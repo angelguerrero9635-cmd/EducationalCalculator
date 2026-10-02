@@ -1,4 +1,4 @@
-# Direction plan: higher education, electrical and computer engineering (15 courses, 66 topics)
+# Direction plan: higher education, electrical and computer engineering (15 courses, 65 topics)
 
 Written from the brief, `src/data/taxonomy.ts` (`COURSES`, read as text), `docs/MODULE_GUIDE.md`
 ("Standards"), `docs/LAYOUTS.md`, `docs/EQUATION_INPUTS.md`, `docs/PICTURES.md`, the type files
@@ -9,23 +9,23 @@ released items (Part 4 plans the collection). Every example was worked by hand.
 
 Courses, in the order to build (prerequisites first within each field):
 
-| #   | Course id                                  | Title                                 | Field      | Topics |
-| --- | ------------------------------------------ | ------------------------------------- | ---------- | ------ |
-| 1   | `he.engineering.circuits-1`                | Circuit Analysis I                    | electrical | 5      |
-| 2   | `he.engineering.circuits-2`                | Circuit Analysis II                   | electrical | 5      |
-| 3   | `he.engineering.electronics`               | Electronics                           | electrical | 4      |
-| 4   | `he.engineering.signals-systems`           | Signals & Systems                     | electrical | 5      |
-| 5   | `he.engineering.control-systems`           | Control Systems                       | electrical | 5      |
-| 6   | `he.engineering.electromagnetics`          | Engineering Electromagnetics          | electrical | 4      |
-| 7   | `he.engineering.power-systems`             | Power Systems                         | electrical | 4      |
-| 8   | `he.engineering.communication-systems`     | Communication Systems                 | electrical | 4      |
-| 9   | `he.engineering.digital-logic`             | Digital Logic Design                  | computer   | 4      |
-| 10  | `he.engineering.discrete-math`             | Discrete Mathematics                  | computer   | 5      |
-| 11  | `he.engineering.data-structures`           | Data Structures & Algorithms          | computer   | 4      |
-| 12  | `he.engineering.computer-architecture`     | Computer Organization & Architecture  | computer   | 4      |
-| 13  | `he.engineering.embedded-systems`          | Embedded Systems                      | computer   | 4      |
-| 14  | `he.engineering.operating-systems`         | Operating Systems                     | computer   | 4      |
-| 15  | `he.engineering.networks`                  | Computer Networks                     | computer   | 4      |
+| #   | Course id                              | Title                                | Field      | Topics |
+| --- | -------------------------------------- | ------------------------------------ | ---------- | ------ |
+| 1   | `he.engineering.circuits-1`            | Circuit Analysis I                   | electrical | 5      |
+| 2   | `he.engineering.circuits-2`            | Circuit Analysis II                  | electrical | 5      |
+| 3   | `he.engineering.electronics`           | Electronics                          | electrical | 4      |
+| 4   | `he.engineering.signals-systems`       | Signals & Systems                    | electrical | 5      |
+| 5   | `he.engineering.control-systems`       | Control Systems                      | electrical | 5      |
+| 6   | `he.engineering.electromagnetics`      | Engineering Electromagnetics         | electrical | 4      |
+| 7   | `he.engineering.power-systems`         | Power Systems                        | electrical | 4      |
+| 8   | `he.engineering.communication-systems` | Communication Systems                | electrical | 4      |
+| 9   | `he.engineering.digital-logic`         | Digital Logic Design                 | computer   | 4      |
+| 10  | `he.engineering.discrete-math`         | Discrete Mathematics                 | computer   | 5      |
+| 11  | `he.engineering.data-structures`       | Data Structures & Algorithms         | computer   | 4      |
+| 12  | `he.engineering.computer-architecture` | Computer Organization & Architecture | computer   | 4      |
+| 13  | `he.engineering.embedded-systems`      | Embedded Systems                     | computer   | 4      |
+| 14  | `he.engineering.operating-systems`     | Operating Systems                    | computer   | 4      |
+| 15  | `he.engineering.networks`              | Computer Networks                    | computer   | 4      |
 
 ## Part 1. Decisions
 
@@ -75,9 +75,9 @@ Courses, in the order to build (prerequisites first within each field):
   function properties, transistor regions, system properties, pole positions), sequences
   (induction proof, FSM design, interrupt entry, encapsulation, TCP handshake, growth rates,
   merge-sort passes, Dijkstra's finalised order, BST traversal) and explorations whose figure is
-  a structure (K-map, truth table, state diagram, stack and queue). Four main pages are layouts
-  (`digital-logic#1`, `digital-logic#3`, `discrete-math#0`, `data-structures#0`); every other
-  main page is a calculator. Proof-writing itself gets no page (a proof is an essay; the
+  a structure (K-map, truth table, state diagram, stack and queue). Five main pages are layouts
+  (`digital-logic#1`, `digital-logic#3`, `discrete-math#0`, `data-structures#0`,
+  `operating-systems#0`); every other main page is a calculator. Proof-writing itself gets no page (a proof is an essay; the
   induction sequence and the equivalence sort carry what a page can check).
 - **Text answers.** A page whose answer is a word (cutoff, triode or saturation; stable or not;
   O(n log n)) is a sort, or a calculator whose numeric answer the step-by-step names in words
@@ -97,7 +97,9 @@ Courses, in the order to build (prerequisites first within each field):
   ceiling, mod and minimum in steps (E4), iterated and simulated steps (E5), short sequences as
   values (E6), Q-function and sinc (E7), simultaneous linear solves (E8), exact integers past
   2⁵³ (E9) and named outputs (E10).
-- **Page count:** 66 main + 196 problem types = **262 pages** (see the summary for the split).
+- **Page count:** 65 main + 191 problem types = **256 pages**: 223 calculators and 33 layouts
+  (19 sorts, 10 sequences, 4 explorations); 118 wait on an engine or picture need (⏳), 138 can
+  be built today.
 
 ## Part 2. Courses and topics
 
@@ -157,8 +159,8 @@ an engine need (E#) or a picture (P#); a ⏳ page can be built with the stand-in
 - **~mesh — BUILD ⏳ P1 (`net: 'twoMesh'`):** values V_a, V_b (−100–100 V), R₁, R₂ (shared),
   R₃, mesh currents I₁, I₂, shared-branch current I_R2. Relations: (R₁ + R₂)I₁ − R₂I₂ = V_a;
   −R₂I₁ + (R₂ + R₃)I₂ = −V_b; I_R2 = I₁ − I₂. Assumptions: both mesh currents clockwise; V_b's
-  + terminal meets I₂ first. Example R₁ = 2 Ω, R₂ = 4 Ω, R₃ = 2 Ω, V_a = 8 V, V_b = 2 V →
-  [6, −4; −4, 6], det = 20, I₁ = (48 − 8) ÷ 20 = 2 A, I₂ = (−12 + 32) ÷ 20 = 1 A, I_R2 = 1 A.
+  - terminal meets I₂ first. Example R₁ = 2 Ω, R₂ = 4 Ω, R₃ = 2 Ω, V_a = 8 V, V_b = 2 V →
+    [6, −4; −4, 6], det = 20, I₁ = (48 − 8) ÷ 20 = 2 A, I₂ = (−12 + 32) ÷ 20 = 1 A, I_R2 = 1 A.
 - **~supernode — BUILD ⏳ P1:** a voltage source V_x between the two nodes, R₁ node 1 to
   ground, R₂ node 2 to ground, I_s into node 1. Relations: V₁ − V₂ = V_x; V₁/R₁ + V₂/R₂ = I_s.
   Example V_x = 6 V, R₁ = 2 Ω, R₂ = 4 Ω, I_s = 6 A → V₁/2 + (V₁ − 6)/4 = 6 → V₁ = 10 V, V₂ = 4 V.
@@ -1172,3 +1174,604 @@ an engine need (E#) or a picture (P#); a ⏳ page can be built with the stand-in
 - **~growth-order — BUILD (sequence):** slowest to fastest: 1, log n, √n, n, n log n, n², 2ⁿ, n!.
 - **Verdict:** 4 pages.
 
+## 12. he.engineering.computer-architecture — Computer Organization & Architecture (after digital-logic)
+
+- **Textbooks:** MIT OCW 6.004 (L09–L22); Matthews, Newhall & Webb, _Dive into Systems_
+  (ch. 5, 11); the RISC-V ISA specification (encoding tables). Titles only: Patterson &
+  Hennessy _Computer Organization and Design_ (RISC-V and MIPS editions) ch. 1–5; Hennessy &
+  Patterson _Computer Architecture_.
+- **Order:** the taxonomy's (Patterson & Hennessy's). RISC-V is the ISA of the examples, with
+  MIPS named where its rule differs (branch offsets), since both editions are in use.
+
+### 12.0 `he.engineering.computer-architecture#0` — Instruction sets
+
+- **Asks:** field widths and immediate range of an instruction format → main; branch target
+  address → ~branch-target; addressing mode of an instruction → ~addressing.
+- **Main — BUILD ⏳ P18 (`bitFields`), E4:** values word w (`allowed` 16, 32, 64), opcode bits o,
+  registers R (`allowed` 8, 16, 32, 64), register field r = log₂R, register fields k, function
+  bits f, immediate bits i, smallest immediate, largest immediate. Relations: r = log₂R;
+  i = w − o − kr − f; range −2ⁱ⁻¹ to 2ⁱ⁻¹ − 1. Example RISC-V I-type: 32, 7, 32 registers (5 bits),
+  2 fields, 3 → i = 12, −2048 to 2047. startWith w, o, R, k, f. Use: "Use this for 'A 32-bit
+  instruction has a 7-bit opcode, two 5-bit register fields and a 3-bit funct. What immediates
+  fit?'"
+- **~branch-target — BUILD ⏳ E3:** MIPS: PC + 4 + 4 × offset; RISC-V: PC + offset (bytes, even).
+  Example MIPS PC = 0x00400020, offset 3 → 0x00400030.
+- **~addressing — BUILD (sort):** bins "Register", "Immediate", "Base + offset",
+  "PC-relative". Cards: "add x5, x6, x7", "sub x1, x2, x3" → Register; "addi x5, x6, 10",
+  "slti x5, x6, −4" → Immediate; "lw x5, 8(x2)", "sw x7, −4(x8)" → Base + offset; "beq x5, x6,
+  loop", "jal x1, func" → PC-relative.
+- **Verdict:** 3 pages.
+
+### 12.1 `he.engineering.computer-architecture#1` — Datapath and control
+
+- **Asks:** CPU time from instruction count, CPI and clock → main; MIPS rating → main;
+  weighted CPI from a mix → ~weighted-cpi; Amdahl's law → ~amdahl; single-cycle clock from unit
+  delays → ~critical-path.
+- **Main — BUILD ⏳ P32 (`datapath`; stand-in `none`):** values instruction count IC (1–10¹⁵),
+  CPI (0.1–100), clock rate f (1 kHz–10 GHz), clock period T, CPU time t, MIPS. Relations:
+  T = 1 ÷ f; t = IC × CPI × T; MIPS = IC ÷ (t × 10⁶). Example 2 × 10⁹, 1.5, 3 GHz → T = 0.333 ns,
+  t = 1.0 s, 2000 MIPS. startWith IC, CPI, f. Use: "Use this for 'A program runs 2 × 10⁹
+  instructions at CPI 1.5 on a 3 GHz CPU. How long does it take?'"
+- **~weighted-cpi — BUILD:** `pieChart` of the mix. CPI = Σ fraction × CPI. Example 50% at 1,
+  30% at 2, 20% at 3 → 1.7.
+- **~amdahl — BUILD:** speedup = 1 ÷ ((1 − f) + f/s); limit 1/(1 − f). Example f = 0.8, s = 4 →
+  2.5; never past 5.
+- **~critical-path — BUILD ⏳ P32:** single-cycle period = the slowest instruction's units in
+  series. Example load: 200 + 100 + 200 + 200 + 100 = 800 ps → 1.25 GHz.
+- **Verdict:** 4 pages.
+
+### 12.2 `he.engineering.computer-architecture#2` — Pipelining
+
+- **Asks:** time and speedup of a k-stage pipeline → main; CPI with stalls → ~hazard-cpi;
+  which hazard → ~hazards.
+- **Main — BUILD ⏳ P23 (`pipelineDiagram`):** values stages k (2–20), instructions n, stage
+  time t_s, single-cycle period t_1, cycles k + n − 1, pipelined time, speedup. Relations:
+  time = (k + n − 1)t_s; speedup = nt_1 ÷ time. Assumptions: no stalls; every stage takes t_s
+  (the slowest stage plus register delay). Example 5, 100, 200 ps, 800 ps → 104 cycles, 20.8 ns,
+  speedup 3.85 (→ 4 for long programs). startWith k, n, t_s, t_1. Use: "Use this for 'How long do
+  100 instructions take on a 5-stage pipeline with 200 ps stages?'"
+- **~hazard-cpi — BUILD:** CPI = 1 + load-use rate × stall + branch rate × mispredict × penalty.
+  Example 25% × 40% × 1 + 20% × 10% × 3 → 1.16.
+- **~hazards — BUILD (sort):** bins "Data hazard", "Control hazard", "Structural hazard".
+  Cards: "sub x4, x1, x5 right after add x1, x2, x3", "a load's result used by the next
+  instruction" → Data; "the instruction after beq is fetched before the branch is decided",
+  "a jump's target isn't known in fetch" → Control; "one memory port for both fetch and a load",
+  "one register-file write port, two writes in a cycle" → Structural.
+- **Verdict:** 3 pages.
+
+### 12.3 `he.engineering.computer-architecture#3` — Memory hierarchy
+
+- **Asks:** tag, index and offset bits → main; average memory access time, one and two levels
+  → ~amat; page-table size → ~page-table.
+- **Main — BUILD ⏳ P18 (`bitFields`), E4:** values address bits A (`allowed` 16, 32, 48, 64),
+  cache size C (KiB), block size B (bytes), associativity w (`allowed` 1, 2, 4, 8, 16), sets
+  S, offset bits, index bits, tag bits. Relations: S = C ÷ (B × w); offset = log₂B; index =
+  log₂S; tag = A − index − offset. Example 32 bits, 32 KiB, 64 B, direct-mapped → 512 sets,
+  6, 9, 17; 4-way → 128 sets, 6, 7, 19. startWith A, C, B, w. Use: "Use this for 'A 32 KiB
+  direct-mapped cache has 64-byte blocks and 32-bit addresses. How many tag bits?'"
+- **~amat — BUILD:** AMAT = hit + miss rate × penalty; two levels hit₁ + m₁(hit₂ + m₂ × memory).
+  Example 1 + 0.05 × 100 = 6 cycles; with L2 (10 cycles, 20% local miss) → 2.5 cycles.
+- **~page-table — BUILD, E4:** offset log₂(page); entries 2^(VA − offset); size entries ×
+  entry. Example 32-bit, 4 KiB pages, 4-byte entries → 12 bits, 2²⁰ entries, 4 MiB.
+- **Verdict:** 3 pages.
+
+## 13. he.engineering.embedded-systems — Embedded Systems (after computer-architecture, circuits-1)
+
+- **Textbooks:** Lee & Seshia, _Introduction to Embedded Systems_ (ch. 7–12); Kuphaldt ModEL
+  modules (microcontrollers, serial communication, ADC/DAC). Titles only: Valvano _Embedded
+  Systems_ (free online), Wolf _Computers as Components_.
+- **Order:** the taxonomy's; ADC, DAC and GPIO are #0, as the lab sequence teaches them.
+
+### 13.0 `he.engineering.embedded-systems#0` — Microcontrollers
+
+- **Asks:** ADC code for a voltage and its resolution → main; DAC output → ~dac; LED resistor
+  on a pin → ~led-pin; divider for a 5 V → 3.3 V input → ~divider; set or clear a register bit →
+  ~bit-mask.
+- **Main — BUILD ⏳ P26 (`functionGraph` `quantizer` staircase), E4:** values bits n
+  (`allowed` 8, 10, 12, 16), reference V_ref, input V_in, code D, step (LSB), voltage back
+  D × LSB. Relations: LSB = V_ref ÷ 2ⁿ; D = ⌊V_in ÷ LSB⌋. Page limit: 0 ≤ V_in < V_ref.
+  Assumptions: the converter truncates (some round; the steps name it); D runs 0 to 2ⁿ − 1.
+  Example 10 bits, 3.3 V, 1.2 V → LSB = 3.22 mV, D = 372, back 1.199 V. startWith n, V_ref, V_in.
+  Use: "Use this for 'A 10-bit ADC with a 3.3 V reference reads 1.2 V. What code does it give?'"
+- **~dac — BUILD ⏳ P26:** V_out = D × V_ref ÷ 2ⁿ. Example 8 bits, 5 V, 200 → 3.906 V.
+- **~led-pin — BUILD:** R = (V_DD − V_F) ÷ I; page limit I ≤ the pin's rating. Example 3.3 V,
+  2.0 V, 10 mA → 130 Ω.
+- **~divider — BUILD:** `seriesCircuit` (two resistors). V_out = V_in R₂ ÷ (R₁ + R₂). Example 5 V,
+  1 kΩ, 2 kΩ → 3.33 V.
+- **~bit-mask — BUILD ⏳ E3:** set bit k: reg | (1 << k); clear: reg & ~(1 << k). Example 0x41,
+  set bit 3 → 0x49; then clear bit 6 → 0x09.
+- **Verdict:** 5 pages.
+
+### 13.1 `he.engineering.embedded-systems#1` — Interrupts and timers
+
+- **Asks:** prescaler and compare value for a period → main; PWM frequency and duty cycle →
+  ~pwm; longest period before overflow → ~overflow; CPU time spent in an ISR → ~cpu-load; what
+  happens on an interrupt, in order → ~isr-steps.
+- **Main — BUILD ⏳ P20 (`timingDiagram` timer count ramping to the compare value),
+  E1 (MHz, μs):** values clock f_clk, prescaler N (`allowed` 1, 8, 64, 256, 1024), timer clock
+  f_t, period P, ticks, compare value. Relations: f_t = f_clk ÷ N; ticks = P × f_t; compare =
+  ticks − 1. Page limit: compare < 2ⁿ for the timer's n bits. Example 16 MHz, 64, 1 ms → 250 kHz,
+  250 ticks, compare 249. startWith f_clk, N, P. Use: "Use this for 'Set a 16 MHz timer to
+  interrupt every 1 ms with prescaler 64.'"
+- **~pwm — BUILD ⏳ P20:** f_PWM = f_clk ÷ (N(TOP + 1)); duty = compare ÷ (TOP + 1); average
+  V = duty × V_DD. Example 16 MHz, 8, 1999, 500 → 1 kHz, 25%, 1.25 V at 5 V.
+- **~overflow — BUILD:** longest = 2ⁿ × N ÷ f_clk. Example 16 bits, 1024, 16 MHz → 4.19 s.
+- **~cpu-load — BUILD:** load = rate × ISR time. Example 10 kHz × 20 μs → 20%.
+- **~isr-steps — BUILD (sequence):** "the event sets the interrupt flag"; "the CPU finishes the
+  current instruction"; "it saves the PC and status"; "it jumps to the vector's handler"; "the
+  ISR runs and clears the flag"; "return restores the PC and status".
+- **Verdict:** 5 pages.
+
+### 13.2 `he.engineering.embedded-systems#2` — Serial protocols
+
+- **Asks:** UART byte rate and frame time → main; baud-rate register and error → ~baud-error;
+  SPI throughput → ~spi; I²C transaction time → ~i2c; which protocol → ~protocols.
+- **Main — BUILD ⏳ P20 (UART frame: start, data bits LSB first, parity, stop):** values baud
+  rate, data bits (`allowed` 5–9), parity bits (`allowed` 0, 1), stop bits (`allowed` 1, 2),
+  frame bits, bytes per second, time per byte. Relations: frame = 1 + data + parity + stop;
+  rate = baud ÷ frame; time = frame ÷ baud. Example 115 200, 8N1 → 10 bits, 11 520 B/s, 86.8 μs.
+  startWith baud, data, parity, stop. Use: "Use this for 'How many bytes per second can a
+  115 200-baud 8N1 UART send?'"
+- **~baud-error — BUILD, E4:** UBRR = round(f_clk ÷ (16 × baud) − 1); actual = f_clk ÷
+  (16(UBRR + 1)); error = actual ÷ baud − 1. Example 16 MHz, 115 200 → 8, 111 111, −3.5%.
+- **~spi — BUILD:** bytes per second = f_SCK ÷ 8. Example 8 MHz → 1 MB/s; 16 bits in 2 μs.
+- **~i2c — BUILD:** bits = 2 + 9 × (1 + data bytes) (start and stop as one bit time each).
+  Example 400 kHz, 2 data bytes → 29 bit times, 72.5 μs.
+- **~protocols — BUILD (sort):** bins UART, SPI, I²C. Cards: "no shared clock; both ends agree
+  on a baud rate", "a start bit low, a stop bit high" → UART; "a chip-select line for each
+  device", "full duplex on MOSI and MISO" → SPI; "two shared wires with device addresses",
+  "open-drain lines with pull-up resistors" → I²C.
+- **Verdict:** 5 pages.
+
+### 13.3 `he.engineering.embedded-systems#3` — Real-time constraints
+
+- **Asks:** is a task set schedulable under rate-monotonic (utilization bound) → main;
+  worst-case response time → ~response-time; EDF schedulability → ~edf.
+- **Main — BUILD ⏳ P24 (`scheduleChart` over the hyperperiod):** values C₁, T₁, C₂, T₂, C₃, T₃
+  (ms), utilization U, bound. Relations: U = Σ Cᵢ/Tᵢ; bound = n(2^(1/n) − 1). Page limit Cᵢ ≤ Tᵢ.
+  Assumptions: independent periodic tasks, deadline = period, shorter period = higher
+  priority; U ≤ bound guarantees it, U above the bound needs the response-time test. Example
+  (1, 4), (2, 8), (3, 12) → U = 0.75 ≤ 0.780: schedulable. startWith the six. Use: "Use this for
+  'Can tasks (C, T) = (1, 4), (2, 8), (3, 12) ms be scheduled rate-monotonically?'"
+- **~response-time — BUILD ⏳ E5 (iteration), P24:** R = C + Σ_{higher j} ⌈R/Tⱼ⌉Cⱼ, iterated from
+  R = ΣC. Example task 3 above: 6 → 7 → 7; R₃ = 7 ms ≤ 12.
+- **~edf — BUILD ⏳ P24:** EDF schedules any set with U ≤ 1. Example (2, 5), (2, 7), (1, 10) →
+  U = 0.786: above the RM bound 0.780 (no guarantee), fine for EDF.
+- **Verdict:** 3 pages.
+
+## 14. he.engineering.operating-systems — Operating Systems (after computer-architecture, data-structures)
+
+- **Textbooks:** Arpaci-Dusseau, _Operating Systems: Three Easy Pieces_ (free online);
+  Hailperin, _Operating Systems and Middleware_; MIT OCW 6.828/6.1810 notes. Titles only:
+  Silberschatz _Operating System Concepts_, Tanenbaum _Modern Operating Systems_.
+- **Order:** the taxonomy's (Silberschatz's).
+
+### 14.0 `he.engineering.operating-systems#0` — Processes and threads
+
+- **Asks:** which state a process enters on an event → main; context-switch overhead →
+  ~switch-cost; processes after n forks → ~fork; CPU use with I/O waiting → ~multiprogramming.
+- **Main — BUILD (sort):** bins "Ready", "Running", "Blocked", "Terminated". Cards (the event;
+  the bin is the state it moves to): "it is created and loaded", "its disk read completes",
+  "the timer ends its time slice" → Ready; "the scheduler dispatches it" → Running; "it asks to
+  read from disk", "it waits for a lock another thread holds" → Blocked; "it calls exit()", "it
+  is killed by a signal" → Terminated. Sentence: "Only a running process can block; a blocked
+  one goes back to ready, never straight to running." Use: "Use this for 'A running process
+  requests I/O. Which state does it enter?'"
+- **~switch-cost — BUILD:** efficiency = q ÷ (q + s). Example q = 10 ms, s = 0.1 ms → 99.0%.
+- **~fork — BUILD:** n forks in a row → 2ⁿ processes. Example 3 → 8 (7 children).
+- **~multiprogramming — BUILD:** use = 1 − pⁿ. Example p = 0.8, n = 4 → 59.0%.
+- **Verdict:** 4 pages.
+
+### 14.1 `he.engineering.operating-systems#1` — Scheduling
+
+- **Asks:** average waiting and turnaround time under FCFS and SJF → main; under round robin →
+  ~round-robin.
+- **Main — BUILD ⏳ P24 (Gantt), E4 (ordering):** values bursts b₁–b₄ (ms, all arriving at 0),
+  FCFS average wait, FCFS average turnaround, SJF average wait, SJF average turnaround.
+  Relations: FCFS wait of job i = sum of the bursts before it; SJF the same after sorting;
+  turnaround = wait + burst. Assumptions: arrival order 1, 2, 3, 4; no I/O; a tie keeps
+  arrival order. Example 10, 4, 2, 6 → FCFS waits 0, 10, 14, 16 (10 ms), turnaround 15.5 ms; SJF
+  waits 0, 2, 6, 12 (5 ms), turnaround 10.5 ms. startWith b₁–b₄. Use: "Use this for 'Four jobs of
+  10, 4, 2 and 6 ms arrive together. Compare FCFS and SJF waiting times.'"
+- **~round-robin — BUILD ⏳ E5, P24:** quantum q; the steps list each slice. Example jobs A, B,
+  C with bursts 5, 3, 1 ms, q = 2 → A 0–2, B 2–4, C 4–5, A 5–7, B 7–8, A 8–9; waits 4, 5, 4 →
+  4.33 ms.
+- **Verdict:** 2 pages.
+
+### 14.2 `he.engineering.operating-systems#2` — Memory management
+
+- **Asks:** page number, offset and physical address → main; effective access time with a
+  TLB → ~tlb; with page faults → ~page-faults; faults under FIFO and LRU → ~replacement.
+- **Main — BUILD ⏳ P28 (`memoryMap` paging), E4:** values page size (`allowed` powers of 2,
+  256 B–1 MiB), virtual address VA, page number, offset, frame (from the table), physical
+  address PA. Relations: page = ⌊VA ÷ size⌋; offset = VA mod size; PA = frame × size + offset.
+  Example 4096, VA 20 500 → page 5, offset 20; frame 9 → PA 36 884. startWith size, VA, frame.
+  Use: "Use this for 'With 4 KiB pages, virtual address 20 500 is on which page, at what offset?'"
+- **~tlb — BUILD:** EAT = h(t + m) + (1 − h)(t + 2m). Example 90%, 10 ns, 100 ns → 120 ns.
+- **~page-faults — BUILD:** EAT = (1 − p)m + p × fault time. Example 100 ns, 8 ms, 1 in 100 000
+  → 180 ns.
+- **~replacement — BUILD ⏳ E5:** references 1, 3, 1, 2, 4, 3, 1, 4 with 3 frames: FIFO 5
+  faults, LRU 6 (LRU isn't always better).
+- **Verdict:** 4 pages.
+
+### 14.3 `he.engineering.operating-systems#3` — File systems
+
+- **Asks:** largest file with direct and indirect pointers → main; disk access time →
+  ~disk-access; blocks and wasted space → ~blocks; allocation method → ~allocation.
+- **Main — BUILD ⏳ P28 (`memoryMap` inode):** values block size B, pointer size p,
+  pointers per block k = B/p, direct pointers d (default 12), largest file in blocks
+  d + k + k² + k³, largest file in bytes. Example 4 KiB, 4 B → k = 1024, 1 074 791 436 blocks,
+  4.40 × 10¹² bytes (about 4 TiB). startWith B, p, d. Use: "Use this for 'An inode has 12 direct
+  pointers and single, double and triple indirect ones. With 4 KiB blocks, what is the largest
+  file?'"
+- **~disk-access — BUILD, E1 (rpm):** seek + ½ × 60/rpm + size ÷ rate. Example 9 ms, 7200 rpm,
+  4 KiB at 100 MB/s → 9 + 4.17 + 0.04 = 13.2 ms.
+- **~blocks — BUILD, E4:** ⌈size ÷ B⌉ blocks; waste = blocks × B − size. Example 10 000 B, 4096 →
+  3 blocks, 2288 B wasted.
+- **~allocation — BUILD (sort):** bins Contiguous, Linked, Indexed. Cards: "fast random access
+  but external fragmentation", "a file can't grow past the free gap after it" → Contiguous;
+  "each block holds the next block's address", "a FAT table chains the blocks" → Linked; "an
+  inode lists the file's blocks", "a block of pointers per file" → Indexed.
+- **Verdict:** 4 pages.
+
+## 15. he.engineering.networks — Computer Networks (after data-structures)
+
+- **Textbooks:** Peterson & Davie, _Computer Networks: A Systems Approach_ (ch. 1–5);
+  Bonaventure, _Computer Networking: Principles, Protocols and Practice_. Titles only: Kurose &
+  Ross _Computer Networking: A Top-Down Approach_, Tanenbaum & Wetherall.
+- **Order:** the taxonomy's; performance is last in the taxonomy but Kurose & Ross teach delay
+  in ch. 1, so its pages need nothing from #1–#2.
+
+### 15.0 `he.engineering.networks#0` — Layered models
+
+- **Asks:** header overhead and efficiency → main; which layer a protocol or device is →
+  ~layers; encapsulation order → ~encapsulation.
+- **Main — BUILD ⏳ P18 (`bitFields` `headers`: nested header bars):** values payload (bytes),
+  TCP header (20–60), IP header (20–60), link overhead (Ethernet 18), frame size, efficiency.
+  Relations: frame = payload + TCP + IP + link; efficiency = payload ÷ frame. Example 1460, 20,
+  20, 18 → 1518 B, 96.2%. startWith payload, TCP, IP, link. Use: "Use this for 'What fraction
+  of a full Ethernet frame is application data?'"
+- **~layers — BUILD (sort):** bins Application, Transport, Network, Link. Cards: "HTTP", "DNS"
+  → Application; "TCP", "UDP", "port numbers" → Transport; "IP", "ICMP", "routers forward by
+  destination address" → Network; "Ethernet", "MAC addresses", "switches forward frames" → Link.
+- **~encapsulation — BUILD (sequence):** "the application writes a message"; "TCP adds its
+  header: a segment"; "IP adds its header: a datagram"; "Ethernet adds its header and FCS: a
+  frame"; "the network card sends the frame as bits".
+- **Verdict:** 3 pages.
+
+### 15.1 `he.engineering.networks#1` — TCP/IP
+
+- **Asks:** network, broadcast and hosts of an address with a prefix → main; subnets from a
+  block → ~subnet-split; TCP throughput limited by window → ~window; sequence and ACK numbers →
+  ~seq-ack; the handshake in order → ~handshake.
+- **Main — BUILD ⏳ P18 (32 bits split at the prefix), E3 (dotted quads), E4:** values prefix
+  n (24–30 here; page limit), block size 2^(32 − n), mask's last octet 256 − block, address's last
+  octet a, network octet ⌊a ÷ block⌋ × block, broadcast octet network + block − 1, usable hosts
+  block − 2. Example 192.168.10.77/26 → block 64, mask 255.255.255.192, network .64, broadcast
+  .127, 62 hosts. startWith n, a. Use: "Use this for 'Find the network and broadcast address of
+  192.168.10.77/26.'"
+- **~subnet-split — BUILD, E4:** borrow ⌈log₂k⌉ bits. Example /24 into 5 subnets → 3 bits, /27,
+  8 subnets of 30 hosts.
+- **~window — BUILD:** throughput ≤ window ÷ RTT. Example 64 KiB, 50 ms → 10.5 Mb/s.
+- **~seq-ack — BUILD:** ACK = seq + bytes. Example seq 1000, 500 bytes → ACK 1500.
+- **~handshake — BUILD (sequence):** "client sends SYN (seq x)"; "server replies SYN-ACK (seq y,
+  ack x + 1)"; "client sends ACK (ack y + 1)"; "data flows both ways"; "one side sends FIN";
+  "the other acknowledges and sends its own FIN, which is acknowledged".
+- **Verdict:** 5 pages.
+
+### 15.2 `he.engineering.networks#2` — Routing
+
+- **Asks:** distance-vector update → main; Dijkstra's order of finalised nodes →
+  ~dijkstra; longest-prefix match → ~prefix-match.
+- **Main — BUILD ⏳ P22 (`graph` with link costs), E4 (min), E10 (the next hop's name):**
+  values link costs c_A, c_B, c_C to three neighbours, their distances D_A, D_B, D_C to the
+  destination, best distance D. Relation: D = min(c_A + D_A, c_B + D_B, c_C + D_C) (Bellman–Ford).
+  Example 2, 7, 4 and 6, 3, 5 → 8, 10, 9 → 8 via A. startWith the six. Use: "Use this for 'Router
+  X's links cost 2, 7, 4 to A, B, C, which report distances 6, 3, 5. Find X's distance.'"
+- **~dijkstra — BUILD (sequence, spans = the cost of the edge used) ⏳ P22:** graph S–A 1, S–B 4,
+  A–B 2, A–C 5, B–C 1, C–D 3, B–D 6; from S: S (0), A (1), B (2, via A), C (1, via B), D (3, via
+  C); distances 0, 1, 3, 4, 7.
+- **~prefix-match — BUILD (sort):** bins "10.1.2.0/24", "10.1.0.0/16", "10.0.0.0/8", "Default
+  route". Cards: 10.1.2.5, 10.1.2.200 → /24; 10.1.9.9, 10.1.250.1 → /16; 10.200.1.1, 10.0.0.1 →
+  /8; 172.16.0.1, 8.8.8.8 → Default.
+- **Verdict:** 3 pages.
+
+### 15.3 `he.engineering.networks#3` — Network performance
+
+- **Asks:** transmission and propagation delay → main; bandwidth-delay product → ~bdp;
+  stop-and-wait utilisation → ~stop-and-wait; queueing delay → ~queue; file time over a
+  bottleneck → ~bottleneck.
+- **Main — BUILD ⏳ P20 (`timingDiagram` `link`: the space-time diagram), E1 (b/s, μs):**
+  values packet L (bytes), rate R, transmission d_t, distance d, signal speed s
+  (default 2 × 10⁸ m/s), propagation d_p, queueing d_q, total. Relations: d_t = 8L ÷ R; d_p = d ÷ s;
+  total = d_t + d_p + d_q. Example 1500 B, 100 Mb/s, 2000 km, no queue → 120 μs + 10 ms = 10.12 ms.
+  startWith L, R, d. Use: "Use this for 'How long does a 1500-byte packet take to cross a
+  2000 km, 100 Mb/s link?'"
+- **~bdp — BUILD:** R × RTT. Example 100 Mb/s, 20 ms → 2 Mb = 250 kB.
+- **~stop-and-wait — BUILD:** U = d_t ÷ (RTT + d_t). Example 0.12 ms, 20 ms → 0.596%.
+- **~queue — BUILD:** M/M/1: ρ = λ/μ; T = 1 ÷ (μ − λ); N = ρ ÷ (1 − ρ). Example 800, 1000 packets/s
+  → 0.8, 5 ms, 4 packets.
+- **~bottleneck — BUILD:** time = size ÷ min(rates). Example 4 MB over 10 and 2 Mb/s → 16 s.
+- **Verdict:** 5 pages.
+
+## Part 3. Pictures for the pictures chat
+
+Kinds reused unchanged: `seriesCircuit` (pilot, ~divider), `circuit` `mixed`, `induction`
+(`transformer`, `coil`), `capacitor`, `vectorDiagram` (power triangle), `complexPlane` (stand-in
+for impedance), `functionGraph` (`cos`, `sin`, `exponential`, `piecewise`, `transform`),
+`waterfall`, `pieChart`, `pascalTriangle`, `termsChart` (`recursive`), `table` (`graph`),
+`normalCurve` (tail), `matrixGrid` (`determinant`, `cramer`). New requests, options on existing
+kinds first (32: 17 options on existing kinds, 13 new kinds, of which `karnaugh` and
+`graph` are also layout figures, and 2 layout-only figures):
+
+1. **HE-electrical-computer-P1 — `seriesCircuit` option `net` (passive schematics).** Pages:
+   circuits-1#0~parallel, ~power-sign; #1 main, ~mesh, ~supernode; #2 main, ~norton,
+   ~max-power, ~superposition; #4 (as the switch circuit beside P4). Draws a schematic in
+   textbook symbols (zig-zag R, plates C, coil L, circle V and I sources with + and arrow, ground)
+   for a named `topology`: `parallel`, `twoNode`, `twoMesh`, `supernode`, `thevenin` (circuit and
+   its equivalent side by side), `superposition` (the two one-source circuits under the full
+   one), `rc`, `rl`, `rlc`, `element` (one box with + − and a current arrow). Fields: `elements:
+{ id: valueId, kind: 'R' | 'C' | 'L' | 'V' | 'I' }[]`, `nodes: valueId[]` (node voltages
+   written at their dots), `meshes: valueId[]` (circular arrows), `branches` (current arrows).
+   Harness: KCL at every drawn node and KVL round every drawn mesh hold to 0.1% for the shown
+   values; every label is a value on the page.
+2. **P2 — `seriesCircuit` option `amp` (op-amp circuits).** Pages: circuits-1#3 (4 pages),
+   electronics#3~integrator, ~active-lowpass, ~schmitt. `amp: 'inverting' | 'nonInverting' |
+'summing' | 'difference' | 'integrator' | 'activeLowPass' | 'schmitt'`; fields `vin` (one or
+   two), `rin`, `rf`, `rg`, `c`, `vout`, `rail`. Draws the triangle with − and + inputs, the
+   resistors, the rails as ±V_sat, v_out at the output and, for `schmitt`, the hysteresis loop
+   beside it. Harness: v₊ = v₋ within 1 mV (virtual short) unless the output is at a rail; |v_out|
+   never past the rail.
+3. **P3 — `seriesCircuit` option `device` (semiconductor circuits).** Pages: electronics#0
+   main (stand-in), ~zener, ~rectifier; #1 main; #2 main, ~cs-mosfet. `device: 'diodeR' |
+'zener' | 'bridge' | 'bjtDivider' | 'mosfetCS' | 'hybridPi'`; fields per device (V_s, R, V_D;
+   V_CC, R₁, R₂, R_C, R_E, V_B, I_C, V_CE; g_m, r_π, R_p, A_v); `bridge` draws the rectified wave
+   with ripple V_r above C. Harness: node voltages consistent with the page's relations; the
+   BJT is drawn active only when V_CE > 0.2 V.
+4. **P4 — `functionGraph` option `transient: { initial, final, tau, time? }`.** Pages:
+   circuits-1#4 main, ~discharge, ~rl, ~general; control#0 main, #4 main (with `second` for the
+   open-loop curve); electronics#3~integrator (a ramp, `tau` absent); signals#1~exp-step. Draws
+   x(t) = x_f + (x₀ − x_f)e^(−t/τ) with the dashed final line, τ to 5τ ticks, the 63% point and
+   the point at `time`. Harness: the point's height equals the page's value; τ ticks at the
+   value τ.
+5. **P5 — `functionGraph` option `stepResponse: { zeta, wn, overshoot?, peak?, settling? }`.**
+   Pages: control#1 main, ~from-spec; #3~bandwidth; #4~pi; circuits-1#4~rlc-damping. Draws the
+   second-order step response, the ±2% band, the peak marked at (T_p, 1 + %OS) and T_s where it
+   enters the band; over- and critically damped curves for ζ ≥ 1. Harness: the drawn peak
+   matches %OS and T_p to 0.5%.
+6. **P6 — `complexPlane` options `j: true`, `axes: [name, name]`, `phasors`, `poles`, `locus`.**
+   Pages: circuits-2#0 main, ~phasor-form, ~parallel-rc; #4 main, ~delta; control#0~feedback,
+   #1~dc-gain, #2~root-locus; signals#3 main. `j` writes j for i; `axes` renames the axes (R,
+   X; σ, jω); `phasors: { mag, angle, name }[]` draws several arrows from 0 (three-phase star with
+   V_ab drawn tip to tail); `poles`, `zeros` mark × and ○; `locus: { poles, zeros?, gain }` draws
+   the root-locus branches, the asymptotes from the centroid and the closed-loop poles at the
+   gain. Harness: every arrow's length and angle match its values; the closed-loop poles solve
+   the characteristic equation at the shown gain.
+7. **P7 — new kind `bode`.** Pages: circuits-2#2 main, ~high-pass, ~band-pass; control#3 main,
+   ~asymptotes, ~gain-margin; electronics#3 main, ~active-lowpass. Magnitude (dB) and phase (°)
+   over a log-frequency axis (Hz or rad/s, decades labelled), straight-line asymptotes dashed,
+   the corner frequencies, a marked frequency with its gain and phase, and for loops the gain
+   crossover with PM and the phase crossover with GM. Fields: `poles`, `zeros`, `gain` (numbers or
+   value ids), `integrators`, `at`, `crossover?`, `margin?`. Harness: the marked gain and phase
+   equal the page's values to 0.1 dB and 0.5°.
+8. **P8 — new kind `deviceCurves`.** Pages: electronics#0 main, ~shockley; #1~mosfet-sat,
+   ~mosfet-triode. Diode mode: the exponential I–V with the load line from (V_s, 0) to (0, V_s/R)
+   and the Q point; MOSFET mode: I_D–V_DS curves for 3–5 values of V_GS, the triode/saturation
+   boundary V_DS = V_GS − V_t dashed, the Q point. Harness: Q lies on both the device curve and
+   the load line.
+9. **P9 — new kind `stemPlot`.** Pages: signals#0~discrete-period, #1 main, #3~difference-eq,
+   #4 main. Stems of x[n]; `convolve: { x, h, n }` draws x[k], h[n − k] flipped and shifted under
+   it, the products and their sum y[n]; `sampled: { f, fs }` draws the continuous sine, the
+   samples and the alias sine dashed through the same samples. Harness: the sum equals y[n]; the
+   alias passes through every sample.
+10. **P10 — `functionGraph` option `fourier: { wave: 'square' | 'saw' | 'triangle', terms, k? }`.**
+    Pages: signals#2 main. The partial sum over the wave (Gibbs overshoot visible) and a
+    harmonic stem chart beside it with bₖ lit. Harness: the lit stem's height equals bₖ.
+11. **P11 — `wave` options `line: { gamma }` and `em: true`.** Pages: electromagnetics#0 main,
+    #2 main. `line` draws the standing-wave envelope on a line from source to load, V_max and
+    V_min marked (their ratio = VSWR), a load box; `em` draws E (vertical) and H (horizontal)
+    in step along the travel direction, λ marked. Harness: V_max/V_min equals the VSWR value.
+12. **P12 — `waterfall` option `decibels: true`.** Pages: electromagnetics#3 main,
+    communication#2 main, electronics#2~cascade. Items in dB and dBm, the running level in
+    dBm, a dashed noise-floor line (`floor` value id) with the margin bracketed. Harness: the end
+    bar equals the sum of the signed items.
+13. **P13 — new kind `oneLine`.** Pages: power#2 main, ~slg. A one-line diagram: generator
+    circle, transformer double circle, line, buses as bars, load arrow, a fault bolt on a bus,
+    each element labelled with its pu reactance; the Thévenin reactance summed under it.
+    Harness: the summed reactance equals X_th.
+14. **P14 — `functionGraph` option `equalArea: { pm, pmax, d0, dc, dmax? }`.** Pages: power#3
+    main (and power#0 main's P–δ point, which works today without it). The P–δ sine, the P_m
+    line, the area A₁ (accelerating, from δ₀ to δ_cr under P_m) and A₂ (decelerating, above P_m
+    to δ_max) shaded. Harness: A₁ = A₂ to 1% at the critical angle.
+15. **P15 — new kind `rfSpectrum`.** Pages: communication#0 main, ~fm. A frequency axis with the
+    carrier line and sidebands to scale (AM: two at f_c ± f_m with heights μ/2; FM: lines inside
+    the Carson band, the band bracketed), and the time waveform with its envelope above. Harness:
+    the bracketed bandwidth equals B; the sideband heights match P_sb.
+16. **P16 — `complexPlane` option `constellation: { M, kind: 'psk' | 'qam' }`.** Pages:
+    communication#1 main. M points with Gray-coded bit labels and the decision boundaries.
+    Harness: M points drawn, log₂M bits per label, neighbours differ in one bit.
+17. **P17 — `placeValueChart` option `base: 2 | 8 | 16`, `width`.** Pages: digital-logic#0
+    main. Columns weighted 2ᵏ (or 16ᵏ), the digits, the weights of the 1s added under it; a
+    `twos` row inverting and adding 1. Harness: Σ digit × weight equals N.
+18. **P18 — new kind `bitFields`.** Pages: architecture#0 main, #3 main; networks#0 main
+    (`headers` mode), #1 main. A word as a bar cut into named fields, widths to scale and
+    written (opcode 7 | rd 5 | …; tag | index | offset; network | host), the bits of a given value
+    written in; `headers` draws nested header boxes around a payload, each with its bytes.
+    Harness: the field widths add to the word size; the bytes add to the frame.
+19. **P19 — new calculator kind and explore figure `karnaugh` (with its truth table).** Pages:
+    digital-logic#1 main (explore), discrete-math#0~truth-table (explore). A 2-, 3- or 4-variable
+    K-map in Gray order with the truth table beside it; scenes give minterms, don't-cares and
+    groups, each group ringed in its own outline style (not by colour alone) with its product
+    term written. Truth-table mode: columns for sub-expressions, a lit column. Harness (layout
+    test): every group is a power-of-two rectangle (wrapping allowed) of 1s and don't-cares;
+    the written SOP's truth table equals the scene's.
+20. **P20 — new kind `timingDiagram`.** Pages: digital-logic#2 main; embedded#1 main, ~pwm; #2
+    main; networks#3 main (`link` mode). Stacked digital waveforms on one time axis (clock, D,
+    Q; a timer count ramp with the compare level; a UART frame with start, data LSB first,
+    parity, stop) with interval brackets (t_cq, t_setup, a bit time); `link` mode draws the
+    space–time diagram of a packet (transmission as the slanted band's width, propagation as its
+    slope). Harness: brackets equal their values; the frame has the stated bit count.
+21. **P21 — explore figure `stateDiagram`.** Pages: digital-logic#3 main. State bubbles with
+    outputs (Moore) or arrow labels in/out (Mealy), a scene's `input` string lighting the path
+    one step at a time. Layout test: every state has one arrow per input value.
+22. **P22 — new kind (and card figure) `graph`.** Pages: discrete-math#3 main;
+    data-structures#1 main; networks#2 main, ~dijkstra; communication#3~code-length (tree mode).
+    Vertices and edges laid out by a fixed embedding (no crossings when planar), degrees or edge
+    costs written, a lit path; `tree` mode draws a rooted binary or code tree level by level
+    with 0/1 on edges. Harness: degree sum = 2E; the lit path's cost equals the page's value.
+23. **P23 — new kind `pipelineDiagram`.** Pages: architecture#2 main. A grid of instructions
+    by clock cycles, each cell a stage (IF, ID, EX, MEM, WB), stall bubbles and forwarding arrows
+    when given. Harness: the last cell is at cycle k + n − 1 (with no stalls); n is drawn up to 8
+    rows with "…" past it.
+24. **P24 — new kind `scheduleChart`.** Pages: embedded#3 main, ~response-time, ~edf;
+    operating-systems#1 main, ~round-robin. A Gantt chart: one row per task (or one row of
+    slices), release arrows and deadlines, the hyperperiod or the makespan; waits bracketed.
+    Harness: the slices of each task add to its burst or C per period; no deadline is drawn
+    missed unless the page says so.
+25. **P25 — explore figure `dataStructure`.** Pages: data-structures#0 main, #2 main (array
+    mode with low, mid, high pointers). Boxes for a stack (vertical, top marked), queue (front
+    and rear), circular buffer (ring of N slots), linked list (nodes and arrows), array with
+    pointers. Layout test: the scene's operations replayed give the drawn contents.
+26. **P26 — `functionGraph` option `quantizer: { bits, vref, input?, mode: 'adc' | 'dac' }`.**
+    Pages: embedded#0 main, ~dac; signals#4~quantization. The staircase transfer function (up
+    to 16 steps drawn, then a zoom on the step holding the input), the input's step lit, 1 LSB
+    bracketed. Harness: the lit step's code equals D.
+27. **P27 — `venn` option `three`.** Pages: discrete-math#1 main. Three circles with the
+    count in each of the 7 regions worked out from the 7 values and the union bracketed.
+    Harness: the regions add to the union; no region negative (the page limit).
+28. **P28 — new kind `memoryMap`.** Pages: operating-systems#2 main, #3 main. `paging`: a
+    virtual space in pages, the page table, physical frames, the address's page and offset
+    lit; `inode`: the inode with 12 direct pointer boxes and three indirect ones fanning out,
+    the block counts written. Harness: PA = frame × size + offset; the counts equal k, k², k³.
+29. **P29 — `matrixGrid` option `routh`.** Pages: control#2 main, ~routh-count. The Routh
+    array for a cubic, each computed cell's 2 × 2 cross-product shown on tap, the first column
+    lit with sign changes counted. Harness: the first column matches the page's values.
+30. **P30 — `oscillator` option `damper: b`.** Pages: control#0~mass-spring. A dashpot beside
+    the spring, labelled b, with the decaying x–t trace for ζ. Harness: ω_n and ζ in the caption
+    equal the page's values.
+31. **P31 — `induction` option `wire` and `charges` option `line`.** Pages: electromagnetics#1
+    main, ~gauss-line. A long straight wire end-on with concentric B circles (right-hand
+    direction), a point at r with its B; a line charge with its Gaussian cylinder and radial E.
+    Harness: the field at r equals the page's value.
+32. **P32 — new kind `datapath`.** Pages: architecture#1 main, ~critical-path. The five units
+    (instruction memory, register file, ALU, data memory, write-back mux) in a row with each
+    unit's delay; an instruction class lights the units it uses and sums their delays. Harness:
+    the lit delays add to the period.
+
+## Part 4. Research to do
+
+For a separate research chat; nothing here has been collected. The reference-only rule of
+`research/README.md` applies: no problem, number, figure or sentence goes into a lesson.
+Licences marked "verified" were read on the publisher's page for this plan (2026-10-02);
+"confirm" means from memory, to be checked and quoted in `research/textbooks/sources/` before
+anything is fetched. robots.txt was not checked for any site below; check it first, and keep
+the K–12 rules (one request a second, the project User-Agent). OpenStax stays off limits (its
+robots.txt disallows `/books/` for AI crawlers, `research/questions/SOURCES.md`), which rules out
+OpenStax University Physics vol. 2 as a bridge text here.
+
+### Textbooks
+
+Record per book a `toc/college/<book>.json` (chapters and sections mapped to
+`<courseId>#<topic>`), and per topic: the worked-example types in order, typical number sizes
+(component values, frequencies, word sizes), the notation (j or i, V or v for phasors, 0- or
+1-based heaps, KB or KiB) and the order of topics. Titles-only for all-rights-reserved books.
+
+| Book                                                                                                                                                                                                                                                                                      | URL                                                | Licence                          | Courses (topics)                                       |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- | -------------------------------- | ------------------------------------------------------ |
+| Kuphaldt, _Lessons in Electric Circuits_ I–IV                                                                                                                                                                                                                                             | https://www.ibiblio.org/kuphaldt/electricCircuits/ | Design Science License (confirm) | circuits-1, circuits-2, electronics, digital-logic#0–2 |
+| Kuphaldt, Modular Electronics Learning (ModEL) modules and worksheets                                                                                                                                                                                                                     | https://www.ibiblio.org/kuphaldt/socratic/model/   | CC BY 4.0 (verified)             | circuits-1/2, electronics, digital-logic, embedded     |
+| Kuphaldt, _Lessons in Industrial Instrumentation_                                                                                                                                                                                                                                         | https://www.ibiblio.org/kuphaldt/socratic/sinst/   | CC BY 4.0 (confirm)              | power-systems, control#4 (PID tuning)                  |
+| Fiore, _DC_ and _AC Electrical Circuit Analysis_, _Semiconductor Devices_, _Operational Amplifiers & Linear ICs_                                                                                                                                                                          | LibreTexts Engineering bookshelf                   | CC BY-NC-SA 4.0 (confirm)        | circuits-1, circuits-2, electronics                    |
+| Johnson, _Fundamentals of Electrical Engineering I_                                                                                                                                                                                                                                       | LibreTexts Engineering bookshelf                   | CC BY (confirm)                  | circuits-1/2, signals#2, communication                 |
+| Baraniuk et al., _Signals and Systems_                                                                                                                                                                                                                                                    | LibreTexts Engineering bookshelf                   | CC BY (confirm)                  | signals-systems                                        |
+| Downey, _Think DSP_                                                                                                                                                                                                                                                                       | https://greenteapress.com/wp/think-dsp/            | CC BY-NC (confirm)               | signals#2, #4                                          |
+| Åström & Murray, _Feedback Systems_ (2nd ed.)                                                                                                                                                                                                                                             | https://fbswiki.org/                               | free PDF; licence to confirm     | control-systems                                        |
+| Wikibooks, _Control Systems_                                                                                                                                                                                                                                                              | https://en.wikibooks.org/wiki/Control_Systems      | CC BY-SA (confirm)               | control-systems                                        |
+| Ellingson, _Electromagnetics_ vol. 1 and 2                                                                                                                                                                                                                                                | https://doi.org/10.21061/electromagnetics-vol-1    | CC BY-SA 4.0 (verified, vol. 1)  | electromagnetics (all four)                            |
+| MIT OpenCourseWare 6.002, 6.003, 6.012, 6.013, 6.302, 6.061, 6.02, 6.450, 6.004, 6.006, 6.042J, 6.1810, 6.033, 6.829, 16.06                                                                                                                                                               | https://ocw.mit.edu                                | CC BY-NC-SA 4.0 (confirm)        | every course (one OCW course each, above)              |
+| Levin, _Discrete Mathematics: An Open Introduction_                                                                                                                                                                                                                                       | https://discrete.openmathbooks.org/                | CC BY-SA 4.0 (confirm)           | discrete-math                                          |
+| Lehman, Leighton & Meyer, _Mathematics for Computer Science_                                                                                                                                                                                                                              | MIT OCW 6.042J                                     | CC BY-SA 3.0 (confirm)           | discrete-math, data-structures#3                       |
+| Hammack, _Book of Proof_                                                                                                                                                                                                                                                                  | https://www.people.vcu.edu/~rhammack/BookOfProof/  | CC BY-NC-ND (confirm)            | discrete-math#0, #1                                    |
+| Morin, _Open Data Structures_                                                                                                                                                                                                                                                             | https://opendatastructures.org/                    | CC BY 2.5 (confirm)              | data-structures                                        |
+| Erickson, _Algorithms_                                                                                                                                                                                                                                                                    | https://jeffe.cs.illinois.edu/teaching/algorithms/ | CC BY 4.0 (confirm)              | data-structures#2, #3; networks#2 (shortest paths)     |
+| Matthews, Newhall & Webb, _Dive into Systems_                                                                                                                                                                                                                                             | https://diveintosystems.org/                       | CC BY-NC-ND 4.0 (confirm)        | architecture, operating-systems#0, #2                  |
+| RISC-V ISA specification                                                                                                                                                                                                                                                                  | https://riscv.org/specifications/                  | CC BY 4.0 (confirm)              | architecture#0 (formats, immediates)                   |
+| Lee & Seshia, _Introduction to Embedded Systems_                                                                                                                                                                                                                                          | https://ptolemy.berkeley.edu/books/leeseshia/      | CC BY-NC-ND 4.0 (verified)       | embedded-systems, digital-logic#3                      |
+| Arpaci-Dusseau, _Operating Systems: Three Easy Pieces_                                                                                                                                                                                                                                    | https://pages.cs.wisc.edu/~remzi/OSTEP/            | free to read; licence to confirm | operating-systems                                      |
+| Hailperin, _Operating Systems and Middleware_                                                                                                                                                                                                                                             | https://gustavus.edu/mcs/max/os-book/              | CC BY-SA 3.0 (confirm)           | operating-systems                                      |
+| Peterson & Davie, _Computer Networks: A Systems Approach_                                                                                                                                                                                                                                 | https://book.systemsapproach.org/                  | CC BY 4.0 (verified)             | networks                                               |
+| Bonaventure, _Computer Networking: Principles, Protocols and Practice_                                                                                                                                                                                                                    | https://www.computer-networking.info/              | CC BY (confirm)                  | networks                                               |
+| Titles only: Alexander & Sadiku, Nilsson & Riedel, Sedra & Smith, Razavi, Oppenheim & Willsky, Nise, Ogata, Ulaby, Hayt & Buck, Glover–Sarma–Overbye, Chapman, Haykin, Proakis, Harris & Harris, Mano, Rosen, CLRS, Patterson & Hennessy, Silberschatz, Tanenbaum, Kurose & Ross, Valvano | publishers' public pages                           | all rights reserved              | chapter titles and order only, to check coverage       |
+
+A college crosswalk (`research/textbooks/college/CROSSWALK.md`: topic → the chapter of each
+book) should be generated by `tools/build.py` the way the K–12 one is.
+
+### Questions
+
+Record per question (`research/questions/college/<course>.jsonl`): course id, topic index,
+the problem-type slug it would use, the question type in our words, the unknown and the given,
+the number sizes (reference only), whether a figure carries it (schematic, Bode plot, K-map,
+graph), source, licence, URL and retrieval date; the review later marks it Solves, Partly or No.
+
+| Source                                                         | URL                                             | Licence                             | Courses                                  | Target                          |
+| -------------------------------------------------------------- | ----------------------------------------------- | ----------------------------------- | ---------------------------------------- | ------------------------------- |
+| MIT OCW problem sets and exams (the courses above)             | https://ocw.mit.edu                             | CC BY-NC-SA 4.0 (confirm)           | all 15                                   | 15 per course                   |
+| Kuphaldt ModEL and Socratic worksheets                         | https://www.ibiblio.org/kuphaldt/socratic/      | CC BY 4.0 (verified for ModEL)      | circuits-1/2, electronics, digital-logic | 15 per course                   |
+| Ellingson end-of-section problems                              | https://doi.org/10.21061/electromagnetics-vol-1 | CC BY-SA 4.0 (verified)             | electromagnetics                         | 25                              |
+| Levin and MCS exercises                                        | as above                                        | CC BY-SA (confirm)                  | discrete-math                            | 30                              |
+| Erickson and Morin exercises; OpenDSA exercises                | as above; https://opendsa.org/                  | CC BY (confirm); OpenDSA to confirm | data-structures                          | 30                              |
+| Peterson & Davie, Bonaventure exercises                        | as above                                        | CC BY (verified / confirm)          | networks                                 | 25                              |
+| Lee & Seshia exercises                                         | as above                                        | CC BY-NC-ND 4.0 (verified)          | embedded-systems, digital-logic#3        | 15                              |
+| Wikibooks _Control Systems_ examples                           | as above                                        | CC BY-SA (confirm)                  | control-systems                          | 15                              |
+| AP Physics C: Electricity and Magnetism released free-response | AP Central (College Board)                      | all rights reserved, reference      | circuits-1#4 (RC), electromagnetics#1    | 10, bridge level                |
+| AP Computer Science A released free-response                   | AP Central (College Board)                      | all rights reserved, reference      | data-structures#0, #2                    | 5, bridge level                 |
+| NCEES FE Electrical and Computer exam specification            | https://ncees.org (public PDF)                  | all rights reserved, reference      | all electrical and computer topics       | the topic list and weights only |
+
+Off limits: NCEES practice exams and the FE Reference Handbook (sold or behind a login), Chegg,
+Course Hero, publisher solution manuals, and the GRE Computer Science test (discontinued; its
+practice book is ETS copyright). **Target:** about 40 questions for each of the eight core
+courses (circuits-1, circuits-2, signals-systems, control-systems, digital-logic,
+discrete-math, data-structures, computer-architecture) and 25 for each of the other seven:
+**about 495 questions**.
+
+### Engine needs
+
+| Need                         | What the solver, steps or harness must learn                                                                                                                                                                                                                                     | Pages waiting                                                                                                                                             |
+| ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| E1 Units                     | H, mH, μH; Hz, kHz, MHz, GHz; rad/s; rpm; μs, ns, ps; VA, kVA, MVA; var, kvar; S, mS; T, μT; Wb; V/m, A/m; per-length nH/m, pF/m; S/m; N·s/m, N/m; mA/V²; dB, dBm, dBi (logarithmic, not converted with the others); pu; bits and bytes with KiB/MiB and kB/MB; b/s with k, M, G | 19 pages (circuits-1#4, circuits-2#0, #1, #3, electronics#1, signals#4, EM#0, #2, #3, power#0, #1, comm#2, digital-logic#2, embedded#1, OS#3, networks#3) |
+| E2 Complex values            | a value that is a + jb (or A∠θ), relations and steps on it (product, quotient, conjugate, polar ↔ rectangular lines), the picture reading both parts                                                                                                                             | EM#0~input-impedance, power#0~load-flow, #1~sync-generator, #2~sym-components; later parallel impedances in circuits-2#0                                  |
+| E3 Bases                     | show and type a whole number in base 2, 8 or 16 at a width (two's complement), and IPv4 dotted quads                                                                                                                                                                             | digital-logic#0 main, ~bcd, #2~shift; architecture#0~branch-target; embedded#0~bit-mask; networks#1 main                                                  |
+| E4 Integer functions         | ⌊ ⌋, ⌈ ⌉, mod, round, exact log₂ of a power of 2, min and sort of a short list, each as a step line the harness reads                                                                                                                                                            | 25 pages (digital-logic, data-structures, architecture, OS, networks, signals#0, #4, discrete#2)                                                          |
+| E5 Iteration                 | a step that repeats a rule until it stops (response time) or builds a table row by row (round robin, page replacement, Gauss–Seidel)                                                                                                                                             | embedded#3~response-time, OS#1~round-robin, OS#2~replacement, power#0~load-flow                                                                           |
+| E6 Short sequences           | a value that is a list of 1–8 numbers (x[n], h[n]) with Σ over an index in steps                                                                                                                                                                                                 | signals#1 main                                                                                                                                            |
+| E7 Special functions         | Q(x) (from the normal tail already drawn), sinc, atan2 in steps                                                                                                                                                                                                                  | comm#1~bpsk-ber, signals#2~pulse-spectrum; atan2 on every phasor page                                                                                     |
+| E8 Simultaneous linear solve | 2 × 2 (later 3 × 3) relations solved together, with the `matrixGrid` Cramer lines as the steps                                                                                                                                                                                   | circuits-1#1 main (ships in closed form until then); mesh and supernode pages likewise                                                                    |
+| E9 Exact big integers        | whole numbers past 2⁵³ exact (n!, C(n, r), 2⁶⁴)                                                                                                                                                                                                                                  | discrete-math#2 main at large n                                                                                                                           |
+| E10 Named outputs            | an answer that is a word from a list (underdamped, Θ(n log n), via A, stable) with its own choice box                                                                                                                                                                            | circuits-1#4~rlc-damping, control#1~step-error (ramp), data-structures#3~master, networks#2 main                                                          |
+| E11 Harness phrases          | dB, dBm, ∠, j, log₂, ⌈ ⌉, ⌊ ⌋, mod, Σ in `PHRASES`; picture checks for the 32 requests                                                                                                                                                                                           | every page                                                                                                                                                |
+
+## Summary
+
+- **Pages:** 15 courses, 65 topics, **256 pages** (65 main + 191 problem types): **223
+  calculators** and **33 layouts** (19 sorts, 10 sequences, 4 explorations; 5 of the main pages
+  are layouts). **118 pages are ⏳** (waiting on a picture, an engine need or both); 138 can be
+  built today with existing kinds. The pilot `he.engineering.circuits-1#0` is kept (one rename).
+- **Pictures:** 32 requests, HE-electrical-computer-P1 to P32: 17 options on existing kinds
+  (`seriesCircuit` `net`, `amp`, `device`; `functionGraph` `transient`, `stepResponse`,
+  `fourier`, `equalArea`, `quantizer`; `complexPlane` `phasors`/`poles`/`locus`,
+  `constellation`; `wave` `line`, `em`; `waterfall` `decibels`; `placeValueChart` `base`;
+  `venn` `three`; `matrixGrid` `routh`; `oscillator` `damper`; `induction` `wire` with
+  `charges` `line`), 13 new kinds (`bode`, `deviceCurves`, `stemPlot`, `oneLine`, `rfSpectrum`,
+  `bitFields`, `karnaugh`, `timingDiagram`, `graph`, `pipelineDiagram`, `scheduleChart`,
+  `memoryMap`, `datapath`) and 2 layout-only figures (`stateDiagram`, `dataStructure`). The
+  most-used: P1 schematics (10 pages), P6 phasors and poles (9), P4 transients (8), P7 Bode (8).
+- **Engine needs:** E1 units (19 pages), E2 complex values (4 pages now, more later), E3 bases
+  (6), E4 integer functions (25), E5 iteration (4), E6 sequences (1), E7 Q and sinc (2), E8
+  simultaneous solve (3, with a closed-form stand-in), E9 big integers, E10 named outputs (4),
+  E11 harness phrases.
+- **Research:** 23 open or free sources (Fiore's four books counted once; 4 licences verified, the
+  rest to confirm) plus titles
+  of 22 commercial texts; about 495 questions, 40 per core course and 25 per other course, from
+  MIT OCW, Kuphaldt, Ellingson, Levin, MCS, Erickson, Morin, Peterson & Davie, Bonaventure, Lee
+  & Seshia and Wikibooks, with AP Physics C and AP CS A as the bridge level and the NCEES FE
+  specification for topic weights only.
