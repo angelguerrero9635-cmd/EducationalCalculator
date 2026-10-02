@@ -5,11 +5,14 @@
 import type { NumOrVar } from '@/data/modules/typesGraphs';
 import type { FunctionGraphHs3b } from '@/data/modules/typesHs3b';
 
+import { isQuadrature, quadratureOf } from './functionGraphHe3a';
+
 type Get = (v: NumOrVar | undefined, fallback: number) => number;
 export type Riemann = NonNullable<FunctionGraphHs3b['riemann']>;
 
 /** The strips: each one's left edge, width and height; and their sum. */
 export function riemannOf(r: Riemann, f: (x: number) => number, get: Get) {
+  if (isQuadrature(r)) return quadratureOf(r, f, get); // HC45: trapezoids, Simpson's panels
   const n = Math.max(1, Math.round(get(r.n, 4)));
   const [a, b] = [get(r.from, 0), get(r.to, 1)];
   const w = (b - a) / n;
