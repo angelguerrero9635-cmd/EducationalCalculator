@@ -46,7 +46,9 @@ import { SignBand, SignFill, signCaption } from './FunctionSign';
 import { reshape, reshapeCaption, reshapeVars } from './functionGraphHs2g';
 import { transformCurve, transformText } from './functionGraphHs3b';
 import { RiemannRects, riemannCaption } from './functionGraphRiemann';
-import { he1eLayer } from './FunctionGraphMarksHe1e';
+import { he1eLayer, type He1eLayerProps } from './FunctionGraphMarksHe1e';
+import { he2gLayer } from './FunctionGraphMarksHe2g';
+import { he2gCaption, he2gWindow, he2gXs, he2gYs } from './functionGraphHe2g';
 import { he1eCaption, he1ePanel, he1eXs, he1eYs, repeatCurve } from './functionGraphHe1e';
 import { riemannOf, riemannXs } from './riemann';
 import { toShownUnits, unitPositionIds } from './functionGraphUnits';
@@ -510,6 +512,7 @@ export function FunctionGraph({
     ...(shadeRange ?? []),
     ...riemannXs(spec.riemann, get), // H106
     ...he1eXs(spec, main, other, get), // HC10, HC12
+    ...he2gXs(spec, main, get), // HC37, HC38
     ...main.domain
       .flatMap((i) => [i.lo, i.hi])
       .filter((v) => Number.isFinite(v) && Math.abs(v) < 50),
@@ -575,6 +578,7 @@ export function FunctionGraph({
     // H106: the log sum's plunge to its asymptote, below its zero.
     ...(main.family === 'logSum' ? [-2.5] : []),
     ...he1eYs(spec, main, other, get), // HC10, HC12
+    ...he2gYs(spec, main, get), // HC37, HC38
   ].filter((v) => Number.isFinite(v) && Math.abs(v) < 1e6);
 
   const legend: { toks: Tok[]; name: string; color: string; dash?: string }[] = [
@@ -635,7 +639,7 @@ export function FunctionGraph({
       ys,
       pw,
       ph,
-      fixed: spec.window,
+      fixed: spec.window ?? he2gWindow(spec, get), // HC37: the ε–δ zoom
       xMin: spec.xMin,
       square: !!spec.inverse,
     });
@@ -1073,7 +1077,7 @@ export function FunctionGraph({
             label(atPt.x, atPt.y, rep.known(spec.at!.x) ? t : undefined, c.chartHighlight);
           }
           // HC10, HC12: the families' marks, the repeated dose and the regions.
-          const he1e = he1eLayer({
+          const layerProps: He1eLayerProps = {
             spec,
             main,
             other,
@@ -1095,7 +1099,9 @@ export function FunctionGraph({
             dots,
             dashes,
             valueOf: (id) => (rep.known(id) ? rep.value(id) : undefined),
-          });
+          };
+          const he1e = he1eLayer(layerProps);
+          const he2g = he2gLayer(layerProps); // HC37, HC38
           // Limit: arrows along the curve from both sides.
           const lim =
             limX !== undefined && inX(limX)
@@ -1458,6 +1464,7 @@ export function FunctionGraph({
                     />
                   ) : null}
                   {he1e.under}
+                  {he2g.under}
                   {dashes.map((d, i) => (
                     <Line
                       key={`d${i}`}
@@ -1681,6 +1688,7 @@ export function FunctionGraph({
                   ) : null}
                 </G>
                 {he1e.over}
+                {he2g.over}
                 {ineq && allKnown ? (
                   <SignBand curve={main} sign={ineq} sx={sx} sy={sy} win={win} />
                 ) : null}
@@ -1957,6 +1965,7 @@ export function FunctionGraph({
       );
     if (spec.riemann) lines.push(riemannCaption(spec.riemann, main.f, get, xName)); // H106
     lines.push(...he1eCaption(spec, main, other, get, xName, fName, gName)); // HC10, HC12
+    lines.push(...he2gCaption(spec, main, get, xName, fName)); // HC37, HC38
     if (spec.inequality) lines.push(signCaption(main, ineq, fName, xName));
     lines.push(...reshapeCaption(spec, shaped, fName, xName));
     if (spec.inverse) lines.push(`The inverse is the reflection across the line y = ${xName}`);

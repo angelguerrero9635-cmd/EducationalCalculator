@@ -198,6 +198,7 @@ import { StressElement } from './StressElement';
 import { Wing } from './Wing';
 import { Duct } from './Duct';
 import { SupersonicFlow } from './SupersonicFlow';
+import { FieldPlot } from './FieldPlot';
 import { MotionGraphHs } from './MotionGraphHs';
 import { HskView } from './HskView';
 import { He2fView } from './He2fView';
@@ -378,6 +379,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <Duct spec={spec} calc={calc} />;
     case 'supersonicFlow':
       return <SupersonicFlow spec={spec} calc={calc} />;
+    case 'fieldPlot':
+      return <FieldPlot spec={spec} calc={calc} />;
     case 'linearFunction':
       return <LinearFunction spec={spec} calc={calc} />;
     case 'lineSystem':

@@ -82,6 +82,7 @@ import { he2bIssues } from './picturesHe2b';
 import { he2jIssues } from './picturesHe2j';
 import { he2eIssues, isHe2e } from './picturesHe2e';
 import { he2hIssues } from './picturesHe2h';
+import { fieldPlotIssues, he2gGraphIssues } from './picturesHe2g';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -1877,6 +1878,7 @@ export function repIssues(
       }
       out.push(...functionGraphIssues(rep, v), ...hs2aIssues(rep, v), ...hs2gIssues(rep, v));
       out.push(...he1eIssues(rep, v)); // HC10, HC12
+      out.push(...he2gGraphIssues(rep, v)); // HC37, HC38
       out.push(...hs3bIssues(rep, val, byId), ...he1dScaleIssues(rep, v)); // HC9: log axes
       break;
     }
@@ -2346,6 +2348,8 @@ export function repIssues(
       break;
     case 'bode':
       out.push(...bodeIssues(rep, siOf(val, byId))); // HC22
+    case 'fieldPlot':
+      out.push(...fieldPlotIssues(rep, val)); // HC21
       break;
     case 'bars':
       out.push(...barFlowIssues(rep, val));

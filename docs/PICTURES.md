@@ -129,6 +129,7 @@ search or the sitemap, but the module tests and the harness run over it):
 | `wing`             | NACA section tilted by α, lift ⟂ wind; C_p, Γ; planform, tip vortices | College aerodynamics (HC24)         |
 | `duct`             | nozzle to scale by A ÷ A∗: throat M = 1, stations, shock, p, M; a jet | College compressible flow (HC30)    |
 | `supersonicFlow`   | normal shock and ratio bars, pitot; wedge θ, β; fan; plate; Mach cone | College shocks, supersonic (HC31)   |
+| `fieldPlot`        | slope field + Euler; F with a path's work; x′ = Ax phases; isoclines  | College ODEs, line integrals (HC21) |
 | `projectile`       | a launch to scale: path, vₓ and v_y at three points, H and R; drag θ  | Physics 2D motion, parametric (H59) |
 | `freeBody`         | a block on a floor, ramp or rope; forces to scale, W sin θ; the net   | Physics forces, inclines (H60)      |
 | `circularMotion`   | v tangent, v²/r to the center; Gm₁m₂/r² pulls; Kepler ellipse, areas  | Physics circles, gravity (H61)      |
@@ -289,6 +290,10 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `functionGraph`    | `stepInput`, `error`, `second`           | the step above on its own axis; eₛₛ bracketed; a dashed open loop (HC4)       |
 | `functionGraph`    | `scale: { x?, y? }`, `invertY`, `swap`   | log axes (decades, minor ticks); depth down; input on the vertical (HC9)      |
 | `functionGraph`    | `family: 'gradation'`, `reads`           | % finer against log grain size, D₁₀, D₃₀, D₆₀; values dropped (HC9)           |
+| `functionGraph`    | `tangent: { x, slope?, at?, value? }`    | the tangent with its slope triangle; L(at), the linear approximation (HC37)   |
+| `functionGraph`    | `band: { x, y, dx, dy }`                 | ε–δ: y ± ε across, x ± δ up, the window zoomed to them (HC37)                 |
+| `functionGraph`    | `series: { of / derivatives, degree }`   | a Taylor polynomial dashed over f, the gap at x bracketed; ∫P shaded (HC38)   |
+| `functionGraph`    | `family: 'linearOde'`, `'taylor'`        | y″ = (cx − ω²)y solved numerically; a polynomial from f(a), f′(a), … (HC38)   |
 | `bars`             | `log`                                    | bars on a log scale, decade grid lines; a value ≤ 0 refused (HC9)             |
 | `termsChart`       | `type: 'power'`, `step` (p)              | aₙ = a₁ × nᵖ: the squares 1, 4, 9 …, nᵖ labels, sums of squares, cubes (H106) |
 | `normalCurve`      | `f: { df1, df2, stat, alpha, tails }`    | the F curve: P past F (or both tails), the critical value, decision (H106)    |

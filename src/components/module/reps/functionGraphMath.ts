@@ -11,11 +11,13 @@ import type {
   Piece,
 } from '@/data/modules/typesFunctionGraph';
 import { isFamilyHe1e } from '@/data/modules/typesHe1e';
+import { isFamilyHe2g } from '@/data/modules/typesHe2g';
 import { formatNumber } from '@/engine/format';
 
 import { toFraction } from './exact';
 import { buildHs3b } from './functionGraphFamiliesHs3b';
 import { buildHe1e, repeatCurve } from './functionGraphHe1e';
+import { buildHe2g } from './functionGraphHe2g';
 import { rationalByTopCurve } from './functionGraphRationalHs3b';
 import { ratioCurve, reshape } from './functionGraphHs2g';
 
@@ -477,6 +479,7 @@ export function buildCurve(
   x = 'x',
 ): Curve {
   if (isFamilyHe1e(fam)) return buildHe1e(fam, get, say, x); // HC10, HC12
+  if (isFamilyHe2g(fam)) return buildHe2g(fam, get, say, x); // HC38
   const base = {
     family: fam.family,
     has: [] as number[],
