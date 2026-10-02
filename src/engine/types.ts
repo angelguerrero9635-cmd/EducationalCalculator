@@ -1,3 +1,6 @@
+import type { BaseForm } from './integers';
+import type { AngleForm } from './angles';
+
 /** Values keyed by variable id. */
 export type Values = Record<string, number>;
 
@@ -61,6 +64,21 @@ export interface VariableDef {
   /** A worked-out value under half the step reads "< 0.0001" in its box (a p-value), never 0. */
   belowStep?: boolean;
   /**
+   * Exactly this many decimals, trailing zeros kept (pH 2.60; HE-E10): a log of a measured
+   * value has as many decimals as the value has significant figures (`logDecimals`).
+   */
+  decimals?: number;
+  /** A plus sign on a positive value (+3, −1, 0): a charge, an oxidation state, a signed change. */
+  signed?: boolean;
+  /**
+   * An angle in degrees shown and typed as degrees–minutes–seconds or a compass direction
+   * (HE-E19): 'dms' "4°30′00″", 'dm' "52°10′", 'bearing' "N 52°10′ E", 'bearing-decimal'
+   * "S 56.31° W", 'azimuth' "052°". `decimals` are of the last part shown. The value's unit is
+   * '°' and it lists no other (the text carries its marks, so no unit follows it); boxes take
+   * any of these typed, and decimal degrees.
+   */
+  angleForm?: AngleForm;
+  /**
    * A fraction whose decimal repeats shows its repeating digits and "…" (1/3 → 0.333…,
    * 1/6 → 0.1666…) when the block is at most 6 digits; boxes take the same.
    */
@@ -81,6 +99,19 @@ export interface VariableDef {
    * and work in the formula's units, so the rule needs no 10⁻⁶ of its own.
    */
   shownIn?: string;
+  /**
+   * A temperature difference (ΔT, a rise, the ΔT_lm of an exchanger), not a temperature: its K,
+   * °C, °F or R convert by the factor alone (a rise of 10 °C is 10 K and 18 °F), never with the
+   * 273.15 or 32 of a thermometer reading.
+   */
+  difference?: boolean;
+  /**
+   * A whole number shown and typed in a base (HE-E21): `{ radix: 2, bits: 8 }` shows 45 as
+   * 00101101₂ (`bits` may be the id of the value that is the width), `prefix` as 0x2D, `group`
+   * in fours (0010 1101₂); `'ipv4'` as a dotted quad (192.168.10.77) and `'prefix'` as /26. The
+   * box takes the digits in that base. A value that isn't a whole number from 0 shows as usual.
+   */
+  base?: BaseForm;
   /** Whole multiples of this number only (e.g. 100 for a hundreds part: 0, 100, 200, …). */
   multipleOf?: number;
   /** Only these values (shown units), when a lesson names them: count by 5s, 10s or 100s. */
@@ -122,6 +153,51 @@ export interface VariableDef {
 }
 
 /**
+ * One case of a relation that switches (HE-E12): a formula valid on one side of a limit
+ * (laminar below Re = 2,300), or the one a choice box picks (first order), or one band of a
+ * category answer (HE-E11). Build them with `piecewise` or `classify` (`cases.ts`).
+ */
+export interface Branch {
+  /** The case's name as the step says it: "laminar", "first order", "underdamped". */
+  name: string;
+  /**
+   * Why the case applies, as a template the step fills ("{Re} < 2,300", "{n} chosen"): the
+   * step's case line reads "1,500 < 2,300: laminar". Comparisons in it are checked by the
+   * harness, so a limit is written as a number.
+   */
+  when: string;
+  /** True when the case applies to these values (formula units; a value missing is false). */
+  applies: (v: Values) => boolean;
+  /** Zero when this case's formula holds (left side − right side). */
+  residual: (v: Values) => number;
+  /** This case's exact rearrangements; any other value is found numerically, case by case. */
+  solve?: Partial<Record<string, (v: Values) => number | number[] | undefined>>;
+  /** The rule in this case, shown in place of the relation's `display` in its steps. */
+  display?: string;
+  /** The check line in this case (a template), when it is not `display`. */
+  check?: string;
+}
+
+/**
+ * How a step works out a value by trial (HE-E14), each try a line the harness checks:
+ *
+ * - `secant` (the default): "Try k = 0.02: … = 33.65 (want 29.39)" from two round guesses
+ *   (`start`, else the answer's one-figure neighbours), each next try where the line through
+ *   the last two meets the target, until the guess stops changing at the shown figures.
+ * - `bisection`: the same lines, each try the middle of the range where the sides cross.
+ * - `fixed-point`: `next` is the rule solved for the value with the value itself still in it
+ *   (Kepler's E = M + e sin E: '{M} + {e} × sin({E})'), repeated from `start`: "E₁ = … = 0.5959".
+ * - `newton`: `f` (zero at the answer) and its `slope` as templates in the value: "x₁ = 2 −
+ *   (2³ − 2 − 3) ÷ (3 × 2² − 1) = 1.7273".
+ *
+ * `start` reads the values the steps show; `{id}` in a template is the guess.
+ */
+export type Trial =
+  | { method: 'secant' | 'bisection'; start?: (v: Values) => [number, number] }
+  | { method: 'fixed-point'; next: string; start: (v: Values) => number }
+  | { method: 'newton'; f: string; slope: string; start: (v: Values) => number };
+
+/**
  * One equation linking some variables. `residual` is zero when the equation holds
  * (write it as left side − right side).
  */
@@ -152,11 +228,23 @@ export interface Relation {
   vars: string[];
   residual: (v: Values) => number;
   /**
+   * The cases of a relation that switches (HE-E12, HE-E11): `residual` is the case that
+   * applies, and a value with no exact rearrangement is found in each case on its own and kept
+   * only where that case applies. The step names the case ("1,500 < 2,300: laminar").
+   */
+  branches?: Branch[];
+  /**
    * Exact rearrangements, one per variable where possible. May return several candidates
    * (e.g. ± square roots); the solver picks the valid one closest to the previous value.
    * Variables without a rearrangement are solved numerically within their [min, max].
    */
   solve?: Partial<Record<string, (v: Values) => number | number[] | undefined>>;
+  /**
+   * How the step shows a value no rearrangement gives (HE-E14), by the method the course names;
+   * left out, a value the root finder found is shown by trial from two round guesses, each next
+   * one by the secant method (`trialWork`, `src/data/modules/trials.ts`).
+   */
+  trials?: Partial<Record<string, Trial>>;
   /**
    * The check line as plain arithmetic (e.g. "4 + 4 + 4 = 12" for "12 = 3 rows of 4"), so the
    * step-by-step check really checks. Given the values in the units the steps show.

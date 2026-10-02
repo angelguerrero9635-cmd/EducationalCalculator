@@ -12,7 +12,16 @@ import { formatNumber } from '@/engine/format';
 import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { Canvas, Caption, ChartText, DragHandle, fitLabel, useFrozen, useRep } from './common';
+import {
+  Canvas,
+  Caption,
+  ChartText,
+  DragHandle,
+  fitLabel,
+  pinHeld,
+  useFrozen,
+  useRep,
+} from './common';
 import { coef } from './graphKit';
 import { outline } from './scaleOutline';
 import { splitterShape } from './scaleSplitter';
@@ -320,7 +329,9 @@ export function SideSplitter({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const unit = typeof spec.width === 'string' ? rep.unit(spec.width) : undefined;
   const part = (i: number, x: number) => {
     const id = sp.parts?.[i];
-    return id ? rep.value(id) : `${formatNumber(x)}${unit ? ` ${unit}` : ''}`;
+    // Worked from k and the sides only when they are known (never the example's behind a "?").
+    if (id) return rep.value(id);
+    return kKnown && sidesKnown ? `${formatNumber(x)}${unit ? ` ${unit}` : ''}` : '?';
   };
   const [ad, db, ae, ec] = [
     part(0, k * AB),
@@ -486,14 +497,20 @@ export function SideSplitter({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     const t =
                       ((start.current.x + dx - A[0]) * ux + (start.current.y + dy - A[1]) * uy) /
                       (ux * ux + uy * uy);
+                    const value = rep.snapTo(spec.factor, Math.min(0.95, Math.max(0.05, t)));
+                    // The sides are held only when that changes no typed value (AB worked out
+                    // from typed AD and DB, held, stopped the factor dead).
                     calc.set(
                       {
-                        ...rep.pin(
+                        ...pinHeld(
+                          calc,
+                          rep,
                           [spec.width, spec.height, ...(sp.base ? [sp.base[1]] : [])].filter(
                             (v): v is string => typeof v === 'string',
                           ),
+                          { [spec.factor]: value },
                         ),
-                        [spec.factor]: rep.snapTo(spec.factor, Math.min(0.95, Math.max(0.05, t))),
+                        [spec.factor]: value,
                       },
                       rep.slide(spec.factor),
                     );

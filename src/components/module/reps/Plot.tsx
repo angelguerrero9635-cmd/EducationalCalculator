@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useMemo, useRef } from 'react';
 import { StyleSheet } from 'react-native';
 import Svg, { Circle, ClipPath, Defs, G, Line, Path, Rect } from 'react-native-svg';
 
@@ -18,6 +18,7 @@ import {
   useFrozen,
   useRep,
   Caption,
+  pinHeld,
 } from './common';
 
 type Spec = Extract<Representation, { kind: 'plot' }>;
@@ -106,6 +107,16 @@ export function Plot({ spec, calc }: { spec: Spec; calc: Calculator }) {
 
   // y = kx: the point (1, k), in shown units.
   const k = spec.unitRate && paramsKnown ? slopeOf(spec.unitRate) : undefined;
+  // A worked-out unit rate that no typed value can change (C ÷ d is always π) has no handle.
+  // (Worked out once per state: each try is a drag's solve.)
+  const rateStep = spec.unitRate ? (rep.slide(spec.unitRate)?.slide.step ?? 0) : 0;
+  const rateTyped = !!spec.unitRate && rep.typed(spec.unitRate);
+  const unitRateMoves = useMemo(
+    () =>
+      !!spec.unitRate &&
+      (rateTyped || calc.moves(spec.unitRate, rateStep) || calc.moves(spec.unitRate, -rateStep)),
+    [calc, spec.unitRate, rateStep, rateTyped],
+  );
   const unitPoint = k === undefined ? undefined : { k, text: `(1, ${formatNumber(k)})` };
   const symbolOf = (id: string) => (rep.words ? rep.variable(id).name : rep.variable(id).symbol);
   const [xs, ys] = [symbolOf(spec.x.var), symbolOf(spec.y.var)];
@@ -401,18 +412,20 @@ export function Plot({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     axes.freeze();
                   }}
                   onEnd={axes.release}
-                  onMove={(dx) =>
+                  onMove={(dx) => {
+                    const x = rep.snapTo(spec.x.var, (start.current + dx / xScale) * fx);
                     calc.set(
-                      {
-                        ...pinned,
-                        [spec.x.var]: rep.snapTo(spec.x.var, (start.current + dx / xScale) * fx),
-                      },
+                      { ...pinHeld(calc, rep, spec.params, { [spec.x.var]: x }), [spec.x.var]: x },
                       rep.slide(spec.x.var),
-                    )
-                  }
+                    );
+                  }}
                 />
               ) : null}
-              {unitPoint && spec.unitRate && inView(sx(1), sy(unitPoint.k)) ? (
+              {/* Mid-drag (the axes held) the handle stays mounted past them, kept on the picture. */}
+              {unitPoint &&
+              spec.unitRate &&
+              unitRateMoves &&
+              (inView(sx(1), sy(unitPoint.k)) || axes.frozen) ? (
                 <DragHandle
                   testID={`drag-${spec.unitRate}`}
                   x={sx(1)}

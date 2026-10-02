@@ -59,7 +59,8 @@ export function EnergyBalance({ spec, calc }: { spec: BalanceSpec; calc: Calcula
   const r = (x2 - x1) / 2;
   const tY = (k: number) =>
     TH_BOT - ((Math.max(T_LO, Math.min(T_HI, k)) - T_LO) / (T_HI - T_LO)) * (TH_BOT - TH_TOP);
-  const w0 = (x: number) => formatNumber(round(x));
+  // Every worked flux reads "?" until the sunlight and the albedo are known.
+  const w0 = (x: number) => (on ? formatNumber(round(x)) : '?');
   // A wavy infrared line up the middle of its band.
   const wave = (cx: number) => {
     let d = `M ${cx} ${GROUND - 4}`;
@@ -251,7 +252,7 @@ export function EnergyBalance({ spec, calc }: { spec: BalanceSpec; calc: Calcula
                 <HaloText
                   x={TH_X + 10}
                   y={tY(t) + 4}
-                  text={`${formatNumber(round(t))} K`}
+                  text={`${on ? formatNumber(round(t)) : '?'} K`}
                   c={c}
                   size={chart.value}
                   bold

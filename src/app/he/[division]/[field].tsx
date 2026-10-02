@@ -1,9 +1,10 @@
 import { Stack, useLocalSearchParams } from 'expo-router';
 
-import { CourseList, EmptyState } from '@/components';
+import { CourseList, DetailHeader } from '@/components';
+import { NotFound } from '@/components/NotFound';
 import { PageMeta } from '@/components/PageMeta';
 import { fieldMeta } from '@/data/meta';
-import { getField, isDivision } from '@/data/selectors';
+import { countLabel, divisionLabel, getField, isDivision, trailOf } from '@/data/selectors';
 import { coursesFor, HE_FIELDS } from '@/data/taxonomy';
 
 /** Pre-render every field page (web static rendering). */
@@ -19,14 +20,24 @@ export default function FieldScreen() {
   const field = isDivision(division) ? getField(division, String(params.field)) : undefined;
 
   if (!isDivision(division) || !field) {
-    return <EmptyState title="Not found" message="This field doesn’t exist." />;
+    return <NotFound />;
   }
 
   return (
     <>
       <Stack.Screen options={{ title: field.title }} />
       <PageMeta {...fieldMeta(division, field.id)!} />
-      <CourseList courses={coursesFor(division, field.id)} />
+      <CourseList
+        courses={coursesFor(division, field.id)}
+        header={
+          <DetailHeader
+            overline={`College · ${divisionLabel(division)}`}
+            title={field.title}
+            lines={[countLabel(coursesFor(division, field.id).length, 'course')]}
+            trail={trailOf('he/[division]/[field]', { division, field: field.id })}
+          />
+        }
+      />
     </>
   );
 }

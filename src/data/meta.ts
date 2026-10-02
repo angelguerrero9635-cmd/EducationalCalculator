@@ -242,7 +242,17 @@ export function skillMeta(skill: Skill): Meta {
 }
 
 export function problemTypeMeta(type: ProblemType): Meta {
-  const { skill } = type;
+  const { skill, topic } = type;
+  if (!skill) {
+    // A college topic's problem type: "Rates: Population and migration – Human Geography".
+    const course = topic?.course.title ?? '';
+    return {
+      title: `${type.title}: ${topic?.title} – ${course}`,
+      description: clip(
+        `${type.title} (${topic?.title}), a topic in ${course}. ${lessonSummary(type.id, false)}`,
+      ),
+    };
+  }
   const level = `${gradeLabel(skill.grade)} ${subjectLabel(skill.subject)}`;
   const early = ['K', '1', '2'].includes(skill.grade);
   return {

@@ -109,8 +109,10 @@ export function NumberLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
               {arcs.map(({ from, to }, i) => {
                 const lift = Math.min(h * 0.45, 30 + Math.abs(to - from) * unit * 0.3);
                 const mid = (sx(from) + sx(to)) / 2;
-                const label =
-                  arcs.length === 1 && spec.jump
+                // A faded line (a number still "?") labels its jumps "?", not the example's.
+                const label = faded
+                  ? `${sign > 0 ? '+' : '−'}?`
+                  : arcs.length === 1 && spec.jump
                     ? `${back ? '−' : b >= 0 ? '+' : ''}${rep.value(spec.jump)}`
                     : `${sign > 0 ? '+' : '−'}${formatNumber(Number(Math.abs(to - from).toFixed(6)))}`;
                 // Many small jumps name only the first, so the labels don't pile up; a counted

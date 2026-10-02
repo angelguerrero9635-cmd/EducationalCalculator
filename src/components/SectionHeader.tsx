@@ -1,21 +1,49 @@
-import { StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
+
 import { Text } from '@/components/Text';
+import { space, type, usePalette } from '@/theme';
 
-import { font, space, usePalette } from '@/theme';
-
-/** A heading between groups of content: bold text on the page, no band. */
-export function SectionHeader({ title }: { title: string }) {
+/** A heading between groups of content, with an optional action on the right ("Edit", "See all"). */
+export function SectionHeader({
+  title,
+  action,
+  onAction,
+}: {
+  title: string;
+  action?: string;
+  onAction?: () => void;
+}) {
   const c = usePalette();
   return (
     <View style={styles.header}>
-      <Text accessibilityRole="header" style={[styles.title, { color: c.text }]}>
+      <Text accessibilityRole="header" style={[type.title2, styles.title, { color: c.text }]}>
         {title}
       </Text>
+      {action && onAction ? (
+        <Pressable
+          accessibilityRole="button"
+          onPress={onAction}
+          hitSlop={8}
+          style={({ pressed }) => [styles.action, { opacity: pressed ? 0.6 : 1 }]}
+        >
+          <Text style={[type.callout, styles.actionText, { color: c.accent }]}>{action}</Text>
+        </Pressable>
+      ) : null}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  header: { paddingHorizontal: space.lg, paddingTop: space.xl, paddingBottom: space.md },
-  title: { fontSize: font.body + 2, fontWeight: '800', letterSpacing: -0.2 },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    justifyContent: 'space-between',
+    gap: space.md,
+    paddingHorizontal: space.lg,
+    paddingTop: space.xl,
+    paddingBottom: space.md,
+  },
+  title: { flex: 1 },
+  action: { minHeight: 32, justifyContent: 'flex-end' },
+  actionText: { fontWeight: '600' },
 });

@@ -1,8 +1,8 @@
 import Constants from 'expo-constants';
 import { router } from 'expo-router';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
-import { Group, ListRow, SectionHeader, SegmentedControl } from '@/components';
+import { DetailHeader, Group, ListRow, Page, SectionHeader, SegmentedControl } from '@/components';
 import { PageMeta } from '@/components/PageMeta';
 import { Text } from '@/components/Text';
 import { parseLevelKey } from '@/data/selectors';
@@ -16,7 +16,8 @@ import {
 } from '@/state';
 import type { UnitSystem } from '@/engine/units';
 import type { AppearancePref } from '@/state';
-import { font, space, usePalette } from '@/theme';
+import { space, type, usePalette } from '@/theme';
+import { monthly, PRICES } from '@/config/pricing';
 
 const APPEARANCES: { value: AppearancePref; label: string }[] = [
   { value: 'system', label: 'System' },
@@ -48,7 +49,6 @@ function Note({ children }: { children: string }) {
 }
 
 export default function SettingsScreen() {
-  const c = usePalette();
   const { levels } = useSelectedLevels();
   const [appearance, setAppearance] = useAppearancePref();
   const [units, setUnits] = useUnitsPref();
@@ -61,15 +61,12 @@ export default function SettingsScreen() {
         title={'Settings'}
         description="Choose what you study, units and appearance. No accounts, no tracking: everything stays on your device."
       />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={{ backgroundColor: c.background }}
-        contentContainerStyle={styles.page}
-      >
-        <SectionHeader title="What you study" />
+      <Page width="read">
+        <DetailHeader title="Settings" />
+        <SectionHeader title="Your learning" />
         <Group>
           <ListRow
-            title="Grade levels & fields"
+            title="What you study"
             subtitle={levelsSummary(levels)}
             onPress={() => router.push('/levels')}
           />
@@ -92,11 +89,11 @@ export default function SettingsScreen() {
           {`${units === 'metric' ? 'cm, m, kg, N, …' : 'in, ft, lb, lbf, …'} The default for every module. Each module can also switch units, or mix units value by value.`}
         </Note>
 
-        <SectionHeader title="Premium" />
+        <SectionHeader title="Plan" />
         <Group>
           <ListRow
-            title="Plans & free trial"
-            subtitle="Preview only. No purchases in this build."
+            title="Plans and prices"
+            subtitle={`K–12 ${monthly(PRICES.k12.usd)}; each college course ${monthly(PRICES.course.usd)}`}
             onPress={() => router.push('/paywall')}
           />
         </Group>
@@ -117,9 +114,8 @@ export default function SettingsScreen() {
           <ListRow title="No data collected" subtitle="No accounts, analytics, ads or tracking." />
         </Group>
         <Note>
-          The app makes no network requests. Your selections, appearance and recently viewed items
-          are stored only on this device. A picture of a problem is read on this device by its own
-          text recognizer and is not saved or sent anywhere.
+          This build makes no network requests. Your selections, appearance and recently viewed
+          items are stored only on this device.
         </Note>
         <Note>
           Typing a problem into Search matches it to a lesson using word statistics derived from
@@ -131,17 +127,16 @@ export default function SettingsScreen() {
           endorsed by, or sponsored by any school, school district, college, university, testing
           organization, or standards body. Course and skill names are generic descriptions.
         </Note>
-      </ScrollView>
+      </Page>
     </>
   );
 }
 
 const styles = StyleSheet.create({
-  page: { paddingBottom: space.xxl },
   control: { padding: space.md },
   note: {
-    fontSize: font.caption + 1,
-    lineHeight: 18,
+    ...type.footnote,
+    fontWeight: '400',
     paddingHorizontal: space.xl,
     paddingTop: space.sm,
   },

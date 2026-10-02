@@ -1,4 +1,4 @@
-import { useState, useRef, type ReactNode } from 'react';
+import { createContext, useContext, useState, useRef, type ReactNode } from 'react';
 import {
   Platform,
   View,
@@ -26,6 +26,9 @@ const WEB_DRAG_STYLE =
 /** Width a picture is drawn at in pre-rendered web HTML (a phone screen minus margins). */
 const WEB_START_WIDTH = 358;
 
+/** The size of the Canvas being drawn, for the handles inside it (a handle stays on the picture). */
+const CanvasSize = createContext<{ w: number; h: number } | null>(null);
+
 export function Canvas({
   aspect,
   children,
@@ -43,23 +46,30 @@ export function Canvas({
       style={{ width: '100%', alignItems: 'center' }}
       onLayout={(e) => setW(Math.min(Math.floor(e.nativeEvent.layout.width), chart.maxWidth))}
     >
-      {w > 0 ? <View style={{ width: w, height: h }}>{children({ w, h })}</View> : null}
+      {w > 0 ? (
+        <CanvasSize.Provider value={{ w, h }}>
+          <View style={{ width: w, height: h }}>{children({ w, h })}</View>
+        </CanvasSize.Provider>
+      ) : null}
     </View>
   );
 }
 
 /**
  * A touch target (chart.handleTouch square) centered on (x, y) inside a Canvas. Reports drag offsets from where
- * the drag started, so callers convert them with the scale captured in `onStart`.
+ * the drag started, so callers convert them with the scale captured in `onStart`. A handle whose
+ * value has left the picture's window (the window is frozen while it is dragged) is drawn at the
+ * picture's edge, never off the picture: the drag goes on from the pointer, not from the knob.
  */
 export function DragHandle({
-  x,
-  y,
+  x: x0,
+  y: y0,
   label,
   onStart,
   onMove,
   onEnd,
   testID,
+  drives,
 }: {
   x: number;
   y: number;
@@ -68,8 +78,18 @@ export function DragHandle({
   onMove: (dx: number, dy: number) => void;
   onEnd?: () => void;
   testID?: string;
+  /**
+   * The values a handle moving two ways sends (a wave's crest: its amplitude and wavelength;
+   * a point worked out from two typed moves), written as data-drives for the review scripts:
+   * a typed value each worked-out one stands for may change with them.
+   */
+  drives?: string[];
 }) {
   const c = usePalette();
+  const size = useContext(CanvasSize);
+  const edge = chart.handle / 2;
+  const x = size ? Math.min(size.w - edge, Math.max(edge, x0)) : x0;
+  const y = size ? Math.min(size.h - edge, Math.max(edge, y0)) : y0;
   // Page coordinates where the drag started; offsets are measured from here.
   const origin = useRef({ x: 0, y: 0 });
   // Web: pointer events with capture (see pointerDrag.ts).
@@ -96,6 +116,7 @@ export function DragHandle({
           .replace(/^-|-$/g, '')}`
       }
       accessibilityLabel={`Drag to change ${label}`}
+      {...(drives ? ({ dataSet: { drives: drives.join(' ') } } as object) : {})}
       ref={ref}
       onStartShouldSetResponder={RESPONDER ? () => true : undefined}
       onStartShouldSetResponderCapture={RESPONDER ? () => true : undefined}
@@ -161,6 +182,8 @@ export function useFrozen<T>(live: T) {
   const [frozen, setFrozen] = useState<{ value: T } | null>(null);
   return {
     value: frozen ? frozen.value : live,
+    /** Whether a drag is on (the value is held): a handle must then stay mounted. */
+    frozen: frozen !== null,
     freeze: () => setFrozen({ value: live }),
     /** Freeze at a value worked out while drawing (a chart window that needs the width). */
     freezeAt: (value: T) => setFrozen({ value }),
@@ -268,6 +291,53 @@ export function snap(x: number, step = 0.1, min = -Infinity, max = Infinity): nu
  * Helpers every representation needs. Geometry uses formula-unit values (`val`), so shapes
  * keep true proportions whatever units are shown; labels and snapping use the shown units.
  */
+/**
+ * A handle that moves two values at once (a rectangle's corner: its length and width). When the
+ * pair would change a typed value it does not send (the typed area of a missing-side page),
+ * only the pair's typed value moves, the one the pointer went farther along first, and the
+ * other follows from the page's rules: a drag never changes a typed value it does not send.
+ */
+export function setPair(
+  calc: Calculator,
+  rep: ReturnType<typeof useRep>,
+  pins: Values,
+  updates: Record<string, number>,
+  /** The pair's ids, the one the pointer moved farther along first. */
+  order: string[],
+) {
+  const both = { ...pins, ...updates };
+  if (calc.fitsHeld(both)) return calc.set(both);
+  for (const id of order.filter((x) => rep.typed(x))) {
+    // The value itself, else the nearest that fits on past it, the way the pointer went (a
+    // typed area of 24 takes a length of 8 after 6: 7 leaves no whole width).
+    const now = calc.values[id];
+    const step = rep.slide(id)?.slide.step ?? 0;
+    const dir = now === undefined || updates[id]! >= now ? 1 : -1;
+    const moved = now === undefined || Math.abs(updates[id]! - now) > 1e-9;
+    for (let k = 0; k <= (moved && step > 0 ? 12 : 0); k++) {
+      const one = { ...pins, [id]: updates[id]! + dir * k * step };
+      if (calc.fitsHeld(one)) return calc.set(one, rep.slide(id));
+    }
+  }
+  const first = order.find((x) => rep.typed(x)) ?? order[0]!;
+  calc.set({ ...pins, [first]: updates[first]! }, rep.slide(first));
+}
+
+/**
+ * The values a drag holds still while it sends `updates`: `ids` as they are, unless holding a
+ * worked-out one would change a typed value the drag does not send (a rate worked out from two
+ * typed totals); then only the typed ones, and the worked-out one gives way.
+ */
+export function pinHeld(
+  calc: Calculator,
+  rep: ReturnType<typeof useRep>,
+  ids: string[],
+  updates: Record<string, number>,
+): Values {
+  const all = rep.pin(ids);
+  return calc.fitsHeld({ ...all, ...updates }) ? all : rep.pinTyped(ids);
+}
+
 export function useRep(calc: Calculator) {
   const { module, values, units } = calc;
   const byId = new Map(module.variables.map((v) => [v.id, v]));
@@ -325,6 +395,14 @@ export function useRep(calc: Calculator) {
   };
   return {
     variable: (id: string) => byId.get(id)!,
+    /**
+     * Whether a handle can ever move this value: not when it can take one number only (a fact
+     * to read, `allowed: [69]`, or min = max). Such a handle is not drawn.
+     */
+    movable: (id: string) => {
+      const v = byId.get(id)!;
+      return !(v.allowed?.length === 1 || (v.min !== undefined && v.min === v.max));
+    },
     known: (id: string) => values[id] !== undefined,
     /** Current value in formula units (a "?" box draws its fallback, see above). */
     val: (id: string) => values[id] ?? fallback(id),

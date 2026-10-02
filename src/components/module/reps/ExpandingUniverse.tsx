@@ -196,7 +196,7 @@ function Stretch({ spec, calc }: { spec: StretchSpec; calc: Calculator }) {
                 fontWeight="700"
                 textAnchor="middle"
               >
-                {`space stretched × ${formatNumber(Number(a.toFixed(2)))}`}
+                {`space stretched × ${on ? formatNumber(Number(a.toFixed(2))) : '?'}`}
               </ChartText>
               {spec.distance !== undefined ? (
                 // Two lines under each panel, each inside its panel's width (one line ran
@@ -288,7 +288,7 @@ function Hubble({ spec, calc }: { spec: HubbleSpec; calc: Calculator }) {
             return [x, h0 * x * (1 + (rnd(i, 8) - 0.5) * 0.3)] as const;
           }).filter(([, y]) => y < vMax);
           const lineEnd = Math.min(dMax, vMax / h0);
-          const slopeText = `slope H₀ = ${formatNumber(h0)} km/s per Mpc`;
+          const slopeText = `slope H₀ = ${known(spec.constant) ? formatNumber(h0) : '?'} km/s per Mpc`;
           const sFit = fitLabel(X(lineEnd * 0.55), slopeText, chart.label, w, 'end');
           return (
             <>

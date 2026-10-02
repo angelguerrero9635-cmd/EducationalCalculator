@@ -12,23 +12,40 @@ import { prefsStore } from '@/state/prefs';
 
 /** Light theme: a cool off-white page, white cards and an indigo accent. */
 const light = {
-  background: '#F5F6FA',
+  background: '#F7F7FB',
   /** Secondary backgrounds: inputs, segmented-control tracks, pressed rows. */
-  surface: '#ECEEF4',
+  surface: '#EEEFF5',
   /** Cards and boxes that sit on the page. */
   card: '#FFFFFF',
   /** The selected part of a segmented control. */
   thumb: '#FFFFFF',
   /** Placeholder boxes and the "not yet built" areas. */
   placeholder: '#E3E6EE',
-  border: '#DDE1EA',
-  text: '#14161F',
-  textMuted: '#636A7A',
+  border: '#E3E5EE',
+  text: '#12131A',
+  textMuted: '#5B6172',
   /** Primary buttons, selected chips and segments, links, the active tab. */
   accent: '#4F46E5',
   /** A tint of the accent for soft highlights (selected rows, badges). */
   accentSoft: '#EEF0FF',
   onAccent: '#FFFFFF',
+  /** Menus, popovers and the plans card (above cards). */
+  cardRaised: '#FFFFFF',
+  /** Inputs and outlines that can take focus. */
+  borderStrong: '#C9CDD9',
+  /** The accent on hover (web) and press. */
+  accentHover: '#4338CA',
+  /** The "dollar" gold: the $ in the mark, plan badges, the K–12 plan ribbon. Never text on white. */
+  gold: '#F5B82E',
+  onGold: '#1F1600',
+  /** Status: purchase confirmed, pending, errors. */
+  success: '#15803D',
+  warning: '#B45309',
+  danger: '#B91C1C',
+  /** The 2 px focus ring (keyboard focus on the web). */
+  focus: '#4F46E5',
+  /** Disabled buttons (with textMuted text, not a faded accent). */
+  disabledBg: '#E3E5EE',
   /** The hero banner's gradient, top-left to bottom-right. */
   heroFrom: '#4F46E5',
   heroTo: '#7C3AED',
@@ -666,17 +683,27 @@ export type Palette = typeof light;
 
 /** Dark theme: a deep blue-black page with slightly lighter cards and a softer indigo. */
 const dark: Palette = {
-  background: '#0D0F14',
-  surface: '#1D2029',
-  card: '#171A21',
+  background: '#0B0C10',
+  surface: '#1A1C23',
+  card: '#14161C',
   thumb: '#323846',
   placeholder: '#242833',
-  border: '#2A2F3A',
-  text: '#EEF0F6',
-  textMuted: '#9AA1B2',
+  border: '#262A34',
+  text: '#ECEEF4',
+  textMuted: '#A0A6B5',
   accent: '#8B83FF',
-  accentSoft: '#23224A',
-  onAccent: '#0D0F14',
+  accentSoft: '#22214A',
+  onAccent: '#0B0C10',
+  cardRaised: '#1C1F27',
+  borderStrong: '#3A3F4C',
+  accentHover: '#A39DFF',
+  gold: '#E9B949',
+  onGold: '#1F1600',
+  success: '#4ADE80',
+  warning: '#FBBF24',
+  danger: '#F87171',
+  focus: '#A39DFF',
+  disabledBg: '#262A34',
   heroFrom: '#3730A3',
   heroTo: '#6D28D9',
   onHero: '#FFFFFF',
@@ -1222,9 +1249,35 @@ export function useTone(i: number): Tone {
  * don't show on a dark page.
  */
 export function useCardShadow() {
-  return useResolvedScheme() === 'dark'
-    ? { borderWidth: 1, borderColor: dark.border }
-    : { boxShadow: '0 1px 2px rgba(16, 24, 40, 0.06), 0 4px 14px rgba(16, 24, 40, 0.06)' };
+  return useElevation(1);
+}
+
+/** The CSS shadows behind the elevation levels (also used by the web page's hover rules). */
+export const shadow = {
+  e1: '0 1px 2px rgba(16, 24, 40, 0.05)',
+  e2: '0 4px 16px rgba(16, 24, 40, 0.08)',
+  e3: '0 12px 32px rgba(16, 24, 40, 0.16)',
+  e3Dark: '0 12px 32px rgba(0, 0, 0, 0.5)',
+};
+
+/**
+ * Elevation: 1 cards, 2 hover and raised, 3 menus and sheets. Light mode uses soft shadows
+ * (with a hairline border on cards); dark mode uses borders and raised surfaces.
+ */
+export function useElevation(level: 1 | 2 | 3) {
+  const isDark = useResolvedScheme() === 'dark';
+  const p = isDark ? dark : light;
+  if (level === 1)
+    return isDark
+      ? { borderWidth: 1, borderColor: p.border }
+      : { borderWidth: 1, borderColor: p.border, boxShadow: shadow.e1 };
+  if (level === 2)
+    return isDark
+      ? { borderWidth: 1, borderColor: p.borderStrong, backgroundColor: p.cardRaised }
+      : { borderWidth: 1, borderColor: p.border, boxShadow: shadow.e2 };
+  return isDark
+    ? { borderWidth: 1, borderColor: p.border, boxShadow: shadow.e3Dark }
+    : { boxShadow: shadow.e3 };
 }
 
 // ─── Type, spacing, shape ────────────────────────────────────────────────────
@@ -1248,9 +1301,63 @@ export const font = {
   display: 32,
 };
 
-export const space = { xs: 4, sm: 8, md: 12, lg: 16, xl: 24, xxl: 32 };
+export const space = { xs: 4, sm: 8, md: 12, lg: 16, xl: 24, xxl: 32, xxxl: 48, huge: 64 };
 /** Corner radius: small controls, inputs and buttons, cards, big banners. */
-export const radius = { sm: 8, md: 12, lg: 18, xl: 24, pill: 999 };
+export const radius = { sm: 8, md: 12, lg: 16, xl: 24, pill: 999 };
+
+/**
+ * The named type scale for the shell (screens, headers, cards): size, line height, weight and
+ * letter spacing. Lessons and charts keep `font` and `chart`. `wide` sizes apply on wide web
+ * screens (≥ 1024 px) through `useType()`.
+ */
+export type TypeStyle = {
+  fontSize: number;
+  lineHeight: number;
+  fontWeight: '400' | '500' | '600' | '700' | '800';
+  letterSpacing: number;
+};
+export const type = {
+  display: { fontSize: 34, lineHeight: 40, fontWeight: '800', letterSpacing: -0.4 },
+  title1: { fontSize: 28, lineHeight: 34, fontWeight: '700', letterSpacing: -0.4 },
+  title2: { fontSize: 22, lineHeight: 28, fontWeight: '700', letterSpacing: -0.2 },
+  title3: { fontSize: 18, lineHeight: 24, fontWeight: '600', letterSpacing: 0 },
+  body: { fontSize: 16, lineHeight: 24, fontWeight: '400', letterSpacing: 0 },
+  callout: { fontSize: 15, lineHeight: 21, fontWeight: '400', letterSpacing: 0 },
+  footnote: { fontSize: 13, lineHeight: 18, fontWeight: '500', letterSpacing: 0 },
+  overline: { fontSize: 12, lineHeight: 16, fontWeight: '600', letterSpacing: 0.2 },
+} satisfies Record<string, TypeStyle>;
+export type TypeStep = keyof typeof type;
+/** The bigger heading sizes on wide screens. */
+export const typeWide: Partial<Record<TypeStep, TypeStyle>> = {
+  display: { fontSize: 44, lineHeight: 50, fontWeight: '800', letterSpacing: -0.6 },
+  title1: { fontSize: 32, lineHeight: 38, fontWeight: '700', letterSpacing: -0.4 },
+  title2: { fontSize: 24, lineHeight: 30, fontWeight: '700', letterSpacing: -0.2 },
+};
+
+/** Screen widths: compact (phones) < 600 ≤ medium (tablets) < 1024 ≤ wide; xl from 1440. */
+export const layout = {
+  medium: 600,
+  wide: 1024,
+  xl: 1440,
+  /** Page gutters by width. */
+  gutter: { compact: 16, medium: 24, wide: 32 },
+  /** Content widths: tile grids, reading pages (lessons, settings, legal), narrow forms. */
+  content: { grid: 1120, read: 760, narrow: 560 },
+  /** The desktop sidebar and top bar. */
+  sidebar: 248,
+  topBar: 64,
+};
+
+/** Durations (ms) and easing for the few animations the shell has. */
+export const motion = {
+  press: 120,
+  fade: 200,
+  sheet: 280,
+  easeIn: 'cubic-bezier(0.2, 0, 0, 1)',
+  easeOut: 'cubic-bezier(0.3, 0, 1, 1)',
+  /** Cards scale to this while pressed. */
+  pressScale: 0.98,
+};
 
 // ─── Charts and diagrams ─────────────────────────────────────────────────────
 

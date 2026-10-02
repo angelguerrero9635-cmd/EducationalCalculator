@@ -456,25 +456,28 @@ export function FractionLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     fit.freeze();
                   }}
                   onEnd={fit.release}
-                  onMove={(dx) =>
-                    calc.set(
-                      {
-                        ...rep.pin([
-                          spec.denominator,
-                          ...(spec.from ? [spec.from] : []),
-                          ...(spec.parts ?? []).filter((id) => id !== dragVar),
-                        ]),
-                        [dragVar]: rep.snapTo(
-                          dragVar,
-                          Math.min(
-                            (lo + W) * b,
-                            Math.max(lo * b, start.current + dx / scale.current),
-                          ) - dragOthers,
-                        ),
-                      },
-                      rep.slide(dragVar),
-                    )
-                  }
+                  onMove={(dx) => {
+                    const held = [
+                      spec.denominator,
+                      ...(spec.from ? [spec.from] : []),
+                      ...(spec.parts ?? []).filter((id) => id !== dragVar),
+                    ];
+                    const pins = rep.pin(held);
+                    // Holding only the typed ones lets a worked-out part give way.
+                    const typedPins = rep.pinTyped(held);
+                    const at = Math.min(
+                      (lo + W) * b,
+                      Math.max(lo * b, start.current + dx / scale.current),
+                    );
+                    const value = rep.snapTo(dragVar, at - dragOthers);
+                    // A page whose fraction must be a whole number of wholes (a = w × b) takes
+                    // the nearest whole mark instead, so the denominator is never let go.
+                    const wholeMark = rep.snapTo(dragVar, Math.round(at / b) * b - dragOthers);
+                    const tries = [pins, typedPins].flatMap((p) =>
+                      [value, wholeMark].map((v) => ({ ...p, [dragVar]: v })),
+                    );
+                    calc.set(tries.find((u) => calc.fitsHeld(u)) ?? tries[0]!, rep.slide(dragVar));
+                  }}
                 />
               ) : null}
             </>

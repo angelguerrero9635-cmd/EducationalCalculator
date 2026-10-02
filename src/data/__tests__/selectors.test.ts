@@ -20,7 +20,15 @@ import {
   search,
   skipsFieldLevel,
   topicKey,
+  getProblemType,
+  pageRoute,
+  problemTypes,
+  topicOf,
+  topicPageId,
+  topicRoute,
+  TOPIC_TYPE_IDS,
 } from '../selectors';
+import { LAYOUTS, MODULES, getPageIds } from '../modules';
 import {
   COURSES,
   GRADES,
@@ -218,7 +226,7 @@ describe('search', () => {
   it('indexes every skill, problem type, course and topic', () => {
     const topics = COURSES.reduce((n, c) => n + c.topics.length, 0);
     expect(buildSearchIndex()).toHaveLength(
-      SKILLS.length + PROBLEM_TYPE_IDS.length + COURSES.length + topics,
+      SKILLS.length + PROBLEM_TYPE_IDS.length + COURSES.length + topics + TOPIC_TYPE_IDS.length,
     );
   });
 });
@@ -236,7 +244,7 @@ describe('nodeContext', () => {
 
 describe('courseSummary', () => {
   it('counts topics', () => {
-    expect(courseSummary(getNode('he.math.calc-1') as never)).toBe('5 topics');
+    expect(courseSummary(getNode('he.math.calc-1') as never)).toBe('8 topics');
     expect(courseSummary(getNode('he.engineering.statics') as never)).toBe('5 topics');
   });
 });
@@ -295,5 +303,75 @@ describe('recents', () => {
     });
     expect(resolveItem('m.99.nope')).toBeUndefined();
     expect(resolveItem(topicKey('he.math.calc-1', 99))).toBeUndefined();
+  });
+});
+
+describe('college topic problem types (HE-E1)', () => {
+  const ids = [...MODULES.map((m) => m.id), ...LAYOUTS.map((l) => l.id)];
+  const topicTypes = ids.filter((id) => /#\d+~/.test(id));
+
+  it('lists the human-geography topic’s problem types, calculators and layouts alike', () => {
+    expect(problemTypes('he.geography.human-geography#0').map((t) => t.id)).toEqual([
+      'he.geography.human-geography#0~rates',
+      'he.geography.human-geography#0~transition',
+    ]);
+    expect(search('demographic transition').map((r) => r.key)).toContain(
+      'he.geography.human-geography#0~transition',
+    );
+  });
+
+  it('parses topic keys', () => {
+    expect(topicOf('he.math.calc-1#1')).toMatchObject({
+      key: 'he.math.calc-1#1',
+      index: 1,
+      title: 'Derivatives and differentiation rules',
+    });
+    expect(topicOf('he.math.calc-1#99')).toBeUndefined();
+    expect(topicOf('he.math.calc-1#1~x')).toBeUndefined();
+    expect(topicOf('m.8.slope')).toBeUndefined();
+  });
+
+  it('lists every topic problem type under its topic, as skills list theirs', () => {
+    expect([...TOPIC_TYPE_IDS].sort()).toEqual([...topicTypes].sort());
+    expect(TOPIC_TYPE_IDS.filter((id) => PROBLEM_TYPE_IDS.includes(id))).toEqual([]);
+    for (const id of TOPIC_TYPE_IDS) {
+      const type = getProblemType(id)!;
+      expect(type.skill).toBeUndefined();
+      expect(type.topic?.key).toBe(id.split('~')[0]);
+      expect(type.owner).toBe(type.topic?.key);
+      expect(problemTypes(type.owner).map((t) => t.id)).toContain(id);
+      expect(getPageIds(type.owner)).toContain(id);
+    }
+  });
+
+  it('routes a topic problem type to its topic page with the slug', () => {
+    expect(topicRoute('he.math.calc-1', 1, 'chain')).toEqual({
+      pathname: '/course/[id]/topic/[index]',
+      params: { id: 'he.math.calc-1', index: '1~chain' },
+    });
+    expect(pageRoute('he.math.calc-1#1')).toEqual(topicRoute('he.math.calc-1', 1));
+    expect(pageRoute('m.8.slope')).toEqual({
+      pathname: '/skill/[id]',
+      params: { id: 'm.8.slope' },
+    });
+    expect(pageRoute('he.math.calc-1#1~no-such-page')).toBeUndefined();
+    expect(topicPageId('he.math.calc-1', '1')).toBe('he.math.calc-1#1');
+    for (const id of TOPIC_TYPE_IDS) {
+      const [course, index] = id.split('#');
+      expect(pageRoute(id)?.params).toEqual({ id: course, index });
+      expect(topicPageId(course!, index!)).toBe(id);
+      expect(resolveItem(id)?.route).toEqual(pageRoute(id));
+    }
+  });
+
+  it('indexes topic problem types for search, labelled with course and topic', () => {
+    const index = buildSearchIndex();
+    for (const id of TOPIC_TYPE_IDS) {
+      const entry = index.find((e) => e.key === id)!;
+      const { topic } = getProblemType(id)!;
+      expect(entry.kind).toBe('topic');
+      expect(entry.label).toContain(`${topic!.course.title} · ${topic!.title}`);
+      expect(entry.route).toEqual(pageRoute(id));
+    }
   });
 });

@@ -1001,12 +1001,16 @@ describe('regressions found in review', () => {
     const s = setValues(m, open(m), { RNI: 1 });
     expect(s.errors).toEqual({});
     expect(s.result.values.Pop).toBeCloseTo(200000);
-    expect(s.result.values.CBR).toBeCloseTo(30);
-    expect(s.result.values.CDR).toBeCloseTo(20);
+    // On the rates page the births move (CDR stays 8, so CBR = 18 and B = 9,000).
+    const r = byId('he.geography.human-geography#0~rates');
+    const t = setValues(r, open(r), { RNI: 1 });
+    expect(t.errors).toEqual({});
+    expect(t.result.values.CBR).toBeCloseTo(18);
+    expect(t.result.values.B).toBeCloseTo(9000);
   });
 
   it('population: a tiny growth rate gives a long doubling time without clearing inputs', () => {
-    const m = byId('he.geography.human-geography#0');
+    const m = byId('he.geography.human-geography#0~rates');
     const s = setValues(m, open(m), { D: 4000, B: 4001 });
     expect(s.result.cleared).toEqual([]);
     expect(s.result.values.Td).toBeCloseTo(350000);

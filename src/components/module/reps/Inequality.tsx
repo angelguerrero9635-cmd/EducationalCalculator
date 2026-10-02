@@ -72,6 +72,8 @@ export function InequalityLine({ spec, calc }: { spec: Spec; calc: Calculator })
             : test >= bound;
   // Grade 6 on: "x > 3". K–5 (no letters): the sign and bound alone, "> 3".
   const letter = rep.words ? '' : `${ineq.letter ?? 'x'} `;
+  // The boundary's label reads "?" while the boundary is not known (never the example's number).
+  const boundLabel = `${letter}${sign ?? '?'} ${boundKnown ? num(bound) : '?'}`;
 
   /** "3 × 5 + 2 = 17": the written side at the test number. */
   const twoTest = (t: number) => {
@@ -205,13 +207,13 @@ export function InequalityLine({ spec, calc }: { spec: Spec; calc: Calculator })
                   strokeWidth={chart.stroke + 0.5}
                 />
                 <ChartText
-                  {...fitLabel(bx, `${letter}${sign ?? '?'} ${num(bound)}`, chart.value, w)}
+                  {...fitLabel(bx, boundLabel, chart.value, w)}
                   y={lineAt - 18}
                   fontSize={chart.value}
                   fontWeight="700"
                   fill={c.chartHighlight}
                 >
-                  {`${letter}${sign ?? '?'} ${num(bound)}`}
+                  {boundLabel}
                 </ChartText>
                 {/* The test point: a diamond above the line, dropped to its number. */}
                 {test !== undefined ? (

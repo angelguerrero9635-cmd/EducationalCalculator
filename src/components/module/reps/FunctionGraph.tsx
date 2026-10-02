@@ -652,6 +652,8 @@ export function FunctionGraph({
   // run the point away (a steep curve rescaled y, then x, on every move).
   const drawn = useRef<Window | undefined>(undefined);
   const start = useRef<{ def?: HandleDef; x: number; y: number }>({ x: 0, y: 0 });
+  // Whether the point on the curve is being dragged (it stays mounted past the window).
+  const pointHeld = useRef(false);
 
   // Values held while a handle moves: every other typed parameter, and the traced x.
   const paramIds = [...familyVars(given), ...(given.other ? familyVars(given.other) : [])].filter(
@@ -819,13 +821,21 @@ export function FunctionGraph({
                 if (x === undefined) continue;
                 placed = { ...def, x, y: main.f(x) };
               }
-              if (!inWin(placed.x, placed.y)) continue;
+              // The handle being dragged stays mounted past the held window (DragHandle keeps it
+              // on the picture): unmounting it would drop the drag.
+              const held = frozen.value !== undefined && def.name === start.current.def?.name;
+              if (!inWin(placed.x, placed.y) && !held) continue;
               handleDefs.push({ def: placed, ids: idsOf });
             }
           }
           const handlePx: [number, number][] = [];
+          // Mid-drag (the window held) the point stays mounted past the window's top or bottom
+          // (DragHandle keeps it on the picture): unmounting it would drop the drag.
           const atPt =
-            spec.at && atX !== undefined && Number.isFinite(main.f(atX)) && inWin(atX, main.f(atX))
+            spec.at &&
+            atX !== undefined &&
+            Number.isFinite(main.f(atX)) &&
+            (inWin(atX, main.f(atX)) || (pointHeld.current && frozen.value !== undefined))
               ? { x: atX, y: main.f(atX) }
               : undefined;
           if (atPt && !spec.fixed && rep.known(spec.at!.x) && !rep.variable(spec.at!.x).derived)
@@ -1746,6 +1756,7 @@ export function FunctionGraph({
                   label={`the point on the curve`}
                   onStart={() => {
                     start.current = { x: atPt.x, y: atPt.y };
+                    pointHeld.current = true;
                     frozen.freezeAt(drawn.current);
                   }}
                   onMove={(dx) => {
@@ -1766,7 +1777,10 @@ export function FunctionGraph({
                       rep.slide(id),
                     );
                   }}
-                  onEnd={frozen.release}
+                  onEnd={() => {
+                    pointHeld.current = false;
+                    frozen.release();
+                  }}
                 />
               ) : null}
               {secQ && inWin(secQ.x, secQ.y) && typeof spec.secant!.h === 'string' ? (

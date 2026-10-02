@@ -369,9 +369,12 @@ export function ComplexPlane({ spec, calc }: { spec: ComplexPlaneSpec; calc: Cal
                         0,
                         za,
                         op === 'product' ? Math.max(18, Math.min(46, zr * f.ux - 34)) : 24,
+                        // A "?" z reads "?", not the example's angle.
                         (spec.argument || spec.polar || zPolar) && op !== 'product'
-                          ? `θ = ${short(za)}°`
-                          : `${short(za)}°`,
+                          ? `θ = ${z.known ? `${short(za)}°` : '?'}`
+                          : z.known
+                            ? `${short(za)}°`
+                            : '?',
                         c.chartInk,
                       )
                     : null}

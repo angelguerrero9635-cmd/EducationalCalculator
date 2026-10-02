@@ -44,14 +44,36 @@ export function ConicTurned({ spec, calc }: { spec: ConicGraphSpec; calc: Calcul
   const w0 = niceWindow([-reach, reach], 8, 0.04);
   const win = { lo: -Math.max(-w0.lo, w0.hi), hi: Math.max(-w0.lo, w0.hi), step: w0.step };
   const G0 = -F;
-  const eq = quadraticText(
-    [
-      [A, 'x²'],
-      [B, 'xy'],
-      [C, 'y²'],
-    ],
-    G0,
-  );
+  // A coefficient whose box is "?" reads as its letter ("4x² + Bxy + Cy² = 1"), and nothing
+  // worked from them (θ, the turned equation) is drawn from the example's numbers.
+  const letter = (x: number | string | undefined) =>
+    typeof x === 'string' && !rep.known(x) ? rep.variable(x).symbol : undefined;
+  const lettered = [s.A, s.B, s.C].some(letter) || !!letter(s.F);
+  const eq = !lettered
+    ? quadraticText(
+        [
+          [A, 'x²'],
+          [B, 'xy'],
+          [C, 'y²'],
+        ],
+        G0,
+      )
+    : `${(
+        [
+          [s.A, A, 'x²'],
+          [s.B, B, 'xy'],
+          [s.C, C, 'y²'],
+        ] as const
+      )
+        .map(([raw, k, v], i) => {
+          const l = letter(raw);
+          if (l) return `${i ? ' + ' : ''}${l}${v}`;
+          if (Math.abs(k) < 1e-12) return '';
+          const mag = Math.abs(k) === 1 ? '' : short(Math.abs(k));
+          return `${k < 0 ? (i ? ' − ' : '−') : i ? ' + ' : ''}${mag}${v}`;
+        })
+        .join('')
+        .replace(/^ \+ /, '')} = ${letter(s.F) ? `−${letter(s.F)}` : short(G0)}`;
   const eq1 = quadraticText(
     [
       [Number(t.A1.toFixed(4)), 'x′²'],
@@ -217,7 +239,7 @@ export function ConicTurned({ spec, calc }: { spec: ConicGraphSpec; calc: Calcul
                   <MathChip
                     x={O.x + (arcR + 12) * Math.cos(mid)}
                     y={O.y - (arcR + 12) * Math.sin(mid) + 4}
-                    text={`θ = ${short(t.theta)}°`}
+                    text={`θ = ${known ? `${short(t.theta)}°` : '?'}`}
                     anchor="start"
                     w={w}
                     h={h}
@@ -244,7 +266,7 @@ export function ConicTurned({ spec, calc }: { spec: ConicGraphSpec; calc: Calcul
                 color={c.chartHighlight}
                 size={chart.value}
               />
-              {B !== 0 ? (
+              {B !== 0 && known ? (
                 <MathChip
                   x={8}
                   y={h - 10}

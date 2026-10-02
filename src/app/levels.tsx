@@ -1,14 +1,12 @@
-import { ScrollView, StyleSheet } from 'react-native';
-import { Text } from '@/components/Text';
+import { StyleSheet, View } from 'react-native';
 
-import { LevelPicker } from '@/components';
-import { useSelectedLevels } from '@/state';
-import { font, space, usePalette } from '@/theme';
+import { DetailHeader, LevelPicker, Page } from '@/components';
 import { PageMeta } from '@/components/PageMeta';
+import { useSelectedLevels } from '@/state';
+import { space } from '@/theme';
 
 /** Settings → edit the onboarding selections. Changes save immediately. */
 export default function LevelsScreen() {
-  const c = usePalette();
   const { levels, toggleLevel } = useSelectedLevels();
   return (
     <>
@@ -16,21 +14,19 @@ export default function LevelsScreen() {
         title={'What You Study'}
         description="Pick the grades and university fields you study to see them on your home page."
       />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        contentContainerStyle={styles.content}
-        style={{ backgroundColor: c.background }}
-      >
-        <Text style={[styles.body, { color: c.textMuted }]}>
-          Your picks become cards under My Courses on Home.
-        </Text>
-        <LevelPicker selected={levels} onToggle={toggleLevel} />
-      </ScrollView>
+      <Page width="narrow">
+        <DetailHeader
+          title="What you study"
+          lines={['Your picks become cards under My courses on Home. Changes save as you tap.']}
+        />
+        <View style={styles.picker}>
+          <LevelPicker selected={levels} onToggle={toggleLevel} />
+        </View>
+      </Page>
     </>
   );
 }
 
 const styles = StyleSheet.create({
-  content: { padding: space.lg, gap: space.lg },
-  body: { fontSize: font.body },
+  picker: { paddingHorizontal: space.lg },
 });

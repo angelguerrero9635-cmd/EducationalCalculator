@@ -1,66 +1,96 @@
-import { router } from 'expo-router';
-import { useState } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
-import { Text } from '@/components/Text';
+import { StyleSheet, View } from 'react-native';
 
-import { Button, ListRow } from '@/components';
-import { font, space, usePalette } from '@/theme';
+import { Button, Card, DetailHeader, Icon, Page } from '@/components';
 import { PageMeta } from '@/components/PageMeta';
+import { Text } from '@/components/Text';
+import { monthly, PRICES } from '@/config/pricing';
+import { SITE_NAME } from '@/config/site';
+import { radius, space, type, usePalette } from '@/theme';
 
-type Plan = 'monthly' | 'annual';
+/** What each plan holds, in three short lines. */
+const PLANS = [
+  {
+    ...PRICES.k12,
+    id: 'k12',
+    ribbon: 'Every grade',
+    points: [
+      'Every K–12 math and science lesson',
+      'Pictures you can move',
+      'Every step worked out',
+    ],
+    action: 'Continue',
+  },
+  {
+    ...PRICES.course,
+    id: 'course',
+    ribbon: undefined,
+    points: [
+      'One college course, every topic',
+      'Add only the courses you take',
+      'Cancel any course anytime',
+    ],
+    action: 'Pick courses',
+  },
+] as const;
 
-const PLANS: { value: Plan; title: string; price: string }[] = [
-  { value: 'monthly', title: 'Monthly', price: '$—.— / month' },
-  { value: 'annual', title: 'Annual', price: '$—.— / year' },
-];
-
-/** Placeholder paywall. No purchase logic: Continue is disabled and Restore does nothing. */
-export default function PaywallScreen() {
+/** The plans and their prices. Purchases are not open yet: the buttons stay disabled. */
+export default function PlansScreen() {
   const c = usePalette();
-  const [plan, setPlan] = useState<Plan>('annual');
-
   return (
     <>
-      <PageMeta title={'Premium'} description="Premium lessons and features (coming soon)." />
-      <ScrollView style={{ backgroundColor: c.background }} contentContainerStyle={styles.content}>
-        <View style={styles.hero}>
-          <View style={[styles.art, { backgroundColor: c.placeholder, borderColor: c.border }]} />
-          <Text accessibilityRole="header" style={[styles.headline, { color: c.text }]}>
-            7-day free trial
-          </Text>
-          <Text style={[styles.body, { color: c.textMuted }]}>
-            Formulas, calculators and step-by-step solutions for every course. [Copy placeholder]
-          </Text>
-        </View>
-
-        <View style={[styles.plans, { borderColor: c.border }]}>
+      <PageMeta
+        noindex
+        title="Plans"
+        description={`${SITE_NAME} plans: Kindergarten to Grade 12 for ${monthly(PRICES.k12.usd)}, and each college course for ${monthly(PRICES.course.usd)}.`}
+      />
+      <Page width="read">
+        <DetailHeader title="Plans" lines={['One dollar a month. No ads, ever.']} />
+        <View style={styles.cards}>
           {PLANS.map((p) => (
-            <ListRow
-              key={p.value}
-              title={p.title}
-              subtitle={p.price}
-              selected={plan === p.value}
-              onPress={() => setPlan(p.value)}
-            />
+            <Card key={p.id} style={styles.card}>
+              <View style={styles.cardHead}>
+                <Text style={[type.title3, styles.flex, { color: c.text }]}>{p.label}</Text>
+                {p.ribbon ? (
+                  <View style={[styles.ribbon, { backgroundColor: c.gold }]}>
+                    <Text style={[type.overline, { color: c.onGold }]}>{p.ribbon}</Text>
+                  </View>
+                ) : null}
+              </View>
+              <Text style={[type.title1, { color: c.text }]}>
+                ${p.usd}
+                <Text style={[type.callout, { color: c.textMuted }]}> a month</Text>
+              </Text>
+              <View style={styles.points}>
+                {p.points.map((point) => (
+                  <View key={point} style={styles.point}>
+                    <Icon name="checkCircle" size={20} color={c.success} />
+                    <Text style={[type.callout, styles.flex, { color: c.text }]}>{point}</Text>
+                  </View>
+                ))}
+              </View>
+              <Button testID={`plan-${p.id}`} label={p.action} disabled />
+            </Card>
           ))}
         </View>
-
-        <View style={styles.actions}>
-          <Button testID="paywall-continue" label="Continue" disabled />
-          <Button label="Restore Purchases" variant="link" />
-          <Button label="Not now" variant="link" onPress={() => router.back()} />
+        <View style={styles.after}>
+          <Button label="Restore purchases" variant="link" icon="restore" disabled />
+          <Text style={[type.footnote, styles.note, { color: c.textMuted }]}>
+            Purchases are not open yet. Everything is free to use in this build.
+          </Text>
         </View>
-      </ScrollView>
+      </Page>
     </>
   );
 }
 
 const styles = StyleSheet.create({
-  content: { padding: space.lg, gap: space.xl },
-  hero: { alignItems: 'center', gap: space.sm },
-  art: { width: 96, height: 96, borderRadius: 20, borderWidth: 1, borderStyle: 'dashed' },
-  headline: { fontSize: font.headline, fontWeight: '700', textAlign: 'center' },
-  body: { fontSize: font.body, textAlign: 'center' },
-  plans: { borderTopWidth: StyleSheet.hairlineWidth },
-  actions: { gap: space.sm },
+  cards: { flexDirection: 'row', flexWrap: 'wrap', gap: space.md, paddingHorizontal: space.lg },
+  card: { flexGrow: 1, flexBasis: 280, gap: space.md, borderRadius: radius.lg },
+  cardHead: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
+  flex: { flex: 1 },
+  ribbon: { paddingHorizontal: space.sm, paddingVertical: 3, borderRadius: radius.pill },
+  points: { gap: space.sm },
+  point: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
+  after: { alignItems: 'center', gap: space.xs, padding: space.lg },
+  note: { fontWeight: '400', textAlign: 'center' },
 });

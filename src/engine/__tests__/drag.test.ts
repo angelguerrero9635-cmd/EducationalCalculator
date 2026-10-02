@@ -114,6 +114,17 @@ describe('a handle on a worked-out value moves its typed value at once', () => {
   });
 });
 
+describe('a worked-out value whose typed values move in whole steps', () => {
+  it('a share into 8 groups: l goes to the nearest multiple of 8 instead of standing still', () => {
+    const { system, state } = opened('m.3.two-step-problems~subtract-share');
+    // The tape's handle on l, the typed start held: 40 → toward 36 lands on 32 (a = 13).
+    const next = setInput(system, state, { s: 45, l: 36 }, { id: 'l', step: 1 });
+    expect(next.result.values.l).toBe(32);
+    expect(next.result.values.e).toBe(4);
+    expect(next.result.values.s).toBe(45);
+  });
+});
+
 describe('the rope pull holds the typed μ', () => {
   it('friction follows the normal force; μ, the mass and the angle stay as typed', () => {
     const { m, system, state } = opened('s.11.dynamics-vectors~rope');

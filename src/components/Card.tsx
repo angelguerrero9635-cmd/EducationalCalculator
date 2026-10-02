@@ -5,6 +5,8 @@ import type { RouteTarget } from '@/data/selectors';
 import { push } from '@/navigation';
 import { radius, space, useCardShadow, usePalette } from '@/theme';
 
+import { webData } from './webData';
+
 export interface CardProps {
   children: ReactNode;
   /** Navigates here on press. */
@@ -34,6 +36,8 @@ export function Card({ children, route, onPress, style, testID, accessibilityLab
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel}
       onPress={handlePress}
+      // Web: a linked card lifts under the pointer (src/app/+html.tsx).
+      {...webData({ hover: 'card' })}
       style={({ pressed }) => [
         ...base,
         style,

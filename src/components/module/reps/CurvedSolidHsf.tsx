@@ -50,7 +50,10 @@ export function SolidNet({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const { rep, r, h, l, known, u, sq } = useSolid(spec, calc);
   const sym = (id: string | undefined, d: string) => (id ? rep.variable(id).symbol : d);
   const S = sym(spec.surface, 'S');
-  const rt = short(r);
+  // The drawn numbers read "?" while a value is "?" (never the example's).
+  const rt = known ? short(r) : '?';
+  const hT = known ? short(h) : '?';
+  const lT = known ? short(l) : '?';
   const lines: string[] = [];
   const fan = (2 * Math.PI * r) / l;
   if (!known) lines.push('Type the radius and height to unfold the solid.');
@@ -132,7 +135,7 @@ export function SolidNet({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   `2π × ${rt} = ${piTimes(2 * r).split(' ≈')[0]}${u}`,
                   c.chartHighlight,
                 )}
-                {text(cx + R, y0 + H / 2 + 14, `by ${short(h)}${u}`)}
+                {text(cx + R, y0 + H / 2 + 14, `by ${hT}${u}`)}
               </Svg>
             );
           }
@@ -154,7 +157,7 @@ export function SolidNet({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 <Circle cx={cx} cy={baseY} r={R} {...face} />
                 <Circle cx={cx} cy={ay} r={2.5} fill={c.chartInk} />
                 {text(cx, baseY + 4, `π × ${rt}²`)}
-                {text(cx, ay + Math.min(L * 0.45, 40), `${short((360 * r) / l)}°`)}
+                {text(cx, ay + Math.min(L * 0.45, 40), known ? `${short((360 * r) / l)}°` : '?°')}
                 {(() => {
                   // ℓ beside the left edge, on the side away from the sector.
                   const [mx, my] = [(cx + edge[0]) / 2, (ay + edge[1]) / 2];
@@ -170,7 +173,7 @@ export function SolidNet({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       <Chip
                         x={mx + nx * 14}
                         y={my + ny * 14 + 5}
-                        text={`ℓ = ${short(l)}${u}`}
+                        text={`ℓ = ${lT}${u}`}
                         anchor={nx < -0.3 ? 'end' : nx > 0.3 ? 'start' : 'middle'}
                         w={w}
                         h={ch}
@@ -232,7 +235,9 @@ export function CoinStacks({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
   const ids = usePaintIds('coin');
   const { r, h, known, u } = useSolid(spec, calc);
-  const rt = short(r);
+  // The drawn numbers read "?" while a value is "?" (never the example's).
+  const rt = known ? short(r) : '?';
+  const hT = known ? short(h) : '?';
   const lines = known
     ? [
         `Both stacks are ${COINS} coins of radius ${rt}${u}, ${short(h)}${u} tall; one leans.`,
@@ -306,11 +311,11 @@ export function CoinStacks({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 strokeWidth={chart.strokeLight}
               />
               <ChartText
-                {...fitLabel(x1 - R - 16, `${short(h)}${u}`, chart.label, w, 'end', 4)}
+                {...fitLabel(x1 - R - 16, `${hT}${u}`, chart.label, w, 'end', 4)}
                 y={yb - H / 2}
                 fontWeight="700"
               >
-                {`${short(h)}${u}`}
+                {`${hT}${u}`}
               </ChartText>
               {[x1, x2].map((x, i) => (
                 <ChartText key={i} x={x} y={yb + ry + 18} textAnchor="middle" fontWeight="700">

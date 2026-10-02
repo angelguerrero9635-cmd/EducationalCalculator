@@ -1,11 +1,20 @@
 // After `expo export -p web` (static output): writes dist/sitemap.xml listing every
 // pre-rendered page, adds dist/404.html (Vercel's not-found page) and removes Expo's route
 // templates ("[id].html") and dev route list ("_sitemap.html"), which aren't real pages.
-import { copyFileSync, existsSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import {
+  copyFileSync,
+  existsSync,
+  readFileSync,
+  readdirSync,
+  rmSync,
+  statSync,
+  writeFileSync,
+} from 'node:fs';
 import { join, relative, sep } from 'node:path';
 
 const DIST = 'dist';
-const SITE = 'https://educational-calculator.vercel.app';
+// The site's address, from its one source (src/config/site.ts).
+const SITE = /SITE_URL = '([^']+)'/.exec(readFileSync('src/config/site.ts', 'utf8'))[1];
 // Pages that shouldn't be listed for search engines.
 const UNLISTED = new Set(['/onboarding', '/paywall', '/+not-found', '/404']);
 

@@ -5,7 +5,7 @@ import type { Representation } from '@/data/modules';
 import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { Canvas, ChartText, DragHandle, useFrozen, useRep } from './common';
+import { Canvas, ChartText, DragHandle, setPair, useFrozen, useRep } from './common';
 import { DimLine, Pill, pillSize, textW } from './dimKit';
 import { TopLight, url, usePaintIds } from './paint';
 
@@ -280,10 +280,18 @@ function Flat({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 }}
                 onEnd={fit.release}
                 onMove={(dx, dy) =>
-                  calc.set({
-                    [spec.length]: rep.snapTo(spec.length, start.current.l + dx / unit),
-                    [spec.width]: rep.snapTo(spec.width, start.current.w + dy / unit),
-                  })
+                  setPair(
+                    calc,
+                    rep,
+                    {},
+                    {
+                      [spec.length]: rep.snapTo(spec.length, start.current.l + dx / unit),
+                      [spec.width]: rep.snapTo(spec.width, start.current.w + dy / unit),
+                    },
+                    Math.abs(dx) >= Math.abs(dy)
+                      ? [spec.length, spec.width]
+                      : [spec.width, spec.length],
+                  )
                 }
               />
             )}
@@ -512,10 +520,18 @@ function Roof({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 // Up the roof is the width; what's left across is the length.
                 const dw = -my / (DEPTH_Y * unit);
                 const dl = (mx - DEPTH_X * dw * unit) / unit;
-                calc.set({
-                  [spec.length]: rep.snapTo(spec.length, start.current.l + dl),
-                  [spec.width]: rep.snapTo(spec.width, start.current.w + dw),
-                });
+                setPair(
+                  calc,
+                  rep,
+                  {},
+                  {
+                    [spec.length]: rep.snapTo(spec.length, start.current.l + dl),
+                    [spec.width]: rep.snapTo(spec.width, start.current.w + dw),
+                  },
+                  Math.abs(dl) >= Math.abs(dw)
+                    ? [spec.length, spec.width]
+                    : [spec.width, spec.length],
+                );
               }}
             />
           </>

@@ -14,6 +14,7 @@ import {
   DragHandle,
   fitLabel,
   nowrap,
+  pinHeld,
   useFrozen,
   useRep,
 } from './common';
@@ -184,19 +185,24 @@ export function EnergyPyramid({ spec, calc }: { spec: Spec; calc: Calculator }) 
                     scale.freeze();
                   }}
                   onEnd={scale.release}
-                  onMove={(dx) =>
+                  onMove={(dx) => {
+                    const value = rep.snapTo(
+                      base,
+                      Math.max(0, start.current + ((2 * dx) / span) * scale.value) *
+                        rep.factor(base),
+                    );
+                    // The percent is held only when that changes no typed level (worked out
+                    // from typed E1 and E2, holding it stopped E1 dead).
                     calc.set(
                       {
-                        ...(typeof spec.percent === 'string' ? rep.pin([spec.percent]) : {}),
-                        [base]: rep.snapTo(
-                          base,
-                          Math.max(0, start.current + ((2 * dx) / span) * scale.value) *
-                            rep.factor(base),
-                        ),
+                        ...(typeof spec.percent === 'string'
+                          ? pinHeld(calc, rep, [spec.percent], { [base]: value })
+                          : {}),
+                        [base]: value,
                       },
                       rep.slide(base),
-                    )
-                  }
+                    );
+                  }}
                 />
               ) : null}
             </>

@@ -48,8 +48,17 @@ function ScaleCopyGrid({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const { cols, rows } = fit.value;
   const pts = outline(spec.shape, W, H);
   const K = formatNumber(k);
-  const copyW = spec.copyWidth ? rep.value(spec.copyWidth) : formatNumber(W * k);
-  const copyH = spec.copyHeight ? rep.value(spec.copyHeight) : formatNumber(H * k);
+  // The copy's lengths read "?" until they are known (never worked from a "?" factor or side).
+  const copyW = spec.copyWidth
+    ? rep.value(spec.copyWidth)
+    : kKnown && known(spec.width)
+      ? formatNumber(W * k)
+      : '?';
+  const copyH = spec.copyHeight
+    ? rep.value(spec.copyHeight)
+    : kKnown && known(spec.height)
+      ? formatNumber(H * k)
+      : '?';
   const plain = (id: string | undefined, x: number) =>
     id && rep.known(id) ? formatNumber(rep.shown(id)) : formatNumber(x);
 

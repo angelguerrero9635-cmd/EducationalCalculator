@@ -13,6 +13,80 @@ that are now automated come out of their instructions, findings they missed or o
 become new lines in their checklists, and the evidence they lacked is added to the evidence
 script. One entry per review, with the token cost, so the next review is cheaper and sharper.
 
+## What the site-wide sweep left: fixed per component, the check taught three general rules
+
+- **Setup.** Builds of the pages in scope in a scratch copy (`PRERENDER_PREFIX`, a private
+  Metro cache), `review-interact.mjs` on every page of each changed kind (224 pages, then the
+  99 tape, wave, power-scale, coordinate-plane and unit-rate pages again after the engine
+  changes, then the 64 pages the sweep's last pass flagged); one 390 px shot per changed kind,
+  most with a box left "?".
+- **"?" leaks fixed** (each by component): determinants (2 × 2, 3 × 3, Cramer: a "?" entry
+  reads "?", D and each Dᵢ "?" until all are typed), the inverse's product (AB and its entry
+  sum), confidence intervals (the middle area waits for the interval and the curve; simulated
+  intervals wait for the level, n and the count), tests (a "?" α reads as the letter, a "?"
+  statistic as "z = ?"), rotated conics ("4x² + Bxy + Cy² = 1", θ and the turned equation
+  only when typed), polar conics ("r = 4 ÷ (m − n sin θ)", the directrix), parametric points
+  ("t = ?: (?, ?)"), 3-D points ("P(1, ?, ?)", the legs and midpoint), the vectors' resultant
+  and kᵤ ("F = ?", "ku"), the complex plane's angle, the CLT histogram (μ, n, the samples),
+  ionic bonding (no ions drawn while a charge is "?"; the counts of ions wait for their
+  boxes), the reserve's axis end, the transit depth, the polynomial box ("?x²" terms and
+  products), and a lone atom's oxidation number ("?", not "1 × ?").
+- **Drags fixed.** `reps/angleDrag.ts`: an angle turns by the pointer's change of direction
+  from its vertex, and within 40 px of the vertex only by its sideways motion over 40 px, so
+  passing the vertex is a small turn (the angle pair 32° → 1°, the rose 15° → 233°, the vector
+  15.87° → 342°, the turned image 141° → −198°); used by the angle pair, the protractor, a
+  point on a polar curve, a vector's tip and a turned image. The H–R star moves the typed
+  radius (not the worked-out luminosity); a polar conic's point stays on the rim past the
+  grid. Handles that stood still: `driveTyped` tries the nearest step that fits (a share of
+  40 into 8 groups goes to 32; a typed value whose steps leave the handle where it was is
+  skipped), with at most 32 solves a move, and keeps the first typed value that drives the
+  handle (moving on to the next made one drag move e, then R₀); a tape's worked-out part beside a typed part lets
+  the worked-out total follow (m = 3 × 8 then 5 extra); the exponent of scientific notation
+  moves the number with the mantissa held (the engine now works g out with the values a
+  handle holds); quarter turns go on to the next after 10°; a mirror worked out from the
+  figure moves the figure. Not drawn: a tape part that is one fact (the fresh-water cups, two
+  handles 9 px apart) and a unit rate nothing can change (C ÷ d = π; the calculator's `moves`).
+  Two-value handles were right and are kept, made exact: a worked-out point (the moves r and
+  u, the pattern's t × s and t × u) and the wave's crest move each worked-out value through
+  the engine, so the typed values behind them stay typed, and name what they send
+  (`DragHandle` `drives`, data-drives).
+- **Drags the sweep's last pass flagged but did not list,** fixed the same way: a held
+  worked-out value is held only when no typed value moves (`pinHeld`): the percent bar's
+  whole, the energy pyramid's percent, the sector's angle in radians, the side-splitter's
+  sides, the line's point under its intercept and slope handles, the braking graph's time (it
+  moved the typed a); a mixing thermometer worked out from two typed readings moves the newest;
+  a function graph's point stays mounted past the held window's top or bottom; a free-body pull
+  stops one step above 0 (its arrow and handle went at 0).
+- **Slow pages.** The `or` inequality's 0.6 s per move was the solver's whole-number search:
+  with only some inputs in, it tried the test result h = 0 first and spent its 20,000 tries
+  under it on every solve; the search now tries each value's previous number first (480 ms →
+  4 ms a solve; a limit-1 search only asks whether any fit, a full one finds the same set).
+  Chi-square (14 boxes) and the histogram from a list (12 values) were not frozen: the
+  watchdog timed the whole page (3 minutes), and their many boxes took longer; it now times
+  silence (no box read, edit or drag).
+- **The check, taught** (`review-interact.mjs`): a run of three or more whole numbers one apart
+  is a count ("0, 1, 2, …", "1, 2, 3"); a number with the same words up to and after it in
+  the same slot when the rest of the text changed shape is fixed ("Shells: 2, 8, 8"); a
+  threshold a letter is compared with is the rule's ("n < 30" → "n ≥ 30"). Drags: boxes
+  lined up by id and copy (a mixed-number answer turning whole dropped a box and read as
+  "changed typed b"); nothing moving right and up is fine when the drag toward the other end
+  moves the value (a handle at the top of its range: 3 feet of 3, l = 40 of 45); a direction
+  box of 0°–360° wraps the short way; a steady ratio per px is a log axis, not a runaway (the
+  star's radius 41 → 450); a handle's data-drives allows one typed value behind each
+  worked-out value it sends.
+- **After:** 0 ERROR on the pages of every changed kind (224, then 173 more for the pinHeld
+  kinds, then 154 again after the last engine change), but the three lines below.
+- **Left:** g.s9-biotechnology-start-stop's "12 bases make 4 codons." is flagged with p
+  cleared: the 4 is the fixed gene's length ÷ 3, equal to the example's codon k = 4, and
+  varying p changes the whole caption (a mutation's sentence), so no rule can show it fixed.
+  m.11.rational-functions: the first zero's handle unmounts when dragged onto the pole (the
+  factor cancels and the zero becomes a hole). m.9.quadratic-formula~inequality (and its
+  gallery copy): after the vertex is dragged right, b typed back as it reads changes the
+  picture's sign (x² − 9x + 22 → x² + 9x + 22): the box and the picture disagree on b's sign.
+  Both were flagged before this work and need their own look. The fraction-coefficient line's
+  point had one 1.7 s move event in a run of four browsers beside other agents' tests; alone
+  its moves take 50–110 ms, as before.
+
 ## Reviewer tooling: three guards the Grades 9–12 reviewers asked for
 
 - **A count is whole** (`standards.test.ts`). A value whose unit is a count noun (people) or
@@ -33,6 +107,74 @@ script. One entry per review, with the token cost, so the next review is cheaper
   questions with none filed under it, and what that file's questions are filed under. s.9.: 42
   questions for 12 of 17 skills; m.12.: 2 for 2 of 20 (math/12.jsonl holds 3 questions, 2
   filed under m.11).
+
+## The "?" check and the end-drags on every page: 1,361 pages with a picture
+
+- **Setup.** One full build, then `review-interact.mjs` (scenes, end-drags, the "?" check) on
+  every page with a picture, grade by grade (m.K–m.12, s.K–s.12, the 359 gallery demos), three
+  browsers at once (about 2 h). Fixes per component, each re-checked on a build of the pages of
+  its kind; then a second full sweep on a fresh build, and a third pass on the pages still
+  flagged.
+- **The check first.** Its false positives buried the leaks, so before the sweep a "?" hit is
+  kept only when the text depends on the "?" box: the same first edit is made again with that
+  box given another number (a step of its own size, doubled or halved), and a text that reads
+  the same, or keeps that number in the same slot of the same shape ("Dollar bills ($1 each):
+  3"), or keeps it with its unit ("9.8 N/kg"), is fixed text, noted and not flagged. A
+  worked-out "?" box is varied through the other "?" boxes. Numbers written onto π or a root
+  ("2π√(m/k)") are a formula's; two bare numbers on a shared round step (100, 300) and runs in
+  a letter (T, 2T, 3T) are ticks. Verified on a build with the pendulum and percent-bar fixes
+  of 5490b89 reverted: the pendulum's leak is still flagged. The script also opens gallery
+  demos under /gallery, survives a failing or frozen page (one ERROR line, a 3-minute watchdog,
+  a server restart), writes its reports after each page, and its second drag starts on the
+  handle (it pressed empty space when the handle had not moved).
+- **Found (first sweep, before the fixes; the early grades ran before the false-positive
+  rules were final):** 398 "?" errors and 201 drag errors.
+
+  | Grade    | Pages | "?" before |      "?" after | Drags before | Drags after |
+  | -------- | ----: | ---------: | -------------: | -----------: | ----------: |
+  | m.K–m.5  |   212 |          8 |              0 |           35 |          24 |
+  | m.6–m.8  |   137 |         37 |              0 |           44 |          14 |
+  | m.9–m.12 |   329 |        129 | 65 (m.12 only) |           47 |          16 |
+  | s.K–s.5  |    46 |          0 |              0 |            8 |           7 |
+  | s.6–s.8  |    48 |          8 |    3 (fixed g) |           11 |           3 |
+  | s.9–s.12 |   230 |         84 |              9 |           19 |          14 |
+  | Gallery  |   359 |        132 |             73 |           37 |          11 |
+
+  "After" is the second full sweep; the third pass (after the last fixes) leaves no "?" error
+  below Grade 12 math but the ones listed under "Not fixed".
+
+- **Fixed ("?" leaks),** each per component so every page of the kind benefits: root and cube
+  labels, cross-sections (flat and round), nets, number-line jumps, hops, inequality and
+  absolute-value lines, skip-count quotients, scale copies and splitters, spinners, the wave's
+  frequency, the motion strip, sector arcs and angles, conic sizes, points and directrix,
+  circle-angle sums, probability trees and Venn regions, solid nets and Cavalieri stacks,
+  lenses and mirrors, standing waves, the normal curve's sampling line, chemistry (beaker,
+  energy profile, equilibrium, pH and titration, decay and its time axis), the DNA mutation,
+  and earth and space (habitable zone, parallax, reserves, expanding universe, spreading rate,
+  isobars, air parcel, energy balance, seismogram). A parallel-lines page with its angle
+  cleared threw a page error (`toFixed` of undefined); it now gives the rule.
+- **Fixed (drags):** `DragHandle` keeps every handle on its Canvas (no handle leaves the
+  picture); lines, conics, function graphs and the plot's unit rate keep the dragged handle
+  mounted while the window is held; the spectrum's color handle stays through its drag. A drag
+  never changes a typed value it does not send: the calculator's `fitsHeld` says whether a
+  drag's update would be taken, `setPair` moves only the typed side of a corner (rectangle,
+  roof, dot array) and skips values that leave no whole partner, `pinHeld` holds a worked-out
+  value only when that changes no typed one (double number lines, plots, skip counts, unit
+  tiles, power scales, fraction lines), tapes try typed-only pins and whole-number parts
+  before growing the total, points and thermometers pin only typed values, a wave's rope keeps
+  its length. Factor-row handles are named after the value they drive.
+- **Not fixed (listed):** Grade 12 math captions still worked with the example's numbers
+  (matrices, polar and rotated conics, parametric points, confidence intervals, vectors);
+  Grades 9–12 ionic bonding, the reserve's axis end, the transit depth, the polynomial box
+  demo; drags: handles on worked-out values that stood still, two-value handles, angle
+  runaways, the fresh-water handles, Grade 11–12 runaways and three slow pages. All fixed in
+  the next entry ("What the site-wide sweep left"); its "Left" line is what remains.
+- **False positives left (and why):** "Shells: 2, 8, 8", "1, 2, 3", "0, 1, 2, …", "1 × ?"
+  and "n < 30": the check now has general rules for them (next entry).
+- **Evidence for the next review:** the drag check's one-value rule can't tell a two-value
+  handle (an amplitude driving its crest-to-trough, a point driving its moves) from a stray
+  change; a list of handles each page means to drive (`drives` has one) would let it (done:
+  a handle's data-drives, next entry).
 
 ## Grades 11–12 new pages: one lesson-reviewer and one page-reviewer, 32 pages
 

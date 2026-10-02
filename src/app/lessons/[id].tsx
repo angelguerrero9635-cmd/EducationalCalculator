@@ -1,7 +1,6 @@
 import { Stack, useLocalSearchParams } from 'expo-router';
-import { ScrollView, StyleSheet } from 'react-native';
 
-import { EmptyState, ListRow, SkillBox } from '@/components';
+import { DetailHeader, ListRow, NotFound, Page, SkillBox } from '@/components';
 import { PageMeta } from '@/components/PageMeta';
 import {
   getSkill,
@@ -9,10 +8,10 @@ import {
   skillRoute,
   skillsWithTypes,
   subjectLabel,
+  trailOf,
 } from '@/data/selectors';
 import { skillIcons } from '@/data/icons';
 import { gradeLabel } from '@/data/taxonomy';
-import { space, usePalette } from '@/theme';
 import { prerenderIds } from '@/data/prerender';
 
 /** Pre-render the lessons page of every skill with problem types (web static rendering). */
@@ -22,11 +21,10 @@ export function generateStaticParams(): { id: string }[] {
 
 /** A skill's lessons: the main lesson and one row for each problem type, in the skill's box. */
 export default function LessonsScreen() {
-  const c = usePalette();
   const id = String(useLocalSearchParams<{ id: string }>().id);
   const skill = getSkill(id);
 
-  if (!skill) return <EmptyState title="Skill not found" message={id} />;
+  if (!skill) return <NotFound />;
   const types = problemTypes(skill.id);
   const where = `${gradeLabel(skill.grade)} ${subjectLabel(skill.subject)}`;
   const [icon] = skillIcons([skill]);
@@ -38,11 +36,13 @@ export default function LessonsScreen() {
         title={`${skill.title} – ${where}`}
         description={`${where}. The main lesson and ${types.length} problem types: ${types.map((t) => t.title).join(', ')}.`}
       />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={{ backgroundColor: c.background }}
-        contentContainerStyle={styles.page}
-      >
+      <Page width="read">
+        <DetailHeader
+          overline={where}
+          title={skill.title}
+          lines={['The main lesson, then each kind of problem it solves.']}
+          trail={trailOf('lessons/[id]', { id })}
+        />
         <SkillBox testID={`skill-${skill.id}`} icon={icon} tone={0} title={skill.title}>
           <ListRow
             flush
@@ -61,11 +61,7 @@ export default function LessonsScreen() {
             />
           ))}
         </SkillBox>
-      </ScrollView>
+      </Page>
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  page: { paddingVertical: space.lg },
-});

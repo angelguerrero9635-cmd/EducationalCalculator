@@ -109,8 +109,11 @@ export function ChemOxidation({ spec, calc }: { spec: Spec; calc: Calculator }) 
             const [a, b] = [xs[idx[0]!]! - r, xs[idx[idx.length - 1]!]! + r];
             const y = ay + r + 8;
             const text =
+              // One atom reads as its number alone, "?" while unknown (as "+6" once known).
               g.n === undefined
-                ? `${g.k} × ? = ?`
+                ? g.k === 1
+                  ? '?'
+                  : `${g.k} × ? = ?`
                 : g.k === 1
                   ? signedText(g.n)
                   : `${g.k} × ${paren(g.n)} = ${signedText(g.sum!)}`;
@@ -175,7 +178,7 @@ export function ChemOxidation({ spec, calc }: { spec: Spec; calc: Calculator }) 
       </Canvas>
       <Caption>
         {[
-          `${groups.map((g) => (g.sum === undefined ? `${g.k} × ?` : paren(g.sum))).join(' + ')} = ${q.known ? signedText(charge) : '?'}`,
+          `${groups.map((g) => (g.sum === undefined ? (g.k === 1 ? '?' : `${g.k} × ?`) : paren(g.sum))).join(' + ')} = ${q.known ? signedText(charge) : '?'}`,
           'The oxidation numbers of all the atoms add up to the charge of the particle.',
         ].join(' · ')}
       </Caption>

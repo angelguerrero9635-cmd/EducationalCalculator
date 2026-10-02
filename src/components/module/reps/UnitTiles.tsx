@@ -7,7 +7,7 @@ import { formatNumber } from '@/engine/format';
 import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { Canvas, Caption, ChartText, DragHandle, useFrozen, useRep } from './common';
+import { Canvas, Caption, ChartText, DragHandle, useFrozen, useRep, pinHeld } from './common';
 import { BoxShadow, Sheen, TopLight, url, usePaintIds } from './paint';
 import { Steppers } from './Steppers';
 import { WoodStick } from './wood';
@@ -246,15 +246,16 @@ export function UnitTiles({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   span.freeze();
                 }}
                 onEnd={span.release}
-                onMove={(dx) =>
+                onMove={(dx) => {
+                  const n = rep.snapTo(spec.count, start.current + dx / (size * cell));
                   calc.set(
                     {
-                      ...rep.pin(sizeVar ? [sizeVar] : []),
-                      [spec.count]: rep.snapTo(spec.count, start.current + dx / (size * cell)),
+                      ...pinHeld(calc, rep, sizeVar ? [sizeVar] : [], { [spec.count]: n }),
+                      [spec.count]: n,
                     },
                     rep.slide(spec.count),
-                  )
-                }
+                  );
+                }}
               />
             </>
           );

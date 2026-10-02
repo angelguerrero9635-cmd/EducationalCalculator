@@ -6,11 +6,12 @@
  */
 
 /**
- * A symbol (one to three letters) then "_" then its subscript (letters or digits, Greek too:
- * μ_ΣX, σ_ΣX are drawn lowered, never raw).
+ * A symbol (one to three letters, each maybe with its marks and prime: ṁ, Q̇, x̂, f′, ΔT) then
+ * "_" then its subscript (letters or digits, Greek too: μ_ΣX, σ_max, T_wall, Re_L are drawn
+ * lowered, never raw), maybe in two parts with a comma (T_h,in, K_c,u: HE-E7).
  */
 export const SUBSCRIPT =
-  /(?<![\p{L}\d_.])(\p{L}[′']?(?:\p{L}[′']?){0,2})_([\p{L}\d]{1,6})(?![\p{L}\d_])/gu;
+  /(?<![\p{L}\p{M}\d_.])(\p{L}\p{M}*[′']?(?:\p{L}\p{M}*[′']?){0,2})_([\p{L}\d]{1,8}(?:,[\p{L}\d]{1,8})?)(?![\p{L}\p{M}\d_])/gu;
 
 const SUBS: Record<string, string> = {
   '0': '₀',

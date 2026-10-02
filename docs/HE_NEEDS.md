@@ -15,7 +15,9 @@ The plans total **1,460 pages** (1,243 calculators, 217 layouts; 1,033 of them p
 
 ## The four that block every college page
 
-None of the 1,456 new pages (the four pilots aside) can ship before these.
+None of the 1,456 new pages (the four pilots aside) can ship before these. **All four are done
+(2026-10-02)**; the pilots are redone to their plans (decision 6), with `~rates` and
+`~transition` as the first topic problem types.
 
 ### HE-E1 Topic problem types (`<course>#<i>~<slug>`)
 
@@ -27,6 +29,10 @@ the owner of its types.
 - **From:** M-E1 (every other plan's "Ids" decision assumes it).
 - **Waiting:** every problem-type page: M 93, P 83, C 111, EG 119, B 87, ME 180, ACC 169,
   EC 191 (**1,033**).
+- **Done:** `problemTypes`/`getProblemType` take a topic key (`ProblemType.topic`), routed by
+  `topicRoute(course, i, slug)` to `/course/<id>/topic/<i>~<slug>` (`pageRoute`, `topicOf`,
+  `topicPageId`, `TOPIC_TYPE_IDS`); the topic page, side menu, search, recents, nav bar, meta,
+  matcher (`MatchResult.owner`) and corpus script (`topicKey`) list them as skills' types.
 
 ### HE-E2 College layouts
 
@@ -37,6 +43,9 @@ layout files read for `he.*` ids and the Grades 9–12 reading rules for courses
 - **From:** M-E2, P-E1; the chemistry plan's `layouts/collegeChemistry.ts`.
 - **Waiting:** every sort, sequence, explore and observe page: M 13, P 4, C 36, EG 45, B 36,
   ME 26, ACC 24, EC 33 (**217**).
+- **Done:** `layouts/college<Field>.ts` spread into `COLLEGE_LAYOUTS` and `LAYOUTS`, found by
+  `getLayout`/`getPage` under `#` ids; `layouts.test.ts` takes a topic as owner, reads college
+  pages at 35 words and checks each lookup (first page: `human-geography#0~transition`).
 
 ### HE-E3 College standards
 
@@ -49,6 +58,8 @@ typed as one group counts once), the name first on every value, 2–4 assumption
 - **From:** M-E3; the "Word rules" decision of all eight plans.
 - **Waiting:** the tests of every page (**1,460**). No plan asks to relax a rule; pages that
   would pass 10 values are split into problem types instead.
+- **Done:** `standards.test.ts` reads `he.` pages at Grade 12 (`rulesGrade`): sentences ≤ 35
+  words, ≤ 10 values (a group once), 2–4 assumptions; human-geography#0 split to 9 + `~rates`.
 
 ### HE-E4 Splitting `college.ts`, and college ids in the scripts
 
@@ -61,6 +72,9 @@ college ids so builders scaffold pages and promote the pictures chat's demos.
 - **From:** the "Ids" decision of every plan (math and physics: split at about 2,000 lines;
   biology and mechanical: at about 3,000; chemistry and aero-civil-chemical: before building).
 - **Waiting:** no page by itself, but every page lands in the new files.
+- **Done:** `college/<field>.ts` (the course's home field: its id's field, or an engineering
+  course's first) spread into `COLLEGE_MODULES`; `pnpm new-module` and `promote-demo.mjs` take
+  `he.<field>.<course>#<i>[~slug]` and create a missing field file (`scripts/college-files.mjs`).
 
 ## The other needs
 
@@ -82,6 +96,17 @@ day⁻¹, kDa, MRayl (CFU/mL, cM, bp stay fixed labels).
 - **Waiting (blocked):** ME 18 (the ΔT unit: mechanics-of-materials#1~thermal and all 17
   heat-transfer pages), EC 19, EG 2 (Sv; long-time conversions). **Upgraded** (fixed labels
   until then): most pages in every group.
+- **Done:** `src/engine/units.ts` has 298 more units (404 in all) in 63 more dimensions, every
+  one in the list above but the fixed labels it names (CFU/mL, cM, bp) and `$/yr` (HE-E30).
+  A temperature difference is its own dimension: a value marked `difference: true` reads K,
+  °C, °F and R as differences (10 °C → 10 K → 18 °F, no 273.15 or 32), and its US unit is °F.
+  `kJ/(kg·K)`, `W/(m·K)` and `°C/km` are per-kelvin units with no offset. dB, dBm/dBW and
+  dBi/dBd are three dimensions of their own; VA and var never convert to W; Hz never to rad/s;
+  N·m (moment) never to J. Years convert to seconds (Julian year). Every unit added is
+  `listed`: it acts as a unit only on a value that lists another unit beside it in `units` (or
+  on a page with a unit set), so the K–12 pages that write Hz, nm, g/mol, u or days as labels
+  are unchanged (their unit menus, systems and contexts were compared page by page before and
+  after). "Sv" is the sverdrup (oceanography); dose pages use mSv and μSv.
 
 ### HE-E6 Calculus lines and notation
 
@@ -97,6 +122,29 @@ line** with the free variable ("V′(x) = 12x² − 240x + 900") checked at samp
   quantum#0, #3, thermal-statistical#0, #1, classical-mechanics#0~atwood, #1); ME the
   thermodynamics#2–3, numerical-methods#0, #3 and ASM#2 topics; ACC reaction-engineering#1,
   propulsion#1, process-control#0, flight-mechanics#0~range; C none (assumptions and `how` only).
+- **Status: done for the steps and the harness; typesetting partly (2026-10-02).** Write each
+  calculus line in a step's `work` (or a relation's `check`), one clause per " → ", ", so " or
+  "; ", with the page's numbers put in; `college/forms.ts` writes the forms (`polyForm`,
+  `polyDerivative`, `expForm`, `termsForm`). `harness/calculus.ts` reads them in order and
+  checks each numerically: a form (`f(x) = x³ − 4x`, `y(t) = 50e^(−0.2t)`, `f(x, y) = …`); a
+  derivative form (`f′(x) = 3x² − 4`, `f″(x)`, `dy/dx = …`, `d²y/dx²`, `d/dx (…) = …`,
+  `f_x(x, y)`, `f_xy`, `∂f/∂x`, `∂f ÷ ∂y`, `∂²f/∂x∂y`) by central differences of the stated
+  function at sample points; a value (`f′(2) = 3(2)² − 4 = 8`, `f_x(1, 2) = 4`, `∂f/∂x at
+(1, 2)`, `dy/dx at x = 2 = 14`, `y(3) = 50e^(−0.6) = 27.44`, `y′(0) = 1`); a definite
+  integral with its antiderivative (`∫ from 0 to 2 of x² dx = [x³ ÷ 3] from 0 to 2 = 8 ÷ 3`:
+  quadrature, F(b) − F(a) and F′ = the integrand) and an indefinite one (`∫ 3x² dx = x³ + C`);
+  a limit (`lim x → 2 of (x² − 4) ÷ (x − 2) = 4`, `lim as h → 0 of …`, `x → 0⁺`, `x → ∞`) by
+  evaluating near the point; an ODE with its closed-form solution, either order (`y′ = −0.2y`
+  and `y(t) = 50e^(−0.2t)`; `y″ + 2y′ + 5y = 0` with `e^(−t)(2cos(2t) + 1.5sin(2t))`, critical
+  `(1 + 3t)e^(−2t)`, overdamped `2e^(−t) − e^(−4t)`; `T′ = −0.1(T − 20)`). `evaluate` reads
+  `[F] from a to b` and `lim …` anywhere, so a substituted line or check may use them. A clause
+  in letters (a rule, "W = ∫P dV") is not checked; Grades 9–12 primes (x′, A′) are names. The
+  sampling test reports a wrong clause as an error and an unreadable one as a harness finding.
+  No page was built: the unit tests cover each form (`harness/__tests__/calculus.test.ts`).
+  **Left:** typesetting: ∫ with limits and ∂U ÷ ∂P are drawn (HE-E7); d/dx and dy/dx written
+  with "/", the evaluation bar of `[F] from a to b` and "lim" with x → a under it show as text
+  until `latex.ts` and `MathLine` gain those nodes; D_u f and ∇f lines are vector lines, read with
+  HE-E16 (linear algebra in steps).
 
 ### HE-E7 Symbols and typesetting
 
@@ -106,6 +154,16 @@ fractional exponents ((k − 1)/k).
 
 - **From:** ME-E3 (rest), ACC-N14.
 - **Waiting:** ME and ACC almost every page reads better; none blocked.
+- **Status: done (2026-10-02).** Write them as text: ṁ, Q̇ and x̂ with combining marks (or
+  precomposed ṁ, ŷ), 𝐅 or F⃗ for vectors, `T_wall`, `σ_max`, `T_h,in`, `f′_c` (subscripts up to 8
+  characters, Greek too, in two parts with a comma), ∂, ∇, ħ, ⌊ ⌋, ⌈ ⌉. `subscripts.ts` draws the
+  subscripts lowered (Unicode where it has the letters: σₘₐₓ); `toLatex` keeps marks and
+  subscripts whole, italicises a marked symbol like any other, stacks ∂U ÷ ∂P, raises
+  (P₂ ÷ P₁)^((k − 1)/k) and typesets **"∫ from a to b of (body) dx"** as ∫ with its limits (the
+  `\int` node, drawn by `MathLine` like Σ; the body is a bracket, a term or sin(t); or "dX ÷
+  (…)"). The screen reader hears "the integral from …", "partial U", "del", "m dot", "x bar",
+  "floor of", "T sub wall". Indefinite ∫P dV stays text. ∫ result lines are checked (HE-E8);
+  calculus form lines are HE-E6.
 
 ### HE-E8 Harness phrases
 
@@ -118,6 +176,21 @@ state one.
 
 - **From:** ME-E10, ACC-N13, EC-E11, B-2 (phrases), EG-E3 (phrases).
 - **Waiting:** every page, as it is built.
+- **Status: done for the listed words (2026-10-02); new words join as pages are built.**
+  `harness/phrasesHe.ts` (first in PHRASES) and `evaluate.ts` read: ∫ with its limits worked out
+  by quadrature at the page's values ("∫ from 0 to 0.5 of dX ÷ (0.2 × (1 − X))"); `log(…)` and
+  `log 1000` as base 10, `log₂`, `ln 2` without brackets, `20 log₁₀(…)` (a number before a
+  function multiplies it), `min(…)`, `max(…)`; `n!!`; `10∠36.87°` (its magnitude; "the real part
+  of", "the imaginary part of"), `|8 + j6|`, "the angle of (8 − j6)"; a level in dB, dBm or dBi
+  as its number, "dB as a power ratio", "dB as a voltage ratio", "dBm in W", "mW in dBm"; the
+  sign words (tension +, compression −, sagging +, hogging −, heat in +, heat out −, work out
+  +, work in −); label words that leave a number as it is ("(found numerically)", "by trial",
+  isentropic, film temperature, quality, Colebrook, governs, case n, branch n, LMTD, Routh,
+  compass rule, integrated, ", for a first-order …"); `LMTD(a, b)`. Already read: ⌈ ⌉, ⌊ ⌋,
+  mod, Σ from …, 64^0.75, 10^(−t ÷ D). A name's e with a prime or mark (e′, ē) is never Euler's
+  number. Complex arithmetic with i or j, polar values and matrices are read by HE-E16 and
+  HE-E17 (`harness/algebraLines.ts`). **Left:** a sign-convention _check_ per page (the phrases give the sign; a page that states a convention
+  still needs its own assertion in the sampling test, when the first such page is built).
 
 ### HE-E9 Constants registry and g per page
 
@@ -129,6 +202,15 @@ owner's decision below).
 - **From:** C-E2, EG-E10; the "Constants" decision of every plan.
 - **Waiting:** EG meteorology#1, oceanography, geophysics#1 pictures; every page reads its
   constants from one place.
+- **Done:** `src/engine/constants.ts`: `CONSTANTS` (39: g, g₀, G, c, h, ħ, k_B, N_A, R in
+  J/(mol·K) and L·atm/(mol·K), F, e, ε₀, μ₀, k, mₑ, mₚ, mₙ, u, σ, R_H, R∞, a₀, K_w, the Nernst
+  slopes at 25 °C and 37 °C, V_T at 300 K, Earth's GM, mass, mean and equatorial radius, the
+  Sun's mass and GM, AU, γ and R of air, 1 atm, 273.15 K, V_m), each with its symbol, the value
+  pages compute with and print, its unit and the precise value behind it. `gFor(pageId)` and
+  `constant('g', pageId)` give 9.81 on `he.` pages and 9.8 on K–12 pages; `constantLine('R')`
+  prints "R = 8.314 J/(mol·K)"; `readConstant(line, pageId)` reads such a line back for the
+  harness (wiring it into `harness/evaluate.ts` and the pictures' `g` is left to their owners).
+  No K–12 page's numbers changed.
 
 ### HE-E10 Number display and range
 
@@ -140,6 +222,15 @@ significant figures by page; pH decimals from the concentration's figures; signe
 - **From:** P-E7, C-E14.
 - **Waiting:** P university-3, quantum and thermal-statistical pages (about 45); C pages with
   large K or pH answers.
+- **Status: done (2026-10-02).** Display already reached 10⁻³⁹ to 10³⁹ (scientific notation
+  past 10⁷ and under 10⁻⁴; `sigFigs`, `figures`, `worked`, `scientificFigures` set 3–4
+  figures by page). New: the harness compares values under 10⁻⁴ relative to their size (half a
+  percent; the absolute floor let any two pass), the solver's zero floor for a scientific value
+  with no step is 10⁻⁴⁵, `parseNumber` reads "1.5 × 10^37" exactly; `decimals` (pH 2.60 with its
+  zeros) with `figuresIn` and `logDecimals` for the concentration's figures; `signed` (+3, −1)
+  and `signedText`; `engineering` (47 × 10³) for a plan that asks; `MathLine` never wraps
+  "6.626 × 10⁻³⁴" between its parts. °′ is plain text (ΔG°′). Values from 10⁻⁴ up keep the K–12
+  tolerance.
 
 ### HE-E11 Category answers
 
@@ -154,6 +245,12 @@ governs, underdamped, Θ(n log n), stable. Until then the class goes in the pict
   linear-algebra#0); EG about 10; ACC about 7 (soil-mechanics#0, transportation#3,
   steel-design#0, concrete-design#0, #2, process-control#3, process-design#3); EC 4
   (circuits-1#4~rlc-damping, control#1~step-error, data-structures#3~master, networks#2).
+- **Status: done (2026-10-02).** `categoryVariable` and `classify` (`src/engine/cases.ts`): the
+  word in its box, steps and check; bands by thresholds, first match wins; the step's case line
+  says why ("3400 ≥ 2300: turbulent"); the harness checks the word and the comparison
+  (`harness/cases.ts`). One way only. A class from a lookup rather than thresholds (Köppen,
+  USCS, Θ(n log n)) is the same `classify` with tests that read the inputs; a word from a list
+  of named rows waits on HE-E13. s.9's silent/missense/nonsense keeps its own phrases.
 
 ### HE-E12 Piecewise and choice-switched relations
 
@@ -166,6 +263,11 @@ valued, backward; the step names the case and why; the harness samples each choi
 - **Waiting:** C gen-chem-2#0, biochemistry#0, #1~inhibition, inorganic#3; EG
   historical-geology#2, mineralogy#2, cartography#2; ACC aerospace-structures#2,
   steel-design#1–3, soil-mechanics#2, transportation#1, concrete-design#0, #2.
+- **Status: done (2026-10-02).** `Relation.branches` and `piecewise` (`src/engine/cases.ts`):
+  each case inverted on its own (exactly, or numerically in `solve.ts`, or by trying a choice
+  box's codes) and kept only where it applies; the step shows the case's rule and its case line
+  ("1500 < 2300: laminar"), the check the case's own. min, max and floor stay plain relations
+  (the harness reads min( and max( already); an empty result is a rule's `message`.
 
 ### HE-E13 Named choices and data rows
 
@@ -193,6 +295,22 @@ finding with a bracket for transcendental equations (finite well, Kepler's equat
   physical-geography#0~declination; ME 5 (numerical-methods#0, ~bisection, #1~gauss-seidel, #4,
   ~rk4); EC 4 (embedded#3~response-time, OS#1~round-robin, OS#2~replacement, power#0~load-flow);
   P none now (proposed quantum#1~finite-well and a Kepler-time page).
+- **Status: done for one-value roots (2026-10-02); tables of several values left.** A value
+  the root finder found (no rearrangement, no closed form) is worked by trial in its step
+  (`trialWork`, `src/data/modules/trials.ts`), each line true as printed and each next try from
+  the numbers printed before it: by default two round guesses (0.0294 → 0.02 and 0.03), then the
+  secant method ("Try k = 0.03: ln(1 + 0.03 × 600 ÷ 15) ÷ 0.03 = 26.28 (want 25)"), until the
+  guess stops changing at one figure more than the answer shows. A relation names its method per
+  value (`trials` on `Relation`): `bisection`, `fixed-point` with the rule to repeat (Kepler:
+  "E₁ = 1 + 0.5 × sin(1) = 1.4207" … "E₅ = … = 1.4987"), `newton` with f and its slope ("x₁ =
+  2 − (2³ − 2 − 3) ÷ (3 × 2² − 1) = 1.7273"), or `secant` from its own `start`; a long run
+  shows its first two tries, "…" and the last three. Grades 6–12 and college only; K–5 keep
+  their wording (never trial). The harness (`harness/trials.ts`, run by `sampling.test.ts`)
+  works each try out again, checks each iteration starts from the value before, and that the
+  tries close in on the target and end at the answer. **Left:** a table of several values at
+  once (Gauss–Seidel, round robin, page replacement, RK4, load flow: rows of a system, not one
+  root); the stopping rule as an error column (εₐ); LMTD and Colebrook pages name `fixed-point`
+  or `newton` when they are built.
 
 ### HE-E15 Branches and ordered roots
 
@@ -205,6 +323,13 @@ negative-concentration root rejected in one line and the small-x check.
 - **Waiting:** ACC compressible-flow#0–2, hydraulics-hydrology#0, chemical-thermodynamics#0,
   concrete-design#0; ME ASM#0, ~invariants, vibrations#3; C gen-chem-2#1, #2, ~weak-base,
   ~common-ion.
+- **Status: done (2026-10-02).** `realRoots`, `rootRule` and `orderedRoots`
+  (`src/engine/cases.ts`): the quadratic formula's line with the sign kept and the rejected root
+  in one line ("Rejected: 0.139, since …"); a cubic's roots in order ("greatest of −1, 2, 5");
+  σ₁ ≥ σ₂ ≥ σ₃ with a double root filling two; a picked branch (subsonic or supersonic, vapor or
+  liquid) is a `piecewise` case on a picked category. **Left:** the small-x check line ("x is
+  2.6% of 0.100, under 5%") is the page's own work line; eigenvalues of a matrix reach this
+  through their characteristic polynomial (HE-E16 writes the A − λI lines).
 
 ### HE-E16 Linear algebra in steps
 
@@ -218,6 +343,31 @@ symmetric 2 × 2 and 3 × 3 eigenvalues (stress tensor, K − ω²M); λ² − (
   classical-mechanics#4, ~chain, quantum#3~two-level); ME FEA#0, #2~beam,
   numerical-methods#1, vibrations#3; EC 3 (circuits-1#1, ~mesh, ~supernode; closed form until
   then).
+- **Status: done but for 4 × 4 lines and K − ω²M (2026-10-02).** `src/engine/linalg.ts` writes
+  each line true as printed, exact fractions where they are ones (1/3, −7/2): a matrix
+  `[[1, 2], [3, 4]]` (augmented `[[1, 1 | 6], …]`), a vector "⟨1, −2, 3⟩"; `matVecLines`,
+  `matMulLines` (one line, or a line a row past 4 entries); `detLines` (2 × 2 arithmetic, 3 × 3
+  by cofactors along the first row, then the minors' arithmetic, the products, the value);
+  `cramerLines` (D, then Dⱼ and xⱼ = Dⱼ ÷ D each); `inverseLines` (`[A | I]`, one row operation a
+  line, "R₂ → R₂ − 2R₁: […]", A⁻¹ and its check A × A⁻¹ = I; a singular A stops at the row of
+  zeros); `rrefLines` (pivots and rank), `rankNullityLines` (nullity = n − rank and each null
+  basis vector with A × v = 0); `eigenLines` (det(A − λI) worked to the characteristic
+  polynomial, the roots by the quadratic formula (2 × 2, real or a ± bi) or each root of the
+  cubic checked "λ = 3: 3³ − 6 × 3² + 11 × 3 − 6 = 0" (3 × 3), then A − λI, an eigenvector as a
+  whole multiple and "A × v = λv"); `dotLine`, `crossLine`, `normLine`, `projectionLines`
+  (u · v, v · v, the projection, the part square to v and its dot product 0). The harness
+  (`harness/algebraLines.ts`, run by `sampling.test.ts` on every step's lines) reads matrices,
+  vectors, det, ᵀ, ⁻¹, I, λ as a variable (a polynomial line is checked at four values of λ), ±
+  and "or", and checks each row operation against the matrix before it; `evaluate` reads
+  `det [[…]]` in a substituted line. Pages: `matrixVariables`/`vectorVariables` declare the
+  group (3 × 4 and 4-vectors too; a group counts once), `matrixOf`/`vectorOf` read it, and
+  `cramerRules` (written.ts) solves A x = b with D and each unknown a relation whose steps are
+  the determinant and Cramer lines (K u = F, node and mesh equations). **Left:** 4 × 4
+  determinants print only their value (no cofactor lines); K − ω²M needs its own line
+  (det(K − ω²M) = 0 in ω²; today a page can use the eigenvalues of M⁻¹K); a cubic's irrational
+  roots print as decimals (checked within display rounding), not surds; a system solved by row
+  operations has the lines (`rrefLines`) but no page helper yet (a page puts them in a step's
+  `work`).
 
 ### HE-E17 Complex values
 
@@ -228,6 +378,29 @@ lines, and the picture reading both parts; a value pair α ± βi from one relat
 - **Waiting:** EC 4 (electromagnetics#0~input-impedance, power#0~load-flow,
   power#1~sync-generator, power#2~sym-components; later parallel impedances in circuits-2#0); M 4
   (diff-eq#1, ~characteristic, diff-eq#3, linear-algebra#3~complex).
+- **Status: done but for the one-box entry and solving backwards (2026-10-02).**
+  `src/engine/complex.ts`: the value (`Complex`), its arithmetic, and the text a page shows:
+  "3 + 4i", "2/5 − 1/5 i" (math), "8 + j6", "40 − j30", "−j6" (electrical, decision 9), polar
+  "10∠36.87°" (`complexText`, `polarText`, the page's `show` for figures or fractions). Lines:
+  `complexSumLines`, `complexProductLines` (term by term, then i² = −1), `complexQuotientLines`
+  (by the conjugate of the bottom, its c² + d², the parts), `polarProductLines` and
+  `polarQuotientLines` ((10 × 2)∠(30° + 45°)), `toPolarLines` (`|z| = √(a² + b²)`, θ = ∠(z) =
+  tan⁻¹(b ÷ a) ± 180° on the left half), `toRectangularLines` (r cos θ + jr sin θ),
+  `conjugateLine`; `parseComplex` reads a typed "8 − j6", "3 - 4i" or "10∠36.87°". The harness
+  reads i, j, ∠, polar and rectangular arithmetic, √ of a negative number, ± pairs ("r = (−2 ±
+  √(4 − 40)) ÷ 2 = −1 ± 3i") and a conjugate "(3 + j4)*", and checks each chain; `evaluate`
+  reads Re(…), Im(…), arg(…) and `|…|` of a complex expression in a substituted line. One value
+  on a page: `complexVariables` (real and imaginary parts) or `polarVariables` (magnitude and
+  angle, as a phasor is given) declare it as one group (counted once), `complexOf` reads it,
+  and `complexRule` (written.ts) works a complex value from complex and real inputs as two
+  relations: the real part's step shows the worked lines, the imaginary part's ends with the one
+  value ("→ Z_in = 40 − j30 Ω = 50∠−36.87° Ω"). Tested on the plan's input impedance (50 Ω line,
+  100 Ω load, λ/8 → 40 − j30 Ω) and a synchronous generator (E = V + jXₛI) as test-only pages.
+  `complexPlane` already takes `{ re, im }` or `{ modulus, argument }` ids, so a group draws as
+  it is. **Left:** a box that takes "8 + j6" as one typed value (the two parts are two boxes;
+  `parseComplex` is ready for it); a complex value is found forward only (no input worked back
+  from a complex result); α ± βi as one solver value (a page gives α and β as two values and
+  says "r = α ± βi" in its note; HE-E6 names the case).
 
 ### HE-E18 Exponentials, logs and powers in solves and the simplifying chain
 
@@ -239,6 +412,24 @@ line; solver inverses (θ → [L] for Hill, t from H_t, p from the Jukes–Canto
 - **Waiting:** P 6 (university-1#1~drag, #3~rocket, university-2#2~rc-charging,
   #3~rl-circuit, university-3#0~intensity-db, #4~decay-law); EG meteorology#0–2,
   historical-geology#1, hydrology#1, climatology, physical-geography#3; B evolution#2~tree-count.
+- **Status: done (2026-10-02) but for named inverses on pages.** The solver reads a closed
+  form from a relation's display when the value to find is in it once (`isolate`,
+  `src/engine/isolate.ts`): each operation round it undone in turn, last done first, with ln or
+  log₁₀ for a value in an exponent (t = ln(A ÷ P) ÷ r, k from N = N₀e^(−kt), n from aⁿ = b as
+  log₁₀(b) ÷ log₁₀(a)), a root for a value in a base (√, ∛, ∜, ^(1 ÷ p); ± for even powers and
+  |x|), a power for a log or root; sin, cos and tan are never undone (the root finder lists every
+  angle). Its value is used where the relation holds, before the root finder. A step with no
+  text of its own (or one found by root finding) then shows that rearrangement and how in
+  words ("Divide both sides by P, take ln of both sides, then divide both sides by r."; a whole
+  product or sum in one move; logs only from Grade 11 or where the rule has one, Grades 6–8
+  only arithmetic, squares and cubes, else the step shows its tries). The
+  simplifying chain works ln, log₁₀, log₂, e^, eˣ, a power that isn't whole and ∛, ∜ one stage
+  a line, writing a value with no exact form to 4 figures (5–7 when 4 would leave the last line
+  more than 2 parts in 10⁴ off), arithmetic inside a log or power rounded with it ("t =
+  log₁₀(1.1255) ÷ log₁₀(1.03)", "t = 0.051345 ÷ 0.012837"); √98 and sin 40° still end the
+  working. **Left:** inverses a display can't show (Hill θ → [L], Jukes–Cantor p from d) are the
+  page's own `solve` and step text, as today; a value twice in a rule (ln(1 + kQ ÷ r) ÷ k for k)
+  is found by trial (HE-E14).
 
 ### HE-E19 Angles: units, atan2, bearings, DMS
 
@@ -250,6 +441,40 @@ Calculus pages in radians, polar and parametric pictures in degrees with a deriv
 - **Waiting:** M calc-1#1~trig, calc-2#5, diff-eq#1; P 3 (university-1#5, #0~projectile-at-t,
   #3); EG geophysics#0, #1~paleolatitude, mineralogy#0, cartography#1, physical-geography#0,
   #2, gis#2; ACC surveying#0–2; EC every phasor page.
+- **Status: done but for a picture's DMS label and a check in letters (2026-10-02).**
+  `src/engine/angles.ts`: trig in degrees for relations (`sinD`, `cosD`, `tanD`, `asinD`,
+  `acosD`, `atanD`, `atan2D`, `azimuthD`; both answers `asinBothD` (θ, 180° − θ) and `acosBothD`
+  (±θ) as a relation's candidates), `wrap360`/`wrap180`. Units: dimension `angle` in `units.ts`
+  (°, rad, grad, ′, ″, rev, mrad, μrad), all `listed`, so a K–12 page writing ° or rad keeps its
+  label; a value listing two (`units: ['rad', '°', 'grad']`) gets a menu and the steps convert
+  ("θ = 45° = 0.7854 rad (180° = π rad)"; `conversionRule` states "180° = π rad", "π rad =
+  200 grad", "400 grad = 360°", "1° = 60′", "1 rev = 2π rad"). DMS and bearings:
+  `VariableDef.angleForm` ('dms' "4°30′00″", 'dm' "52°10′", 'bearing' "N 52°10′ E",
+  'bearing-decimal' "S 56.31° W", 'azimuth' "052°"; `decimals` of the last part) shows the value
+  that way in boxes, steps, checks and substituted lines (no unit after it); every box takes
+  "34°12′30″", `34° 12' 30"`, "N 52°10′ E" or "052°" typed (`parseNumber`). Lines: `atan2Lines`
+  (the quadrant line "(−8, 6) is in quadrant II: add 180°", then "θ = tan⁻¹(6 ÷ (−8)) + 180° =
+  −36.87° + 180° = 143.13°"; radians with π; −180°…180° or `full` 0°…360°; form 'atan2' opens
+  "θ = atan2(6, −8)"), `bearingLines` ("(east, north) = (−0.6, −0.4) points south-west: add
+  180°", the azimuth, "236.31° = S 56.31° W"), `toDmsLines`/`fromDmsLine`,
+  `angleConversionLine` ("45° × π ÷ 180 = 0.7854 rad"), `inverseTrigLines` ("θ = sin⁻¹(0.5) =
+  30°, or θ = 180° − 30° = 150°", "θ = ±cos⁻¹(0.5) = ±60°"). Pages (`data/modules/angles.ts`):
+  `angleVariable`, `angleFormVariable`, `atan2Rule` (forward only, its step opens "β =
+  atan2(229.29, 129.29)" and shows `atan2Lines`), `bearingRule` (azimuth = atan2(east, north)).
+  Degrees or radians per page: a page with a ° value reads trig in degrees, else radians; a line
+  marked "rad" reads in radians on either. Harness: `evaluate` reads DMS, bearings, azimuths,
+  atan2(y, x), a degree mark on a number and rad/grad after one; `harness/angles.ts`
+  (`checkAngleLines`, run by `sampling.test.ts` on every step) checks each chain (DMS to half its
+  last part), each quadrant, axis and compass claim against the point's signs, and that
+  tan⁻¹(y ÷ (−x)) never ends in the wrong quadrant; the conversion check reads "(180° = π rad)".
+  Tested on test-only pages from the plans (a resultant in every quadrant, an SHM phase in
+  radians, a traverse course at 52°10′ and its bearing back, a slope reading at 4°30′00″ worked
+  both ways, an angle misclosure of 25″ spread −5″ each, an arc with θ typed in ° or grad).
+  **Left:** a picture label of an `angleForm` value appends its ° (`reps/common.tsx`, the
+  picture components'); a relation's check falls back to its display when the page's units
+  aren't coherent, which for `atan2Rule`/`bearingRule` reads the bearing against the signed
+  atan2; a lone 25″ in a line reads as the number 25 (lines mix DMS with lone minutes only in
+  DMS form).
 
 ### HE-E20 Special functions
 
@@ -271,6 +496,42 @@ quads; exact integers past 2⁵³ (n!, C(n, r), 2⁶⁴); C(n, k) past row 12 wi
 - **From:** EC-E3, EC-E4, EC-E9, P-E9, ME-E7 (floor and ceiling).
 - **Waiting:** EC 25 (integer functions) + 6 (bases) + discrete#2 at large n; P 2
   (thermal-statistical#1~einstein-solid, ~two-state).
+- **Status: done but for 64-bit values in a box and a signed box (2026-10-02).**
+  `src/engine/integers.ts`: the functions (`floorDiv`, `ceilDiv`, `mod` from 0 to n − 1,
+  `roundHalfAway`, `roundTo`, `log2Exact`, `floorLog2`, `ceilLog2`, `gcd`/`lcm` of any count,
+  `sortedOf`), exact on whole numbers past 2⁵³; their lines (`floorLine` "⌊77 ÷ 64⌋ = ⌊1.2031⌋ =
+  1", `ceilLine`, `modLine` "77 mod 64 = 77 − 64 × ⌊77 ÷ 64⌋ = 77 − 64 × 1 = 13", `roundLine`,
+  `log2Line`, `ceilLog2Line` "⌈log₂ 5⌉ = 3, since 2² = 4 < 5 ≤ 8 = 2³", `floorLog2Line`,
+  `gcdLines` (Euclid a line), `lcmLine`, `minLine`, `maxLine`, `sortLine`); bases (`baseText`
+  101101₂, 0010 1101₂, 2D₁₆, 0x2D, 55₈; `parseBased`; `divisionLines` (repeated division with
+  remainders, "13 is D"), `placeValueLine`, `groupLines` (bits in fours or threes), `bcdLines`);
+  two's complement (`twosComplement` as the unsigned pattern 2ⁿ − N, `twosLines` invert-then-add-1,
+  `signedLine` with −2ⁿ⁻¹ on the top bit, `rangeLines`, `wrapLines` for overflow); bit fields
+  (`bitField`, `bitFieldLine` "Bits 11–7: ⌊0x00A30513 ÷ 2⁷⌋ mod 2⁵ = 83,466 mod 32 = 10"); IPv4
+  (`ipv4Text`, `parseIPv4`, `prefixMask`, `dottedBinary`, `networkOf`, `broadcastOf`, `hostsOf`,
+  `subnetLines`); exact counts (`bigFactorial`, `bigPerm`, `bigChoose`, `bigPow`, `groupDigits`,
+  `factorialLine`, `permLine`, `chooseLine` "C(60, 30) = 60! ÷ (30! × 30!) =
+  118,264,581,564,861,424", `powLine`, `stirlingLn`/`stirlingLine` for ln Ω). A value shows and
+  is typed in a form with `VariableDef.base`: a `radix` of 2, 8 or 16 with `bits` (a count or a
+  width's id), `prefix` and `group`; `'ipv4'`; or `'prefix'` (/26; its bare number in a rule).
+  `parseNumber` also reads 101101₂, 0x2D and a quad, which it refused before. A count past 2⁵³
+  shows its exact digits with `exact: exactInteger(id, (v) => bigChoose(v.n, v.r))`. Pages:
+  `src/data/modules/integerRules.ts`: `integerRule` (floor, ceil, mod, round, log2, pow2,
+  ceilLog2, floorLog2, gcd, lcm, min, max; forward, and backward only for log2 ↔ pow2, with a
+  message for a number that isn't a power of 2), `baseRule` (a number ↔ its digits: division
+  forward, place value back, or hex and octal grouped from n bits), `twosRule` (P = 2ⁿ − N both
+  ways, N from 1 to 2ⁿ⁻¹, said when it doesn't fit). The harness (`harness/integerLines.ts`, run
+  by `sampling.test.ts` on every step's lines from the first with a whole-number mark) reads all
+  of it with BigInt fractions, so the last digit of 2⁶⁴ is checked; a decimal side within
+  display rounding (a lone decimal against an unrounded side to its last place); "a ÷ b = q
+  remainder r" as a true division; "Invert every bit:" against the line before; a "Signed" line
+  in two's complement at its written width; =, ≈, <, ≤, >, ≥ chains; an octet past 255 or a digit
+  a base lacks is an error. `evaluate` reads based numbers, quads, AND/OR/XOR, shifts, lcm,
+  round and gcd of three in a substituted line. **Left:** the solver holds floats, so a box
+  value past 2⁵³ (a 64-bit pattern, 2⁶⁴ − 1) is exact only in its lines and its shown digits
+  (`exactInteger`), not as a typed value; a box showing a signed pattern (−45 as 11010011₂)
+  needs the unsigned-pattern value and `twosRule` today; the picture kinds (P17
+  `placeValueChart` base, P18 `bitFields`) are separate requests.
 
 ### HE-E22 Sums, series and recurrences
 
@@ -313,6 +574,15 @@ signed sequence spans (ATP per glycolysis step, net +2).
 - **From:** C-E15, C-E12, ME-E11, ACC-N11.
 - **Waiting:** C 36 layouts (the chemistry plan puts this first); ME 5 (programming sorts and
   the trace page); ACC 7 sequences; C biochemistry#2 (spans).
+- **Status: done for sorts and sequences (2026-10-02).** Chemistry is written as text on cards
+  and stages (H₂O, Fe³⁺, ⇌, (2R,3S)-…; `K_a` drawn lowered) and `layouts.test.ts` counts a
+  formula with subscripts or a charge as one word. `code: true` on a sort or sequence draws
+  its cards or stages in a code font exactly as written (`LabelText`; straight quotes, no
+  subscripts from `_`) and skips the copy-editing checks for them. `signed: true` on a
+  sequence shows signed spans and a net total ("−1 + 0 − 1 + … = +2", "Net: +2 ATP"). A
+  sequence with no spans shows stages only (N11 needed nothing new). The wrong-tap hint keeps
+  a stage's capitals (CO₂, NADH, Prophase I). **Left:** code text in explore scenes (ME-E11
+  mentions them; no plan page needs one yet).
 
 ### HE-E26 Formula unit sets
 
@@ -322,6 +592,14 @@ first, so they read like the textbook (σ = 50,000 N ÷ 314.2 mm²).
 - **From:** ME-E2.
 - **Waiting:** ME every solid-mechanics page (mechanics-of-materials 24, advanced-solid-mechanics
   14, FEA 14, machine-design 15: about 67).
+- **Done:** `src/engine/unitSets.ts`: `UNIT_SETS` (SI base, N–mm–MPa, kN–m–kPa, kip–in–ksi,
+  lbf–in–psi, kip–ft–ksf, kJ–kg–K, Btu–lb–R). A page sets `unitSet: 'N-mm-MPa'` or
+  `{ metric: 'N-mm-MPa', us: 'kip-in-ksi' }` and writes its values in the set; a value typed in
+  kN or m² converts into it first (the usual "F = 50 kN = 50,000 N" line), and under US
+  customary a page with a US set shows every value in that set (squares and fourth powers of
+  its length implied: in², in⁴) and works the steps in it directly, with no conversion lines.
+  `unitSetProblems(page)` (run on every page that names a set) reports a value not written in
+  its set and a set the relations don't hold in.
 
 ### HE-E27 Water and steam properties
 
@@ -411,6 +689,8 @@ can be revisited.
 6. **Pilot pages are redone to match their plans** (owner): circuits-1#0 labels "Resistance 1
    (R₁)"; human-geography#0 trimmed to 9 values with `~rates`; university-1#0 on `motionGraph`
    velocity with "Displacement (Δx)"; calc-1#1 on `functionGraph` tangent once HC37 is drawn.
+   Done 2026-10-02 but for calc-1#1, which keeps its `plot` (and gains its use line) until
+   **HC37** is drawn; move it then (a comment on its picture says so).
 7. **Licence mismatch on Chemistry 2e and Biology 2e** (owner asked what it means): with titles
    only, nothing. Only chapter and section titles are recorded from any OpenStax book, and
    titles carry no licence terms. The mismatch would matter only if their text or exercises

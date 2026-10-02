@@ -7,7 +7,16 @@ import { fullDecimal } from '@/engine/format';
 import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { Canvas, Caption, ChartText, DragHandle, fitLabel, useFrozen, useRep } from './common';
+import {
+  Canvas,
+  Caption,
+  ChartText,
+  DragHandle,
+  fitLabel,
+  useFrozen,
+  useRep,
+  pinHeld,
+} from './common';
 import { sup } from './FactorRows';
 import { LOG_ROOM, LogScale } from './PowerScaleHsf';
 
@@ -321,19 +330,18 @@ export function PowerScale({ spec, calc }: { spec: Spec; calc: Calculator }) {
                         0.99999,
                         Math.max(0, start.current.log + dx / (w - 2 * pad)),
                       );
+                      const m = rep.snapTo(spec.mantissa, 10 ** log * rep.factor(spec.mantissa));
                       calc.set(
                         {
-                          ...rep.pin([spec.exponent]),
-                          [spec.mantissa]: rep.snapTo(
-                            spec.mantissa,
-                            10 ** log * rep.factor(spec.mantissa),
-                          ),
+                          ...pinHeld(calc, rep, [spec.exponent], { [spec.mantissa]: m }),
+                          [spec.mantissa]: m,
                         },
                         rep.slide(spec.mantissa),
                       );
                     }}
                   />
-                  {inView ? (
+                  {/* Mid-drag (the scale held) it stays mounted past the view, on its edge. */}
+                  {inView || lo.frozen ? (
                     <DragHandle
                       testID="drag-number"
                       x={numberX}
@@ -347,13 +355,15 @@ export function PowerScale({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       onMove={(dx) => {
                         // Whole decades only: the mantissa stays, the exponent moves.
                         const k = Math.round(start.current.log + dx / decade - logA);
+                        const ex = rep.snapTo(spec.exponent, k * rep.factor(spec.exponent));
+                        // A worked-out exponent (from the typed number) moves the number, the
+                        // mantissa held: 4.7 × 10⁵ → 4.7 × 10⁶.
                         calc.set(
                           {
-                            ...rep.pin([spec.mantissa]),
-                            [spec.exponent]: rep.snapTo(
-                              spec.exponent,
-                              k * rep.factor(spec.exponent),
-                            ),
+                            ...(rep.typed(spec.exponent)
+                              ? pinHeld(calc, rep, [spec.mantissa], { [spec.exponent]: ex })
+                              : rep.pin([spec.mantissa])),
+                            [spec.exponent]: ex,
                           },
                           rep.slide(spec.exponent),
                         );

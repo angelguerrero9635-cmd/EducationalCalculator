@@ -39,6 +39,10 @@ import {
 import { convert, getUnit } from '@/engine/units';
 
 import { TESTED_MODULES } from '..';
+import { checkAlgebraLines } from '../harness/algebraLines';
+import { checkIntegerLines, formValueAt } from '../harness/integerLines';
+import { checkAngleLines } from '../harness/angles';
+import { checkTrialLines, isTrialLine } from '../harness/trials';
 import {
   BAD_TEXT,
   PLURAL,
@@ -50,6 +54,8 @@ import {
   shownClose,
   withinRounding,
 } from '../harness/evaluate';
+import { CALCULUS_MARK, checkCalculus } from '../harness/calculus';
+import { caseIssues } from '../harness/cases';
 import { pictureCoverage, repIssues } from '../harness/pictures';
 import {
   asValues,
@@ -212,6 +218,9 @@ function resultNumber(result: string, exp = false): number {
     const x = evaluate(rhs);
     if (x !== undefined) return x;
   }
+  // A whole number in a base, a dotted quad or a prefix (HE-E21): 101101₂, 0x2D, /26.
+  const form = formValueAt(rhs);
+  if (form !== undefined) return form;
   // A root written exactly says its decimal beside it (√2/2 ≈ 0.7071): read the decimal.
   const approx = / ≈ (-?[\d.,]+)/.exec(rhs.replace(/−/g, '-'));
   if (approx) return Number(approx[1]!.replace(/,/g, ''));
@@ -236,6 +245,12 @@ function resultNumber(result: string, exp = false): number {
     const k =
       pi[1] === '' ? 1 : pi[1] === '−' || pi[1] === '-' ? -1 : Number(pi[1]!.replace('−', '-'));
     return (k * Math.PI) / Number(pi[2] ?? 1);
+  }
+  // An angle in degrees, minutes and seconds, or a bearing (HE-E19): 4°30′00″, N 52°10′ E.
+  const angle = /^[-−]?\d+°\d+(?:\.\d+)?′(?:\d+(?:\.\d+)?″)?|^[NS] \S+ [EW]\b/.exec(rhs);
+  if (angle) {
+    const n = parseNumber(angle[0]);
+    if (typeof n === 'number') return n;
   }
   const re = exp ? /^\$?(-?[\d.]+(?:e[-+]?\d+)?)/ : /^\$?(-?[\d.]+)/;
   return Number(re.exec(rhs)?.[1]);
@@ -434,12 +449,34 @@ function checkSteps(c: Ctx, res: SolveResult, where: string) {
     if (/ = less than 1 cent/.test(s.result)) continue;
     // (nor does a p-value under its step: "P < 0.0001")
     if (/^\S+ < /.test(s.result)) continue;
+    // A relation that switches names its case, and a category answer is its word (HE-E11/12).
+    const from = res.trace.find((t) => t.id === s.id)?.relation;
+    const switching = c.module.relations.find((r) => r.id === from && r.branches);
+    if (switching) {
+      const shown = w.steps.flatMap((x) => x.lines);
+      for (const issue of caseIssues(s, c.byId.get(s.id)!, switching, res.values, shown))
+        c.f.add('error', `${c.label}${issue}`, where);
+      if (c.byId.get(s.id)!.labels) continue;
+    }
     // The answer's leading number ("536¢ ($5.36)" → 536).
     const value = resultNumber(s.result, true);
     // The substituted line is left out when it would only repeat the rearranged line (numbers
     // only, e.g. "t = 6 − 3 − 2") or the result ("s = 4"): evaluate the rearranged line then.
     const line = s.substituted ?? s.rearranged;
     if (!line) {
+      // Found by trial (HE-E14): each try worked out again, and the tries reach the answer.
+      if (s.lines.some(isTrialLine) || /^No rearrangement puts /.test(s.how)) {
+        const t = checkTrialLines(s.lines, value);
+        for (const p of t.problems) c.f.add('error', `${c.label}${p}`, where);
+        for (const u of t.unread)
+          c.f.add(
+            'harness',
+            `${c.label}can't read trial line "${u.replace(/[\d.]+/g, 'N')}"`,
+            where,
+          );
+        if (!t.read) c.f.add('error', `${c.label}trial step for ${s.id} shows no tries`, where);
+        continue;
+      }
       c.f.add('minor', `${c.label}step for ${s.id} solved numerically (not evaluated)`, where);
       continue;
     }
@@ -466,6 +503,24 @@ function checkSteps(c: Ctx, res: SolveResult, where: string) {
       !withinRounding(value, expr)
     ) {
       c.f.add('error', `${c.label}step "${s.substituted}" ≠ "${s.result}"`, where);
+    }
+  }
+  // Calculus lines (HE-E6): forms, derivatives, integrals, limits and ODE solutions, checked
+  // numerically in reading order, on college pages and wherever a line has a calculus mark.
+  const calculusLines = [...w.steps.flatMap((s) => s.lines), ...w.check.map((k) => k.formula)];
+  const calculusRead = new Set<string>();
+  if (c.module.id.startsWith('he.') || calculusLines.some((l) => CALCULUS_MARK.test(l))) {
+    for (const v of checkCalculus(calculusLines)) {
+      calculusRead.add(v.line);
+      if (v.problem === 'wrong') {
+        c.f.add('error', `${c.label}calculus line is wrong (${v.kind}): "${v.line}"`, where);
+      } else if (v.problem === 'unread') {
+        c.f.add(
+          'harness',
+          `${c.label}can't read calculus line "${v.line.replace(/[\d.]+/g, 'N')}"`,
+          where,
+        );
+      }
     }
   }
   // A line shown twice in one walkthrough (the same pairing in two steps) is padding.
@@ -536,6 +591,23 @@ function checkSteps(c: Ctx, res: SolveResult, where: string) {
         c.f.add('error', `${c.label}work line doesn't add up: "${line}"`, where);
       }
     }
+  }
+  // Matrix, vector and complex lines (HE-E16, E17): each chain of equal sides holds, and each
+  // row operation gives the matrix it prints.
+  for (const s of w.steps) {
+    for (const p of checkAlgebraLines(s.lines))
+      c.f.add('error', `${c.label}line doesn't hold: ${p}`, where);
+  }
+  // Whole-number lines (HE-E21): ⌊ ⌋, ⌈ ⌉, mod, log₂, gcd, bases, quads and big integers,
+  // read exactly; a division with its remainder and a flipped pattern must be true.
+  for (const s of w.steps) {
+    for (const p of checkIntegerLines(s.lines))
+      c.f.add('error', `${c.label}line doesn't hold: ${p}`, where);
+  }
+  // Angle lines (HE-E19): DMS, bearings, atan2 and its quadrant, conversions.
+  for (const s of w.steps) {
+    for (const p of checkAngleLines(s.lines))
+      c.f.add(p.kind === 'wrong' ? 'error' : 'harness', `${c.label}${p.text}`, where);
   }
   // A sum with its limits said equal to a number ("Σ from k = 1 to 8 of (3k − 1) = 100", in a
   // step's lines or its sentence) must add up to it, term by term.
@@ -629,6 +701,8 @@ function checkSteps(c: Ctx, res: SolveResult, where: string) {
     if (/^about \$|^less than 1 cent/.test(q.value) && res.values[q.id] !== undefined)
       shown.add(res.values[q.id]!);
   for (const chk of w.check) {
+    // (a calculus check states a form or a value of its own: read above)
+    if (calculusRead.has(chk.formula)) continue;
     const strays = numbersIn(chk.formula).filter(
       (x) => ![...shown].some((y) => shownClose(x, y) || figuresClose(x, y, figures)),
     );
@@ -642,6 +716,7 @@ function checkSteps(c: Ctx, res: SolveResult, where: string) {
   }
   for (const chk of w.check) {
     if (!chk.ok) c.f.add('error', `${c.label}check line doesn't balance: "${chk.formula}"`, where);
+    if (calculusRead.has(chk.formula)) continue;
     // Comparisons ("3/8 < 5/8, 2 parts apart"): the sign must match the two sides. A sum with
     // its limits ("Σ from k = 1 to 8 of (3k − 1)") is worked out first, so its "k = 1" is no side.
     const formula = expandSums(chk.formula)
@@ -686,7 +761,17 @@ function checkSteps(c: Ctx, res: SolveResult, where: string) {
     }
   }
   // Conversion lines: "s = A u1 = B u2   (1 X = f Y)".
-  for (const line of [...w.convertIn, ...w.convertOut]) {
+  for (const raw of [...w.convertIn, ...w.convertOut]) {
+    // (an angle unit written on its number, 45° or 25″, and a rule from a number other than 1,
+    // "180° = π rad" or "400 grad = 360°" (HE-E19), read as "45 °" and "(1 rad = 57.29… °)")
+    const line = raw
+      .replace(/(\d)([°′″])(?= |\)|$)/g, '$1 $2')
+      .replace(/\(([^() ]+) (\S+) = ([^() ]+) (\S+)\)$/, (whole, a, x, b, y) => {
+        const [na, nb] = [parseNumber(a), parseNumber(b)];
+        return typeof na === 'number' && typeof nb === 'number' && na !== 1
+          ? `(1 ${x} = ${nb / na} ${y})`
+          : whole;
+      });
     // A number is one token, or scientific notation (3 × 10⁷).
     const N = String.raw`(?:\(?[-−]?[\d.,]+ × 10⁻?[⁰¹²³⁴⁵⁶⁷⁸⁹]+\)?|\S+)`;
     const m = new RegExp(

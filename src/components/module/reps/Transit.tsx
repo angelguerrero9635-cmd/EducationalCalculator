@@ -54,10 +54,13 @@ export function Transit({ spec, calc }: { spec: TransitSpec; calc: Calculator })
     typeof x === 'string' ? rep.named(x) : fallback;
   const starText = text(spec.star, `R = ${formatNumber(R)} R☉`);
   const planetText = text(spec.planet, `r = ${formatNumber(r)} R⊕`);
+  // A depth worked from a "?" star or planet reads "?", not the example's dip.
   const depthText =
     typeof spec.depth === 'string' && rep.known(spec.depth)
       ? rep.named(spec.depth)
-      : `δ = ${sig(d)}%`;
+      : on
+        ? `δ = ${sig(d)}%`
+        : 'δ = ?';
 
   return (
     <View>

@@ -439,8 +439,19 @@ export function MotionGraphHs({
 
   /** Drag the end time, the start velocity, the slope (velocity view) or the tangent point. */
   function handles(f: Frame) {
-    const set = (id: string, x: number) =>
-      calc.set({ ...others(id), [id]: rep.snapTo(id, x) }, rep.slide(id));
+    // The others are held only when that changes no typed value: a time worked out from typed
+    // speeds (braking), held, made the drag move the typed acceleration.
+    const set = (id: string, x: number) => {
+      const value = rep.snapTo(id, x);
+      const all = others(id);
+      calc.set(
+        {
+          ...(calc.fitsHeld({ ...all, [id]: value }) ? all : rep.pinTyped(Object.keys(all))),
+          [id]: value,
+        },
+        rep.slide(id),
+      );
+    };
     const startId = typeof spec.start === 'string' ? spec.start : undefined;
     if (position) {
       const at = k.at;

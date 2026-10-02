@@ -1,7 +1,7 @@
-import { MODULES } from '@/data/modules';
+import { LAYOUTS, MODULES } from '@/data/modules';
 
 import { menuGroupOf, menuGroups, routePath } from '../menu';
-import { skillRoute, topicRoute } from '../selectors';
+import { pageRoute } from '../selectors';
 
 describe('side menu', () => {
   const groups = menuGroups();
@@ -17,10 +17,10 @@ describe('side menu', () => {
   });
 
   it('reaches every lesson page, main pages and problem types alike', () => {
-    for (const m of MODULES) {
-      // A college topic's page is its course's topic page ("he.physics.university-1#0").
-      const [course, topic] = m.id.split('#');
-      const route = topic === undefined ? skillRoute(m.id) : topicRoute(course!, Number(topic));
+    for (const m of [...MODULES, ...LAYOUTS]) {
+      // A college topic's page (and its problem types) is its course's topic page
+      // ("he.physics.university-1#0" → /course/he.physics.university-1/topic/0).
+      const route = pageRoute(m.id)!;
       expect([m.id, paths.has(routePath(route))]).toEqual([m.id, true]);
     }
   });
@@ -34,6 +34,15 @@ describe('side menu', () => {
     expect(at('grade:3:math:Measurement & Data').route).toBeUndefined();
     expect(at('m.3.area').depth).toBe(2);
     expect(at('m.3.area~split').depth).toBe(3);
+  });
+
+  it('indents a course topic’s problem types under the topic', () => {
+    const rows = groups.flatMap((g) => g.rows);
+    for (const row of rows.filter((r) => /#\d+~/.test(r.key))) {
+      const topic = rows.find((r) => r.key === row.key.split('~')[0])!;
+      expect(row.depth).toBe(topic.depth + 1);
+      expect(rows.indexOf(row)).toBeGreaterThan(rows.indexOf(topic));
+    }
   });
 
   it('has unique keys', () => {

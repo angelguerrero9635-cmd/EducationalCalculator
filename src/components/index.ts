@@ -15,3 +15,6 @@ export { SkillBox } from './SkillBox';
 export { SegmentedControl } from './SegmentedControl';
 export { DetailHeader, LockedState, RefreshSection } from './DetailParts';
 export { ModuleSections } from './module/ModuleSections';
+export { Logo } from './Logo';
+export { NotFound } from './NotFound';
+export { Page } from './Page';

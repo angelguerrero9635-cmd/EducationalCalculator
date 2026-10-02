@@ -84,8 +84,9 @@ export function HabitableZone({ spec, calc }: { spec: HabitableZoneSpec; calc: C
   );
   const rs = Math.max(4, Math.min(18, 9 * L ** 0.15));
   const where = a < d1 ? 'hot' : a > d2 ? 'cold' : 'in';
+  // A box's own label ("a = ?" while it is "?"), never a number worked from the example's.
   const text = (x: number | string | undefined, fallback: string) =>
-    typeof x === 'string' && rep.known(x) ? rep.named(x) : fallback;
+    typeof x === 'string' ? rep.named(x) : fallback;
   const d1Text = text(spec.inner, `d₁ = ${formatNumber(round(d1))} AU`);
   const d2Text = text(spec.outer, `d₂ = ${formatNumber(round(d2))} AU`);
   const aText = text(spec.orbit, `a = ${formatNumber(round(a))} AU`);

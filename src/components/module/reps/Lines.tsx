@@ -19,7 +19,7 @@ import {
   uprightTest,
 } from './LineSystemMarks';
 import { shadeSaid, shadeSign } from './signBox';
-import { Canvas, Caption, DragHandle, useFrozen, useRep } from './common';
+import { Canvas, Caption, DragHandle, pinHeld, useFrozen, useRep } from './common';
 import {
   above,
   holds,
@@ -275,6 +275,12 @@ export function LinearFunction({ spec, calc }: { spec: LinearFunctionSpec; calc:
           const y0 = x0 === undefined ? 0 : m.value * x0 + b.value;
           const up = rise >= 0;
           const bIn = b.value >= f.y[0] && b.value <= f.y[1] && f.x[0] <= 0;
+          // Mid-drag (the window held) the triangle may fit nowhere and the intercept may leave
+          // the window: the handles stay mounted (the slope's where its drag began) and
+          // DragHandle keeps them on the picture.
+          const dragging = grid.ext.frozen;
+          const slopeX0 = x0 ?? (dragging ? start.current.x0 : undefined);
+          const slopeRun = x0 === undefined && dragging ? start.current.run : run;
           // The point's label: left of it, else just right of the y-axis, else right of the
           // point, whichever first keeps off the axis numbers and the other handles.
           const ptLeft = (() => {
@@ -414,7 +420,7 @@ export function LinearFunction({ spec, calc }: { spec: LinearFunctionSpec; calc:
                   </G>
                 ) : null}
               </Svg>
-              {!spec.fixed && typeof spec.intercept === 'string' && b.known && bIn ? (
+              {!spec.fixed && typeof spec.intercept === 'string' && b.known && (bIn || dragging) ? (
                 <DragHandle
                   testID="drag-intercept"
                   x={f.sx(0)}
@@ -426,11 +432,14 @@ export function LinearFunction({ spec, calc }: { spec: LinearFunctionSpec; calc:
                   }}
                   onMove={(_, dy) => {
                     const id = spec.intercept as string;
+                    const value = rep.snapTo(id, (start.current.b - dy / f.uy) * rep.factor(id));
                     calc.set(
                       {
                         ...(spec.keep ? rep.pin(spec.keep) : rep.pin(vars.filter((v) => v !== id))),
-                        ...(spec.point ? rep.pin([spec.point.x]) : {}),
-                        [id]: rep.snapTo(id, (start.current.b - dy / f.uy) * rep.factor(id)),
+                        // The point's x is held only when that changes no typed value (x worked
+                        // out from the equation, held, stopped the intercept dead).
+                        ...(spec.point ? pinHeld(calc, rep, [spec.point.x], { [id]: value }) : {}),
+                        [id]: value,
                       },
                       rep.slide(id),
                     );
@@ -438,14 +447,19 @@ export function LinearFunction({ spec, calc }: { spec: LinearFunctionSpec; calc:
                   onEnd={grid.ext.release}
                 />
               ) : null}
-              {!spec.fixed && typeof spec.slope === 'string' && known && x0 !== undefined ? (
+              {!spec.fixed && typeof spec.slope === 'string' && known && slopeX0 !== undefined ? (
                 <DragHandle
                   testID="drag-slope"
-                  x={f.sx(x0 + run)}
-                  y={f.sy(y0 + rise)}
+                  x={f.sx(slopeX0 + slopeRun)}
+                  y={f.sy(m.value * (slopeX0 + slopeRun) + b.value)}
                   label={`the slope ${rep.variable(spec.slope).symbol}`}
                   onStart={() => {
-                    start.current = { ...start.current, m: m.value, run, x0 };
+                    start.current = {
+                      ...start.current,
+                      m: m.value,
+                      run: slopeRun,
+                      x0: slopeX0 ?? start.current.x0,
+                    };
                     grid.ext.freeze();
                   }}
                   onMove={(_, dy) => {
@@ -455,7 +469,11 @@ export function LinearFunction({ spec, calc }: { spec: LinearFunctionSpec; calc:
                     calc.set(
                       {
                         ...(spec.keep ? rep.pin(spec.keep) : rep.pin(vars.filter((v) => v !== id))),
-                        ...(spec.point ? rep.pin([spec.point.x]) : {}),
+                        ...(spec.point
+                          ? pinHeld(calc, rep, [spec.point.x], {
+                              [id]: rep.snapTo(id, (riseNow / s.run) * rep.factor(id)),
+                            })
+                          : {}),
                         [id]: rep.snapTo(id, (riseNow / s.run) * rep.factor(id)),
                       },
                       rep.slide(id),
@@ -478,7 +496,9 @@ export function LinearFunction({ spec, calc }: { spec: LinearFunctionSpec; calc:
                     const id = spec.point!.x;
                     calc.set(
                       {
-                        ...rep.pin(vars),
+                        // The line holds still: its typed slope and intercept are pinned; worked
+                        // out ones (from a standard form's a, b, c) follow those numbers anyway.
+                        ...rep.pinTyped(vars),
                         [id]: rep.snapTo(id, (start.current.x + dx / f.ux) * rep.factor(id)),
                       },
                       rep.slide(id),
@@ -583,7 +603,7 @@ export function LineSystem({ spec, calc }: { spec: LineSystemSpec; calc: Calcula
       ...(givenIn ? [givenIn.y] : []),
     ],
   );
-  const start = useRef({ m: 0, b: 0 });
+  const start = useRef<{ m: number; b: number; hx?: number }>({ m: 0, b: 0 });
   const colors = [c.chartHighlight, c.chartSecond];
   const x = spec.solution ? rep.variable(spec.solution.x).symbol : 'x';
   const y = spec.solution ? rep.variable(spec.solution.y).symbol : 'y';
@@ -1110,12 +1130,14 @@ export function LineSystem({ spec, calc }: { spec: LineSystemSpec; calc: Calcula
                 if (spec.fixed) return null;
                 const others = (id: string) =>
                   l.keep ? rep.pin(l.keep) : rep.pin(allVars.filter((v) => v !== id));
+                // Mid-drag (the window held) an intercept may leave the window and a slope's
+                // spot may be lost: the handles stay mounted, and DragHandle keeps them on the
+                // picture.
+                const dragging = grid.ext.frozen;
                 if (
                   typeof l.intercept === 'string' &&
                   l.b.known &&
-                  l.b.value >= f.y[0] &&
-                  l.b.value <= f.y[1] &&
-                  f.x[0] <= 0
+                  ((l.b.value >= f.y[0] && l.b.value <= f.y[1] && f.x[0] <= 0) || dragging)
                 ) {
                   const id = l.intercept;
                   handles.push(
@@ -1142,7 +1164,7 @@ export function LineSystem({ spec, calc }: { spec: LineSystemSpec; calc: Calcula
                     />,
                   );
                 }
-                const hx = hxs[i];
+                const hx = hxs[i] ?? (dragging ? start.current.hx : undefined);
                 if (typeof l.slope === 'string' && hx !== undefined) {
                   const id = l.slope;
                   handles.push(
@@ -1153,7 +1175,7 @@ export function LineSystem({ spec, calc }: { spec: LineSystemSpec; calc: Calcula
                       y={f.sy(l.m.value * hx + l.b.value)}
                       label={`the slope ${rep.variable(id).symbol}`}
                       onStart={() => {
-                        start.current = { m: l.m.value, b: l.b.value };
+                        start.current = { m: l.m.value, b: l.b.value, hx };
                         grid.ext.freeze();
                       }}
                       onMove={(_, dy) => {

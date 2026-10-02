@@ -57,7 +57,7 @@ function DoubleArrow({ x, y1, y2, color }: { x: number; y1: number; y2: number; 
 export function Wave({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
   const rep = useRep(calc);
-  const start = useRef({ A: 0, L: 0 });
+  const start = useRef({ A: 0, L: 0, n: 0 });
   const known = (!spec.amplitude || rep.known(spec.amplitude)) && rep.known(spec.wavelength);
   const A = spec.amplitude ? Math.max(0, rep.shown(spec.amplitude)) : 0;
   const L = Math.max(0.001, rep.shown(spec.wavelength));
@@ -204,6 +204,7 @@ export function Wave({ spec, calc }: { spec: Spec; calc: Calculator }) {
               {known ? (
                 <DragHandle
                   testID={`drag-${spec.amplitude ?? spec.wavelength}`}
+                  drives={spec.amplitude ? [spec.amplitude, spec.wavelength] : undefined}
                   x={troughX}
                   y={troughY}
                   label={
@@ -212,34 +213,72 @@ export function Wave({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       : rep.variable(spec.wavelength).name
                   }
                   onStart={() => {
-                    start.current = { A, L };
+                    start.current = {
+                      A,
+                      L,
+                      n:
+                        typeof spec.extent === 'string' && rep.known(spec.extent)
+                          ? rep.shown(spec.extent)
+                          : 0,
+                    };
                     scale.freeze();
                   }}
-                  onMove={(dx, dy) =>
-                    calc.set({
-                      // The rope's length (the waves along it) stays as typed while the waves are
-                      // stretched or squeezed.
-                      ...rep.pin([
-                        ...(spec.frequency ? [spec.frequency] : []),
-                        ...(typeof spec.extent === 'string' ? [spec.extent] : []),
-                      ]),
+                  onMove={(dx, dy) => {
+                    const Lnew = Math.max(0.001, start.current.L + dx / (0.75 * perUnit));
+                    // A wavelength worked out from a typed rope (R ÷ n): the rope keeps its
+                    // length and the count of waves along it changes, in whole waves.
+                    const n = spec.extent;
+                    if (
+                      !spec.amplitude &&
+                      typeof n === 'string' &&
+                      start.current.n > 0 &&
+                      !rep.typed(spec.wavelength) &&
+                      rep.typed(n)
+                    ) {
+                      calc.set(
+                        {
+                          ...rep.pin(spec.frequency ? [spec.frequency] : []),
+                          [n]: rep.snapTo(n, (start.current.n * start.current.L) / Lnew),
+                        },
+                        rep.slide(n),
+                      );
+                      return;
+                    }
+                    // The rope's length (the waves along it) stays as typed while the waves are
+                    // stretched or squeezed.
+                    const pins = rep.pin([
+                      ...(spec.frequency ? [spec.frequency] : []),
+                      ...(typeof spec.extent === 'string' ? [spec.extent] : []),
+                    ]);
+                    const sends: [string, number][] = [
                       ...(spec.amplitude
-                        ? {
-                            // The trough moves down as far as the crest moves up.
-                            [spec.amplitude]: rep.snapTo(
+                        ? ([
+                            [
+                              // The trough moves down as far as the crest moves up.
                               spec.amplitude,
-                              Math.max(0, start.current.A + dy / perY) * rep.factor(spec.amplitude),
-                            ),
-                          }
-                        : {}),
+                              rep.snapTo(
+                                spec.amplitude,
+                                Math.max(0, start.current.A + dy / perY) *
+                                  rep.factor(spec.amplitude),
+                              ),
+                            ],
+                          ] as [string, number][])
+                        : []),
                       // The first trough is ¾ of a wavelength along.
-                      [spec.wavelength]: rep.snapTo(
+                      [
                         spec.wavelength,
-                        Math.max(0.001, start.current.L + dx / (0.75 * perUnit)) *
-                          rep.factor(spec.wavelength),
-                      ),
-                    })
-                  }
+                        rep.snapTo(spec.wavelength, Lnew * rep.factor(spec.wavelength)),
+                      ],
+                    ];
+                    const typedSends = Object.fromEntries(sends.filter(([id]) => rep.typed(id)));
+                    const worked = sends.filter(([id]) => !rep.typed(id));
+                    if (!worked.length || Object.keys(typedSends).length)
+                      calc.set({ ...pins, ...typedSends });
+                    // A worked-out amplitude or wavelength (from a typed crest-to-trough, from v
+                    // and f) moves the typed value behind it, which stays typed.
+                    for (const [id, value] of worked)
+                      calc.set({ ...pins, ...typedSends, [id]: value }, rep.slide(id));
+                  }}
                   onEnd={scale.release}
                 />
               ) : null}
@@ -249,7 +288,7 @@ export function Wave({ spec, calc }: { spec: Spec; calc: Calculator }) {
       </Canvas>
       <Caption>
         {known
-          ? `Crest to crest is one wavelength, ${rep.value(spec.wavelength)}.${spec.amplitude ? ` The crest rises ${rep.value(spec.amplitude)} above the middle.` : ''}${spec.frequency ? ` ${formatNumber(rep.shown(spec.frequency))} waves pass each second.` : ''}`
+          ? `Crest to crest is one wavelength, ${rep.value(spec.wavelength)}.${spec.amplitude ? ` The crest rises ${rep.value(spec.amplitude)} above the middle.` : ''}${spec.frequency && rep.known(spec.frequency) ? ` ${formatNumber(rep.shown(spec.frequency))} waves pass each second.` : ''}`
           : 'Type the wavelength to draw the wave.'}
       </Caption>
       <Steppers

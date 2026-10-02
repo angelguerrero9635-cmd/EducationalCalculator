@@ -12,7 +12,16 @@ import { formatNumber } from '@/engine/format';
 import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { Canvas, Caption, ChartText, DragHandle, fitLabel, useFrozen, useRep } from './common';
+import {
+  Canvas,
+  Caption,
+  ChartText,
+  DragHandle,
+  fitLabel,
+  pinHeld,
+  useFrozen,
+  useRep,
+} from './common';
 import { toFraction } from './exact';
 import { Chip, coef } from './graphKit';
 
@@ -49,7 +58,14 @@ function useSector(spec: Spec, calc: Calculator) {
   const r = rep.shown(spec.radius);
   const unit = rep.unit(spec.radius);
   const u = (square = false) => (unit ? ` ${unit}${square ? '²' : ''}` : '');
-  const angleText = radians ? (piMultiple(t) ?? short(t)) : `${formatNumber(t)}°`;
+  // A "?" angle reads "?" (the shaded angle is drawn from the example's but never labelled so).
+  const angleText = !tKnown
+    ? radians
+      ? '?'
+      : '?°'
+    : radians
+      ? (piMultiple(t) ?? short(t))
+      : `${formatNumber(t)}°`;
   return { rep, s, radians, turn, angleId, t, tKnown, rad, r, u, angleText };
 }
 
@@ -146,7 +162,8 @@ export function CircleSector({ spec, calc }: { spec: Spec; calc: Calculator }) {
           const cos = Math.cos(mid);
           // On the picture the arc is short: exact (2π cm) when it is a multiple of π.
           const arcShort = s?.arc && rep.known(s.arc) ? rep.shown(s.arc) : arc;
-          const arcText = `s = ${piMultiple(arcShort) ?? short(arcShort)}${u()}`;
+          // A "?" radius or angle: the arc reads "?" (never worked from the example's numbers).
+          const arcText = `s = ${known ? (piMultiple(arcShort) ?? short(arcShort)) : '?'}${u()}`;
           const arcAnchor = cos > 0.3 ? 'start' : cos < -0.3 ? 'end' : 'middle';
           // The angle's label sits on the bisector, clear of the small arc mark.
           const mark = Math.min(24, R * 0.3);
@@ -246,19 +263,23 @@ export function CircleSector({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       fit.freeze();
                     }}
                     onEnd={fit.release}
-                    onMove={(dx, dy) =>
+                    onMove={(dx, dy) => {
+                      const value = rep.snapTo(
+                        spec.radius,
+                        Math.hypot(start.current.x + dx - cx, start.current.y + dy - cy) / scale,
+                      );
+                      // The angle is held only when that changes no typed value (θ in radians
+                      // worked out from typed degrees, held, made the degrees worked out).
                       calc.set(
                         {
-                          ...(angleId ? rep.pin([angleId]) : {}),
-                          [spec.radius]: rep.snapTo(
-                            spec.radius,
-                            Math.hypot(start.current.x + dx - cx, start.current.y + dy - cy) /
-                              scale,
-                          ),
+                          ...(angleId
+                            ? pinHeld(calc, rep, [angleId], { [spec.radius]: value })
+                            : {}),
+                          [spec.radius]: value,
                         },
                         rep.slide(spec.radius),
-                      )
-                    }
+                      );
+                    }}
                   />
                   {angleId ? (
                     <DragHandle
@@ -304,7 +325,7 @@ export function CircleRadian({ spec, calc }: { spec: Spec; calc: Calculator }) {
     'About 6.28 of them go around: a full turn is 2π radians = 360°.',
     ...(s && tKnown && rad > 0 && rad <= 2 * Math.PI + 1e-9
       ? [
-          `The shaded angle, ${radians ? `${angleText} radians` : `${angleText} = ${exactText(rad)} radians`}, has an arc ${short(rad)} radii long: ${short(rad * r)}${sec.u()}.`,
+          `The shaded angle, ${radians ? `${angleText} radians` : `${angleText} = ${exactText(rad)} radians`}, has an arc ${short(rad)} radii long: ${known ? short(rad * r) : '?'}${sec.u()}.`,
         ]
       : []),
   ];

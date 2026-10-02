@@ -4,7 +4,7 @@ import { StyleSheet, View, type DimensionValue } from 'react-native';
 import { Text } from '@/components/Text';
 import type { TopicIconName } from '@/data/icons';
 import type { RouteTarget } from '@/data/selectors';
-import { font, radius, space, usePalette, useTone } from '@/theme';
+import { font, radius, space, type, usePalette, useTone } from '@/theme';
 
 import { Card } from './Card';
 import { TopicIcon } from './TopicIcon';
@@ -91,19 +91,19 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     flexBasis: 150,
     maxWidth: '100%',
-    minHeight: 124,
+    minHeight: 132,
     gap: space.md,
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
   },
   badge: {
-    width: 44,
-    height: 44,
+    width: 40,
+    height: 40,
     borderRadius: radius.md,
     alignItems: 'center',
     justifyContent: 'center',
   },
   badgeText: { fontSize: font.title - 2, fontWeight: '800' },
   text: { gap: 2 },
-  title: { fontSize: font.body, fontWeight: '700' },
-  subtitle: { fontSize: font.caption + 1, lineHeight: 17 },
+  title: { ...type.body, fontWeight: '600', lineHeight: 21 },
+  subtitle: { ...type.footnote, fontWeight: '400' },
 });

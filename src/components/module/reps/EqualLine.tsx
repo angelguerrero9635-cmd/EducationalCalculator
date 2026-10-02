@@ -187,12 +187,13 @@ export function EqualLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   />
                 ))}
                 {(radius === 0
-                  ? [{ at: C, text: `${x} = ${n(center)}` }]
+                  ? [{ at: C, text: `${x} = ${known ? n(center) : '?'}` }]
                   : none
                     ? []
                     : [
-                        { at: loX, text: n(lo) },
-                        { at: hiX, text: n(hi) },
+                        // "?" while a value is "?" (never the example's solutions).
+                        { at: loX, text: known ? n(lo) : '?' },
+                        { at: hiX, text: known ? n(hi) : '?' },
                       ]
                 ).map((d, i) => (
                   <ChartText

@@ -1,4 +1,6 @@
+import { angleFormText, parseAngle } from './angles';
 import { exactRoot } from './exact';
+import { formText, parseBased, parseIPv4, parseInForm } from './integers';
 import type { Values, VariableDef } from './types';
 
 /** Compact display: whole numbers as-is, up to 4 decimals, scientific for extremes. */
@@ -32,6 +34,10 @@ export function formatNumber(
     | 'sigFigs'
     | 'figures'
     | 'exact'
+    | 'decimals'
+    | 'signed'
+    | 'base'
+    | 'angleForm'
   > & {
     /**
      * A worked-out value's significant figures on a page that sets them (Grades 9–12 science:
@@ -47,11 +53,30 @@ export function formatNumber(
     values?: Values;
   },
 ): string {
+  // A whole number in a base, a dotted quad or a prefix (HE-E21): 101101₂, 0x2D, /26.
+  if (variable?.base) {
+    const t = formText(x, variable.base, variable.values);
+    if (t) return t;
+  }
+  // An angle as degrees–minutes–seconds or a compass direction (HE-E19).
+  if (variable?.angleForm && Number.isFinite(x))
+    return angleFormText(x, variable.angleForm, variable.decimals);
+  // A charge or signed change: +3, −1 (HE-E10).
+  if (variable?.signed && x > 0 && Number.isFinite(x)) {
+    const shown = formatNumber(x, { ...variable, signed: false });
+    return /^[0-9]/.test(shown) && shown !== '0' ? `+${shown}` : shown;
+  }
   if (variable?.exact) {
     const e = exactText(x, variable, variable.values);
     if (e) return e;
   }
   if (variable?.sigFigs && x !== 0 && Number.isFinite(x)) return significant(x, variable.sigFigs);
+  // A fixed count of decimals (pH 2.60), between 10⁻⁴ and 10⁷ where a decimal is shown.
+  if (variable?.decimals !== undefined && Number.isFinite(x) && Math.abs(x) < 1e7) {
+    const text = (x * (1 + 1e-12)).toFixed(variable.decimals);
+    if (Number(text) !== 0 || x === 0 || Math.abs(x) >= 1e-4)
+      return minus(withSeparators(/^-0(?:\.0*)?$/.test(text) ? text.slice(1) : text));
+  }
   if (variable?.full && x !== 0 && Number.isFinite(x)) {
     const e = Math.floor(Math.log10(Math.abs(x)) + 1e-12);
     const a = Number((Math.abs(x) / 10 ** e).toPrecision(12));
@@ -235,6 +260,55 @@ export function significant(x: number, sig: number): string {
   return minus(`${x < 0 ? '-' : ''}${withSeparators(text)}`);
 }
 
+/**
+ * The significant figures of a number as written (HE-E10): "0.0250" → 3, "2.5 × 10⁻³" → 2,
+ * "1,200" → 2 (a whole number's trailing zeros only hold the place), "1200." → 4, "7" → 1.
+ * Undefined for text that is not a number.
+ */
+export function figuresIn(text: string): number | undefined {
+  const t = text.trim().replace(/^[−+-]/, '');
+  const m =
+    /^(\d[\d,]*\.?\d*|\.\d+)(?:\s*[×x*]\s*10(?:\^\(?[−-]?\d+\)?|[⁻]?[⁰¹²³⁴⁵⁶⁷⁸⁹]+)|e[-+]?\d+)?$/i.exec(
+      t,
+    );
+  if (!m) return undefined;
+  const digits = m[1]!.replace(/,/g, '');
+  const point = digits.includes('.');
+  const all = digits.replace('.', '').replace(/^0+/, '');
+  if (all === '') return 1;
+  return point ? all.length : all.replace(/0+$/, '').length || 1;
+}
+
+/**
+ * The decimals of a log (pH, pKa, log₁₀ K) from its value's significant figures: as many
+ * decimals as the concentration has figures ([H⁺] = 2.5 × 10⁻³ M, 2 figures → pH 2.60).
+ */
+export const logDecimals = (figures: number) => Math.max(0, Math.round(figures));
+
+/**
+ * x with its sign always written (HE-E10): "+3", "−1", "0", as a charge, an oxidation state or
+ * a signed span (ATP per step) is written.
+ */
+export const signedText = (x: number, variable?: Parameters<typeof formatNumber>[1]) =>
+  formatNumber(x, { ...variable, signed: true });
+
+/**
+ * x in engineering notation (HE-E10): the exponent a multiple of 3, the mantissa 1 to 999,
+ * "47 × 10³", "2.2 × 10⁻⁹"; up to `figures` significant figures (default 4).
+ */
+export function engineering(x: number, figures = 4): string {
+  if (x === 0 || !Number.isFinite(x)) return formatNumber(x);
+  let n = Math.floor(Math.log10(Math.abs(x)) + 1e-12);
+  let m = Number((x / 10 ** n).toPrecision(figures));
+  if (Math.abs(m) >= 10) {
+    m /= 10;
+    n += 1;
+  }
+  const e = Math.floor(n / 3) * 3;
+  const mantissa = Number((m * 10 ** (n - e)).toPrecision(figures));
+  return minus(e === 0 ? String(mantissa) : `${mantissa} × 10${raised(e)}`);
+}
+
 export function scientific(x: number, figures = 5, zeros = false): string {
   if (x === 0) return '0';
   let n = Math.floor(Math.log10(Math.abs(x)));
@@ -320,6 +394,14 @@ export const dollarsOf = (x: number, num: string) => {
   return `about ${dollars(withSeparators((cents / 100).toFixed(2)))}`;
 };
 
+/**
+ * Scientific notation kept on one line (HE-E10): "6.626 × 10⁻³⁴" never wraps between its
+ * mantissa and its power of ten (no-break spaces around the ×). For drawing only: step text
+ * and the harness keep plain spaces.
+ */
+export const keepNumbersWhole = (text: string) =>
+  text.replace(/(\d) × (?=10[⁻⁰¹²³⁴⁵⁶⁷⁸⁹])/g, '$1\u00A0×\u00A0');
+
 /** Thousands separators from 1,000 ("12,500.5"), the way students read numbers in class. */
 const withSeparators = (s: string) =>
   s.replace(
@@ -337,6 +419,18 @@ export const plainDigits = (s: string) => s.replace(/(\d),(?=\d{3}(?!\d))/g, '$1
 export function parseNumber(text: string): number | undefined | 'invalid' {
   const cleaned = text.trim().replace(/,/g, '').replace(/−/g, '-');
   if (cleaned === '') return undefined;
+  // A whole number written in a base or as a dotted quad (HE-E21): 101101₂, 0x2D, 2D₁₆,
+  // 192.168.10.77.
+  if (/^(?:0[xbo][\dA-Fa-f_ ]+|[\dA-F ]+(?:₂|₈|₁₆))$/.test(cleaned)) {
+    const b = parseBased(cleaned);
+    return b === undefined || b > BigInt(Number.MAX_SAFE_INTEGER) ? 'invalid' : Number(b);
+  }
+  if (/^\d+\.\d+\.\d+\.\d+$/.test(cleaned)) return parseIPv4(cleaned) ?? 'invalid';
+  // An angle typed with its marks (HE-E19): 34°12′30″, 34° 12' 30", 45°, N 52°10′ E, 052°.
+  if (/[°′″'"]|^[NSns]\s*\d.*[EWew]$/.test(cleaned)) {
+    const a = parseAngle(text.replace(/,/g, ''));
+    return a === undefined ? 'invalid' : a;
+  }
   // A multiple of π: "36π", "36 pi", "36*pi", "π", "-2.5π", and a fraction of it: "5π/2",
   // "π/6", "3pi/4".
   const pi = /^([-+]?)(\d+\.?\d*|\.\d+)?\s*\*?\s*(?:π|pi)(?:\s*\/\s*(\d+))?$/i.exec(cleaned);
@@ -368,8 +462,9 @@ export function parseNumber(text: string): number | undefined | 'invalid' {
         : Number(
             [...sci[3]!].map((c) => (c === '⁻' ? '-' : String(SUPERSCRIPT.indexOf(c)))).join(''),
           );
-    // (a bare power of ten, "10⁶" or "10^6", is 1 × 10⁶)
-    return Number(sci[1] ?? 1) * 10 ** exp;
+    // (a bare power of ten, "10⁶" or "10^6", is 1 × 10⁶; read as "1.5e37", so the digits are
+    // exact: 1.5 × 10³⁷, never 1.4999… × 10³⁷)
+    return Number(`${sci[1] ?? 1}e${exp}`);
   }
   // A repeating decimal: "0.333…", "0.1666...", "2.0909…" (the last block written twice or more).
   const rep = /^([-+]?)(\d*)\.(\d+)(?:…|\.\.\.)$/.exec(cleaned);
@@ -387,6 +482,17 @@ export function parseNumber(text: string): number | undefined | 'invalid' {
   }
   if (!/^[-+]?(\d+\.?\d*|\.\d+)(e[-+]?\d+)?$/i.test(cleaned)) return 'invalid';
   return Number(cleaned);
+}
+
+/**
+ * A value typed into its box: in the variable's base, quad or prefix when it has one
+ * (`VariableDef.base`), else as any number (`parseNumber`).
+ */
+export function parseValue(
+  text: string,
+  variable?: Pick<VariableDef, 'base'>,
+): number | undefined | 'invalid' {
+  return variable?.base ? parseInForm(text, variable.base) : parseNumber(text);
 }
 
 /**
@@ -443,10 +549,11 @@ export function renderTemplate(
     if (meaning !== undefined) return meaning;
     // Zero padding is for clock times ("3:05"); in sums and words the minutes are plain (5 + 20).
     const clockPart = template[at - 1] === ':';
+    // (a prefix, /26, is its bare number in a rule: 32 − 26)
     const s = formatNumber(
       x,
       clockPart ? { ...variable, values } : { ...variable, digits: undefined, values },
-    );
+    ).replace(variable.base === 'prefix' ? /^\// : /^(?!)/, '');
     // A negative is bracketed only where its sign would meet another one ("3 × (−4)") or a
     // power; alone, first in a line or in an ordered pair it reads as itself: (−4, 3), |−4|.
     const before = template.slice(0, at).trimEnd();
@@ -460,17 +567,23 @@ export function renderTemplate(
     if (/\^$/.test(before) && /[/ ]/.test(s)) return `(${s})`;
     // An angle in degrees inside sin, cos or tan keeps its sign: sin(40°), not sin(40), which
     // would be radians.
-    if (variable.unit === '°' && /(sin|cos|tan)\($/.test(before) && after.startsWith(')'))
+    if (
+      variable.unit === '°' &&
+      !variable.angleForm &&
+      /(sin|cos|tan)\($/.test(before) &&
+      after.startsWith(')')
+    )
       return `${s}°`;
     // An exact sum (2 − √3, but not (√6 + √2)/4, already one bracket) reads as one number
     // only in brackets: 3 × (2 − √3).
     const sum = / [+−] /.test(s) && !/^\([^()]*\)\/\d+$/.test(s);
-    return (x < 0 || s.includes(' × 10') || sum) && needs ? `(${s})` : s;
+    // (a signed value, +3, reads as one number in brackets too: 2 − (+3))
+    return (x < 0 || s.startsWith('+') || s.includes(' × 10') || sum) && needs ? `(${s})` : s;
   });
   if (!values) return filled;
-  // A minus sign in the template in front of a 0 (e.g. −v₀ with v₀ = 0) reads as just 0; a
-  // whole-number power is written raised (10^3 → 10³), the way it is written on paper.
-  return superscript(filled.replace(/(^|[(\s])−0(?![\d.])/g, '$10'));
+  // A minus sign in the template in front of a 0 (e.g. −v₀ with v₀ = 0) reads as just 0 (not
+  // before a DMS angle: −0°00′05″, HE-E19); a whole-number power is written raised (10^3 → 10³), the way it is written on paper.
+  return superscript(filled.replace(/(^|[(\s])−0(?![\d.]|°\d)/g, '$10'));
 }
 
 /** Whole-number exponents after a caret written as superscript digits: "10^3" → "10³". */

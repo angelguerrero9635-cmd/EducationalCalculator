@@ -1,7 +1,6 @@
 import { Stack, useLocalSearchParams } from 'expo-router';
-import { ScrollView, StyleSheet } from 'react-native';
 
-import { CourseList, EmptyState, Tile, TileGrid } from '@/components';
+import { CourseList, DetailHeader, NotFound, Page, Tile, TileGrid } from '@/components';
 import { PageMeta } from '@/components/PageMeta';
 import { divisionMeta } from '@/data/meta';
 import {
@@ -11,10 +10,10 @@ import {
   divisionView,
   fieldRoute,
   isDivision,
+  trailOf,
 } from '@/data/selectors';
 import { fieldIcons } from '@/data/icons';
 import { coursesFor, HE_FIELDS } from '@/data/taxonomy';
-import { space, usePalette } from '@/theme';
 
 /** Division → fields. Single-field divisions (Math) skip straight to their course list. */
 /** Pre-render every division page (web static rendering). */
@@ -23,11 +22,10 @@ export function generateStaticParams(): { division: string }[] {
 }
 
 export default function DivisionScreen() {
-  const c = usePalette();
   const division = String(useLocalSearchParams<{ division: string }>().division);
 
   if (!isDivision(division)) {
-    return <EmptyState title="Not found" message={`There is no division “${division}”.`} />;
+    return <NotFound />;
   }
 
   const view = divisionView(division);
@@ -43,13 +41,25 @@ export default function DivisionScreen() {
       <Stack.Screen options={{ title: divisionLabel(division) }} />
       <PageMeta {...divisionMeta(division)} />
       {view.kind === 'courses' ? (
-        <CourseList courses={view.courses} />
+        <CourseList
+          courses={view.courses}
+          header={
+            <DetailHeader
+              overline="College"
+              title={divisionLabel(division)}
+              lines={[countLabel(view.courses.length, 'course')]}
+              trail={trailOf('he/[division]/index', { division })}
+            />
+          }
+        />
       ) : (
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={{ backgroundColor: c.background }}
-          contentContainerStyle={styles.page}
-        >
+        <Page>
+          <DetailHeader
+            overline="College"
+            title={divisionLabel(division)}
+            lines={[countLabel(view.fields.length, 'field')]}
+            trail={trailOf('he/[division]/index', { division })}
+          />
           <TileGrid>
             {view.fields.map((f, i) => (
               <Tile
@@ -63,12 +73,8 @@ export default function DivisionScreen() {
               />
             ))}
           </TileGrid>
-        </ScrollView>
+        </Page>
       )}
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  page: { paddingVertical: space.lg },
-});

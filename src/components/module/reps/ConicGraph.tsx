@@ -68,7 +68,11 @@ export function ConicGraph({
       }
     }
   })();
-  const pt = spec.point ? { x: rep.val(spec.point.x), y: rep.val(spec.point.y) } : undefined;
+  // The point is drawn only when both its coordinates are known (never at the example's spot).
+  const pt =
+    spec.point && rep.known(spec.point.x) && rep.known(spec.point.y)
+      ? { x: rep.val(spec.point.x), y: rep.val(spec.point.y) }
+      : undefined;
   const live = (() => {
     const xs = [q.h - reach.x, q.h + reach.x, ...(pt ? [pt.x] : [])];
     const ys = [q.k - reach.y, q.k + reach.y, ...(pt ? [pt.y] : [])];
@@ -247,7 +251,10 @@ export function ConicGraph({
             set: (p: Pt) => number,
             label: string,
           ) => {
-            if (typeof id === 'string' && inside(at)) sizeHandles.push({ id, at, set, label });
+            // Mid-drag (the window held) a handle past the window stays mounted: DragHandle keeps
+            // it on the picture's edge.
+            if (typeof id === 'string' && (inside(at) || win.frozen))
+              sizeHandles.push({ id, at, set, label });
           };
           if (spec.conic === 'circle')
             addSize(
@@ -359,7 +366,7 @@ export function ConicGraph({
                         // Below the axis and clear of the focus (its F tag is above it).
                         x={f.sx(q.h + (q.a! >= q.b! ? (cF + q.a!) / 2 : q.a! / 2))}
                         y={C.y + 16}
-                        text={`a = ${short(q.a!)}`}
+                        text={`a = ${known ? short(q.a!) : '?'}`}
                         w={w}
                         h={h}
                         bold={false}
@@ -367,7 +374,7 @@ export function ConicGraph({
                       <MathChip
                         x={C.x + 6}
                         y={f.sy(q.k + q.b! / 2) + 4}
-                        text={`b = ${short(q.b!)}`}
+                        text={`b = ${known ? short(q.b!) : '?'}`}
                         anchor="start"
                         w={w}
                         h={h}
@@ -398,7 +405,7 @@ export function ConicGraph({
                             <MathChip
                               x={vertical ? a.x + 6 : a.x + 6}
                               y={vertical ? a.y - 6 : f.sy(f.y[1]) + 26}
-                              text={vertical ? `y = ${short(d)}` : `x = ${short(d)}`}
+                              text={`${vertical ? 'y' : 'x'} = ${known ? short(d) : '?'}`}
                               anchor="start"
                               w={w}
                               h={h}
@@ -425,7 +432,7 @@ export function ConicGraph({
                         x={f.sx(q.h + (q.r! * Math.SQRT1_2) / 2) - 6}
                         y={f.sy(q.k + (q.r! * Math.SQRT1_2) / 2) - 6}
                         anchor="end"
-                        text={`r = ${short(q.r!)}`}
+                        text={`r = ${known ? short(q.r!) : '?'}`}
                         w={w}
                         h={h}
                         bold={false}

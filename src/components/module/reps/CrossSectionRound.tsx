@@ -49,16 +49,19 @@ export function CrossSectionRound({ spec, calc }: { spec: Spec; calc: Calculator
     return p ? `${p} ≈ ${short(Math.PI * k)}` : `≈ ${short(Math.PI * k)}`;
   };
   const areaName = spec.area ? `${sym(spec.area)} = ` : 'A = ';
+  // While a value is "?" its numbers read "?" (never the example's behind the "?").
+  const kn = (x: number) => (known ? short(x) : '?');
+  const knExact = (k: number) => (known ? exact(k) : '?');
   const cutLine =
     sec.name === 'none'
       ? 'The plane only touches the solid here.'
       : sec.name === 'circle'
-        ? `The cut is a circle of radius ${short(sec.radius!)}${u}: ${areaName}π × ${short(sec.radius!)}² = ${exact(sec.radius! ** 2)}${sq}.`
+        ? `The cut is a circle of radius ${kn(sec.radius!)}${u}: ${areaName}π × ${kn(sec.radius!)}² = ${knExact(sec.radius! ** 2)}${sq}.`
         : sec.name === 'rectangle'
-          ? `The cut is a rectangle ${short(sec.width!)}${u} wide and ${short(h)}${u} tall: ${areaName}${short(sec.width!)} × ${short(h)} = ${short(sec.area)}${sq}.`
+          ? `The cut is a rectangle ${kn(sec.width!)}${u} wide and ${kn(h)}${u} tall: ${areaName}${kn(sec.width!)} × ${kn(h)} = ${kn(sec.area)}${sq}.`
           : sec.name === 'triangle'
-            ? `Through the axis the cut is a triangle: ${areaName}1/2 × ${short(2 * r)} × ${short(h)} = ${short(sec.area)}${sq}.`
-            : `Off the axis the cut is a curved region (a hyperbola's), ${short(sec.width!)}${u} wide at the base: ${areaName.replace(' = ', '')} ≈ ${short(sec.area)}${sq}.`;
+            ? `Through the axis the cut is a triangle: ${areaName}1/2 × ${kn(2 * r)} × ${kn(h)} = ${kn(sec.area)}${sq}.`
+            : `Off the axis the cut is a curved region (a hyperbola's), ${kn(sec.width!)}${u} wide at the base: ${areaName.replace(' = ', '')} ≈ ${kn(sec.area)}${sq}.`;
   const note =
     cut === 'base'
       ? solid === 'cylinder'
@@ -69,7 +72,7 @@ export function CrossSectionRound({ spec, calc }: { spec: Spec; calc: Calculator
         : 'Upright cuts of a cone: a triangle through the axis, curved regions off it.';
   const vol = solid === 'cylinder' ? r * r * h : (r * r * h) / 3;
   const volumeLine = spec.volume
-    ? `${sym(spec.volume)} = ${solid === 'cone' ? '1/3 × ' : ''}π × ${short(r)}² × ${short(h)} = ${exact(vol)}${unit ? ` ${unit}³` : ''}`
+    ? `${sym(spec.volume)} = ${solid === 'cone' ? '1/3 × ' : ''}π × ${kn(r)}² × ${kn(h)} = ${knExact(vol)}${unit ? ` ${unit}³` : ''}`
     : undefined;
 
   /**
@@ -135,10 +138,10 @@ export function CrossSectionRound({ spec, calc }: { spec: Spec; calc: Calculator
           const along = cut === 'base' ? { x: 0, y: -k } : { x: 0, y: -k * TILT };
           const measure =
             sec.name === 'circle'
-              ? `r = ${short(sec.radius!)}${u}`
+              ? `r = ${kn(sec.radius!)}${u}`
               : sec.name === 'none'
                 ? ''
-                : `${short(sec.width!)}${u}`;
+                : `${kn(sec.width!)}${u}`;
           return (
             <>
               <Svg width={w} height={ch} opacity={known ? 1 : 0.4}>
@@ -200,12 +203,12 @@ export function CrossSectionRound({ spec, calc }: { spec: Spec; calc: Calculator
                   strokeWidth={chart.strokeLight}
                 />
                 <ChartText x={cx + R / 2} y={yb + ry + 16} textAnchor="middle" fontWeight="700">
-                  {`${sym(spec.length)} = ${short(r)}${u}`}
+                  {`${sym(spec.length)} = ${kn(r)}${u}`}
                 </ChartText>
                 <ChartText
                   {...fitLabel(
                     cx - R - 6,
-                    `${sym(spec.height)} = ${short(h)}${u}`,
+                    `${sym(spec.height)} = ${kn(h)}${u}`,
                     chart.label,
                     w,
                     'end',
@@ -214,7 +217,7 @@ export function CrossSectionRound({ spec, calc }: { spec: Spec; calc: Calculator
                   y={yb - H / 2}
                   fontWeight="700"
                 >
-                  {`${sym(spec.height)} = ${short(h)}${u}`}
+                  {`${sym(spec.height)} = ${kn(h)}${u}`}
                 </ChartText>
                 {/* The cut, flat and to scale. */}
                 {flat.length ? (
@@ -235,7 +238,7 @@ export function CrossSectionRound({ spec, calc }: { spec: Spec; calc: Calculator
                       {measure}
                     </ChartText>
                     <ChartText
-                      {...fitLabel(fx, `${short(sec.area)}${sq}`, chart.value, w)}
+                      {...fitLabel(fx, `${kn(sec.area)}${sq}`, chart.value, w)}
                       y={
                         cut === 'base'
                           ? yb - H / 2 - (sec.radius ?? 0) * k - 10
@@ -245,7 +248,7 @@ export function CrossSectionRound({ spec, calc }: { spec: Spec; calc: Calculator
                       fontWeight="700"
                       fill={c.chartHighlight}
                     >
-                      {`${short(sec.area)}${sq}`}
+                      {`${kn(sec.area)}${sq}`}
                     </ChartText>
                   </G>
                 ) : null}

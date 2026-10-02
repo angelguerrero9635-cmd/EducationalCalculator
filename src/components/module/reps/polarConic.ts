@@ -38,10 +38,16 @@ export function polarConicParts(c: PolarConicHs3b, v: Record<string, number>): P
 }
 
 /** "r = 6 ÷ (2 − cos θ)", "r = 4 ÷ (1 + sin θ)" */
-export function polarConicText(p: { k: number; m: number; n: number; fn: 'cos' | 'sin' }) {
+export function polarConicText(
+  p: { k: number; m: number; n: number; fn: 'cos' | 'sin' },
+  // A number whose box is "?" reads as its letter: "r = 4 ÷ (m − n sin θ)".
+  letters: { k?: string; m?: string; n?: string } = {},
+) {
   const tail =
-    p.n === 0
-      ? ''
-      : ` ${p.n > 0 ? '−' : '+'} ${Math.abs(p.n) === 1 ? '' : `${short(Math.abs(p.n))} `}${p.fn} θ`;
-  return `r = ${short(p.k)} ÷ (${short(p.m)}${tail})`;
+    letters.n !== undefined
+      ? ` − ${letters.n} ${p.fn} θ`
+      : p.n === 0
+        ? ''
+        : ` ${p.n > 0 ? '−' : '+'} ${Math.abs(p.n) === 1 ? '' : `${short(Math.abs(p.n))} `}${p.fn} θ`;
+  return `r = ${letters.k ?? short(p.k)} ÷ (${letters.m ?? short(p.m)}${tail})`;
 }

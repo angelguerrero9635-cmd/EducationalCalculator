@@ -14,7 +14,7 @@ const vercel = JSON.parse(readFileSync('vercel.json', 'utf8'));
 
 /** [url, expected status, text that must appear in the HTML]. */
 const CHECKS = [
-  ['/browse', 200, ['Browse | Educational Calculator', 'Kindergarten', 'Grade 12']],
+  ['/browse', 200, ['Browse | One Dollar University', 'Kindergarten', 'Grade 12']],
   [
     '/grade/K',
     200,
@@ -34,7 +34,7 @@ const CHECKS = [
     '/skill/m.K.make-10',
     200,
     [
-      'Add to make 10 – Kindergarten Math | Educational Calculator',
+      'Add to make 10 – Kindergarten Math | One Dollar University',
       '<meta data-rh="true" name="description"',
       'A ten-frame has 10 boxes.',
       'Count the open counters. They fill the empty boxes.',
@@ -44,10 +44,7 @@ const CHECKS = [
   [
     '/skill/m.1.add-sub-20~compare',
     200,
-    [
-      'Solve compare problems: Add and subtract within 20',
-      'Problem type · Add and subtract within 20',
-    ],
+    ['Solve compare problems: Add and subtract within 20', 'Grade 1 Math · Problem type'],
   ],
   [
     '/skill/m.K.position-words',
@@ -57,7 +54,7 @@ const CHECKS = [
   [
     '/skill/s.K.pushes-pulls',
     200,
-    ['Pushes and pulls – Kindergarten Science', 'Kindergarten · Science'],
+    ['Pushes and pulls – Kindergarten Science', 'Kindergarten Science ·'],
   ],
   [
     '/course/he.math.calc-1',
@@ -100,7 +97,13 @@ function rewrite(path) {
 /** Resolves a URL path to a file in dist/, as Vercel's static routing would. */
 function resolve(path) {
   const file = (p) => {
-    const f = normalize(join(DIST, decodeURIComponent(p)));
+    let decoded;
+    try {
+      decoded = decodeURIComponent(p);
+    } catch {
+      return undefined; // a malformed escape is no file (and must not stop the server)
+    }
+    const f = normalize(join(DIST, decoded));
     return f.startsWith(DIST) && existsSync(f) && statSync(f).isFile() ? f : undefined;
   };
   return (

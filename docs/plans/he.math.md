@@ -23,12 +23,12 @@ is original and was worked by hand; nothing is copied from a textbook or problem
   limit (a)"), 2–4 assumptions. Every page below fits. The test's `valueLimit` returns
   `undefined` for a course today, so E3 maps `he.` ids to the Grade 12 limits.
 - **Notation.** The notation of OpenStax Calculus (Vols 1–3), Lebl's _Notes on Diffy Qs_ and
-      Austin's _Understanding Linear Algebra_: f′(x) and dy/dx, f_x and ∂f/∂x, ∇f, D_u f, ∫ from a
-      to b, Σ, ⟨a, b, c⟩ for vectors, [[a, b], [c, d]] for matrices, λ, rank, Nul A, Col A, det A,
-      Aᵀ, A⁻¹, x̂, y″ + by′ + cy = 0, L{f} = F(s), u(t − c). Unicode sub- and superscripts (x₀, aₙ,
-      eˣ). Angles: calculus and ODE pages work in radians (the harness default); vector angles and
-      the polar and parametric pictures read degrees, as m.12 does, with the radian value derived
-      where a derivative needs it.
+  Austin's _Understanding Linear Algebra_: f′(x) and dy/dx, f_x and ∂f/∂x, ∇f, D_u f, ∫ from a
+  to b, Σ, ⟨a, b, c⟩ for vectors, `[[a, b], [c, d]]` for matrices, λ, rank, Nul A, Col A, det A,
+  Aᵀ, A⁻¹, x̂, y″ + by′ + cy = 0, L{f} = F(s), u(t − c). Unicode sub- and superscripts (x₀, aₙ,
+  eˣ). Angles: calculus and ODE pages work in radians (the harness default); vector angles and
+  the polar and parametric pictures read degrees, as m.12 does, with the radian value derived
+  where a derivative needs it.
 - **Constants.** e and π only, in the relations. Applied pages: g = 9.8 m/s², water
   ρ = 1000 kg/m³ (ρg = 9800 N/m³), named in an assumption.
 - **Units.** Pure pages are unitless. Applied pages (related rates, optimization, work,
@@ -638,23 +638,24 @@ Differential Equations_; CV2 chapter 4 and CV3 chapter 7; MIT OCW 18.03.
 
 - **Textbooks:** LDQ 3.1–3.9, 8.1–8.2.
 - **Main — BUILD (⏳ P9 phase): x′ = Ax for a 2 × 2 A.** Values A (a group), trace T, det D,
-      T² − 4D, λ₁, λ₂ (or α ± βi), eigenvectors, type (E6). Assumptions: the type comes from T and
-      D (saddle D < 0; node or spiral by T² − 4D; stable when T < 0); straight-line solutions run
-      along eigenvectors. Example: A = [[1, 2], [2, 1]] → T = 2, D = −3: saddle, λ = 3 along ⟨1, 1⟩,
-      −1 along ⟨1, −1⟩. startWith A. Use line: "Use this for 'Classify the equilibrium of
-      x′ = x + 2y, y′ = 2x + y.'"
+  T² − 4D, λ₁, λ₂ (or α ± βi), eigenvectors, type (E6). Assumptions: the type comes from T and
+  D (saddle D < 0; node or spiral by T² − 4D; stable when T < 0); straight-line solutions run
+  along eigenvectors. Example: A = `[[1, 2], [2, 1]]` → T = 2, D = −3: saddle, λ = 3 along ⟨1, 1⟩,
+  −1 along ⟨1, −1⟩. startWith A. Use line: "Use this for 'Classify the equilibrium of
+  x′ = x + 2y, y′ = 2x + y.'"
 - **~solution — BUILD (⏳ P9):** x(t) = c₁e^(λ₁t)v₁ + c₂e^(λ₂t)v₂ from x(0). Example: x(0) =
   ⟨3, 1⟩ → c₁ = 2, c₂ = 1; at t = 0.5, (9.570, 8.357).
 - **~phase-types — BUILD (sort):** bins Saddle, Stable node, Unstable node, Stable spiral,
-      Unstable spiral, Center. Cards: [[1, 2], [2, 1]]; [[0, 1], [1, 0]] (Saddle); [[−2, 0], [0, −3]];
-      [[−3, 1], [0, −1]] (Stable node); [[1, 0], [0, 2]] (Unstable node); [[−1, −2], [2, −1]]
-      (Stable spiral); [[1, −1], [1, 1]] (Unstable spiral); [[0, 1], [−4, 0]] (Center).
+  Unstable spiral, Center. Cards: `[[1, 2], [2, 1]]`; `[[0, 1], [1, 0]]` (Saddle); `[[−2, 0], [0, −3]]`;
+  `[[−3, 1], [0, −1]]` (Stable node); `[[1, 0], [0, 2]]` (Unstable node); `[[−1, −2], [2, −1]]`
+  (Stable spiral); `[[1, −1], [1, 1]]` (Unstable spiral); `[[0, 1], [−4, 0]]` (Center).
 - **~predator-prey — BUILD (⏳ P9):** x′ = αx − βxy, y′ = −γy + δxy: equilibrium (γ/δ, α/β),
   small-cycle period 2π/√(αγ). Example: α = 1, β = 0.5, γ = 0.75, δ = 0.25 → (3, 2), 7.26.
 - **Answers:** eigenvalue method with real eigenvalues — main, ~solution Solve; complex
-      eigenvalues (spiral solution) — Partly (the type, not x(t)); classify equilibria — Solves;
-      second-order equation as a system — Partly (A = [[0, 1], [−k/m, −c/m]] typed on main);
-      linearize a nonlinear system — ~predator-prey Solves for Lotka–Volterra; normal modes of coupled masses — No [new-page].
+  eigenvalues (spiral solution) — Partly (the type, not x(t)); classify equilibria — Solves;
+  second-order equation as a system — Partly (A = `[[0, 1], [−k/m, −c/m]]` typed on main);
+  linearize a nonlinear system — ~predator-prey Solves for Lotka–Volterra; normal modes of
+  coupled masses — No [new-page].
 - **Verdict:** 4 pages (1 sort, 3 ⏳).
 
 ### DE#4 he.math.diff-eq#4 — Series solutions
@@ -691,15 +692,15 @@ _Linear Algebra_; Beezer, _A First Course in Linear Algebra_; MIT OCW 18.06.
   matrix. Picture: `matrixGrid` `rowReduce`, `steps: 'reduced'`; equation `[[…]]` with the bar.
   Refresh `m.12.matrices`. Use line: "Use this for 'Solve x + y + z = 6, 2x + 3y + z = 11,
   3x + 4y + 2z = 17. Is there one solution, none or infinitely many?'"
-- **~inverse — BUILD (⏳ HE-math-P11):** [A | I] → [I | A⁻¹] for 3 × 3. Example: A = [[2, 1, 0],
-      [1, 1, 0], [0, 0, 3]] → A⁻¹ = [[1, −1, 0], [−1, 2, 0], [0, 0, 1/3]].
-- **~lu — BUILD:** A = LU, L holding the multipliers. Example: [[2, 1, 1], [4, 3, 3], [8, 7, 9]] →
-      multipliers 2, 4, 3; U = [[2, 1, 1], [0, 1, 1], [0, 0, 2]]. Picture: `matrixGrid` `multiply`
-      (L × U = A).
+- **~inverse — BUILD (⏳ HE-math-P11):** [A | I] → [I | A⁻¹] for 3 × 3. Example: A =
+  `[[2, 1, 0], [1, 1, 0], [0, 0, 3]]` → A⁻¹ = `[[1, −1, 0], [−1, 2, 0], [0, 0, 1/3]]`.
+- **~lu — BUILD:** A = LU, L holding the multipliers. Example: `[[2, 1, 1], [4, 3, 3], [8, 7, 9]]` →
+  multipliers 2, 4, 3; U = `[[2, 1, 1], [0, 1, 1], [0, 0, 2]]`. Picture: `matrixGrid` `multiply`
+  (L × U = A).
 - **~forms — BUILD (sort):** bins Reduced echelon form, Echelon form only, Not echelon form.
-      Cards: [[1, 0, 3], [0, 1, −2]]; [[1, 0, 0], [0, 0, 1], [0, 0, 0]]; [[1, 7, 0, 2], [0, 0, 1, 5]]
-      (Reduced); [[1, 2, 5], [0, 1, 4]]; [[2, 4, 1], [0, 3, 6], [0, 0, 5]]; [[1, 0, 4], [0, 2, 0]]
-      (Echelon only); [[0, 1, 2], [1, 0, 3]]; [[1, 3, 0], [0, 0, 0], [0, 0, 1]] (Not).
+  Cards: `[[1, 0, 3], [0, 1, −2]]`; `[[1, 0, 0], [0, 0, 1], [0, 0, 0]]`; `[[1, 7, 0, 2], [0, 0, 1, 5]]`
+  (Reduced); `[[1, 2, 5], [0, 1, 4]]`; `[[2, 4, 1], [0, 3, 6], [0, 0, 5]]`; `[[1, 0, 4], [0, 2, 0]]`
+  (Echelon only); `[[0, 1, 2], [1, 0, 3]]`; `[[1, 3, 0], [0, 0, 0], [0, 0, 1]]` (Not).
 - **Answers:** solve by row reduction, parametric solution — main Solves; consistency with a
   parameter k — Partly (type k in a cell and read the case); inverse by Gauss–Jordan — ~inverse
   Solves; LU — Solves; echelon forms — Solves; network or chemical-balance applications — Partly
@@ -710,13 +711,13 @@ _Linear Algebra_; Beezer, _A First Course in Linear Algebra_; MIT OCW 18.06.
 
 - **Textbooks:** ULA 2.2–2.4, 3.2, 3.5; Hefferon Two.
 - **Main — BUILD: rank, nullity and a basis of Nul A for a 3 × 4 matrix.** Values A (a group),
-      rank r, dim Col A, dim Nul A = 4 − r, null basis (derived). Relations: reduced echelon form;
-      r = number of pivots; rank + nullity = number of columns. Assumptions: the pivot columns of A
-      are a basis of Col A; each free variable gives one null vector. Example: [[1, 2, 0, 1],
-      [2, 4, 1, 4], [3, 6, 1, 5]] → [[1, 2, 0, 1], [0, 0, 1, 2], [0, 0, 0, 0]]: r = 2, nullity 2,
-      basis ⟨−2, 1, 0, 0⟩, ⟨−1, 0, −2, 1⟩. startWith A. Picture: `matrixGrid` `rowReduce`
+  rank r, dim Col A, dim Nul A = 4 − r, null basis (derived). Relations: reduced echelon form;
+  r = number of pivots; rank + nullity = number of columns. Assumptions: the pivot columns of A
+  are a basis of Col A; each free variable gives one null vector. Example:
+  `[[1, 2, 0, 1], [2, 4, 1, 4], [3, 6, 1, 5]]` → `[[1, 2, 0, 1], [0, 0, 1, 2], [0, 0, 0, 0]]`: r = 2, nullity 2,
+  basis ⟨−2, 1, 0, 0⟩, ⟨−1, 0, −2, 1⟩. startWith A. Picture: `matrixGrid` `rowReduce`
   `steps: 'reduced'`. Use line: "Use this for 'Find a basis for the null space and the rank of
-      A.'"
+  A.'"
 - **~independence — BUILD:** three vectors in ℝ³: independent when det ≠ 0. Example: ⟨1, 0, 1⟩,
   ⟨2, 1, 0⟩, ⟨0, 1, 1⟩ → det 3; with ⟨3, 1, 1⟩ = v₁ + v₂ → 0. Picture: `vectorDiagram` `space`
   with `w`, `triple`, `volume` (a flat box means dependent).
@@ -735,11 +736,11 @@ _Linear Algebra_; Beezer, _A First Course in Linear Algebra_; MIT OCW 18.06.
 
 - **Textbooks:** ULA 3.4; Hefferon Four; 18.06 lectures 18–20.
 - **Main — BUILD: det A by row reduction.** Values A (3 × 3 group), swaps s, scale factors,
-      pivots, det (derived). Relations: det = (−1)ˢ × (product of the pivots) ÷ (product of the
-      scale factors). Assumptions: a swap flips the sign; adding a multiple of a row keeps det; a
-      triangular matrix's det is its diagonal's product. Example: [[0, 2, 1], [1, 1, 1], [2, 0, 3]] →
-      swap rows 1 and 2, R₃ − 2R₁, R₃ + R₂ → pivots 1, 2, 2; det = −4 (cofactors: −2 − 2 = −4).
-      startWith A. Picture: `matrixGrid` `rowReduce` (P11 tally later). Refresh
+  pivots, det (derived). Relations: det = (−1)ˢ × (product of the pivots) ÷ (product of the
+  scale factors). Assumptions: a swap flips the sign; adding a multiple of a row keeps det; a
+  triangular matrix's det is its diagonal's product. Example: `[[0, 2, 1], [1, 1, 1], [2, 0, 3]]` →
+  swap rows 1 and 2, R₃ − 2R₁, R₃ + R₂ → pivots 1, 2, 2; det = −4 (cofactors: −2 − 2 = −4).
+  startWith A. Picture: `matrixGrid` `rowReduce` (P11 tally later). Refresh
   `m.12.matrices~determinant`. Use line: "Use this for 'Find det A by row reduction.'"
 - **~volume — BUILD:** |det [u v w]| is the volume of the box. Example: ⟨2, 0, 0⟩, ⟨1, 3, 0⟩,
   ⟨0, 1, 4⟩ → 24. Picture: `vectorDiagram` `space` with `w`, `volume`.
@@ -755,21 +756,21 @@ _Linear Algebra_; Beezer, _A First Course in Linear Algebra_; MIT OCW 18.06.
 
 - **Textbooks:** ULA 4.1–4.5; Hefferon Five; 18.06 lectures 21–24.
 - **Main — BUILD: a 2 × 2 matrix's eigenvalues and eigenvectors.** Values A (group), trace,
-      det, discriminant, λ₁, λ₂, v₁, v₂ (derived). Relations: λ² − (tr A)λ + det A = 0;
-      (A − λI)v = 0. Assumptions: Av = λv means A only stretches v; real eigenvalues need a
-      discriminant ≥ 0 (complex: ~complex). Example: [[4, 1], [2, 3]] → λ² − 7λ + 10 = 0, λ = 5 with
-      ⟨1, 1⟩, λ = 2 with ⟨1, −2⟩. startWith A. Picture: `vectorDiagram` v₁ with `scalar: { k: λ₁ }`
-      (Av = λv drawn; P12 later). Use line: "Use this for 'Find the eigenvalues and eigenvectors of
-      [[4, 1], [2, 3]].'"
+  det, discriminant, λ₁, λ₂, v₁, v₂ (derived). Relations: λ² − (tr A)λ + det A = 0;
+  (A − λI)v = 0. Assumptions: Av = λv means A only stretches v; real eigenvalues need a
+  discriminant ≥ 0 (complex: ~complex). Example: `[[4, 1], [2, 3]]` → λ² − 7λ + 10 = 0, λ = 5 with
+  ⟨1, 1⟩, λ = 2 with ⟨1, −2⟩. startWith A. Picture: `vectorDiagram` v₁ with `scalar: { k: λ₁ }`
+  (Av = λv drawn; P12 later). Use line: "Use this for 'Find the eigenvalues and eigenvectors of
+  `[[4, 1], [2, 3]]`.'"
 - **~three-by-three — BUILD:** an eigenvector for a given λ from Nul(A − λI). Example:
-      [[2, 0, 0], [1, 3, 0], [0, 1, 1]], λ = 3 → ⟨0, 2, 1⟩ (A⟨0, 2, 1⟩ = ⟨0, 6, 3⟩). Picture:
+  `[[2, 0, 0], [1, 3, 0], [0, 1, 1]]`, λ = 3 → ⟨0, 2, 1⟩ (A⟨0, 2, 1⟩ = ⟨0, 6, 3⟩). Picture:
   `matrixGrid` `rowReduce` of A − λI.
 - **~powers — BUILD:** Aᵏx by the eigenvectors. Example: A above, x = ⟨1, 0⟩ = ⅔v₁ + ⅓v₂ →
   A³x = ⅔ × 125⟨1, 1⟩ + ⅓ × 8⟨1, −2⟩ = ⟨86, 78⟩. Picture: `vectorDiagram` `sum: 'parallelogram'`.
 - **~markov — BUILD:** the steady state of a 2-state chain: (q/(p + q), p/(p + q)). Example:
   p = 0.1, q = 0.3 → (0.75, 0.25). Picture: `matrixGrid` `multiply` (P × steady = steady).
-- **~complex — BUILD:** [[a, −b], [b, a]] → λ = a ± bi, a turn by θ with a stretch r. Example:
-      a = b = 1 → r = √2, θ = 45°. Picture: `complexPlane` `conjugate`, `modulus`, `argument`.
+- **~complex — BUILD:** `[[a, −b], [b, a]]` → λ = a ± bi, a turn by θ with a stretch r. Example:
+  a = b = 1 → r = √2, θ = 45°. Picture: `complexPlane` `conjugate`, `modulus`, `argument`.
 - **Answers:** 2 × 2 eigenpairs — main Solves; 3 × 3 with a known λ — Solves, the cubic —
   Partly (triangular matrices only); diagonalize and powers — ~powers Solves; Markov steady
   state — Solves for 2 states; complex eigenvalues — Solves; discrete dynamical systems classified by eigenvalues — No [new-page].
@@ -779,12 +780,12 @@ _Linear Algebra_; Beezer, _A First Course in Linear Algebra_; MIT OCW 18.06.
 
 - **Textbooks:** ULA 6.1–6.5; Hefferon Three.VI; 18.06 lectures 14–17.
 - **Main — BUILD (⏳ HE-math-P13): the least-squares line by the normal equations.** Values: the
-      data (3–8 points, a group), AᵀA, Aᵀb, slope m, intercept b, error ‖b − Ax̂‖² (derived).
-      Relations: AᵀA x̂ = Aᵀb with A's rows (xᵢ, 1). Assumptions: x̂ makes Ax̂ the projection of b
-      onto Col A; the residual is square to every column. Example: (0, 1), (1, 2), (2, 2), (3, 4) →
-      AᵀA = [[14, 6], [6, 4]], Aᵀb = ⟨18, 9⟩, m = 0.9, b = 0.9, error 0.70. startWith the data.
-      Interim: `matrixGrid` `multiply` (AᵀA). Use line: "Use this for 'Find the least-squares line
-      through (0, 1), (1, 2), (2, 2), (3, 4).'"
+  data (3–8 points, a group), AᵀA, Aᵀb, slope m, intercept b, error ‖b − Ax̂‖² (derived).
+  Relations: AᵀA x̂ = Aᵀb with A's rows (xᵢ, 1). Assumptions: x̂ makes Ax̂ the projection of b
+  onto Col A; the residual is square to every column. Example: (0, 1), (1, 2), (2, 2), (3, 4) →
+  AᵀA = `[[14, 6], [6, 4]]`, Aᵀb = ⟨18, 9⟩, m = 0.9, b = 0.9, error 0.70. startWith the data.
+  Interim: `matrixGrid` `multiply` (AᵀA). Use line: "Use this for 'Find the least-squares line
+  through (0, 1), (1, 2), (2, 2), (3, 4).'"
 - **~projection — BUILD:** proj_v u = (u·v ÷ v·v)v and the part square to v. Example:
   u = ⟨3, 1⟩, v = ⟨1, 1⟩ → ⟨2, 2⟩ and ⟨1, −1⟩. Picture: `vectorDiagram` with `angle` (P14 later).
 - **~gram-schmidt — BUILD:** u₂ = v₂ − proj_(u₁) v₂ in ℝ³. Example: ⟨1, 1, 0⟩, ⟨1, 0, 1⟩ →
@@ -862,9 +863,9 @@ _Linear Algebra_; Beezer, _A First Course in Linear Algebra_; MIT OCW 18.06.
     with `eigen`
 
     .** Pages: LA#3 main, LA#2
-            ~volume (2-D). The unit square and unit circle under [[a, b], [c, d]] (the circle to an
-            ellipse), the eigenvector lines kept, each stretched by λ. Check: Av = λv on the drawn lines;
-            the area ratio equals |det|.
+    ~volume (2-D). The unit square and unit circle under `[[a, b], [c, d]]` (the circle to an
+    ellipse), the eigenvector lines kept, each stretched by λ. Check: Av = λv on the drawn lines;
+    the area ratio equals |det|.
 
 13. **HE-math-P13 — `scatter` points from a value group.** Page (⏳): LA#4 main. `pointsFrom:
 '<group>'` with the `leastSquares: 'fit'` and `residuals` options. Check: as today's `fit`.

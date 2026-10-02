@@ -3,9 +3,10 @@
  * together (every card has a group, every scene fits the figure), and everything a student
  * reads meets the same reading-level and formatting rules as a calculator page.
  */
-import { getSkill } from '@/data/selectors';
+import { getProblemType, getSkill, problemTypes, topicOf } from '@/data/selectors';
 
-import { LAYOUTS, gradeOf, moduleOwner } from '..';
+import { LAYOUTS, getLayout, getPage, gradeOf, moduleOwner } from '..';
+import { COLLEGE_LAYOUTS } from '../layouts';
 import type { Figure, LayoutDef, Scene } from '../layouts';
 import { isStandIn, pages } from '../harness/scope';
 import { HSL_SCENE_FIELD } from '../typesHsl';
@@ -61,8 +62,13 @@ const SCENE_FIELD: Record<Figure['kind'], keyof Scene | undefined> = {
   dichotomousKey: 'key',
 };
 
-/** Longest sentence per grade (as in standards.test.ts). */
-function wordLimit(grade: string | undefined): number | undefined {
+/**
+ * Longest sentence per grade (as in standards.test.ts); a college page (`he.…`) reads at the
+ * Grade 12 limit, 35 words (HE-E3).
+ */
+function wordLimit(id: string): number | undefined {
+  if (id.startsWith('he.')) return 35;
+  const grade = gradeOf(id);
   if (grade === undefined) return undefined;
   const g = grade === 'K' ? 0 : Number(grade);
   if (g <= 1) return 12;
@@ -79,7 +85,10 @@ const FORMAT: [RegExp, string][] = [
   [/\.\./, 'double period (use …)'],
   [/\s[,.;:]/, 'space before punctuation'],
 ];
-const words = (s: string) => s.split(/\s+/).filter((w) => /[A-Za-z]{2,}|\b[aI]\b/.test(w)).length;
+/** A chemical formula or ion (H₂O, O₂, Fe³⁺, (2R,3S)-…): one word (HE-E25). */
+const FORMULA = /^(?=.*[₀-₉⁺⁻])[([]?(?:[A-Z][a-z]?[₀-₉]*)+[⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻]*[)\]]?[.,;:]?$/;
+const words = (s: string) =>
+  s.split(/\s+/).filter((w) => /[A-Za-z]{2,}|\b[aI]\b/.test(w) || FORMULA.test(w)).length;
 const sentences = (text: string) =>
   text
     .split(/(?<=[.!?])\s+/)
@@ -87,8 +96,10 @@ const sentences = (text: string) =>
     .filter(Boolean);
 
 /** Everything a student reads on the page. */
-function studentText(l: LayoutDef): { where: string; text: string; prose: boolean }[] {
-  const out: { where: string; text: string; prose: boolean }[] = [];
+function studentText(
+  l: LayoutDef,
+): { where: string; text: string; prose: boolean; code?: boolean }[] {
+  const out: { where: string; text: string; prose: boolean; code?: boolean }[] = [];
   l.assumptions.forEach((a, i) => out.push({ where: `assumption ${i + 1}`, text: a, prose: true }));
   if (l.use) out.push({ where: 'use', text: l.use, prose: true });
   if (l.title) out.push({ where: 'title', text: l.title, prose: false });
@@ -100,11 +111,16 @@ function studentText(l: LayoutDef): { where: string; text: string; prose: boolea
         out.push({ where: `bin ${b.id}`, text: b.label, prose: false });
         out.push({ where: `bin ${b.id} why`, text: b.why, prose: true });
       });
-      l.cards.forEach((c) => out.push({ where: `card ${c.label}`, text: c.label, prose: false }));
+      // (code cards, HE-E25, are code as written: straight quotes, no copy-editing)
+      l.cards.forEach((c) =>
+        out.push({ where: `card ${c.label}`, text: c.label, prose: false, code: l.code }),
+      );
       break;
     case 'sequence':
       out.push({ where: 'question', text: l.question, prose: true });
-      l.stages.forEach((s) => out.push({ where: `stage ${s.label}`, text: s.label, prose: false }));
+      l.stages.forEach((s) =>
+        out.push({ where: `stage ${s.label}`, text: s.label, prose: false, code: l.code }),
+      );
       break;
     case 'explore':
       l.scenes.forEach((s) => {
@@ -135,10 +151,25 @@ it('layout ids are unique and never shared with a calculator module', async () =
   expect(ids.filter((id) => MODULES.some((m) => m.id === id))).toEqual([]);
 });
 
+it('college layouts are read under their topic ids (HE-E2)', () => {
+  expect(COLLEGE_LAYOUTS.length).toBeGreaterThan(0);
+  for (const l of COLLEGE_LAYOUTS) {
+    // A topic (`<courseId>#<i>`) or its problem type (`…#<i>~<slug>`), in LAYOUTS.
+    expect(l.id).toMatch(/^he\.[\w-]+\.[\w-]+#\d+(~[\w-]+)?$/);
+    expect(LAYOUTS).toContain(l);
+    expect(getLayout(l.id)).toBe(l);
+    expect(getPage(l.id)).toBe(l);
+    if (l.id.includes('~')) {
+      expect(getProblemType(l.id)?.topic?.key).toBe(moduleOwner(l.id));
+      expect(problemTypes(moduleOwner(l.id)).map((t) => t.id)).toContain(l.id);
+    }
+  }
+});
+
 describe.each(pages(LAYOUTS))('layout %s', (id, l) => {
   if (isStandIn(id)) return void it.skip('no pages in scope', () => {});
-  it('belongs to a skill, with a title and use line when it is a problem type', () => {
-    expect(getSkill(moduleOwner(l.id))).toBeDefined();
+  it('belongs to a skill or course topic, with a title and use line when it is a problem type', () => {
+    expect(getSkill(moduleOwner(l.id)) ?? topicOf(moduleOwner(l.id))).toBeDefined();
     if (l.id.includes('~')) {
       expect(l.title).toBeTruthy();
       expect(l.use).toMatch(/^Use this/);
@@ -167,6 +198,11 @@ describe.each(pages(LAYOUTS))('layout %s', (id, l) => {
         // Every stage has a span, except that the last may be the end point (a frog).
         if (l.totalLabel) {
           expect(l.stages.slice(0, -1).every((s) => s.span !== undefined)).toBe(true);
+        }
+        // Signed spans (HE-E25) are whole changes with a net: every stage has one.
+        if (l.signed) {
+          expect(l.stages.every((s) => s.span !== undefined)).toBe(true);
+          expect(l.totalLabel).toBeDefined();
         }
         break;
       case 'explore':
@@ -223,9 +259,10 @@ describe.each(pages(LAYOUTS))('layout %s', (id, l) => {
   });
 
   it('reads at the grade level and is formatted the way the copy editor expects', () => {
-    const limit = wordLimit(gradeOf(l.id));
-    const failures = studentText(l).flatMap(({ where, text, prose }) => {
+    const limit = wordLimit(l.id);
+    const failures = studentText(l).flatMap(({ where, text, prose, code }) => {
       const out: string[] = [];
+      if (code) return out;
       const bad = FORMAT.find(([re]) => re.test(text));
       if (bad) out.push(`${where}: ${bad[1]} — "${text}"`);
       if (prose && !/[.!?”…]$/.test(text))

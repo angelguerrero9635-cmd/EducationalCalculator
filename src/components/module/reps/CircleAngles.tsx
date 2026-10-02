@@ -9,6 +9,7 @@ import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, ChartText, fitLabel, useRep } from './common';
 import { Arcs, inside, type Pt } from './geoMarks';
 import { buildAngles } from './circleAnglesGeo';
+import { worked } from './hskKit';
 
 const n2 = (x: number) => formatNumber(Number(x.toFixed(2)));
 
@@ -327,16 +328,20 @@ export function CircleAngles({ spec, calc }: { spec: CircleTheoremsSpec; calc: C
     if (fig.reason) return `Can't draw it: ${fig.reason}`;
     const sym = (x: string | number | undefined, word: string) =>
       typeof x === 'string' ? rep.variable(x).symbol : word;
+    // Worked with numbers only when every value it uses is known (a "?" is never worked with
+    // the example's number): else the rule alone.
+    const ok = (...xs: (string | number | undefined)[]) =>
+      xs.every((x) => typeof x !== 'string' || rep.known(x));
     if (spec.theorem === 'cyclic') {
       const q = spec.cyclic ?? {};
       const g = fig.angles!;
       const lines = [
         'Opposite angles of an inscribed quadrilateral add to 180°: each is half the arc across from it, and those two arcs make the whole circle.',
         '∠A stands on the blue arc BCD, ∠C on the yellow arc DAB.',
-        `m∠A + m∠C = ${n2(g.A)}° + ${n2(g.C)}° = 180°.`,
+        ...worked(ok(q.A, q.C), `m∠A + m∠C = ${n2(g.A)}° + ${n2(g.C)}° = 180°.`),
       ];
       if (q.B !== undefined || q.D !== undefined)
-        lines.push(`m∠B + m∠D = ${n2(g.B)}° + ${n2(g.D)}° = 180°.`);
+        lines.push(...worked(ok(q.B, q.D), `m∠B + m∠D = ${n2(g.B)}° + ${n2(g.D)}° = 180°.`));
       return lines.join(' · ');
     }
     const a = spec.arcAngle!;
@@ -346,11 +351,17 @@ export function CircleAngles({ spec, calc }: { spec: CircleTheoremsSpec; calc: C
     return fig.where === 1
       ? [
           'Two chords crossing inside a circle: the angle is half the sum of the arcs it and its vertical angle stand on (blue and yellow).',
-          `${x} = (${s1} + ${s2}) ÷ 2 = (${n2(a1)}° + ${n2(a2)}°) ÷ 2 = ${n2(fig.angle!)}°.`,
+          ...worked(
+            ok(...a.arcs, a.angle),
+            `${x} = (${s1} + ${s2}) ÷ 2 = (${n2(a1)}° + ${n2(a2)}°) ÷ 2 = ${n2(fig.angle!)}°.`,
+          ),
         ].join(' · ')
       : [
           'Two secants from a point outside: the angle is half the far arc (blue) minus the near arc (yellow).',
-          `${x} = (${s1} − ${s2}) ÷ 2 = (${n2(a1)}° − ${n2(a2)}°) ÷ 2 = ${n2(fig.angle!)}°.`,
+          ...worked(
+            ok(...a.arcs, a.angle),
+            `${x} = (${s1} − ${s2}) ÷ 2 = (${n2(a1)}° − ${n2(a2)}°) ÷ 2 = ${n2(fig.angle!)}°.`,
+          ),
         ].join(' · ');
   }
 }

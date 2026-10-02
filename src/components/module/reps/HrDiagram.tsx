@@ -318,7 +318,20 @@ export function HrDiagram({
                   onMove={(dx, dy) => {
                     const nx = Math.min(R, Math.max(L, start.current.x + dx / k));
                     const ny = Math.min(BASE, Math.max(TOP, start.current.y + dy / k));
-                    calc.set({ [tid]: rep.snapTo(tid, tOf(nx)), [lid]: rep.snapTo(lid, lOf(ny)) });
+                    // With the radius typed and the luminosity worked out from it, the star
+                    // moves the radius (the two typed values, as a point moves its x and y).
+                    const rid = typeof spec.radius === 'string' ? spec.radius : undefined;
+                    const typed = (id: string) =>
+                      ['given', 'example'].includes(calc.status(id) ?? '');
+                    const viaRadius = rid !== undefined && typed(rid) && !typed(lid);
+                    calc.set(
+                      viaRadius
+                        ? {
+                            [tid]: rep.snapTo(tid, tOf(nx)),
+                            [rid]: rep.snapTo(rid, radiusOf(lOf(ny), tOf(nx))),
+                          }
+                        : { [tid]: rep.snapTo(tid, tOf(nx)), [lid]: rep.snapTo(lid, lOf(ny)) },
+                    );
                   }}
                 />
               ) : null}

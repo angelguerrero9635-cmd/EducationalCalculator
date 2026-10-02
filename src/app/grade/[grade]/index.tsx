@@ -1,12 +1,28 @@
 import { Stack, router, useLocalSearchParams } from 'expo-router';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
-import { EmptyState, SegmentedControl, Tile, TileGrid } from '@/components';
+import {
+  DetailHeader,
+  EmptyState,
+  NotFound,
+  Page,
+  SegmentedControl,
+  Tile,
+  TileGrid,
+} from '@/components';
 import { PageMeta } from '@/components/PageMeta';
 import { gradeMeta } from '@/data/meta';
-import { SUBJECTS, gradeStrands, isGrade, isSubject, subjectLabel } from '@/data/selectors';
-import { gradeLabel, GRADES, type K12Subject } from '@/data/taxonomy';
-import { space, usePalette } from '@/theme';
+import {
+  SUBJECTS,
+  countLabel,
+  gradeStrands,
+  isGrade,
+  isSubject,
+  subjectLabel,
+  trailOf,
+} from '@/data/selectors';
+import { gradeLabel, GRADES, skillsFor, type K12Subject } from '@/data/taxonomy';
+import { space } from '@/theme';
 
 const SEGMENTS = SUBJECTS.map((s) => ({ value: s, label: subjectLabel(s) }));
 
@@ -17,14 +33,13 @@ export function generateStaticParams(): { grade: string }[] {
 
 /** A grade: a box for each strand (topic) of the chosen subject. */
 export default function GradeScreen() {
-  const c = usePalette();
   const params = useLocalSearchParams<{ grade: string; subject?: string }>();
   const grade = String(params.grade);
   // The selected subject lives in the URL so deep links (e.g. Home cards) open the right tab.
   const subject: K12Subject = params.subject && isSubject(params.subject) ? params.subject : 'math';
 
   if (!isGrade(grade)) {
-    return <EmptyState title="Grade not found" message={`There is no grade “${grade}”.`} />;
+    return <NotFound />;
   }
   const strands = gradeStrands(grade, subject);
 
@@ -32,11 +47,17 @@ export default function GradeScreen() {
     <>
       <Stack.Screen options={{ title: gradeLabel(grade) }} />
       <PageMeta {...gradeMeta(grade)} />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={{ backgroundColor: c.background }}
-        contentContainerStyle={styles.page}
-      >
+      <Page>
+        <DetailHeader
+          title={gradeLabel(grade)}
+          lines={[
+            SUBJECTS.map(
+              (s) =>
+                `${countLabel(skillsFor(grade, s).length, 'skill')} in ${subjectLabel(s).toLowerCase()}`,
+            ).join(' · '),
+          ]}
+          trail={trailOf('grade/[grade]/index', { grade })}
+        />
         <View style={styles.segment}>
           <SegmentedControl
             segments={SEGMENTS}
@@ -63,12 +84,11 @@ export default function GradeScreen() {
             title={`No ${subjectLabel(subject).toLowerCase()} skills in this grade yet`}
           />
         )}
-      </ScrollView>
+      </Page>
     </>
   );
 }
 
 const styles = StyleSheet.create({
-  page: { paddingBottom: space.xxl },
-  segment: { padding: space.lg },
+  segment: { paddingHorizontal: space.lg, paddingBottom: space.lg, maxWidth: 480 },
 });

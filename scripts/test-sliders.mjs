@@ -56,7 +56,7 @@ const errors = [];
 page.on('pageerror', (e) => errors.push(e.message));
 await page.goto(base + '/');
 await page
-  .getByText('Skip', { exact: true })
+  .getByText(/^Skip( for now)?$/)
   .click({ timeout: 5000 })
   .catch(() => {});
 

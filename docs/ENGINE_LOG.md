@@ -5,6 +5,364 @@ helpers, pictures, tests, harness) could have prevented are turned into engine w
 next section is written, so each section starts from a better engine than the last. One entry
 per review; each line names the finding and what the engine now does about it.
 
+## HE-E21: integer functions, bases and big integers
+
+- **About 30 computer-engineering pages work in whole numbers (⌈log₂ M⌉ flip-flops, ⌊a ÷ block⌋
+  × block, a mod N queue slot, 101101₂ and 0x2D, −45 in 8 bits, 192.168.10.77/26), and
+  discrete-math#2 counts past 2⁵³; the steps had no lines for them and the harness read them
+  as floats or not at all** (an exact 2⁶⁴ with its last digit wrong would pass; "0x2D" and
+  "192.168.10.77" were unreadable). → `engine/integers.ts` has the functions (exact on BigInt),
+  the lines a student writes for each (floor, ceiling, mod by its definition, ⌈log₂ n⌉ with its
+  bracketing powers, Euclid a line, repeated division with remainders, place value, bits
+  grouped into hex, invert-then-add-1, the signed reading, bit fields by shift and mask, a
+  subnet from its mask, C(n, r) and n! exactly, Stirling), and `harness/integerLines.ts` reads
+  them back with BigInt fractions: each chain of =, ≈, <, ≤, > and ≥ must hold (exactly where
+  every number is exact), a division with its remainder must be one, a flipped pattern must flip
+  the line before, a "Signed" line reads its patterns in two's complement, and an octet past
+  255 or a digit 8 in base 8 is an error. `sampling.test.ts` runs it on every step's lines from
+  the first with a whole-number mark (one added loop) and reads a result written 101101₂, 0x2D,
+  a quad or /26; `evaluate` reads those forms in a substituted line (one pre-pass line).
+- **A whole number shown in a base is still one value** → `VariableDef.base` (radix, width in
+  bits or the width's id, 0x prefix, groups of four; or `'ipv4'`, `'prefix'`): `formatNumber`
+  shows it, the box parses the base's digits (`parseValue`), `parseNumber` also reads an
+  explicit 101101₂, 0x2D or quad (refused before, so no K–12 input changes). A pattern of −N is
+  its unsigned value 2ⁿ − N (`twosRule`), so the solver stays in whole numbers from 0.
+- **A count past 2⁵³ printed in full was rounded** (`full` shows 12 figures of a float) →
+  `exactInteger(id, f)` as a variable's `exact` prints the BigInt digits when they are the
+  solver's value.
+- **A floor or a gcd has many inputs for one output** → `integerRule` solves forward only
+  (`() => undefined` for the inputs), and both ways only where one value answers (log₂ ↔ 2ⁿ,
+  a number ↔ its digits, N ↔ its pattern); a block that isn't a power of 2 says so.
+- **Grades 4–5 write "17 ÷ 5 = 3, remainder 2"**: the reader joins the remainder to its
+  division, so those lines read as true divisions, not 17 ÷ 5 = 3.
+- Left: box values past 2⁵³ (the solver's floats), a signed-pattern box, the P17 and P18
+  pictures (docs/HE_NEEDS.md).
+- Tests: `engine/__tests__/integers.test.ts` (each function and line, the plans' examples: 45 →
+  101101₂ = 2D₁₆, 8-bit −45 = 11010011₂ = D3₁₆, 192.168.10.77/26, C(60, 30), 2⁶⁴; boxes and
+  `parseNumber` unchanged on what they read before), `__tests__/integerLines.test.ts` (every
+  writer over 150 seeded inputs reads true; over 90% of single-digit changes are caught, the
+  rest still true lines; K–12 lines with mod, gcd, remainders and chemistry subscripts read as
+  before; test-only subnet, binary and counting pages pass the sampling checks). Pages tested by
+  id: m.11.complex-numbers~powers-of-i, m.6.gcf-lcm, m.4.place-value-million, m.5.powers-of-ten,
+  m.4.factors-multiples~multiples, m.4.fraction-times-whole, m.4.unit-conversion~two-units,
+  m.5.convert-units~multi-step and every `he.` page; no K–12 text changed.
+
+## HE-E19: angles as units, atan2, bearings and DMS
+
+- **An angle was a number with a ° label**, so no page could take 4°30′00″ or N 52°10′ E, show a
+  surveyor's angle, or convert degrees to radians in its steps; each grade file kept its own
+  `sin(d * RAD)`. → `engine/angles.ts` (trig in degrees, `atan2D`, `azimuthD`, both answers of
+  sin⁻¹ and cos⁻¹, DMS and bearing text and parsing) and the `angle` dimension in `units.ts` (°,
+  rad, grad, ′, ″, rev, mrad, μrad, all `listed`: K–12 labels unchanged). `VariableDef.angleForm`
+  shows a value as DMS, a bearing or an azimuth in boxes and steps and takes it typed;
+  `conversionRule` writes "180° = π rad" in a conversion line.
+- **tan⁻¹(y ÷ x) gives the wrong quadrant when x < 0**, and nothing checked it. → `atan2Lines`
+  names the quadrant ("(−8, 6) is in quadrant II: add 180°") and writes the turn; `bearingLines`
+  does the same for a compass bearing; `atan2Rule` and `bearingRule` (`data/modules/angles.ts`)
+  make them a page's forward-only rule. The harness (`harness/angles.ts`) checks the quadrant and
+  compass claims against the signs and fails a tan⁻¹ of a negative bottom left unturned.
+- **The evaluator stopped at a degree mark** outside sin( ) and could not read rad, atan2, DMS or
+  bearings. → `evaluate` reads them (a lone 12.5′ is its number; 4°30′ is 4.5°), and a line marked
+  "rad" reads in radians on a page of degrees. DMS sides are compared to half their last part
+  (one second), not the 0.2% of display rounding.
+- **A template's "−0" rule dropped the sign of −0°00′05″** → `renderTemplate` keeps a minus before
+  a DMS angle; `sin({α})` with a DMS α no longer adds a second °.
+- K–12 text unchanged (every listed unit is a label without `units`; no K–12 value has
+  `angleForm`). Ids run: m.10.right-triangle-trig, m.10.law-sines-cosines, m.11.unit-circle,
+  m.12.vectors, s.11.kinematics-2d, s.11.dynamics-vectors and every `he.` page; tests
+  `engine/__tests__/angles.test.ts`, `harness/__tests__/angles.test.ts` (every form on 300 random
+  points, each wrong variant caught), `__tests__/angles.test.ts` (test-only plan pages).
+
+## HE-E14, HE-E18: trial steps, closed forms read from a rule, logs and powers in the chain
+
+- **A value with no rearrangement read "Try numbers until both sides match." and showed no
+  work** (240 pages and demos had such a step when a value was typed in place of an opening
+  one; the growth rate that empties a reserve, k in T = ln(1 + kQ ÷ r) ÷ k, on
+  s.12.resource-management~growing-use). →
+  `trialWork` (`src/data/modules/trials.ts`) writes the tries, each line worked as printed and
+  each next guess from the printed numbers: two round guesses, then the secant method ("Try
+  k = 0.03: ln(1 + 0.03 × 600 ÷ 15) ÷ 0.03 = 26.28 (want 25)"), until the guess stops changing
+  at one figure past the answer's. A relation can name `bisection`, `fixed-point` (Kepler's
+  E = M + e sin E: "E₁ = 1 + 0.5 × sin(1) = 1.4207") or `newton` (f and its slope) per value in
+  `trials`. K–5 keep their words; a try that can't be worked as printed keeps the old line.
+- **The harness never read such a step** ("solved numerically (not evaluated)", a minor). →
+  `harness/trials.ts` works each try out again, checks each iteration starts from the value
+  before it, that the tries close in on the target and that the last is the answer; the
+  sampling test runs it on every trial step (a step with no tries is an error).
+- **Many of those values had a closed form nobody wrote** (a × x + b = c × x + d for a; t in
+  A = P × gᵗ; n in a geometric sum). → `isolate` (`src/engine/isolate.ts`) reads the display
+  as arithmetic and undoes each operation round a value that appears once (ln or log₁₀ for an
+  exponent, a root for a base, ± for even powers and |x|; never sin, cos or tan). The solver
+  uses it before the root finder, kept only where the relation holds; a step with no text of
+  its own shows its rearrangement and how in words ("Divide both sides by P, then take log₁₀
+  of both sides and divide by log₁₀ g."). A whole product or sum goes in one move ("divide both
+  sides by (½ × v²)", never "… by v², then by ½"); logs undo a power only from Algebra 2
+  (Grade 11) or where the rule already has one, and Grades 6–8 only arithmetic, squares and
+  cubes: a Grade 8 or 9 exponent is found by trial ("Try t = 4: …"), as those grades do it.
+- **The simplifying chain stopped at the first log or power of e** ("t = ln(1.5) ÷ 0.05" and
+  no more). → `simplifyChain` writes ln, log, e^, a power that isn't whole, ∛ and ∜ to 4
+  figures (more when the last line would be over 2 parts in 10⁴ off) and goes on, rounding the
+  arithmetic inside them too: "t = log₁₀(1.1255) ÷ log₁₀(1.03)", "t = 0.051345 ÷ 0.012837".
+  √98 and sin 40° still end the working.
+- **The harness read "log₁₀ 6.1394 × 10⁸" as log₁₀ 6.1394, times 10⁸** (m.11.logarithms
+  sampled large x). → `evaluate` takes a number in scientific notation after a log as one
+  number, as the steps work it (a lone ² or ³ stays a power).
+
+## HE-E6: calculus lines and notation in steps
+
+- **The solver is numeric, so a calculus page states closed forms, and nothing read them**: a
+  form line "V′(x) = 12x² − 240x + 900" was unreadable to the harness, an antiderivative at its
+  limits or a limit could not be checked, and a wrong derivative would pass. →
+  `harness/calculus.ts` reads a walkthrough's lines (and checks) in order, clause by clause
+  (" → ", ", so ", "; "), and checks each numerically, never symbolically: a **form** with its free
+  variable (`f(x) = …`, `y(t) = …`, `f(x, y) = …`); a **derivative form** (`f′(x)`, `f″(x)`,
+  `dy/dx`, `d²y/dx²`, `d/dx (…)`, `f_x(x, y)`, `f_xy`, `∂f/∂x`, `∂f ÷ ∂y`, `∂²f/∂x∂y`) against
+  central differences of the stated function at seven sample points (or read there, when the
+  function isn't stated); a **value** at a point (`f′(2) = 3(2)² − 4 = 8`, `f_x(1, 2)`,
+  `∂f/∂x at (1, 2)`, `dy/dx at x = 2`, `y(3)`, `y′(0)`) against every side that reads; a
+  **definite integral** with its antiderivative (`∫ from 0 to 2 of x² dx = [x³ ÷ 3] from 0 to 2 = 8 ÷ 3`:
+  quadrature, F(b) − F(a), and F′ = the integrand between the limits, so an antiderivative
+  right only at its ends fails) and an **indefinite** one (`∫ 3x² dx = x³ + C`); a **limit**
+  (`lim x → 2 of …`, `lim as h → 0 of …`, `x → 0⁺`, `x → ∞`); an **ODE** with its closed-form
+  solution (`y′ = −0.2y` with `y(t) = 50e^(−0.2t)`, `y″ + 2y′ + 5y = 0` with the under-,
+  critically and overdamped solutions), its residual within 2 parts in 1000 of its terms (a
+  frequency shown to 4 figures passes). A clause in letters (a rule: "f′(x) = n·c·xⁿ⁻¹",
+  "∫ from a to b of f(x) dx") is not checked.
+- **`evaluate` reads the new pieces anywhere** (substituted lines and checks too): `[F] from a
+to b` as F(b) − F(a) (its one letter is its variable), `lim … of …` evaluated near the point
+  (from both sides, extrapolated from h and h/2; slow ones like √x at 0⁺ from 10⁻⁴, 10⁻⁶, 10⁻⁸;
+  far out for ∞; sides that disagree or values that run off give no limit), and forms with
+  their letters put in (`evaluateAt`, `plugIn`, `implicitTimes`: 3(2)², 50e^(…), 2cos(…),
+  (1 + 3t)e^(−2t), 2xy; never 1e-7 or sin⁻¹). The ∫ integrand uses the same reading, so
+  `(50e^(−0.2t)) dt` reads now.
+- **Pages need to write form lines with their signs** → `college/forms.ts`: `termsForm`,
+  `polyForm([12, −240, 900])` = "12x² − 240x + 900", `polyDerivative`, `expForm(50, −0.2)` =
+  "50e^(−0.2t)". Put form lines in a step's `work` (or a relation's `check`); `how` is a
+  sentence and is not read.
+- **Grades 9–12 primes are names, not derivatives** (x′ and y″ for image points, A′ and C′ on
+  rotated conics). → the sampling test runs the checker only on college pages and lines with a
+  calculus mark (`CALCULUS_MARK`: ∫, ∂, lim, `] from … to`, d/dx, dy/dx, f′(…), f_x(…)); an ODE
+  is read only when its function is stated as a form in one variable; a substituted line with
+  numbers only ("f′(x) = 2 × 1 × 1.5") is a value at the page's point, not a form. K–12 step
+  text is unchanged (no step-building code changed); m.12 limits-intro, matrix-transformations,
+  polar-conics~rotated-equation and m.10 rigid-motions run clean.
+- **Left:** typesetting. `toLatex` already stacks ∂U ÷ ∂P and draws ∫ with limits; d/dx and
+  dy/dx written with "/", `[F] from a to b` (an evaluation bar) and `lim x → a` (a limit under
+  "lim") are shown as text until `latex.ts` and `MathLine` gain those nodes.
+- Tests: `harness/__tests__/calculus.test.ts` (each form right and wrong, the three damped
+  regimes, rules in letters and K–12 primes left alone, the forms `college/forms.ts` writes),
+  `evaluate.test.ts`; the pages by id: every `he.` page, m.12.limits-intro,
+  m.12.matrix-transformations, m.12.polar-conics~rotated-equation, m.10.rigid-motions.
+
+## E33: category answers, relations that switch, and roots a rule keeps (HE-E11, E12, E15)
+
+- **A college answer is often a word worked out from thresholds** (laminar or turbulent,
+  underdamped, LOS C, converges), and only s.9's silent/missense/nonsense did that, with its
+  own phrases. → `engine/cases.ts`: `categoryVariable` (the words coded 1, 2, 3 in `labels`,
+  derived, or `pick: true` for a choice box) and `classify` (bands, first match wins, each
+  with its test as a template, "{Re} ≥ 2300"). The box, the steps and the check show the word
+  (the `labels` path s.9 already used); the step's case line says why ("3400 ≥ 2300:
+  turbulent") and the check repeats the test ("3400 ≥ 2300, so turbulent"). One way: the
+  thresholds are never worked backward. s.9.biotechnology~substitution is unchanged (its
+  effect is from codons, not thresholds; it keeps its phrases).
+- **A relation that switches at a limit or by a choice had no way to be inverted case by
+  case** (64 ÷ Re below 2,300, Blasius above; order 0, 1 or 2; subsonic or supersonic). →
+  `Relation.branches` (`Branch`: name, `when` template, `applies`, residual, optional `solve`,
+  `display`, `check`) built by `piecewise`. Its residual is the case that applies; a value
+  every case rearranges for is solved exactly, each answer kept only where its own case
+  applies (f = 0.05 gives Re = 1,280, not the Blasius 1,596, which would be laminar); any other
+  value is found in `solve.ts` case by case (a choice box's codes tried, so the order the
+  numbers fit is found; else roots of each case's formula across the range). `TraceStep.branch`
+  names the case; `branchOf` and `byCase` give it to step text.
+- **The step must say which case applies.** → `buildSteps` (one additive hook): a step from a
+  relation with `branches` shows that case's `display` as its rule and opens its work with the
+  case line, printed with more figures when the shown ones would read false (2,299.96 is
+  "2299.96 < 2300", not "2,300 < 2,300"); the check uses the case's `check` or `display`. A
+  case line already shown in an earlier step is not repeated. No page has `branches` yet, so
+  no K–12 walkthrough changes (the units and unit-set suites build every page's steps).
+- **Two or three physical roots** (the ICE quadratic's negative root, a cubic equation of
+  state, σ₁ ≥ σ₂ ≥ σ₃). → `realRoots` (closed-form quadratics and cubics, three real roots by
+  the cosine rule so a symmetric tensor never loses a pair to rounding, a repeated root as
+  often as it repeats; Durand–Kerner above degree 3; Newton-polished), `rootRule` (the root a
+  stated rule keeps: a test, or least, greatest, median; the step writes the quadratic formula
+  with the sign kept, or "greatest of −1, 2, 5" for a cubic, then "Rejected: 0.139, since x
+  must leave every concentration at least 0"; inputs worked back numerically unless
+  `backward: false`) and `orderedRoots` (σ₁, σ₂, σ₃ or ω₁ < ω₂, one way). A branch the
+  student picks (subsonic or supersonic, vapor or liquid) is a `piecewise` case on a
+  `categoryVariable({ pick: true })`.
+- **The harness must check the word and the case.** → `harness/cases.ts` `caseIssues`, hooked
+  into `sampling.test.ts`: the case named is the one the values are in, its comparisons hold
+  as printed (`comparisonHolds`, also used by `buildSteps`), no other case is named, and a
+  category answer reads as its code's word (then its substituted line is not read by phrases).
+- Tests: `engine/__tests__/cases.test.ts` (roots, friction factor both ways and numerically,
+  reaction order by choice and found back, damping regime, ICE root and K back, principal
+  stresses with a double root, A/A* subsonic and supersonic), `harness/__tests__/cases.test.ts`
+  (walkthroughs of synthetic pages: case lines, words, checks, quadratic and rank lines read by
+  the harness). Pages run by id: m.9.quadratic-formula, m.10.law-sines-cosines,
+  m.11.polynomial-equations, s.9.biotechnology~substitution, s.10.atomic-structure~ions,
+  s.10.electrons-in-atoms~ions, s.10.rates-equilibrium, s.10.acids-bases, every `he.` page; the
+  engine suites.
+
+## HE-E16, HE-E17: linear algebra and complex values in steps, read back by the harness
+
+- **About 50 college pages need matrix, vector and eigenvalue lines and 8 need complex
+  arithmetic, and the harness read none of them** (a work line was checked only when it was a
+  sum: `[[2, 1], [3, 4]] × ⟨5, −1⟩ = ⟨9, 11⟩` or "(30 + j40) ÷ (1 − j2) = −10 + j20" could have
+  been wrong unseen, and so could Grade 11's "(2 + 3i)(1 − 4i) = 2 − 8i + 3i − 12i²"). →
+  `engine/linalg.ts` and `engine/complex.ts` write the lines (products, determinants, Cramer,
+  `[A | I]` and reduced echelon form one row operation a line, rank and nullity, eigenvalues and
+  eigenvectors, dot, cross, projection; complex sums, products, quotients by the conjugate,
+  polar products and quotients, polar ↔ rectangular), and `harness/algebraLines.ts` reads every
+  form back: each chain of equal sides must hold (exactly on a line of whole numbers and
+  fractions, within display rounding on one with decimals or angles), a λ polynomial at four
+  values of λ, ± as both signs, and each row operation against the matrix before it.
+  `sampling.test.ts` runs it on every step's lines (one added loop); `evaluate` reads Re(…),
+  Im(…), `|a + jb|` and `det [[…]]` (one pre-pass line).
+- **The solver has numbers only, so a matrix or a phasor was nine or two unrelated values.** →
+  `written.ts`: `matrixVariables`, `vectorVariables`, `complexVariables`, `polarVariables` give
+  a group (counted once toward the 10 values), `cramerRules` solves A x = b with its lines, and
+  `complexRule` works a complex value as one: its real part's step shows the arithmetic, its
+  imaginary part's ends "→ Z = 40 − j30 Ω = 50∠−36.87° Ω".
+- **A rounded number can pass for a fraction** (49.6488 is 34208/689 to 10⁻⁹ of its top):
+  `exactShow` writes a fraction only when the value is one to 10⁻¹⁰, and a magnitude that is a
+  fraction is bracketed before ∠ ((2/5)∠−90°, never 2/5∠−90°, which reads 2 ÷ (5∠−90°)).
+- **A factor written beside another must be bracketed even when it is one number**: the
+  quotient line read "(−7 + 5i)4 ÷ (44)" for a real bottom, and "j6* = −j6" conjugated the 6.
+  → `complexText` products and conjugates bracket every factor.
+- **A page whose example doesn't hold exactly loses its notes** (`units.coherent`): an angle
+  typed as 36.87° in an example makes E = V + jXₛI miss by 10⁻⁵, and the one-value note goes.
+  Page builders take an example angle from its exact pair (the angle of 0.8 − j0.6).
+- Left: 4 × 4 cofactor lines, K − ω²M, a cubic's surd roots, a row-operation page helper; a
+  box that takes "8 + j6" as one value, complex values found backwards, α ± βi as one solver
+  value (docs/HE_NEEDS.md).
+- Tests: `engine/__tests__/complex.test.ts`, `linalg.test.ts` (the plans' examples: LA#0–LA#4,
+  10∠36.87° = 8 + j6, 30 + j40 over 1 − j2), `__tests__/algebraLines.test.ts` (every builder
+  over 150 seeded inputs reads true; a wrong number in any line read is caught, over 1,000
+  lines; Grade 11's product lines read; test-only pages for input impedance, a synchronous
+  generator and a 3 × 3 Cramer system). Pages tested by id: m.12.matrices,
+  m.12.matrix-transformations, m.12.polar, m.12.vectors, m.11.complex-numbers, every college
+  page; no K–12 text changed.
+
+## E31: college units, temperature differences, unit sets and constants (HE-E5, E26, E9)
+
+- **The college plans need about 300 units the registry lacked, and a temperature difference
+  converted like a thermometer reading** (a rise of 10 °C shown as 50 °F; `kJ/(kg·K)` and ΔT_lm
+  pages blocked). → `units.ts` adds 298 units in 63 dimensions (stress, moment, line load,
+  second moment, specific energy, conductivity, film coefficient, viscosity, flows, rpm, Hz,
+  inductance, field, conductance, VA and var, dB/dBm/dBi, pu, bits and bytes, molarity, mass
+  concentration, molar energy, rate constants, cm⁻¹, Da, dose, activity, traffic…) and a
+  `temperatureDifference` dimension: `difference: true` on a value makes `getUnit`, `convert`,
+  `unitInSystem` and the conversion line read K, °C, °F and R without the offset. dBm/dBW and
+  dBi/dBd are affine within their own dimensions; years convert to seconds.
+- **New units must not change a K–12 page** (s.10 writes g/mol, u, nm and kJ/mol as labels,
+  s.11 N·m and N/m, which have US counterparts now). → every added unit is `listed`: a menu,
+  a system switch and a conversion only on a value listing another unit beside it, or on a page
+  with a unit set (`unitHere`). Checked by comparing every page's unit options, menus, shown
+  units and factors in all three systems before and after: identical.
+- **Solid mechanics reads in N–mm–MPa or kip–in–ksi, not SI base** (HE-E26). → `unitSets.ts`
+  and `ModuleDef.unitSet`; the unit context shows a page's values in its set for the chosen
+  system, so the US steps are written in kip, in² and ksi with no conversion lines, and
+  `unitSetProblems` keeps every page that names a set honest.
+- **Constants were typed per page, and g must be 9.81 on college pages and 9.8 on K–12**
+  (decision 1). → `constants.ts`: one registry with symbols, printed values and the precise
+  values, `gFor(pageId)`, `constantLine` and `readConstant` for the harness.
+- **The absolute-temperature menu is still a scale only**: the unit context converts by a
+  factor, so a thermometer reading offered in both °C and K would show the wrong number. No
+  page lists both today; a page that needs it waits for an affine unit context.
+- Tests: `units.test.ts` (college conversions, logarithmic and reactive units kept apart, ΔT
+  against T, K–12 labels unchanged), `unitSets.test.ts`, `constants.test.ts`; the pages tested
+  by id: s.11 rotation, oscillations, thermodynamics; s.12 surface-processes, climate-systems;
+  s.10 entropy-free-energy, nuclear-chemistry, gas-laws; m.6 unit-rates; m.7
+  proportional-relationships; s.8 newtons-laws; every college page.
+
+## E32: the four college blockers (HE-E1–E4) and the pilots redone
+
+- **College pages had one file, no problem types, no layouts and no value cap**
+  (docs/HE_NEEDS.md HE-E1–E4: 1,456 planned pages blocked). → `college.ts` is one file per field
+  (`college/<field>.ts`, `layouts/college<Field>.ts`; `scripts/college-files.mjs` reads a
+  course's home field from taxonomy.ts and creates a missing file for `new-module` and
+  `promote-demo`). `problemTypes` and `getProblemType` take a topic key as they take a skill id
+  (`ProblemType.owner`, `.topic`; `.skill` is now optional), and every view that lists a
+  skill's types lists a topic's: the topic page (its types as tiles, a type's related lessons),
+  the side menu, search, recents, the nav bar (a type's back button goes to its topic), page
+  meta, the matcher (`MatchResult.owner` replaces `.skill`) and the corpus script. A type lives
+  at `/course/<id>/topic/<i>~<slug>` (`topicRoute(course, i, slug)`, `pageRoute(id)`) and is
+  pre-rendered (`TOPIC_TYPE_IDS`; a review build's PRERENDER_PREFIX now limits topic pages
+  too). College layouts are read under `#` ids. `standards.test.ts` holds `he.` pages to the
+  Grade 12 rules (35 words, 10 values, 2–4 assumptions); `layouts.test.ts` reads them at 35.
+- **The problem-type id lists are computed when selectors.ts loads**, and the first topic type
+  made them call `getCourse`, a `const` defined further down (a temporal-dead-zone crash in
+  every suite that imports the menu). → `getCourse` and `topicKey` are function declarations.
+- **The kinematics pilot on `motionGraph`: a time of −1 × 10⁻⁶ s** (d typed in mm, the
+  quadratic's root a rounding crumb below 0) fails the graph's check, where the old `plot`
+  drew it. → `atLeastZero` (college/shared.ts) reads such a crumb as 0 in each time solver.
+- **A scratch build drew another checkout's routes**: with node_modules symlinked to the main
+  checkout, the shared Metro cache served expo-router's `_ctx` transform from a build there, so
+  the export rendered that checkout's `src/app` with this one's data (no `~` topic pages, and
+  PRERENDER_PREFIX ignored on topics). → Build a copy with its own cache (`TMPDIR=<scratch>`), or
+  `--clear`.
+- Pilots: circuits-1#0 "Resistance 1 (R₁)", "Resistance 2 (R₂)"; human-geography#0 trimmed to 9
+  values, `~rates` (P₀, B, D, CBR, CDR, RNI, T₂; bars of CBR and CDR) and the plan's
+  `~transition` sequence; university-1#0 on the s.11 v–t graph with Δx and g = 9.81; calc-1#1
+  waits for HC37. Tested by id (`MODULE_IDS=he.`) and in `src/data/__tests__`.
+
+## HE-E7, HE-E8, HE-E10, HE-E25: college symbols, number range, harness phrases, layout text
+
+Engine work the college plans asked for before their pages are built (`docs/HE_NEEDS.md`). Each
+change was checked against every step line in the review dumps (about 61,600 K–12 lines): no
+number shown, no value the harness reads and no line of a page below Grade 9 changed; the
+Grades 9–12 lines that changed were wrong before (below).
+
+- **Symbols (HE-E7).** `toLatex` typesets "∫ from a to b of (body) dx" as ∫ with its limits
+  (`\int`, drawn by `MathLine` like Σ), keeps letters with combining marks (ṁ, Q̇, x̂, p̂, x̄,
+  F⃗) and subscripts of several letters, Greek or in two parts (σ_max, T_wall, T_h,in) whole,
+  stacks ∂U ÷ ∂P, and raises an exponent with a bracket inside ((P₂ ÷ P₁)^((k − 1)/k),
+  10^(1.5 × (−4))). `subscripts.ts` takes marks and primes on the base, 8-character subscripts
+  and a comma part. `spokenMath` says the integral, ∂, ∇, floor and ceiling, dotted, hatted,
+  barred and arrowed letters, and subscripts ("T sub wall", never an underscore).
+- **K–12 fixes found on the way.** A stacked division drew a function's name alone over its
+  bracket (m.10.law-sines-cosines and its five types: 9 × sin(80°) ÷ sin(35°) was "sin" under
+  "(80°)"; m.10.right-triangle-trig~elevation, m.11.logarithms~change-of-base log₁₀ 12 ÷ log₁₀ 2,
+  m.11.exp-log-equations~continuous, m.11.pythagorean-identities~tangent, m.12.conics c ÷ max(a,
+  b), m.12.induction~divisible f(n) ÷ 3, s.11.circuits~parallel, s.11.dynamics-vectors ~incline
+  and ~rope, s.12.resource-management~growing-use ln(1.8) ÷ 0.02, the P(A ∩ B) ÷ P(A) lines): the
+  function now stays whole. Marked symbols (p̂, x̄, d̄) were upright beside italic letters and
+  kept a division inline (m.9.data-displays and ~standard-deviation, ~histogram-from-list;
+  m.11.normal-distribution~margin; m.12.sampling-distributions and its types, confidence-intervals
+  and its types, hypothesis-testing and its types, anova~groups; s.10.measurement~accuracy): now
+  italic like every symbol, divisions stacked. `1/n₁^2` read as 1/n then a stray "₁^2"
+  (s.10.electrons-in-atoms~emission, s.11.modern-physics~hydrogen-lines). (a² + b²)^(n ÷ 2) showed
+  a raw caret (m.12.polar~de-moivre); s.12.earth-interior~magnitude 10^(1.5 × (−4)) too. The
+  sequence hint lowered a whole label ("gives off co₂", "loads nadh", "prophase i", "an arc from
+  a": s.9.cellular-energy~stages, s.9.mitosis-meiosis~cell-cycle and ~meiosis, m.10.constructions,
+  m.10.proofs, s.8.em-spectrum~spectrum-order): it now uses `lowerFirst`. A fraction of a letter
+  with a subscript split the subscript off (`1/R₁` drew 1/R then "₁"; s.11.circuits~parallel,
+  ~series, ~mixed; s.10.gas-laws~charles, ~gay-lussac, ~effusion, ~partial-pressure;
+  s.11.rotation~seesaw `τ/F₁`; s.11.optics~critical `n₂/n₁`; s.11.modern-physics~relativity,
+  ~photoelectric; s.12.cosmology `1/H₀`; s.10 acids-bases ~titration,
+  atomic-structure~average-mass, molarity~percent-mass, nuclear-chemistry,
+  phase-colligative~vapor-pressure, thermochemistry~heating-curve), and a letter's power was drawn
+  outside its fraction (`E/A²` as (E/A)²: s.11.oscillations, ~hooke): both now stack right; `1/2²`
+  keeps its old drawing. Screen readers heard "A underscore ft" on typeset lines with a subscript;
+  they now hear "A sub ft" (spoken labels only, every page with an underscore subscript).
+- **Number range (HE-E10).** Values under 10⁻⁴ compare relative to their size in the harness
+  (half a percent); the solver's zero floor for a scientific value with no step is 10⁻⁴⁵;
+  "1.5 × 10^37" parses exactly; new `decimals` and `signed` display options with `figuresIn`,
+  `logDecimals`, `signedText` and `engineering`; scientific notation never wraps between its
+  parts on screen.
+- **Harness phrases (HE-E8).** `phrasesHe.ts`: n!!, phasors (∠ and j), dB, dBm and dBi, the sign
+  words (tension, compression, sagging, hogging, heat in and out, work in and out), label words,
+  LMTD; `evaluate.ts`: integrals with limits by Gauss–Legendre quadrature, log as base 10, log₂,
+  logs without brackets, a number before a function multiplying it, min and max. Seven K–12
+  lines that could not be read now can (β = 70 dB, ln 1.5); none changed value.
+- **Layout text (HE-E25).** `code: true` on sorts and sequences (a code font, exactly as
+  written, no copy-editing checks); `signed: true` on sequences (signed spans and a net total);
+  the reading check counts a formula as one word.
+- Tested: the engine and harness unit suites; by id m.10.law-sines-cosines,
+  m.12.hypothesis-testing, m.9.data-displays~standard-deviation, s.11.modern-physics,
+  s.10.electrons-in-atoms, s.10.acids-bases, s.10.mole, s.11.electrostatics, s.11.optics,
+  s.11.circular-gravitation, s.11.circuits, s.12.starlight-spectra; `layouts.test.ts` in full.
+
 ## E30: checks with ln, log or e^ printed worked-out values with their extra figures
 
 - **A check whose right side has a logarithm or e to a power kept its extra figures**

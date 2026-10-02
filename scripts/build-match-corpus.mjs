@@ -1,6 +1,6 @@
-// Word weights per skill for the problem matcher (src/data/match.ts), derived from the openly
-// licensed practice problems in research/textbooks/practice (Illustrative Mathematics and
-// OpenSciEd, CC BY 4.0). Only statistics ship: for each skill, the words that set its
+// Word weights per skill (or college course topic) for the problem matcher (src/data/match.ts),
+// derived from the openly licensed practice problems in research/textbooks/practice
+// (Illustrative Mathematics and OpenSciEd, CC BY 4.0). Only statistics ship: for each skill, the words that set its
 // problems apart and how strongly. No problem text is copied. Non-commercial material
 // (Eureka Math) is left out. Writes src/data/matchCorpus.json.
 //   node scripts/build-match-corpus.mjs
@@ -45,9 +45,12 @@ for (const subject of readdirSync(ROOT)) {
     for (const line of readFileSync(join(ROOT, subject, file), 'utf8').split('\n')) {
       if (!line.trim()) continue;
       const r = JSON.parse(line);
-      if (!ALLOWED.has(r.curriculum) || !r.skillId || !r.question) continue;
+      // A K–12 record names its skill; a college record its topic (`topicKey`, <courseId>#<i>),
+      // keyed the same way as the topic's pages in match.ts.
+      const owner = r.skillId ?? r.topicKey;
+      if (!ALLOWED.has(r.curriculum) || !owner || !r.question) continue;
       problems++;
-      const skills = [r.skillId, ...(r.alsoSkills ?? [])];
+      const skills = [owner, ...(r.alsoSkills ?? [])];
       const terms = new Set(tokenize(r.question));
       for (const t of terms) df.set(t, (df.get(t) ?? 0) + 1);
       for (const s of skills) {

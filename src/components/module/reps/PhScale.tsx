@@ -240,7 +240,7 @@ function ScaleView({ spec, rep, calc }: { spec: Scale; rep: Rep; calc: Calculato
       </Canvas>
       <Caption>
         {[
-          `Since pH = −log₁₀[H⁺], here [H⁺] = ${Number.isInteger(ph.value) ? tenTo(-ph.value) : raisedTen(ph.text)} = ${formatNumber(h)} mol/L.`,
+          `Since pH = −log₁₀[H⁺], here [H⁺] = ${Number.isInteger(ph.value) ? tenTo(-ph.value) : raisedTen(ph.text)} = ${ph.known ? formatNumber(h) : '?'} mol/L.`,
           ph.value < 7 - 1e-9
             ? 'Below 7: acidic.'
             : ph.value > 7 + 1e-9
@@ -353,7 +353,7 @@ function TitrationView({ spec, rep, calc }: { spec: Titration; rep: Rep; calc: C
                       <MathChip
                         x={p.sx(veq / 2)}
                         y={p.sy(phAt(veq / 2)) - 12}
-                        text={`half-way: pH ${fmt(phAt(veq / 2))}${Math.abs(phAt(veq / 2) + Math.log10(ka.value)) < 0.05 ? ' = pKₐ' : ''}`}
+                        text={`half-way: pH ${known ? fmt(phAt(veq / 2)) : '?'}${known && Math.abs(phAt(veq / 2) + Math.log10(ka.value)) < 0.05 ? ' = pKₐ' : ''}`}
                         anchor="middle"
                         bold={false}
                         w={w}
@@ -414,8 +414,8 @@ function TitrationView({ spec, rep, calc }: { spec: Titration; rep: Rep; calc: C
       </Canvas>
       <Caption>
         {[
-          `The ${acid} is used up at ${fmt(veq)} ${unit} of ${base}, where the pH is ${phEq === undefined ? '?' : fmt(phEq)}${ka ? ': above 7, since the acid’s partner base is left' : ''}.`,
-          `After ${vb.text} ${unit} of ${base}, the pH is ${fmt(phNow)}.`,
+          `The ${acid} is used up at ${known ? fmt(veq) : '?'} ${unit} of ${base}, where the pH is ${phEq === undefined || !known ? '?' : fmt(phEq)}${ka ? ': above 7, since the acid’s partner base is left' : ''}.`,
+          `After ${vb.text} ${unit} of ${base}, the pH is ${known && vb.known ? fmt(phNow) : '?'}.`,
         ].join(' · ')}
       </Caption>
     </View>

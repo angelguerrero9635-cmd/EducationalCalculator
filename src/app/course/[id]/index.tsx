@@ -1,10 +1,11 @@
 import { Stack, useLocalSearchParams } from 'expo-router';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import {
   Chip,
   DetailHeader,
-  EmptyState,
+  NotFound,
+  Page,
   LockedState,
   RefreshSection,
   SectionHeader,
@@ -21,11 +22,13 @@ import {
   refreshRows,
   skipsFieldLevel,
   topicRoute,
+  countLabel,
+  trailOf,
 } from '@/data/selectors';
 import { topicIcons } from '@/data/icons';
 import { COURSES } from '@/data/taxonomy';
 import { useTrackRecent } from '@/state';
-import { space, usePalette } from '@/theme';
+import { space } from '@/theme';
 
 /** Pre-render every course page (web static rendering). */
 export function generateStaticParams(): { id: string }[] {
@@ -33,23 +36,24 @@ export function generateStaticParams(): { id: string }[] {
 }
 
 export default function CourseScreen() {
-  const c = usePalette();
   const id = String(useLocalSearchParams<{ id: string }>().id);
   const course = getCourse(id);
   useTrackRecent(course?.id);
 
-  if (!course) return <EmptyState title="Course not found" message={id} />;
+  if (!course) return <NotFound />;
   if (isLocked(course.id)) return <LockedState />;
   const icons = topicIcons(course);
 
   return (
-    <ScrollView
-      contentInsetAdjustmentBehavior="automatic"
-      style={{ backgroundColor: c.background }}
-    >
+    <Page>
       <Stack.Screen options={{ title: course.title }} />
       <PageMeta {...courseMeta(course)} />
-      <DetailHeader title={course.title} lines={[`Division: ${divisionLabel(course.division)}`]} />
+      <DetailHeader
+        overline={`College · ${divisionLabel(course.division)}`}
+        title={course.title}
+        lines={[countLabel(course.topics.length, 'topic')]}
+        trail={trailOf('course/[id]/index', { id })}
+      />
       {skipsFieldLevel(course.division) ? null : (
         <View style={styles.chips} accessibilityLabel="Fields">
           {course.fields.map((f) => (
@@ -57,7 +61,7 @@ export default function CourseScreen() {
           ))}
         </View>
       )}
-      <RefreshSection title="Prerequisites" rows={refreshRows(course.id)} />
+      <RefreshSection title="Before this course" rows={refreshRows(course.id)} />
       <SectionHeader title="Topics" />
       <TileGrid>
         {course.topics.map((topic, index) => (
@@ -71,13 +75,11 @@ export default function CourseScreen() {
           />
         ))}
       </TileGrid>
-      <View style={styles.end} />
-    </ScrollView>
+    </Page>
   );
 }
 
 const styles = StyleSheet.create({
-  end: { height: space.xxl },
   chips: {
     flexDirection: 'row',
     flexWrap: 'wrap',

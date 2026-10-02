@@ -16,6 +16,7 @@ import {
   useFrozen,
   useRep,
   Caption,
+  pinHeld,
 } from './common';
 import { quotientText } from './exact';
 import { Steppers } from './Steppers';
@@ -40,8 +41,13 @@ export function SkipCount({ spec, calc }: { spec: Spec; calc: Calculator }) {
   // A number keeps the count fixed too (4 quarters in a minute): nothing to drag or type.
   const countVar = typeof spec.count === 'string' ? spec.count : undefined;
   // How many jumps fit in the total (a quotient): 100 ÷ 3 is 33 jumps and 1/3 of a jump.
+  // (Only with the total and the jump known: never the example's numbers behind a "?".)
   const quotient =
-    !countVar && spec.count === undefined && !spec.second && rep.known(spec.total)
+    !countVar &&
+    spec.count === undefined &&
+    !spec.second &&
+    rep.known(spec.total) &&
+    (!stepVar || rep.known(stepVar))
       ? rep.shown(spec.total) / (stepVar ? rep.shown(stepVar) : (spec.step as number))
       : undefined;
   const part =
@@ -321,18 +327,16 @@ export function SkipCount({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     fit.freeze();
                   }}
                   onEnd={fit.release}
-                  onMove={(dx) =>
+                  onMove={(dx) => {
+                    const n = rep.snapTo(countVar, start.current + (dir * dx) / (px(s) - px(0)));
                     calc.set(
                       {
-                        ...rep.pin(stepVar ? [stepVar] : []),
-                        [countVar]: rep.snapTo(
-                          countVar,
-                          start.current + (dir * dx) / (px(s) - px(0)),
-                        ),
+                        ...pinHeld(calc, rep, stepVar ? [stepVar] : [], { [countVar]: n }),
+                        [countVar]: n,
                       },
                       rep.slide(countVar),
-                    )
-                  }
+                    );
+                  }}
                 />
               ) : null}
             </>

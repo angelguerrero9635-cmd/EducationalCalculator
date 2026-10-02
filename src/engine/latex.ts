@@ -9,10 +9,17 @@
  * `\pow{b}{e}` (a power the text writes b^e), `\sqrt{x}`, `\mathit{x}` (a letter that stands for
  * a number), `\rep{0.1666…}` (a repeating decimal, a bar over its block),
  * `\sum_{k=1}^{n}{body}` (a sum with its limits, which the text writes "Σ from k = 1 to n of
- * (body)") and symbol commands (\times, \div, \le, …).
+ * (body)"), `\int_{a}^{b}{body}` (an integral with its limits, "∫ from a to b of (body) dx")
+ * and symbol commands (\times, \div, \le, \partial, \nabla, …).
+ *
+ * College symbols (HE-E7) are plain text the typesetting keeps whole: dotted and hatted
+ * letters and vector arrows written with combining marks (ṁ, Q̇, x̂, F⃗), bold vectors (𝐅),
+ * primes (f′_c, σ′₃), ∂, ∇, ⌊ ⌋ and ⌈ ⌉, and subscripts of several letters or with a comma
+ * (T_wall, σ_max, ΔT_lm, T_h,in), drawn lowered by the text component.
  */
 
 import { repeatingParts } from './format';
+import { SUBSCRIPT } from './subscripts';
 
 /**
  * Which lines get typeset (from grade.ts): `early` K–2, never; `elementary` Grades 3–6 word
@@ -38,8 +45,19 @@ const SUP = '⁻?[⁰¹²³⁴⁵⁶⁷⁸⁹]+';
 const SUB = '[₀₁₂₃₄₅₆₇₈₉ₜ]*';
 /** A letter right after "number space" is a unit (36 m², 4 V), never a variable. */
 const NOT_UNIT = String.raw`(?<!\d[  ])`;
-/** An operand of a stacked division: a bracket, a number (maybe times a letter), a name. */
-const OPERAND = String.raw`\([^()]*\)|\d[\d,]*(?:\.\d+)?\p{L}?|\p{L}+(?:_[A-Za-z0-9]+)?${SUB}`;
+/**
+ * A subscript written with an underscore: letters or digits, Greek too (σ_max, T_wall, μ_Σ),
+ * maybe a second part after a comma (T_h,in, K_c,u). Never split by the typesetting.
+ */
+const USUB = String.raw`(?:_[\p{L}\d]+(?:,[\p{L}\d]+)?)`;
+/**
+ * An operand of a stacked division: a function of a bracket (sin(30°), ln(ΔT₁ ÷ ΔT₂): never
+ * the name alone over its bracket) or of one number or letter (log₁₀ 2), a bracket, a number (maybe times a letter), a name (with
+ * its marks and subscript, maybe after ∂: ∂U ÷ ∂P).
+ */
+const OPERAND = String.raw`\p{L}+[₀-₉]*\([^()]*\)|(?:ln|log|log₁₀|log₂|sin|cos|tan) (?:\d+(?:\.\d+)?|\p{L}${SUB})(?![\p{L}\p{M}\d(_])|\([^()]*\)|\d[\d,]*(?:\.\d+)?\p{L}?|∂?(?:\p{L}\p{M}*)+′?${USUB}?${SUB}`;
+/** A bracket with one more bracket level inside: ((k − 1)/k), (P₂ ÷ (P₁ + 1)). */
+const NESTED = String.raw`\((?:[^()]|\([^()]*\))*\)`;
 
 const letterBand = (band: MathBand) => band === 'middle' || band === 'standard';
 
@@ -53,31 +71,94 @@ export const SIGMA = new RegExp(
   'gu',
 );
 
-/** The text a screen reader says for a line: "Σ from k = 1 to 8 of …" is "the sum from …". */
+/**
+ * A definite integral with its limits as the steps write it (HE-E7): "∫ from 0 to 2 of (x² + 1)
+ * dx", "∫ from V₁ to V₂ of P dV", "∫ from 0 to X of dX ÷ (k(1 − X))". The limits are one token
+ * each; the body is a bracket (one bracket deep inside, maybe raised to a power) or one term
+ * (sin(t) too), then its d and variable; or d and the variable over a bracket or term.
+ */
+const D_VAR = String.raw`d\p{L}\p{M}*(?:_[\p{L}\d]+)?[₀-₉]*`;
+const INT_TERM = String.raw`\((?:[^()]|\([^()]*\))*\)(?:${SUP}|\^\S+)?|\d*(?:\.\d+)?\p{L}+[₀-₉]*\([^()]*\)|[^\s,;()]*[^\s,;.()]`;
+export const INTEGRAL = new RegExp(
+  String.raw`∫ from (?<lo>[^\s()]+) to (?<hi>[^\s()]+) of (?<body>(?<ib>${INT_TERM}) (?<dv>${D_VAR})(?![\p{L}\p{M}\d_])|(?<dv2>${D_VAR}) ÷ (?<ib2>${INT_TERM}))`,
+  'gu',
+);
+
+/** Capital at the start of a sentence. */
+const sentenceStart = (line: string, at: number) => /^$|[.:;]\s+$/.test(line.slice(0, at));
+
+/** Combining marks over a letter, as they are read: ṁ "m dot", x̂ "x hat", F⃗ "F vector". */
+const MARK_WORDS: Record<string, string> = {
+  '\u0307': 'dot',
+  '\u0308': 'double dot',
+  '\u0302': 'hat',
+  '\u0304': 'bar',
+  '\u0305': 'bar',
+  '\u20D7': 'vector',
+};
+/** Precomposed dotted letters (ṁ, ṅ, ẋ, ẏ) and bars (x̄ has none), read the same way. */
+const PRECOMPOSED: Record<string, string> = {
+  ṁ: 'm dot',
+  ṅ: 'n dot',
+  ẋ: 'x dot',
+  ẏ: 'y dot',
+  ż: 'z dot',
+  ṗ: 'p dot',
+  ṙ: 'r dot',
+  ṡ: 's dot',
+  ṫ: 't dot',
+  ẇ: 'w dot',
+  Ẇ: 'W dot',
+  ŷ: 'y hat',
+  ȳ: 'y bar',
+};
+
+/**
+ * The text a screen reader says for a line: "Σ from k = 1 to 8 of …" is "the sum from …",
+ * "∫ from 0 to 2 of …" "the integral from …"; ∂ is "partial", ∇ "del", ⌊x⌋ "floor of x",
+ * ⌈x⌉ "ceiling of x", a dotted or hatted letter "m dot", "x hat", and a subscript drawn
+ * lowered (T_wall, v_y) "T sub wall", never an underscore.
+ */
 export const spokenMath = (line: string) =>
-  line.replace(/Σ from (?=\p{L} = )/gu, (_, at: number) =>
-    // Capital at the start of a sentence.
-    /^$|[.:;]\s+$/.test(line.slice(0, at)) ? 'The sum from ' : 'the sum from ',
-  );
+  line
+    .replace(/Σ from (?=\p{L} = )/gu, (_, at: number) =>
+      sentenceStart(line, at) ? 'The sum from ' : 'the sum from ',
+    )
+    .replace(/∫ from (?=\S+ to )/gu, (_, at: number) =>
+      sentenceStart(line, at) ? 'The integral from ' : 'the integral from ',
+    )
+    .replace(/∂(?=\S)/g, 'partial ')
+    .replace(/∇·/g, 'del dot ')
+    .replace(/∇×/g, 'del cross ')
+    .replace(/∇(?=\S)/g, 'del ')
+    .replace(/⌊([^⌊⌋]+)⌋/g, 'floor of $1')
+    .replace(/⌈([^⌈⌉]+)⌉/g, 'ceiling of $1')
+    .replace(
+      /(\p{L})([\u0307\u0308\u0302\u0304\u0305\u20D7])/gu,
+      (_, l: string, mark: string) => `${l} ${MARK_WORDS[mark]}`,
+    )
+    .replace(/[ṁṅẋẏżṗṙṡṫẇẆŷȳ]/g, (ch) => PRECOMPOSED[ch]!)
+    .replace(SUBSCRIPT, (_, base: string, sub: string) => `${base} sub ${sub}`);
 
 /** One pattern for everything inside a line that is drawn as math, by band. */
 function atomPattern(band: MathBand): RegExp {
   const letters = letterBand(band);
-  const side = letters ? String.raw`${PART}|${NOT_UNIT}\p{L}` : PART;
+  const side = letters ? String.raw`${PART}|${NOT_UNIT}\p{L}${SUB}` : PART;
   return new RegExp(
     [
       // Mixed number: a whole, one space, a fraction.
       String.raw`(?<![\d/.,])(?<mw>${INT}) (?<mn>${INT})\/(?<md>${INT})${END}`,
       // Fraction: numbers (3/4, 8/?), or from Grade 6 letters one letter over a number (r/100).
-      String.raw`(?<![\d/.,?\p{L}_])(?<fn>${side})\/(?<fd>${side})${END}(?!\p{L})`,
+      String.raw`(?<![\d/.,?\p{L}_])(?<fn>${side})\/(?<fd>${side})${END}(?![\p{L}\p{M}₀-₉_^])(?!(?<=\p{L}\p{M}*[₀-₉]*)[⁰¹²³⁴⁵⁶⁷⁸⁹⁻])`,
       // Power of a bracket: (1 + 0.1)³.
       ...(letters ? [String.raw`\((?<gb>[^()]*)\)(?<ge>${SUP})`] : []),
       // Power of a number, or from Grade 6 letters of one letter (10³, x²; never cm²).
-      String.raw`(?<![\p{L}\d._])(?<pb>\d+(?:\.\d+)?${letters ? String.raw`|${NOT_UNIT}\p{L}(?:_[A-Za-z0-9]+)?${SUB}` : ''})(?<pe>${SUP})`,
+      String.raw`(?<![\p{L}\p{M}\d._])(?<pb>\d+(?:\.\d+)?${letters ? String.raw`|${NOT_UNIT}\p{L}\p{M}*${USUB}?${SUB}` : ''})(?<pe>${SUP})`,
       // A power written with ^ (x^(n − 1), 1.5^1): high school and college.
       ...(band === 'standard'
         ? [
-            String.raw`(?<cb>\([^()]*\)|\d+(?:\.\d+)?|(?<![\p{L}_])\p{L})\^(?<ce>\([^()]*\)|\d+(?:\.\d+)?|\p{L}(?!\p{L}))`,
+            // (the exponent may hold one more bracket: (P₂ ÷ P₁)^((k − 1)/k))
+            String.raw`(?<cb>\([^()]*\)|\d+(?:\.\d+)?|(?<![\p{L}_])\p{L}\p{M}*${USUB}?${SUB})\^(?<ce>${NESTED}|\d+(?:\.\d+)?|\p{L}(?![\p{L}\p{M}]))`,
           ]
         : []),
       // A root written exactly over its bottom (E22): √3/2, 2√31/3, (√6 + √2)/4.
@@ -140,7 +221,7 @@ function atom(m: RegExpMatchArray, band: MathBand, prose: boolean, symbols: stri
 /** The module's one-letter symbols (x, v₀) as a pattern, longest first; '' when none. */
 const symbolPattern = (symbols: string[]) =>
   symbols
-    .filter((s) => new RegExp(`^\\p{L}${SUB}$`, 'u').test(s))
+    .filter((s) => new RegExp(`^\\p{L}\\p{M}*${SUB}$`, 'u').test(s))
     .sort((a, b) => b.length - a.length)
     .map((s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
     .join('|');
@@ -161,7 +242,7 @@ function italics(segs: Seg[], symbols: string[], products: boolean): Seg[] {
   const sym = symbolPattern(symbols);
   if (sym) {
     const re = new RegExp(
-      String.raw`(?<![\p{L}\d._])(?<k>\d+(?:\.\d+)?)?(?<v>(?:${sym})${products ? '{1,3}' : ''})(?![\p{L}\d₀-₉_])`,
+      String.raw`(?<![\p{L}\p{M}\d._])(?<k>\d+(?:\.\d+)?)?(?<v>(?:${sym})${products ? '{1,3}' : ''})(?![\p{L}\p{M}\d₀-₉_])`,
       'gu',
     );
     const one = new RegExp(`^(?:${sym})$`, 'u');
@@ -254,6 +335,12 @@ export function toLatex(
       const index = innerTex(si!, band, [...symbols, si!]);
       return `\\sum_{${index}=${innerTex(lo!, band, symbols)}}^{${innerTex(hi!, band, symbols)}}{${innerTex(sb!, band, [...symbols, si!], true)}}`;
     });
+    // An integral with its limits: ∫, its limits, its body with its d and variable.
+    segs = pass(segs, INTEGRAL, (m) => {
+      const { lo, hi, body, dv, dv2 } = m.groups!;
+      const v = (dv ?? dv2)!.slice(1);
+      return `\\int_{${innerTex(lo!, band, symbols)}}^{${innerTex(hi!, band, symbols)}}{${innerTex(body!, band, [...symbols, v], true)}}`;
+    });
   }
   // Divisions drawn stacked: every one in high school and college; on Grade 6 letter pages only
   // in a line that solves for a letter (4x ÷ 4 = 30 ÷ 4). Never beside a remainder.
@@ -266,12 +353,18 @@ export function toLatex(
   const divide = (band === 'standard' || solving) && !/remainder/.test(line);
   // A bracket raised to a power first, with its own divisions inside: (1 + r ÷ 100)^t.
   if (letterBand(band)) {
-    const caret = band === 'standard' ? String.raw`|\^(?<ce>\d+(?:\.\d+)?|\p{L}(?!\p{L}))` : '';
+    const caret =
+      band === 'standard'
+        ? String.raw`|\^(?<ce>${NESTED}|\d+(?:\.\d+)?|\p{L}(?![\p{L}\p{M}]))`
+        : '';
     segs = pass(
       segs,
       new RegExp(String.raw`\((?<b>[^()]*)\)(?:(?<se>${SUP})${caret})`, 'gu'),
       (m) => {
         const { b, se, ce } = m.groups!;
+        // A root's bracket raised (√(a² + b²)^(1 ÷ n)) keeps its root bar: the root is drawn
+        // first, as before.
+        if (ce?.startsWith('(') && m.input!.slice(0, m.index).endsWith('√')) return undefined;
         const body = `(${innerTex(b!, band, symbols, divide)})`;
         return se
           ? `{${body}}^{${fromSuper(se)}}`
@@ -321,7 +414,9 @@ export type MathNode =
   /** \rep{0.1666…}: a repeating decimal, drawn with a bar over its block (0.16̅). */
   | { t: 'rep'; lead: string; block: string; src: string }
   /** \sum_{k=1}^{n}{body}: Σ with its limits below and above, then its body. */
-  | { t: 'sum'; lower: MathNode[]; upper: MathNode[]; body: MathNode[] };
+  | { t: 'sum'; lower: MathNode[]; upper: MathNode[]; body: MathNode[] }
+  /** \int_{a}^{b}{body}: ∫ with its limits below and above, then its body (with its dx). */
+  | { t: 'int'; lower: MathNode[]; upper: MathNode[]; body: MathNode[] };
 
 /** Symbol commands, drawn as their characters. */
 const SYMBOLS: Record<string, string> = {
@@ -335,6 +430,15 @@ const SYMBOLS: Record<string, string> = {
   approx: '≈',
   pi: 'π',
   to: '→',
+  partial: '∂',
+  nabla: '∇',
+  infty: '∞',
+  hbar: 'ħ',
+  lfloor: '⌊',
+  rfloor: '⌋',
+  lceil: '⌈',
+  rceil: '⌉',
+  angle: '∠',
   ',': ' ',
   ' ': ' ',
   '%': '%',
@@ -394,8 +498,8 @@ export function parseMath(src: string): MathNode[] {
           const parts = repeatingParts(src);
           if (!parts) throw new Error(`not a repeating decimal: ${src}`);
           nodes.push({ t: 'rep', ...parts, src });
-        } else if (name === 'sum') {
-          // \sum_{k=1}^{n}{body}: both limits, then the body, each braced.
+        } else if (name === 'sum' || name === 'int') {
+          // \sum_{k=1}^{n}{body} (or \int): both limits, then the body, each braced.
           const limit = (mark: string) => {
             while (src[i] === ' ') i++;
             if (src[i] !== mark) throw new Error(`\\sum needs ${mark} in "${src}"`);
@@ -404,7 +508,7 @@ export function parseMath(src: string): MathNode[] {
           };
           const lower = limit('_');
           const upper = limit('^');
-          nodes.push({ t: 'sum', lower, upper, body: braced() });
+          nodes.push({ t: name, lower, upper, body: braced() });
         } else if (name === 'sqrt') {
           nodes.push({ t: 'sqrt', body: braced() });
         } else if (name === 'mathit') {
@@ -470,6 +574,8 @@ export function plainMath(nodes: MathNode[]): string {
     } else if (n.t === 'rep') out += n.src;
     else if (n.t === 'sum')
       out += `Σ from ${plainMath(n.lower).replace(/\s*=\s*/, ' = ')} to ${plainMath(n.upper)} of ${plainMath(n.body)}`;
+    else if (n.t === 'int')
+      out += `∫ from ${plainMath(n.lower)} to ${plainMath(n.upper)} of ${plainMath(n.body)}`;
     else out += `√${plainMath(n.body)}`;
   });
   return out;

@@ -49,6 +49,8 @@ export function ChanceTree({ spec, calc }: { spec: TreeChances; calc: Calculator
   const firstRead = spec.first.map(read);
   const secondRead = spec.second.map((r) => r.map(read));
   const known = [...firstRead, ...secondRead.flat()].every((x) => x.known);
+  // With a probability "?" the tree reads "?" on its branches and leaves, not the example's.
+  const drawnP = (p: number) => (known ? probText(p) : '?');
   const pA = branchChances(
     firstRead.map((x) => x.value),
     A,
@@ -126,13 +128,13 @@ export function ChanceTree({ spec, calc }: { spec: TreeChances; calc: Calculator
           ) => {
             const size = chart.small;
             const wide = (t: string) => t.length * size * 0.6 + 8;
-            const full = `${name} = ${probText(p)}`;
+            const full = `${name} = ${drawnP(p)}`;
             const lines =
               wide(full) <= room
                 ? [full]
                 : wide(name) <= room
-                  ? [name, `= ${probText(p)}`]
-                  : [probText(p)];
+                  ? [name, `= ${drawnP(p)}`]
+                  : [drawnP(p)];
             const tw = Math.max(...lines.map(wide));
             const th = lines.length * (size + 3) + 3;
             return (
@@ -255,7 +257,7 @@ export function ChanceTree({ spec, calc }: { spec: TreeChances; calc: Calculator
                   const y = leafY(i * B + j);
                   const lit = onPath(i, j);
                   const pair = `${namesA[i]}, ${namesB[j]}`;
-                  const prod = `${probText(pA[i]!)} × ${probText(pB[i]![j]!)} = ${probText(leafP(i, j))}`;
+                  const prod = `${drawnP(pA[i]!)} × ${drawnP(pB[i]![j]!)} = ${drawnP(leafP(i, j))}`;
                   return (
                     <G key={`l${i}-${j}`}>
                       <Circle cx={xB} cy={y} r={3.5} fill={lit ? c.chartHighlight : c.chartInk} />

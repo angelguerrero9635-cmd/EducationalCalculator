@@ -9,13 +9,19 @@
 // its line or a value land somewhere odd.
 // drags.md marks as **ERROR**: a drag that leaves a "?" where a typed number was, changes or
 // drops a typed value besides one it drives, changes nothing (no box and not the picture, even
-// dragged further), or has a move event over 500 ms; two handles drawn on top of each other; a
-// handle with no drag- test id; and a scene shot under 100 px (not the picture).
+// dragged further, and nothing toward the other end either: a handle at the top of its range
+// moves only down), or has a move event over 500 ms; two handles drawn on top of each other; a
+// handle with no drag- test id; and a scene shot under 100 px (not the picture). Boxes are
+// compared by id (and copy), so a box that comes or goes shifts no other. A handle that names
+// what it sends (data-drives: a wave's crest, a worked-out point) may also move one typed value
+// behind each worked-out value it sends.
 // Then each handle is dragged toward each end (left and down, then right and up, in one press
 // each, 7 growing steps to 240 px), its lines under the 40 px line; **ERROR**: the handle
 // unmounts or leaves the picture mid-drag, a value leaves its box's range (data-min,
 // data-max), the driven value changes per px over 8 times as fast as on any earlier step (a
-// runaway: the axes rescaling under the finger), a page error during the drag, a sentence
+// runaway: the axes rescaling under the finger; a direction box of 0°–360° counts its wrap as
+// the short turn, and a positive value whose ratio per px stays steady is on a log axis, not
+// running away), a page error during the drag, a sentence
 // calling the state impossible after release ("An orbit inside the body is not possible.",
 // "This page only works when …"), and, after the drag to the right, the picture changing when
 // the driven value is typed back as it reads (the picture and the box disagreed).
@@ -25,7 +31,27 @@
 // leaves no "?", the box cleared. The picture's text (svg text and caption) must not then
 // show the example's value of a box now "?" (**ERROR**, naming the value and the text it is
 // in). A number that is also a known box's value, or an axis tick (a bare number, percent,
-// degrees or imaginary tick in a run of evenly spaced ones), is not flagged; 0 is never matched.
+// degrees or imaginary tick in a run of evenly spaced ones, or two on a shared round step at
+// most 5 steps apart: 100 and 300), is not flagged; 0 is never matched, nor a number written
+// onto π or a root ("2π√(m/k)"): a formula's.
+// Nor is a text that reads the same when the "?" box is typed with another number (the same
+// first edit, then the box moved a step of its own size, or doubled or halved, in its range): it
+// does not come from that box ("n = 2" on a ladder, the unit circle's π/4 family, "2V", the
+// 68–95–99.7 brackets); the line notes it as fixed text. Only texts that then change are flagged,
+// and a text of the same shape whose number in that slot is unchanged counts as the same text
+// ("Dollar bills ($1 each): 3" keeps its "$1" while the count moved), as does a number still
+// drawn with the unit after it ("9.8 N/kg", a fixed g), or with the same words up to and just
+// after it in the same slot when the rest changed shape ("Shells: 2, 8, 8" → "…, 8, 1"), or a
+// threshold a letter is compared with ("n < 30" → "n ≥ 30"). Ticks may count a letter: T, 2T,
+// 3T; and a run of three or more whole numbers one apart is a count ("0, 1, 2, 3, …").
+// A worked-out "?" box takes no number, so the other "?" boxes are varied in its place; when no
+// box can be varied, the text stays flagged.
+// Gallery demos (g.…) are opened under /gallery, every other page under /skill. A page whose
+// check fails is one ERROR line; the run goes on (and restarts its server if it stopped). The
+// reports are rewritten after each page. PORT picks the server's port (runs side by side). A
+// renderer that answers nothing (no box read, edit or drag) for 3 minutes (a solver search on
+// every move) is an ERROR too, and the run goes on in a new page; a page with many boxes may
+// take longer in all.
 // Uses the globally installed Playwright and the pre-installed Chromium; serves dist/ itself.
 import { spawn } from 'node:child_process';
 import { mkdirSync, writeFileSync } from 'node:fs';
@@ -45,56 +71,83 @@ const ids = args.filter(
 );
 mkdirSync(join(out, 'scenes'), { recursive: true });
 
-const port = 8900 + Math.floor(Math.random() * 90);
-const server = spawn('node', ['scripts/verify-ssr.mjs', '--serve', String(port)], {
-  stdio: 'ignore',
-});
+// Runs side by side each take their own port (PORT), so one run's server is never another's.
+const port = Number(process.env.PORT) || 8900 + Math.floor(Math.random() * 90);
 const base = `http://localhost:${port}`;
-for (let i = 0; i < 50; i++) {
-  try {
-    await fetch(base);
-    break;
-  } catch {
-    await new Promise((r) => setTimeout(r, 200));
+let server;
+/** Starts (or restarts) the static server for dist/ and waits until it answers. */
+async function serve() {
+  server?.kill();
+  server = spawn('node', ['scripts/verify-ssr.mjs', '--serve', String(port)], {
+    stdio: 'ignore',
+  });
+  for (let i = 0; i < 50; i++) {
+    try {
+      await fetch(base);
+      return;
+    } catch {
+      await new Promise((r) => setTimeout(r, 200));
+    }
   }
 }
+await serve();
 const browser = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium' });
 /** A phone-sized page past the first-launch onboarding, light or dark. */
 async function phone(colorScheme) {
   const p = await browser.newPage({ viewport: { width: 390, height: 900 }, colorScheme });
   await p.goto(base + '/');
   await p
-    .getByText('Skip', { exact: true })
+    .getByText(/^Skip( for now)?$/)
     .click({ timeout: 5000 })
     .catch(() => {});
   return p;
 }
-const page = await phone('light');
 // Page errors (uncaught exceptions), for the end drags.
 const pageErrors = [];
-page.on('pageerror', (e) => pageErrors.push(String(e?.message ?? e).split('\n')[0]));
+/** A fresh phone page that reports its errors and gives up on a hung renderer after 30 s. */
+async function freshPage() {
+  const p = await phone('light');
+  p.setDefaultTimeout(30000);
+  p.on('pageerror', (e) => pageErrors.push(String(e?.message ?? e).split('\n')[0]));
+  return p;
+}
+let page = await freshPage();
 // Explore scenes are shot in dark mode too (a figure's colours on the dark card).
 const dark = await phone('dark');
 
 const safe = (id) => id.replace(/[^\w.~-]/g, '_');
+/** A page's url: gallery demos (g.…) live under /gallery, every lesson page under /skill. */
+const urlOf = (id) => {
+  if (id.startsWith('g.')) return `${base}/gallery/${encodeURIComponent(id)}`;
+  // A college page (`<courseId>#<i>[~slug]`) is its course's topic page.
+  const [course, index] = id.split('#');
+  return index === undefined
+    ? `${base}/skill/${encodeURIComponent(id)}`
+    : `${base}/course/${encodeURIComponent(course)}/topic/${encodeURIComponent(index)}`;
+};
 // Each box: its id, its value ("?" when empty), its status (given, example, derived) and its
 // range in the shown unit (data-min, data-max; null when it has none).
+/** When the page last answered a call (a box read, a drag, an edit): the watchdog's clock. */
+let lastAnswer = Date.now();
+const answered = () => (lastAnswer = Date.now());
 const boxes = () =>
-  page.$$eval('input', (els) =>
-    els.map((e) => {
-      const bound = (name) => {
-        const v = e.getAttribute(name);
-        return v === null || v === '' ? null : Number(v);
-      };
-      return {
-        id: (e.getAttribute('data-testid') ?? '').replace(/^input-/, ''),
-        value: e.value || '?',
-        status: e.getAttribute('data-status') ?? '',
-        min: bound('data-min'),
-        max: bound('data-max'),
-      };
-    }),
-  );
+  page
+    .$$eval('input', (els) =>
+      els.map((e) => {
+        const bound = (name) => {
+          const v = e.getAttribute(name);
+          return v === null || v === '' ? null : Number(v);
+        };
+        return {
+          id: (e.getAttribute('data-testid') ?? '').replace(/^input-/, ''),
+          value: e.value || '?',
+          status: e.getAttribute('data-status') ?? '',
+          min: bound('data-min'),
+          max: bound('data-max'),
+        };
+      }),
+    )
+    .then((b) => (answered(), b));
 const SUP = '⁰¹²³⁴⁵⁶⁷⁸⁹';
 /** Superscript digits and minus as plain ones ("⁻³⁴" → "-34"). */
 const unsup = (s) =>
@@ -124,6 +177,8 @@ function numbersIn(s) {
     if (/[A-Za-z_\d.]/.test(prev)) continue;
     // A DNA strand's ends (5′, 3′) are names, not numbers.
     if (/^[′']/.test(s.slice(m.index + m[0].length))) continue;
+    // A number written onto π or a root ("2π√(m/k)", "4π") is a formula's, not a value.
+    if (/^[π√]/.test(s.slice(m.index + m[0].length))) continue;
     const mant = m[1] + (m[2] ?? '');
     const value = parseShown(m[0].replace(/\s+/g, ' '));
     if (Number.isFinite(value)) out.push({ text: m[0], mant, value: Math.abs(value), at: m.index });
@@ -172,20 +227,109 @@ const pictureTexts = () =>
     return out;
   });
 /**
+ * A text's shape: its numbers and "?"s as "#" ("Dollar bills ($# each): #"), and those tokens in
+ * order (a "?" holds a number's slot, so "? × 1" and "2 × 1" line up).
+ */
+const TOKEN = /\?|\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d+(?:\.\d+)?/g;
+const shapeOf = (t) => ({ shape: t.replace(TOKEN, '#'), nums: t.match(TOKEN) ?? [] });
+/**
+ * Whether the number `num` of text `t` is still drawn after a box was varied: the same text is
+ * there, or a text of the same shape whose number in that slot is unchanged ("Dollar bills
+ * ($1 each): 3" keeps its "$1" while its count moved).
+ */
+function stillThere(t, num, after) {
+  if (after.includes(t)) return true;
+  // The number with the unit written after it ("9.8 N/kg", a fixed g) still drawn.
+  const unit = new RegExp(
+    `(^|[^\\d.,])${num.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')} ([^\\s\\d?]+)`,
+  ).exec(t);
+  if (unit && /[A-Za-z]/.test(unit[2]) && after.some((a) => a.includes(`${num} ${unit[2]}`)))
+    return true;
+  const was = shapeOf(t);
+  const slots = was.nums.flatMap((n, i) => (n === num ? [i] : []));
+  if (!slots.length) return false;
+  if (
+    after.some((a) => {
+      const now = shapeOf(a);
+      return now.shape === was.shape && slots.every((i) => now.nums[i] === num);
+    })
+  )
+    return true;
+  // The same words up to the number and just after it, with the number in the same slot, when
+  // the rest of the text changed shape: "Shells: 2, 8, 8" → "Shells: 2, 8, 8, 1", the redox
+  // count "1 × ? = ?" → "1 × (+6) = +6".
+  const ends = [...t.matchAll(TOKEN)];
+  const leads = slots.map((i) => {
+    const next = ends[i + 1];
+    return shapeOf(t.slice(0, next ? next.index : t.length)).shape;
+  });
+  if (
+    after.some((a) => {
+      const now = shapeOf(a);
+      return slots.every((i, k) => now.shape.startsWith(leads[k]) && now.nums[i] === num);
+    })
+  )
+    return true;
+  // A threshold a letter is compared with ("n < 30") still there, the sign perhaps turned
+  // ("n ≥ 30"), while the box moved: a rule's number, not the box's.
+  const esc = num.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const cmp = new RegExp(`([A-Za-zα-ωμσ])\\s*[<>≤≥]\\s*${esc}(?![\\d.])`).exec(t);
+  return (
+    !!cmp &&
+    after.some((a) => new RegExp(`(^|[^A-Za-z])${cmp[1]}\\s*[<>≤≥]\\s*${esc}(?![\\d.])`).test(a))
+  );
+}
+/**
+ * Where a text counts in a run of three or more whole numbers one apart ("0, 1, 2, 3, …", the
+ * ionic rule's "1, 2, 3"): [start, end) spans whose numbers are a count, not a box's value.
+ */
+function countRuns(t) {
+  const spans = [];
+  for (const m of t.matchAll(/\d+(?:, \d+){2,}/g)) {
+    const ns = m[0].split(', ').map(Number);
+    if (ns.every((n, i) => !i || n === ns[i - 1] + 1)) spans.push([m.index, m.index + m[0].length]);
+  }
+  return spans;
+}
+/** The picture's texts once two reads 250 ms apart agree (a slow machine still re-rendering). */
+async function settledTexts() {
+  let last = await pictureTexts();
+  for (let i = 0; i < 6; i++) {
+    await page.waitForTimeout(250);
+    const next = await pictureTexts();
+    if (next.length === last.length && next.every((t, j) => t === last[j])) return next;
+    last = next;
+  }
+  return last;
+}
+/**
  * Bare numbers (or a bare percent, degrees or imaginary tick: "40%", "4i") among the texts that sit in
  * a run of three evenly spaced ones: axis ticks.
  */
 function tickValues(texts) {
   const bare = uniq(
     texts
-      .filter((t) => /^[−-]?[\d,]*\.?\d+[%°iπ]?$/.test(t))
-      .map((t) => parseShown(t.replace(/[%°iπ]$/, ''))),
+      .filter((t) => /^[−-]?[\d,]*\.?\d+[%°iπT]?$/.test(t))
+      .map((t) => parseShown(t.replace(/[%°iπT]$/, ''))),
   ).filter(Number.isFinite);
   const has = (x) => bare.some((y) => Math.abs(x - y) <= 1e-9 * Math.max(1, Math.abs(x)));
+  // Two bare numbers a round step apart (1, 2 or 5 × 10ⁿ), both on that step, are ticks too (a
+  // line numbered 100, 200 only).
+  const round = (d) => {
+    const m = d / 10 ** Math.floor(Math.log10(d) + 1e-9);
+    return [1, 2, 5].some((k) => Math.abs(m - k) < 1e-9);
+  };
+  const onStep = (x, d) => Math.abs(x / d - Math.round(x / d)) < 1e-9;
   return bare.filter((p) =>
     bare.some((q) => {
       const d = q - p;
-      return d !== 0 && (has(p + 2 * d) || has(p - d));
+      if (d === 0) return false;
+      if (has(p + 2 * d) || has(p - d)) return true;
+      // A round step that both sit on, the gap at most 5 of it (100 and 300 on a step of 100).
+      const top = 10 ** Math.floor(Math.log10(Math.abs(d)) + 1e-9);
+      return [top, top / 2, top / 5, 2 * top, 5 * top].some(
+        (r) => round(r) && Math.abs(d) / r <= 5 + 1e-9 && onStep(p, r) && onStep(q, r) && r >= 1,
+      );
     }),
   );
 }
@@ -197,8 +341,11 @@ const typed = (b) => b.status === 'given' || b.status === 'example';
  * value, named in `notes`; otherwise a point's x and y, two, are allowed), or nothing moved at
  * all (`live`: the picture changed, so the handle works; a drag-turn turns the view).
  */
-function problems(before, after, handle, live, notes = []) {
+function problems(before, after0, handle, live, notes = [], drives = []) {
   const out = [];
+  // Each box after the drag lined up with the same box before (its id and which copy of it):
+  // a box that comes or goes (the answer's fraction part when it turns whole) shifts no other.
+  const after = byBox(before, after0);
   const blanked = before.filter((b, i) => typed(b) && after[i]?.value === '?');
   if (blanked.length) out.push(`left ? in ${uniq(blanked.map((b) => b.id)).join(', ')}`);
   const driven = handle.replace(/^drag-/, '');
@@ -216,6 +363,20 @@ function problems(before, after, handle, live, notes = []) {
     notes.push(`drove ${extra[0].id}`);
     extra = [];
   }
+  // A handle that says what it sends (data-drives: a wave's crest moves its amplitude and
+  // wavelength, a worked-out point its x and y): those, and one typed value behind each sent
+  // value that is worked out (the moves r and u behind the end point).
+  if (drives.length && !dropped.length) {
+    const behind = uniq(extra.map((b) => b.id)).filter((id) => !drives.includes(id));
+    const worked = drives.filter((id) => {
+      const b = before.find((x) => x.id === id);
+      return b && !typed(b);
+    });
+    if (behind.length <= worked.length) {
+      if (behind.length) notes.push(`drove ${behind.join(', ')} (behind ${worked.join(', ')})`);
+      extra = [];
+    }
+  }
   // A typed value now worked out to the same number: the drag made it worked out, no number
   // changed.
   const kept = (b) => after[before.indexOf(b)].value === b.value;
@@ -230,6 +391,19 @@ function problems(before, after, handle, live, notes = []) {
   return out;
 }
 const uniq = (xs) => [...new Set(xs)];
+/** `after` reordered to line up with `before` by box id and copy number (a gone box: none). */
+function byBox(before, after) {
+  const key = (list) => {
+    const seen = new Map();
+    return list.map((b) => {
+      const k = seen.get(b.id) ?? 0;
+      seen.set(b.id, k + 1);
+      return `${b.id}#${k}`;
+    });
+  };
+  const at = new Map(key(after).map((k, i) => [k, after[i]]));
+  return key(before).map((k) => at.get(k));
+}
 /** The picture: the largest drawing on the page (the first svg is the header's home icon). */
 const picture = () =>
   page.$$eval('svg', (els) => {
@@ -249,6 +423,7 @@ async function dragBy(x, y, dx, dy) {
   }
   await page.mouse.up();
   await page.waitForTimeout(150);
+  answered();
   return slowest;
 }
 /** A handle's centre relative to the picture's corner (scroll-proof), or null when gone. */
@@ -300,10 +475,11 @@ async function typeInto(id, text) {
   await el.click({ timeout: 3000 });
   // An example box empties on focus and comes back when left empty: clearing it is typing a
   // digit and deleting it.
-  if (!text) await el.fill('1');
-  await el.fill(text);
+  if (!text) await el.fill('1', { timeout: 3000 });
+  await el.fill(text, { timeout: 3000 });
   await el.evaluate((e) => e.blur());
   await page.waitForTimeout(250);
+  answered();
 }
 /**
  * Sentences that call the state impossible: the picture's ("An orbit inside the body is not
@@ -403,17 +579,32 @@ async function dragToEnds(h) {
     for (const i of watched) {
       const path = trail.slice(0, steps).map((t) => parseShown(t[i]?.value ?? '?'));
       let most = 0;
+      // A direction whose box runs once or twice round (0° to 360°, −360° to 360°) wraps: 358°
+      // after 2° is a 4° turn.
+      const span = before[i].max - before[i].min;
+      const turn =
+        before[i].min !== null && before[i].max !== null && span >= 360 && span % 360 === 0;
+      const wrap = (d) => (turn ? d - 360 * Math.round(d / 360) : d);
+      // A value on a log axis (a star's radius, 0.005 to 1,500 R☉) grows by the same factor per
+      // px: it runs away only when its ratio per px jumps too (positive values only).
+      let mostLog = 0;
       for (let k = 1; k < path.length; k++) {
         const dist = moved[k] - moved[k - 1];
-        const rate = Math.abs(path[k] - path[k - 1]) / dist;
+        const rate = Math.abs(wrap(path[k] - path[k - 1])) / dist;
         if (!Number.isFinite(rate) || dist < 1) continue;
-        if (most > 0 && rate > RUNAWAY * most) {
+        const logRate =
+          path[k] > 0 && path[k - 1] > 0
+            ? Math.abs(Math.log(path[k] / path[k - 1])) / dist
+            : Infinity;
+        const steady = Number.isFinite(logRate) && mostLog > 0 && logRate <= RUNAWAY * mostLog;
+        if (most > 0 && rate > RUNAWAY * most && !steady) {
           bad.push(
             `${before[i].id} ran away: ${trail[k - 1][i].value} → ${trail[k][i].value} over ${Math.round(dist)} px, ${Math.round(rate / most)} times as fast as before`,
           );
           break;
         }
         most = Math.max(most, rate);
+        if (Number.isFinite(logRate)) mostLog = Math.max(mostLog, logRate);
       }
     }
     // The driven value's path, or that of each typed value that moved.
@@ -457,9 +648,52 @@ async function dragToEnds(h) {
           );
       }
     }
-    out.push({ line: `to the ${name}: ${shown}`, bad });
+    // Whether any box moved on the way (a handle at the top of its range moves only down).
+    const movedAny = trail.some((t) => t.some((b, i) => b.value !== before[i]?.value));
+    out.push({ line: `to the ${name}: ${shown}`, bad, moved: movedAny });
   }
   return out;
+}
+/** A number as a box takes it: no exponent, no float dust ("0.30000000000000004"). */
+const plain = (x) => {
+  const t = String(Number(x.toPrecision(10)));
+  return /e/.test(t) ? null : t;
+};
+/**
+ * The picture's texts after the same first edit and then another number typed in the "?" box
+ * `u` (its example value moved a step of its own size, or doubled or halved, inside its range),
+ * or null when no other number was taken. Those are the texts that do not come from `u`.
+ */
+async function textsWhenVaried(edited, how, u) {
+  // A worked-out box takes no typing (its stand-ins are varied instead).
+  if (u.status === 'derived') return null;
+  const v = Math.abs(parseShown(u.value));
+  const step = Math.max(v >= 1 || Number.isInteger(v) ? 1 : 0, 10 ** Math.floor(Math.log10(v)));
+  const sign = parseShown(u.value) < 0 ? -1 : 1;
+  const inRange = (x) =>
+    x !== 0 &&
+    Number.isFinite(x) &&
+    (u.min === null || x >= u.min - 1e-9) &&
+    (u.max === null || x <= u.max + 1e-9);
+  const candidates = uniq(
+    [v + step, v - step, 2 * v, v / 2]
+      .map((x) => sign * x)
+      .filter(inRange)
+      .map(plain),
+  ).filter((t) => t !== null);
+  for (const text of candidates) {
+    await page.reload({ waitUntil: 'networkidle' });
+    await page.waitForTimeout(200);
+    const was = (await boxes()).find((b) => b.id === edited)?.value;
+    await typeInto(edited, how.startsWith('cleared') ? '' : was).catch(() => {});
+    await typeInto(u.id, text).catch(() => {});
+    const now = (await boxes()).find((b) => b.id === u.id);
+    const got = parseShown(now?.value ?? '?');
+    if (!Number.isFinite(got) || Math.abs(got - Number(text)) > 1e-6 * Math.max(1, Math.abs(got)))
+      continue;
+    return await settledTexts();
+  }
+  return null;
 }
 /**
  * The first edit on each typed box in turn, from the opening page (its number typed again, or
@@ -495,24 +729,56 @@ async function unknowns(id) {
         all.findIndex((o) => o.id === b.id) === i,
     );
     const known = now.filter((b) => b.value !== '?');
-    const texts = await pictureTexts();
+    const texts = await settledTexts();
     const ticks = tickValues(texts).map(Math.abs);
     // Each drawn number that is a "?" box's example value, with the texts it is in.
     const found = new Map();
     for (const t of texts)
       for (const p of numbersIn(t)) {
+        if (p.at !== undefined && countRuns(t).some(([a, b]) => p.at >= a && p.at < b)) continue;
         if (ticks.some((v) => Math.abs(v - p.value) <= 1e-9 * Math.max(1, v))) continue;
         if (known.some((b) => sameNumber(p, b.value))) continue;
         const us = unknown.filter((b) => sameNumber(p, b.value));
         if (!us.length) continue;
         const key = `${p.text} (the example's ${us.map((u) => `${u.id} = ${u.value}`).join(' or ')})`;
-        found.set(key, uniq([...(found.get(key) ?? []), `"${t}"`]));
+        found.set(key, uniq([...(found.get(key) ?? []), t]));
       }
-    const hits = [...found].map(([k, ts]) => `${k} in ${ts.join(', ')}`);
+    // A text that reads the same when the "?" box is typed with another number does not come
+    // from that box (a fixed label that happens to equal the example: "n = 2", "2V", the unit
+    // circle's π/4 family): not a leak. Each "?" box behind a hit is given another number, from
+    // the same first edit, and only the texts that then change (or go) are flagged.
+    const fixed = [];
+    const varied = new Map();
+    for (const u of unknown) {
+      if (![...found.keys()].some((k) => k.includes(`${u.id} = ${u.value}`))) continue;
+      varied.set(u.id, await textsWhenVaried(edited, how, u));
+    }
+    // A worked-out box takes no number: the other "?" boxes, which it is worked out from, are
+    // varied in its place (a text that depends on it changes when one of them does).
+    if ([...varied.values()].some((v) => !v))
+      for (const u of unknown)
+        if (!varied.has(u.id)) varied.set(u.id, await textsWhenVaried(edited, how, u));
+    const standIns = [...varied.values()].filter(Boolean);
+    for (const [k, ts] of found) {
+      const us = unknown.filter((u) => k.includes(`${u.id} = ${u.value}`));
+      const num = k.split(' (')[0];
+      const kept = ts.filter((t) =>
+        us.some((u) => {
+          const after = varied.get(u.id);
+          if (after) return !stillThere(t, num, after);
+          return !standIns.length || standIns.some((a) => !stillThere(t, num, a));
+        }),
+      );
+      for (const t of ts) if (!kept.includes(t)) fixed.push(t);
+      if (kept.length) found.set(k, kept);
+      else found.delete(k);
+    }
+    const hits = [...found].map(([k, ts]) => `${k} in ${ts.map((t) => `"${t}"`).join(', ')}`);
     if (pageErrors.length > errs) hits.push(`page error: ${pageErrors.slice(errs).join(' | ')}`);
     out.push({
       line: `${id} ${how}: ? in ${unknown.map((b) => b.id).join(', ') || '(none)'}`,
       hits: uniq(hits),
+      fixed: uniq(fixed),
     });
   }
   return out;
@@ -523,7 +789,10 @@ async function checkUnknowns(id) {
     if (u.hits.length) {
       unknownLines.push(`- **ERROR** ${u.line}; the picture shows ${u.hits.join('; ')}`);
       unknownErrors.push(`- **ERROR** ${u.line}: ${u.hits.join('; ')}`);
-    } else unknownLines.push(`- ${u.line}`);
+    } else
+      unknownLines.push(
+        `- ${u.line}${u.fixed.length ? ` (fixed text, not from the box: ${u.fixed.map((t) => `"${t}"`).join(', ')})` : ''}`,
+      );
   }
 }
 const errors = [];
@@ -546,12 +815,89 @@ const lines = [
   '',
 ];
 let scenes = 0;
+/** The two reports as they stand (written after each page, so a long run can be watched). */
+const flush = () => {
+  writeFileSync(
+    join(out, 'drags.md'),
+    [...lines, '', '## Errors', '', ...(errors.length ? errors : ['None.'])].join('\n') + '\n',
+  );
+  writeFileSync(
+    join(out, 'unknowns.md'),
+    [
+      ...unknownLines,
+      '',
+      '## Errors',
+      '',
+      ...(unknownErrors.length ? unknownErrors : ['None.']),
+    ].join('\n') + '\n',
+  );
+};
+/**
+ * One page's checks; a failure (a page that will not load, a handle gone before its drag) is one
+ * ERROR line, not the end of the run, and a server that stopped answering is started again.
+ */
+async function guarded(id, run) {
+  // A renderer frozen in a drag (a solver search on every move) answers no call, and mouse
+  // moves and evaluations take no timeout: a watchdog gives the page up when it has answered
+  // nothing (no box read, no typing, no drag done) for WATCHDOG ms. A page with many boxes
+  // (chi-square's 14, a list of 12 values) takes longer than that in all, and is not frozen.
+  let timer;
+  answered();
+  const watchdog = new Promise((_, reject) => {
+    timer = setInterval(() => {
+      if (Date.now() - lastAnswer > WATCHDOG)
+        reject(new Error(`Timeout: the page answered nothing for ${WATCHDOG / 1000} s`));
+    }, 1000);
+  });
+  const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+  let work;
+  try {
+    work = run();
+    work.catch(() => {});
+    await Promise.race([work, watchdog]);
+  } catch (e) {
+    const msg = String(e?.message ?? e).split('\n')[0];
+    errors.push(`- **ERROR** ${id}: the check failed: ${msg}`);
+    lines.push(`- **ERROR** ${id}: the check failed: ${msg}`);
+    if (/ERR_CONNECTION_REFUSED|ECONNREFUSED/.test(msg)) await serve();
+    // A renderer hung in a drag (a solver search on every move) stays hung: it is closed, the
+    // given-up check is let run into the closed page and end (so it never drives the next
+    // page), and a new page opens.
+    if (/Timeout|timeout/.test(msg)) {
+      await Promise.race([page.close(), wait(15000)]).catch(() => {});
+      await Promise.race([work, wait(30000)]).catch(() => {});
+      page = await freshPage();
+    }
+  } finally {
+    clearInterval(timer);
+  }
+}
+const WATCHDOG = 180000;
 for (const id of ids) {
-  await page.goto(`${base}/skill/${encodeURIComponent(id)}`, { waitUntil: 'networkidle' });
+  await guarded(id, () => checkPage(id));
+  flush();
+}
+for (const id of unknownsOnly) {
+  await guarded(id, async () => {
+    await page.goto(urlOf(id), { waitUntil: 'networkidle' });
+    await checkUnknowns(id);
+  });
+  flush();
+}
+flush();
+console.log(
+  `${scenes} scenes in ${join(out, 'scenes')}; drags in ${join(out, 'drags.md')}; ${errors.length} errors; unknowns in ${join(out, 'unknowns.md')}; ${unknownErrors.length} errors`,
+);
+await browser.close();
+server.kill();
+
+/** Every check on one page: scenes, each handle's drags, then the "?" check. */
+async function checkPage(id) {
+  await page.goto(urlOf(id), { waitUntil: 'networkidle' });
   await page.waitForTimeout(300);
   // Every scene of an exploration, light and then dark.
   const n = await page.locator('[data-testid^="scene-"]').count();
-  if (n) await dark.goto(`${base}/skill/${encodeURIComponent(id)}`, { waitUntil: 'networkidle' });
+  if (n) await dark.goto(urlOf(id), { waitUntil: 'networkidle' });
   for (const [p, suffix] of n
     ? [
         [page, ''],
@@ -625,21 +971,41 @@ for (const id of ids) {
     const notes = [];
     // Nothing moved: a value that snaps (a turn in 90° steps) may need a longer drag.
     if (!live && before.every((b, i) => after[i]?.value === b.value)) {
-      await dragBy(x + 40, y - 30, 80, -60);
+      // From where the handle is now (it may not have moved: pressing where the pointer was
+      // left would grab nothing).
+      const again = await page.locator(`[data-testid="${h}"]`).first().boundingBox();
+      const [ax, ay] = again ? [again.x + again.width / 2, again.y + again.height / 2] : [x, y];
+      await dragBy(ax, ay, 120, -90);
       after = await boxes();
       live = (await picture()) !== shape;
       if (live) notes.push('moves in steps (a longer drag)');
     }
-    const bad = problems(before, after, h, live, notes);
+    const drives = (
+      (await page
+        .locator(`[data-testid="${h}"]`)
+        .first()
+        .getAttribute('data-drives', { timeout: 1000 })
+        .catch(() => null)) ?? ''
+    )
+      .split(' ')
+      .filter(Boolean);
+    let bad = problems(before, after, h, live, notes, drives);
     // A move event over 500 ms freezes the page (a solver search on every move).
     if (slowest > 500) bad.push(`a move event took ${Math.round(slowest)} ms`);
+    // Then toward each end, where a runaway or a handle leaving the picture shows.
+    const ends = await dragToEnds(h);
+    // Nothing changed to the right and up, but a value moved toward the other end: the handle
+    // sits at the top of its range (3 feet of at most 3, 40 left of 45 in 8 groups).
+    if (bad.includes('nothing changed') && ends.some((e) => e.moved)) {
+      bad = bad.filter((b) => b !== 'nothing changed');
+      notes.push('at the end of its range: moves only the other way');
+    }
     const line = `${id} ${h}: ${before.map((b) => b.value).join(', ')} → ${after.map((b) => b.value).join(', ')}`;
     if (bad.length) {
       lines.push(`- **ERROR** ${line} (${[...bad, ...notes].join('; ')})`);
       errors.push(`- **ERROR** ${id} ${h}: ${bad.join('; ')}`);
     } else lines.push(`- ${line}${notes.length ? ` (${notes.join('; ')})` : ''}`);
-    // Then toward each end, where a runaway or a handle leaving the picture shows.
-    for (const end of await dragToEnds(h)) {
+    for (const end of ends) {
       if (end.bad.length) {
         lines.push(`  - **ERROR** ${end.line} (${end.bad.join('; ')})`);
         errors.push(`- **ERROR** ${id} ${h} ${end.line.split(':')[0]}: ${end.bad.join('; ')}`);
@@ -648,16 +1014,3 @@ for (const id of ids) {
   }
   await checkUnknowns(id);
 }
-for (const id of unknownsOnly) {
-  await page.goto(`${base}/skill/${encodeURIComponent(id)}`, { waitUntil: 'networkidle' });
-  await checkUnknowns(id);
-}
-lines.push('', '## Errors', '', ...(errors.length ? errors : ['None.']));
-writeFileSync(join(out, 'drags.md'), lines.join('\n') + '\n');
-unknownLines.push('', '## Errors', '', ...(unknownErrors.length ? unknownErrors : ['None.']));
-writeFileSync(join(out, 'unknowns.md'), unknownLines.join('\n') + '\n');
-console.log(
-  `${scenes} scenes in ${join(out, 'scenes')}; drags in ${join(out, 'drags.md')}; ${errors.length} errors; unknowns in ${join(out, 'unknowns.md')}; ${unknownErrors.length} errors`,
-);
-await browser.close();
-server.kill();

@@ -287,7 +287,7 @@ export function AirParcel({ spec, calc }: { spec: ParcelSpec; calc: Calculator }
                   <HaloText
                     x={Math.min(R - 4, X(t) + 4)}
                     y={BASE - 6}
-                    text={deg(t)}
+                    text={known(spec.temperature) ? deg(t) : '? °C'}
                     c={c}
                     size={chart.label}
                     bold
@@ -297,7 +297,7 @@ export function AirParcel({ spec, calc }: { spec: ParcelSpec; calc: Calculator }
                   <HaloText
                     x={Math.max(L + 4, X(td) - 4)}
                     y={BASE - 6}
-                    text={deg(td)}
+                    text={known(spec.dewPoint) ? deg(td) : '? °C'}
                     c={c}
                     size={chart.label}
                     bold

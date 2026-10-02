@@ -1,35 +1,42 @@
 # Working in this repository
 
-A study app (Expo SDK 57, Expo Router, TypeScript strict) that ships as an iOS app and a
-static website. Users are often minors: no accounts, analytics, tracking or network calls.
+One Dollar University ("Education For Everyone"; `src/config/site.ts`): a study app (Expo SDK 57, Expo Router, TypeScript strict) that ships as an iOS app and a
+static website. Users are often minors: no accounts, analytics, advertising or tracking. The
+only network requests are for buying, restoring and checking a subscription (StoreKit on
+iPhone; the site's own `/api` purchase functions and Stripe's pages on the web), carrying only
+what a purchase needs (product ids, a licence id, a session id), never lesson activity, search
+text or anything typed. Lessons, search and pictures work offline. No third-party code that
+collects data (owner, 2026-10-02; `docs/plans/site-upgrade.md` section 4).
 Course content is data, never hardcoded in UI code. `src/data/taxonomy.ts` is the source of
 truth for grades, skills and courses (log changes in `TAXONOMY_ISSUES.md`).
 
 ## Where things are
 
-| Path                                         | What                                                                                                                                                                                                     |
-| -------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `src/data/modules/math/<grade>.ts`           | Calculator modules for a math grade (`k`, `1`, `2`, …), main page then its problem types                                                                                                                 |
-| `src/data/modules/science/<grade>.ts`        | The same for science                                                                                                                                                                                     |
-| `src/data/modules/layouts/`                  | Sort, sequence, explore and observe pages (data only)                                                                                                                                                    |
-| `src/data/modules/helpers.ts`, `work.ts`     | Shared relations and step text; worked arithmetic lines                                                                                                                                                  |
-| `src/data/modules/written.ts`, `simplify.ts` | Written work by grade (column sums, partial products, long division) and the one-stage-per-line simplifying                                                                                              |
-| `src/data/modules/shared/`                   | Helpers two grade files share (add-sub, compare)                                                                                                                                                         |
-| `src/data/modules/pilots.ts`                 | Pilot modules for grades not built yet; move each to its grade file                                                                                                                                      |
-| `src/data/modules/gallery.ts`, `/gallery`    | Demo modules for picture kinds no lesson uses yet                                                                                                                                                        |
-| `src/data/modules/pictureRequests.ts`        | Every picture requested, the pages it is for and its status (requested, drawn, placed)                                                                                                                   |
-| `src/data/modules/harness/`                  | The sampling harness: `evaluate.ts` (PHRASES the step text uses), `pictures.ts` (checks per picture kind), `search.ts`                                                                                   |
-| `src/components/module/reps/`                | One component per picture kind; register new kinds in `reps/index.tsx`, `meta.ts`, `modules.test.ts`, `harness/pictures.ts`                                                                              |
-| `src/components/module/sliderPolicy.ts`      | Which picture kinds show sliders (a module can set `sliders`)                                                                                                                                            |
-| `src/engine/`                                | Solver, calculator state, units, formatting                                                                                                                                                              |
-| `src/data/match.ts`, `matchCorpus.json`      | Search's problem matcher: a typed problem → the page that solves it, on the device; the word weights come from `scripts/build-match-corpus.mjs` (CC BY practice problems only; rerun after adding pages) |
-| `docs/MODULE_GUIDE.md`                       | Content standards and the review process (short; read first)                                                                                                                                             |
-| `docs/PICTURES.md`, `docs/LAYOUTS.md`        | The picture catalog with each kind's options and the art direction; the layout kinds and every explore, observe and card figure (open when choosing one)                                                 |
-| `docs/MODULE_PLAN.md`                        | Sections and what is built                                                                                                                                                                               |
-| `docs/ENGINE_LOG.md`, `REVIEW_LOG.md`        | What each review taught the engine and the reviewers                                                                                                                                                     |
-| `research/questions/`                        | Released K–12 test and practice questions by skill (NAEP, Illustrative Mathematics and others); reference only, never used directly                                                                      |
-| `research/textbooks/`                        | What K–12 textbooks teach, by grade (`grades/<grade>.md`) and by skill (`CROSSWALK.md`), with practice problems; check a lesson's coverage, order, numbers and wording against them; never copy          |
-| `.claude/agents/`                            | `lesson-reviewer` and `page-reviewer`                                                                                                                                                                    |
+| Path                                                               | What                                                                                                                                                                                                     |
+| ------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/data/modules/math/<grade>.ts`                                 | Calculator modules for a math grade (`k`, `1`, `2`, …), main page then its problem types                                                                                                                 |
+| `src/data/modules/science/<grade>.ts`                              | The same for science                                                                                                                                                                                     |
+| `src/data/modules/layouts/`                                        | Sort, sequence, explore and observe pages (data only)                                                                                                                                                    |
+| `src/data/modules/helpers.ts`, `work.ts`                           | Shared relations and step text; worked arithmetic lines                                                                                                                                                  |
+| `src/data/modules/written.ts`, `simplify.ts`                       | Written work by grade (column sums, partial products, long division) and the one-stage-per-line simplifying                                                                                              |
+| `src/data/modules/shared/`                                         | Helpers two grade files share (add-sub, compare)                                                                                                                                                         |
+| `src/data/modules/college/<field>.ts`, `layouts/college<Field>.ts` | College pages by home field (topic `<course>#<i>`, problem types `#<i>~<slug>`); plans in `docs/plans/he.*.md`, needs in `docs/HE_NEEDS.md`                                                              |
+| `src/data/modules/pilots.ts`                                       | Pilot modules for grades not built yet; move each to its grade file                                                                                                                                      |
+| `src/data/modules/gallery.ts`, `/gallery`                          | Demo modules for picture kinds no lesson uses yet                                                                                                                                                        |
+| `src/data/modules/pictureRequests.ts`                              | Every picture requested, the pages it is for and its status (requested, drawn, placed)                                                                                                                   |
+| `src/data/modules/harness/`                                        | The sampling harness: `evaluate.ts` (PHRASES the step text uses), `pictures.ts` (checks per picture kind), `search.ts`                                                                                   |
+| `src/components/module/reps/`                                      | One component per picture kind; register new kinds in `reps/index.tsx`, `meta.ts`, `modules.test.ts`, `harness/pictures.ts`                                                                              |
+| `src/components/module/sliderPolicy.ts`                            | Which picture kinds show sliders (a module can set `sliders`)                                                                                                                                            |
+| `src/engine/`                                                      | Solver, calculator state, units, formatting                                                                                                                                                              |
+| `src/data/match.ts`, `matchCorpus.json`                            | Search's problem matcher: a typed problem → the page that solves it, on the device; the word weights come from `scripts/build-match-corpus.mjs` (CC BY practice problems only; rerun after adding pages) |
+| `docs/MODULE_GUIDE.md`                                             | Content standards and the review process (short; read first)                                                                                                                                             |
+| `docs/PICTURES.md`, `docs/LAYOUTS.md`                              | The picture catalog with each kind's options and the art direction; the layout kinds and every explore, observe and card figure (open when choosing one)                                                 |
+| `docs/MODULE_PLAN.md`                                              | Sections and what is built                                                                                                                                                                               |
+| `docs/ENGINE_LOG.md`, `REVIEW_LOG.md`                              | What each review taught the engine and the reviewers                                                                                                                                                     |
+| `research/questions/`                                              | Released K–12 test and practice questions by skill (NAEP, Illustrative Mathematics and others); reference only, never used directly                                                                      |
+| `research/textbooks/`                                              | What K–12 textbooks teach, by grade (`grades/<grade>.md`) and by skill (`CROSSWALK.md`), with practice problems; check a lesson's coverage, order, numbers and wording against them; never copy          |
+| `docs/plans/site-upgrade.md`                                       | The site and app upgrade outside lessons: design tokens, shell, screens, payments, brand images (B1–B24)                                                                                                 |
+| `.claude/agents/`                                                  | `lesson-reviewer` and `page-reviewer`                                                                                                                                                                    |
 
 ## Commands
 
@@ -76,7 +83,8 @@ not a dependency. Chromium is at `/opt/pw-browsers/chromium`.
   runs (the review evidence alone samples deeply). No `--heavy` or `--full` run, here or in CI,
   unless the owner approves that run (ask first, saying why), engine changes included: test the
   ids a change is about by `MODULE_IDS`.
-- Don't add dependencies without asking.
+- Don't add dependencies without asking. Approved for payments and the brand (2026-10-02):
+  `expo-iap`, `expo-splash-screen`, `expo-dev-client` (dev only).
 - `taxonomy.ts`: the owner authorized the taxonomy updates the plans need (2026-10-02). Edit it
   only for those, keep its existing ids and topic order (append new topics), log every change in
   `TAXONOMY_ISSUES.md`; it is kept byte-for-byte and Prettier ignores it.

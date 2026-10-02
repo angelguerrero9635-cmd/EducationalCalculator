@@ -4,7 +4,14 @@ import { buildSteps } from '@/data/modules/buildSteps';
 import { solve } from '../solve';
 import { changeUnits, initialState, setValues } from '../state';
 import { linkedUnits, makeUnitContext, unitChoices, unitOptions } from '../unitContext';
-import { UNITS, convert, getUnit, unitInSystem } from '../units';
+import {
+  TEMPERATURE_DIFFERENCES,
+  UNITS,
+  convert,
+  getUnit,
+  offsetRule,
+  unitInSystem,
+} from '../units';
 
 const close = (a: number, b: number, rel = 1e-9) => Math.abs(a - b) <= rel * Math.abs(b);
 
@@ -423,5 +430,150 @@ describe('Grades 9–12 units', () => {
       'atm',
       'mmHg',
     ]);
+  });
+});
+
+describe('college units (HE-E5)', () => {
+  it.each([
+    [1, 'MPa', 'N/mm²', 1],
+    [1, 'ksi', 'MPa', 6.894757293168361],
+    [1, 'GPa', 'MPa', 1000],
+    [1, 'kPa·m³', 'kJ', 1],
+    [1, 'kip·ft', 'kN·m', 1.3558179483314003],
+    [1, 'lbf·ft', 'N·m', 1.3558179483314003],
+    [1, 'in⁴', 'mm⁴', 416231.4256],
+    [1, 'Btu/lb', 'kJ/kg', 2.326],
+    [1, 'Btu/(lb·°F)', 'kJ/(kg·K)', 4.1868],
+    [1, 'Btu/(h·ft·°F)', 'W/(m·K)', 1.730734666],
+    [1, 'Btu/(h·ft²·°F)', 'W/(m²·K)', 5.678263341],
+    [3000, 'rpm', 'rad/s', 100 * Math.PI],
+    [2.4, 'GHz', 'Hz', 2.4e9],
+    [1, 'cP', 'Pa·s', 1e-3],
+    [1, 'MGD', 'm³/s', 0.043812636],
+    [1, 'Sv', 'm³/s', 1e6],
+    [100, 'kmol/h', 'mol/s', 27.777777778],
+    [1, 'M', 'mM', 1000],
+    [250, 'μM', 'mM', 0.25],
+    [1, 'mg/L', 'μg/L', 1000],
+    [1, 'kcal/mol', 'kJ/mol', 4.184],
+    [1, 'L·atm/(mol·K)', 'J/(mol·K)', 101.325],
+    [1, 'L/(mol·min)', 'M⁻¹s⁻¹', 1 / 60],
+    [1, 'cm⁻¹', 'm⁻¹', 100],
+    [1, 'kDa', 'Da', 1000],
+    [1, 'Da', 'u', 1],
+    [1, 'Å', 'nm', 0.1],
+    [1, 'μm', 'mm', 1e-3],
+    [1, 'mGal', 'm/s²', 1e-5],
+    [1, 'Ω·cm', 'Ω·m', 0.01],
+    [1, 'KiB', 'B', 1024],
+    [1, 'kB', 'B', 1000],
+    [1, 'B', 'bit', 8],
+    [1, 'Gb/s', 'MB/s', 125],
+    [1, 'N/C', 'V/m', 1],
+    [1, 'G', 'μT', 100],
+    [1, 'Ci', 'MBq', 37000],
+    [60, 'dpm/g', 'Bq/g', 1],
+    [1, 'ksf', 'psf', 1000],
+    [1, 'pc/mi/ln', 'pc/km/ln', 1 / 1.609344],
+    [1, 'days', 'h', 24],
+    [1, 'm/day', 'mm/h', 1000 / 24],
+    [1, 'yr', 's', 31557600],
+    [1, 'Myr', 's', 3.15576e13],
+    [1, 'MPa√m', 'ksi√in', 0.910048],
+    [1, 'R', 'K', 5 / 9],
+  ])('%p %s = %p %s', (x, from, to, y) => {
+    expect(close(convert(x, from, to), y, 1e-6)).toBe(true);
+    expect(close(convert(y, to, from), x, 1e-6)).toBe(true);
+  });
+
+  it('keeps logarithmic, apparent and reactive units out of the linear ones', () => {
+    expect(() => convert(1, 'dBm', 'mW')).toThrow();
+    expect(() => convert(1, 'dB', 'dBm')).toThrow();
+    expect(() => convert(1, 'VA', 'W')).toThrow();
+    expect(() => convert(1, 'var', 'VA')).toThrow();
+    expect(() => convert(1, 'Hz', 'rad/s')).toThrow();
+    expect(() => convert(1, 'N·m', 'J')).toThrow();
+    expect(() => convert(1, 'mSv', 'mGy')).toThrow();
+    // dBm and dBW differ by 30; dBi and dBd by 2.15.
+    expect(convert(30, 'dBm', 'dBW')).toBeCloseTo(0);
+    expect(convert(0, 'dBd', 'dBi')).toBeCloseTo(2.15);
+  });
+
+  it('gives every unit one id, and US counterparts of the same dimension', () => {
+    const ids = UNITS.map((x) => x.id);
+    expect(new Set(ids).size).toBe(ids.length);
+    for (const x of TEMPERATURE_DIFFERENCES) {
+      if (x.us) expect(getUnit(x.us, true)?.dimension).toBe('temperatureDifference');
+      if (x.metric) expect(getUnit(x.metric, true)?.dimension).toBe('temperatureDifference');
+    }
+  });
+
+  it('never offers a college unit on a K–12 page: μm, Hz and g/mol stay labels', () => {
+    const d = { id: 'd', symbol: 'd', name: 'Length', unit: 'cm' };
+    expect(unitChoices(d, 'metric')).toEqual(['mm', 'cm', 'm', 'km']);
+    const w = { id: 'w', symbol: 'λ', name: 'Wavelength', unit: 'nm' };
+    expect(unitChoices(w, 'metric')).toEqual([]);
+    // Listing the value's own unit alone (a gallery demo) is still a label.
+    expect(unitChoices({ ...w, units: ['nm'] }, 'metric')).toEqual([]);
+    expect(unitOptions([{ ...w, units: ['nm'] }]).systems).toEqual([]);
+    // A college value listing its units gets the menu.
+    expect(unitChoices({ ...w, units: ['nm', 'μm', 'Å'] }, 'metric')).toEqual(['μm', 'nm', 'Å']);
+    const days = { id: 't', symbol: 't', name: 'Time', unit: 'days' };
+    const page = { id: 's.x', relations: [], variables: [days], example: {} };
+    expect(makeUnitContext(page, { system: 'us' }).display.t).toBe('days');
+  });
+
+  it('switches a college value between metric and US units where it lists both', () => {
+    const s = { id: 's', symbol: 'σ', name: 'Stress', unit: 'MPa', units: ['MPa', 'ksi'] };
+    expect(unitChoices(s, 'metric')).toEqual(['MPa']);
+    expect(unitChoices(s, 'us')).toEqual(['ksi']);
+    expect(unitOptions([s]).systems).toEqual(['metric', 'us']);
+    const page = { id: 'he.x', relations: [], variables: [s], example: {} };
+    const ctx = makeUnitContext(page, { system: 'us' });
+    expect(ctx.display.s).toBe('ksi');
+    expect(ctx.toDisplay('s', 250)).toBeCloseTo(36.26, 2);
+  });
+});
+
+describe('temperature differences (ΔT)', () => {
+  it('converts a difference by the factor alone, a reading with the offset', () => {
+    // A rise of 10 °C is a rise of 10 K and of 18 °F (and 18 R).
+    expect(convert(10, '°C', 'K', true)).toBeCloseTo(10);
+    expect(convert(10, '°C', '°F', true)).toBeCloseTo(18);
+    expect(convert(18, '°F', 'K', true)).toBeCloseTo(10);
+    expect(convert(18, 'R', '°F', true)).toBeCloseTo(18);
+    // A reading of 10 °C is 283.15 K and 50 °F.
+    expect(convert(10, '°C', 'K')).toBeCloseTo(283.15);
+    expect(convert(10, '°C', '°F')).toBeCloseTo(50);
+    expect(convert(491.67, 'R', '°C')).toBeCloseTo(0);
+    expect(getUnit('K', true)?.dimension).toBe('temperatureDifference');
+    expect(getUnit('K')?.dimension).toBe('temperature');
+    // Non-temperature units read the same with the flag.
+    expect(getUnit('kJ/(kg·K)', true)?.dimension).toBe('specificHeat');
+  });
+
+  it('shows a ΔT in °F or R under US customary, and works the steps without an offset', () => {
+    const dT = {
+      id: 'dT',
+      symbol: 'ΔT',
+      name: 'Temperature rise',
+      unit: 'K',
+      units: ['K', '°C', '°F', 'R'],
+      difference: true,
+    };
+    expect(unitChoices(dT, 'metric')).toEqual(['K', '°C']);
+    expect(unitChoices(dT, 'us')).toEqual(['°F', 'R']);
+    expect(unitInSystem('°C', 'us', true)).toBe('°F');
+    const page = { id: 'he.x', relations: [], variables: [dT], example: { dT: 10 } };
+    const us = makeUnitContext(page, { system: 'us' });
+    expect(us.display.dT).toBe('°F');
+    expect(us.toDisplay('dT', 10)).toBeCloseTo(18);
+    expect(us.fromDisplay('dT', 18)).toBeCloseTo(10);
+    const c = makeUnitContext(page, { system: 'metric', units: { dT: '°C' } });
+    expect(c.toDisplay('dT', 10)).toBeCloseTo(10);
+    // The conversion line states a factor, never "K = °C + 273.15".
+    expect(offsetRule('°C', 'K', true)).toBeUndefined();
+    expect(offsetRule('°C', 'K')).toBe('K = °C + 273.15');
+    expect(offsetRule('R', '°F')).toBe('R = °F + 459.67');
   });
 });

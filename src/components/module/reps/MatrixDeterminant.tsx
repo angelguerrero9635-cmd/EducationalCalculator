@@ -14,7 +14,7 @@ import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, useRep } from './common';
-import { cramerOf, det, minorOf, withColumn, type Square } from './determinant';
+import { cramerOf, det, minorOf, type Square } from './determinant';
 import { MathText, textWidth } from './hsdText';
 import { cellWidth, ROW_H } from './MatrixGrid';
 import { entryText } from './matrices';
@@ -142,22 +142,32 @@ export function MatrixDeterminant({
   const n = M.length;
   const known = [...spec.matrix.flat(), ...(spec.cramer?.rhs ?? [])].every(isKnown);
   const D = det(M);
-  const cells = (m: Square) => m.map((r) => r.map(entryText));
+  // A "?" entry reads "?", and every value worked from the entries reads "?" until all are
+  // typed: the picture never shows the example's numbers behind a "?".
+  const T = spec.matrix.map((r) => r.map((v) => (isKnown(v) ? entryText(num(v)) : '?')));
+  const out = (x: number) => (known ? entryText(x) : '?');
+  const outPar = (x: number) => (known ? par(x) : '?');
+  const parT = (t: string) => (t.startsWith('−') ? `(${t})` : t);
   const lines: string[] = [];
 
   // ── Cramer's rule ──
   if (spec.cramer) {
     const rhs = spec.cramer.rhs.map(num);
+    const rhsT = spec.cramer.rhs.map((v) => (isKnown(v) ? entryText(num(v)) : '?'));
     const cr = cramerOf(M, rhs);
-    const mats = [M, ...M[0]!.map((_, j) => withColumn(M, j, rhs))];
+    const mats = [
+      T,
+      ...T[0]!.map((_, j) => T.map((row, i) => row.map((x, k) => (k === j ? rhsT[i]! : x)))),
+    ];
     const names = ['D', ...M[0]!.map((_, j) => `D${SUB[j]}`)];
     lines.push(
       // The working first, the result last, as it is written by hand.
       n === 2
-        ? `D = ${par(M[0]![0]!)} × ${par(M[1]![1]!)} − ${par(M[0]![1]!)} × ${par(M[1]![0]!)} = ${entryText(cr.D)}`
-        : `D = ${entryText(cr.D)}`,
+        ? `D = ${parT(T[0]![0]!)} × ${parT(T[1]![1]!)} − ${parT(T[0]![1]!)} × ${parT(T[1]![0]!)} = ${out(cr.D)}`
+        : `D = ${out(cr.D)}`,
     );
-    if (cr.solution)
+    if (!known) lines.push(M[0]!.map((_, j) => `${NAMES[j]} = D${SUB[j]} ÷ D`).join(' · '));
+    else if (cr.solution)
       lines.push(
         M[0]!
           .map(
@@ -170,7 +180,7 @@ export function MatrixDeterminant({
     lines.push(
       `${names.slice(1, -1).join(', ')} and ${names[names.length - 1]} put the right sides in that unknown’s column (shaded).`,
     );
-    const boxW = Math.max(...mats.map((m) => cellWidth(cells(m)) * n + 12));
+    const boxW = Math.max(...mats.map((m) => cellWidth(m) * n + 12));
     const boxH = n * ROW_H + 8;
     const place = (w: number) => {
       const per = Math.max(1, Math.min(mats.length, Math.floor((w + 14) / (boxW + 14))));
@@ -188,7 +198,7 @@ export function MatrixDeterminant({
                   const inRow = Math.min(per, mats.length - row * per);
                   const x0 = (w - inRow * boxW - (inRow - 1) * 14) / 2 + (k % per) * (boxW + 14);
                   const y0 = 22 + row * (boxH + 50);
-                  const b = bars(x0, y0, cells(m), c, k ? { col: k - 1 } : {});
+                  const b = bars(x0, y0, m, c, k ? { col: k - 1 } : {});
                   const value = k ? cr.Ds[k - 1]! : cr.D;
                   return (
                     <G key={`m${k}`}>
@@ -203,7 +213,7 @@ export function MatrixDeterminant({
                       />
                       {b.el}
                       <MathText
-                        text={`= ${entryText(value)}`}
+                        text={`= ${out(value)}`}
                         x={x0 + boxW / 2}
                         y={y0 + boxH + 18}
                         textAnchor="middle"
@@ -226,7 +236,9 @@ export function MatrixDeterminant({
   if (n === 2) {
     const [[a, b], [cc, d]] = M as [[number, number], [number, number]];
     lines.push(
-      `D = ad − bc = ${par(a)} × ${par(d)} − ${par(b)} × ${par(cc)} = ${entryText(a * d)} − ${par(b * cc)} = ${entryText(D)}`,
+      known
+        ? `D = ad − bc = ${par(a)} × ${par(d)} − ${par(b)} × ${par(cc)} = ${entryText(a * d)} − ${par(b * cc)} = ${entryText(D)}`
+        : `D = ad − bc = ${parT(T[0]![0]!)} × ${parT(T[1]![1]!)} − ${parT(T[0]![1]!)} × ${parT(T[1]![0]!)} = ?`,
     );
     lines.push('Down the main diagonal, take away the other diagonal');
     return (
@@ -234,7 +246,7 @@ export function MatrixDeterminant({
         <Canvas aspect={(w) => (2 * 52 + 76) / w}>
           {({ w, h }) => {
             // Big cells, so each diagonal runs between the numbers, not through them.
-            const t = cells(M);
+            const t = T;
             const cw = Math.max(88, ...t.flat().map((x) => textWidth(x, 18) + 44));
             const ch = 52;
             const x0 = (w - 2 * cw) / 2;
@@ -258,7 +270,7 @@ export function MatrixDeterminant({
                 />
               );
             };
-            const formula = `${par(a)} × ${par(d)} − ${par(b)} × ${par(cc)} = ${entryText(D)}`;
+            const formula = `${parT(t[0]![0]!)} × ${parT(t[1]![1]!)} − ${parT(t[0]![1]!)} × ${parT(t[1]![0]!)} = ${out(D)}`;
             return (
               <Svg width={w} height={h} opacity={known ? 1 : 0.4}>
                 <Line
@@ -312,19 +324,22 @@ export function MatrixDeterminant({
 
   // ── A 3 × 3: expanded along the first row ──
   const terms = M[0]!.map((a, j) => {
-    const minor = minorOf(M, 0, j);
-    const md = det(minor);
+    const md = det(minorOf(M, 0, j));
     const sign = j % 2 ? '−' : '+';
-    const [[p, q], [r, s]] = minor as [[number, number], [number, number]];
+    const [[p, q], [r, s]] = T.slice(1).map((row) => row.filter((_, k) => k !== j)) as [
+      [string, string],
+      [string, string],
+    ];
+    const aT = parT(T[0]![j]!);
     return {
-      a,
+      aT,
       md,
-      text: `${sign} ${par(a)} × (${par(p)} × ${par(s)} − ${par(q)} × ${par(r)}) = ${sign} ${par(a)} × ${par(md)}`,
+      text: `${sign} ${aT} × (${parT(p)} × ${parT(s)} − ${parT(q)} × ${parT(r)}) = ${sign} ${aT} × ${outPar(md)}`,
       value: (j % 2 ? -1 : 1) * a * md,
     };
   });
   lines.push(
-    `D = ${terms.map((t, j) => `${j ? (j % 2 ? ' − ' : ' + ') : ''}${par(t.a)} × ${par(t.md)}`).join('')} = ${entryText(D)}`,
+    `D = ${terms.map((t, j) => `${j ? (j % 2 ? ' − ' : ' + ') : ''}${t.aT} × ${outPar(t.md)}`).join('')} = ${out(D)}`,
     'Each first-row entry times the 2 × 2 left when its row and column are struck, signs +, −, +',
   );
   const blockH = 3 * ROW_H + 8;
@@ -332,7 +347,7 @@ export function MatrixDeterminant({
     <View>
       <Canvas aspect={(w) => (3 * (blockH + 12) + 40) / w}>
         {({ w, h }) => {
-          const t = cells(M);
+          const t = T;
           const bw = cellWidth(t) * 3 + 12;
           const textRoom = w - bw - 24;
           return (
@@ -360,12 +375,16 @@ export function MatrixDeterminant({
                 );
               })}
               <MathText
-                text={`D = ${terms
-                  .map((x) =>
-                    x.value < 0 ? `− ${entryText(-x.value)}` : `+ ${entryText(x.value)}`,
-                  )
-                  .join(' ')
-                  .replace(/^\+ /, '')} = ${entryText(D)}`}
+                text={
+                  known
+                    ? `D = ${terms
+                        .map((x) =>
+                          x.value < 0 ? `− ${entryText(-x.value)}` : `+ ${entryText(x.value)}`,
+                        )
+                        .join(' ')
+                        .replace(/^\+ /, '')} = ${entryText(D)}`
+                    : 'D = ?'
+                }
                 x={w / 2}
                 y={h - 12}
                 textAnchor="middle"

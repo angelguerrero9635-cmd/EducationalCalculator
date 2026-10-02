@@ -97,6 +97,8 @@ function DecayView({ spec, rep, calc }: { spec: Decay; rep: Rep; calc: Calculato
   const x = frame.value;
   const y = axisOf(0, n0.value, 4);
   const known = T.known && t.known && n0.known;
+  // The half-lives passed (and the atoms left) need the time and the half-life.
+  const tOk = T.known && t.known;
   const timeId = typeof spec.time === 'string' ? spec.time : undefined;
   const parent = spec.parent ?? 'parent';
   const daughter = spec.daughter ?? 'daughter';
@@ -150,7 +152,7 @@ function DecayView({ spec, rep, calc }: { spec: Decay; rep: Rep; calc: Calculato
                   strokeWidth={0.6}
                 />
                 <ChartText x={lx + 18} y={28} fontSize={chart.label} fontWeight="700">
-                  {`${parent}: ${left} left`}
+                  {`${parent}: ${tOk ? left : '?'} left`}
                 </ChartText>
                 <Circle
                   cx={lx + 6}
@@ -164,10 +166,10 @@ function DecayView({ spec, rep, calc }: { spec: Decay; rep: Rep; calc: Calculato
                   {`${daughter}: ${GRID_ATOMS - left} decayed`}
                 </ChartText>
                 <ChartText x={lx} y={80} fontSize={chart.label} fill={c.chartMuted}>
-                  {halvesWord}
+                  {tOk ? halvesWord : '? half-lives'}
                 </ChartText>
                 <ChartText x={lx} y={98} fontSize={chart.label} fill={c.chartMuted}>
-                  {`100 × ${pow} ≈ ${left}`}
+                  {tOk ? `100 × ${pow} ≈ ${left}` : '100 × ?'}
                 </ChartText>
                 <ChartText x={lx} y={116} fontSize={chart.label} fill={c.chartMuted}>
                   Which atoms decay is random.
@@ -176,7 +178,16 @@ function DecayView({ spec, rep, calc }: { spec: Decay; rep: Rep; calc: Calculato
                   p={p}
                   xName={withUnit('Time', tUnit ? `(${tUnit})` : '')}
                   yName={withUnit('Left', nUnit ? `(${nUnit})` : '')}
-                  xText={big}
+                  // A "?" half-life: the time axis counts half-lives (T, 2T, …), not the
+                  // example's days.
+                  xText={
+                    T.known
+                      ? big
+                      : (v) => {
+                          const k = Math.round(v / T.value);
+                          return v === 0 ? '0' : k === 1 ? 'T' : `${formatNumber(k)}T`;
+                        }
+                  }
                 />
                 <G opacity={known ? 1 : 0.4}>
                   {/* Each half-life: the amount halves again. */}
@@ -228,7 +239,7 @@ function DecayView({ spec, rep, calc }: { spec: Decay; rep: Rep; calc: Calculato
                   <MathChip
                     x={p.sx(tx) + 12}
                     y={p.sy(amount) - 8}
-                    text={withUnit(big(amount), nUnit)}
+                    text={known ? withUnit(big(amount), nUnit) : '?'}
                     anchor="start"
                     w={w}
                     h={h}
@@ -265,8 +276,11 @@ function DecayView({ spec, rep, calc }: { spec: Decay; rep: Rep; calc: Calculato
       </Canvas>
       <Caption>
         {[
-          `After ${withUnit(t.text, tUnit)}, ${halvesWord} ${halves === 1 ? 'has' : 'have'} passed: ${n0.text} × ${pow} = ${withUnit(big(amount), nUnit)} left.`,
-          `In the grid ${left} of ${GRID_ATOMS} ${parent} atoms are left; each half-life, half of those still there decay.`,
+          // A "?" value: the rule only, never worked with the example's numbers behind it.
+          known
+            ? `After ${withUnit(t.text, tUnit)}, ${halvesWord} ${halves === 1 ? 'has' : 'have'} passed: ${n0.text} × ${pow} = ${withUnit(big(amount), nUnit)} left.`
+            : 'Each half-life, the amount left halves.',
+          `In the grid ${tOk ? left : '?'} of ${GRID_ATOMS} ${parent} atoms are left; each half-life, half of those still there decay.`,
         ].join(' · ')}
       </Caption>
     </View>

@@ -1,3 +1,4 @@
+import { branchOf, comparisonHolds } from '@/engine/cases';
 import { CHOICE_BOX, choiceOf, choiceSign, codeLabel } from '@/engine/choices';
 import {
   dollarsOf,
@@ -10,10 +11,11 @@ import {
   superscript,
   unitFor,
 } from '@/engine/format';
-import { holds, outOfCount, type SolveResult } from '@/engine/solve';
+import { evalExpr, isolate, movesSentence } from '@/engine/isolate';
+import { closeTo, holds, outOfCount, type SolveResult } from '@/engine/solve';
 import type { Values, VariableDef } from '@/engine/types';
 import { makeUnitContext, type UnitContext } from '@/engine/unitContext';
-import { getUnit } from '@/engine/units';
+import { conversionRule } from '@/engine/units';
 
 import {
   gradeBand,
@@ -25,7 +27,8 @@ import {
   type GradeBand,
 } from './grade';
 import { evaluatePrinted, operationCount, simplifyChain } from './simplify';
-import type { ModuleDef } from './types';
+import { trialWork } from './trials';
+import type { ModuleDef, StepText } from './types';
 import { factWork } from './work';
 import { autoWritten, type Written } from './written';
 
@@ -286,6 +289,44 @@ export const agree = (text: string) =>
 
 const givenIdsOf = (result: SolveResult) => result.given.map((g) => g.id);
 
+/**
+ * A step's text from a closed form read from its rule (HE-E18): the rearranged side ("ln(A ÷ P)
+ * ÷ r") and how it was undone ("Divide both sides by P, take ln of both sides, then divide both
+ * sides by r."), from the way out that gives the value found. Undefined when there is none.
+ */
+function closedStep(
+  display: string,
+  id: string,
+  vars: readonly VariableDef[],
+  values: Values,
+  grade: string | undefined,
+): StepText | undefined {
+  const x = values[id];
+  if (x === undefined) return undefined;
+  // Logs undo a power from Algebra 2 (Grade 11) on, or where the rule already has one; Grades
+  // 6–8 undo with arithmetic, squares and cubes only. (Otherwise the step shows its tries.)
+  const g = grade === undefined ? 99 : grade === 'K' ? 0 : Number(grade);
+  const logs = g >= 11 || /\bln\b|log|e\^|\be(?=[⁰¹²³⁴⁵⁶⁷⁸⁹])/.test(display);
+  const allowed = (move: string) =>
+    !(!logs && /\b(?:ln|log)/.test(move)) &&
+    !(g <= 8 && /fourth|power|\bln\b|log|raise/.test(move));
+  const way = isolate(display, id)?.find((w) => {
+    if (!w.moves.every(allowed)) return false;
+    const y = evalExpr(w.tree, values);
+    return Number.isFinite(y) && closeTo(y, x, 1e-9 * Math.max(1, Math.abs(x)));
+  });
+  if (!way) return undefined;
+  // (a long list of moves reads as one instruction: Grades 6–8 read sentences of 30 words)
+  const listed = renderTemplate(movesSentence(way.moves), vars);
+  const symbol = vars.find((v) => v.id === id)?.symbol ?? id;
+  const how = !way.moves.length
+    ? 'Work out the other side of the rule.'
+    : listed.split(/\s+/).length > 26
+      ? `Undo each operation round ${symbol} in turn, the last one done first.`
+      : listed;
+  return { expr: way.expr, how };
+}
+
 export function buildSteps(
   module: ModuleDef,
   result: SolveResult,
@@ -341,6 +382,10 @@ export function buildSteps(
     if (!unit) return n;
     // $ goes before the number; ¢ right after it; word units in the singular for 1 ("1 cup").
     if (unit === '$') return dollarsOf(x, n);
+    // An angle shown as DMS or a bearing carries its own marks (4°30′00″, N 52°10′ E); minutes
+    // and seconds of arc on a value that lists them are written on the number (25″), HE-E19.
+    if (v?.angleForm && unit === '°') return n;
+    if ((unit === '′' || unit === '″') && v?.units) return `${n}${unit}`;
     if (unit === '¢' || unit === '°' || unit === '%' || unit === '×') return `${n}${unit}`;
     return `${n} ${x === 1 ? (SINGULAR[unit] ?? unitFor(1, unit)) : unit}`;
   };
@@ -429,12 +474,41 @@ export function buildSteps(
         );
   // Figure-only values are found for the picture, never written as a step.
   const trace = result.trace.filter((t) => !byId.get(t.id)?.hidden);
+  /** The values found, in formula units (a case of a relation that switches reads these). */
+  const found = result.values;
   const steps = trace.map((t): Step => {
     const knownHere = { ...known };
     known[t.id] = working[t.id]!;
     const v = byId.get(t.id)!;
     const relation = relations.get(t.relation)!;
-    const text = module.steps[t.relation]?.[t.id];
+    // A relation that switches (HE-E11, HE-E12) shows the case its value was found in: that
+    // case's rule, and a line saying which case and why ("1,500 < 2,300: laminar"), both from
+    // the final values (a case reads formula units).
+    const branch = relation.branches ? branchOf(relation, found) : undefined;
+    const display = branch?.display ?? relation.display;
+    // (to more figures when the shown ones would read wrong: 2,299.6 is not "2,300 < 2,300")
+    const caseLine = branch
+      ? agree(
+          `${firstTrue(
+            (vs) => renderTemplate(branch.when, vs, working),
+            [...lineSets, unread],
+            (line) => {
+              const ok = comparisonHolds(line, evaluatePrinted);
+              return ok === undefined ? undefined : !ok;
+            },
+            unread,
+          )}: ${branch.name}`,
+        )
+      : undefined;
+    const authored = module.steps[t.relation]?.[t.id];
+    // Grade 6 letters on: a value with no step text, or one the root finder found, is worked
+    // from a closed form read from the rule (HE-E18: t = ln(A ÷ P) ÷ r) when it has one.
+    const lettered = band === 'standard' || band === 'middle';
+    const closed =
+      lettered && !t.pinned && (!authored || !t.exact)
+        ? closedStep(display, t.id, vars, working, grade)
+        : undefined;
+    const text = closed ?? authored;
     const base = {
       id: t.id,
       // Lowercase only the first letter, so names like “Pencil A” keep their capital.
@@ -442,11 +516,11 @@ export function buildSteps(
       title: v.name.endsWith(')')
         ? `Find ${lowerFirst(v.name)}: ${v.symbol}`
         : `Find ${lowerFirst(v.name)} (${v.symbol})`,
-      formula: renderTemplate(relation.display, vars),
+      formula: renderTemplate(display, vars),
       sentence: agree(
         relation.sentence
           ? relation.sentence(knownHere)
-          : renderTemplate(relation.display, lineVars, knownHere),
+          : renderTemplate(display, lineVars, knownHere),
       ),
       // A p-value under 0.0001 is written "P < 0.0001", never "P = 0"; a coded value reads as
       // what it means ("e = nonsense"), never its code.
@@ -462,26 +536,48 @@ export function buildSteps(
       band === 'early'
         ? { sentence: base.sentence }
         : band === 'elementary'
-          ? { sentence: base.sentence, formula: wordRule(relation.display, vars, relation.words) }
+          ? { sentence: base.sentence, formula: wordRule(display, vars, relation.words) }
           : band === 'middle'
             ? // Grade 6 letters: the formula with what its letters mean.
               {
-                formula: `${base.formula} (${lowerFirst(wordRule(relation.display, vars, relation.words))})`,
+                formula: `${base.formula} (${lowerFirst(wordRule(display, vars, relation.words))})`,
               }
             : { formula: base.formula };
     const heading =
       band === 'standard' || band === 'middle' ? base.title : `Find ${lowerFirst(v.name)}`;
     // Grade 6 letters: the numbers put in with the unknown kept as its letter ("40 = b × 5"),
     // unless the formula already has the unknown alone on one side.
-    const isolated =
-      relation.display.startsWith(`{${t.id}} =`) || relation.display.endsWith(`= {${t.id}}`);
+    const isolated = display.startsWith(`{${t.id}} =`) || display.endsWith(`= {${t.id}}`);
     const letterSentence = base.sentence.replaceAll('?', v.symbol);
     const answer = plain(base.result, t.id, true);
     // A value only the search pins says so: no formula found it from the values before it.
     const pinnedValue = base.result.startsWith(`${v.symbol} = `)
       ? base.result.slice(v.symbol.length + 3)
       : undefined;
-    if (!text || !t.exact) {
+    if (!text || (!t.exact && !closed)) {
+      // No closed form (HE-E14): the tries that find it, each line true as printed.
+      const tries =
+        lettered && !t.pinned
+          ? trialWork({
+              display,
+              id: t.id,
+              symbol: v.symbol,
+              vars: lineVars,
+              values: working,
+              figures,
+              trial: relation.trials?.[t.id],
+            })
+          : undefined;
+      if (tries)
+        return {
+          ...base,
+          how: tries.how,
+          heading,
+          lead,
+          lines: [...(caseLine ? [caseLine] : []), ...tries.lines],
+          writtenAfter: 0,
+          answer,
+        };
       // K–5 hears it as a child does ("12 is the only number that works here."); Grade 6 on
       // reads the rules ("Only 12 fits every rule here: no other number works.").
       const pinnedHow =
@@ -493,7 +589,7 @@ export function buildSteps(
         how: t.pinned ? pinnedHow : 'Try numbers until both sides match.',
         heading,
         lead,
-        lines: [],
+        lines: caseLine ? [caseLine] : [],
         writtenAfter: 0,
         answer,
       };
@@ -535,7 +631,7 @@ export function buildSteps(
       piValue !== undefined
         ? `${noted} (≈ ${formatNumber(Math.round(piValue * 100) / 100)}${workUnit(t.id) ? ` ${workUnit(t.id)}` : ''})`
         : noted;
-    const workLines = work?.length
+    const workLines0 = work?.length
       ? byGrade(
           work.map((line) =>
             agree(firstTrue((vs) => renderTemplate(line, vs, working), lineSets, lineOff, unread)),
@@ -543,6 +639,8 @@ export function buildSteps(
           grade,
         )
       : undefined;
+    // (the case first: which formula, then its arithmetic)
+    const workLines = caseLine ? [caseLine, ...(workLines0 ?? [])] : workLines0;
     // "35 + 20" before "35 + 20 = 55" says nothing: the work line carries it.
     const bare = substituted.slice(v.symbol.length + 3);
     // A compare page's first work line ("Tens: 4 < 5, so 45 < 54") is the lesson; the bare
@@ -659,7 +757,7 @@ export function buildSteps(
       return String(Number(x.toPrecision(6)));
     };
     const one =
-      offsetRule(shownUnit(id), formulaUnit(id)) ??
+      conversionRule(shownUnit(id), formulaUnit(id), v.difference) ??
       (f >= 1
         ? `1 ${shownUnit(id)} = ${sig(f)} ${formulaUnit(id)}`
         : `1 ${formulaUnit(id)} = ${sig(1 / f)} ${shownUnit(id)}`);
@@ -686,6 +784,11 @@ export function buildSteps(
       s.work = s.work.filter((line) => !repeated(line));
     for (const line of s.lines) seen.add(line);
   }
+  // A relation that switches is checked in the case its values are in (HE-E12).
+  const caseCheck = (r: (typeof module.relations)[number]) => {
+    const b = r.branches ? branchOf(r, result.values) : undefined;
+    return b?.check ?? b?.display;
+  };
   return {
     band,
     given: givenIds.map(quantity),
@@ -709,7 +812,7 @@ export function buildSteps(
         formula: agree(
           r.check && direct
             ? r.check(working)
-            : checkLine(r.display, lineSets, unread, working, figures),
+            : checkLine(caseCheck(r) ?? r.display, lineSets, unread, working, figures),
         ),
         ok: holds(r, result.values, module.variables),
       })),
@@ -799,20 +902,4 @@ function byGrade(lines: string[], grade: string | undefined): string[] {
     }
   }
   return out.filter((_, i) => !chained.has(i));
-}
-
-/**
- * The rule between two temperature units, which differ by an offset as well as a factor: no
- * "1 °C = …" holds, so the step writes "K = °C + 273.15" or "°F = °C × 9/5 + 32" instead.
- */
-function offsetRule(shown: string | undefined, formula: string | undefined): string | undefined {
-  const a = getUnit(shown);
-  const b = getUnit(formula);
-  if (!a || !b || !(a.offset || b.offset)) return undefined;
-  const pair = (x: string, y: string) =>
-    (shown === x && formula === y) || (shown === y && formula === x);
-  if (pair('°C', '°F')) return '°F = °C × 9/5 + 32';
-  if (pair('K', '°C')) return 'K = °C + 273.15';
-  if (pair('K', '°F')) return 'K = (°F + 459.67) × 5/9';
-  return undefined;
 }
