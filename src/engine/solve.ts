@@ -36,6 +36,11 @@ export interface TraceStep {
   relation: string;
   /** False when found by numeric root-finding rather than a rearrangement. */
   exact: boolean;
+  /**
+   * Found only because one value fits every rule (the search pins it), not from a formula and
+   * the values before it: its step says so ("Only 2 fits every rule").
+   */
+  pinned?: boolean;
 }
 
 export interface System {
@@ -578,6 +583,7 @@ function propagate(
   previous: Values,
   trace: readonly TraceStep[] = [],
   budget = { left: 2000 },
+  vet?: (values: Values) => boolean,
 ): Propagation {
   const byId = new Map(system.variables.map((v) => [v.id, v]));
   const values = { ...known };
@@ -631,8 +637,11 @@ function propagate(
         }
         const step = { id, relation: relation.id, exact: !!relation.solve?.[id] };
         if (xs.length > 1 && budget.left > 0) {
-          // Branch: keep the first candidate that leads to no conflict.
+          // Branch: keep the first candidate that leads to no conflict, and (`vet`) leaves the
+          // values still open some whole numbers that fit: with n₁ = 2 from "1 more than 1",
+          // 2 = 0 pictures × the key has no key, where n₁ = 0 does.
           let first: Propagation | undefined;
+          let open: Propagation | undefined;
           for (const x of xs) {
             const branch = propagate(
               system,
@@ -640,11 +649,13 @@ function propagate(
               previous,
               [...steps, step],
               budget,
+              vet,
             );
-            if (branch.ok) return branch;
+            if (branch.ok && (!vet || vet(branch.values))) return branch;
+            if (branch.ok) open ??= branch;
             first ??= branch;
           }
-          return first!;
+          return open ?? first!;
         }
         values[id] = xs[0]!;
         steps.push(step);
@@ -989,10 +1000,21 @@ export function solve(system: System, given: readonly Given[], previous: Values 
     // Re-solve from the kept givens (not the values derived from them), so a value that had
     // two possibilities can take the other one if this older given needs it.
     const givens = Object.fromEntries(kept.map((k) => [k.id, k.value]));
+    // A branch (the bigger or the smaller of a difference) is kept only if the values it leaves
+    // open can still be filled in.
+    const fillable = (vals: Values) => {
+      if (Object.keys(vals).length >= system.variables.length) return true;
+      if (outOfReach(system, vals)) return false;
+      const r = wholeSolutions(system, vals, previous, 1);
+      return r.exhausted || r.solutions.length > 0;
+    };
     const propagated = propagate(
       system,
       { ...givens, [g.id]: normalizeValue(variable, g.value) },
       previous,
+      [],
+      undefined,
+      fillable,
     );
     // With values still unknown, check they can still be filled in: a sum within reach of
     // the unknowns' ranges, and some whole numbers that fit.
@@ -1072,6 +1094,17 @@ export function solve(system: System, given: readonly Given[], previous: Values 
       trace = trial.trace;
       kept.unshift({ id: g.id, value: normalizeValue(variable, g.value) });
     } else if (why !== undefined) {
+      // This older input doesn't fit the newer ones, but the inputs older still work it out
+      // from them (x̄ = Σx ÷ n once n is in, where Σx ÷ x̄ made n 35.96): it is worked out
+      // again, as a value newer input determines is, and the newest stands.
+      const without = solve(
+        system,
+        given.filter((_, j) => j !== i),
+        previous,
+      );
+      if (!without.rejected && without.cleared.length === 0 && g.id in without.values) {
+        return { ...without, dropped: [...without.dropped, g.id] };
+      }
       // A rule or a range says why the newest input doesn't fit the older ones (parallel
       // lines; no material denser than osmium): the newest is refused with that sentence, and
       // the older numbers stay as they were. Only a conflict nothing explains clears the older.
@@ -1185,32 +1218,96 @@ export function solve(system: System, given: readonly Given[], previous: Values 
       known = next;
     }
   }
-  // Explain each filled value with a formula that gives it directly once everything is known,
-  // so its step shows the usual arithmetic. A value only a rule like "a/b is at most 1" or the
-  // ranges pin down is left for the student to type: a step can't be found from an order
-  // rule ("12/? is at most 1, so the denominator is 12" reads as circular).
+  // Explain each filled value in order, each step using only values known before it: a formula
+  // that gives it once the values before it are known (its usual arithmetic), or a group the
+  // group's own formulas fix together (c + s = 20 with c = s). A value only the search pins
+  // (the key 2, the only one of 2, 4, 5 and 10 that makes 1 apple a number of pictures; a common
+  // denominator with the first denominator still "?") is a step of its own, marked `pinned`
+  // ("Only 2 fits every rule"), placed where nothing else can go next, so no later step is used
+  // before it: "?/12 − ?/12 = ?/12" with "8 + 4" printed from values found later read wrong.
+  // A value with no rule at all (only an order rule like "a/b is at most 1" pins it) is left
+  // for the student to type: "12/? is at most 1, so the denominator is 12" reads as circular.
+  const formulas = system.relations.filter((rel) => !rel.constraint);
   for (const id of [...filled]) {
-    const direct = system.relations.find((rel) => {
+    if (formulas.some((rel) => rel.vars.includes(id))) continue;
+    const rest = { ...known };
+    delete rest[id];
+    known = rest;
+    filled.splice(filled.indexOf(id), 1);
+  }
+  const directFor = (id: string, explained: ReadonlySet<string>) =>
+    formulas.find((rel) => {
+      if (!rel.vars.includes(id) || !rel.vars.every((v) => v === id || explained.has(v)))
+        return false;
       const fn = rel.solve?.[id];
-      if (!fn || fn.length === 0 || !rel.vars.every((v) => v in known)) return false;
+      if (fn?.length === 0) return false;
+      // (no rearrangement: worked out numerically, as the solver does)
+      if (!fn) return holds(rel, known, system.variables);
       const others = { ...known };
       delete others[id];
       const out = fn(others);
       const xs = out === undefined ? [] : Array.isArray(out) ? out : [out];
       return xs.some((x) => closeTo(x, known[id]!, floorOf(byId.get(id))));
     });
-    const relation =
-      direct ?? system.relations.find((rel) => rel.vars.includes(id) && !rel.constraint);
-    if (!relation) {
-      const rest = { ...known };
-      delete rest[id];
-      known = rest;
-      filled.splice(filled.indexOf(id), 1);
-      continue;
+  const explained = new Set(Object.keys(known).filter((id) => !filled.includes(id)));
+  const everything = new Set(Object.keys(known));
+  let pending = [...filled];
+  const order: TraceStep[] = [];
+  while (pending.length) {
+    let grew = false;
+    for (const id of pending) {
+      const rel = directFor(id, explained);
+      if (!rel) continue;
+      order.push({ id, relation: rel.id, exact: !!rel.solve?.[id] });
+      explained.add(id);
+      grew = true;
     }
-    trace = [...trace, { id, relation: relation.id, exact: !!direct }];
+    pending = pending.filter((id) => !explained.has(id));
+    if (grew || !pending.length) continue;
+    // A group its own formulas fix: as many formulas among the group and the values explained
+    // as values in the group (c + s = 20 and c = s).
+    for (const start of pending) {
+      if (explained.has(start)) continue;
+      const group = new Set([start]);
+      for (let more = true; more;) {
+        more = false;
+        for (const rel of formulas) {
+          if (!rel.vars.some((v) => group.has(v))) continue;
+          for (const v of rel.vars) {
+            if (pending.includes(v) && !group.has(v)) {
+              group.add(v);
+              more = true;
+            }
+          }
+        }
+      }
+      const fixing = formulas.filter(
+        (rel) =>
+          rel.vars.some((v) => group.has(v)) &&
+          rel.vars.every((v) => group.has(v) || explained.has(v)),
+      );
+      if (fixing.length < group.size) continue;
+      for (const id of group) {
+        const direct = directFor(id, everything);
+        const rel = direct ?? fixing.find((r) => r.vars.includes(id))!;
+        order.push({ id, relation: rel.id, exact: !!direct?.solve?.[id] });
+      }
+      for (const id of group) explained.add(id);
+      grew = true;
+    }
+    pending = pending.filter((id) => !explained.has(id));
+    if (grew || !pending.length) continue;
+    // Only the search pins what is left: the first of them is its own step, from a rule whose
+    // values are all known if one is.
+    const id = pending[0]!;
+    const rel =
+      formulas.find((r) => r.vars.includes(id) && r.vars.every((v) => everything.has(v))) ??
+      formulas.find((r) => r.vars.includes(id))!;
+    order.push({ id, relation: rel.id, exact: false, pinned: true });
+    explained.add(id);
+    pending = pending.slice(1);
   }
-
+  trace = [...trace, ...order];
   const givenIds = new Set(kept.map((g) => g.id));
   const ids = system.variables.map((v) => v.id);
   return {
