@@ -64,7 +64,7 @@ import * as hsk from './picturesHsk';
 import { gasEnergyIssues, hs2cIssues, siOf } from './picturesHs2c';
 import { hs3aIssues, hs3aOptionIssues } from './picturesHs3a';
 import { gasMixtureIssues } from './picturesHs3e';
-import { netIssues } from './picturesHe1h';
+import { netIssues, oscillatorIssues } from './picturesHe1h';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -2254,6 +2254,7 @@ export function repIssues(
     case 'pendulum':
     case 'capacitor':
       out.push(...hs3aIssues(rep, siOf(val, byId)));
+      if (rep.kind === 'oscillator') out.push(...oscillatorIssues(rep, siOf(val, byId), byId)); // HC11
       break;
     case 'bars':
       out.push(...barFlowIssues(rep, val));

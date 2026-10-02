@@ -47,10 +47,16 @@ export function oscillatorIssues(
     const raw = val(x);
     return raw === undefined ? undefined : raw * siFactor(byId.get(x)?.unit);
   };
-  const same = (id: string | undefined, want: number | undefined, what: string) => {
+  // `floor`: the absolute slack (a position read off a trace: 0.1% of its swing).
+  const same = (
+    id: string | undefined,
+    want: number | undefined,
+    what: string,
+    floor = 1e-9 * Math.max(1, Math.abs(want ?? 0)),
+  ) => {
     const x = si(id);
     if (id === undefined || x === undefined || want === undefined || !Number.isFinite(want)) return;
-    if (!near(x, want, 1e-9 * Math.max(1, Math.abs(want))))
+    if (!near(x, want, floor))
       out.push(`oscillator: ${what} ${id} = ${x}, the picture draws ${want}`);
   };
   const [m, k] = [si(rep.mass), si(rep.spring)];
@@ -65,20 +71,28 @@ export function oscillatorIssues(
     if (cc !== undefined) {
       if (cc < 0) out.push(`oscillator: damping ${cc} is negative`);
       const x0 = si(d.x0 ?? rep.amplitude) ?? 0;
-      const fv = freeVibration(m, cc, k, x0, si(d.v0) ?? 0);
+      const v0 = si(d.v0) ?? 0;
+      const fv = freeVibration(m, cc, k, x0, v0);
+      const swing = Math.max(Math.abs(x0), Math.abs(v0) / wn);
       same(d.natural, wn, 'ω_n');
       same(d.zeta, fv.zeta, 'ζ = c ÷ (2√(km))');
       same(d.critical, 2 * Math.sqrt(k * m), 'c_cr = 2√(km)');
-      if (fv.regime === 'under') {
+      if (fv.regime === 'under' || fv.regime === 'none') {
         same(d.damped, fv.wd, 'ω_d');
-        if (!(fv.wd < wn)) out.push(`oscillator: ω_d ${fv.wd} is not less than ω_n ${wn}`);
+        if (fv.wd > wn * (1 + 1e-12) || (fv.zeta > 1e-6 && !(fv.wd < wn)))
+          out.push(`oscillator: ω_d ${fv.wd} is not less than ω_n ${wn}`);
         // Each crest sits on the envelope, and n cycles shrink it by e^(−nδ).
-        const crests = fv.crests(4);
+        const delta = (2 * Math.PI * fv.zeta) / Math.sqrt(1 - fv.zeta ** 2);
+        // (Only where the crests are numbers: a swing of 0, or one gone in a cycle, has none.)
+        const crests = swing > 0 && delta < 20 ? fv.crests(4) : [];
         for (const tc of crests)
           if (!near(fv.x(tc), fv.envelope!(tc) * Math.cos(Math.atan2(fv.zeta * wn, fv.wd)), 1e-12))
             out.push(`oscillator: the crest at t = ${tc} is off the envelope`);
-        const delta = (2 * Math.PI * fv.zeta) / Math.sqrt(1 - fv.zeta ** 2);
-        if (crests.length > 1 && !near(Math.log(fv.x(crests[0]!) / fv.x(crests[1]!)), delta))
+        if (
+          crests.length > 1 &&
+          delta > 1e-6 &&
+          !near(Math.log(fv.x(crests[0]!) / fv.x(crests[1]!)), delta)
+        )
           out.push('oscillator: the crests’ ratio does not match δ');
         same(d.decrement, delta, 'δ');
         const n = si(d.cycles);
@@ -87,7 +101,7 @@ export function oscillatorIssues(
           same(d.decrement, Math.log(x0 / end) / n, 'δ = (1/n) ln(x₀/xₙ)');
       } else if (d.damped) same(d.damped, 0, 'ω_d (not underdamped)');
       const tt = si(d.t);
-      if (tt !== undefined) same(d.x, fv.x(tt), 'x at the marked t');
+      if (tt !== undefined) same(d.x, fv.x(tt), 'x at the marked t', 1e-3 * swing);
     }
   }
 
@@ -103,7 +117,7 @@ export function oscillatorIssues(
       if (!near(Ap * Math.cos(phip), x0, 1e-12)) out.push('oscillator: x(0) ≠ A cos φ');
       if (!near(-Ap * wn * Math.sin(phip), v0, 1e-12)) out.push('oscillator: the slope at 0 ≠ v₀');
       const tt = si(p.t);
-      if (tt !== undefined) same(p.x, A * Math.cos(wn * tt + phi), 'x at the marked t');
+      if (tt !== undefined) same(p.x, A * Math.cos(wn * tt + phi), 'x at the marked t', 1e-3 * A);
     }
   }
 

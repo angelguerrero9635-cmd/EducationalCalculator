@@ -2,6 +2,10 @@
  * College gallery demos, round 1, group H (docs/RENDERINGS_HE.md). Each stands in for the
  * college page that waits, built from the plan's worked example. Spread into gallery.ts.
  *
+ * HC11: the oscillator's damping, start phase, forcing, transmissibility, coupled masses and
+ * springs, one demo per option from the math, physics, vibrations and controls plans, and one
+ * close to resonance.
+ *
  * HC7: the passive-circuit schematic (`net` on `seriesCircuit` and `circuit`), one demo per
  * topology from the circuits, physics and bioinstrumentation plans, and one at the edge (a
  * branch current that runs against its reference).
@@ -1406,6 +1410,936 @@ const lowpass = demo({
   }),
 });
 
+// ─── HC11: the oscillator's college options ───────────────────────────────────
+
+/** A variable shown in its own unit only (no unit menu): the oscillator steps mix units. */
+const vu = (...a: Parameters<typeof vr>): VariableDef => {
+  const v = vr(...a);
+  return v.unit ? { ...v, units: [v.unit] } : v;
+};
+
+const dampedX = (x: Values) => {
+  const [a, b] = [x.alpha!, x.beta!];
+  return Math.exp(a * x.t!) * x.x0! * (Math.cos(b * x.t!) - (a / b) * Math.sin(b * x.t!));
+};
+
+const damped = demo({
+  id: 'g.he-oscillator-damped',
+  title: 'Oscillator: a damped mass on a spring, my″ + cy′ + ky = 0',
+  use: 'Use this for “A 1 kg mass on a 10 N/m spring with damping 2 N·s/m is pulled 1 m and let go from rest. Where is it after 1 s?”',
+  assumptions: [
+    'A linear spring and damper: my″ + cy′ + ky = 0, with roots α ± βi when c² < 4mk.',
+    'c² < 4mk oscillates; c² = 4mk is critical; c² > 4mk creeps back without swinging.',
+    'Let go from rest (v₀ = 0): y = e^(αt)(C₁ cos βt + C₂ sin βt) with C₁ = y₀ and C₂ = −αy₀/β; angles in radians.',
+  ],
+  variables: [
+    vu('m', 'm', 'Mass', 'kg', 0.1, 100, { step: 0.1 }),
+    vu('c', 'c', 'Damping constant', 'N·s/m', 0, 100, { step: 0.1 }),
+    vu('k', 'k', 'Spring constant', 'N/m', 1, 1e4, { step: 1 }),
+    vu('x0', 'y₀', 'Start position', 'm', -10, 10, { step: 0.1 }),
+    vu('alpha', 'α', 'Decay rate (real part)', '1/s', -500, 0, { derived: true }),
+    vu('beta', 'β', 'Damped frequency (imaginary part)', 'rad/s', 1e-6, 1000, { derived: true }),
+    vu('t', 't', 'Time', 's', 0, 60, { step: 0.1 }),
+    vu('x', 'y(t)', 'Position at t', 'm', -10, 10, { derived: true }),
+  ],
+  rules: [
+    rule(
+      'α = −c ÷ (2m)',
+      '{alpha} = −{c} ÷ (2 × {m})',
+      ['alpha', 'c', 'm'],
+      (x) => x.alpha! * 2 * x.m! + x.c!,
+      {
+        alpha: [
+          (x) => div(-x.c!, 2 * x.m!),
+          '−{c} ÷ (2 × {m})',
+          'The real part of the roots of mr² + cr + k = 0.',
+        ],
+        c: [(x) => -2 * x.m! * x.alpha!, '−2 × {m} × {alpha}', 'Undo α = −c ÷ (2m).'],
+      },
+    ),
+    rule(
+      'β = √(4mk − c²) ÷ (2m)',
+      '{beta} = √(4 × {m} × {k} − {c}²) ÷ (2 × {m})',
+      ['beta', 'm', 'k', 'c'],
+      (x) => (2 * x.m! * x.beta!) ** 2 - (4 * x.m! * x.k! - x.c! ** 2),
+      {
+        beta: [
+          (x) =>
+            4 * x.m! * x.k! > x.c! ** 2
+              ? Math.sqrt(4 * x.m! * x.k! - x.c! ** 2) / (2 * x.m!)
+              : undefined,
+          '√(4 × {m} × {k} − {c}²) ÷ (2 × {m})',
+          'The imaginary part of the roots: the ringing frequency (only when c² < 4mk).',
+        ],
+        k: [
+          (x) => ((2 * x.m! * x.beta!) ** 2 + x.c! ** 2) / (4 * x.m!),
+          '((2 × {m} × {beta})² + {c}²) ÷ (4 × {m})',
+          'Square both sides and solve for k.',
+        ],
+      },
+    ),
+    rule(
+      'y = e^(αt)(C₁ cos βt + C₂ sin βt)',
+      '{x} = e^({alpha} × {t}) × {x0} × (cos({beta} × {t}) − {alpha} ÷ {beta} × sin({beta} × {t}))',
+      ['x', 'alpha', 't', 'x0', 'beta'],
+      (x) => x.x! - dampedX(x),
+      {
+        x: [
+          dampedX,
+          'e^({alpha} × {t}) × {x0} × (cos({beta} × {t}) − {alpha} ÷ {beta} × sin({beta} × {t}))',
+          'C₁ = y₀ and C₂ = −αy₀/β fit a start from rest; the swing shrinks by e^(αt).',
+        ],
+      },
+    ),
+  ],
+  example: (() => {
+    const ex: Values = { m: 1, c: 2, k: 10, x0: 1, alpha: -1, beta: 3, t: 1 };
+    return { ...ex, x: dampedX(ex) };
+  })(),
+  startWith: ['m', 'c', 'k', 'x0', 't'],
+  representation: {
+    kind: 'oscillator',
+    mass: 'm',
+    spring: 'k',
+    amplitude: 1,
+    damping: { c: 'c', x0: 'x0', t: 't', x: 'x' },
+  },
+});
+
+const phaseOmega = 10;
+const phasePhi = -Math.atan(0.4 / (phaseOmega * 0.03));
+const phaseA = Math.hypot(0.03, 0.4 / phaseOmega);
+const phase = demo({
+  id: 'g.he-oscillator-phase',
+  title: 'Oscillator: simple harmonic motion from x₀ and v₀',
+  use: 'Use this for “A 0.5 kg mass on a 50 N/m spring starts at 0.03 m moving at 0.4 m/s. Find A, φ and x at 0.2 s.”',
+  assumptions: [
+    'No friction: x(t) = A cos(ωt + φ) solves mẍ = −kx.',
+    'φ is in radians; with x₀ > 0, φ = −arctan(v₀ ÷ (ωx₀)).',
+  ],
+  variables: [
+    vu('m', 'm', 'Mass', 'kg', 0.01, 100, { step: 0.1 }),
+    vu('k', 'k', 'Spring constant', 'N/m', 0.1, 1e4, { step: 1 }),
+    vu('w', 'ω', 'Angular frequency', 'rad/s', 0.01, 1000, { derived: true }),
+    vu('x0', 'x₀', 'Start position', 'm', 0.001, 10, { step: 0.01 }),
+    vu('v0', 'v₀', 'Start velocity', 'm/s', -100, 100, { step: 0.1 }),
+    vu('A', 'A', 'Amplitude', 'm', 0.001, 1e4, { derived: true }),
+    vu('phi', 'φ', 'Phase', 'rad', -Math.PI, Math.PI, { derived: true }),
+    vu('t', 't', 'Time', 's', 0, 60, { step: 0.1 }),
+    vu('x', 'x', 'Position at t', 'm', -1e4, 1e4, { derived: true }),
+  ],
+  rules: [
+    rule('ω = √(k ÷ m)', '{w} = √({k} ÷ {m})', ['w', 'k', 'm'], (x) => x.w! ** 2 * x.m! - x.k!, {
+      w: [(x) => Math.sqrt(x.k! / x.m!), '√({k} ÷ {m})', 'The natural angular frequency.'],
+      k: [(x) => x.w! ** 2 * x.m!, '{w}² × {m}', 'Square ω and multiply by m.'],
+      m: [(x) => div(x.k!, x.w! ** 2), '{k} ÷ {w}²', 'Divide k by ω².'],
+    }),
+    rule(
+      'A = √(x₀² + (v₀/ω)²)',
+      '{A} = √({x0}² + ({v0} ÷ {w})²)',
+      ['A', 'x0', 'v0', 'w'],
+      (x) => x.A! ** 2 - x.x0! ** 2 - (x.v0! / x.w!) ** 2,
+      {
+        A: [
+          (x) => Math.hypot(x.x0!, x.v0! / x.w!),
+          '√({x0}² + ({v0} ÷ {w})²)',
+          'The start position and the start velocity (over ω) are the legs; A is the hypotenuse.',
+        ],
+      },
+    ),
+    rule(
+      'φ = −arctan(v₀ ÷ (ωx₀))',
+      '{phi} = −arctan({v0} ÷ ({w} × {x0}))',
+      ['phi', 'v0', 'w', 'x0'],
+      (x) => Math.tan(-x.phi!) * x.w! * x.x0! - x.v0!,
+      {
+        phi: [
+          (x) => -Math.atan(x.v0! / (x.w! * x.x0!)),
+          '−arctan({v0} ÷ ({w} × {x0}))',
+          'x(0) = A cos φ and v(0) = −Aω sin φ: their ratio gives tan φ.',
+        ],
+        v0: [
+          (x) => -Math.tan(x.phi!) * x.w! * x.x0!,
+          '−tan({phi}) × {w} × {x0}',
+          'The start velocity from the phase.',
+        ],
+      },
+    ),
+    rule(
+      'x = A cos(ωt + φ)',
+      '{x} = {A} × cos({w} × {t} + {phi})',
+      ['x', 'A', 'w', 't', 'phi'],
+      (x) => x.x! - x.A! * Math.cos(x.w! * x.t! + x.phi!),
+      {
+        x: [
+          (x) => x.A! * Math.cos(x.w! * x.t! + x.phi!),
+          '{A} × cos({w} × {t} + {phi})',
+          'The position at time t, angle in radians.',
+        ],
+      },
+    ),
+  ],
+  example: {
+    m: 0.5,
+    k: 50,
+    w: phaseOmega,
+    x0: 0.03,
+    v0: 0.4,
+    A: phaseA,
+    phi: phasePhi,
+    t: 0.2,
+    x: phaseA * Math.cos(2 + phasePhi),
+  },
+  startWith: ['m', 'k', 'x0', 'v0', 't'],
+  representation: {
+    kind: 'oscillator',
+    mass: 'm',
+    spring: 'k',
+    amplitude: 'A',
+    phase: { x0: 'x0', v0: 'v0', amplitude: 'A', phase: 'phi', omega: 'w', t: 't', x: 'x' },
+  },
+});
+
+const envelope = demo({
+  id: 'g.he-oscillator-envelope',
+  title: 'Oscillator: light damping, the amplitude decaying',
+  use: 'Use this for “A 0.5 kg mass on 50 N/m has damping b = 0.4 kg/s. Find ω′, Q and the amplitude after 5 s from 0.05 m.”',
+  assumptions: [
+    'Underdamped only: b < 2√(mk); at the limit the motion is critically damped.',
+    'The amplitude decays as A₀e^(−bt/2m); ω′ = √(k/m − (b/2m)²).',
+  ],
+  variables: [
+    vu('m', 'm', 'Mass', 'kg', 0.01, 100, { step: 0.1 }),
+    vu('k', 'k', 'Spring constant', 'N/m', 0.1, 1e4, { step: 1 }),
+    vu('b', 'b', 'Damping constant', 'kg/s', 0.001, 100, { step: 0.1 }),
+    vu('wp', 'ω′', 'Damped angular frequency', 'rad/s', 0.001, 1000, { derived: true }),
+    vu('Q', 'Q', 'Quality factor', undefined, 0.5, 1e5, { derived: true }),
+    vu('A0', 'A₀', 'Start amplitude', 'm', 0.001, 10, { step: 0.01 }),
+    vu('t', 't', 'Time', 's', 0, 600, { step: 0.5 }),
+    vu('A', 'A', 'Amplitude at t', 'm', 0, 10, { derived: true }),
+  ],
+  rules: [
+    rule(
+      'ω′ = √(k/m − (b/2m)²)',
+      '{wp} = √({k} ÷ {m} − ({b} ÷ (2 × {m}))²)',
+      ['wp', 'k', 'm', 'b'],
+      (x) => x.wp! ** 2 - (x.k! / x.m! - (x.b! / (2 * x.m!)) ** 2),
+      {
+        wp: [
+          (x) =>
+            x.k! / x.m! > (x.b! / (2 * x.m!)) ** 2
+              ? Math.sqrt(x.k! / x.m! - (x.b! / (2 * x.m!)) ** 2)
+              : undefined,
+          '√({k} ÷ {m} − ({b} ÷ (2 × {m}))²)',
+          'Damping slows the swing a little below √(k/m).',
+        ],
+      },
+    ),
+    rule(
+      'Q = √(mk) ÷ b',
+      '{Q} = √({m} × {k}) ÷ {b}',
+      ['Q', 'm', 'k', 'b'],
+      (x) => x.Q! * x.b! - Math.sqrt(x.m! * x.k!),
+      {
+        Q: [
+          (x) => div(Math.sqrt(x.m! * x.k!), x.b!),
+          '√({m} × {k}) ÷ {b}',
+          'Q = mω₀ ÷ b: about how many radians it rings before fading.',
+        ],
+        b: [
+          (x) => div(Math.sqrt(x.m! * x.k!), x.Q!),
+          '√({m} × {k}) ÷ {Q}',
+          'The damping that gives this Q.',
+        ],
+      },
+    ),
+    rule(
+      'A = A₀e^(−bt/2m)',
+      '{A} = {A0} × e^(−{b} × {t} ÷ (2 × {m}))',
+      ['A', 'A0', 'b', 't', 'm'],
+      (x) => x.A! - x.A0! * Math.exp((-x.b! * x.t!) / (2 * x.m!)),
+      {
+        A: [
+          (x) => x.A0! * Math.exp((-x.b! * x.t!) / (2 * x.m!)),
+          '{A0} × e^(−{b} × {t} ÷ (2 × {m}))',
+          'The envelope: the amplitude shrinks by e every 2m/b seconds.',
+        ],
+        A0: [
+          (x) => x.A! / Math.exp((-x.b! * x.t!) / (2 * x.m!)),
+          '{A} ÷ e^(−{b} × {t} ÷ (2 × {m}))',
+          'Undo the decay.',
+        ],
+      },
+    ),
+  ],
+  example: {
+    m: 0.5,
+    k: 50,
+    b: 0.4,
+    wp: Math.sqrt(100 - 0.16),
+    Q: 12.5,
+    A0: 0.05,
+    t: 5,
+    A: 0.05 * Math.exp(-2),
+  },
+  startWith: ['m', 'k', 'b', 'A0', 't'],
+  representation: {
+    kind: 'oscillator',
+    mass: 'm',
+    spring: 'k',
+    amplitude: 'A0',
+    damping: { c: 'b', letter: 'b', x0: 'A0', damped: 'wp' },
+  },
+});
+
+const massSpring = demo({
+  id: 'g.he-oscillator-mass-spring',
+  title: 'Oscillator: a mass, spring and damper as a second-order system',
+  use: 'Use this for “Find ωₙ, ζ and the DC gain of G(s) = 1 ÷ (2s² + 8s + 50).”',
+  assumptions: [
+    'G(s) = 1 ÷ (ms² + bs + k) from force to position.',
+    'ωₙ = √(k/m), ζ = b ÷ (2√(km)); the DC gain is 1/k.',
+  ],
+  variables: [
+    vu('m', 'm', 'Mass', 'kg', 0.01, 1000, { step: 0.1 }),
+    vu('b', 'b', 'Damping', 'N·s/m', 0, 1e4, { step: 0.5 }),
+    vu('k', 'k', 'Spring constant', 'N/m', 0.1, 1e6, { step: 1 }),
+    vu('wn', 'ωₙ', 'Natural frequency', 'rad/s', 1e-6, 1e6),
+    vu('zeta', 'ζ', 'Damping ratio', undefined, 0, 100),
+    vu('K', 'K', 'DC gain', 'm/N', 1e-9, 10),
+  ],
+  rules: [
+    rule(
+      'ωₙ = √(k ÷ m)',
+      '{wn} = √({k} ÷ {m})',
+      ['wn', 'k', 'm'],
+      (x) => x.wn! ** 2 * x.m! - x.k!,
+      {
+        wn: [(x) => Math.sqrt(x.k! / x.m!), '√({k} ÷ {m})', 'The natural frequency of ms² + k.'],
+        k: [(x) => x.wn! ** 2 * x.m!, '{wn}² × {m}', 'Square ωₙ, times m.'],
+      },
+    ),
+    rule(
+      'ζ = b ÷ (2√(km))',
+      '{zeta} = {b} ÷ (2 × √({k} × {m}))',
+      ['zeta', 'b', 'k', 'm'],
+      (x) => x.zeta! * 2 * Math.sqrt(x.k! * x.m!) - x.b!,
+      {
+        zeta: [
+          (x) => div(x.b!, 2 * Math.sqrt(x.k! * x.m!)),
+          '{b} ÷ (2 × √({k} × {m}))',
+          'Match ms² + bs + k to m(s² + 2ζωₙs + ωₙ²).',
+        ],
+        b: [
+          (x) => x.zeta! * 2 * Math.sqrt(x.k! * x.m!),
+          '{zeta} × 2 × √({k} × {m})',
+          'The damping for this ζ.',
+        ],
+      },
+    ),
+    rule('K = 1 ÷ k', '{K} = 1 ÷ {k}', ['K', 'k'], (x) => x.K! * x.k! - 1, {
+      K: [(x) => div(1, x.k!), '1 ÷ {k}', 'At s = 0 only the spring holds the force: G(0) = 1/k.'],
+      k: [(x) => div(1, x.K!), '1 ÷ {K}', 'The spring from the DC gain.'],
+    }),
+  ],
+  example: { m: 2, b: 8, k: 50, wn: 5, zeta: 0.4, K: 0.02 },
+  startWith: ['m', 'b', 'k'],
+  representation: {
+    kind: 'oscillator',
+    mass: 'm',
+    spring: 'k',
+    amplitude: 0.02,
+    damping: { c: 'b', letter: 'b', natural: 'wn', zeta: 'zeta' },
+  },
+});
+
+const ratio = demo({
+  id: 'g.he-oscillator-damping-ratio',
+  title: 'Oscillator: critical damping, ζ and ω_d',
+  use: 'Use this for “2 kg on 800 N/m with c = 16 N·s/m: find c_cr, ζ and ω_d.”',
+  assumptions: [
+    'c_cr = 2√(km) is the damping that just stops the swing.',
+    'ζ < 1: ω_d = ωₙ√(1 − ζ²); the page names the over- and critically damped cases.',
+  ],
+  variables: [
+    vu('m', 'm', 'Mass', 'kg', 0.001, 1000, { step: 0.1 }),
+    vu('k', 'k', 'Spring constant', 'N/m', 0.1, 1e6, { step: 10 }),
+    vu('c', 'c', 'Damping constant', 'N·s/m', 0, 1e5, { step: 1 }),
+    vu('cc', 'c_cr', 'Critical damping', 'N·s/m', 1e-6, 1e6),
+    vu('zeta', 'ζ', 'Damping ratio', undefined, 0, 100),
+    vu('wn', 'ωₙ', 'Natural frequency', 'rad/s', 1e-6, 1e6),
+    vu('wd', 'ω_d', 'Damped frequency', 'rad/s', 0, 1e6),
+  ],
+  rules: [
+    rule(
+      'c_cr = 2√(km)',
+      '{cc} = 2 × √({k} × {m})',
+      ['cc', 'k', 'm'],
+      (x) => x.cc! - 2 * Math.sqrt(x.k! * x.m!),
+      {
+        cc: [(x) => 2 * Math.sqrt(x.k! * x.m!), '2 × √({k} × {m})', 'The damping where c² = 4km.'],
+      },
+    ),
+    rule(
+      'ζ = c ÷ c_cr',
+      '{zeta} = {c} ÷ {cc}',
+      ['zeta', 'c', 'cc'],
+      (x) => x.zeta! * x.cc! - x.c!,
+      {
+        zeta: [(x) => div(x.c!, x.cc!), '{c} ÷ {cc}', 'The damping as a fraction of critical.'],
+        c: [(x) => x.zeta! * x.cc!, '{zeta} × {cc}', 'Multiply back by c_cr.'],
+      },
+    ),
+    rule(
+      'ωₙ = √(k ÷ m)',
+      '{wn} = √({k} ÷ {m})',
+      ['wn', 'k', 'm'],
+      (x) => x.wn! ** 2 * x.m! - x.k!,
+      {
+        wn: [(x) => Math.sqrt(x.k! / x.m!), '√({k} ÷ {m})', 'The undamped natural frequency.'],
+      },
+    ),
+    rule(
+      'ω_d = ωₙ√(1 − ζ²)',
+      '{wd} = {wn} × √(1 − {zeta}²)',
+      ['wd', 'wn', 'zeta'],
+      (x) => x.wd! ** 2 - x.wn! ** 2 * (1 - x.zeta! ** 2),
+      {
+        wd: [
+          (x) => (x.zeta! < 1 ? x.wn! * Math.sqrt(1 - x.zeta! ** 2) : undefined),
+          '{wn} × √(1 − {zeta}²)',
+          'Damping slows the swing: ω_d < ωₙ.',
+        ],
+      },
+    ),
+  ],
+  example: { m: 2, k: 800, c: 16, cc: 80, zeta: 0.2, wn: 20, wd: 20 * Math.sqrt(0.96) },
+  startWith: ['m', 'k', 'c'],
+  representation: {
+    kind: 'oscillator',
+    mass: 'm',
+    spring: 'k',
+    amplitude: 0.01,
+    damping: { c: 'c', critical: 'cc', zeta: 'zeta', natural: 'wn', damped: 'wd' },
+  },
+});
+
+const logDelta = Math.log(5) / 5;
+const logZeta = logDelta / Math.sqrt(4 * Math.PI ** 2 + logDelta ** 2);
+const logDec = demo({
+  id: 'g.he-oscillator-log-dec',
+  title: 'Oscillator: the logarithmic decrement from two crests',
+  use: 'Use this for “The swing falls from 10 mm to 2 mm in 5 cycles. Find δ and ζ.”',
+  assumptions: [
+    'Viscous damping: each crest is e^(−δ) of the one before.',
+    'Drawn on 1 kg and 100 N/m (c_cr = 20 N·s/m), so c = 20ζ.',
+  ],
+  variables: [
+    vu('x0', 'x₀', 'First crest', 'mm', 0.01, 1000, { step: 0.5 }),
+    vu('xn', 'xₙ', 'Crest n cycles later', 'mm', 0.001, 1000, { step: 0.5 }),
+    vu('n', 'n', 'Cycles between them', undefined, 1, 50, { integer: true }),
+    vu('delta', 'δ', 'Logarithmic decrement', undefined, 0.0001, 5),
+    vu('zeta', 'ζ', 'Damping ratio', undefined, 0.00001, 0.7),
+    vu('c', 'c', 'Damping constant (drawn)', 'N·s/m', 0.0002, 14, { derived: true }),
+  ],
+  rules: [
+    rule(
+      'δ = (1/n) ln(x₀ ÷ xₙ)',
+      '{delta} = ln({x0} ÷ {xn}) ÷ {n}',
+      ['delta', 'x0', 'xn', 'n'],
+      (x) => x.delta! * x.n! - Math.log(x.x0! / x.xn!),
+      {
+        delta: [
+          (x) => (x.xn! > 0 ? Math.log(x.x0! / x.xn!) / x.n! : undefined),
+          'ln({x0} ÷ {xn}) ÷ {n}',
+          'n cycles shrink the crest by e^(−nδ).',
+        ],
+        xn: [
+          (x) => x.x0! * Math.exp(-x.n! * x.delta!),
+          '{x0} × e^(−{n} × {delta})',
+          'The crest after n cycles.',
+        ],
+      },
+    ),
+    rule(
+      'ζ = δ ÷ √(4 × π² + δ²)',
+      '{zeta} = {delta} ÷ √(4 × π² + {delta}²)',
+      ['zeta', 'delta'],
+      (x) => x.zeta! - x.delta! / Math.sqrt(4 * Math.PI ** 2 + x.delta! ** 2),
+      {
+        zeta: [
+          (x) => x.delta! / Math.sqrt(4 * Math.PI ** 2 + x.delta! ** 2),
+          '{delta} ÷ √(4 × π² + {delta}²)',
+          'From δ = 2πζ ÷ √(1 − ζ²), solved for ζ.',
+        ],
+        delta: [
+          (x) => (x.zeta! < 1 ? (2 * Math.PI * x.zeta!) / Math.sqrt(1 - x.zeta! ** 2) : undefined),
+          '2π × {zeta} ÷ √(1 − {zeta}²)',
+          'The decrement a damping ratio gives.',
+        ],
+      },
+    ),
+    rule('c = 20ζ', '{c} = 20 × {zeta}', ['c', 'zeta'], (x) => x.c! - 20 * x.zeta!, {
+      c: [(x) => 20 * x.zeta!, '20 × {zeta}', 'The damping drawn: ζ times c_cr = 20 N·s/m.'],
+      zeta: [(x) => x.c! / 20, '{c} ÷ 20', 'The damping as a fraction of 20 N·s/m.'],
+    }),
+  ],
+  example: { x0: 10, xn: 2, n: 5, delta: logDelta, zeta: logZeta, c: 20 * logZeta },
+  startWith: ['x0', 'xn', 'n'],
+  representation: {
+    kind: 'oscillator',
+    mass: 1,
+    spring: 100,
+    amplitude: 'x0',
+    damping: { c: 'c', x0: 'x0', cycles: 'n', end: 'xn', decrement: 'delta', zeta: 'zeta' },
+  },
+});
+
+const forcedModule = (id: string, title: string, use: string, ex: Values): ModuleDef => {
+  const wn = Math.sqrt(ex.k! / ex.m!);
+  const r = ex.w! / wn;
+  const fr = 1 / Math.sqrt((1 - r * r) ** 2 + (2 * ex.zeta! * r) ** 2);
+  const mag = (x: Values) => 1 / Math.sqrt((1 - x.r! ** 2) ** 2 + (2 * x.zeta! * x.r!) ** 2);
+  return demo({
+    id,
+    title,
+    use,
+    assumptions: [
+      'Steady state under F₀ sin ωt; the start-up motion has died away.',
+      'X = (F₀ ÷ k) ÷ √((1 − r²)² + (2ζr)²), tan φ = 2ζr ÷ (1 − r²), φ in radians.',
+    ],
+    variables: [
+      vu('m', 'm', 'Mass', 'kg', 0.01, 1e4, { step: 0.5 }),
+      vu('k', 'k', 'Spring constant', 'N/m', 1, 1e7, { step: 100 }),
+      vu('wn', 'ωₙ', 'Natural frequency', 'rad/s', 0.01, 1e4),
+      vu('w', 'ω', 'Driving frequency', 'rad/s', 0.01, 1e4, { step: 0.5 }),
+      vu('r', 'r', 'Frequency ratio', undefined, 0.001, 20),
+      vu('zeta', 'ζ', 'Damping ratio', undefined, 0.001, 5, { step: 0.01 }),
+      vu('F0', 'F₀', 'Force amplitude', 'N', 1e-6, 1e8, { step: 10 }),
+      vu('X', 'X', 'Steady amplitude', 'm', 0, 1e6),
+      vu('phi', 'φ', 'Phase lag', 'rad', 0, Math.PI),
+    ],
+    rules: [
+      rule(
+        'ωₙ = √(k ÷ m)',
+        '{wn} = √({k} ÷ {m})',
+        ['wn', 'k', 'm'],
+        (x) => x.wn! ** 2 * x.m! - x.k!,
+        {
+          wn: [(x) => Math.sqrt(x.k! / x.m!), '√({k} ÷ {m})', 'The natural frequency.'],
+          k: [(x) => x.wn! ** 2 * x.m!, '{wn}² × {m}', 'Square ωₙ, times m.'],
+        },
+      ),
+      rule('r = ω ÷ ωₙ', '{r} = {w} ÷ {wn}', ['r', 'w', 'wn'], (x) => x.r! * x.wn! - x.w!, {
+        r: [
+          (x) => div(x.w!, x.wn!),
+          '{w} ÷ {wn}',
+          'How fast it is driven, against how fast it rings.',
+        ],
+        w: [(x) => x.r! * x.wn!, '{r} × {wn}', 'The driving frequency from r.'],
+      }),
+      rule(
+        'X = (F₀/k) ÷ √((1 − r²)² + (2ζr)²)',
+        '{X} = {F0} ÷ {k} ÷ √((1 − {r}²)² + (2 × {zeta} × {r})²)',
+        ['X', 'F0', 'k', 'r', 'zeta'],
+        (x) => x.X! - (x.F0! / x.k!) * mag(x),
+        {
+          X: [
+            (x) => (x.F0! / x.k!) * mag(x),
+            '{F0} ÷ {k} ÷ √((1 − {r}²)² + (2 × {zeta} × {r})²)',
+            'The static stretch F₀/k times the magnification at r.',
+          ],
+          F0: [
+            (x) => (x.X! * x.k!) / mag(x),
+            '{X} × {k} × √((1 − {r}²)² + (2 × {zeta} × {r})²)',
+            'The force that gives this amplitude.',
+          ],
+        },
+      ),
+      rule(
+        'tan φ = 2ζr ÷ (1 − r²)',
+        '{phi} = arccos((1 − {r}²) ÷ √((1 − {r}²)² + (2 × {zeta} × {r})²))',
+        ['phi', 'zeta', 'r'],
+        (x) => x.phi! - Math.atan2(2 * x.zeta! * x.r!, 1 - x.r! ** 2),
+        {
+          phi: [
+            (x) => Math.atan2(2 * x.zeta! * x.r!, 1 - x.r! ** 2),
+            'arccos((1 − {r}²) ÷ √((1 − {r}²)² + (2 × {zeta} × {r})²))',
+            'The response lags the force: little below r = 1, 90° at it, nearly 180° above.',
+          ],
+        },
+      ),
+    ],
+    example: {
+      ...ex,
+      wn,
+      r,
+      X: (ex.F0! / ex.k!) * fr,
+      phi: Math.atan2(2 * ex.zeta! * r, 1 - r * r),
+    },
+    startWith: ['m', 'k', 'w', 'zeta', 'F0'],
+    representation: {
+      kind: 'oscillator',
+      mass: 'm',
+      spring: 'k',
+      amplitude: 'X',
+      forcing: { force: 'F0', omega: 'w', zeta: 'zeta', ratio: 'r', response: 'X', lag: 'phi' },
+    },
+  });
+};
+
+const forcedDemo = forcedModule(
+  'g.he-oscillator-forced',
+  'Oscillator: forced vibration and the response curve',
+  'Use this for “10 kg on 4000 N/m with ζ = 0.1 is driven by 100 N at 15 rad/s. Find the amplitude and the lag.”',
+  { m: 10, k: 4000, w: 15, zeta: 0.1, F0: 100 },
+);
+
+const resonance = forcedModule(
+  'g.he-oscillator-resonance',
+  'Oscillator: driven close to resonance',
+  'Use this for “1 kg on 100 N/m with ζ = 0.05 is driven by 10 N at 9.8 rad/s. How big is the swing?”',
+  { m: 1, k: 100, w: 9.8, zeta: 0.05, F0: 10 },
+);
+
+const trOf = (x: Values) =>
+  Math.sqrt(1 + (2 * x.zeta! * x.r!) ** 2) /
+  Math.sqrt((1 - x.r! ** 2) ** 2 + (2 * x.zeta! * x.r!) ** 2);
+const transmit = demo({
+  id: 'g.he-oscillator-transmit',
+  title: 'Oscillator: transmissibility and isolation',
+  use: 'Use this for “A mount runs at r = 3 with ζ = 0.05. What fraction of the force gets through?”',
+  assumptions: [
+    'Force (or base motion) transmitted through spring and damper in steady state.',
+    'TR < 1 only above r = √2: below it the mount makes things worse.',
+  ],
+  variables: [
+    vu('r', 'r', 'Frequency ratio', undefined, 0.01, 20, { step: 0.1 }),
+    vu('zeta', 'ζ', 'Damping ratio', undefined, 0.001, 5, { step: 0.01 }),
+    vu('TR', 'TR', 'Transmissibility', undefined, 0, 1e4),
+    vu('iso', 'I', 'Isolation', '%', -1e6, 100),
+  ],
+  rules: [
+    rule(
+      'TR = √(1 + (2ζr)²) ÷ √((1 − r²)² + (2ζr)²)',
+      '{TR} = √(1 + (2 × {zeta} × {r})²) ÷ √((1 − {r}²)² + (2 × {zeta} × {r})²)',
+      ['TR', 'zeta', 'r'],
+      (x) => x.TR! - trOf(x),
+      {
+        TR: [
+          trOf,
+          '√(1 + (2 × {zeta} × {r})²) ÷ √((1 − {r}²)² + (2 × {zeta} × {r})²)',
+          'The force through the mount over the force applied.',
+        ],
+      },
+    ),
+    rule(
+      'I = 100(1 − TR)',
+      '{iso} = 100 × (1 − {TR})',
+      ['iso', 'TR'],
+      (x) => x.iso! - 100 * (1 - x.TR!),
+      {
+        iso: [
+          (x) => 100 * (1 - x.TR!),
+          '100 × (1 − {TR})',
+          'The share of the force kept out, as a percent.',
+        ],
+        TR: [(x) => 1 - x.iso! / 100, '1 − {iso} ÷ 100', 'The share that gets through.'],
+      },
+    ),
+  ],
+  example: (() => {
+    const ex: Values = { r: 3, zeta: 0.05 };
+    const TR = trOf(ex);
+    return { ...ex, TR, iso: 100 * (1 - TR) };
+  })(),
+  startWith: ['r', 'zeta'],
+  representation: {
+    kind: 'oscillator',
+    mass: 1,
+    spring: 1,
+    amplitude: 1,
+    transmit: { ratio: 'r', zeta: 'zeta', value: 'TR' },
+  },
+});
+
+const coupled = demo({
+  id: 'g.he-oscillator-coupled',
+  title: 'Oscillator: two equal masses, three springs',
+  use: 'Use this for “Two 1 kg masses on 100 N/m springs are joined by 10.5 N/m. Find both modes and how long the hand-off takes.”',
+  assumptions: [
+    'Small motions along the line, no friction; any motion is a mix of the two modes.',
+    'In step the middle spring never stretches: ω₁ = √(k/m); opposite it stretches twice: ω₂ = √((k + 2k′)/m).',
+  ],
+  variables: [
+    vu('m', 'm', 'Mass', 'kg', 0.01, 100, { step: 0.1 }),
+    vu('k', 'k', 'Outer springs', 'N/m', 1, 1e4, { step: 1 }),
+    vu('kc', 'k′', 'Coupling spring', 'N/m', 0.1, 1e4, { step: 0.5 }),
+    vu('w1', 'ω₁', 'Slow mode', 'rad/s', 0.01, 1e4),
+    vu('w2', 'ω₂', 'Fast mode', 'rad/s', 0.01, 1e4),
+    vu('Tex', 'T_ex', 'Energy-exchange period', 's', 1e-4, 1e5, { derived: true }),
+  ],
+  rules: [
+    rule(
+      'ω₁ = √(k ÷ m)',
+      '{w1} = √({k} ÷ {m})',
+      ['w1', 'k', 'm'],
+      (x) => x.w1! ** 2 * x.m! - x.k!,
+      {
+        w1: [
+          (x) => Math.sqrt(x.k! / x.m!),
+          '√({k} ÷ {m})',
+          'In step: the coupling spring keeps its length.',
+        ],
+        k: [(x) => x.w1! ** 2 * x.m!, '{w1}² × {m}', 'The outer springs from the slow mode.'],
+      },
+    ),
+    rule(
+      'ω₂ = √((k + 2k′) ÷ m)',
+      '{w2} = √(({k} + 2 × {kc}) ÷ {m})',
+      ['w2', 'k', 'kc', 'm'],
+      (x) => x.w2! ** 2 * x.m! - x.k! - 2 * x.kc!,
+      {
+        w2: [
+          (x) => Math.sqrt((x.k! + 2 * x.kc!) / x.m!),
+          '√(({k} + 2 × {kc}) ÷ {m})',
+          'Opposite: each mass feels k plus the coupling spring stretched from both ends.',
+        ],
+        kc: [
+          (x) => (x.w2! ** 2 * x.m! - x.k!) / 2,
+          '({w2}² × {m} − {k}) ÷ 2',
+          'The coupling spring from the fast mode.',
+        ],
+      },
+    ),
+    rule(
+      'T_ex = 2π ÷ (ω₂ − ω₁)',
+      '{Tex} = 2π ÷ ({w2} − {w1})',
+      ['Tex', 'w2', 'w1'],
+      (x) => x.Tex! * (x.w2! - x.w1!) - 2 * Math.PI,
+      {
+        Tex: [
+          (x) => div(2 * Math.PI, x.w2! - x.w1!),
+          '2π ÷ ({w2} − {w1})',
+          'The modes drift out of step and back: the beat brings the motion back to m₁.',
+        ],
+      },
+    ),
+  ],
+  example: { m: 1, k: 100, kc: 10.5, w1: 10, w2: 11, Tex: 2 * Math.PI },
+  startWith: ['m', 'k', 'kc'],
+  representation: {
+    kind: 'oscillator',
+    mass: 'm',
+    spring: 'k',
+    amplitude: 0.05,
+    coupled: { m1: 'm', k1: 'k', k2: 'kc', slow: 'w1', fast: 'w2', exchange: 'Tex' },
+  },
+});
+
+/** ω² of two masses on k₁ (wall), k₂ (between) and k₃ (other wall; 0 for a free end). */
+const modeW2 = (x: Values, k3: number, sign: 1 | -1) => {
+  const P = x.m1! * (x.k2! + k3) + x.m2! * (x.k1! + x.k2!);
+  const Q = (x.k1! + x.k2!) * (x.k2! + k3) - x.k2! ** 2;
+  return (P + sign * Math.sqrt(P * P - 4 * x.m1! * x.m2! * Q)) / (2 * x.m1! * x.m2!);
+};
+
+const twoMassModule = (chain: boolean): ModuleDef => {
+  const k3 = (x: Values) => (chain ? 0 : x.k3!);
+  const vars = chain ? ['m1', 'm2', 'k1', 'k2'] : ['m1', 'm2', 'k1', 'k2', 'k3'];
+  const ex: Values = chain
+    ? { m1: 1, m2: 1, k1: 200, k2: 100 }
+    : { m1: 1, m2: 1, k1: 100, k2: 100, k3: 100 };
+  const w = (x: Values, s: 1 | -1) => Math.sqrt(modeW2(x, k3(x), s));
+  const rOf = (x: Values, wv: number) => (x.k1! + x.k2! - x.m1! * wv ** 2) / x.k2!;
+  const P = chain
+    ? '{m1} × {k2} + {m2} × ({k1} + {k2})'
+    : '{m1} × ({k2} + {k3}) + {m2} × ({k1} + {k2})';
+  const Q = chain ? '{k1} × {k2}' : '({k1} + {k2}) × ({k2} + {k3}) − {k2}²';
+  const root = (s: string) =>
+    `√((${P} ${s} √((${P})² − 4 × {m1} × {m2} × (${Q}))) ÷ (2 × {m1} × {m2}))`;
+  return demo({
+    id: chain ? 'g.he-oscillator-chain' : 'g.he-oscillator-two-mass',
+    title: chain
+      ? 'Oscillator: a two-mass chain, the far end free'
+      : 'Oscillator: two masses between walls',
+    use: chain
+      ? 'Use this for “Wall, 200 N/m, 1 kg, 100 N/m, 1 kg, free end: find both modes and their shapes.”'
+      : 'Use this for “Two 1 kg masses between walls on three 100 N/m springs: find the natural frequencies and mode shapes.”',
+    assumptions: [
+      'Small motions along the line, no friction.',
+      chain
+        ? 'det(K − ω²M) = 0 with K = [k₁ + k₂, −k₂; −k₂, k₂], the far end free.'
+        : 'det(K − ω²M) = 0 with K = [k₁ + k₂, −k₂; −k₂, k₂ + k₃].',
+      'Each mode’s shape x₂/x₁ = (k₁ + k₂ − m₁ω²) ÷ k₂.',
+    ],
+    variables: [
+      vu('m1', 'm₁', 'Mass 1', 'kg', 0.01, 100, { step: 0.1 }),
+      vu('m2', 'm₂', 'Mass 2', 'kg', 0.01, 100, { step: 0.1 }),
+      vu('k1', 'k₁', 'Wall spring', 'N/m', 1, 1e4, { step: 10 }),
+      vu('k2', 'k₂', 'Middle spring', 'N/m', 1, 1e4, { step: 10 }),
+      ...(chain ? [] : [vu('k3', 'k₃', 'Far wall spring', 'N/m', 1, 1e4, { step: 10 })]),
+      vu('w1', 'ω₁', 'Slow mode', 'rad/s', 0, 1e4, { derived: true }),
+      vu('w2', 'ω₂', 'Fast mode', 'rad/s', 0, 1e4, { derived: true }),
+      vu('r1', 'r₁', 'Slow mode shape x₂/x₁', undefined, -1e6, 1e6, { derived: true }),
+      vu('r2', 'r₂', 'Fast mode shape x₂/x₁', undefined, -1e6, 1e6, { derived: true }),
+    ],
+    rules: [
+      rule(
+        'ω₁ from det(K − ω²M) = 0',
+        `{w1} = ${root('−')}`,
+        ['w1', ...vars],
+        (x) => x.w1! - w(x, -1),
+        {
+          w1: [(x) => w(x, -1), root('−'), 'The smaller root of m₁m₂ω⁴ − Pω² + Q = 0.'],
+        },
+      ),
+      rule(
+        'ω₂ from det(K − ω²M) = 0',
+        `{w2} = ${root('+')}`,
+        ['w2', ...vars],
+        (x) => x.w2! - w(x, 1),
+        {
+          w2: [(x) => w(x, 1), root('+'), 'The larger root of the same equation.'],
+        },
+      ),
+      rule(
+        'r₁ = (k₁ + k₂ − m₁ω₁²) ÷ k₂',
+        '{r1} = ({k1} + {k2} − {m1} × {w1}²) ÷ {k2}',
+        ['r1', 'k1', 'k2', 'm1', 'w1'],
+        (x) => x.r1! * x.k2! - (x.k1! + x.k2! - x.m1! * x.w1! ** 2),
+        {
+          r1: [
+            (x) => rOf(x, x.w1!),
+            '({k1} + {k2} − {m1} × {w1}²) ÷ {k2}',
+            'The first row of (K − ω²M)x = 0 gives x₂/x₁.',
+          ],
+        },
+      ),
+      rule(
+        'r₂ = (k₁ + k₂ − m₁ω₂²) ÷ k₂',
+        '{r2} = ({k1} + {k2} − {m1} × {w2}²) ÷ {k2}',
+        ['r2', 'k1', 'k2', 'm1', 'w2'],
+        (x) => x.r2! * x.k2! - (x.k1! + x.k2! - x.m1! * x.w2! ** 2),
+        {
+          r2: [
+            (x) => rOf(x, x.w2!),
+            '({k1} + {k2} − {m1} × {w2}²) ÷ {k2}',
+            'The same row at the fast mode: negative, the blocks move opposite.',
+          ],
+        },
+      ),
+    ],
+    example: (() => {
+      const [w1, w2] = [w(ex, -1), w(ex, 1)];
+      return { ...ex, w1, w2, r1: rOf(ex, w1), r2: rOf(ex, w2) };
+    })(),
+    startWith: vars,
+    representation: {
+      kind: 'oscillator',
+      mass: 'm1',
+      spring: 'k1',
+      amplitude: 0.05,
+      coupled: {
+        m1: 'm1',
+        m2: 'm2',
+        k1: 'k1',
+        k2: 'k2',
+        ...(chain ? { layout: 'chain' as const } : { k3: 'k3' }),
+        slow: 'w1',
+        fast: 'w2',
+        ratios: ['r1', 'r2'],
+      },
+    },
+  });
+};
+
+const springsModule = (layout: 'series' | 'parallel'): ModuleDef =>
+  demo({
+    id: `g.he-oscillator-springs-${layout}`,
+    title: `Oscillator: two springs in ${layout}`,
+    use: `Use this for “Springs of 3000 and 6000 N/m are joined in ${layout}. What single spring acts the same?”`,
+    assumptions:
+      layout === 'series'
+        ? [
+            'In series both springs carry the same force; their stretches add.',
+            '1/k_eq = 1/k₁ + 1/k₂.',
+          ]
+        : ['In parallel both springs stretch the same; their forces add.', 'k_eq = k₁ + k₂.'],
+    variables: [
+      vu('k1', 'k₁', 'Spring 1', 'N/m', 1, 1e6, { step: 100 }),
+      vu('k2', 'k₂', 'Spring 2', 'N/m', 1, 1e6, { step: 100 }),
+      vu('keq', 'k_eq', 'Equivalent spring', 'N/m', 0.5, 2e6),
+    ],
+    rules: [
+      layout === 'series'
+        ? rule(
+            'k_eq = k₁k₂ ÷ (k₁ + k₂)',
+            '{keq} = {k1} × {k2} ÷ ({k1} + {k2})',
+            ['keq', 'k1', 'k2'],
+            (x) => x.keq! * (x.k1! + x.k2!) - x.k1! * x.k2!,
+            {
+              keq: [
+                (x) => div(x.k1! * x.k2!, x.k1! + x.k2!),
+                '{k1} × {k2} ÷ ({k1} + {k2})',
+                'The stretches add, so the softnesses 1/k add: product over sum.',
+              ],
+              k1: [
+                (x) => div(x.keq! * x.k2!, x.k2! - x.keq!),
+                '{keq} × {k2} ÷ ({k2} − {keq})',
+                'Solve 1/k_eq = 1/k₁ + 1/k₂ for k₁.',
+              ],
+              k2: [
+                (x) => div(x.keq! * x.k1!, x.k1! - x.keq!),
+                '{keq} × {k1} ÷ ({k1} − {keq})',
+                'Solve 1/k_eq = 1/k₁ + 1/k₂ for k₂.',
+              ],
+            },
+          )
+        : rule(
+            'k_eq = k₁ + k₂',
+            '{keq} = {k1} + {k2}',
+            ['keq', 'k1', 'k2'],
+            (x) => x.keq! - x.k1! - x.k2!,
+            {
+              keq: [
+                (x) => x.k1! + x.k2!,
+                '{k1} + {k2}',
+                'The same stretch in both: their forces add.',
+              ],
+              k1: [(x) => x.keq! - x.k2!, '{keq} − {k2}', 'Take away spring 2.'],
+              k2: [(x) => x.keq! - x.k1!, '{keq} − {k1}', 'Take away spring 1.'],
+            },
+          ),
+    ],
+    example: { k1: 3000, k2: 6000, keq: layout === 'series' ? 2000 : 9000 },
+    startWith: ['k1', 'k2'],
+    representation: {
+      kind: 'oscillator',
+      mass: 1,
+      spring: 'keq',
+      amplitude: 0.01,
+      springs: { k1: 'k1', k2: 'k2', layout, total: 'keq' },
+    },
+  });
+
+const HC11_MODULES = [
+  damped,
+  phase,
+  envelope,
+  massSpring,
+  ratio,
+  logDec,
+  forcedDemo,
+  resonance,
+  transmit,
+  coupled,
+  twoMassModule(true),
+  twoMassModule(false),
+  springsModule('series'),
+  springsModule('parallel'),
+];
+
 export const HE1H_GALLERY_MODULES: ModuleDef[] = [
   parallel,
   powerSign,
@@ -1425,6 +2359,7 @@ export const HE1H_GALLERY_MODULES: ModuleDef[] = [
   internal,
   bridge,
   lowpass,
+  ...HC11_MODULES,
 ];
 
 export const HE1H_GALLERY_LAYOUTS: LayoutDef[] = [];

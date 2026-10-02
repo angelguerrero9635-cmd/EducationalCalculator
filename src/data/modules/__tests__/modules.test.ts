@@ -594,7 +594,7 @@ function representationVars(r: Representation): string[] {
     case 'oscillator':
     case 'pendulum':
     case 'capacitor':
-      return hs3aSpecVars(r);
+      return [...hs3aSpecVars(r), ...he1hSpecVars(r)];
   }
 }
 
