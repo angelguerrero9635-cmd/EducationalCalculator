@@ -29,7 +29,7 @@ export function MenuButton() {
         hitSlop={8}
         style={({ pressed }) => [styles.menuButton, { opacity: pressed ? 0.5 : 1 }]}
       >
-        <Icon name="menu" color={c.accent} />
+        <Icon name="menu" color={c.text} />
       </Pressable>
       {open ? <SideMenu onClose={() => setOpen(false)} /> : null}
     </>

@@ -1,37 +1,74 @@
-import { router, type NativeStackHeaderProps } from 'expo-router';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { router } from 'expo-router';
+import { Platform, Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { HEADER_ACTIONS_WIDTH, HeaderActions } from '@/components/HeaderActions';
+import { Icon } from '@/components/Icon';
+import { useLayoutSize } from '@/components/layoutSize';
 import { Logo } from '@/components/Logo';
+import { TopBar } from '@/components/shell/TopBar';
 import { Text } from '@/components/Text';
-import { parentOf, screenTitle } from '@/data/selectors';
-import { font, space, usePalette } from '@/theme';
+import { webData } from '@/components/webData';
+import { parentOf, screenTitle, trailOf } from '@/data/selectors';
+import { layout, space, type, usePalette } from '@/theme';
 
-/** Lesson pages: their title is the first thing on the page, so the bar doesn't repeat it. */
-const UNTITLED = new Set(['skill/[id]', 'course/[id]/topic/[index]', 'gallery/[id]']);
+/** What a header needs from either navigator (stack or tabs). */
+export interface HeaderProps {
+  navigation: { canGoBack(): boolean; goBack(): void };
+  route: { name: string; params?: object };
+  options: { title?: string; presentation?: string };
+  /** Stack screens with a page before them; absent on tab roots. */
+  back?: { title?: string };
+}
+
+/** Tab roots: no back button, the logo alone. */
+const TAB_ROOTS = new Set(['index', 'browse', 'search', 'settings']);
+/** The back label's longest form before it is shortened. */
+const BACK_MAX = 14;
 
 /**
- * Navigation bar for every stacked page: a back button, the $U logo in the middle with the page's
- * name under it (not on lesson pages), and Home, Search and the lessons menu. Back returns to the previous page; with no history (opened from a link or a
- * reload) it goes one level up instead, e.g. from a skill to its grade.
+ * The header of every page. Phone and tablet: back (to the parent page, by name), the $U logo
+ * in the middle (it goes Home), Search and the lessons menu. Wide screens: the top bar with the
+ * page's breadcrumbs and a search field (the sidebar holds the rest). On the web both are in
+ * the page and CSS shows the one that fits, so pre-rendered pages are right before they hydrate.
  */
-export function NavBar({ navigation, route, options, back }: NativeStackHeaderProps) {
+export function NavBar({ navigation, route, options, back }: HeaderProps) {
+  const size = useLayoutSize();
+  const params = (route.params ?? {}) as Record<string, unknown>;
+  const trail = trailOf(route.name, params);
+  // A dynamic page with an unknown id is the not-found page: its name matches the pre-rendered
+  // 404 page, so the page hydrates without a mismatch.
+  const title =
+    screenTitle(route.name, params) ??
+    (route.name.includes('[') || route.name === '+not-found'
+      ? 'Not found'
+      : typeof options.title === 'string'
+        ? options.title
+        : route.name);
+  const wide = <TopBar trail={trail} title={title} />;
+  const narrow = (
+    <PhoneHeader navigation={navigation} route={route} options={options} back={back} />
+  );
+  if (Platform.OS !== 'web') return size === 'wide' ? wide : narrow;
+  return (
+    <>
+      <View {...webData({ shell: 'narrow' })}>{narrow}</View>
+      <View {...webData({ shell: 'wide' })}>{wide}</View>
+    </>
+  );
+}
+
+function PhoneHeader({ navigation, route, options, back }: HeaderProps) {
   const c = usePalette();
   const insets = useSafeAreaInsets();
   const modal = options.presentation === 'modal';
+  const root = TAB_ROOTS.has(route.name);
   const hasHistory = !!back && navigation.canGoBack();
   const params = (route.params ?? {}) as Record<string, unknown>;
-  // The route's own name first (known before the page renders, so it's right in pre-rendered
-  // HTML), then the screen's title option.
-  const untitled = UNTITLED.has(route.name);
-  const title =
-    screenTitle(route.name, params) ??
-    (typeof options.title === 'string' ? options.title : route.name);
   const parent = parentOf(route.name, params);
-  // A route group's name ("(tabs)") is not a page name: the page before is a tab.
-  const backTitle = back?.title && !back.title.startsWith('(') ? back.title : 'Back';
-  const backLabel = modal ? 'Close' : hasHistory ? backTitle : parent.label;
+  // Back is named for the page it goes to (never this page's own title).
+  const label =
+    parent.label.length > BACK_MAX ? `${parent.label.slice(0, BACK_MAX - 1)}…` : parent.label;
 
   const goBack = () => {
     if (hasHistory) navigation.goBack();
@@ -50,59 +87,67 @@ export function NavBar({ navigation, route, options, back }: NativeStackHeaderPr
       ]}
     >
       <View style={styles.row}>
-        <Pressable
-          testID="nav-back"
-          accessibilityRole="button"
-          accessibilityLabel={modal ? 'Close' : `Back to ${backLabel}`}
-          onPress={goBack}
-          hitSlop={8}
-          style={({ pressed }) => [styles.back, { opacity: pressed ? 0.5 : 1 }]}
-        >
-          {modal ? null : <Text style={[styles.chevron, { color: c.accent }]}>‹</Text>}
-          <Text style={[styles.backLabel, { color: c.accent }]} numberOfLines={1}>
-            {backLabel}
-          </Text>
-        </Pressable>
-        <View style={styles.middle}>
-          <Logo size={untitled ? 28 : 22} />
-          {untitled ? null : (
-            <Text
-              accessibilityRole="header"
-              style={[styles.title, { color: c.textMuted }]}
-              numberOfLines={1}
+        <View style={styles.side}>
+          {root ? null : modal ? (
+            <Pressable
+              testID="nav-back"
+              accessibilityRole="button"
+              accessibilityLabel="Close"
+              onPress={goBack}
+              hitSlop={8}
+              style={({ pressed }) => [styles.back, { opacity: pressed ? 0.5 : 1 }]}
             >
-              {title}
-            </Text>
+              <Icon name="close" size={22} color={c.text} />
+            </Pressable>
+          ) : (
+            <Pressable
+              testID="nav-back"
+              accessibilityRole="button"
+              accessibilityLabel={`Back to ${parent.label}`}
+              onPress={goBack}
+              hitSlop={8}
+              style={({ pressed }) => [styles.back, { opacity: pressed ? 0.5 : 1 }]}
+            >
+              <Icon name="chevronLeft" size={22} color={c.accent} />
+              <Text style={[type.callout, styles.backLabel, { color: c.accent }]} numberOfLines={1}>
+                {label}
+              </Text>
+            </Pressable>
           )}
         </View>
-        {/* Home, Search and the lessons menu. */}
-        <View style={styles.side}>{modal ? null : <HeaderActions />}</View>
+        <Pressable
+          testID="nav-logo"
+          accessibilityRole="link"
+          accessibilityLabel="One Dollar University, Home"
+          onPress={() => router.navigate('/')}
+          hitSlop={8}
+        >
+          <Logo size={28} />
+        </Pressable>
+        <View style={[styles.side, styles.right]}>{modal ? null : <HeaderActions />}</View>
       </View>
     </View>
   );
 }
 
-/** Both sides are as wide as the buttons on the right, so the logo sits in the middle. */
-const SIDE = HEADER_ACTIONS_WIDTH;
+/** Each side's width, so the logo sits in the middle of the screen. */
+const SIDE = 128;
 
 const styles = StyleSheet.create({
   bar: { borderBottomWidth: StyleSheet.hairlineWidth },
   row: {
-    minHeight: 52,
+    height: 56,
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: space.sm,
   },
-  back: {
-    width: SIDE,
-    minHeight: 44,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 2,
-  },
-  chevron: { fontSize: 30, lineHeight: 32, marginTop: -3 },
-  backLabel: { flexShrink: 1, fontSize: font.body, fontWeight: '500' },
-  middle: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 1, paddingVertical: 4 },
-  title: { maxWidth: '100%', textAlign: 'center', fontSize: font.caption, fontWeight: '600' },
-  side: { width: SIDE, alignItems: 'flex-end' },
+  side: { width: SIDE, flexDirection: 'row', alignItems: 'center' },
+  right: { justifyContent: 'flex-end', minWidth: HEADER_ACTIONS_WIDTH },
+  back: { flexDirection: 'row', alignItems: 'center', minHeight: 44, maxWidth: SIDE, gap: 2 },
+  backLabel: { flexShrink: 1, fontWeight: '500' },
 });
+
+/** The phone header's height without the safe area (for pages that lay out under it). */
+export const HEADER_HEIGHT = 56;
+export const TOP_BAR_HEIGHT = layout.topBar;

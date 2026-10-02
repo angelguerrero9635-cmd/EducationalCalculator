@@ -4,6 +4,7 @@ import { ScrollView, StyleSheet, View, type ScrollViewProps, type ViewStyle } fr
 import { layout, space, usePalette } from '@/theme';
 
 import { useGutter } from './layoutSize';
+import { Footer } from './shell/Footer';
 
 export type PageWidth = keyof typeof layout.content;
 
@@ -16,9 +17,12 @@ export function Page({
   width = 'grid',
   children,
   contentStyle,
+  footer = true,
   ...scroll
 }: {
   width?: PageWidth;
+  /** The web footer under the content (on by default). */
+  footer?: boolean;
   children: ReactNode;
   contentStyle?: ViewStyle;
 } & Omit<ScrollViewProps, 'children' | 'contentContainerStyle'>) {
@@ -36,6 +40,7 @@ export function Page({
       <View style={[styles.inner, { maxWidth: layout.content[width] }, contentStyle]}>
         {children}
       </View>
+      {footer ? <Footer /> : null}
     </ScrollView>
   );
 }

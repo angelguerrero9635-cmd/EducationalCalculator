@@ -760,3 +760,44 @@ export function screenTitle(screen: string, params: Record<string, unknown>): st
       return undefined;
   }
 }
+
+/** One step of a page's breadcrumb trail. */
+export interface Crumb {
+  label: string;
+  /** Absent on the last crumb (the page itself). */
+  target?: RouteTarget;
+}
+
+/** The stack screen a route target opens ("/grade/[grade]" → "grade/[grade]/index"). */
+const SCREENS_WITH_INDEX = new Set(['grade/[grade]', 'he/[division]', 'course/[id]']);
+const screenOf = (pathname: string) => {
+  const name = pathname.replace(/^\//, '');
+  return SCREENS_WITH_INDEX.has(name) ? `${name}/index` : name;
+};
+
+/**
+ * The breadcrumb trail of a stack screen, from the top section down to the page itself:
+ * "Browse › Grade 5 › Fractions › Add and subtract fractions". Built by following `parentOf`, so
+ * it always agrees with the back button. Empty for pages with no parent but Home.
+ */
+export function trailOf(screen: string, params: Record<string, unknown>): Crumb[] {
+  const here = screenTitle(screen, params);
+  if (!here) return [];
+  const trail: Crumb[] = [{ label: here }];
+  let current = { screen, params };
+  for (let i = 0; i < 8; i++) {
+    const parent = parentOf(current.screen, current.params);
+    if (parent.target.pathname === '/') break;
+    const next = { screen: screenOf(parent.target.pathname), params: parent.target.params ?? {} };
+    trail.unshift({
+      label: screenTitle(next.screen, next.params) ?? parent.label,
+      target: { pathname: parent.target.pathname, params: parent.target.params ?? {} },
+    });
+    if (parent.target.pathname === '/browse' || parent.target.pathname === '/he') break;
+    current = next;
+  }
+  // College pages start from Browse too.
+  if (trail[0]?.target?.pathname === '/he')
+    trail.unshift({ label: 'Browse', target: { pathname: '/browse', params: {} } });
+  return trail;
+}

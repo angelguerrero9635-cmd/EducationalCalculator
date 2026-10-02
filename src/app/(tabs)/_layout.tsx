@@ -1,10 +1,11 @@
-import { Tabs } from 'expo-router/js-tabs';
+import { BottomTabBar, Tabs } from 'expo-router/js-tabs';
+import { View } from 'react-native';
 import { Platform, type ColorValue } from 'react-native';
 
 import { Icon, type IconName } from '@/components/Icon';
-import { HeaderActions } from '@/components/HeaderActions';
-import { Logo } from '@/components/Logo';
-import { font, usePalette } from '@/theme';
+import { NavBar } from '@/components/NavBar';
+import { webData } from '@/components/webData';
+import { usePalette } from '@/theme';
 
 /** A tab's icon: outlined, and filled (or bolder) when it is the open tab. */
 function tabIcon(name: IconName) {
@@ -18,6 +19,12 @@ export default function TabsLayout() {
   const c = usePalette();
   return (
     <Tabs
+      // Wide web screens use the sidebar instead of the tab bar (CSS, src/app/+html.tsx).
+      tabBar={(props) => (
+        <View {...webData({ shell: 'narrow' })}>
+          <BottomTabBar {...props} />
+        </View>
+      )}
       screenOptions={{
         tabBarActiveTintColor: c.accent,
         tabBarInactiveTintColor: c.textMuted,
@@ -29,19 +36,12 @@ export default function TabsLayout() {
           ...(Platform.OS === 'web' ? { height: 60 } : {}),
         },
         tabBarLabelStyle: {
-          fontSize: font.caption - 1,
-          lineHeight: font.caption + 3,
+          fontSize: 12,
+          lineHeight: 16,
           fontWeight: '600',
         },
-        headerStyle: { backgroundColor: c.background },
-        headerShadowVisible: false,
-        // The $U logo in the middle of every tab's header; the tab bar names the tab.
-        headerTitle: () => <Logo />,
-        headerTitleAlign: 'center',
-        // Every tab's header has Home, Search and the lessons menu too.
-        headerRight: () => <HeaderActions />,
-        headerRightContainerStyle: { paddingRight: 8 },
-        headerTitleStyle: { fontSize: font.body + 1, fontWeight: '700', color: c.text },
+        // One header for every page (src/components/NavBar.tsx): the logo, Search and the menu.
+        header: (props) => <NavBar {...props} />,
       }}
     >
       <Tabs.Screen name="index" options={{ title: 'Home', tabBarIcon: tabIcon('home') }} />
