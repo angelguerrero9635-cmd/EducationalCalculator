@@ -75,6 +75,7 @@ import { ampIssues, deviceIssues } from './picturesHe2d';
 import { he2fIssues } from './picturesHe2f';
 import { isHe2fSpec } from '../typesHe2f';
 import { skeletalIssues } from './picturesHe1c';
+import { soilProfileIssues, surveyIssues, trussIssues } from './picturesHe2i';
 import { phaseEnvelopeIssues, phaseSubstanceIssues } from './picturesHe1i';
 import { chemRateHe2kIssues, globeIssues } from './picturesHe2k';
 import { he1fIssues } from './picturesHe1f';
@@ -2213,6 +2214,15 @@ export function repIssues(
       break;
     case 'skeletal':
       out.push(...skeletalIssues(rep, val));
+      break;
+    case 'truss':
+      out.push(...trussIssues(rep, siOf(val, byId)));
+      break;
+    case 'soilProfile':
+      out.push(...soilProfileIssues(rep, siOf(val, byId)));
+      break;
+    case 'survey':
+      out.push(...surveyIssues(rep, siOf(val, byId)));
       break;
     case 'gel':
     case 'alleleFrequencies':
