@@ -7,7 +7,7 @@
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
-import { scientific } from '@/engine/format';
+import { formatNumber, scientific } from '@/engine/format';
 
 import { atLeast } from '../helpers';
 import type { ModuleDef, StepText } from '../types';
@@ -42,6 +42,12 @@ const plain = (x: number) =>
 const withWork = (r: Rule, id: string, work: StepText['work']): Rule => ({
   relation: r.relation,
   steps: { ...r.steps, [id]: { ...r.steps[id]!, work } },
+});
+
+/** A rule with the reason it gives when its values break it (`why` returns undefined when they don't). */
+const withMessage = (r: Rule, why: (v: Values) => string | undefined): Rule => ({
+  relation: { ...r.relation, message: why },
+  steps: r.steps,
 });
 
 /** A rule that only places the picture: solved like any other, never shown as a step. */
@@ -1927,37 +1933,54 @@ const momentumPages: ModuleDef[] = [
               '({m} × {v} + {n} × {w} − {m} × {a})/{n}',
               'The momentum before, less cart 1’s after, is cart 2’s after; divide by m₂.',
             ],
+            m: [
+              (x) => div(x.n! * (x.b! - x.w!), x.v! - x.a!),
+              '{n} × ({b} − {w})/({v} − {a})',
+              'Collect cart 1’s terms: m₁(v₁ − v₁′) = m₂(v₂′ − v₂).',
+            ],
+            n: [
+              (x) => div(x.m! * (x.v! - x.a!), x.b! - x.w!),
+              '{m} × ({v} − {a})/({b} − {w})',
+              'Collect cart 2’s terms: m₂(v₂′ − v₂) = m₁(v₁ − v₁′).',
+            ],
             a: null,
             v: null,
             w: null,
           },
         ),
-        rule(
-          'ΔKE = KE before − KE after',
-          '{X} = ½ × {m} × {v}² + ½ × {n} × {w}² − ½ × {m} × {a}² − ½ × {n} × {b}²',
-          (x) =>
-            x.X! -
-            (0.5 * x.m! * x.v! ** 2 +
-              0.5 * x.n! * x.w! ** 2 -
-              0.5 * x.m! * x.a! ** 2 -
-              0.5 * x.n! * x.b! ** 2),
-          {
-            X: [
-              (x) =>
-                0.5 * x.m! * x.v! ** 2 +
+        withMessage(
+          rule(
+            'ΔKE = KE before − KE after',
+            '{X} = ½ × {m} × {v}² + ½ × {n} × {w}² − ½ × {m} × {a}² − ½ × {n} × {b}²',
+            (x) =>
+              x.X! -
+              (0.5 * x.m! * x.v! ** 2 +
                 0.5 * x.n! * x.w! ** 2 -
                 0.5 * x.m! * x.a! ** 2 -
-                0.5 * x.n! * x.b! ** 2,
-              '½ × {m} × {v}² + ½ × {n} × {w}² − ½ × {m} × {a}² − ½ × {n} × {b}²',
-              'Each cart’s ½mv² before, less each cart’s ½mv² after.',
-            ],
-            m: null,
-            n: null,
-            v: null,
-            w: null,
-            a: null,
-            b: null,
-          },
+                0.5 * x.n! * x.b! ** 2),
+            {
+              X: [
+                (x) =>
+                  0.5 * x.m! * x.v! ** 2 +
+                  0.5 * x.n! * x.w! ** 2 -
+                  0.5 * x.m! * x.a! ** 2 -
+                  0.5 * x.n! * x.b! ** 2,
+                '½ × {m} × {v}² + ½ × {n} × {w}² − ½ × {m} × {a}² − ½ × {n} × {b}²',
+                'Each cart’s ½mv² before, less each cart’s ½mv² after.',
+              ],
+              m: null,
+              n: null,
+              v: null,
+              w: null,
+              a: null,
+              b: null,
+            },
+          ),
+          (x) =>
+            0.5 * x.m! * x.v! ** 2 + 0.5 * x.n! * x.w! ** 2 <
+            0.5 * x.m! * x.a! ** 2 + 0.5 * x.n! * x.b! ** 2 - 1e-9
+              ? 'The carts can’t leave with more kinetic energy than they brought.'
+              : undefined,
         ),
       ),
       example: { m, n, v, w, a, b, X },
@@ -2172,17 +2195,28 @@ const energyPages: ModuleDef[] = [
           G: [(x) => x.m! * G, '{m} × 9.8', 'The weight is the mass times g.'],
           m: [(x) => x.G! / G, '{G}/9.8', 'Divide the weight by g.'],
         }),
-        rule(
-          'F_N = F_g − F sin θ',
-          '{N} = {G} − {F} × sin({q})',
-          (x) => x.N! - (x.G! - x.F! * Math.sin(x.q! * RAD)),
-          {
-            N: [
-              (x) => x.G! - x.F! * Math.sin(x.q! * RAD),
-              '{G} − {F} × sin({q})',
-              'The pull’s part up, F sin θ, lifts a little: the floor pushes up less.',
-            ],
-          },
+        withMessage(
+          rule(
+            'F_N = F_g − F sin θ',
+            '{N} = {G} − {F} × sin({q})',
+            (x) => x.N! - (x.G! - x.F! * Math.sin(x.q! * RAD)),
+            {
+              N: [
+                (x) => x.G! - x.F! * Math.sin(x.q! * RAD),
+                '{G} − {F} × sin({q})',
+                'The pull’s part up, F sin θ, lifts a little: the floor pushes up less.',
+              ],
+              G: [
+                (x) => x.N! + x.F! * Math.sin(x.q! * RAD),
+                '{N} + {F} × sin({q})',
+                'The floor and the pull’s part up, F sin θ, hold up the weight together.',
+              ],
+            },
+          ),
+          (x) =>
+            x.F! * Math.sin(x.q! * RAD) > x.G! + 1e-9 * Math.max(1, x.G!)
+              ? 'The pull would lift the crate: F sin θ is more than its weight.'
+              : undefined,
         ),
         rule(
           'W = Fd cos θ',
@@ -4203,14 +4237,14 @@ const inductionPages: ModuleDef[] = [
       unitSystems: ['metric'],
       assumptions: [
         'A charge moving through a magnetic field feels F = |q|vB sin θ, θ the angle between v and B.',
-        'The force is square to both v and B (F = qv × B): a − charge is pushed the other way.',
+        'The force is square to both v and B (right-hand rule): a − charge is pushed the other way.',
         'A charge moving along the field feels no force.',
       ],
       variables: [
         q('a', 'q', 'Charge', 'μC', -1e4, 1e4, 0.001),
         q('v', 'v', 'Speed', 'm/s', 0.001, 1e8, 0.001, { units: ['m/s'] }),
         q('B', 'B', 'Magnetic field', 'T', 0.0001, 10, 0.0001),
-        q('t', 'θ', 'Angle to the field', '°', 1, 179, 1),
+        q('t', 'θ', 'Angle to the field', '°', 0, 180, 1),
         q('F', 'F', 'Force', 'N', 0, 1e6, 0.000001, { scientific: true }),
       ],
       ...rules(
@@ -4579,28 +4613,45 @@ const modernPages: ModuleDef[] = [
         q('p', 'φ', 'Work function of the metal', 'eV', 0.5, 10, 0.01),
         q('K', 'Kₘₐₓ', 'Greatest kinetic energy of an electron', 'eV', 0, 124, 0.001),
         q('z', 'λ₀', 'Threshold wavelength', 'nm', 124, 2480, 0.1, { units: ['nm'] }),
+        q('V', 'V₀', 'Stopping voltage', 'V', 0, 124, 0.001),
       ],
       ...rules(
         rule('E = 1240/λ', '{E} = 1240/{l}', (x) => x.E! * x.l! - 1240, {
           E: [(x) => div(1240, x.l!), '1240/{l}', 'hc in eV·nm over the wavelength in nm.'],
           l: [(x) => div(1240, x.E!), '1240/{E}', 'The wavelength whose photons carry E.'],
         }),
-        rule('Kₘₐₓ = E − φ', '{K} = {E} − {p}', (x) => x.K! - (x.E! - x.p!), {
-          K: [
-            (x) => x.E! - x.p!,
-            '{E} − {p}',
-            'What is left of the photon’s energy after freeing the electron.',
+        withMessage(
+          rule('Kₘₐₓ = E − φ', '{K} = {E} − {p}', (x) => x.K! - (x.E! - x.p!), {
+            K: [
+              (x) => x.E! - x.p!,
+              '{E} − {p}',
+              'What is left of the photon’s energy after freeing the electron.',
+            ],
+            E: [
+              (x) => x.K! + x.p!,
+              '{K} + {p}',
+              'The photon paid the work function and the kinetic energy.',
+            ],
+            p: [
+              (x) => x.E! - x.K!,
+              '{E} − {K}',
+              'The part of the photon’s energy that freed the electron.',
+            ],
+          }),
+          (x) =>
+            x.E! < x.p! - 1e-9
+              ? x.l !== undefined
+                ? `${formatNumber(Number(x.l.toPrecision(6)))} nm is longer than the threshold wavelength: no electron leaves.`
+                : 'The photon carries less than the work function: no electron leaves.'
+              : undefined,
+        ),
+        rule('eV₀ = Kₘₐₓ', '{V} = {K}', (x) => x.V! - x.K!, {
+          V: [
+            (x) => x.K!,
+            '{K}',
+            'Each volt stops 1 eV: the voltage that stops the fastest electron is Kₘₐₓ in eV.',
           ],
-          E: [
-            (x) => x.K! + x.p!,
-            '{K} + {p}',
-            'The photon paid the work function and the kinetic energy.',
-          ],
-          p: [
-            (x) => x.E! - x.K!,
-            '{E} − {K}',
-            'The part of the photon’s energy that freed the electron.',
-          ],
+          K: [(x) => x.V!, '{V}', 'The fastest electron climbs V₀ volts, so it left with V₀ eV.'],
         }),
         rule('λ₀ = 1240/φ', '{z} = 1240/{p}', (x) => x.z! * x.p! - 1240, {
           z: [(x) => div(1240, x.p!), '1240/{p}', 'The wavelength whose photons carry just φ.'],
@@ -4611,7 +4662,7 @@ const modernPages: ModuleDef[] = [
           ],
         }),
       ),
-      example: { l, E: 1240 / l, p, K: 1240 / l - p, z: 1240 / p },
+      example: { l, E: 1240 / l, p, K: 1240 / l - p, z: 1240 / p, V: 1240 / l - p },
       startWith: ['l', 'p'],
       representation: {
         kind: 'photoelectric',
