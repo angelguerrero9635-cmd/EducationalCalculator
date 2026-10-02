@@ -54,8 +54,9 @@ Every id below starts `he.engineering.`; it is left off inside the blocks (`aero
   determinant mode). Implicit relations (Kepler's equation, the area–Mach relation, Prandtl–Meyer,
   θ–β–M, Manning normal depth) use the solver's root finder; the step shows the trial values
   (need N2) and a branch choice where there are two roots (need N3).
-- **Layouts (34 pages).** Sorts 23, sequences 9, explores 2, listed in each block. Main pages
-  that are layouts: `process-design#0` (sequence). Everything else is a calculator.
+- **Layouts (24 pages).** Sorts 15, sequences 7, explores 2, listed in each block. One main page
+  is a layout: `process-design#0` (the design hierarchy, a sequence). Most sequences here are an
+  order with no time spans (N11). Everything else is a calculator.
 - **Equation inputs.** Two pages take an `equation`: `surveying#3` (`{H:unit} = {h:unit} − {N:unit}`)
   and `transportation#0~headway` (`{h:unit} = 3600 ÷ {q:unit}`); every other page keeps rows
   (units change, several steps).
@@ -64,9 +65,10 @@ Every id below starts `he.engineering.`; it is left off inside the blocks (`aero
   group. If that group's plan requests a beam, column, Mohr circle, pipe, property diagram, block
   diagram or exchanger kind, merge its request with P14, P7, P18, P20, P10, P34, P35 here: one
   kind, the options of both.
-- **Page count:** 85 topic pages + 205 problem types = **290 pages** (256 calculators, 34
-  layouts); 61 wait on an engine or picture need (marked ⏳). Picture ids below are
-  `HE-aero-civil-chemical-Pn`, written **Pn** in the blocks; needs are **Nn** (part 4).
+- **Page count:** 85 topic pages + 169 problem types = **254 pages** (230 calculators, 24
+  layouts); 102 wait on an engine or picture need (marked ⏳), most of them on a new picture kind.
+  Picture ids below are `HE-aero-civil-chemical-Pn`, written **Pn** in the blocks; engine needs
+  are **Nn** (part 4).
 
 ## Aerospace
 
@@ -1357,7 +1359,7 @@ and the 360-22 specification (free download, all rights reserved); MIT OCW 1.050
 | curvature and refraction over a long sight              | ~curvature  | Solves |
 | trigonometric leveling                                  | ~trig       | Solves |
 
-- **Main — BUILD ⏳ P28:** **P28** `levelRun` (two setups, rods at BM, TP1 and B; HI lines).
+- **Main — BUILD ⏳ P28:** **P28** `survey` level (two setups, rods at BM, TP1 and B; HI lines).
   Values BM elevation, BS₁, FS₁, TP1 elevation, BS₂, FS₂, HI₁, HI₂, B elevation (9). Relations:
   HI = elevation + BS; elevation = HI − FS. Assumptions: backsight and foresight distances
   balanced, so curvature, refraction and collimation errors cancel. Example: 100.000 m; BS 1.245,
@@ -1379,7 +1381,7 @@ and the 360-22 specification (free download, all rights reserved); MIT OCW 1.050
 | compass-rule correction of one course                 | ~compass-rule | Solves          |
 | area from coordinates                                 | ~area         | Solves          |
 
-- **Main — BUILD ⏳ P27:** **P27** `traverse` one course lit, its north and east components drawn.
+- **Main — BUILD ⏳ P27:** **P27** `survey` traverse, one course lit, its north and east components drawn.
   Values azimuth (or bearing, N6), length L, latitude, departure. Relations: lat = L cos(azimuth);
   dep = L sin(azimuth). Assumptions: azimuth clockwise from north; north and east are +. Example:
   52°00′, 120.00 m → lat = 73.88 m, dep = 94.56 m. startWith azimuth, L.
@@ -1402,7 +1404,7 @@ and the 360-22 specification (free download, all rights reserved); MIT OCW 1.050
 | expected position error from DOP                       | ~dop          | Solves |
 | which error source is which                            | ~errors       | Solves |
 
-- **Main — BUILD ⏳ P29:** equation `{H:unit} = {h:unit} − {N:unit}`; **P29** `geoid` (terrain,
+- **Main — BUILD ⏳ P29:** equation `{H:unit} = {h:unit} − {N:unit}`; **P29** `survey` heights (terrain,
   geoid and ellipsoid curves, h, N and H at the point). Assumptions: h is what GNSS measures; N
   comes from a geoid model (negative across most of the US); H is the height above mean sea
   level surveyors use. Example: h = 45.320 m, N = −28.750 m → H = 74.070 m. startWith h, N.
@@ -1414,4 +1416,814 @@ and the 360-22 specification (free download, all rights reserved); MIT OCW 1.050
   drift; broadcast orbit (ephemeris) error; ionospheric delay; tropospheric delay; receiver clock
   offset; receiver noise.
 - **Verdict:** 4 pages.
+
+## Chemical
+
+Textbooks for the field (part 4): Wikibooks _Introduction to Chemical Engineering Processes_
+(CC BY-SA); LearnChemE screencasts, simulations and ConcepTests (Colorado, CC BY-SA 4.0); Woolf
+et al., _Chemical Process Dynamics and Controls_ (Michigan, LibreTexts, CC BY 3.0); Rawlings and
+Ekerdt, _Chemical Reactor Analysis and Design Fundamentals_ (free PDF from the publisher, all
+rights reserved); Fogler's _Elements of CRE_ companion site (free to read, all rights reserved);
+Northwestern _Process Design_ open wiki (licence to confirm); MIT OCW 10.213, 10.302, 10.37,
+10.40, 10.450, 10.490, 10.50 (CC BY-NC-SA); U.S. CSB investigation reports (public domain).
+Reference only.
+
+### 15. material-energy-balances — Material & Energy Balances
+
+#### material-energy-balances#0 — Process flow diagrams
+
+| Question type                                          | Page          | Mark            |
+| ------------------------------------------------------ | ------------- | --------------- |
+| mass flow to molar flow and mole fractions of a stream | main          | Solves          |
+| degrees of freedom of a unit                           | ~dof          | Solves          |
+| what each PFD symbol does                              | ~symbols      | Solves (⏳ P36) |
+
+- **Main — BUILD ⏳ P9:** **P9** `controlVolume` one stream (a labeled arrow with its flow and
+  composition box). Values total mass flow ṁ, mass fraction w_A, molar masses M_A, M_B, molar
+  flows ṅ_A, ṅ_B, total ṅ, mole fraction x_A. Relations: ṅ_A = w_Aṁ ÷ M_A; ṅ_B = (1 − w_A)ṁ ÷ M_B;
+  ṅ = ṅ_A + ṅ_B; x_A = ṅ_A ÷ ṅ. Assumptions: two components; fractions sum to 1. Example: 100 kg/h,
+  40% benzene (78.11) and toluene (92.14) → 0.5121 + 0.6512 = 1.163 kmol/h, x_A = 0.440.
+  startWith ṁ, w_A, M_A, M_B.
+- **~dof — BUILD:** P9 unit with its unknowns lit. Values unknowns, independent balances,
+  specifications, other relations, degrees of freedom. Relation: DOF = unknowns − balances −
+  specifications − relations. Example: a two-component splitter with 5 unknown flows and
+  fractions, 2 balances, 2 specified values, 1 split relation → DOF = 0, solvable. Assumption: DOF > 0
+  needs more information; DOF < 0 means over-specified or inconsistent.
+- **~symbols — BUILD (sort) ⏳ P36:** card figure `pfdSymbol`. Bins "Moves fluid", "Changes
+  temperature", "Separates", "Reacts". Cards: centrifugal pump; compressor; shell-and-tube heat
+  exchanger; fired heater; distillation column; flash drum; packed absorber; CSTR; packed-bed reactor.
+- **Verdict:** 3 pages.
+
+#### material-energy-balances#1 — Material balances
+
+| Question type                                          | Page        | Mark   |
+| ------------------------------------------------------ | ----------- | ------ |
+| mixer: outlet flow and composition                     | main        | Solves |
+| column split: distillate, bottoms, recovery            | ~splitter   | Solves |
+| bypass around a unit                                   | ~bypass     | Solves |
+
+- **Main — BUILD ⏳ P9:** P9 mixer (two in, one out; the in = out check). Values F₁, x₁, F₂, x₂, F₃,
+  x₃. Relations: F₁ + F₂ = F₃; F₁x₁ + F₂x₂ = F₃x₃. Assumptions: steady state, no reaction, so mass
+  in equals mass out for each component. Example: 100 kg/h at 20% ethanol + 50 kg/h at 50% →
+  150 kg/h at 30%. startWith F₁, x₁, F₂, x₂.
+- **~splitter — BUILD ⏳ P9:** P9 column. Values F, z, x_D, x_B, D, B, recovery. Relations: F = D + B;
+  Fz = Dx_D + Bx_B; recovery = Dx_D ÷ (Fz). Example: 100 kmol/h, 0.40, 0.95, 0.05 → D = 38.9,
+  B = 61.1 kmol/h, 92.4% of the light key overhead.
+- **~bypass — BUILD ⏳ P9:** P9 evaporator with a bypass line. Values fresh feed, feed solids,
+  concentrate solids, product solids, bypass B, evaporator feed E, water removed W, product P.
+  Relations: overall solids and water; solids at the evaporator; the mixing point. Example:
+  100 kg/h juice at 12% solids, evaporator makes 58%, product 42% → P = 28.57, W = 71.43,
+  E = 90.06, B = 9.94 kg/h.
+- **Verdict:** 3 pages.
+
+#### material-energy-balances#2 — Reactive systems
+
+| Question type                                          | Page          | Mark   |
+| ------------------------------------------------------ | ------------- | ------ |
+| outlet flows from conversion (extent of reaction)      | main          | Solves |
+| limiting reactant and percent excess                   | main          | Solves |
+| combustion with excess air; dry-basis CO₂ %            | ~combustion   | Solves |
+
+- **Main — BUILD:** `reaction` with `limiting` (N₂ + 3H₂ → 2NH₃, before and after counts). Values
+  N₂ in, H₂ in, conversion of H₂ X, extent ξ, N₂ out, H₂ out, NH₃ out, % excess N₂. Relations:
+  ξ = XH₂,in ÷ 3; ṅ_i = ṅ_i0 + ν_iξ; excess = (N₂ in − H₂ in ÷ 3) ÷ (H₂ in ÷ 3). Assumptions:
+  one reaction; steady state; conversion is of the limiting reactant. Example: 100 and
+  250 mol/h, X = 0.6 → ξ = 50 mol/h; out 50 N₂, 100 H₂, 100 NH₃; H₂ limits, N₂ 20% in excess.
+  startWith the feeds and X.
+- **~combustion — BUILD ⏳ P9:** P9 burner (fuel and air in, flue gas out). Values CH₄ fed, %
+  excess air, O₂ fed, N₂ fed, CO₂, H₂O, O₂ left, dry CO₂ %. Relations: O₂ fed = 2 × CH₄ ×
+  (1 + excess); N₂ = 3.76 × O₂; dry total = CO₂ + O₂ left + N₂. Example: 100 mol/h, 20% excess →
+  240 O₂, 902.4 N₂; out 100 CO₂, 200 H₂O, 40 O₂; dry CO₂ = 100 ÷ 1042.4 = 9.59%.
+- **Verdict:** 2 pages.
+
+#### material-energy-balances#3 — Energy balances
+
+| Question type                                          | Page              | Mark            |
+| ------------------------------------------------------ | ----------------- | --------------- |
+| heat duty to warm a stream                             | main              | Solves          |
+| steam needed for that duty                             | main              | Solves          |
+| heat released by a reaction at 25 °C                   | ~heat-of-reaction | Solves          |
+| enthalpy from steam tables                             | —                 | No (⏳ N4 steam table rows) |
+
+- **Main — BUILD ⏳ P9:** P9 heater with a Q arrow and the steam line. Values ṁ, c_p, T_in, T_out,
+  Q̇, latent heat λ, steam ṁ_s. Relations: Q̇ = ṁc_p(T_out − T_in); ṁ_s = Q̇ ÷ λ. Assumptions: steady
+  open system, kinetic and potential energy changes negligible; constant c_p; steam condenses
+  fully and leaves as saturated liquid. Example: water 2 kg/s, 4.18 kJ/(kg·K), 20 → 80 °C →
+  501.6 kW; λ = 2257 kJ/kg at 100 °C → 0.222 kg/s of steam. startWith ṁ, c_p, T_in, T_out, λ.
+- **~heat-of-reaction — BUILD:** `energyProfile` ladder (reactants, products, ΔH). Values extent ξ̇,
+  ΔH_r°, Q̇. Relation: Q̇ = ξ̇ΔH_r° (feed and products at 25 °C). Example: 10 mol/s CH₄ burned,
+  −802.3 kJ/mol (water as vapor) → Q̇ = −8023 kW (heat leaves).
+- **Verdict:** 2 pages.
+
+### 16. chemical-thermodynamics — Chemical Engineering Thermodynamics
+
+#### chemical-thermodynamics#0 — Equations of state
+
+| Question type                                          | Page          | Mark            |
+| ------------------------------------------------------ | ------------- | --------------- |
+| compressibility factor from the virial (Pitzer) form   | main          | Solves          |
+| pressure from van der Waals at a molar volume          | ~van-der-waals| Solves          |
+| volume from van der Waals at a pressure (cubic)        | ~van-der-waals| Partly (⏳ N2, N3) |
+| Peng–Robinson                                          | —             | No (⏳ N2, N3, N4) |
+
+- **Main — BUILD ⏳ N4:** **P10** `propertyDiagram` P–v mode (the isotherm, ideal dashed, the
+  state). Values T_c, P_c, acentric ω (a compound row sets these, N4), T, P, T_r, P_r, B⁰, B¹, Z.
+  10 values. Relations: T_r = T ÷ T_c; P_r = P ÷ P_c; B⁰ = 0.083 − 0.422 ÷ T_r^1.6;
+  B¹ = 0.139 − 0.172 ÷ T_r^4.2; Z = 1 + (B⁰ + ωB¹)P_r ÷ T_r. Assumptions: low to moderate pressure
+  (the two-term virial form holds roughly where V_r > 2); nonpolar gas. Example: propane (369.8 K,
+  42.48 bar, 0.152) at 400 K and 10 bar → T_r = 1.082, P_r = 0.2354, B⁰ = −0.2892, B¹ = 0.0153,
+  Z = 0.938. startWith compound, T, P.
+- **~van-der-waals — BUILD ⏳ P10:** P10 P–v with the vdW isotherm. Values T_c, P_c, a, b, T, molar
+  volume V, P, Z. Relations: a = 27R²T_c² ÷ (64P_c); b = RT_c ÷ (8P_c); P = RT ÷ (V − b) − a ÷ V²;
+  Z = PV ÷ (RT). Example: CO₂ (304.2 K, 73.83 bar) → a = 0.3655 Pa·m⁶/mol², b = 4.28 × 10⁻⁵ m³/mol;
+  300 K, 1.000 L/mol → P = 22.40 bar (ideal 24.94), Z = 0.898.
+- **Verdict:** 2 pages.
+
+#### chemical-thermodynamics#1 — Fugacity
+
+| Question type                                         | Page        | Mark   |
+| ----------------------------------------------------- | ----------- | ------ |
+| fugacity coefficient from the virial form             | main        | Solves |
+| liquid fugacity with the Poynting factor              | ~poynting   | Solves |
+
+- **Main — BUILD:** `plot` with `reference` (f against P; the ideal line f = P dashed, the gas's
+  point below it). Values T_r, P_r, B⁰ + ωB¹, ln φ, φ, P, f. Relations: ln φ = (B⁰ + ωB¹)P_r ÷ T_r;
+  f = φP. Assumptions: same range as the virial page; φ = 1 is the ideal gas. Example: propane above
+  → ln φ = −0.0624, φ = 0.939, f = 9.39 bar. startWith the virial values, P.
+- **~poynting — BUILD:** `none`. Values P_sat, liquid volume V_L, P, T, Poynting factor, f.
+  Relation: f = P_sat exp(V_L(P − P_sat) ÷ (RT)) (φ_sat ≈ 1). Example: water at 25 °C, 3.17 kPa,
+  18.07 cm³/mol, 100 bar → factor 1.076, f = 3.41 kPa.
+- **Verdict:** 2 pages.
+
+#### chemical-thermodynamics#2 — Vapor–liquid equilibrium
+
+| Question type                                          | Page          | Mark            |
+| ------------------------------------------------------ | ------------- | --------------- |
+| bubble pressure and vapor composition (Raoult)         | main          | Solves (⏳ N4)  |
+| dew pressure                                           | ~dew          | Solves          |
+| binary flash: phase fractions at T and P               | ~flash        | Solves          |
+| activity coefficients (one-parameter Margules)         | ~margules     | Solves          |
+| bubble temperature at a pressure                       | main (type P) | Solves (⏳ N2)  |
+
+- **Main — BUILD ⏳ P30, N4:** **P30** `phaseEnvelope` Pxy (bubble and dew curves at T, the tie
+  line at x). A pair row (N4) supplies both compounds' Antoine A, B, C as data, not values. Values
+  T (°C), P₁sat, P₂sat, x₁, P, y₁. Relations:
+  log P^sat = A − B ÷ (T + C) (mmHg, °C); P = x₁P₁sat + (1 − x₁)P₂sat; y₁ = x₁P₁sat ÷ P.
+  Assumptions: ideal liquid (Raoult's law) and ideal vapor; the Antoine range covers T. Example:
+  benzene–toluene at 90 °C → 1021 and 406.7 mmHg; x₁ = 0.5 → P = 713.9 mmHg, y₁ = 0.715.
+  startWith the pair, T, x₁.
+- **~dew — BUILD:** P30. Relation: 1 ÷ P = y₁ ÷ P₁sat + (1 − y₁) ÷ P₂sat. Example: y₁ = 0.5 at
+  90 °C → 581.7 mmHg.
+- **~flash — BUILD:** P30 with the feed point on the tie line (lever rule). Values P₁sat, P₂sat, P,
+  K₁, K₂, z₁, x₁, y₁, V ÷ F. Relations: K = P^sat ÷ P; x₁ = (1 − K₂) ÷ (K₁ − K₂); y₁ = K₁x₁;
+  V ÷ F = (z₁ − x₁) ÷ (y₁ − x₁). Example: 90 °C, 760 mmHg → K = 1.343 and 0.535, x₁ = 0.575,
+  y₁ = 0.773; z₁ = 0.6 → V/F = 0.126.
+- **~margules — BUILD:** P30 with a dashed Raoult line. Values A, x₁, γ₁, γ₂. Relations:
+  ln γ₁ = A x₂²; ln γ₂ = A x₁². Example: A = 0.8, x₁ = 0.3 → γ₁ = 1.480, γ₂ = 1.075.
+- **Verdict:** 4 pages.
+
+#### chemical-thermodynamics#3 — Reaction equilibria
+
+| Question type                                         | Page          | Mark   |
+| ----------------------------------------------------- | ------------- | ------ |
+| K from ΔG° at 298 K                                   | main          | Solves |
+| K at another temperature (van 't Hoff)                | ~van-t-hoff   | Solves |
+| equilibrium conversion of A ⇌ B                       | ~conversion   | Solves |
+
+- **Main — BUILD:** `equilibriumChart` (Q against K). Values ΔG° (kJ/mol), T, K, ln K. Relation:
+  ln K = −ΔG° ÷ (RT). Assumptions: standard state 1 bar; ΔG° for the reaction as written.
+  Example: N₂ + 3H₂ ⇌ 2NH₃, ΔG° = −32.9 kJ/mol at 298.15 K → ln K = 13.27, K = 5.81 × 10⁵.
+  startWith ΔG°, T.
+- **~van-t-hoff — BUILD:** `linearFunction` (ln K against 1 ÷ T, slope −ΔH° ÷ R). Values K₁, T₁,
+  ΔH°, T₂, K₂. Relation: ln(K₂ ÷ K₁) = −(ΔH° ÷ R)(1 ÷ T₂ − 1 ÷ T₁). Assumption: ΔH° constant over the
+  range. Example: −92.2 kJ/mol, 298.15 → 700 K → K₂ = 3.10 × 10⁻⁴ (why plants run hot only for
+  speed, at high pressure).
+- **~conversion — BUILD:** `equilibriumChart`. Values K, X. Relation: K = X ÷ (1 − X) (no change in
+  moles, ideal). Example: K = 3 → X = 0.75.
+- **Verdict:** 3 pages.
+
+### 17. transport-phenomena — Transport Phenomena
+
+#### transport-phenomena#0 — Momentum transport
+
+| Question type                                          | Page          | Mark   |
+| ------------------------------------------------------ | ------------- | ------ |
+| laminar flow rate in a tube (Hagen–Poiseuille)         | main          | Solves |
+| average and maximum velocity; wall shear stress        | main          | Solves |
+| shear stress and force in Couette flow                 | ~couette      | Solves |
+| falling film average velocity                          | ~film         | Solves |
+
+- **Main — BUILD ⏳ P31:** **P31** `velocityProfile` tube (parabolic arrows, v_max on the axis,
+  τ_w at the wall). Values ΔP, length L, radius R, viscosity μ, Q, v_avg, v_max, τ_w, Re (ρ fixed
+  1000 kg/m³ in the assumption). Relations: Q = πΔPR⁴ ÷ (8μL); v_avg = Q ÷ (πR²); v_max = 2v_avg;
+  τ_w = ΔPR ÷ (2L); Re = ρv_avg(2R) ÷ μ. Assumptions: steady, laminar (Re < 2100), Newtonian,
+  fully developed; the step names the shell balance that gives the parabola. Example: 1000 Pa,
+  1 m, 1 mm, 0.001 Pa·s → Q = 3.93 × 10⁻⁷ m³/s, v_avg = 0.125 m/s, v_max = 0.25 m/s,
+  τ_w = 0.5 Pa, Re = 250. startWith ΔP, L, R, μ.
+- **~couette — BUILD:** P31 plates (linear profile). Values μ, plate speed V, gap h, τ, area A,
+  force F. Relations: τ = μV ÷ h; F = τA. Example: oil 0.3 Pa·s, 2 m/s, 1 mm → 600 Pa; 0.5 m² → 300 N.
+- **~film — BUILD:** P31 film on a wall. Values ρ, μ, thickness δ, angle β, v_avg. Relation:
+  v_avg = ρgδ² cos β ÷ (3μ). Example: water, 0.5 mm, vertical (β = 0) → 0.818 m/s.
+- **Verdict:** 3 pages.
+
+#### transport-phenomena#1 — Heat transport
+
+| Question type                                          | Page            | Mark   |
+| ------------------------------------------------------ | --------------- | ------ |
+| heat flux through a composite wall with convection     | main            | Solves |
+| heat loss from an insulated pipe; critical radius      | ~cylinder       | Solves |
+| center temperature of a wire with heat generation      | ~heated-wire    | Solves |
+
+- **Main — BUILD ⏳ P31:** P31 `temperature` through layers (a straight drop in each layer, steeper
+  where k is small). Values T_in, h_in, L₁, k₁, L₂, k₂, h_out, T_out, total R, flux q″. Relations:
+  R = 1 ÷ h_in + L₁ ÷ k₁ + L₂ ÷ k₂ + 1 ÷ h_out; q″ = (T_in − T_out) ÷ R. Assumptions: steady,
+  one-dimensional; resistances in series like resistors; perfect contact between layers. Example:
+  22 °C, 10 W/(m²·K), brick 0.2 m at 0.7, insulation 0.05 m at 0.04, 25 W/(m²·K), −5 °C →
+  R = 1.676 m²·K/W, q″ = 16.1 W/m². startWith all but R and q″.
+- **~cylinder — BUILD ⏳ P31:** P31 radial. Values r₁, r₂, k, h, T_i, T∞, R_cond, R_conv, q′, r_c.
+  Relations: R_cond = ln(r₂ ÷ r₁) ÷ (2πk); R_conv = 1 ÷ (2πr₂h); q′ = (T_i − T∞) ÷ (R_cond + R_conv);
+  r_c = k ÷ h. Example: 0.05 → 0.08 m, 0.04 W/(m·K), 10 W/(m²·K), 150 → 20 °C → 1.870 + 0.199 →
+  62.8 W/m; r_c = 4 mm, so insulating this pipe only helps.
+- **~heated-wire — BUILD ⏳ P31:** P31 radial with generation. Values heat generation S
+  (W/m³), radius R, k, T_s, T_center. Relation: T_center − T_s = SR² ÷ (4k). Example: 5 × 10⁸ W/m³,
+  1 mm, 12 W/(m·K) → 10.4 K above the surface.
+- **Verdict:** 3 pages.
+
+#### transport-phenomena#2 — Mass transport
+
+| Question type                                          | Page            | Mark   |
+| ------------------------------------------------------ | --------------- | ------ |
+| equimolar counterdiffusion flux (Fick)                 | main            | Solves |
+| evaporation through a stagnant gas (Stefan tube)       | ~stagnant-film  | Solves |
+| time to diffuse a distance                             | ~diffusion-time | Solves |
+
+- **Main — BUILD ⏳ P31:** P31 `concentration` across a film (a straight line from c_A1 to c_A2).
+  Values D_AB, c_A1, c_A2, thickness L, flux N_A. Relation: N_A = D_AB(c_A1 − c_A2) ÷ L.
+  Assumptions: steady; equimolar counterdiffusion, so no bulk flow; constant D. Example:
+  2.0 × 10⁻⁵ m²/s, 2.0 and 0.5 mol/m³, 0.05 m → 6.0 × 10⁻⁴ mol/(m²·s). startWith D_AB, c_A1, c_A2, L.
+- **~stagnant-film — BUILD ⏳ P31:** P31 tube with liquid at the bottom (a curved profile). Values
+  P, T, P_sat, c, x_A1, x_A2, D, L, N_A. Relations: c = P ÷ (RT); x_A1 = P_sat ÷ P;
+  N_A = (cD ÷ L) ln((1 − x_A2) ÷ (1 − x_A1)). Example: water at 25 °C, 3.17 kPa, 2.6 × 10⁻⁵ m²/s,
+  0.1 m, dry air at the top → c = 40.9 mol/m³, x_A1 = 0.0313, N_A = 3.38 × 10⁻⁴ mol/(m²·s).
+- **~diffusion-time — BUILD:** `none`. Values distance L, D, t ≈ L² ÷ D. Example: 1 mm in water,
+  10⁻⁹ m²/s → about 1000 s; 1 cm → about 28 hours, why stirring matters.
+- **Verdict:** 3 pages.
+
+#### transport-phenomena#3 — Transport analogies
+
+| Question type                                           | Page              | Mark   |
+| ------------------------------------------------------- | ----------------- | ------ |
+| Nusselt number from the friction factor (Chilton–Colburn)| main             | Solves |
+| Sherwood number by the same analogy                     | ~mass-analogy     | Solves |
+| Prandtl and Schmidt numbers and what they compare       | ~dimensionless    | Solves |
+
+- **Main — BUILD ⏳ P31:** P31 `analogy` (velocity, thermal and concentration boundary layers side
+  by side, δ_T = δPr^(−1/3)). Values Re, Fanning f, Pr, j_H (= f ÷ 2), Nu, Dittus–Boelter Nu for
+  comparison. Relations: f = 0.079Re^(−0.25) (smooth tube, 4000 < Re < 10⁵); Nu = (f ÷ 2)RePr^(1/3);
+  Nu_DB = 0.023Re^0.8Pr^0.4. Assumptions: turbulent; 0.6 < Pr < 60; no form drag (the analogy
+  links skin friction only). Example: Re = 50,000, Pr = 0.7 → f = 0.00528, Nu = 117.3 (Dittus–Boelter
+  114.5, within 3%). startWith Re, Pr.
+- **~mass-analogy — BUILD ⏳ P31:** same. Values Re, f, Sc, Sh. Relation: Sh = (f ÷ 2)ReSc^(1/3).
+  Example: Re = 50,000, Sc = 0.6 → Sh = 111.4.
+- **~dimensionless — BUILD:** `bars` (the two diffusivities compared). Values c_p, μ, k, Pr, ρ, D,
+  Sc. Relations: Pr = c_pμ ÷ k; Sc = μ ÷ (ρD). Example: water at 20 °C → Pr = 4182 × 0.001 ÷ 0.598
+  = 6.99 (heat diffuses 7 times slower than momentum).
+- **Verdict:** 3 pages.
+
+### 18. separations — Separation Processes
+
+#### separations#0 — Distillation
+
+| Question type                                          | Page           | Mark            |
+| ------------------------------------------------------ | -------------- | --------------- |
+| minimum stages (Fenske)                                | main           | Solves          |
+| minimum reflux (Underwood, saturated liquid feed)      | ~min-reflux    | Solves          |
+| rectifying operating line                              | ~operating-line| Solves          |
+| stages by McCabe–Thiele stepping                       | ~mccabe-thiele | Solves (⏳ P30) |
+
+- **Main — BUILD ⏳ P30:** P30 `xy` (equilibrium curve for constant α, the 45° line, x_B and x_D
+  marked, total-reflux steps). Values x_D, x_B, relative volatility α, N_min. Relation:
+  N_min = ln[(x_D ÷ (1 − x_D))((1 − x_B) ÷ x_B)] ÷ ln α. Assumptions: constant α; total reflux; N_min
+  counts the reboiler as a stage. Example: 0.95, 0.05, α = 2.5 → ln 361 ÷ ln 2.5 = 6.43 stages.
+  startWith x_D, x_B, α.
+- **~min-reflux — BUILD ⏳ P30:** P30 `xy` with the pinch at the feed. Values x_F, x_D, α, R_min,
+  R = 1.5R_min. Relation: R_min = (1 ÷ (α − 1))[x_D ÷ x_F − α(1 − x_D) ÷ (1 − x_F)]. Example:
+  x_F = 0.4, x_D = 0.95, α = 2.5 → 1.444; R = 2.167.
+- **~operating-line — BUILD ⏳ P30:** P30 `xy` line. Values R, x_D, slope, intercept. Relations:
+  slope = R ÷ (R + 1); intercept = x_D ÷ (R + 1). Example: R = 2.167 → 0.684 and 0.300.
+- **~mccabe-thiele — BUILD ⏳ P30:** P30 `xy` `steps` (both operating lines, the q-line, the
+  staircase). Values α, x_F, q, x_D, x_B, R, stages (counted by the picture), feed stage. Example
+  from the three pages above; the count is the picture's, the page shows it as a derived whole
+  number (⏳ N7: a count from a construction).
+- **Verdict:** 4 pages.
+
+#### separations#1 — Absorption
+
+| Question type                                          | Page        | Mark   |
+| ------------------------------------------------------ | ----------- | ------ |
+| stages by the Kremser equation                         | main        | Solves |
+| minimum liquid-to-gas ratio                            | ~min-liquid | Solves |
+
+- **Main — BUILD ⏳ P30:** P30 `xy` with straight equilibrium y = mx and operating lines. Values
+  y_in, y_out, x_in, m, absorption factor A, N. Relation: N = ln[((y_in − mx_in) ÷ (y_out −
+  mx_in))(1 − 1 ÷ A) + 1 ÷ A] ÷ ln A, A = L ÷ (mG). Assumptions: dilute gas, so L and G are
+  constant; linear equilibrium (Henry's law); isothermal. Example: 0.02, 0.001, 0, m = 1.5,
+  A = 1.4 → 5.53 stages. startWith y_in, y_out, x_in, m, A.
+- **~min-liquid — BUILD ⏳ P30:** P30 `xy` pinch at the bottom. Values y_in, y_out, x_in, m,
+  (L ÷ G)min, L ÷ G at 1.5 × min. Relation: (L ÷ G)min = (y_in − y_out) ÷ (y_in ÷ m − x_in).
+  Example: → 1.425; 1.5 × = 2.14, A = 1.425.
+- **Verdict:** 2 pages.
+
+#### separations#2 — Extraction
+
+| Question type                                         | Page           | Mark   |
+| ----------------------------------------------------- | -------------- | ------ |
+| fraction left after one equilibrium stage             | main           | Solves |
+| crosscurrent stages with split solvent                | ~crosscurrent  | Solves |
+| one large wash or several small ones                  | ~crosscurrent  | Solves |
+
+- **Main — BUILD ⏳ P9:** P9 `stages: 1` (feed and solvent in, extract and raffinate out, solute
+  amounts). Values distribution coefficient K_D, solvent-to-feed S ÷ F, extraction factor E,
+  fraction left, fraction extracted. Relations: E = K_DS ÷ F; left = 1 ÷ (1 + E). Assumptions:
+  immiscible solvents; dilute solute; one equilibrium stage. Example: K_D = 4, S/F = 0.5 → E = 2,
+  one third left. startWith K_D, S/F.
+- **~crosscurrent — BUILD ⏳ P9:** P9 `stages: n` crosscurrent. Values K_D, total S ÷ F, stages n,
+  E per stage, left. Relation: left = (1 ÷ (1 + K_D(S ÷ F) ÷ n))ⁿ. Example: same solvent in three
+  equal parts → (0.6)³ = 0.216, against 0.333 in one.
+- **Verdict:** 2 pages.
+
+#### separations#3 — Membranes
+
+| Question type                                          | Page          | Mark   |
+| ------------------------------------------------------ | ------------- | ------ |
+| reverse-osmosis water flux                             | main          | Solves |
+| osmotic pressure of seawater                           | main          | Solves |
+| ideal selectivity and permeate purity                  | ~gas-permeation | Solves |
+
+- **Main — BUILD ⏳ P9:** P9 `membrane` (feed, retentate, permeate; pressure and osmotic pressure
+  bars). Values salt concentration (g/L), molar mass, ions i, T, osmotic π, applied ΔP,
+  permeability A_w, flux J_w. Relations: π = i(c ÷ M)RT; J_w = A_w(ΔP − π). Assumptions: permeate
+  nearly salt-free; van 't Hoff dilute form; no concentration polarization. Example: 35 g/L NaCl
+  (58.44 g/mol), i = 2, 25 °C → π = 29.7 bar; ΔP = 60 bar, A_w = 1.0 L/(m²·h·bar) → J_w =
+  30.3 L/(m²·h). startWith c, M, i, T, ΔP, A_w.
+- **~gas-permeation — BUILD ⏳ P9:** P9 membrane. Values permeabilities P_A, P_B, selectivity α,
+  feed x_A, permeate y_A (low pressure ratio limit). Relations: α = P_A ÷ P_B; y_A ÷ (1 − y_A) =
+  α x_A ÷ (1 − x_A). Example: O₂/N₂ α = 5, air x = 0.21 → y = 1.05 ÷ 1.84 = 0.571.
+- **Verdict:** 2 pages.
+
+### 19. reaction-engineering — Chemical Reaction Engineering
+
+#### reaction-engineering#0 — Rate laws
+
+| Question type                                          | Page           | Mark   |
+| ------------------------------------------------------ | -------------- | ------ |
+| rate constant at a new temperature (Arrhenius)         | main           | Solves |
+| activation energy from two rate constants              | main (type E)  | Solves |
+| reaction order from initial rates                      | ~order         | Solves |
+| Arrhenius plot: E from the slope                       | ~arrhenius-plot| Solves |
+
+- **Main — BUILD:** `linearFunction` (ln k against 1 ÷ T through the two points; slope −E ÷ R).
+  Values E (kJ/mol), k₁, T₁, T₂, k₂, ratio k₂ ÷ k₁. Relation: ln(k₂ ÷ k₁) = (E ÷ R)(1 ÷ T₁ − 1 ÷ T₂).
+  Assumptions: E and the pre-exponential factor don't change with T; temperatures in kelvins.
+  Example: 80 kJ/mol, 0.05 per min at 300 K → at 320 K ratio 7.42, k₂ = 0.371 per min (the
+  "doubles every 10 K" rule is rough). startWith E, k₁, T₁, T₂.
+- **~order — BUILD:** `chemDiagram` `mode: 'rate'`. Values C₁, rate₁, C₂, rate₂, order n, k.
+  Relations: n = ln(r₂ ÷ r₁) ÷ ln(C₂ ÷ C₁); k = r₁ ÷ C₁ⁿ. Example: 0.5 → 1.0 mol/L, rate × 4 → n = 2.
+- **~arrhenius-plot — BUILD:** `linearFunction`. Values slope m, E = −mR, intercept ln A, A.
+  Example: slope −9622 K → E = 80.0 kJ/mol.
+- **Verdict:** 3 pages.
+
+#### reaction-engineering#1 — Batch, CSTR and PFR design
+
+| Question type                                           | Page           | Mark            |
+| ------------------------------------------------------- | -------------- | --------------- |
+| CSTR and PFR volume for a first-order conversion        | main           | Solves          |
+| second-order liquid reaction in each reactor            | ~second-order  | Solves          |
+| batch time for a conversion                             | ~batch         | Solves          |
+| CSTRs in series                                         | ~series        | Solves          |
+| Levenspiel plot: which reactor is smaller               | ~levenspiel    | Solves (⏳ P33) |
+
+- **Main — BUILD:** `bars` (V_CSTR beside V_PFR) until P33. Values k (per min), X, v₀, τ_CSTR,
+  V_CSTR, τ_PFR, V_PFR. Relations: τ_CSTR = X ÷ (k(1 − X)); τ_PFR = −ln(1 − X) ÷ k; V = v₀τ.
+  Assumptions: first order, liquid phase (constant density), isothermal; the PFR line names the
+  integral ∫dX ÷ (k(1 − X)) from 0 to X (N10). Example: 0.2 per min, X = 0.8, 10 L/min → CSTR
+  20 min, 200 L; PFR 8.05 min, 80.5 L. startWith k, X, v₀.
+- **~second-order — BUILD:** same. Values k, C_A0, X, τ_CSTR, τ_PFR. Relations:
+  τ_CSTR = X ÷ (kC_A0(1 − X)²); τ_PFR = X ÷ (kC_A0(1 − X)). Example: 0.5 L/(mol·min), 2 mol/L, 0.8
+  → 20 min and 4 min.
+- **~batch — BUILD:** `functionGraph` exponential (C_A against t). Values k, X, t. Relation:
+  t = −ln(1 − X) ÷ k. Example: 0.2 per min, X = 0.9 → 11.5 min.
+- **~series — BUILD:** `bars` (conversion after each tank). Values k, τ each, n, X. Relation:
+  X = 1 − 1 ÷ (1 + kτ)ⁿ. Example: two tanks of 5 min, 0.2 per min → 0.75.
+- **~levenspiel — BUILD ⏳ P33:** `functionGraph` with **P33** `levenspiel` (F_A0 ÷ (−r_A) against
+  X; the CSTR rectangle and the PFR area). Values F_A0, k, C_A0, X, V_CSTR, V_PFR. Example: the
+  main page's numbers, the two areas 200 and 80.5 L.
+- **Verdict:** 5 pages.
+
+#### reaction-engineering#2 — Multiple reactions
+
+| Question type                                          | Page         | Mark            |
+| ------------------------------------------------------ | ------------ | --------------- |
+| time and amount of the intermediate's maximum (A → B → C)| main       | Solves (⏳ P32) |
+| instantaneous selectivity of parallel reactions        | ~selectivity | Solves          |
+
+- **Main — BUILD ⏳ P32:** `chemDiagram` **P32** `mode: 'series'` (C_A, C_B, C_C against t, B's peak).
+  Values k₁, k₂, C_A0, t_max, C_B,max, yield C_B,max ÷ C_A0. Relations: t_max = ln(k₂ ÷ k₁) ÷ (k₂ −
+  k₁); C_B,max = C_A0(k₁ ÷ k₂)^(k₂ ÷ (k₂ − k₁)). Assumptions: first-order steps, batch or PFR, no B
+  in the feed; k₁ ≠ k₂. Example: 0.5 and 0.2 per h, 2 mol/L → t_max = 3.05 h, C_B,max = 1.086 mol/L,
+  yield 54%. startWith k₁, k₂, C_A0.
+- **~selectivity — BUILD:** `functionGraph` linear (S against C_A). Values k_D, k_U, C_A, orders
+  a_D = 2 and a_U = 1 (fixed), S. Relation: S = k_DC_A ÷ k_U. Example: 0.5 L/(mol·min), 0.1 per
+  min, 1 mol/L → S = 5; high C_A favors the second-order product, so a PFR or batch beats a CSTR.
+- **Verdict:** 2 pages.
+
+#### reaction-engineering#3 — Catalysis
+
+| Question type                                          | Page           | Mark            |
+| ------------------------------------------------------ | -------------- | --------------- |
+| fractional coverage and rate (Langmuir)                | main           | Solves          |
+| effectiveness factor of a spherical pellet (Thiele)    | ~effectiveness | Solves (⏳ N8)  |
+| order of the steps on a catalyst                       | ~steps         | Solves          |
+
+- **Main — BUILD:** `functionGraph` rational (θ = KP ÷ (1 + KP), approaching 1). Values K
+  (per atm), P_A, θ, k, rate. Relations: θ = KP ÷ (1 + KP); rate = kθ. Assumptions: one adsorbed
+  species per site; surface reaction limits the rate (Langmuir–Hinshelwood, single site). Example:
+  0.5 per atm, 2 atm → θ = 0.5; k = 0.1 mol/(kg·s) → 0.05 mol/(kg·s). startWith K, P_A, k.
+- **~effectiveness — BUILD ⏳ N8:** `functionGraph` (η against φ, the 3 ÷ φ tail). Values R, k,
+  D_e, φ, η. Relations: φ = R√(k ÷ D_e); η = (3 ÷ φ²)(φ coth φ − 1). Example: 3 mm, 10 per s,
+  10⁻⁶ m²/s → φ = 9.49, η = 0.283.
+- **~steps — BUILD (sequence):** reactant diffuses from the bulk to the pellet surface; diffuses
+  into the pores; adsorbs on a site; reacts on the surface; product desorbs; diffuses out of the
+  pores; diffuses into the bulk fluid.
+- **Verdict:** 3 pages.
+
+### 20. process-control — Process Dynamics & Control
+
+#### process-control#0 — Process dynamics
+
+| Question type                                          | Page           | Mark   |
+| ------------------------------------------------------ | -------------- | ------ |
+| first-order step response at a time; 63.2% at τ        | main           | Solves |
+| second-order overshoot, decay ratio, period            | ~second-order  | Solves |
+| time constant of a mixing tank                         | ~tank          | Solves |
+
+- **Main — BUILD:** `functionGraph` exponential with `r` (y = KΔu − KΔue^(−t ÷ τ), the asymptote
+  KΔu and t = τ marked) until P5. Values gain K, step Δu, time constant τ, time t, response y,
+  final value. Relations: y = KΔu(1 − e^(−t ÷ τ)); final = KΔu. Assumptions: first-order, starts
+  at steady state (deviation variables), no dead time; the step names the ODE τ dy ÷ dt + y = Ku
+  it solves. Example: K = 2, Δu = 3, τ = 5 min → final 6; at 5 min 3.79 (63.2%); at 10 min 5.19.
+  startWith K, Δu, τ, t.
+- **~second-order — BUILD ⏳ P5:** **P5** `stepResponse` underdamped. Values ζ (0–0.99), ω_n,
+  overshoot OS, decay ratio, period P. Relations: OS = e^(−πζ ÷ √(1 − ζ²)); decay = OS²;
+  P = 2π ÷ (ω_n√(1 − ζ²)). Example: ζ = 0.3, ω_n = 0.5 per min → OS = 37.2%, decay 0.139, P = 13.2 min.
+- **~tank — BUILD:** P9 tank. Values volume V, flow q, τ. Relation: τ = V ÷ q. Example: 2 m³,
+  0.1 m³/min → 20 min.
+- **Verdict:** 3 pages.
+
+#### process-control#1 — Feedback control
+
+| Question type                                          | Page          | Mark   |
+| ------------------------------------------------------ | ------------- | ------ |
+| offset with proportional control                       | main          | Solves |
+| closed-loop time constant                              | main          | Solves |
+| what P, I and D action each do                         | ~modes        | Solves |
+| fail-open or fail-closed valve                         | ~fail-safe    | Solves |
+
+- **Main — BUILD ⏳ P34:** **P34** `blockDiagram` loop (setpoint, comparator, K_c, process K_p ÷
+  (τs + 1), sensor). Values K_c, K_p, τ, setpoint change, loop gain K_cK_p, final value, offset,
+  closed-loop τ_cl. Relations: final = setpoint × K_cK_p ÷ (1 + K_cK_p); offset = setpoint − final;
+  τ_cl = τ ÷ (1 + K_cK_p). Assumptions: proportional-only control of a first-order process; ideal
+  sensor and valve. Example: K_p = 2, K_c = 4, τ = 10 min, +5 → final 4.44, offset 0.556 (11.1%),
+  τ_cl = 1.11 min. startWith K_c, K_p, τ, setpoint.
+- **~modes — BUILD (sort):** bins "Proportional", "Integral", "Derivative". Cards: output in step
+  with the error; leaves a steady offset alone; removes offset over time; can wind up while the
+  valve is saturated; acts on how fast the error changes; amplifies measurement noise.
+- **~fail-safe — BUILD (sort):** bins "Fail closed (air to open)", "Fail open (air to close)".
+  Cards: fuel gas to a furnace; steam to a reboiler; feed to a reactor; cooling water to an
+  exothermic reactor; quench water to a hot vessel.
+- **Verdict:** 3 pages.
+
+#### process-control#2 — Controller tuning
+
+| Question type                                          | Page        | Mark   |
+| ------------------------------------------------------ | ----------- | ------ |
+| Ziegler–Nichols settings from K_u and P_u              | main        | Solves |
+| IMC PI settings for a first-order-plus-dead-time model | ~imc        | Solves |
+| FOPDT model from a step test (two-point method)        | ~fit        | Solves |
+
+- **Main — BUILD:** `table` (P, PI, PID rows: K_c, τ_I, τ_D). Values ultimate gain K_u, period P_u,
+  then K_c, τ_I, τ_D for PID. Relations: PID K_c = 0.6K_u, τ_I = P_u ÷ 2, τ_D = P_u ÷ 8 (P: 0.5K_u;
+  PI: 0.45K_u, P_u ÷ 1.2 in the table). Assumptions: K_u and P_u from a closed-loop test at the edge
+  of stability; the settings are aggressive (quarter decay). Example: K_u = 8, P_u = 4 min → PID
+  4.8, 2 min, 0.5 min. startWith K_u, P_u.
+- **~imc — BUILD ⏳ P5:** P5 FOPDT curve. Values K, τ, θ, τ_c, K_c, τ_I. Relations: K_c = τ ÷
+  (K(τ_c + θ)); τ_I = τ. Example: 2, 10 min, 2 min, τ_c = 4 min → K_c = 0.833, τ_I = 10 min.
+- **~fit — BUILD ⏳ P5:** P5 step test with the 28.3% and 63.2% points. Values t₂₈, t₆₃, τ, θ.
+  Relations: τ = 1.5(t₆₃ − t₂₈); θ = t₆₃ − τ. Example: 4 and 10 min → τ = 9 min, θ = 1 min.
+- **Verdict:** 3 pages.
+
+#### process-control#3 — Control-loop design
+
+| Question type                                          | Page           | Mark            |
+| ------------------------------------------------------ | -------------- | --------------- |
+| ultimate gain for three equal lags (Routh)             | main           | Solves          |
+| stable or not from a cubic's coefficients              | ~routh         | Solves (⏳ N5)  |
+| static feedforward gain                                | ~feedforward   | Solves          |
+| feedback, feedforward, cascade or ratio                | ~architecture  | Solves          |
+
+- **Main — BUILD ⏳ P34:** P34 loop with three lags. Values τ, K_p, K_c,u, crossover ω_u, P_u.
+  Relations: K_c,uK_p = 8; ω_u = √3 ÷ τ; P_u = 2π ÷ ω_u. Assumptions: three equal first-order lags,
+  P control; the step names the Routh row (or s = iω substitution) that gives 8. Example: τ = 2 min,
+  K_p = 0.5 → K_c,u = 16, P_u = 7.26 min. startWith τ, K_p.
+- **~routh — BUILD ⏳ N5:** `table` (the Routh array). Values a₃, a₂, a₁, a₀, test a₂a₁ − a₃a₀,
+  result. Example: s³ + 6s² + 11s + 6 → 66 − 6 = 60 > 0, all positive, stable.
+- **~feedforward — BUILD ⏳ P34:** P34 `feedforward`. Values K_d, K_p, K_ff. Relation:
+  K_ff = −K_d ÷ K_p. Example: 1.5 and 3 → −0.5.
+- **~architecture — BUILD (sort):** bins "Feedback", "Feedforward", "Cascade", "Ratio". Cards:
+  thermostat adjusts the heater from the room temperature; a measured feed-flow change moves the
+  steam before the temperature drifts; a reactor temperature controller sets the jacket
+  temperature controller's setpoint; fuel flow kept at a fixed share of air flow.
+- **Verdict:** 4 pages.
+
+### 21. process-design — Process Design
+
+#### process-design#0 — Flowsheet synthesis
+
+| Question type                                          | Page              | Mark   |
+| ------------------------------------------------------ | ----------------- | ------ |
+| the order of design decisions (hierarchy)              | main              | Solves |
+| economic potential of the input–output structure       | ~economic-potential| Solves |
+| separation-sequencing heuristics                       | ~heuristics       | Solves |
+
+- **Main — BUILD (sequence):** batch or continuous; input–output structure; recycle structure;
+  separation system; heat integration. Sentence: "Each level fixes the streams the next level
+  designs around."
+- **~economic-potential — BUILD:** `bars` `flows` (product value in, raw-material cost out).
+  Values product rate, product price, feed rate, feed price, hours a year, EP. Relation:
+  EP = (product × price − feed × price) × hours. Example: 100 kmol/h at $40, 105 kmol/h at $25,
+  8000 h → $1375 an hour, $11.0 million a year (before any equipment or energy cost).
+- **~heuristics — BUILD (sort):** bins "Remove early", "Remove late". Cards: a corrosive
+  component; the most plentiful component; a component that is easy to separate; the hardest
+  split (close boiling points); a hazardous component; the product needing the highest purity.
+- **Verdict:** 3 pages.
+
+#### process-design#1 — Equipment sizing
+
+| Question type                                          | Page       | Mark   |
+| ------------------------------------------------------ | ---------- | ------ |
+| heat-exchanger area from duty, U and LMTD              | main       | Solves |
+| pump power                                             | ~pump      | Solves |
+| drum diameter from holdup time and L ÷ D               | ~drum      | Solves |
+
+- **Main — BUILD ⏳ P35:** **P35** `exchangerProfile` countercurrent (hot and cold lines along the
+  length, ΔT₁ and ΔT₂). Values duty Q, U, T_h,in, T_h,out, T_c,in, T_c,out, ΔT₁, ΔT₂, LMTD, A (10).
+  Relations: ΔT₁ = T_h,in − T_c,out; ΔT₂ = T_h,out − T_c,in; LMTD = (ΔT₁ − ΔT₂) ÷ ln(ΔT₁ ÷ ΔT₂);
+  A = Q ÷ (U × LMTD). Assumptions: countercurrent, no phase change, U constant along the exchanger.
+  Example: 500 kW, 500 W/(m²·K), hot 150 → 90 °C, cold 30 → 80 °C → 70 and 60 K, LMTD = 64.9 K,
+  A = 15.4 m². startWith Q, U, the four temperatures.
+- **~pump — BUILD:** `none`. Values Q, head H, efficiency η, power P. Relation: P = ρgQH ÷ η.
+  Example: 0.02 m³/s, 40 m, 0.7 → 11.2 kW.
+- **~drum — BUILD:** `curvedSolid` cylinder. Values flow, holdup time, fill fraction, V, L ÷ D, D.
+  Relations: V = flow × time ÷ fill; V = (π ÷ 4)D²L with L = 3D. Example: 0.5 m³/min, 10 min, half
+  full → 10 m³ → D = 1.62 m, L = 4.86 m.
+- **Verdict:** 3 pages.
+
+#### process-design#2 — Process economics
+
+| Question type                                          | Page       | Mark   |
+| ------------------------------------------------------ | ---------- | ------ |
+| equipment cost by the six-tenths rule and a cost index | main       | Solves |
+| net present value of a project                         | ~npv       | Solves |
+| simple payback                                         | ~npv       | Solves |
+
+- **Main — BUILD:** `functionGraph` power family (cost against size, exponent 0.6). Values base
+  cost C₁, base size S₁, new size S₂, exponent n, index then I₁, index now I₂, C₂. Relation:
+  C₂ = C₁(S₂ ÷ S₁)ⁿ(I₂ ÷ I₁). Assumptions: same equipment type and material; sizes within about a
+  factor of 10; index values typed from the published CEPCI. Example: $80,000 for 100 m², 250 m²,
+  0.6, indexes 550.8 and 800 → 80,000 × 1.733 × 1.452 = $201,000. startWith C₁, S₁, S₂, n, I₁, I₂.
+- **~npv — BUILD:** `bars` `flows` (investment down, yearly cash up). Values investment C₀, annual
+  cash A, rate i, years n, annuity factor, NPV, payback. Relations: factor = (1 − (1 + i)^(−n)) ÷ i;
+  NPV = −C₀ + A × factor; payback = C₀ ÷ A. Example: $1,000,000, $200,000, 10%, 10 years →
+  6.145, NPV = $228,900, payback 5 years.
+- **Verdict:** 2 pages.
+
+#### process-design#3 — Process safety
+
+| Question type                                          | Page       | Mark   |
+| ------------------------------------------------------ | ---------- | ------ |
+| lower flammability limit of a fuel mixture             | main       | Solves |
+| mitigated event frequency (LOPA)                       | ~lopa      | Solves |
+| HAZOP guide word for a deviation                       | ~hazop     | Solves |
+
+- **Main — BUILD:** `integerLine` `compound` (the flammable range from LFL to UFL, the mixture's
+  concentration as a point). Values shares y₁, y₂, y₃ of the fuel, their LFLs, LFL_mix, the
+  concentration in air, result (N5). Relation: LFL_mix = 1 ÷ Σ(y_i ÷ LFL_i). Assumptions:
+  Le Chatelier's rule (works best for similar hydrocarbons); air at 25 °C and 1 atm. Example:
+  80% methane (5.0%), 15% ethane (3.0%), 5% propane (2.1%) → 1 ÷ 0.2338 = 4.28% fuel in air.
+  startWith shares, LFLs.
+- **~lopa — BUILD:** `powerScale` (each frequency on the 10ⁿ ruler). Values initiating frequency f, PFD₁,
+  PFD₂, mitigated frequency. Relation: f_m = f × PFD₁ × PFD₂. Example: 0.1 a year, 0.1, 0.01 →
+  10⁻⁴ a year.
+- **~hazop — BUILD (sort):** bins "No", "More", "Less", "Reverse", "Other than". Cards: pump
+  stops, no flow to the reactor; control valve sticks open, too much feed; fouled exchanger
+  passes too little cooling; check valve fails and product flows back; wrong drum unloaded into
+  the tank; heater trips, temperature falls below the set point (Less).
+- **Verdict:** 3 pages.
+
+## Pictures for the pictures chat
+
+Each request: the pages, what it draws, its fields (variable ids or numbers), what must stay true
+(the harness check in `harness/pictures.ts`), and the kind it extends. Options on existing kinds
+come first where one fits: 27 new kinds, 6 options on existing kinds, 2 layout figures. Every label is a page value with
+its symbol (`rep.label`, `rep.tag`); nothing depends on color alone.
+
+1. **P1 `wing` (new kind).** Pages: aerodynamics#0, its 3 types, #1 main, #2 and its 2 types.
+   Draws a section (chord line, camber line from NACA digits, angle of attack against the
+   relative wind) or a planform (span, root and tip chord, trailing vortices, downwash). Options:
+   `forces` (L ⟂ wind and D along it, to scale), `pressure` (C_p arrows, suction outward),
+   `circulation` (a loop of Γ), `mode: 'section' | 'planform'`. Fields: alpha, alphaL0, digits
+   (d1, d2, d34), chord, cl, cd, span, rootChord, tipChord. Must stay true: lift is drawn ⟂ the
+   wind, not the chord; the camber peak sits at d2 × 10% of the chord; AR read off the drawing
+   equals b² ÷ S within 2%.
+2. **P2 `duct` (new kind).** Pages: compressible-flow#0 (all), #2 main, propulsion#0~turbojet,
+   #2 (both). A stream tube or converging–diverging nozzle drawn to scale by A ÷ A*, stations with
+   M, p, T; `chamber` (a rocket chamber before the throat); `shock` at a station; `engine`
+   (turbojet outline, V₀ in, V_e out). Fields: M, areaRatio, p0, T0, pe, Me, shockAt. Must stay
+   true: the throat is the narrowest section and is where M = 1 when choked; M < 1 before the
+   throat on the subsonic branch; drawn exit width ÷ throat width = √(Ae ÷ At) for a round nozzle.
+3. **P3 `supersonicFlow` (new kind).** Pages: aerodynamics#3 main, compressible-flow#1 (all), #3
+   (all). Modes: `normal` (a vertical shock, M₁ > 1 to M₂ < 1, ratio bars), `wedge` (wedge θ,
+   oblique shock at β), `corner` (expansion fan between Mach lines at μ₁ and μ₂), `flatPlate`
+   (Ackeret plate at α with shocks and fans at the edges), `mach` (sound fronts from a moving
+   point; the cone at M > 1). Fields: M1, beta, theta, M2, alpha. Must stay true: β > θ and
+   β ≥ μ₁ = sin⁻¹(1 ÷ M₁); the fan opens by exactly θ; no cone drawn at M < 1.
+4. **P4 `freeBody` options `object: 'aircraft'`, `bank`, `stability` (extends `freeBody`).**
+   Pages: flight-mechanics#0 (5 pages), #1 main, #3 main and ~coordinated-turn. Side view with L,
+   W, T, D to scale and the climb angle γ; front view banked at φ with L cos φ and L sin φ
+   dashed; `stability` marks the aerodynamic center, CG and neutral point on the mean chord with
+   the static margin bracket. Fields: W, L, T, D, gamma, phi, hac, h, hn. Must stay true: in level
+   flight the L and W arrows are equal; L cos φ equals W in a level turn; the CG mark is ahead of
+   the neutral point exactly when SM > 0.
+5. **P5 `stepResponse` (new kind).** Pages: flight-mechanics#2 main, process-control#0~second-order,
+   #2~imc, #2~fit (and the first-order main once drawn). Input step under the output against
+   time; first-order with dead time θ (63.2% at θ + τ marked, the final value dashed);
+   second-order with overshoot, period and decay ratio marked; `oscillation` (free decay from a
+   disturbance inside the e^(−ζω_n t) envelope, t½ marked); `points` (28.3% and 63.2% times).
+   Fields: K, du, tau, theta, zeta, wn, t. Must stay true: the curve passes 63.2% of the final
+   value at t = θ + τ; the first peak's height ÷ final equals 1 + OS; the envelope bounds every peak.
+6. **P6 `section` (new kind).** Pages: aerospace-structures#0 (both), steel-design#1 main, #2 main
+   and ~shear, concrete-design#0 (both), #1 main, #2 (main, ~spiral). Cross-sections to scale:
+   W-shape (d, b_f, t_f, t_w, axes), rectangular RC beam or column with bars (count, size,
+   cover), `whitney` (the 0.85f′_c block depth a, the strain line 0.003 to ε_t, the neutral axis at
+   c), `thinWalled` (box or tube, shear-flow arrows, enclosed area shaded), `cylinder` (pressurized
+   skin element, hoop and axial arrows), `interaction` (a later P–M curve for columns). Fields:
+   b, d, h, bars, barSize, As, a, c, epsT, q, Am. Must stay true: a = β₁c; the strain line is
+   straight and crosses zero at c; bars sit inside the cover; shear flow is the same value all round
+   a single closed cell.
+7. **P7 `column` (new kind).** Pages: aerospace-structures#2 (all), steel-design#1 main,
+   concrete-design#2~slenderness. A column with its end conditions drawn (pin, fixed, free), the
+   buckled half-wave over KL, the load P; `panel` (a skin panel between stringers buckling in
+   half-waves). Fields: L, K, P, Pcr. Must stay true: the drawn half-wave length is K × L; K is
+   one of 0.5, 0.7, 1, 2 and matches the ends drawn.
+8. **P8 `lamina` (new kind).** Pages: aerospace-structures#1 (all). A block of fibers in matrix at
+   V_f, loaded along (fiber and matrix as springs side by side) or across (in series), E bars
+   for fiber, matrix and composite. Fields: Vf, Ef, Em, E1, E2. Must stay true: the fiber share of
+   the drawn cross-section is V_f within 2%; E₂ ≤ E₁.
+9. **P9 `controlVolume` (new kind).** Pages: propulsion#3~burner, environmental#1~activated-sludge,
+   material-energy-balances (#0 main and ~dof, #1 all, #2~combustion, #3 main), separations#2
+   (both), #3 (both), process-control#0~tank. A unit as a box (mixer, splitter, column,
+   evaporator with bypass, burner, tank, membrane, a chain of `stages`, crosscurrent or
+   countercurrent) with labeled streams (flow and composition), heat and work arrows, and a
+   balance line "in = out" per component. Fields: streams[{ flow, fractions }], Q, W, stages.
+   Must stay true: every component's total in equals total out (plus generation where a
+   reaction is named) within 0.1%; the stream arrows point the way the flow goes.
+10. **P10 `propertyDiagram` (new kind).** Pages: propulsion#0 (main, ~compressor),
+    chemical-thermodynamics#0 (both). Modes: `Ts` (Brayton states 1–4, constant-pressure lines,
+    the real compression dashed), `Pv` (isotherms ideal and van der Waals, the state point, the
+    critical point). Fields: T1, rp, T3, T2, T4, P, V, T, a, b. Must stay true: T₂ > T₁ and
+    T₃ > T₄; the real T₂ lies right of the ideal one; the vdW isotherm meets the ideal one at
+    large V.
+11. **P11 `rocket` (new kind).** Pages: propulsion#1 (all). A rocket with dry and propellant mass
+    as bars, v_e out of the nozzle, Δv beside; `stages: 2` stacks two with the drop between.
+    Fields: m0, mf, Isp, dv, stages. Must stay true: the propellant bar ÷ total equals
+    1 − m_f ÷ m₀; Δv grows with the mass ratio.
+12. **P12 `circularMotion` options `mode: 'hohmann'`, `visViva`, `pair` (extends
+    `circularMotion`).** Pages: orbital-mechanics#0~vis-viva, #2 main, #3 main and ~synodic.
+    Hohmann: two circles, the transfer half-ellipse tangent to both, Δv₁ and Δv₂ arrows, TOF;
+    Sun-centered scale for interplanetary. `visViva`: a point on the kepler ellipse with r and v.
+    `pair`: two planets with their angular positions. Fields: r1, r2, a, r, v, dv1, dv2. Must stay
+    true: the ellipse touches the inner circle at perigee and the outer at apogee; a =
+    (r₁ + r₂) ÷ 2 measured on the drawing.
+13. **P13 explore figure `orbitElements` (layout figure).** Page: orbital-mechanics#1~elements.
+    The equatorial plane, the orbit tilted by i, the node line, the vernal-equinox direction;
+    scenes light i, Ω, ω, ν or the ellipse's a and e. Must stay true: Ω is measured in the
+    equatorial plane, ω in the orbit plane.
+14. **P14 `beam` (new kind).** Pages: structural-analysis (#0 main, ~udl, ~cantilever; #1 all; #2
+    all; #3 main sketch `axial`), steel-design#2 (main, ~deflection), concrete-design#1 main,
+    #3~slab-thickness. A beam with pins, rollers or fixed ends, point and uniform loads,
+    reactions, and the shear and moment diagrams under it; `influence` (the influence line for a
+    reaction, shear or moment at a section); `continuous` (two or three spans, the distribution
+    table under it); `deflected` (the deflected shape, Δ); `stirrups` (spacing marks along the
+    span); `axial` (bars in series with nodes). Fields: L, loads[{ P, a } | { w, from, to }],
+    supports, RA, RB, Mmax, c. Must stay true: the shear diagram's area between two points equals
+    the change in moment; reactions balance the loads (ΣF = 0, ΣM = 0); the moment peak is where
+    shear crosses zero.
+15. **P15 `truss` (new kind).** Pages: structural-analysis#0~truss, ~determinacy. Pratt, Howe or
+    Warren panels, joint loads, reactions, a section cut; member forces labeled with T or C (and
+    drawn as pulling or pushing arrows on the joints). Fields: panels, panelLength, height, P,
+    cutPanel. Must stay true: m + r − 2j shown equals the drawing's own counts; the cut chord
+    force × height equals the moment at the cut joint.
+16. **P16 `soilPhases` (new kind).** Pages: soil-mechanics#0 main, #1~sand-cone. The three-phase
+    block (air, water, solids) with volumes on one side and weights on the other. Fields: e, w,
+    Gs, S, Vv, Vs. Must stay true: the drawn void height ÷ solid height equals e; the water share
+    of the voids equals S.
+17. **P17 `soilProfile` (new kind).** Pages: soil-mechanics#2 (all), #4 (both), transportation#2
+    main, concrete-design#3 main. Layers to scale with the water table; `stress` (σ, u, σ′ lines
+    with depth); `consolidation` (a clay layer under a load, drainage arrows, the settled surface);
+    `footing` (width B at D_f, failure wedges, the critical perimeter for punching shear in plan);
+    `pavement` (surface, base, subbase with a, D, m and the axle load). Fields: layers[{ thickness,
+    gamma }], zw, z, B, Df, q, D1–D3. Must stay true: σ′ = σ − u at the marked depth; u is 0
+    above the water table; the footing's drawn depth ÷ width equals D_f ÷ B.
+18. **P18 `mohrCircle` (new kind).** Pages: soil-mechanics#3 main, ~undrained. A Mohr circle from
+    σ₃ to σ₁, the Mohr–Coulomb line (c, φ) tangent to it, the failure plane angle; a flat
+    envelope for undrained tests. Fields: s3, s1, c, phi. Must stay true: the line touches the
+    circle (distance from center = radius within 0.5%) at failure; the angle drawn is 45° + φ ÷ 2.
+19. **P19 `streamChannel` options `manning`, `froude`, `specificEnergy`, `jump` (extends
+    `streamChannel`).** Pages: hydraulics-hydrology#0 (all). The slope and n beside the section;
+    Fr with "sub" or "super" by the depth; an E–y curve with y_c at its minimum; a jump with y₁,
+    the roller and y₂. Fields: n, S, Fr, q, yc, y1, y2. Must stay true: E is least at y_c;
+    y₂ > y₁ and Fr₁ > 1 for a jump.
+20. **P20 `pipeNetwork` (new kind).** Pages: hydraulics-hydrology#1 (all), #3 main. One pipe with
+    the energy and hydraulic grade lines falling by h_f; two parallel pipes between nodes; a loop
+    of four with flow arrows and ΔQ; `full` pipe in section. Fields: D, L, Q, hf, pipes[{ K, Q }].
+    Must stay true: the grade lines fall in the flow direction; the two parallel pipes' h_f are
+    equal; the gap between EGL and HGL is V² ÷ (2g).
+21. **P21 `hydrograph` (new kind).** Pages: hydraulics-hydrology#2 (main, ~rational), #3~detention.
+    Rain bars hanging from the top, the runoff hydrograph below with peak and t_c; `split` (P cut
+    into I_a, infiltration and runoff Q); `detention` (inflow and outflow triangles, storage
+    shaded). Fields: P, Ia, Q, Qp, tc, Qin, Qout, tb. Must stay true: I_a + F + Q = P; the shaded
+    storage area equals ½t_b(Q_i − Q_o).
+22. **P22 `roadCurve` (new kind).** Pages: transportation#1 (all). `stopping` (reaction then
+    braking distance as two strips ahead of a car), `plan` (PC, PI, PT, R, Δ, T, L), `profile`
+    (two grades, the vertical curve, the sight line of length S). Fields: V, t, a, G, R, Delta,
+    G1, G2, L, S. Must stay true: T = R tan(Δ ÷ 2) on the drawing; the sight line clears the crest
+    exactly when L meets the formula.
+23. **P23 `losScale` (new kind).** Page: transportation#3 main. A density bar 0–45+ pc/mi/ln cut
+    into A–F bands with the letters printed, the segment's density marked. Fields: D. Must stay
+    true: the marked letter is the band containing D.
+24. **P24 `connection` (new kind).** Pages: steel-design#1~tension, #3 (all). A plate with bolt
+    holes (rows, pitch, gage), the net section line, the block-shear path, fillet welds with leg
+    and length. Fields: plateWidth, t, holes, holeSize, n, weldLeg, weldLength. Must stay true:
+    holes drawn = the holes value; the net width drawn = width − holes × size.
+25. **P25 `settlingTank` (new kind).** Page: environmental#0 main. A basin to scale, a particle
+    entering at the top and falling at v_s while crossing at the flow speed; the share settled.
+    Fields: length, width, depth, Q, vs, v0. Must stay true: the particle lands inside the basin
+    exactly when v_s ≥ v₀.
+26. **P26 `plume` (new kind).** Page: environmental#2 main. Stack, plume rise to H, the plume's
+    Gaussian spread (σ_z), a receptor at ground level downwind. Fields: H, sy, sz, u, Q, C. Must
+    stay true: the drawn plume centerline sits at H; the spread grows with distance.
+27. **P27 `survey` (new kind), mode `traverse`.** Pages: surveying#0~angle-closure, #2 (main, ~closure,
+    ~compass-rule). Stations and courses with azimuths, one course's latitude and departure
+    drawn, the misclosure gap. Fields: courses[{ azimuth, length }], lat, dep. Must stay true:
+    lat² + dep² = L²; north is up.
+28. **P28 `survey` mode `level` (same kind as P27).** Pages: surveying#1 (main, ~curvature). A level between two
+    rods, BS and FS readings, the HI line, the ground, BM and TP elevations; one long sight over a
+    curved Earth for curvature and refraction. Fields: BM, BS1, FS1, BS2, FS2. Must stay true:
+    each elevation equals the HI − FS shown.
+29. **P29 `survey` mode `heights` (same kind as P27).** Page: surveying#3 main. Terrain, geoid and ellipsoid curves with h,
+    N and H at a point. Fields: h, N, H. Must stay true: H = h − N on the drawing, N drawn below
+    the ellipsoid when negative.
+30. **P30 `phaseEnvelope` (new kind).** Pages: chemical-thermodynamics#2 (all), separations#0
+    (all), #1 (both). `Pxy` (bubble and dew curves at T, a tie line at x), `xy` (equilibrium
+    curve for constant α or a line y = mx, the 45° line, operating lines, q-line, `steps`
+    McCabe–Thiele staircase). Fields: P1sat, P2sat, x1, y1, alpha, m, R, xD, xB, xF, q. Must stay
+    true: the bubble curve lies above the dew curve in Pxy; the step count shown equals the
+    stairs drawn; operating lines cross on the q-line.
+31. **P31 `velocityProfile` (new kind).** Pages: transport-phenomena (all 12 pages). Tube or plates
+    with velocity arrows (parabolic or linear) and τ_w; `film` on a wall; `temperature` through
+    wall layers (a straight drop per layer, ∝ L ÷ k); `concentration` across a film or a Stefan
+    tube; `analogy` (three boundary layers side by side, δ_T = δPr^(−1/3)). Fields: R, vmax,
+    tauW, layers[{ L, k }], cA1, cA2, Pr, Sc. Must stay true: v_max = 2v_avg in a tube; the
+    drop in each layer is proportional to its L ÷ k.
+32. **P32 `chemDiagram` option `mode: 'series'` (extends `chemDiagram`).** Page:
+    reaction-engineering#2 main. C_A, C_B, C_C against t for A → B → C, B's peak marked. Fields:
+    k1, k2, CA0, tmax. Must stay true: C_A + C_B + C_C = C_A0 at every t; the B peak is at t_max.
+33. **P33 `functionGraph` option `levenspiel` (extends `functionGraph`).** Page:
+    reaction-engineering#1~levenspiel. F_A0 ÷ (−r_A) against X; the CSTR rectangle and the PFR area
+    under the curve, each labeled with its volume. Fields: FA0, k, CA0, X. Must stay true: the
+    rectangle's area equals V_CSTR and the shaded area equals V_PFR within 1%.
+34. **P34 `blockDiagram` (new kind).** Pages: process-control#1 main, #3 (main, ~feedforward).
+    Setpoint, comparator, controller, valve, process, sensor blocks with gains, the disturbance
+    entering; `feedforward` and `cascade` wiring. Fields: Kc, Kp, tau, Kd, Kff. Must stay true:
+    the feedback sign at the comparator is minus; every block's gain shown is a value.
+35. **P35 `exchangerProfile` (new kind).** Page: process-design#1 main. Hot and cold temperature
+    lines along the length, countercurrent (or cocurrent), ΔT₁ and ΔT₂ at the ends. Fields: Thi,
+    Tho, Tci, Tco. Must stay true: the hot line stays above the cold line (no temperature cross).
+36. **P36 card figure `pfdSymbol` (layout figure).** Page: material-energy-balances#0~symbols.
+    The standard PFD symbols for pump, compressor, shell-and-tube exchanger, fired heater, column,
+    flash drum, packed absorber, CSTR, packed bed, each a card image with its name.
+37. **P37 `functionGraph` option `logAxes: { x?, y? }` (extends `functionGraph`).** Pages:
+    aerospace-structures#3~basquin, soil-mechanics#0~gradation. Log-scaled axes with decade ticks
+    (S–N curve on log–log; grain size on a log x-axis with D₁₀, D₃₀, D₆₀ marked). Must stay true:
+    a power law draws as a straight line on log–log axes.
 

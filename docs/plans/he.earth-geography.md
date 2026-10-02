@@ -1,4 +1,4 @@
-# Direction plan: higher education, Earth Science and Geography (13 courses, 50 topics)
+# Direction plan: higher education, Earth Science and Geography (13 courses, 51 topics)
 
 Group `earth-geography`: the Earth Science field (Physical Geology, Historical Geology, Mineralogy,
 Meteorology, Oceanography, Hydrology, Geophysics; 27 topics) and the Geography field (Physical
@@ -48,10 +48,10 @@ original and was worked by hand; nothing is copied from `research/` or from a te
   0–42 g/kg; relative humidity ≤ 100 % (supersaturation is not taught here); reflectances 0–1;
   albedo 0–1; population counts whole. Working values nobody types are `derived: true`; values a lesson
   names (crystal systems' shared oxygens, Köppen season factors) are `allowed: [...]`.
-- **Layouts (46 pages).** Six main pages are layouts: `he.earth-science.historical-geology#0` and `#3`
+- **Layouts (45 pages).** Six main pages are layouts: `he.earth-science.historical-geology#0` and `#3`
   (sequences), `he.geography.physical-geography#1`, `he.geography.human-geography#3`,
-  `he.geography.cartography#3` (sorts), `he.geography.climatology#2` (observe). The other 40 are
-  problem types (34 sorts, 4 sequences, 3 explores, 3 observes in all; listed per topic). A topic whose
+  `he.geography.cartography#3` (sorts), `he.geography.climatology#2` (observe). The other 39 are
+  problem types (33 sorts, 5 sequences, 3 explores, 4 observes in all; listed per topic). A topic whose
   idea is a classification, an order of events or a pattern over time is a layout; anything with a
   quantity relationship a teacher would work on the board is a calculator.
 - **Pilot.** `he.geography.human-geography#0` has 12 values, over the cap of 10. Trim: the main keeps
@@ -66,10 +66,11 @@ original and was worked by hand; nothing is copied from `research/` or from a te
   quantity (moment magnitude, not the amplitude ratio; the isochron, not the half-life count).
 - **Interims.** A page whose picture is a new request ships with the named interim (`table`,
   `functionGraph`, `bars`) and is marked ⏳; the picture replaces it when drawn.
-- **Page count:** 50 topics, 170 pages (the pilot included): **124 calculators, 46 layouts; 51 marked ⏳**
-  (47 wait on a picture, 4 on an engine need). Per course: Physical Geology 16, Historical Geology 14,
-  Mineralogy 10, Meteorology 14, Oceanography 14, Hydrology 14, Geophysics 13, Physical Geography 13,
-  Human Geography 15, Cartography 12, GIS 11, Climatology 12, Remote Sensing 12.
+- **Page count:** 51 topics, 170 pages (the pilot included, 169 to build): **125 calculators,
+  45 layouts; 52 marked ⏳** (50 wait on a picture, 2 on an engine need only). Per course: Physical
+  Geology 16, Historical Geology 13, Mineralogy 10, Meteorology 14, Oceanography 14, Hydrology 14,
+  Geophysics 13, Physical Geography 13, Human Geography 16, Cartography 12, GIS 11, Climatology 12,
+  Remote Sensing 12.
 
 ## Part 2. Courses and topics
 
@@ -852,11 +853,11 @@ original and was worked by hand; nothing is copied from `research/` or from a te
 
 | Question type                                         | Page      | Mark           |
 | ----------------------------------------------------- | --------- | -------------- |
-| apparent resistivity from a Wenner survey             | main      | Solves (⏳ P25) |
+| apparent resistivity from a Wenner survey             | main      | Solves (⏳ P23) |
 | GPR depth from two-way time and permittivity          | ~gpr      | Solves (⏳ P20) |
 | which method finds this target                        | ~methods  | Solves         |
 
-- **Main — BUILD `…#3`:** Wenner resistivity. Picture: new `electrodeArray` (P25); interim `table`
+- **Main — BUILD `…#3`:** Wenner resistivity. Picture: new `electrodeArray` (P23); interim `table`
   (a = 1, 2, 5, 10, 20 m at the page's V ÷ I). Values: spacing a (m, 0.1–500), voltage V (V),
   current I (A), resistance V ÷ I (Ω), apparent resistivity ρ_a (Ω·m). Relations: R = V ÷ I;
   ρ_a = 2πaR. Assumptions: four electrodes evenly spaced in a line, current through the outer two;
@@ -870,3 +871,613 @@ original and was worked by hand; nothing is copied from `research/` or from a te
   groundwater; a plastic pipe 1 m down; sedimentary layers 3 km down; a dense ore body with no magnetic minerals; a
   basalt dike under farmland.
 - **Verdict:** 3 pages; the two calculators wait on their pictures for the real teaching.
+
+### Physical Geography — `he.geography.physical-geography`
+
+- **Prerequisite:** `s.12.climate-systems`. **Refresh:** `s.12.climate-systems~zones`,
+  `s.12.atmosphere-weather`, `s.12.surface-processes`, `s.9.biomes`.
+- **Textbooks:** Dastrup, Physical Geography and Natural Disasters (Earth–sun, climate, landforms,
+  biogeography chapters).
+
+#### #0 Earth–sun relationships
+
+| Question type                                         | Page          | Mark           |
+| ----------------------------------------------------- | ------------- | -------------- |
+| noon sun angle at a latitude on a date                | main          | Solves (⏳ P3)  |
+| day length at a latitude on a date                    | main          | Solves (⏳ P3)  |
+| the Sun's declination on a day of the year            | ~declination  | Solves         |
+| daily sunlight at the top of the atmosphere           | ~insolation   | Solves (⏳ P3)  |
+
+- **Main — BUILD `…#0`:** `globe` mode `sun` (P3); interim `functionGraph` (day length against
+  latitude at the page's δ). Values: latitude φ (°, −90–90), declination δ (°, −23.44–23.44), noon
+  sun angle (°), sunrise hour angle H (°), day length (h). Relations: noon angle = 90 − |φ − δ|;
+  cos H = −tan φ tan δ; day = 2H ÷ 15. Assumptions: δ is the latitude where the Sun is overhead at
+  noon; 15° of turning is one hour; refraction and the Sun's width (a few minutes) ignored; past
+  the polar circles the day is 0 or 24 h (the page says "polar night" or "midnight sun"). Example:
+  40° N at the June solstice → 73.4°; cos H = −0.3638, H = 111.3°, day 14.8 h; at the December
+  solstice 26.6° and 9.2 h. startWith φ, δ.
+- **~declination — BUILD:** `functionGraph` sine over the year. Values: day of year n (whole,
+  1–365), declination δ (°). Relation: δ = 23.44 sin(360(284 + n) ÷ 365). Example: n = 172 (21 June)
+  → 23.44°; n = 80 → −0.40°.
+- **~insolation — BUILD (⏳ P3; interim `table` of latitudes 0–90 at the page's δ):** values φ, δ,
+  H (from main's relation), daily mean sunlight Q (W/m²). Relation: Q = (1,361 ÷ π)(H_rad sin φ sin δ +
+  cos φ cos δ sin H). Example: 40° N, June solstice → 499 W/m²; the equator at an equinox → 433 W/m².
+- **Verdict:** 3 calculators; all ship on interims, the globe (P3) is the picture a teacher draws.
+
+#### #1 Climate classification
+
+| Question type                                         | Page         | Mark   |
+| ----------------------------------------------------- | ------------ | ------ |
+| Köppen group from monthly temperatures and rain       | main         | Solves |
+| arid (B) or not; steppe or desert                     | ~arid        | Solves |
+| read a climograph and name its climate                | ~climograph  | Solves |
+
+- **Main — BUILD `…#1` (sort, `pickBar`):** bins A Tropical, B Dry, C Temperate, D Continental,
+  E Polar; `intro` gives the rules (A: coldest month 18 °C or more; C: coldest between 0 and 18 °C;
+  D: coldest below 0 °C, warmest above 10 °C; E: warmest below 10 °C; B: too little rain for the
+  heat, checked first). Cards: coldest month 26 °C, 2,800 mm rain; mean 24 °C, 120 mm rain; coldest
+  6 °C, warmest 23 °C, 1,000 mm; coldest −14 °C, warmest 19 °C, 600 mm; warmest 5 °C; coldest 21 °C,
+  1,500 mm with a dry winter; coldest −30 °C, warmest 14 °C, 400 mm; mean 19 °C, 250 mm.
+- **~arid — BUILD:** `bars` (P beside the threshold and half of it). Values: mean annual temperature
+  T (°C, −30–35), yearly rain P (mm, 0–12,000), rain season (allowed 0 winter, 140 even, 280 summer:
+  the added mm), threshold P_th (mm), P ÷ P_th. Relation: P_th = 20T + season. Assumptions: B if
+  P < P_th; desert BW below half of it, steppe BS between; h if T ≥ 18 °C, k below (in the caption,
+  E5). Example: 18 °C, even rain, 300 mm → P_th = 500 → 0.6 → BSh.
+- **~climograph — BUILD (observe, `second` with its own unit: a climograph):** columns Jan … Dec,
+  temperature (°C, `min` −20) and rain (mm). A made-up inland city: −8, −6, 0, 8, 15, 20, 23, 21, 16,
+  9, 1, −5 °C; 20, 20, 35, 55, 85, 100, 95, 85, 70, 45, 35, 25 mm. Pattern: "Coldest month below 0 °C,
+  warmest above 10 °C, rain all year: a D climate (Dfa)."
+- **Verdict:** 3 pages (1 calculator, 2 layouts); every type Solves.
+
+#### #2 Landforms
+
+| Question type                                        | Page       | Mark           |
+| ---------------------------------------------------- | ---------- | -------------- |
+| slope and gradient along a line on a contour map     | main       | Solves (⏳ P24) |
+| drainage density and bifurcation ratio of a basin    | ~drainage  | Solves         |
+| landform from its shape and process                  | ~landforms | Solves         |
+
+- **Main — BUILD `…#2`:** a contour-map profile. Picture: new `contourMap` (P24); interim
+  `triangleSolver` (rise over run, the angle). Values: contour interval CI (m, 1–500), intervals
+  crossed n (whole, 0–100), rise (m), map distance (cm, 0.1–100), scale denominator (whole,
+  1,000–10,000,000), ground distance (m), gradient (%), slope angle (°). Relations: rise = n × CI;
+  ground = map × denominator ÷ 100; gradient = 100 × rise ÷ ground; angle = tan⁻¹(rise ÷ ground).
+  Assumptions: the slope is even between the two points; close contours mean steep ground. Example:
+  20 m, 5 intervals → 100 m; 5 cm at 1:50,000 → 2,500 m; 4 %, 2.29°. startWith CI, n, map, scale.
+- **~drainage — BUILD:** `table` (order, streams, ratio). Values: total stream length L (km), basin
+  area A (km²), drainage density D_d (km/km²), streams of order 1, 2 and 3 (whole), ratios R_b12,
+  R_b23. Relations: D_d = L ÷ A; R_b12 = N₁ ÷ N₂; R_b23 = N₂ ÷ N₃. Assumptions: Strahler ordering
+  (two streams of one order make the next); high D_d means impermeable ground or steep slopes.
+  Example: 180 km over 75 km² → 2.4 km/km²; 40, 9, 2 streams → 4.44 and 4.5.
+- **~landforms — BUILD (explore, `landforms`):** scenes V-shaped valley (a river cutting down), U-
+  shaped valley (a glacier scouring), meander (outer bank cut, inner bar), dune (wind from the gentle
+  side), normal fault (crust pulled apart), aquifer (water under the land).
+- **Verdict:** 3 pages; every type Solves (the map picture after P24).
+
+#### #3 Biogeography
+
+| Question type                                         | Page           | Mark   |
+| ----------------------------------------------------- | -------------- | ------ |
+| species expected on an island of a given area         | main           | Solves |
+| share of species lost when habitat shrinks            | ~habitat-loss  | Solves |
+| treeline elevation from sea-level temperature         | ~treeline      | Solves |
+| biome from its climate                                | ~biomes        | Solves |
+
+- **Main — BUILD `…#3`:** `functionGraph` power (S against A; `logX`/`logY` of P19 later). Values:
+  constant c (0.1–1,000), exponent z (0.1–0.5; islands near 0.25–0.35), area A (km², 0.001–10⁷),
+  species S. Relation: S = cA^z. Assumptions: c and z are fitted for one group of species in one
+  region; 10 times the area gives about twice the species when z ≈ 0.3. Example: c 20, z 0.25,
+  10,000 km² → 200 species. startWith c, z, A.
+- **~habitat-loss — BUILD:** `functionGraph` power. Values: area kept (%), z, species kept (%),
+  species lost (%). Relation: kept S = 100(kept A ÷ 100)^z. Example: 10 % of the forest kept, z 0.25
+  → 56.2 % of species kept, 43.8 % lost in time.
+- **~treeline — BUILD:** `atmosphereLayers` mode `profile` (altitude, temperature, ground). Values:
+  warmest-month temperature at sea level T₀ (°C, 0–35), lapse rate (6.5 °C/km), treeline z (km).
+  Relation: z = (T₀ − 10) ÷ 6.5. Assumption: trees need a warmest month of about 10 °C. Example:
+  24 °C → 2.15 km.
+- **~biomes — BUILD (sort):** bins with the biome icons: tropical rainforest, desert, grassland,
+  temperate deciduous forest, taiga, tundra. Cards: hot and wet all year; under 250 mm of rain;
+  cold winters, warm summers, 750–1,500 mm; long cold winters, conifers; permafrost, short summer;
+  hot summers, 300–800 mm, fires.
+- **Verdict:** 4 pages; every type Solves.
+
+### Human Geography — `he.geography.human-geography`
+
+- **Prerequisites:** none. **Refresh:** `m.9.exponential-functions` (growth), `m.7.percent-applications`,
+  `m.11.exp-log-equations`.
+- **Textbooks:** Dastrup, Introduction to Human Geography (population, migration, urban, economic,
+  culture, language and religion chapters).
+
+#### #0 Population and migration (pilot)
+
+| Question type                                          | Page         | Mark           |
+| ------------------------------------------------------ | ------------ | -------------- |
+| natural increase, net migration, population change     | main (pilot) | Solves         |
+| CBR, CDR, RNI; doubling time by the rule of 70         | ~rates       | Solves         |
+| population after t years; exact doubling time         | ~doubling    | Solves         |
+| which city draws more migrants (gravity model)         | ~gravity     | Solves         |
+| dependency ratio from age groups                       | ~dependency  | Solves (⏳ P29) |
+| stage of the demographic transition                    | ~transition  | Solves         |
+
+- **Main — REVIEW the pilot `…#0`:** trim to 9 values as in Decisions (P₀, B, D, I, E, N, M, ΔP,
+  RNI = N ÷ P₀ × 100), `waterfall` unchanged. Its use line: "Use this for 'A city of 500,000 had 6,000
+  births, 4,000 deaths, 3,000 arrivals and 1,000 departures. How much did it grow?'"
+- **~rates — BUILD (from the pilot):** `bars` (CBR, CDR and the gap RNI × 10). Values: P₀, B, D,
+  CBR, CDR (per 1,000), RNI (%), T₂ (years). Relations: the pilot's CBR, CDR, RNI = (CBR − CDR) ÷ 10
+  and T₂ ≈ 70 ÷ RNI. Example: as the pilot, T₂ = 175 years.
+- **~doubling — BUILD:** `functionGraph` exponential (P against t). Values: starting population P₀,
+  growth rate r (%/yr, −5–10), years t (0–200), population P_t, exact doubling time T₂ (years),
+  rule-of-70 estimate. Relations: P_t = P₀(1 + r ÷ 100)^t; T₂ = ln 2 ÷ ln(1 + r ÷ 100); estimate =
+  70 ÷ r. Example: 1,000,000 at 2 % for 20 yr → 1,485,947; T₂ = 35.0 yr (the rule gives 35).
+- **~gravity — BUILD:** `bars` (each city's pull). Values: populations of cities A and B, distances
+  d_A, d_B (km), pulls I_A = P_A ÷ d_A², I_B, share drawn to A (%). Relations: I = P ÷ d²; share =
+  100I_A ÷ (I_A + I_B). Assumptions: migration grows with a place's size and falls with distance
+  squared (the gravity model); jobs, family and borders change it. Example: 1,000,000 at 100 km,
+  4,000,000 at 300 km → 100 and 44.4 → 69.2 % to A.
+- **~dependency — BUILD (⏳ P29 `populationPyramid`; interim `pieChart`):** values ages 0–14,
+  15–64, 65 and over (people), dependency ratio, youth ratio, old-age ratio (per 100 of working
+  age). Relations: youth = 100 × young ÷ working; old = 100 × old ÷ working; total = youth + old.
+  Example: 2.4, 6.0, 1.2 million → 40 + 20 = 60.
+- **~transition — BUILD (sequence):** Stage 1 high births and deaths, slow growth; Stage 2 deaths
+  fall (food, clean water, medicine), fast growth; Stage 3 births fall (cities, schooling, women's
+  work), growth slows; Stage 4 low births and deaths; Stage 5 births below deaths, decline.
+- **Verdict:** 6 pages (the pilot, 4 calculators, 1 sequence); every type Solves, the pyramid after P29.
+
+#### #1 Urbanization
+
+| Question type                                          | Page              | Mark   |
+| ------------------------------------------------------ | ----------------- | ------ |
+| expected size of the nth city (rank–size rule)         | main              | Solves |
+| density at a distance from the centre                  | ~density-gradient | Solves |
+| a city's yearly growth rate; its doubling time         | ~growth-rate      | Solves |
+| concentric, sector or multiple-nuclei model            | ~models           | Solves |
+
+- **Main — BUILD `…#1`:** `bars` (expected and actual size, the largest city beside them). Values:
+  largest city P₁ (people), rank n (whole, 1–100), expected P_n, actual P_n, actual ÷ expected.
+  Relation: P_n = P₁ ÷ n. Assumptions: the rank–size rule describes many countries' city systems; a
+  primate city is far more than twice the second. Example: 8,400,000; rank 3 → 2,800,000 expected;
+  2,100,000 actual → 0.75. startWith P₁, n.
+- **~density-gradient — BUILD:** `functionGraph` exponential, or `circle` with `population` (a town's
+  outline with its people) for the centre's density. Values: central density D₀ (people/km²),
+  gradient b (per km, 0.01–2), distance x (km), density D. Relation: D = D₀e^(−bx). Example:
+  20,000, 0.2, 10 km → 2,707 per km².
+- **~growth-rate — BUILD:** `functionGraph` exponential. Values: P₁, P₂, years t, rate r (%/yr),
+  doubling time (yr). Relations: r = 100 ln(P₂ ÷ P₁) ÷ t; T₂ = 100 ln 2 ÷ r. Example: 1.2 to 3.0
+  million in 25 yr → 3.67 %/yr, doubling in 18.9 yr.
+- **~models — BUILD (sort):** bins Concentric zone (Burgess), Sector (Hoyt), Multiple nuclei
+  (Harris–Ullman). Cards: rings of land use around one centre; wedges along rail lines and highways;
+  several business centres, an airport district; the poorest housing just outside downtown, wealthier
+  rings farther out; a high-income wedge along a lakeshore; an industrial park far from downtown.
+- **Verdict:** 4 pages; every type Solves.
+
+#### #2 Economic geography
+
+| Question type                                         | Page       | Mark   |
+| ----------------------------------------------------- | ---------- | ------ |
+| location quotient of an industry                      | main       | Solves |
+| land rent at a distance from market (von Thünen)      | ~bid-rent  | Solves |
+| least-cost site: at the mine or the market (Weber)    | ~weber     | Solves |
+| economic sector of a job                              | ~sectors   | Solves |
+
+- **Main — BUILD `…#2`:** `percentBar` with `second` (the local share as a band, the national share
+  dashed). Values: local jobs in the industry eᵢ, all local jobs e, national jobs in it Eᵢ, all
+  national jobs E, local share (%), national share (%), location quotient LQ. Relations: local =
+  100eᵢ ÷ e; national = 100Eᵢ ÷ E; LQ = local ÷ national. Assumptions: LQ above 1 means the area
+  specializes in the industry (and likely exports it). Example: 24,000 of 200,000 (12 %) against
+  12 million of 150 million (8 %) → LQ 1.5. startWith eᵢ, e, Eᵢ, E.
+- **~bid-rent — BUILD:** `functionGraph` linear (rent against distance). Values: yield Y (t/ha),
+  price p ($/t), cost c ($/t), freight f ($/t per km), distance d (km), rent R ($/ha), edge of farming
+  d_max (km). Relations: R = Y(p − c) − Yfd; d_max = (p − c) ÷ f. Example: 4 t/ha, $200, $120,
+  $0.50 → R = 320 − 2d, zero at 160 km.
+- **~weber — BUILD:** `functionGraph` linear (cost against the site's distance from the mine).
+  Values: freight rate ($/t·km), material per tonne of product (t), product (1 t), mine-to-market
+  distance D (km), site's distance from the mine x (km), cost per tonne ($), material index.
+  Relations: cost = rate × (material × x + product × (D − x)); index = material ÷ product.
+  Example: $0.10, 5 t of ore per t of metal, 300 km → $30 at the mine, $150 at the market: build at
+  the mine (weight-losing, index 5).
+- **~sectors — BUILD (sort):** bins Primary, Secondary, Tertiary, Quaternary. Cards: fishing;
+  copper mining; logging; steel mill; car assembly; bakery making bread; nurse; truck driver; retail
+  clerk; university research lab; software design; financial data analysis.
+- **Verdict:** 4 pages; every type Solves.
+
+#### #3 Cultural landscapes
+
+| Question type                                          | Page        | Mark   |
+| ------------------------------------------------------ | ----------- | ------ |
+| type of cultural diffusion from an example             | main        | Solves |
+| language or religious diversity of a country           | ~diversity  | Solves |
+
+- **Main — BUILD `…#3` (sort):** bins Relocation, Contagious, Hierarchical, Stimulus diffusion.
+  Cards: emigrants bring their cuisine to a new country; a song spreads friend to friend online;
+  a fashion reaches big cities first, then towns; a fast-food chain adds vegetarian menus in India;
+  a disease spreads house to house; missionaries move to a new land, their religion with them; a new phone model
+  launches in capital cities first.
+- **~diversity — BUILD:** `pieChart`. Values: shares of four groups (%, the fourth = 100 − the
+  others), sum of squares, diversity index F (0–1). Relations: Σ = (s₁² + s₂² + s₃² + s₄²) ÷ 10,000;
+  F = 1 − Σ. Assumption: F is the chance two people picked at random belong to different groups.
+  Example: 50, 30, 20, 0 % → Σ = 0.38, F = 0.62.
+- **Verdict:** 2 pages (1 calculator, 1 sort); every type Solves.
+
+### Cartography — `he.geography.cartography`
+
+- **Prerequisite:** `m.10.coordinate-geometry`. **Refresh:** `m.7.scale-drawings`, `m.11.unit-circle`,
+  `m.10.coordinate-geometry`.
+- **Textbooks:** Snyder, Map Projections — A Working Manual (USGS); Penn State GEOG 486
+  (cartography and visualization); DiBiase, The Nature of Geographic Information.
+
+#### #0 Map projections
+
+| Question type                                          | Page          | Mark           |
+| ------------------------------------------------------ | ------------- | -------------- |
+| Mercator scale factor and area distortion at φ         | main          | Solves (⏳ P28) |
+| where a parallel is drawn (Mercator, equal-area)       | main, ~equal-area | Solves (⏳ P28) |
+| conformal, equal-area, equidistant or compromise       | ~properties   | Solves         |
+
+- **Main — BUILD `…#0`:** Mercator. Picture: new `projection` (P28) with a Tissot circle at φ;
+  interim `table` (φ = 0, 30, 45, 60, 75° → k, area, y). Values: latitude φ (°, −85–85), scale factor
+  k, area factor, globe radius R (cm, 1–100), map height of the parallel y (cm). Relations: k =
+  1 ÷ cos φ; area = k²; y = R ln tan(45° + φ ÷ 2). Assumptions: a sphere; conformal, so small shapes
+  keep their angles while area grows as k²; the poles never fit. Example: 60° → k = 2, area × 4;
+  R = 10 cm → y = 10 × ln 3.732 = 13.2 cm. startWith φ, R.
+- **~equal-area — BUILD (⏳ P28 `cylindrical equal-area`):** values φ, R, y, east–west scale k_E,
+  north–south scale k_N, area factor. Relations: y = R sin φ; k_E = 1 ÷ cos φ; k_N = cos φ; area =
+  k_E k_N = 1. Example: 60° → y = 8.66 cm, k_E = 2, k_N = 0.5, area 1 (shapes squashed, areas true).
+- **~properties — BUILD (sort):** bins Conformal, Equal-area, Equidistant, Compromise (the P28 card
+  figure when drawn). Cards: Mercator; Lambert conformal conic; stereographic; Albers equal-area
+  conic; Mollweide; Gall–Peters; azimuthal equidistant; Robinson; Winkel tripel.
+- **Verdict:** 3 pages; the two calculators ship on `table` interims.
+
+#### #1 Scale and coordinate systems
+
+| Question type                                         | Page           | Mark          |
+| ----------------------------------------------------- | -------------- | ------------- |
+| ground distance from a map distance and scale         | main           | Solves        |
+| great-circle distance between two places              | ~great-circle  | Solves (⏳ P3) |
+| degrees–minutes–seconds to decimal degrees            | ~dms           | Solves        |
+
+- **Main — BUILD `…#1`:** `doubleNumberLine` (map cm over ground m or km). Values: map distance
+  (cm, 0.01–200), scale denominator (whole, 100–100,000,000), ground distance (m, unit menu km, mi).
+  Relation: ground = map × denominator. Assumptions: the representative fraction has no units, so
+  1 cm on the map is 24,000 cm on the ground at 1:24,000; a large scale shows a small area in detail.
+  Example: 4.2 cm at 1:24,000 → 100,800 cm = 1,008 m. startWith map, denominator.
+- **~great-circle — BUILD (⏳ P3 `globe` mode `route`; interim `none`):** values latitudes φ₁, φ₂ and
+  longitudes λ₁, λ₂ (°), central angle c (°), distance d (km). Relations: cos c = sin φ₁ sin φ₂ +
+  cos φ₁ cos φ₂ cos(λ₂ − λ₁); d = 6,371 × c × π ÷ 180. Assumptions: a sphere (within 0.5 % of the
+  ellipsoid); the shortest route is an arc of a great circle, not a straight line on a Mercator map.
+  Example: (40° N, 75° W) to (52° N, 0°) → cos c = 0.6286, c = 51.05°, d = 5,677 km.
+- **~dms — BUILD (equation `{d}° {m}′ {s}″ = {x}°`, picture `none`):** values degrees (whole, 0–180),
+  minutes (whole, 0–59), seconds (0–59.99), decimal degrees. Relation: x = d + m ÷ 60 + s ÷ 3,600.
+  Example: 40° 26′ 46″ = 40.4461°.
+- **Verdict:** 3 pages; every type Solves (the globe after P3).
+
+#### #2 Thematic mapping
+
+| Question type                                        | Page           | Mark   |
+| ---------------------------------------------------- | -------------- | ------ |
+| equal-interval class breaks; a value's class         | main           | Solves |
+| rates, not counts, on a choropleth                   | ~normalize     | Solves |
+| proportional-symbol radius                           | ~proportional  | Solves |
+| best map type for a data set                         | ~map-types     | Solves |
+
+- **Main — BUILD `…#2`:** `histogram` (the data's bins at the class breaks). Values: minimum, maximum,
+  classes k (whole, 2–9), class width w, a value v, its class (derived, `floor((v − min) ÷ w) + 1`).
+  Relation: w = (max − min) ÷ k. Assumptions: equal intervals suit evenly spread data; skewed data
+  leaves most places in one class (quantiles fix that). Example: 12 to 92, 5 classes → w = 16;
+  breaks 28, 44, 60, 76; v = 50 → class 3. startWith min, max, k.
+- **~normalize — BUILD:** `bars` (counts and rates for two counties side by side). Values: cases and
+  population in county A and in county B, rate per 100,000 in each. Relation: rate = 100,000 ×
+  cases ÷ population. Example: 340 of 85,000 → 400; 900 of 450,000 → 200: fewer cases, twice the rate.
+- **~proportional — BUILD:** `circle` (radius). Values: largest value, its symbol radius (mm), a
+  value, its radius. Relation: r = r_max√(v ÷ v_max). Assumption: area, not radius, stands for the
+  value. Example: 1,000,000 at 20 mm; 250,000 → 10 mm.
+- **~map-types — BUILD (sort):** bins Choropleth, Dot density, Proportional symbol, Isarithmic,
+  Flow. Cards: median income by county; farms, one dot per 100; city populations; temperature
+  everywhere in a state; migrants moving between states; percent of homes with broadband; air
+  pressure across a continent.
+- **Verdict:** 4 pages; every type Solves.
+
+#### #3 Map design
+
+| Question type                                         | Page               | Mark   |
+| ----------------------------------------------------- | ------------------ | ------ |
+| color scheme for a data set                           | main               | Solves |
+| visual variable for nominal or ordered data           | ~visual-variables  | Solves |
+
+- **Main — BUILD `…#3` (sort):** bins Sequential, Diverging, Qualitative. Cards: elevation above sea
+  level; percent change in population (+ and −); land-use classes; temperature anomaly from the
+  1991–2020 mean; percent with broadband; languages spoken; votes for two parties as a margin; soil
+  orders. Sentence: "Ordered data gets ordered lightness; data with a meaningful middle gets two hues."
+- **~visual-variables — BUILD (sort):** bins Shows categories (nominal), Shows order or amount. Cards:
+  hue; shape; texture pattern; lightness (value); size; color saturation.
+- **Verdict:** 2 sorts; map design has no honest quantity at this level.
+
+### Geographic Information Systems (GIS) — `he.geography.gis`
+
+- **Prerequisite:** Cartography. **Refresh:** `m.10.coordinate-geometry`, `m.8` slope and Pythagorean
+  pages (`m.8.slope`, `m.8.pythagorean`), the Grades 9–12 statistics pages.
+- **Textbooks:** Campbell & Shin, Essentials of Geographic Information Systems; Penn State GEOG 586
+  (geographic information analysis); DiBiase, The Nature of Geographic Information.
+
+#### #0 Vector and raster data
+
+| Question type                                           | Page          | Mark           |
+| ------------------------------------------------------- | ------------- | -------------- |
+| rows, columns, cells and file size of a raster          | main          | Solves (⏳ P25) |
+| vector or raster for a data set                         | ~data-model   | Solves         |
+| point, line or polygon for a feature at a scale         | ~geometry     | Solves         |
+
+- **Main — BUILD `…#0`:** raster size. Picture: new `rasterGrid` (P25); interim `rectangle` with
+  `grid` at a coarse cell. Values: extent width and height (km, 0.01–20,000), cell size c (m, 0.1–
+  100,000), columns, rows, cells, bytes per cell (allowed 1, 2, 4, 8), file size (MB). Relations:
+  columns = 1,000 × width ÷ c; rows likewise; cells = columns × rows; size = cells × bytes ÷ 10⁶.
+  Assumptions: no compression; one band; halving the cell size makes four times the cells.
+  Example: 30 km × 30 km at 30 m → 1,000 × 1,000 = 10⁶ cells × 2 bytes = 2 MB; at 10 m → 18 MB.
+  startWith width, height, c, bytes.
+- **~data-model — BUILD (sort):** bins Vector, Raster. Cards: road network; parcel boundaries;
+  well locations; elevation everywhere; a satellite image; land surface temperature; addresses;
+  rainfall surface from a radar.
+- **~geometry — BUILD (sort):** bins Point, Line, Polygon. Cards: fire hydrants; a city on a world
+  map; a river on a state map; bus routes; a lake on a county map; census tracts; a city on a street
+  map of itself.
+- **Verdict:** 3 pages; the main ships on its interim.
+
+#### #1 Spatial analysis
+
+| Question type                                         | Page       | Mark           |
+| ----------------------------------------------------- | ---------- | -------------- |
+| area of a polygon from its vertices                   | main       | Solves (⏳ P26) |
+| area inside a buffer round a line or point            | ~buffer    | Solves (⏳ P26) |
+| straight-line and grid (Manhattan) distance           | ~distance  | Solves         |
+
+- **Main — BUILD `…#1`:** the shoelace formula. Picture: `coordinatePlane` option `polygon` (P26);
+  interim `coordinatePlane` `plot` of the four points. Values: x₁, y₁ … x₄, y₄ (m, −10⁶–10⁶), area
+  (m², ha by the menu). Relation: area = ½|x₁y₂ − x₂y₁ + x₂y₃ − x₃y₂ + x₃y₄ − x₄y₃ + x₄y₁ − x₁y₄|.
+  Assumptions: vertices in order round the edge, which doesn't cross itself; projected coordinates
+  in metres. Example: (0, 0), (500, 100), (400, 400), (100, 300) → ½ × (0 + 160,000 + 80,000 + 0)
+  = 120,000 m² = 12 ha. 9 values; the vertices are the inputs.
+- **~buffer — BUILD (⏳ P26 `buffer`):** values line length L (m), buffer radius r (m), area (m²).
+  Relation: area = 2rL + πr² (round ends; a point buffer is L = 0). Example: 2 km road, 100 m →
+  400,000 + 31,416 = 431,416 m² = 43.1 ha.
+- **~distance — BUILD:** `coordinatePlane` `segment`. Values: Δx, Δy (km), straight-line distance,
+  grid distance. Relations: d = √(Δx² + Δy²); grid = |Δx| + |Δy|. Example: (2, 3) to (8, 11) → 10
+  and 14 km.
+- **Verdict:** 3 calculators; the two area pages gain their pictures with P26.
+
+#### #2 Geoprocessing
+
+| Question type                                         | Page             | Mark           |
+| ----------------------------------------------------- | ---------------- | -------------- |
+| slope and aspect of a DEM cell                        | main             | Solves (⏳ P25) |
+| weighted-overlay suitability score                    | ~weighted-overlay| Solves         |
+
+- **Main — BUILD `…#2`:** slope from a 3 × 3 window. Picture: `rasterGrid` mode `window` (P25);
+  interim `vectorDiagram` (the gradient's east and north parts). Values: cell size c (m), elevations
+  east, west, north and south of the cell (m), east gradient, north gradient, slope (°), slope (%),
+  aspect (° from north). Relations: east = (z_E − z_W) ÷ 2c; north = (z_N − z_S) ÷ 2c; slope =
+  tan⁻¹√(east² + north²); aspect = the bearing downhill (atan2, E4). Assumptions: the centre cell's
+  own height doesn't enter; aspect is the way the slope faces. Example: 10 m; 112, 100, 106, 98 →
+  0.6 and 0.4, slope 35.8° (72.1 %), aspect 236° (south-west). 10 values.
+- **~weighted-overlay — BUILD:** `bars` (each layer's weighted score stacked). Values: three weights
+  (sum 1), three scores (1–5), suitability. Relation: S = w₁s₁ + w₂s₂ + w₃s₃. Example: 0.5, 0.3, 0.2
+  with 4, 2, 5 → 3.6.
+- **Verdict:** 2 calculators; the main ships on its interim.
+
+#### #3 Spatial statistics
+
+| Question type                                         | Page          | Mark           |
+| ----------------------------------------------------- | ------------- | -------------- |
+| nearest-neighbor index and its z-score                | main          | Solves (⏳ P27) |
+| clustering from quadrat counts (variance ÷ mean)      | ~quadrat      | Solves         |
+| mean center and standard distance                     | ~mean-center  | Solves (⏳ P26) |
+
+- **Main — BUILD `…#3`:** nearest-neighbor analysis. Picture: `sample` option `pattern` (P27); interim
+  `normalCurve` (the z-score). Values: points n (whole, 2–10,000), area A (km²), observed mean
+  distance d̄ (km), expected mean distance (km), index R, standard error, z. Relations: expected =
+  0.5 ÷ √(n ÷ A); R = d̄ ÷ expected; SE = 0.26136 ÷ √(n² ÷ A); z = (d̄ − expected) ÷ SE.
+  Assumptions: R near 1 is random, toward 0 clustered, up to 2.15 dispersed; edge effects ignored.
+  Example: 50 points in 100 km², d̄ = 0.9 km → expected 0.707, R = 1.27, SE 0.0523, z = 3.69:
+  dispersed. startWith n, A, d̄.
+- **~quadrat — BUILD:** `histogram` (quadrats by count). Values: quadrats m (whole), mean count,
+  variance, VMR, chi-square. Relations: VMR = variance ÷ mean; χ² = (m − 1) × VMR. Example: 40
+  quadrats, mean 2.5, variance 6.0 → VMR 2.4 (clustered), χ² = 93.6.
+- **~mean-center — BUILD (⏳ P26 `points`):** values three points' x and y, mean center (x̄, ȳ),
+  standard distance. Relations: x̄ = (x₁ + x₂ + x₃) ÷ 3; ȳ likewise; SD = √(Σ((x − x̄)² + (y − ȳ)²) ÷ 3).
+  Example: (2, 1), (4, 5), (9, 3) → (5, 3), SD = √(34 ÷ 3) = 3.37.
+- **Verdict:** 3 calculators; every type Solves on interims.
+
+### Climatology — `he.geography.climatology`
+
+- **Prerequisite:** Physical Geography. **Refresh:** `s.12.climate-systems` (and `~energy-balance`,
+  `~feedbacks`, `~co2-record`), `s.11.modern-physics` (photons).
+- **Textbooks:** Schmittner, Introduction to Climate Science (energy balance, greenhouse effect,
+  circulation, variability, models); Stull ch. 2 and 11 (radiation, general circulation).
+
+#### #0 Energy balance
+
+| Question type                                          | Page    | Mark           |
+| ------------------------------------------------------ | ------- | -------------- |
+| surface temperature with a one-layer greenhouse        | main    | Solves (⏳ P13) |
+| peak wavelength of the Sun's and Earth's radiation     | ~wien   | Solves         |
+| balance temperature with no greenhouse                 | Refresh `s.12.climate-systems~energy-balance` | cross-listed |
+
+- **Main — BUILD `…#0`:** `atmosphereLayers` mode `balance` with the `layer` option (P13; until then
+  the mode draws Tₑ only). Values: sunlight S (W/m², 0–3,000), albedo α (0–1), absorbed F (W/m²),
+  balance temperature Tₑ (K), layer emissivity ε (0–1), surface temperature T_s (K). Relations:
+  F = S(1 − α) ÷ 4; Tₑ = (F ÷ σ)^(1/4); T_s = Tₑ(2 ÷ (2 − ε))^(1/4). Assumptions: one atmospheric
+  layer, transparent to sunlight, absorbing a share ε of the infrared and sending half back down;
+  ε = 1 gives T_s = 2^(1/4)Tₑ. Example: 1,361, 0.30 → F = 238.2, Tₑ = 254.6 K; ε = 0.78 → T_s =
+  254.6 × 1.1315 = 288.1 K (15 °C). startWith S, α, ε.
+- **~wien — BUILD:** `spectrum` with the peak marked. Values: temperature T (K, 3–50,000), peak
+  wavelength λ_max (μm). Relation: λ_max = 2,898 ÷ T. Example: the Sun 5,772 K → 0.502 μm (visible);
+  Earth 288 K → 10.1 μm (infrared), so greenhouse gases act on the outgoing light, not the sunlight.
+- **Verdict:** 2 calculators; every type Solves.
+
+#### #1 General circulation
+
+| Question type                                            | Page        | Mark          |
+| -------------------------------------------------------- | ----------- | ------------- |
+| wind of air carried poleward keeping angular momentum    | main        | Solves (⏳ P3) |
+| Coriolis parameter; inertial circle radius and period    | ~coriolis   | Solves        |
+| which cell holds the trades, westerlies, ITCZ            | ~cells      | Solves        |
+
+- **Main — BUILD `…#1`:** `globe` mode `momentum` (P3); interim `table` (φ = 10, 20, 30, 40° → u).
+  Values: latitude φ (°, 0–60), Earth's rim speed ΩR (464.6 m/s), eastward wind u (m/s). Relation:
+  u = ΩR sin²φ ÷ cos φ. Assumptions: air leaves the equator at rest with the ground and keeps its
+  angular momentum, so it turns east as its distance from the axis shrinks; real Hadley flow loses
+  some to friction and eddies. Example: 30° → 464.6 × 0.25 ÷ 0.866 = 134 m/s, far above the real
+  subtropical jet (about 40 m/s), so the cell must end near 30°. startWith φ.
+- **~coriolis — BUILD:** `vectorDiagram` (velocity and the Coriolis acceleration at 90° to it).
+  Values: latitude φ, f (s⁻¹), speed U (m/s), inertial radius r (m), inertial period (h).
+  Relations: f = 2Ω sin φ; r = U ÷ f; period = 2π ÷ f. Example: 45°, 0.2 m/s → f = 1.031 × 10⁻⁴,
+  r = 1,939 m, period 16.9 h.
+- **~cells — BUILD (sort; the explore of P33 later):** bins Hadley cell, Ferrel cell, Polar cell.
+  Cards: trade winds; the ITCZ's rising air; subtropical deserts under sinking air; westerlies;
+  mid-latitude storms; polar easterlies; air sinking over the poles.
+- **Verdict:** 3 pages; the main ships on its table interim.
+
+#### #2 Climate variability
+
+| Question type                                            | Page       | Mark          |
+| -------------------------------------------------------- | ---------- | ------------- |
+| El Niño or La Niña from the Niño-3.4 index               | main       | Solves        |
+| which orbital cycle (Milankovitch) from its description  | ~orbital   | Solves        |
+| warming trend per decade from yearly anomalies           | ~trend     | Solves (⏳ E2) |
+
+- **Main — BUILD `…#2` (observe, `min` −2, `guides` at +0.5 and −0.5 named "El Niño threshold",
+  "La Niña threshold"):** columns are overlapping three-month seasons (JJA … FMA), the Niño-3.4 sea
+  surface temperature anomaly (°C). A made-up event: +0.3, +0.6, +0.9, +1.2, +1.5, +1.6, +1.4, +1.0,
+  +0.6. Pattern: "Five or more seasons in a row at +0.5 °C or above make an El Niño (here eight)."
+- **~orbital — BUILD (sort):** bins Eccentricity, Obliquity, Precession. Cards: the orbit's shape
+  changes, about 100,000 years; Earth's tilt swings between 22.1° and 24.5°; about 41,000 years;
+  which season comes when Earth is nearest the Sun; about 23,000 years; the spin axis wobbles like a
+  top.
+- **~trend — BUILD (⏳ E2, a data list):** `scatter` with `leastSquares` over ten years of anomalies.
+  Values: the list, slope (°C/yr), trend per decade. Relation: least-squares slope; per decade = 10 ×
+  slope. Example (made up): 0.32, 0.41, 0.35, 0.47, 0.44, 0.52, 0.50, 0.58, 0.55, 0.63 °C → slope
+  0.0308 °C/yr, 0.31 °C per decade.
+- **Verdict:** 3 pages (1 calculator, 2 layouts); the trend waits on list values.
+
+#### #3 Climate models
+
+| Question type                                           | Page        | Mark   |
+| ------------------------------------------------------- | ----------- | ------ |
+| CO₂ forcing and equilibrium warming                     | main        | Solves |
+| warming after t years of a slow response                | ~response   | Solves |
+| warming with feedbacks from the no-feedback warming     | ~feedback   | Solves |
+| cost of a finer model grid                              | ~grid       | Solves |
+
+- **Main — BUILD `…#3`:** `functionGraph` log (ΔF against C). Values: starting CO₂ C₀ (ppm, 180–
+  2,000; 280), CO₂ C (ppm), forcing ΔF (W/m²), sensitivity parameter λ (K per W/m², 0.3–1.5; 0.8),
+  equilibrium warming ΔT (K). Relations: ΔF = 5.35 ln(C ÷ C₀); ΔT = λΔF. Assumptions: forcing grows
+  with the log of CO₂, so each doubling adds the same 3.7 W/m²; λ includes the feedbacks. Example:
+  560 ppm → 3.71 W/m², ΔT = 2.97 K. startWith C₀, C, λ.
+- **~response — BUILD:** `functionGraph` exponential. Values: equilibrium warming ΔT_eq, response
+  time τ (yr, 1–1,000), years t, warming ΔT(t). Relation: ΔT = ΔT_eq(1 − e^(−t/τ)). Assumption: one
+  ocean layer with one time scale. Example: 3 K, τ 30 yr, t 30 yr → 1.90 K.
+- **~feedback — BUILD:** `bars` (ΔT₀ beside ΔT). Values: no-feedback warming ΔT₀ (K), feedback factor
+  f (0–0.95), warming ΔT, gain. Relations: ΔT = ΔT₀ ÷ (1 − f); gain = 1 ÷ (1 − f). Example: 1.2 K,
+  f = 0.6 → 3.0 K (gain 2.5).
+- **~grid — BUILD:** `table` (spacing 2°, 1°, 0.5°, 0.25° → boxes, cost). Values: grid spacing (°),
+  levels (whole), columns, boxes, cost against a 1° grid. Relations: columns = (360 ÷
+  spacing)(180 ÷ spacing); boxes = columns × levels; cost = (1 ÷ spacing)³ (the time step shrinks
+  with the spacing). Example: 1°, 50 levels → 64,800 columns, 3.24 million boxes; halving the
+  spacing costs 8 times as much.
+- **Verdict:** 4 calculators; every type Solves.
+
+### Remote Sensing — `he.geography.remote-sensing`
+
+- **Prerequisite:** GIS. **Refresh:** `s.8.em-spectrum`, `s.11.modern-physics`,
+  `s.11.circular-gravitation~orbit`.
+- **Textbooks:** Natural Resources Canada, Fundamentals of Remote Sensing; the USGS Landsat data
+  users handbook (radiance and reflectance); Penn State GEOG 883 (remote sensing image analysis).
+
+#### #0 Electromagnetic radiation and sensors
+
+| Question type                                         | Page          | Mark           |
+| ----------------------------------------------------- | ------------- | -------------- |
+| ground pixel size and swath from altitude and angles  | main          | Solves (⏳ P30) |
+| frequency and photon energy of a band                 | ~wavelength   | Solves         |
+| orbital period and orbits a day of a satellite        | ~orbit        | Solves         |
+| spatial, spectral, radiometric or temporal resolution | ~resolutions  | Solves         |
+
+- **Main — BUILD `…#0`:** sensor geometry. Picture: new `sensorGeometry` (P30); interim
+  `triangleSolver` (half the swath over the altitude). Values: altitude H (km, 100–40,000),
+  instantaneous field of view IFOV (μrad, 1–10,000), ground pixel (m), field of view FOV (°, 0.1–
+  120), swath (km). Relations: pixel = 1,000 H × IFOV × 10⁻⁶ (H in km gives m); swath = 2H tan(FOV ÷ 2).
+  Assumptions: looking straight down over flat ground; pixels at the swath's edges are larger.
+  Example: 705 km, 42.5 μrad → 30.0 m; 15° → 185.6 km. startWith H, IFOV, FOV.
+- **~wavelength — BUILD:** `spectrum` with `photon` (the band named). Values: wavelength λ (nm,
+  10–10⁸), frequency f (Hz), photon energy E (eV). Relations: f = c ÷ λ; E = 1,240 ÷ λ. Example:
+  850 nm (near infrared) → 3.53 × 10¹⁴ Hz, 1.46 eV.
+- **~orbit — BUILD:** `circularMotion` mode `satellite` (central, r). Values: altitude H (km),
+  orbit radius r (km), period T (min), orbits a day. Relations: r = 6,371 + H; T = 2π√(r³ ÷ GM) ÷ 60;
+  orbits = 1,440 ÷ T. Example: 705 km → r = 7,076 km, T = 98.7 min, 14.6 orbits a day.
+- **~resolutions — BUILD (sort):** bins Spatial, Spectral, Radiometric, Temporal. Cards: 30 m pixels;
+  11 bands; 12 bits a pixel (4,096 levels); revisits every 16 days; a 0.5 m panchromatic band; a
+  hyperspectral sensor with 200 narrow bands; images every 10 minutes from geostationary orbit;
+  8-bit images with 256 levels.
+- **Verdict:** 4 pages; every type Solves (main on its interim).
+
+#### #1 Image processing
+
+| Question type                                          | Page         | Mark           |
+| ------------------------------------------------------ | ------------ | -------------- |
+| linear contrast stretch of a pixel                     | main         | Solves         |
+| radiance and top-of-atmosphere reflectance from DN     | ~reflectance | Solves         |
+| NDVI of a pixel                                        | ~ndvi        | Solves (⏳ P31) |
+
+- **Main — BUILD `…#1`:** `functionGraph` linear (output against input brightness, clipped at 0 and
+  255). Values: pixel value DN (0–255), image minimum and maximum (DN), stretched value. Relation:
+  out = 255(DN − min) ÷ (max − min), rounded and kept in 0–255. Assumptions: 8-bit display; values
+  outside min–max saturate. Example: 70 in a 40–120 image → 95.6, shown as 96. startWith DN, min, max.
+- **~reflectance — BUILD:** `table` (the steps' values). Values: DN, gain, offset, radiance L
+  (W/(m²·sr·μm)), Earth–Sun distance d (AU, 0.983–1.017), solar irradiance ESUN (W/(m²·μm)), sun
+  zenith θ_s (°, 0–85), reflectance ρ. Relations: L = gain × DN + offset; ρ = πLd² ÷ (ESUN cos θ_s).
+  Example: 100, 0.8, −1.5 → 78.5; 1.0 AU, 1,550, 35° → ρ = 246.6 ÷ 1,269.7 = 0.194.
+- **~ndvi — BUILD (⏳ P31 `spectralCurve`; interim `bars`):** values red and near-infrared reflectance
+  (0–1), NDVI (−1–1). Relation: NDVI = (NIR − red) ÷ (NIR + red). Assumptions: healthy leaves reflect
+  near infrared strongly and absorb red; water and bare soil give values near or below 0.2.
+  Example: 0.45 and 0.08 → 0.37 ÷ 0.53 = 0.698.
+- **Verdict:** 3 calculators; every type Solves.
+
+#### #2 Classification
+
+| Question type                                            | Page           | Mark           |
+| -------------------------------------------------------- | -------------- | -------------- |
+| overall, producer's and user's accuracy; kappa           | main           | Solves         |
+| minimum-distance class of a pixel                        | ~min-distance  | Solves (⏳ P32) |
+| supervised or unsupervised step                          | ~methods       | Solves         |
+
+- **Main — BUILD `…#2`:** `table` `twoWay` (rows: classified forest, non-forest; columns: reference;
+  the diagonal lit). Values: the four counts (whole), total N, overall accuracy OA (%), producer's
+  accuracy for forest (%), user's accuracy for forest (%), chance agreement p_e, kappa κ. Relations:
+  OA = 100(a + d) ÷ N; PA = 100a ÷ (a + c); UA = 100a ÷ (a + b); p_e = ((a + b)(a + c) + (c + d)(b +
+  d)) ÷ N²; κ = (OA ÷ 100 − p_e) ÷ (1 − p_e). Example: 45, 10 (classified forest), 5, 40 → OA 85 %,
+  PA 90 %, UA 81.8 %, p_e = 0.5, κ = 0.70. 10 values.
+- **~min-distance — BUILD (⏳ P32; interim `coordinatePlane` with the points):** class means fixed in
+  the assumptions (water red 0.05, NIR 0.03; vegetation 0.06, 0.45; soil 0.20, 0.28). Values: the
+  pixel's red and NIR, its distance to each class mean. Relation: d = √((red − r̄)² + (NIR − n̄)²).
+  Example: (0.10, 0.40) → 0.373, 0.064, 0.156: vegetation.
+- **~methods — BUILD (sort):** bins Supervised, Unsupervised. Cards: the analyst draws training areas
+  first; k-means groups pixels, then the analyst names the clusters; ISODATA; maximum likelihood with
+  training statistics; a random forest trained on labeled points; the number of clusters is chosen
+  before any labels exist.
+- **Verdict:** 3 pages; every type Solves.
+
+#### #3 Change detection
+
+| Question type                                         | Page          | Mark   |
+| ----------------------------------------------------- | ------------- | ------ |
+| burn severity from pre- and post-fire NBR (dNBR)      | main          | Solves |
+| percent and yearly rate of area change                | ~area-change  | Solves |
+
+- **Main — BUILD `…#3`:** `bars` (NBR before, after and the difference; P31's `spectralCurve` beside
+  it later). Values: NIR and SWIR before, NIR and SWIR after (0–1), NBR before, NBR after, dNBR.
+  Relations: NBR = (NIR − SWIR) ÷ (NIR + SWIR); dNBR = NBR before − NBR after. Assumptions: burning
+  drops near-infrared and raises shortwave-infrared reflectance; severity classes are thresholds
+  (above 0.66 high, 0.44–0.66 moderate-high: in the caption, E5). Example: 0.40, 0.15 → 0.455; 0.20,
+  0.25 → −0.111; dNBR = 0.566, moderate-high. 7 values.
+- **~area-change — BUILD:** `percentBar` with `change` (total, direction). Values: area before A₁,
+  area after A₂ (km²), years t, change (%), yearly rate r (%/yr). Relations: change = 100(A₂ − A₁) ÷
+  A₁; r = 100 ln(A₂ ÷ A₁) ÷ t. Example: 1,200 to 1,050 km² in 10 yr → −12.5 %, −1.34 %/yr.
+- **Verdict:** 2 calculators; every type Solves.

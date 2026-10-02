@@ -9,23 +9,23 @@ the scratchpad; nothing is copied from a textbook, an exam or `research/`.
 
 Courses in scope (field, id, topics):
 
-| Field     | Course                                    | Id (`he.engineering.…`)    | Topics |
-| --------- | ----------------------------------------- | -------------------------- | ------ |
-| classical | Statics                                   | `statics`                  | 5      |
-| classical | Dynamics                                  | `dynamics`                 | 4      |
-| classical | Mechanics of Materials (Solid Mech. I)    | `mechanics-of-materials`   | 6      |
-| classical | Materials Science & Material Properties   | `materials-science`        | 4      |
-| classical | Engineering Programming (MATLAB/Python)   | `engineering-programming`  | 4      |
-| classical | Engineering Graphics & CAD                | `cad-graphics`             | 4      |
-| classical | Numerical Methods for Engineers           | `numerical-methods`        | 5      |
-| classical | Advanced Solid Mechanics (Solid Mech. II) | `advanced-solid-mechanics` | 5      |
-| classical | Finite Element Analysis                   | `finite-element-analysis`  | 5      |
-| mechanical| Engineering Thermodynamics                | `thermodynamics`           | 4      |
-| mechanical| Fluid Mechanics                           | `fluid-mechanics`          | 6      |
-| mechanical| Heat Transfer                             | `heat-transfer`            | 4      |
-| mechanical| Machine Design                            | `machine-design`           | 4      |
-| mechanical| Mechanical Vibrations                     | `vibrations`               | 4      |
-| mechanical| Manufacturing Processes                   | `manufacturing`            | 4      |
+| Field      | Course                                    | Id (`he.engineering.…`)    | Topics |
+| ---------- | ----------------------------------------- | -------------------------- | ------ |
+| classical  | Statics                                   | `statics`                  | 5      |
+| classical  | Dynamics                                  | `dynamics`                 | 4      |
+| classical  | Mechanics of Materials (Solid Mech. I)    | `mechanics-of-materials`   | 6      |
+| classical  | Materials Science & Material Properties   | `materials-science`        | 4      |
+| classical  | Engineering Programming (MATLAB/Python)   | `engineering-programming`  | 4      |
+| classical  | Engineering Graphics & CAD                | `cad-graphics`             | 4      |
+| classical  | Numerical Methods for Engineers           | `numerical-methods`        | 5      |
+| classical  | Advanced Solid Mechanics (Solid Mech. II) | `advanced-solid-mechanics` | 5      |
+| classical  | Finite Element Analysis                   | `finite-element-analysis`  | 5      |
+| mechanical | Engineering Thermodynamics                | `thermodynamics`           | 4      |
+| mechanical | Fluid Mechanics                           | `fluid-mechanics`          | 6      |
+| mechanical | Heat Transfer                             | `heat-transfer`            | 4      |
+| mechanical | Machine Design                            | `machine-design`           | 4      |
+| mechanical | Mechanical Vibrations                     | `vibrations`               | 4      |
+| mechanical | Manufacturing Processes                   | `manufacturing`            | 4      |
 
 ## Decisions
 
@@ -83,7 +83,7 @@ Courses in scope (field, id, topics):
   Taylor's tool life) use the solver's numeric root-finding within [min, max] (`solve.ts`); the
   walkthrough says "found numerically" (exists). Three ordered roots (σ₁ ≥ σ₂ ≥ σ₃) and
   eigenvalues are need E4.
-- **Layouts (24 pages).** Sorts: `statics#1~zero-force`, `materials-science#1~defects`,
+- **Layouts (26 pages: 20 sorts, 4 sequences, 2 explores).** Sorts: `statics#1~zero-force`, `materials-science#1~defects`,
   `thermodynamics#0~regions`, `thermodynamics#2~possible`, `fluid-mechanics#3~which-number`,
   `manufacturing#0~families`, `manufacturing#2~families`, `manufacturing#3~fit-type`,
   `engineering-programming#0~syntax`, `#1~elementwise`, `#2~which-axes`, `#3~error-types`,
@@ -98,9 +98,10 @@ Courses in scope (field, id, topics):
 - **Question data.** No released college questions are in `research/questions/` yet; every
   "Asks" line below lists the common textbook and FE-style types, to be checked against the
   research targets at the end.
-- **Page count:** 68 main + 197 problem types = **265 pages** (241 calculators, 24 layouts);
-  **98 wait on a picture or engine need** (⏳), most of them with an interim picture so they can
-  ship first.
+- **Page count:** 68 main + 180 problem types = **248 pages** (222 calculators, 26 layouts);
+  **102 are marked ⏳** (a picture or engine need). 26 of them name an interim picture and can
+  ship now; the other 76 either ship on `none` (values, relations and walkthrough, no picture)
+  if the lead accepts that, or wait for their picture.
 
 ## Classical (Engineering Mechanics)
 
@@ -124,10 +125,10 @@ Courses in scope (field, id, topics):
   result magnitude W at 90°, unit N; ⏳ P26 for the closed force triangle with W drawn.
   Use line: "Use this for 'A 500 N sign hangs from two cables at 30° and 60°. Find each tension.'"
 - **~components:** resultant of three coplanar forces. Values F₁, α₁, F₂, α₂, F₃, α₃ (angles from
-  + x), R_x, R_y, R, direction β (10). Relations: R_x = ΣF cos α; R_y = ΣF sin α; R = √(R_x² + R_y²);
-  β = atan2(R_y, R_x). Example: 200 N at 0°, 300 N at 90°, 100 N at 225° → R_x = 129.3 N,
-  R_y = 229.3 N, R = 263.2 N at 60.6°. ⏳ P26 (three arrows tip to tail); interim `vectorDiagram`
-  of R alone with `components`.
+  - x), R_x, R_y, R, direction β (10). Relations: R_x = ΣF cos α; R_y = ΣF sin α; R = √(R_x² + R_y²);
+    β = atan2(R_y, R_x). Example: 200 N at 0°, 300 N at 90°, 100 N at 225° → R_x = 129.3 N,
+    R_y = 229.3 N, R = 263.2 N at 60.6°. ⏳ P26 (three arrows tip to tail); interim `vectorDiagram`
+    of R alone with `components`.
 - **~moment:** M_O = xF_y − yF_x (2-D cross product), and |M| = Fd. Values x, y (m), F_x, F_y (N),
   M_O (N·m, + counterclockwise), F, d. Example: F = (30, 40) N at (2, 1) m → M_O = 80 − 30 =
   50 N·m counterclockwise; F = 50 N, d = 1 m. Picture: `vectorDiagram` `space` with z = 0 and
@@ -636,7 +637,7 @@ Courses in scope (field, id, topics):
   b₁, b₂, x₀, y₀, x₁, y₁ (10). Example: 4x + y = 9, x + 3y = 5 from (0, 0) → (2.25, 0.917); the
   answer is (2, 1).
 - **~condition:** κ∞ = ‖A‖∞‖A⁻¹‖∞ for 2 × 2. Example: [[1, 1], [1, 1.001]] → det 0.001, κ = 4004.
-  Picture: `matrixGrid` `determinant`.
+        Picture: `matrixGrid` `determinant`.
 - **Verdict:** 3 pages; the three types Solve (LU is Partly: same eliminations, no L shown).
 
 #### #2 — Interpolation and curve fitting
@@ -694,8 +695,8 @@ Courses in scope (field, id, topics):
   20, −30, 15 MPa → in plane 65 and 15 → σ₁ = 65, σ₂ = 15, σ₃ = −30, τ_max = 47.5 MPa. Ordering three
   roots is E4. ⏳ P4 three Mohr circles.
 - **~invariants:** I₁ = σₓ + σ_y + σ_z; I₂ = σₓσ_y + σ_yσ_z + σ_zσₓ − τₓ_y² − τ_yz² − τ_zx²; I₃ = det σ.
-  Example: [[50, 20, 0], [20, −10, 10], [0, 10, 30]] → I₁ = 70, I₂ = 200, I₃ = −32,000 (MPa³).
-  Picture: `matrixGrid` `determinant` (existing). Principal stresses from the cubic wait on E4.
+        Example: [[50, 20, 0], [20, −10, 10], [0, 10, 30]] → I₁ = 70, I₂ = 200, I₃ = −32,000 (MPa³).
+        Picture: `matrixGrid` `determinant` (existing). Principal stresses from the cubic wait on E4.
 - **~octahedral:** σ_oct = I₁ ÷ 3; τ_oct = (1/3)√((σ₁ − σ₂)² + (σ₂ − σ₃)² + (σ₃ − σ₁)²). Example: main's
   principals → 16.67 and 38.80 MPa.
 - **~rosette:** 45° rosette: εₓ = ε_a, ε_y = ε_c, γₓ_y = 2ε_b − ε_a − ε_c; principal strains.
@@ -761,9 +762,9 @@ Courses in scope (field, id, topics):
 - **Asks:** assemble two springs in series and solve (main); bar element stiffness and stress
   (~bar); load between two fixed ends (~fixed-fixed).
 - **Main — calculator:** node 1 fixed, force F at node 3. Values k₁, k₂, F, u₂, u₃, element forces
-  f₁, f₂, reaction R₁ (8). Relations: reduced K = [[k₁ + k₂, −k₂], [−k₂, k₂]]; K u = (0, F); f = k(Δu);
-  R₁ = −k₁u₂. Example: 1000 and 500 N/mm, 2000 N → u₂ = 2 mm, u₃ = 6 mm, f = 2000 N each,
-  R₁ = −2000 N. Picture: `matrixGrid` `rowReduce` (existing); ⏳ P25 `elementChain` beside it.
+        f₁, f₂, reaction R₁ (8). Relations: reduced K = [[k₁ + k₂, −k₂], [−k₂, k₂]]; K u = (0, F); f = k(Δu);
+        R₁ = −k₁u₂. Example: 1000 and 500 N/mm, 2000 N → u₂ = 2 mm, u₃ = 6 mm, f = 2000 N each,
+        R₁ = −2000 N. Picture: `matrixGrid` `rowReduce` (existing); ⏳ P25 `elementChain` beside it.
 - **~bar:** k = AE ÷ L; f = k(u₂ − u₁); σ = f ÷ A. Example: 100 mm², 200 GPa, 1 m → 20,000 N/mm;
   Δu = 0.1 mm → 2000 N, 20 MPa.
 - **~fixed-fixed:** u₂ = F ÷ (k₁ + k₂); R₁ = −k₁u₂; R₃ = −k₂u₂. Example: 3000 N, 1000 and 2000 N/mm →
@@ -794,8 +795,8 @@ Courses in scope (field, id, topics):
 - **~k-matrix:** (AE ÷ L)c², cs, s². Example: 50,000 N/mm, 30° → 37,500, 21,651, 12,500 N/mm.
   Picture `matrixGrid` (4 × 4 with ± signs).
 - **~beam:** reduced [[12, 6L], [6L, 4L²]]EI ÷ L³ with P at the tip → v = PL³ ÷ (3EI), θ = PL² ÷ (2EI).
-  Example: the MoM#4 beam → 8.333 mm, 0.00625 rad (one element is exact for a tip load).
-  Picture `matrixGrid` `rowReduce`.
+        Example: the MoM#4 beam → 8.333 mm, 0.00625 rad (one element is exact for a tip load).
+        Picture `matrixGrid` `rowReduce`.
 - **Verdict:** 3 pages; truss and beam types Solve; 2-D elements are Partly.
 
 #### #3 — Meshing and convergence
@@ -1002,3 +1003,620 @@ Courses in scope (field, id, topics):
 - **~drag:** F_D = ½ρV²C_DA; P = F_DV. Example: C_D = 0.3, 2.2 m², 30 m/s → 356 N, 10.7 kW.
 - **Verdict:** 3 pages; the three types Solve.
 
+### 12. he.engineering.heat-transfer — Heat Transfer
+
+- **Prereqs:** thermodynamics, he.math.diff-eq. **Textbooks:** A Heat Transfer Textbook (Lienhard
+  IV and V, free to download, all rights reserved); MIT OCW 2.51. **FE:** Heat transfer
+  (conduction, convection, radiation, exchangers, transient).
+- Temperature differences in K (ΔT dimension, E1); property values (k, ν, Pr) typed with the film
+  temperature named.
+
+#### #0 — Conduction
+
+- **Asks:** heat loss through a layered wall with convection (main); insulated pipe (~cylinder);
+  lumped cooling and the Biot check (~lumped); pin fin (~fin).
+- **Main — calculator:** per m² of wall. Values T_in, T_out, h_i, L₁, k₁, L₂, k₂, h_o, R″, q″ (10).
+  Relations: R″ = 1 ÷ h_i + L₁ ÷ k₁ + L₂ ÷ k₂ + 1 ÷ h_o; q″ = (T_in − T_out) ÷ R″. Example: 20 °C in, −10 °C
+  out, h = 10 and 25 W/(m²·K), 0.2 m brick (k = 0.72), 50 mm foam (0.04) → R″ = 1.668 m²·K/W,
+  q″ = 18.0 W/m². ⏳ P14 (`thermalWall`, profile and resistances).
+- **~cylinder:** R = ln(r₂ ÷ r₁) ÷ (2πkL); q = ΔT ÷ R. Example: 50/80 mm, k = 0.05, 10 m, ΔT = 100 K →
+  R = 0.1496 K/W, q = 668 W. ⏳ P14 `cylinder`.
+- **~lumped:** Bi = h(V ÷ A) ÷ k < 0.1; τ = ρc(V ÷ A) ÷ h; T = T∞ + (T_i − T∞)e^(−t/τ). Example: 10 mm steel ball,
+  h = 50, 300 °C into 25 °C air for 120 s → Bi = 0.0021, τ = 117 s, T = 123.6 °C. Picture:
+  `functionGraph` exponential toward T∞ (existing).
+- **~fin:** m = √(hP ÷ (kA_c)); q = √(hPkA_c) θ_b tanh(mL) (adiabatic tip). Example: aluminum pin
+  5 mm × 50 mm, h = 20, θ_b = 60 K → m = 8.94 m⁻¹, q = 0.884 W. ⏳ P14 `fin`.
+- **Verdict:** 4 pages; the four types Solve (2-D conduction and Heisler charts are Partly).
+
+#### #1 — Convection
+
+- **Asks:** h inside a tube by Dittus–Boelter (main); Newton's law of cooling (~newton); laminar
+  flat plate (~plate); free convection on a vertical plate (~free).
+- **Main — calculator:** Values V, D, ν, Re, Pr, Nu, k, h (8). Relations: Re = VD ÷ ν;
+  Nu = 0.023Re^0.8Pr^0.4 (heating; 0.3 for cooling, `allowed`); h = Nu k ÷ D. Example: water, 1 m/s,
+  25 mm, ν = 0.8 × 10⁻⁶, Pr = 5.4, k = 0.615 → Re = 31,250, Nu = 178.1, h = 4380 W/(m²·K). A limit line:
+  Re > 10,000. ⏳ P14 `tube`; interim `none`.
+- **~newton:** q = hA(T_s − T∞). Example: 25 W/(m²·K), 1.5 m², 60 → 20 °C → 1500 W.
+- **~plate:** Nu = 0.664Re^½Pr^⅓. Example: air 5 m/s, 1 m, ν = 1.6 × 10⁻⁵, Pr = 0.71, k = 0.026 →
+  Re = 312,500, Nu = 331, h = 8.61 W/(m²·K).
+- **~free:** Ra = gβΔT L³ ÷ (να); Nu = 0.59Ra^¼ (10⁴ < Ra < 10⁹). Example: 0.5 m plate, ΔT = 40 K, film 320 K →
+  Ra = 3.50 × 10⁸, Nu = 80.7, h = 4.52 W/(m²·K).
+- **Verdict:** 4 pages; the four types Solve (cross-flow over cylinders: Partly, same pattern with
+  typed C and m).
+
+#### #2 — Radiation
+
+- **Asks:** net exchange with surroundings (main); blackbody peak and power (~blackbody); two
+  parallel gray plates (~plates); view factor relations (~view); radiation coefficient (~h-rad).
+- **Main — calculator:** Values ε, A, T_s, T_surr (K), q (W). Relation: q = εσA(T_s⁴ − T_surr⁴). Example:
+  0.8, 2 m², 400 K, 300 K → 1588 W. Temperatures must be in kelvins (the step converts first).
+  ⏳ P14 `radiation`.
+- **~blackbody:** λ_max T = 2898 μm·K; E_b = σT⁴. Example: 5800 K → 0.500 μm, 6.42 × 10⁷ W/m². ⏳ P14
+  `blackbody` (Planck curves).
+- **~plates:** q″ = σ(T₁⁴ − T₂⁴) ÷ (1 ÷ ε₁ + 1 ÷ ε₂ − 1). Example: 500 K, 300 K, 0.8, 0.6 → 1609 W/m².
+- **~view:** A₁F₁₂ = A₂F₂₁; ΣF = 1. Example: a 1 m² body in a 4 m² enclosure, F₁₂ = 1 → F₂₁ = 0.25,
+  F₂₂ = 0.75.
+- **~h-rad:** h_r = εσ(T_s + T_surr)(T_s² + T_surr²). Example: 0.8, 400 K, 300 K → 7.94 W/(m²·K).
+- **Verdict:** 5 pages; the five types Solve (view-factor charts are typed).
+
+#### #3 — Heat exchangers
+
+- **Asks:** area by LMTD for counterflow (main); unknown flow rate by energy balance
+  (~balance); effectiveness–NTU (~ntu); parallel flow comparison (~parallel).
+- **Main — calculator:** Values T_h,in, T_h,out, T_c,in, T_c,out, ΔT₁, ΔT₂, ΔT_lm, q, U, A (10).
+  Relations: ΔT₁ = T_h,in − T_c,out; ΔT₂ = T_h,out − T_c,in; ΔT_lm = (ΔT₁ − ΔT₂) ÷ ln(ΔT₁ ÷ ΔT₂); q = UAΔT_lm.
+  Example: oil 120 → 70 °C, water 20 → 50 °C, 50 kW, U = 300 → ΔT_lm = 59.44 K, A = 2.80 m².
+  ⏳ P15 (`heatExchanger`).
+- **~balance:** q = ṁ_hc_h ΔT_h = ṁ_cc_c ΔT_c. Example: oil 0.5 kg/s, 2.0 kJ/(kg·K), 50 K → 50 kW;
+  water ΔT 30 K → 0.399 kg/s.
+- **~ntu:** counterflow ε = (1 − e^(−NTU(1−C_r))) ÷ (1 − C_re^(−NTU(1−C_r))); q = εC_min(T_h,in − T_c,in).
+  Example: C_min = 1000 W/K, C_r = 0.6, UA = 841 W/K → NTU = 0.841, ε = 0.50, q = 50 kW (matches the
+  main).
+- **~parallel:** the same temperatures in parallel flow → ΔT_lm = 49.7 K, A = 3.35 m² (20 % more).
+- **Verdict:** 4 pages; the four types Solve (shell-and-tube F factors are typed).
+
+### 13. he.engineering.machine-design — Machine Design
+
+- **Prereqs:** mechanics-of-materials. **Textbooks:** MIT OCW 2.72 (Elements of Mechanical
+  Design); NPTEL Design of Machine Elements. Empirical factors (Marin, Lewis Y, K for bolt
+  torque) are typed with their name; the example values are ours. **FE:** Mechanical design and
+  analysis.
+
+#### #0 — Failure theories
+
+- **Asks:** factor of safety by von Mises and Tresca from plane stress (main); brittle material,
+  Coulomb–Mohr (~brittle); peak stress at a hole with K_t (~kt).
+- **Main — calculator:** Values σₓ, σ_y, τₓ_y, σ′ (von Mises), S_y, n_vM, τ_max, n_Tresca (8).
+  Relations: σ′ = √(σₓ² − σₓσ_y + σ_y² + 3τₓ_y²); n = S_y ÷ σ′; τ_max from the principals (with σ₃ = 0);
+  n_T = S_y ÷ (2τ_max). Example: 120, −40, 50 MPa, S_y = 350 → σ′ = 168.2, n = 2.08; σ₁ = 134.3,
+  σ₂ = −54.3, τ_max = 94.3, n_T = 1.85. ⏳ P4 envelopes.
+- **~brittle:** σ₁ ÷ S_ut − σ₃ ÷ S_uc = 1 ÷ n. Example: 200, 750 MPa, σ₁ = 60, σ₃ = −90 → n = 2.38.
+- **~kt:** σ_nom = P ÷ ((w − d)t); σ_max = K_tσ_nom. Example: 20 kN, 50 × 10 mm plate, 10 mm hole,
+  K_t = 2.5 (typed from a chart) → 50 and 125 MPa.
+- **Verdict:** 3 pages; the three types Solve.
+
+#### #1 — Fatigue
+
+- **Asks:** Goodman factor of safety (main); life on the S–N line (~sn); endurance limit from
+  Marin factors (~marin); Miner's damage (~miner).
+- **Main — calculator:** Values S_ut, S_e′, Marin product k, S_e, σ_a, σ_m, n (7). Relations:
+  S_e′ = 0.5S_ut (S_ut ≤ 1400 MPa); S_e = kS_e′; σ_a ÷ S_e + σ_m ÷ S_ut = 1 ÷ n. Example: 600 MPa, k = 0.7,
+  σ_a = 80, σ_m = 120 → S_e = 210, n = 1.72. ⏳ P17 (`fatigueDiagram`).
+- **~sn:** S_f = aN^b, a = (fS_ut)² ÷ S_e, b = −log(fS_ut ÷ S_e) ÷ 3 (f typed, 0.9 here). Example: 600, 210,
+  300 MPa → b = −0.1367, a = 1389 MPa, N ≈ 73,600 cycles. ⏳ P17 S–N.
+- **~marin:** k_a = aS_ut^b (machined a = 4.51, b = −0.265); k_b = 1.24d^−0.107 (2.79–51 mm);
+  S_e = k_ak_bS_e′. Example: 600 MPa, 30 mm → 0.828, 0.862, S_e = 214 MPa.
+- **~miner:** D = Σnᵢ ÷ Nᵢ. Example: 20,000 of 80,000 and 100,000 of 500,000 → 0.45 used.
+- **Verdict:** 4 pages; the four types Solve (Gerber and ASME-elliptic as `allowed` criteria
+  are Partly).
+
+#### #2 — Shafts and bearings
+
+- **Asks:** factor of safety for bending plus torsion (main); ball-bearing life (~life); rating
+  to select (~select); first critical speed (~critical).
+- **Main — calculator:** Values d, M, T, σ, τ, σ′, S_y, n (8). Relations: σ = 32M ÷ (πd³);
+  τ = 16T ÷ (πd³); σ′ = √(σ² + 3τ²); n = S_y ÷ σ′. Example: 40 mm, 400 N·m, 600 N·m, 420 MPa → 63.7, 47.7,
+  104.4 MPa, n = 4.02. ⏳ P6 with the bending arrow.
+- **~life:** L₁₀ = (C ÷ P)^a × 10⁶ rev (a = 3 ball, 10/3 roller, `allowed`); hours = L₁₀ ÷ (60N). Example:
+  30 kN, 5 kN, 1800 rpm → 216 × 10⁶ rev, 2000 h.
+- **~select:** C = P(60NL_h ÷ 10⁶)^(1/a). Example: 4 kN, 1000 rpm, 20,000 h → 42.5 kN.
+- **~critical:** ω = √(g ÷ δ). Example: δ = 0.1 mm → 313 rad/s = 2991 rpm.
+- **Verdict:** 4 pages; the four types Solve (fatigue-based shaft sizing, DE-Goodman, is Partly:
+  ~marin plus the main).
+
+#### #3 — Gears and fasteners
+
+- **Asks:** spur gear speeds, pitch diameters and tooth load (main); Lewis bending stress
+  (~lewis); gear-train value (~train); bolt preload and torque (~bolt).
+- **Main — calculator:** Values N₁, N₂, module m, d₁, d₂, n₁, n₂, power P, V, W_t (10). Relations:
+  d = mN; n₂ = n₁N₁ ÷ N₂; V = πd₁n₁ ÷ 60; W_t = P ÷ V. Example: m = 3 mm, 20 and 60 teeth, 1500 rpm, 5 kW →
+  60 and 180 mm, 500 rpm, 4.71 m/s, 1061 N. ⏳ P18 (`gearPair`).
+- **~lewis:** σ = K_vW_t ÷ (FmY), K_v = (6.1 + V) ÷ 6.1. Example: face 30 mm, Y = 0.32 (typed) →
+  36.8 MPa, K_v = 1.77 → 65.3 MPa.
+- **~train:** e = ΠN_driving ÷ ΠN_driven. Example: 20/60 × 18/54 = 1/9; 1800 rpm → 200 rpm. ⏳ P18 train.
+- **~bolt:** F_i = 0.75A_tS_p; T = KF_id. Example: M12, A_t = 84.3 mm², S_p = 600 MPa, K = 0.2 →
+  37.9 kN, 91.0 N·m.
+- **Verdict:** 4 pages; the four types Solve (helical gears and joint stiffness are Partly).
+
+### 14. he.engineering.vibrations — Mechanical Vibrations
+
+- **Prereqs:** dynamics, he.math.diff-eq. **Textbooks:** MIT OCW 2.003SC; Applied Mechanics of
+  Solids (vibration chapters, reference only). **FE:** Vibrations (natural frequency, damping).
+- `oscillator` (existing, Grade 11) is the base picture; P16 adds damping, forcing and two masses.
+
+#### #0 — Free vibration
+
+- **Asks:** natural frequency and amplitude from start conditions (main); from static deflection
+  (~static); springs in series and parallel (~springs); compound pendulum (~compound).
+- **Main — calculator:** Values m, k, ω_n, f_n, T, x₀, v₀, X (8). Relations: ω_n = √(k ÷ m); f_n = ω_n ÷ 2π;
+  T = 1 ÷ f_n; X = √(x₀² + (v₀ ÷ ω_n)²). Example: 2 kg, 800 N/m, 0.03 m, 0.8 m/s → 20 rad/s, 3.18 Hz,
+  0.314 s, X = 0.05 m. Picture: `oscillator` `swing` with `position` (existing).
+- **~static:** ω_n = √(g ÷ δ_st). Example: 2 mm → 70.0 rad/s, 11.1 Hz. Picture `oscillator` `hang`.
+- **~springs:** parallel k₁ + k₂; series k₁k₂ ÷ (k₁ + k₂). Example: 3000 and 6000 N/m → 9000, 2000.
+  ⏳ P16 `springs`.
+- **~compound:** ω_n = √(mgd ÷ I_O). Example: a uniform 1 m rod pivoted at its end → √(3g ÷ 2L) =
+  3.84 rad/s. Picture `pendulum` (stand-in; ⏳ P16 rod option is low priority).
+- **Verdict:** 4 pages; the four types Solve.
+
+#### #1 — Forced vibration and resonance
+
+- **Asks:** steady amplitude and phase under F₀ sin ωt (main); transmissibility and isolation
+  (~transmissibility); rotating unbalance (~unbalance).
+- **Main — calculator:** Values m, k, ω_n, ω, r, ζ, F₀, X, φ (9). Relations: r = ω ÷ ω_n;
+  X = (F₀ ÷ k) ÷ √((1 − r²)² + (2ζr)²); tan φ = 2ζr ÷ (1 − r²). Example: 10 kg, 4000 N/m, ω = 15 rad/s, ζ = 0.1,
+  100 N → r = 0.75, X = 54.1 mm, φ = 18.9°. ⏳ P16 `forcing` (response curve with the point).
+- **~transmissibility:** TR = √(1 + (2ζr)²) ÷ √((1 − r²)² + (2ζr)²). Example: r = 3, ζ = 0.05 → 0.130 (87 %
+  isolated). ⏳ P16.
+- **~unbalance:** X = (m_ee ÷ M) r² ÷ √((1 − r²)² + (2ζr)²). Example: 50 kg, 0.01 kg·m, r = 2, ζ = 0.1 →
+  0.264 mm.
+- **Verdict:** 3 pages; the three types Solve.
+
+#### #2 — Damping
+
+- **Asks:** damping ratio and damped frequency (main); ζ from logarithmic decrement (~log-dec).
+- **Main — calculator:** Values m, k, c, c_cr, ζ, ω_n, ω_d (7). Relations: c_cr = 2√(km); ζ = c ÷ c_cr;
+  ω_d = ω_n√(1 − ζ²) (ζ < 1; the page names over- and critically damped cases). Example: 2 kg,
+  800 N/m, 16 N·s/m → c_cr = 80, ζ = 0.2, ω_d = 19.60 rad/s. ⏳ P16 `damping`.
+- **~log-dec:** δ = (1 ÷ n) ln(x₀ ÷ xₙ); ζ = δ ÷ √(4π² + δ²). Example: 10 mm to 2 mm in 5 cycles →
+  δ = 0.322, ζ = 0.0512. ⏳ P16 peaks marked.
+- **Verdict:** 2 pages; both types Solve (Coulomb damping is Partly).
+
+#### #3 — Multi-degree-of-freedom systems
+
+- **Asks:** two natural frequencies and mode shapes (main); vibration absorber (~absorber);
+  free–free two masses (~free-free).
+- **Main — calculator:** masses m₁, m₂; springs k₁ (wall–m₁), k₂ (between), k₃ (m₂–wall); ω₁, ω₂, mode
+  ratios r₁, r₂ (9). Relations: m₁m₂ω⁴ − (m₁(k₂ + k₃) + m₂(k₁ + k₂))ω² + (k₁ + k₂)(k₂ + k₃) − k₂² = 0 (two
+  roots, E4); r = (k₁ + k₂ − m₁ω²) ÷ k₂. Example: 1 kg, 1 kg, 100 N/m each → ω₁ = 10, ω₂ = 17.32 rad/s,
+  ratios +1 (together), −1 (opposite). Picture: `matrixGrid` `determinant` of K − ω²M (existing);
+  ⏳ P16 `twoMass`.
+- **~absorber:** k_a = m_aω². Example: 1800 rpm = 188.5 rad/s, 2 kg → 71,061 N/m.
+- **~free-free:** ω = √(k(m₁ + m₂) ÷ (m₁m₂)). Example: 2 kg, 3 kg, 600 N/m → 22.4 rad/s.
+- **Verdict:** 3 pages; the three types Solve once E4 orders the roots (the main can ship with
+  the quadratic formula on ω²).
+
+### 15. he.engineering.manufacturing — Manufacturing Processes
+
+- **Prereqs:** materials-science. **Textbooks:** Manufacturing Processes 4-5 (Virasak, Open
+  Oregon); MIT OCW 2.008. **FE:** Manufacturing processes (machining, forming, tolerances).
+
+#### #0 — Casting and forming
+
+- **Asks:** solidification time (main); riser size (~riser); can a rolling pass take this draft
+  (~rolling); flow stress and forming force (~flow-stress); which process family (~families).
+- **Main — calculator:** Values V (cm³), A (cm²), modulus M = V ÷ A, mold constant B (min/cm²), t (min).
+  Relation: t = BM² (Chvorinov, n = 2). Example: 10 cm cube, B = 2.0 → M = 1.667 cm, t = 5.56 min.
+  ⏳ P30 (`casting`); interim `table` of cube, sphere, plate of equal V.
+- **~riser:** t_riser = 1.25t_casting → M_r = √1.25 M_c; a cylinder with H = D has M = D ÷ 6. Example:
+  M_c = 1.667 cm → M_r = 1.863 cm, D = 11.2 cm.
+- **~rolling:** d_max = μ²R; ε = ln(t₀ ÷ t_f); contact length L = √(Rd). Example: 25 → 20 mm, R = 250 mm,
+  μ = 0.15 → d_max = 5.63 mm ≥ 5 (one pass works; with μ = 0.12 it doesn't), ε = 0.223, L = 35.4 mm.
+- **~flow-stress:** Ȳ_f = Kεⁿ ÷ (1 + n); F = Ȳ_f wL. Example: K = 275 MPa, n = 0.15, ε = 0.223 →
+  Ȳ_f = 190.9 MPa; w = 300 mm, L = 35.4 mm → 2.03 MN.
+- **~families — sort:** bins "Casting", "Bulk forming", "Sheet forming", "Material removal",
+  "Joining". Cards (P31 icons): sand casting, die casting, investment casting, forging,
+  rolling, extrusion, deep drawing, bending, turning, milling, welding, brazing.
+- **Verdict:** 5 pages; the five types Solve.
+
+#### #1 — Machining
+
+- **Asks:** spindle speed, removal rate and time for a turning pass (main); Taylor tool life
+  (~taylor); milling feed and MRR (~milling); cutting power (~power); ideal surface roughness
+  (~finish).
+- **Main — calculator:** Values D, v (m/min), N (rpm), f (mm/rev), depth d, MRR, length L, time T_m (8).
+  Relations: N = v ÷ (πD); MRR = vfd; T_m = L ÷ (fN). Example: 50 mm, 150 m/min → 955 rpm; 0.25 mm/rev,
+  2 mm → 75 cm³/min; 200 mm → 0.838 min. ⏳ P19 (`machining` turning).
+- **~taylor:** vTⁿ = C. Example: n = 0.25, C = 400 m/min, v = 200 → T = 16 min (doubling v cuts life
+  16-fold). Picture `functionGraph` `family: 'power'`.
+- **~milling:** N = v ÷ (πD); f_r = Nn_tf_t; MRR = wdf_r. Example: 80 mm, 6 teeth, 120 m/min, 0.1 mm/tooth,
+  40 × 3 mm → 477 rpm, 286 mm/min, 34.4 cm³/min. ⏳ P19 milling.
+- **~power:** P_c = u × MRR; P_motor = P_c ÷ η. Example: 2.8 J/mm³, 75 cm³/min → 3.5 kW; η = 0.85 → 4.12 kW.
+- **~finish:** R_a ≈ f² ÷ (32r). Example: 0.25 mm/rev, r = 0.8 mm → 2.44 μm. ⏳ P19 profile.
+- **Verdict:** 5 pages; the five types Solve.
+
+#### #2 — Additive manufacturing
+
+- **Asks:** build time from layers (main); stair-step error on a slope (~cusp); FDM print time
+  from the bead (~fdm); which process family (~families); the order of a metal print
+  (~workflow).
+- **Main — calculator:** powder-bed build. Values height H, layer t, layers n, area per layer A,
+  hatch spacing s, scan speed v, recoat time t_r, time per layer, build time (9). Relations:
+  n = H ÷ t; t_layer = A ÷ (sv) + t_r; T = n t_layer. Example: 30 mm, 0.1 mm → 300 layers; 400 mm², 0.1 mm,
+  1000 mm/s → 4 s + 8 s = 12 s; 3600 s = 1 h. ⏳ P20 (`printLayers`).
+- **~cusp:** c = t cos θ (θ from the build plate). Example: 0.2 mm at 30° → 0.173 mm. ⏳ P20.
+- **~fdm:** flow Q = wtv; time = V ÷ Q. Example: 0.4 × 0.2 mm at 60 mm/s → 4.8 mm³/s; 12 cm³ → 41.7 min.
+- **~families — sort:** bins the seven ISO/ASTM 52900 families (vat photopolymerization, material
+  extrusion, powder bed fusion, material jetting, binder jetting, directed energy deposition,
+  sheet lamination). Cards (P31 icons): SLA, DLP, FDM, SLS, laser metal powder fusion, electron
+  beam melting, PolyJet-style jetting, binder jet, wire-and-arc DED, laminated sheets.
+- **~workflow — sequence:** CAD model → export a mesh → orient and add supports → slice → build →
+  remove the powder → stress-relieve → cut from the plate → remove supports → finish.
+- **Verdict:** 5 pages; the five types Solve.
+
+#### #3 — Tolerances
+
+- **Asks:** clearance of a hole–shaft fit (main); stack-up worst case and RSS (~stack); process
+  capability (~capability); fit type (~fit-type).
+- **Main — calculator:** Values basic size, hole ES, EI, shaft es, ei (mm), C_max, C_min (7).
+  Relations: C_max = ES − ei; C_min = EI − es (negative is interference; the caption names the
+  fit). Example: 25 mm H7/g6 typed as +0.021/0 and −0.007/−0.020 → C_max = 0.041, C_min = 0.007 mm
+  (clearance). ⏳ P21 (`fitDiagram`).
+- **~stack:** worst case ΣTᵢ; RSS √(ΣTᵢ²). Example: ±0.05, ±0.10, ±0.05, ±0.02 → ±0.22, ±0.124. ⏳ P21 chain.
+- **~capability:** C_p = (USL − LSL) ÷ 6σ; C_pk = min(USL − μ, μ − LSL) ÷ 3σ. Example: 25.000 ± 0.030,
+  σ = 0.008, μ = 25.006 → 1.25 and 1.00. Picture: `normalCurve` with both limits shaded (existing).
+- **~fit-type — sort:** bins "Clearance", "Transition", "Interference". Cards: hole 25.000–25.021
+  with shafts 24.980–24.993, 24.950–24.970, 25.002–25.015, 25.028–25.041, 25.022–25.035.
+- **Verdict:** 4 pages; the four types Solve.
+
+## Pictures for the pictures chat
+
+Options on existing kinds come first where they fit (P9, P16, P26–P28); the rest are new kinds,
+ordered by how many pages wait on them. Every field takes a number or a value id unless said.
+Art direction as `docs/PICTURES.md`: real parts in their materials (steel, aluminum, wood,
+water in glass), diagrams (curves, charts, Mohr's circle) flat.
+
+1. **HE-mechanical-P1 `beam`** (new kind). Pages: statics#0~reactions, #2~distributed;
+   mechanics-of-materials#0, #1, #1~thermal, #3~diagrams, #4 (all four), #5; advanced-solid-mechanics#2,
+   #4. Draws a steel beam to scale on supports (`pin`, `roller`, `fixed`), point loads, uniform
+   and triangular loads (arrows as tall as w), reactions as arrows with values; under it, with
+   `diagrams: true`, the shear and moment diagrams on one x-axis with V(x) and M(x) at a marked x
+   and the maxima labelled; `deflection` draws the bent shape dashed with δ_max and θ at the end.
+   Modes: `axial` (a bar of 1–3 segments with L, A, E, loads, δ brackets; `walls: true` for a
+   restrained bar), `column` (K by its end symbols, the buckled half-waves, KL bracketed),
+   `plate` (a circular plate's section under p, clamped or simple edges, w_max). Fields: length,
+   supports [{ at, kind }], loads [{ kind: 'point' | 'uniform' | 'triangle', at, from?, to?, size }],
+   reactions?, at?, shear?, moment?, deflection?, slope?, segments? (axial), k? (column), plate?.
+   Harness: ΣF = 0 and ΣM = 0 with the drawn reactions; V jumps by each point load; M(x) is the
+   area under V; deflected shape meets every support; δ sign matches the load.
+2. **HE-mechanical-P2 `truss`** (new kind) and card figure `trussJoint`. Pages: statics#1,
+   #1~sections, #1~zero-force (cards), advanced-solid-mechanics#2~truss,
+   finite-element-analysis#2. Draws joints and members (steel angle look), supports, loads,
+   each member's force as a label with T or C, colored by sign and also by the letter; a `cut`
+   line for sections with the free body shaded; `element` labels (nodes, angle θ, Δu, Δv) for FEA.
+   Fields: joints [{ name, x, y }], members [{ from, to, force? }], supports, loads, cut?,
+   element?. Harness: every joint balances; zero-force members show 0; T/C letters match signs.
+3. **HE-mechanical-P3 `section`** (new kind). Pages: statics#2, #2~hole, #3 (all four);
+   mechanics-of-materials#0~vessel, #3, #3~shear-stress; advanced-solid-mechanics#3, #4~thick.
+   Draws a cross-section to scale: rectangle, T, I, L, circle, tube, plate with a hole, thin or
+   thick cylinder wall; centroid marked with x̄, ȳ; the reference and centroidal axes and the
+   parallel-axis offset d; options `stress: 'bending' | 'shear' | 'plastic' | 'torsion' | 'hoop'`
+   draw the stress block beside it (linear, parabolic, rectangular, radial). Fields: shape, sizes,
+   centroid?, inertia?, axis?, stress?, values at the edges. Harness: centroid inside the bounding
+   box and matching ΣAy ÷ ΣA; I ≥ Ī; bending block zero at ȳ.
+4. **HE-mechanical-P4 `stressElement`** (new kind). Pages: mechanics-of-materials#0~mohr;
+   advanced-solid-mechanics#0, #3~yield; machine-design#0. Draws the square element with σₓ, σ_y,
+   τₓ_y arrows; the element turned to θ_p with σ₁, σ₂; Mohr's circle with center σ_avg, radius R,
+   the points (σₓ, τₓ_y) and (σ_y, −τₓ_y) and 2θ_p; `three: true` draws three circles from σ₁, σ₂, σ₃;
+   `envelope: 'vonMises' | 'tresca' | 'coulombMohr'` draws the failure locus in the σ₁–σ₂ plane
+   with the load point and the n-scaled point on the locus. Fields: sx, sy, txy, s1, s2, s3?,
+   angle?, strength?, n?. Harness: circle center and radius from the inputs; principal points
+   on the axis; the load point inside the envelope when n > 1.
+5. **HE-mechanical-P5 `stressStrain`** (new kind). Pages: mechanics-of-materials#0;
+   materials-science#3, #3~resilience; advanced-solid-mechanics#3. Draws the engineering curve
+   (elastic line of slope E, 0.2 % offset line meeting it at σ_Y, rising to UTS, necking to
+   fracture), the true curve dashed, the shaded resilience triangle or toughness area, and an
+   elastic–perfectly-plastic option; the current point (ε, σ). Fields: E, yield, uts, fracture
+   strain, point?, area?. Harness: the point is on the elastic line below yield; areas match
+   σ_Y² ÷ 2E.
+6. **HE-mechanical-P6 `shaft`** (new kind). Pages: mechanics-of-materials#2 (all three);
+   machine-design#2. Draws a steel shaft with T at the ends as curved arrows, a line scribed
+   along it twisting by φ, the end face with τ growing from the center (hollow when d_i > 0), and
+   with `bending` the moment M and the stress element at the surface. Fields: d, di?, length,
+   torque, angle?, tau?, moment?. Harness: τ_max = 16T ÷ πd³ (solid); φ drawn in proportion.
+7. **HE-mechanical-P7 `unitCell`** (new kind). Pages: materials-science#0 (all three). Draws a SC,
+   BCC or FCC cell in perspective with atoms as spheres (shrunk, `touching` lit along the edge,
+   body or face diagonal) and a, R labelled; `plane: [h, k, l]` shades a Miller plane; `bragg`
+   draws two plane rows with incoming and outgoing rays at θ and the extra path 2d sin θ.
+   Fields: structure, radius, edge, plane?, theta?. Harness: a matches R for the structure; atoms
+   per cell n.
+8. **HE-mechanical-P8 `binaryPhase`** (new kind). Pages: materials-science#2 (all three). Draws a
+   generic A–B isomorphous lens, a eutectic diagram, or the iron–carbon steel corner (eutectoid at
+   0.76 wt% C, 727 °C), with the alloy's vertical line, a tie line at T, the lever arms labelled
+   and two bars of the phase fractions. Fields: kind, c0, cl, calpha, ce?, temperature?.
+   Harness: the fractions add to 1 and match the lever arms.
+9. **HE-mechanical-P9 `functionGraph` options.** Pages: materials-science#1; engineering-
+   programming#2; numerical-methods#0, #0~bisection, #2, #3, #4. `family: 'erfc'` (C(x) =
+   C_s − (C_s − C₀)erf(x ÷ 2√(Dt)), the depth marked); `newton: { x0, steps }` (tangents down to the
+   axis); `bisect: { a, b, steps }` (shrinking brackets); `riemann.side: 'trapezoid' | 'simpson'`;
+   `steps: { method: 'euler' | 'heun' | 'rk4', h, n, y0 }` (the step polyline over the exact curve);
+   `through: [points]` (interpolation nodes ringed); `scale: { x: 'log', y: 'log' }`. Harness:
+   each drawn iterate equals the walkthrough's; the trapezoid sum equals T.
+10. **HE-mechanical-P10 `propertyDiagram`** (new kind). Pages: thermodynamics#0, #2~entropy,
+    #2~isentropic, #3, #3~rankine. Draws the T–v, P–v or T–s plane with water's vapor dome
+    (shape from IAPWS-IF97 saturation, not a copied chart), the critical point, states as numbered
+    dots, processes as lines (isobar, isentropic dashed for actual), a tie line with x, and
+    whole cycles (Rankine, Brayton, Otto, Diesel, refrigeration) with q_in and q_out arrows.
+    Fields: plane, states [{ name, T?, v?, P?, s?, x? }], path, cycle?. Harness: a state with
+    0 < x < 1 lies under the dome; isentropic segments vertical on T–s.
+11. **HE-mechanical-P11 `steadyFlowDevice`** (new kind). Pages: thermodynamics#1~steady-flow,
+    ~nozzle, ~mixing. Draws a turbine, compressor, pump, nozzle, diffuser, throttling valve or
+    mixing chamber in metal, inlets and outlets with ṁ, h, V labels, Q̇ and Ẇ as arrows, and an
+    energy bar (in = out). Fields: device, inlets, outlets, heat?, work?. Harness: Σṁh in + Q̇ =
+    Σṁh out + Ẇ.
+12. **HE-mechanical-P12 `fluidSystem`** (new kind). Pages: fluid-mechanics#0 (all four), #1,
+    #1~pitot, #2, #2~pump, #3, #4, #5. Modes: `tank` (water in glass, a depth h with P = ρgh),
+    `manometer` (U-tube, two fluids), `gate` (submerged rectangle, F at the center of pressure),
+    `buoyancy` (floating block, submerged part), `venturi` (two sections with piezometer
+    columns), `pitot`, `jet` (a jet on a fixed vane, F arrows, the control volume dashed), `pipe`
+    (length, diameter, pump, the energy and hydraulic grade lines falling by h_L), `plate` (the
+    boundary layer growing as δ ∝ √x, two velocity profiles), `model` (prototype and model side
+    by side at scale). Harness: column heights match ΔP ÷ ρg; A₁V₁ = A₂V₂; EGL falls by h_L; F
+    direction opposes the jet's turn.
+13. **HE-mechanical-P13 `moodyChart`** (new kind). Page: fluid-mechanics#4. Log–log f against
+    Re from 10³ to 10⁸, the laminar line 64 ÷ Re, curves for ε ÷ D (computed from Colebrook, not
+    copied), the transition band shaded, the page's point and its ε ÷ D curve lit. Fields: re,
+    roughness, f. Harness: the point lies on its curve.
+14. **HE-mechanical-P14 `thermalWall`** (new kind). Pages: heat-transfer#0, #0~cylinder, #0~fin,
+    #1, #2, #2~blackbody. Draws layered walls (brick, foam, steel) with the temperature profile
+    stepping through each layer and the films, and the resistance network beneath; `cylinder`
+    (pipe and insulation rings), `fin` (a pin fin with its temperature fading), `tube` (flow in a
+    tube with h), `radiation` (a surface to surroundings, εσT⁴ arrows), `blackbody` (Planck curves
+    with λ_max marked). Harness: the temperature drop in each layer equals q times its R.
+15. **HE-mechanical-P15 `heatExchanger`** (new kind). Page: heat-transfer#3 (all four). Hot and
+    cold temperature lines along the length, counter or parallel, ΔT₁ and ΔT₂ bracketed, the
+    LMTD dashed, C_min named. Fields: arrangement, hot in/out, cold in/out, lmtd?, q?.
+    Harness: lines never cross in parallel flow; ΔT_lm between ΔT₁ and ΔT₂.
+16. **HE-mechanical-P16 `oscillator` options** (extends `oscillator`). Pages: vibrations (#0~springs,
+    #1, #1~transmissibility, #2, #2~log-dec, #3). `damping: { c, zeta? }` (a dashpot, the decaying
+    trace inside the ±Xe^(−ζω_nt) envelope, peaks marked for δ); `forcing: { amplitude, frequency }`
+    (F₀ sin ωt on the block and the response curve X ÷ δ_st against r with the point and the
+    phase); `transmit: true` (TR against r with √2 marked); `twoMass` (two blocks, three
+    springs, both mode shapes as arrows); `springs: { k1, k2, layout }`. Harness: ω_d < ω_n; peak
+    ratio matches δ; the point lies on the response curve.
+17. **HE-mechanical-P17 `fatigueDiagram`** (new kind). Pages: machine-design#1, #1~sn, #1~miner.
+    The Goodman diagram (σ_m against σ_a, the line from S_e to S_ut, the yield line, the load line
+    through the point, the factor n); the S–N line on log–log axes from 10³ to 10⁶ with S_e flat
+    after; a Miner bar. Harness: the point and n agree; N read off the line matches the page.
+18. **HE-mechanical-P18 `gearPair`** (new kind). Page: machine-design#3, #3~train. Two spur gears
+    in steel with their teeth counted, pitch circles d = mN, speeds and torques by each, the
+    tangential force at the mesh; a train of up to four. Harness: n₁N₁ = n₂N₂; pitch circles touch.
+19. **HE-mechanical-P19 `machining`** (new kind). Pages: manufacturing#1, #1~milling, #1~finish.
+    Turning (a bar of diameter D turning at N, the tool moving f per turn, depth d, the chip),
+    milling (a cutter of n_t teeth, feed per tooth, width and depth), and the ideal surface
+    profile of cusps from f and the tool radius. Harness: v = πDN; the cusp height matches R_a.
+20. **HE-mechanical-P20 `printLayers`** (new kind). Page: manufacturing#2, #2~cusp. A part sliced
+    into layers t on a build plate (n counted, a few drawn and "…"), a sloped face showing the
+    stair steps and cusp c at θ, a time bar per layer. Harness: n = H ÷ t; c = t cos θ.
+21. **HE-mechanical-P21 `fitDiagram`** (new kind). Page: manufacturing#3, #3~stack. The basic-size
+    zero line, the hole and shaft tolerance zones as bars above and below, C_max and C_min (or
+    interference) bracketed, the fit named; a stack-up chain of dimensions with ± zones.
+    Harness: brackets match ES − ei and EI − es.
+22. **HE-mechanical-P22 explore figure `orthographic`** (layout engine). Page: cad-graphics#0. A
+    stepped block with a through hole in a glass box; scenes light a view, unfold the box,
+    show hidden edges dashed and center lines, or the isometric view. Also card icons for line
+    types.
+23. **HE-mechanical-P23 card icons: GD&T symbols** (14, drawn by us to the standard's shapes).
+    Page: cad-graphics#1.
+24. **HE-mechanical-P24 explore figure `codeTrace`** and card figure `code` (layout engine).
+    Pages: engineering-programming#0~trace and the programming sorts (cards in a code font).
+    A snippet with the current line lit and a variables table that changes by scene; MATLAB and
+    Python side by side.
+25. **HE-mechanical-P25 `elementChain`** (new kind). Pages: finite-element-analysis#0 (all three),
+    #3~count. Nodes in a row joined by springs or bars, fixed nodes hatched, nodal forces and
+    displacement arrows, element numbers and k; `mesh: { nx, ny }` draws a 2-D grid with node and
+    DOF counts. Harness: node forces balance with element forces; counts match.
+26. **HE-mechanical-P26 `vectorDiagram` `forces`** (extends). Pages: statics#0, #0~components. Up to
+    four forces from a point and their closed polygon (equilibrium) or resultant, each angle
+    from the horizontal labelled. Harness: the polygon closes when the page says equilibrium.
+27. **HE-mechanical-P27 `freeBody` options** (extends). Pages: statics#4~tip, #4~belt; dynamics#1,
+    #1~banked. `g: 9.81`; `tip` (push height h, the tipping edge, P_tip and P_slip); `drum` (a rope
+    round a drum, wrap β, T₁, T₂); `hangingMass` (a second block on a rope over a pulley);
+    `banked` (a car on a road banked θ, n and mg summing to the centripetal force). Harness:
+    T₂ = T₁e^(μβ); the tip check picks the smaller force.
+28. **HE-mechanical-P28 `circularMotion` `tangential`** (extends). Page: dynamics#0~nt. A curved
+    path with v, a_t along it, a_n toward the center of curvature ρ, and their sum.
+29. **HE-mechanical-P29 `linkage`** (new kind). Pages: dynamics#3~rolling, #3~ic; cad-graphics#3.
+    A sliding ladder or link with its instantaneous center and velocity arrows ⟂ to the IC lines;
+    a rolling wheel (v = 0 at the contact, 2v at the top); four-bar and slider-crank with links
+    and joints counted for Gruebler. Harness: velocities ⟂ to their IC rays and ∝ distance.
+30. **HE-mechanical-P30 `casting`** (new kind, low priority). Page: manufacturing#0, #0~riser. A sand
+    mold cut open with the casting and a riser, V and A named, solidification time bars.
+31. **HE-mechanical-P31 card icons** (layout cards): crystal defects (materials-science#1~defects),
+    process families (manufacturing#0~families) and additive families (manufacturing#2~families).
+
+## Engine needs
+
+1. **E1 Units.** Add: stress MPa, GPa, ksi, Msi; moment and torque N·m, kN·m, N·mm, lbf·ft,
+   lbf·in (a dimension apart from energy); stiffness and line load N/m, N/mm, kN/m, lbf/in;
+   second moment mm⁴, cm⁴, m⁴, in⁴; section modulus mm³ (as volume, named); specific energy kJ/kg,
+   Btu/lbm; specific heat and entropy kJ/(kg·K); entropy kJ/K; conductivity W/(m·K); film
+   coefficient W/(m²·K); heat flux W/m²; resistance K/W, m²·K/W; viscosity Pa·s, cP; kinematic
+   viscosity m²/s, cSt; mass flow kg/s, lbm/s; volume flow m³/s, L/s, gpm; angular speed rad/s,
+   rpm; frequency Hz; length μm, nm; microstrain; fracture toughness MPa√m; diffusivity m²/s;
+   number density m⁻³; feed mm/rev; cutting speed m/min; removal rate cm³/min, mm³/s; specific
+   cutting energy J/mm³; mold constant min/cm²; **a temperature-difference dimension** (K = °C,
+   °F = °R, converted without offset) and °R absolute. Waiting: nearly every page; the ΔT unit
+   blocks mechanics-of-materials#1~thermal and every heat-transfer page.
+2. **E2 Formula unit sets.** A page names its working set ("N–mm–MPa", "SI base", "kJ–kg–K") and
+   the steps convert into it first, so steps read like the textbook (σ = 50,000 N ÷ 314.2 mm²).
+   Waiting: all solid-mechanics pages (MoM, advanced, FEA, machine design).
+3. **E3 Typesetting.** `toLatex` for ∫ with limits (in `how` only), ∂U ÷ ∂P, Σ, ln and log₁₀,
+   ⌊ ⌋ and ⌈ ⌉, multi-letter subscripts (ΔT_lm, S_ut, Re_L, Nu_D, h_fg, T_h,in), square roots
+   of sums, and powers with fractional exponents ((k − 1)/k). Waiting: thermodynamics#2, #3;
+   numerical-methods#0, #3; advanced-solid-mechanics#2.
+4. **E4 Ordered and paired roots.** A relation with two or three roots fills several values in
+   order (σ₁ ≥ σ₂ ≥ σ₃; ω₁ < ω₂), and symmetric 2 × 2 and 3 × 3 eigenvalues (stress tensor, 2-DOF
+   K − ω²M). Waiting: advanced-solid-mechanics#0, #0~invariants; vibrations#3; MoM#0~mohr (σ₁, σ₂ by
+   ± already works).
+5. **E5 Water properties.** A routine from the public IAPWS-IF97 equations: saturation by T or
+   P (P_sat, T_sat, v_f, v_g, h_f, h_fg, s_f, s_fg) and superheated v, h, s; later R-134a and
+   air's c_p(T). Pages keep typed table values until then. Waiting (for automatic look-ups):
+   thermodynamics#0, #1~steady-flow, #3~rankine, #3~refrigeration; P10's dome.
+6. **E6 Iteration tables.** A walkthrough step that runs a method k times and shows the rows
+   (n, xₙ, f(xₙ), error) with the stopping rule. Waiting: numerical-methods#0, #0~bisection,
+   #1~gauss-seidel, #4, #4~rk4.
+7. **E7 Special functions.** erf, erfc and their inverse; tanh; log₁₀; floor and ceiling, each
+   with a harness phrase ("erf(0.329) = 0.359, from the error function"). Waiting:
+   materials-science#1; heat-transfer#0~fin; engineering-programming#0, #3; numerical-methods#0~bisection.
+8. **E8 Linear solve in relations.** Solve K u = F (up to 4 × 4) as one relation whose steps are
+   the `matrixGrid` row operations, so FEA pages need no hand-written rearrangements. Waiting:
+   finite-element-analysis#0, #2~beam; numerical-methods#1.
+9. **E9 Two-value limits.** A page limit comparing two values ("σ_cr must be below σ_Y",
+   "Re below 5 × 10⁵", "0 ≤ x ≤ 1", "shaft VC ≤ hole VC") shown as a limit, never as a relation; check
+   whether the current limit lines take two values. Waiting: MoM#5~slenderness, fluid-mechanics#5,
+   thermodynamics#0, cad-graphics#1~virtual.
+10. **E10 Harness.** PHRASES for the group's words (tension, compression, sagging, quality,
+    isentropic, film temperature, found numerically, Colebrook); a check per new picture kind
+    (P1–P31); a sign-convention check (tension +, Q in +, W out +) on pages that state one.
+11. **E11 Code text.** Layout cards and explore scenes in a code font with `'` and `"` kept
+    straight (the text formatter must not curl quotes in code). Waiting: engineering-programming
+    sorts and the trace page.
+
+## Not in the taxonomy
+
+- **Stress transformation and Mohr's circle, combined loading, thin-walled pressure vessels:** a
+  chapter each in every Mechanics of Materials text; here they are problem types under
+  `mechanics-of-materials#0`. A seventh topic "Stress transformation and combined loading" would
+  fit better.
+- **Kinematics of mechanisms** (linkages, cams, gear trains as mechanisms): no course; Gruebler is
+  on `cad-graphics#3`, gear trains on `machine-design#3`.
+- **Welding and joining:** taught in Manufacturing Processes; only a sort card here.
+- **Gas mixtures and psychrometrics; compressible flow:** psychrometrics is in most
+  Thermodynamics courses; compressible flow is owned by aerospace (`he.engineering.compressible-flow`).
+- **Turbomachinery** (pump curves, specific speed, cavitation): taught in Fluid Mechanics; only
+  pump power is here.
+- **Transient conduction** is under "Conduction" (lumped only); 1-D transient charts and
+  finite-difference conduction are missing. **Mass transfer** is not in Heat Transfer.
+- **Fracture, creep and composites (rule of mixtures):** Materials Science courses teach them;
+  fracture is a problem type of mechanical properties, the others are missing.
+- **Eigenvalue methods and finite differences for PDEs:** Numerical Methods courses often end with
+  them; not topics here.
+- **2-D finite elements** (CST, Q4, isoparametric quads): named in "Truss, beam and 2D elements"
+  but too big for one page; a topic of its own, or an explore page with the triangle and its
+  strains, would serve them.
+- **Engineering economics, ethics, measurements and instrumentation:** FE Mechanical topics not
+  in the taxonomy for this group.
+
+## Priority
+
+1. Picture P1 (`beam`) and engine E1 + E2: they unblock most of Statics, Mechanics of Materials
+   and Advanced Solid Mechanics.
+2. Ship-now pages (existing pictures): statics#0, #2~integration, #4; dynamics (all but ~nt,
+   ~banked, ~ic); thermodynamics#1, #2, #3 mains and ~otto/~diesel/~refrigeration; numerical-methods#1,
+   #2~least-squares; FEA#0, #1; vibrations#0; manufacturing#3~capability; every sort and sequence.
+3. P3, P4, P5, P12, P14 (the next biggest groups of waiting pages).
+4. E5 (water), E6 (iteration tables), E4 (ordered roots).
+5. The rest of the pictures, P30 last.
+
+## Research to do
+
+For a separate research chat. Follow `research/textbooks/README.md` and
+`research/questions/SOURCES.md`: sequential fetches, one request a second per host, our
+User-Agent, robots.txt obeyed, the licence or reuse statement quoted with its URL, reference
+only. Licences marked "verified" were read on the publisher's listing on 2026-10-02 (web search
+only); the rest are to confirm. robots.txt was **not** checked: the sandbox proxy blocks
+ocw.mit.edu, engineeringstatics.org, libretexts.org, mathforcollege.com, doitpoms.ac.uk and
+mechanicsmap.psu.edu, so the research chat checks each first. OpenStax books carry the
+"may not be used in the training of large language models" restriction (`research/textbooks/README.md`);
+use them as the K–12 files do, chapter titles and question types only.
+
+### Textbooks (proposed `research/textbooks/college/<course>.md`, one per course)
+
+| Course                    | Text, URL                                                                                                                            | Licence                                                                            | Extract                                                                      |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| Statics                   | Engineering Statics: Open and Interactive (Baker & Haynes), <https://engineeringstatics.org>                                         | CC BY-NC-SA 4.0 (verified)                                                         | chapter list; worked-example types; number sizes (kN, m); sign conventions   |
+| Statics, Dynamics         | Mechanics Map (J. Moore et al., Penn State), <https://mechanicsmap.psu.edu>                                                          | CC BY-SA 4.0 (to confirm)                                                          | topic order; problem types per section                                       |
+| Statics, MoM, Adv. solids | MIT OCW 2.001, 2.002, 2.080J, <https://ocw.mit.edu>                                                                                  | CC BY-NC-SA 4.0                                                                    | lecture topics; problem-set types                                            |
+| Dynamics, Vibrations      | MIT OCW 2.003SC Engineering Dynamics                                                                                                 | CC BY-NC-SA 4.0                                                                    | topic order; exam question types                                             |
+| MoM                       | Mechanics of Materials (Roylance), <https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_of_Materials_(Roylance)> | CC BY-NC-SA 4.0 (verified)                                                         | chapter list; notation; example ranges                                       |
+| MoM                       | Strength of Materials (Engineering Mechanics OER), <https://engineeringmechanicsoer.github.io/StrengthBook/>                         | CC BY-NC-SA 4.0 (verified)                                                         | chapter list; whether transformation and vessels are separate chapters       |
+| Statics, MoM              | Essential Mechanics: Statics and Strength of Materials with MATLAB and Octave (RIT Scholar Works)                                    | CC BY (verified)                                                                   | MATLAB scripting examples (for programming#3)                                |
+| Materials                 | DoITPoMS teaching and learning packages, <https://www.doitpoms.ac.uk>                                                                | CC BY-NC-SA 2.0 UK (to confirm)                                                    | package list (crystals, diffusion, phase diagrams, fracture); question types |
+| Materials                 | MIT OCW 3.091                                                                                                                        | CC BY-NC-SA 4.0                                                                    | unit-cell, diffusion and phase-diagram problem types                         |
+| Thermodynamics            | Introduction to Engineering Thermodynamics (C. Y. Yan), <https://pressbooks.bccampus.ca/thermo1/>                                    | CC BY-NC-SA 4.0 (verified)                                                         | chapter list; worked examples by type; typical states (P, T)                 |
+| Thermodynamics            | Thermodynamics and Propulsion (Greitzer, Spakovszky, Waitz), MIT 16.Unified notes                                                    | to confirm (MIT OCW terms)                                                         | cycle notation; T–s conventions                                              |
+| Thermodynamics            | IAPWS-IF97 release, <https://www.iapws.org>                                                                                          | free release of the equations (to confirm)                                         | the equations for E5 (implemented in our code, no tables copied)             |
+| Fluids                    | Fluid Mechanics (Bar-Meir, Potto), LibreTexts                                                                                        | GFDL or CC (to confirm)                                                            | chapter list; pipe-flow and statics example ranges                           |
+| Fluids, Heat              | MIT OCW 2.06, 2.005/2.006, 2.51                                                                                                      | CC BY-NC-SA 4.0                                                                    | topic order; problem types                                                   |
+| Heat transfer             | A Heat Transfer Textbook (Lienhard IV & V), <https://ahtt.mit.edu>                                                                   | free download for personal and non-profit teaching; otherwise copyright (verified) | chapter list; correlation names and ranges; notation                         |
+| Machine design            | MIT OCW 2.72 Elements of Mechanical Design                                                                                           | CC BY-NC-SA 4.0                                                                    | lecture topics; problem types (fatigue, bearings, gears)                     |
+| Machine design            | NPTEL Design of Machine Elements                                                                                                     | to confirm (NPTEL states CC BY-SA on many courses)                                 | module list; numbers in metric practice                                      |
+| Manufacturing             | Manufacturing Processes 4-5 (Virasak), <https://openoregon.pressbooks.pub/manufacturingprocesses45/>                                 | CC BY 4.0 (verified)                                                               | chapter list; machining formulas and review-question types                   |
+| Manufacturing             | MIT OCW 2.008 Design and Manufacturing II                                                                                            | CC BY-NC-SA 4.0                                                                    | casting, forming, AM and tolerance problem types                             |
+| Programming, Numerical    | Python Programming and Numerical Methods (Kong, Siauw, Bayen), <https://pythonnumericalmethods.berkeley.edu>                         | free to read; publisher copyright (Elsevier) — reference only                      | chapter list; exercise types                                                 |
+| Numerical                 | Holistic Numerical Methods (Kaw, USF), <https://nm.mathforcollege.com>                                                               | CC BY-NC-SA 3.0 US (verified via its FAQ listing)                                  | chapter list; multiple-choice quiz types                                     |
+| Programming, Numerical    | MIT OCW 2.086 (MATLAB), 6.0001 (Python)                                                                                              | CC BY-NC-SA 4.0                                                                    | problem-set types                                                            |
+| CAD                       | Engineering Graphics and Design (M. Ford, UW Tacoma), <https://uw.pressbooks.pub/enggraphics/>                                       | CC BY-NC-SA 4.0 (verified)                                                         | chapter list; projection and dimensioning conventions                        |
+| CAD                       | Blueprint Reading (WisTech Open), <https://wtcs.pressbooks.pub/blueprintreading/>                                                    | CC BY 4.0 (verified)                                                               | line types; first- and third-angle; GD&T symbol names                        |
+| Adv. solids               | Applied Mechanics of Solids (A. Bower), <https://www.solidmechanics.org>                                                             | free to read; all rights reserved                                                  | chapter list; notation for tensors and energy methods                        |
+| FEA                       | MIT OCW 2.092/2.093 (Bathe); Introduction to Finite Element Methods (Felippa, Colorado)                                              | CC BY-NC-SA 4.0; Felippa free to read (to confirm)                                 | element list; 1-D and truss examples; convergence                            |
+| Notation (all)            | NCEES FE Reference Handbook                                                                                                          | free to view, NCEES copyright — symbols only                                       | symbols, constants, unit conventions per FE topic                            |
+
+### Questions (proposed `research/questions/college/<course>.jsonl`)
+
+| Source                                                                                                      | URL                                  | Licence                                  | Use                                                                                  |
+| ----------------------------------------------------------------------------------------------------------- | ------------------------------------ | ---------------------------------------- | ------------------------------------------------------------------------------------ |
+| MIT OCW problem sets and exams (2.001, 2.002, 2.003SC, 2.005, 2.06, 2.51, 2.72, 2.008, 2.086, 2.092, 3.091) | <https://ocw.mit.edu>                | CC BY-NC-SA 4.0                          | the main college source: one record per question                                     |
+| Engineering Statics interactive problems                                                                    | <https://engineeringstatics.org>     | CC BY-NC-SA 4.0                          | statics types and number sizes                                                       |
+| Yan, end-of-section practice problems                                                                       | BCcampus                             | CC BY-NC-SA 4.0                          | thermodynamics types                                                                 |
+| Kaw, multiple-choice quizzes                                                                                | <https://nm.mathforcollege.com>      | CC BY-NC-SA 3.0 US                       | numerical-methods types                                                              |
+| Virasak, review questions                                                                                   | Open Oregon                          | CC BY 4.0                                | manufacturing types                                                                  |
+| DoITPoMS questions                                                                                          | <https://www.doitpoms.ac.uk>         | to confirm                               | materials types                                                                      |
+| Mechanics Map exercises                                                                                     | <https://mechanicsmap.psu.edu>       | to confirm                               | statics and dynamics                                                                 |
+| AP Physics C: Mechanics released free-response (bridge level)                                               | <https://apcentral.collegeboard.org> | College Board copyright — reference only | statics, dynamics and oscillation bridge items                                       |
+| NCEES FE exam specifications (topic lists, not questions)                                                   | <https://ncees.org>                  | free to view — reference only            | which topics each FE exam tests; no questions (practice exams are sold and not used) |
+| GRE Physics practice book (classical mechanics, thermodynamics)                                             | <https://www.ets.org>                | ETS copyright — reference only           | bridge-level types for dynamics and thermodynamics                                   |
+
+Record per question: id, source, URL, licence, retrieved date, course id, topic index, problem
+type (e.g. "member force by joints", "head loss, turbulent"), the unknown, the givens' sizes
+and units (reference only, never copied), the answer's form, what the figure shows, the FE
+knowledge area if any, and the page that should answer it (Solves / Partly / No, filled by the
+reviewer). **Targets:** 40 each for Statics, Dynamics, Mechanics of Materials, Thermodynamics,
+Fluid Mechanics and Heat Transfer; 30 each for Materials Science, Machine Design, Vibrations,
+Numerical Methods and Manufacturing; 20 each for Advanced Solid Mechanics, FEA, Programming and
+CAD (**480** in all).
+
+### Engine and picture research
+
+- The IAPWS-IF97 equations (E5) and the Colebrook relation (P13) are public equations; implement
+  them, never digitize a printed chart or table.
+- ISO 286 fit tables, Marin and Lewis factors and K_t charts are published in copyrighted
+  standards and texts: the pages take them typed; the research chat records only which factors
+  the textbooks use, not their values.
+
+## Summary
+
+- **Pages: 248** — 68 main pages + 180 problem types; **222 calculators** and **26 layouts**
+  (20 sorts, 4 sequences, 2 explores). **102 pages are ⏳**: 26 ship now on an interim picture
+  (`functionGraph`, `vectorDiagram`, `matrixGrid`, `plot`, `table`, `rotor`, `oscillator`,
+  `heatEngine`, `gasPiston`), 76 wait for their picture (or ship on `none`); the other 146 have
+  their picture today (several still need an engine item: E1–E2 units, E6, E7). No topic is left without a page; 2-D finite elements, plate bending beyond
+  circular plates and Buckingham-Π derivations are served in part.
+- **Existing kinds reused:** `vectorDiagram`, `freeBody`, `simpleMachine`, `functionGraph`
+  (power, polynomial, exponential, riemann, shade), `plot`, `projectile`, `circularMotion`,
+  `energyTrack`, `powerLift`, `impulse`, `collision`, `rotor`, `oscillator`, `pendulum`,
+  `gasPiston` (ideal, energy), `heatEngine` (engine, refrigerator), `matrixGrid` (multiply,
+  rowReduce, determinant), `scatter`, `normalCurve`, `termsChart`, `table`, `curvedSolid`.
+- **Picture requests: 31** (HE-mechanical-P1–P31): 22 new kinds (beam, truss, section,
+  stressElement, stressStrain, shaft, unitCell, binaryPhase, propertyDiagram, steadyFlowDevice,
+  fluidSystem, moodyChart, thermalWall, heatExchanger, fatigueDiagram, gearPair, machining,
+  printLayers, fitDiagram, elementChain, linkage, casting — P30 low priority), 5 option sets on
+  existing kinds (functionGraph, oscillator, vectorDiagram, freeBody, circularMotion), 2 explore
+  figures (orthographic, codeTrace) and 2 card-icon sets (GD&T, defects and process families).
+- **Engine needs: 11** (E1 units with a ΔT dimension, E2 formula unit sets, E3 typesetting, E4
+  ordered roots and eigenvalues, E5 IAPWS-IF97 water, E6 iteration tables, E7 special functions,
+  E8 linear solve in relations, E9 two-value limits, E10 harness, E11 code text).
+- **Research targets:** 27 open or free-to-read texts across the 15 courses (10 licences
+  verified by web search, the rest to confirm; robots.txt unchecked behind the proxy) and **480** questions,
+  mainly MIT OCW (CC BY-NC-SA), with AP Physics C, FE specifications and GRE Physics as
+  reference-only bridges.

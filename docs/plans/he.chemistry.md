@@ -801,3 +801,475 @@ MIT OCW 5.13.
   + ethanol (46.07) → ethyl ethanoate (88.11) + water: 83.0%; ethene + water → ethanol: 100%.
 - **Verdict:** 3 pages (2 calculators, 1 sequence).
 
+## Analytical Chemistry — `he.chemistry.analytical`
+
+Prerequisite `he.chemistry.gen-chem-2`. Textbooks: Harvey, Analytical Chemistry 2.1 (ch. 4
+data, 5 calibration, 9 titrations, 10 spectroscopy, 11 electrochemistry, 12 chromatography);
+MIT OCW 5.35 (lab notes).
+
+### analytical#0 — Error analysis and statistics
+
+- **Textbooks:** Analytical Chemistry 2.1 ch. 4 (mean, standard deviation, confidence
+  intervals, propagation of uncertainty, t-tests, outliers).
+- **Refresh:** `s.10.measurement~accuracy`; the statistics pages of `m.12` (normal curve).
+- **Tests ask:**
+
+  | Question type                                      | Page            | Mark            |
+  | -------------------------------------------------- | --------------- | --------------- |
+  | 95% confidence interval of a mean                  | main            | Solves (⏳ P19) |
+  | uncertainty of a computed result                   | ~propagation    | Solves          |
+  | may a suspect value be rejected (Q test)           | ~q-test         | Solves          |
+  | does a mean differ from a known value (t-test)     | ~t-test         | Solves (⏳ P19) |
+  | mean and s from a list of replicates               | main            | Partly (E13: a data list) |
+
+- **Main — BUILD `he.chemistry.analytical#0` (⏳ P19):** `normalCurve` with `family: 't', df`.
+  Values: measurements n (whole, 2–30), mean x̄, standard deviation s, t for n − 1 degrees of
+  freedom at 95% (typed, default 2.776, picked by n after E5), half-width, lower end, upper
+  end. Relations: half-width = ts ÷ √n; lower = x̄ − half-width; upper = x̄ + half-width.
+  Assumptions: random error only; the interval is where the true mean lies with 95%
+  confidence, not where 95% of the readings lie. Example: n = 5, x̄ = 10.12, s = 0.15 →
+  ± 0.19 (9.93 to 10.31). startWith n, x̄, s.
+- **~propagation — BUILD:** `none`. Values: mass m (g), its uncertainty s_m, volume V (L), its
+  uncertainty s_V, molar mass M (exact), concentration c (M), relative uncertainty, absolute
+  uncertainty s_c. Relations: c = m ÷ (MV); relative = √((s_m ÷ m)² + (s_V ÷ V)²);
+  s_c = c × relative. Assumptions: independent random errors; in a product or quotient the
+  relative uncertainties add in quadrature. Example: 0.2500 ± 0.0002 g NaCl (58.44 g/mol) in
+  0.2500 ± 0.0001 L → c = 0.01711 M, relative 8.9 × 10⁻⁴, s_c = 1.5 × 10⁻⁵ M.
+- **~q-test — BUILD:** `histogram` (the readings as dots, the suspect ringed). Values: suspect
+  value, its nearest neighbor, highest, lowest, gap, range, Q, Q critical (typed; 0.710 for
+  n = 5 at 95%, by n after E5). Relations: gap = |suspect − nearest|; range = highest − lowest;
+  Q = gap ÷ range. Example: 10.09, 10.12, 10.15, 10.18, 10.45 → Q = 0.27 ÷ 0.36 = 0.75 > 0.710:
+  reject 10.45.
+- **~t-test — BUILD (⏳ P19):** values x̄, known value μ, s, n, t calculated, t critical.
+  Relation: t = |x̄ − μ|√n ÷ s. Example: x̄ = 10.12, μ = 10.00, s = 0.15, n = 5 → t = 1.79 <
+  2.776: no significant difference at 95%.
+- **Verdict:** 4 calculators; four types Solve, two after P19; data lists wait on E13.
+
+### analytical#1 — Titrations
+
+- **Textbooks:** Analytical Chemistry 2.1 ch. 9 (acid–base, complexation with EDTA, back
+  titrations, polyprotic curves, indicators).
+- **Refresh:** `gen-chem-2#2~equivalence-ph`, `s.10.acids-bases~titration`.
+- **Tests ask:**
+
+  | Question type                                       | Page             | Mark           |
+  | --------------------------------------------------- | ---------------- | -------------- |
+  | standardize NaOH with KHP                           | main             | Solves         |
+  | analyte from a back titration (antacid)             | ~back-titration  | Solves         |
+  | water hardness by EDTA (mg/L CaCO₃)                 | ~edta            | Solves         |
+  | equivalence volumes and pH of a diprotic acid       | ~polyprotic      | Solves (⏳ P6) |
+  | choose an indicator                                 | ~indicator       | Solves         |
+
+- **Main — BUILD `he.chemistry.analytical#1`:** `phScale` titration (from
+  `g.s10-acids-bases-weak-titration`; acid KHP, Kₐ 3.9 × 10⁻⁶, `name: 'KHP'`). Values: KHP mass
+  m (g), molar mass M (204.22 g/mol), moles of KHP n, endpoint volume V (mL), NaOH
+  concentration C (M). Relations: n = m ÷ M; C = n ÷ V. Assumptions: KHP reacts 1 : 1 with
+  NaOH; KHP is a primary standard (pure, weighed dry). Example: 0.5105 g → 2.500 mmol; 24.95 mL
+  → 0.1002 M. startWith m, V.
+- **~back-titration — BUILD:** `tape` (interim: the acid added as one tape split into "reacted
+  with the sample" and "left over"). Values: HCl concentration, HCl volume, moles of HCl added,
+  NaOH concentration, NaOH volume, moles left over, moles reacted, mole ratio (HCl per analyte),
+  moles of analyte, analyte mass (mg). Relations: n_added = CV; n_left = C_b V_b; n_reacted =
+  n_added − n_left; n_analyte = n_reacted ÷ ratio; mass = n_analyte × 100.09. Example: 50.00 mL
+  of 0.1000 M HCl (5.000 mmol); 18.20 mL of 0.1000 M NaOH (1.820 mmol) → 3.180 mmol ÷ 2 =
+  1.590 mmol CaCO₃ = 159.1 mg. 10 values.
+- **~edta — BUILD:** `beaker` solution (interim). Values: sample volume (mL), EDTA
+  concentration (M), EDTA volume (mL), moles of metal ion, hardness (mg/L as CaCO₃).
+  Relations: n = C × V (EDTA binds 1 : 1); hardness = n × 100.09 ÷ sample volume. Example:
+  50.00 mL sample, 12.40 mL of 0.01000 M EDTA → 0.1240 mmol → 12.41 mg → 248 mg/L.
+- **~polyprotic — BUILD (⏳ P6):** `phScale` titration with `polyprotic`. Values pKₐ₁, pKₐ₂,
+  acid concentration, acid volume, base concentration, first and second equivalence volumes,
+  pH at the first equivalence. Relations: V₁ = C_aV_a ÷ C_b; V₂ = 2V₁; pH₁ = (pKₐ₁ + pKₐ₂) ÷ 2
+  (pH = pKₐ₁ at V₁ ÷ 2). Example: pKₐ₁ = 2.00, pKₐ₂ = 6.00, 25.00 mL of 0.100 M with 0.100 M
+  NaOH → 25.0 mL and 50.0 mL, pH 4.00 at the first.
+- **~indicator — BUILD (sort):** bins "Methyl red (pH 4.4–6.2)", "Bromothymol blue (6.0–7.6)",
+  "Phenolphthalein (8.2–10.0)". Cards (equivalence pH shown): HCl with NaOH (7.0); HNO₃ with KOH
+  (7.0); ethanoic acid with NaOH (8.7); benzoic acid with NaOH (8.6); NH₃ with HCl (5.3);
+  methylamine with HCl (5.9). Sentence: "Pick the indicator whose color change brackets the
+  equivalence-point pH."
+- **Verdict:** 5 pages (4 calculators, 1 sort); the five types Solve, one after P6.
+
+### analytical#2 — Spectrophotometry (Beer–Lambert)
+
+- **Textbooks:** Analytical Chemistry 2.1 ch. 5 (calibration curves, standard additions), 10
+  (Beer's law, mixtures).
+- **Tests ask:**
+
+  | Question type                                          | Page                | Mark   |
+  | ------------------------------------------------------ | ------------------- | ------ |
+  | absorbance, %T, ε or c from Beer's law                 | main                | Solves |
+  | unknown from a calibration line, with dilution        | ~calibration        | Solves |
+  | two absorbing species at two wavelengths              | ~mixture            | Solves |
+  | standard addition                                      | ~standard-addition  | Solves |
+  | least-squares line from standards                      | ~calibration        | Partly (E13) |
+
+- **Main — BUILD `he.chemistry.analytical#2`:** `functionGraph` linear (interim: A against c,
+  slope εb, the point marked; P16 draws the cuvette and the light). Values: molar absorptivity
+  ε (L/(mol·cm), 1–10⁶), path length b (cm, default 1.00), concentration c (M), absorbance A
+  (no unit), transmittance %T. Relations: A = εbc; A = −log(%T ÷ 100). Assumptions: one
+  wavelength; dilute solutions (A up to about 1 stays on the line); A has no unit. Example:
+  ε = 1.20 × 10⁴, b = 1.00 cm, c = 4.00 × 10⁻⁵ M → A = 0.480, %T = 33.1%. startWith ε, b, c.
+- **~calibration — BUILD:** `functionGraph` linear with `at` (the unknown read across and
+  down). Values: slope m (per mg/L), intercept b, unknown absorbance A, measured concentration
+  c, dilution factor D, original concentration c₀. Relations: c = (A − b) ÷ m; c₀ = Dc.
+  Example: A = 0.0950c + 0.0040; A = 0.524 → c = 5.47 mg/L; diluted 10 times → 54.7 mg/L.
+- **~mixture — BUILD:** `matrixGrid` (the ε matrix times the concentration column). Values
+  ε_X and ε_Y at λ₁, ε_X and ε_Y at λ₂, A₁, A₂, c_X, c_Y (b = 1.00 cm). Relations:
+  A₁ = ε_X1c_X + ε_Y1c_Y; A₂ = ε_X2c_X + ε_Y2c_Y (Cramer's rule, three lines). Example: 5000,
+  1000; 500, 4000; A₁ = 0.280, A₂ = 0.340 → c_X = 4.0 × 10⁻⁵ M, c_Y = 8.0 × 10⁻⁵ M.
+- **~standard-addition — BUILD:** `functionGraph` linear (signal against added concentration,
+  the x-intercept marked with `zeros`). Values: sample volume V_x, standard volume V_s,
+  standard concentration c_s, signal of the sample alone A₁, signal with the standard A₂,
+  unknown concentration c_x. Relation: c_x = A₁c_sV_s ÷ ((A₂ − A₁)V_x). Assumptions: both
+  flasks are filled to the same mark; the signal is proportional to concentration. Example:
+  10.00 mL sample, 1.00 mL of 100.0 mg/L, A 0.200 → 0.300 → c_x = 20.0 mg/L.
+- **Verdict:** 4 calculators; four types Solve; fitting from a data list waits on E13.
+
+### analytical#3 — Chromatography
+
+- **Textbooks:** Analytical Chemistry 2.1 ch. 12 (retention, resolution, plates, van Deemter,
+  GC, HPLC, ion-exchange and size-exclusion).
+- **Tests ask:**
+
+  | Question type                                    | Page          | Mark           |
+  | ------------------------------------------------ | ------------- | -------------- |
+  | resolution, retention factor, selectivity, plates| main          | Solves (⏳ P5) |
+  | best flow rate from the van Deemter equation     | ~van-deemter  | Solves         |
+  | plates needed for a resolution                   | ~purnell      | Solves         |
+  | which technique for a sample                     | ~technique    | Solves         |
+
+- **Main — BUILD `he.chemistry.analytical#3` (⏳ P5):** `instrumentTrace` `chromatogram`.
+  Values: dead time t_M (min), retention times t₁, t₂, base widths w₁, w₂, resolution R,
+  retention factors k₁, k₂, selectivity α, plates N (peak 2). Relations: R = 2(t₂ − t₁) ÷
+  (w₁ + w₂); kᵢ = (tᵢ − t_M) ÷ t_M; α = k₂ ÷ k₁; N = 16(t₂ ÷ w₂)². Assumptions: widths at the
+  base; R of 1.5 or more separates to the baseline. Example: t_M = 1.00 min, 5.00 and 5.60 min,
+  widths 0.30 and 0.32 min → R = 1.94, k = 4.00 and 4.60, α = 1.15, N = 4900.
+- **~van-deemter — BUILD:** `functionGraph` rational by top (H106: top C, A, B over x;
+  `marks: ['extrema']`). Values A (cm), B (cm²/s), C (s), flow speed u (cm/s), plate height H
+  (cm), best speed u_opt, least height H_min. Relations: H = A + B ÷ u + Cu; u_opt = √(B ÷ C);
+  H_min = A + 2√(BC). Example: A = 0.050 cm, B = 0.40 cm²/s, C = 0.010 s → u_opt = 6.32 cm/s,
+  H_min = 0.176 cm; at 10 cm/s, H = 0.190 cm.
+- **~purnell — BUILD:** `table` sweeping N (1000, 2000, 4000, 8000) for R (four times the
+  plates, twice the resolution). Values N, α, k₂, R. Relation: R = (√N ÷ 4)((α − 1) ÷ α)(k₂ ÷
+  (1 + k₂)). Example: N = 4900, α = 1.15, k₂ = 4.6 → R = 1.88; R = 1.5 needs N = 3136.
+- **~technique — BUILD (sort):** bins "Gas chromatography", "HPLC (reversed phase)",
+  "Ion-exchange", "Size-exclusion". Cards: hydrocarbons in petrol; ethanol in blood (GC); a
+  heat-sensitive drug and its impurities; caffeine in a soft drink (HPLC); nitrate and sulfate
+  in tap water; sodium and potassium ions (ion-exchange); proteins by size; a polymer's spread
+  of chain lengths (size-exclusion).
+- **Verdict:** 4 pages (3 calculators, 1 sort); the main waits on P5.
+
+### analytical#4 — Electroanalytical methods
+
+- **Textbooks:** Analytical Chemistry 2.1 ch. 11 (potentiometry, ion-selective and glass
+  electrodes, coulometry, voltammetry).
+- **Tests ask:**
+
+  | Question type                                       | Page                             | Mark   |
+  | --------------------------------------------------- | -------------------------------- | ------ |
+  | concentration from an ion-selective electrode       | main                             | Solves |
+  | calibrate a pH meter with two buffers               | ~ph-meter                        | Solves |
+  | moles from a constant-current (coulometric) run     | `gen-chem-2#4~electrolysis`      | Solves (⏳ P9) |
+  | current in voltammetry against concentration        | —                                | No (see "Not in the taxonomy") |
+
+- **Main — BUILD `he.chemistry.analytical#4`:** `functionGraph` linear (E against log c, slope
+  0.05916 ÷ z, the standard and the sample marked). Values: ion charge z (allowed ±1, ±2),
+  slope (V per decade, derived), standard concentration c_s, its reading E_s (V), sample
+  reading E_x, sample concentration c_x. Relations: slope = 0.05916 ÷ z; log(c_x ÷ c_s) =
+  (E_x − E_s) ÷ slope. Assumptions: 25 °C; same ionic strength in standard and sample.
+  Example: fluoride (z = −1), 1.00 × 10⁻³ M reads −0.120 V, the sample −0.085 V → log ratio
+  = −0.592 → c_x = 2.56 × 10⁻⁴ M.
+- **~ph-meter — BUILD:** `functionGraph` linear (E against pH through two buffers). Values pH₁,
+  E₁, pH₂, E₂, slope (V/pH), percent of the ideal 0.05916, sample reading E_x, sample pH.
+  Relations: slope = (E₂ − E₁) ÷ (pH₂ − pH₁); % = 100|slope| ÷ 0.05916; pH_x = pH₂ +
+  (E_x − E₂) ÷ slope. Example: pH 4.00 at +0.1720 V, pH 7.00 at −0.0050 V → slope −0.0590 V/pH
+  (99.7%); a sample at +0.0500 V → pH 6.07.
+- **Verdict:** 2 calculators; coulometry shares the electrolysis page (same relations).
+
+## Physical Chemistry I: Thermodynamics & Kinetics — `he.chemistry.physical-1`
+
+Prerequisites `he.chemistry.gen-chem-2`, `he.math.calc-3`. Textbooks: LibreTexts Physical &
+Theoretical Chemistry bookshelf (thermodynamics, phase equilibria, kinetics); MIT OCW 5.60.
+Calculus is stated once (Decisions) and the steps use the integrated forms.
+
+### physical-1#0 — Laws of thermodynamics
+
+- **Textbooks:** 5.60 lectures on the first law (reversible isothermal and adiabatic work),
+  heat capacities, Kirchhoff's law, entropy changes; LibreTexts thermodynamics chapters.
+- **Refresh:** `s.11.thermodynamics` (first law, heat engines; the Carnot engine is there, not
+  rebuilt), `gen-chem-2#3`.
+- **Tests ask:**
+
+  | Question type                                         | Page              | Mark   |
+  | ----------------------------------------------------- | ----------------- | ------ |
+  | w, q, ΔU, ΔS of a reversible isothermal expansion     | main              | Solves |
+  | final T and work of a reversible adiabatic expansion  | ~adiabatic        | Solves |
+  | ΔH and ΔS of heating at constant pressure             | ~heating-entropy  | Solves |
+  | ΔH at another temperature (Kirchhoff)                 | ~kirchhoff        | Solves |
+  | state or path function                                | ~state-functions  | Solves |
+
+- **Main — BUILD `he.chemistry.physical-1#0`:** `gasPiston` ideal (interim; P11 draws the P–V
+  path with the work as the area under it). Values: amount n (mol), T (K), V₁ (L), V₂ (L), work
+  on the gas w (J), heat q (J), entropy change ΔS (J/K). Relations: w = −nRT ln(V₂ ÷ V₁);
+  q = −w; ΔS = q ÷ T. Assumptions: ideal gas, reversible, constant T, so ΔU = 0 and q = −w;
+  w = −∫ P dV with P = nRT ÷ V gives the ln. Example: 1.00 mol at 298.15 K, 10.0 L → 20.0 L
+  → w = −1718 J, q = +1718 J, ΔS = +5.76 J/K. startWith n, T, V₁, V₂.
+- **~adiabatic — BUILD:** `gasPiston` ideal (interim, P11). Values n, molar heat capacity C_V
+  (allowed 12.47 = 3R/2 for a monatomic gas, 20.79 = 5R/2 for a diatomic one), T₁, T₂, V₁, V₂,
+  work w. Relations: T₂ = T₁(V₁ ÷ V₂)^(R/C_V); w = nC_V(T₂ − T₁). Assumptions: q = 0, so ΔU = w;
+  the gas cools as it expands. Example: 1.00 mol monatomic at 300 K, 10.0 → 20.0 L →
+  T₂ = 189.0 K, w = −1384 J.
+- **~heating-entropy — BUILD:** `none`. Values n, C_p (J/(mol·K)), T₁, T₂, ΔH (J), ΔS (J/K).
+  Relations: ΔH = nC_p(T₂ − T₁); ΔS = nC_p ln(T₂ ÷ T₁) (from dS = C_p dT ÷ T). Assumptions: C_p
+  constant over the range; no phase change between T₁ and T₂. Example: 1.00 mol liquid water
+  (75.3 J/(mol·K)) from 25 °C to 75 °C → ΔH = 3765 J, ΔS = 11.7 J/K.
+- **~kirchhoff — BUILD:** `none`. Values ΔH at T₁ (kJ/mol), heat capacity change ΔC_p
+  (J/(mol·K)), T₁, T₂, ΔH at T₂. Relation: ΔH₂ = ΔH₁ + ΔC_p(T₂ − T₁) ÷ 1000. Assumptions:
+  ΔC_p = ΣC_p(products) − ΣC_p(reactants), constant over the range. Example: ΔH = −92.2 kJ/mol
+  at 298.15 K, ΔC_p = −45.0 J/(mol·K) → −101.3 kJ/mol at 500 K.
+- **~state-functions — BUILD (sort):** bins "State function: depends only on where it starts
+  and ends", "Path function: depends on the way". Cards: internal energy U, enthalpy H,
+  entropy S, Gibbs energy G, pressure, volume (state); heat q, work w, the heat taken in on a
+  reversible expansion, the work done pushing against 1 atm (path).
+- **Verdict:** 5 pages (4 calculators, 1 sort); the five common types Solve.
+
+### physical-1#1 — Phase equilibria
+
+- **Textbooks:** 5.60 (Clapeyron and Clausius–Clapeyron, the phase rule, ideal solutions and
+  Raoult's law); LibreTexts phase-equilibria chapters.
+- **Refresh:** `s.10.phase-colligative~vapor-pressure`, `s.10.phase-colligative`.
+- **Tests ask:**
+
+  | Question type                                         | Page          | Mark   |
+  | ----------------------------------------------------- | ------------- | ------ |
+  | vapor pressure at another T; ΔH_vap from two points   | main          | Solves |
+  | slope of the melting line; pressure to melt ice       | ~clapeyron    | Solves |
+  | vapor pressure and vapor composition of a mixture     | ~raoult       | Solves |
+  | degrees of freedom at a point of a phase diagram      | ~phase-rule   | Solves |
+
+- **Main — BUILD `he.chemistry.physical-1#1`:** `table` (interim) sweeping T (300, 325, 350,
+  375 K) for the vapor pressure; P8 draws the curve through both points. Values ΔH_vap
+  (kJ/mol), T₁, P₁ (atm), T₂, P₂. Relation: ln(P₂ ÷ P₁) = −(ΔH_vap ÷ R)(1/T₂ − 1/T₁).
+  Assumptions: the vapor is ideal; the liquid's volume is tiny next to the gas's; ΔH_vap
+  constant over the range. Example: water, 40.7 kJ/mol, 1.000 atm at 373.15 K → 0.131 atm at
+  323.15 K (measured 0.122: ΔH_vap grows as T falls). startWith ΔH_vap, T₁, P₁, T₂.
+- **~clapeyron — BUILD:** `chemDiagram` mode `phase` (H108, water's melting line). Values
+  ΔH_fus (J/mol), T (K), volume change ΔV (cm³/mol, signed), slope dP/dT (atm/K). Relation:
+  dP/dT = ΔH ÷ (TΔV) (steps convert cm³ to m³ and Pa to atm). Example: ice → water, 6010 J/mol,
+  273.15 K, ΔV = −1.63 cm³/mol → −1.35 × 10⁷ Pa/K = −133 atm/K: pressure lowers ice's melting
+  point.
+- **~raoult — BUILD:** `gasPiston` mixture (interim, H108; P8 `binary` later). Values mole
+  fraction of A in the liquid x_A, vapor pressures of the pure liquids P*_A and P*_B (torr),
+  total pressure P, mole fraction of A in the vapor y_A. Relations: P = x_AP*_A + (1 − x_A)P*_B;
+  y_A = x_AP*_A ÷ P. Example: benzene (95.1 torr) with methylbenzene (28.4 torr) at 25 °C,
+  x_A = 0.600 → P = 68.4 torr, y_A = 0.834 (the vapor is richer in the more volatile liquid).
+- **~phase-rule — BUILD:** `chemDiagram` mode `phase` (water, the point named). Values
+  components C (1–5), phases P (1–5), degrees of freedom F. Relation: F = C − P + 2 (page limit:
+  F ≥ 0). Example: water at its triple point: C = 1, P = 3 → F = 0; boiling water → F = 1.
+- **Verdict:** 4 calculators; the four common types Solve.
+
+### physical-1#2 — Chemical equilibrium
+
+- **Textbooks:** 5.60 (K and ΔG°, van 't Hoff, degree of dissociation, activities); LibreTexts
+  (Debye–Hückel).
+- **Refresh:** `gen-chem-2#3` (ΔG° = −RT ln K), `gen-chem-2#1`.
+- **Tests ask:**
+
+  | Question type                                  | Page            | Mark   |
+  | ---------------------------------------------- | --------------- | ------ |
+  | K at another T; ΔH° from K at two T            | main            | Solves |
+  | degree of dissociation from Kp and P           | ~dissociation   | Solves |
+  | ionic strength and activity coefficient        | ~debye-huckel   | Solves |
+
+- **Main — BUILD `he.chemistry.physical-1#2`:** `functionGraph` linear (ln K against 1/T,
+  slope −ΔH°/R, both points marked). Values ΔH° (kJ/mol), K₁, T₁, T₂, K₂. Relation:
+  ln(K₂ ÷ K₁) = −(ΔH° ÷ R)(1/T₂ − 1/T₁). Assumptions: ΔH° constant over the range; an
+  endothermic reaction's K grows with T. Example: N₂O₄ ⇌ 2NO₂, ΔH° = +57.2 kJ/mol,
+  K = 0.148 at 298.15 K → K = 4.07 at 348.15 K. startWith ΔH°, K₁, T₁, T₂.
+- **~dissociation — BUILD:** `equilibriumChart` (N₂O₄ reactant, NO₂ product coef 2, levels in
+  bar). Values Kp, total pressure P (bar), degree of dissociation α, partial pressures
+  p(N₂O₄) and p(NO₂). Relations: Kp = 4α²P ÷ (1 − α²); p(N₂O₄) = P(1 − α) ÷ (1 + α);
+  p(NO₂) = 2αP ÷ (1 + α). Example: Kp = 0.148, P = 1.00 bar → α = 0.189, 0.682 and 0.318 bar
+  (check 0.318² ÷ 0.682 = 0.148). Raising P lowers α (Le Châtelier).
+- **~debye-huckel — BUILD:** `none`. Values salt concentration c (M), charges z₊ and z₋ (sizes),
+  ions per formula ν₊ and ν₋, ionic strength I, mean activity coefficient γ±. Relations:
+  I = ½(ν₊cz₊² + ν₋cz₋²); log γ± = −0.509z₊z₋√I (25 °C, water). Assumptions: the limiting law,
+  good below about I = 0.01 M; above it the real drop is smaller. Example: 0.010 M CaCl₂ →
+  I = 0.030 M, log γ± = −0.176, γ± = 0.666.
+- **Verdict:** 3 calculators; the three common types Solve.
+
+### physical-1#3 — Rate laws and mechanisms
+
+- **Textbooks:** 5.60 (consecutive reactions, steady state, Lindemann, transition-state
+  theory); LibreTexts kinetics chapters.
+- **Refresh:** `gen-chem-2#0` and its `~arrhenius` (Eₐ and A; not rebuilt here).
+- **Tests ask:**
+
+  | Question type                                          | Page          | Mark   |
+  | ------------------------------------------------------ | ------------- | ------ |
+  | intermediate's concentration; when it peaks (A→B→C)    | main          | Solves |
+  | rate constant from ΔG‡ (Eyring); ΔH‡ and ΔS‡           | ~eyring       | Solves |
+  | unimolecular rate against pressure (steady state)      | ~lindemann    | Solves |
+  | rate law from a mechanism with a fast pre-equilibrium  | —             | No (a symbolic derivation; see "Engine needs" E10) |
+
+- **Main — BUILD `he.chemistry.physical-1#3`:** `table` (interim) sweeping t (0, 5, 10, 20, 40 s)
+  for [A], [B], [C]; P7 `consecutive` draws the three curves. Values k₁, k₂ (s⁻¹), [A]₀, t,
+  [A], [B], [C], time of the most B t_max. Relations: [A] = [A]₀e^(−k₁t); [B] = [A]₀k₁(e^(−k₁t)
+  − e^(−k₂t)) ÷ (k₂ − k₁); [C] = [A]₀ − [A] − [B]; t_max = ln(k₁ ÷ k₂) ÷ (k₁ − k₂) (page limit:
+  k₁ ≠ k₂). Example: k₁ = 0.10 s⁻¹, k₂ = 0.050 s⁻¹, [A]₀ = 1.00 M, t = 10 s → 0.368, 0.477,
+  0.155 M; t_max = 13.9 s. startWith k₁, k₂, [A]₀, t.
+- **~eyring — BUILD:** `energyProfile` (the barrier drawn as ΔG‡). Values ΔH‡ (kJ/mol), ΔS‡
+  (J/(mol·K)), T, ΔG‡, rate constant k (s⁻¹). Relations: ΔG‡ = ΔH‡ − TΔS‡ ÷ 1000;
+  k = (k_BT ÷ h)e^(−ΔG‡/RT). Example: ΔG‡ = 80.0 kJ/mol at 298.15 K → k_BT/h = 6.21 × 10¹² s⁻¹,
+  k = 0.0599 s⁻¹.
+- **~lindemann — BUILD:** `functionGraph` rational by coefficients (H94: (px + q) ÷ (rx + s)
+  with p = k₁k₂, q = 0, r = k₋₁, s = k₂; the point at [M]). Values k₁ (M⁻¹s⁻¹), k₋₁ (M⁻¹s⁻¹),
+  k₂ (s⁻¹), bath gas [M] (M), k_uni (s⁻¹), high-pressure limit k_∞. Relations: k_uni =
+  k₁k₂[M] ÷ (k₋₁[M] + k₂); k_∞ = k₁k₂ ÷ k₋₁. Assumptions: the energized A* is at steady state;
+  first order at high pressure, second order at low. Example: 1.0 × 10⁶, 1.0 × 10⁹, 1.0 × 10⁶,
+  [M] = 1.0 × 10⁻³ M → k_uni = 500 s⁻¹, half of k_∞ = 1000 s⁻¹.
+- **Verdict:** 3 calculators; three of four types Solve; mechanism derivations are not a
+  calculator.
+
+## Physical Chemistry II: Quantum & Spectroscopy — `he.chemistry.physical-2`
+
+Prerequisites `he.chemistry.physical-1`, `he.math.diff-eq`. Textbooks: LibreTexts Physical &
+Theoretical Chemistry (quantum chapters), MIT OCW 5.61.
+
+### physical-2#0 — Schrödinger equation
+
+- **Textbooks:** 5.61 (operators, eigenfunctions, the free particle).
+- **Refresh:** `gen-chem-1#0~de-broglie`, `~uncertainty`.
+- **Tests ask:**
+
+  | Question type                                         | Page          | Mark   |
+  | ----------------------------------------------------- | ------------- | ------ |
+  | energy and momentum of a free particle from λ or k    | main          | Solves |
+  | is f an eigenfunction of an operator; its eigenvalue  | ~eigenfunction | Solves (which, not the value) |
+  | normalize a wavefunction; ⟨x⟩                          | —             | No (symbolic integrals, E10) |
+
+- **Main — BUILD `he.chemistry.physical-2#0`:** `functionGraph` cos (the real part of e^(ikx),
+  `marks: ['period']`, period λ). Values: mass m (allowed electron, proton, neutron; or typed),
+  wavelength λ (nm), wavenumber k (m⁻¹), momentum p, energy E (J), energy E_eV. Relations:
+  k = 2π ÷ λ; p = h ÷ λ; E = p² ÷ (2m); E_eV = E ÷ e. Assumptions: V = 0, so ψ = e^(ikx) solves
+  −(ħ² ÷ 2m)ψ″ = Eψ with E = ħ²k² ÷ 2m. Example: electron, λ = 0.500 nm → k = 1.26 × 10¹⁰ m⁻¹,
+  p = 1.33 × 10⁻²⁴ kg·m/s, E = 9.64 × 10⁻¹⁹ J = 6.02 eV.
+- **~eigenfunction — BUILD (sort):** bins "Eigenfunction of d/dx (so also of d²/dx²)",
+  "Eigenfunction of d²/dx² only", "Eigenfunction of neither". Cards: e^(3x), e^(−2ix); sin(4x),
+  cos(2x), sin x + cos x; x², ln x, x e^x. Sentence: "f is an eigenfunction when the operator
+  gives back f times a number, the eigenvalue."
+- **Verdict:** 2 pages (1 calculator, 1 sort).
+
+### physical-2#1 — Particle in a box and harmonic oscillator
+
+- **Textbooks:** 5.61 (the box, conjugated dyes, the harmonic oscillator, zero-point energy).
+- **Tests ask:**
+
+  | Question type                                        | Page          | Mark           |
+  | ---------------------------------------------------- | ------------- | -------------- |
+  | energy levels; wavelength of a transition; a dye     | main          | Solves (⏳ P1) |
+  | probability of finding it in part of the box         | ~probability  | Solves         |
+  | vibrational frequency, wavenumber, zero-point energy | ~oscillator   | Solves (⏳ P1) |
+
+- **Main — BUILD `he.chemistry.physical-2#1` (⏳ P1):** `orbitalDiagram` mode `well` (`model:
+  'box'`). Values: mass m (default electron), box length L (nm), lower level n₁, upper level n₂,
+  ground energy E₁ (J), gap ΔE (J), wavelength λ (nm). Relations: E₁ = h² ÷ (8mL²); ΔE =
+  (n₂² − n₁²)E₁; λ = hc ÷ ΔE. Assumptions: V = 0 inside, infinite walls; n starts at 1, so
+  E₁ > 0 (zero-point energy); for a dye with N π electrons, n₁ = N ÷ 2. Example: electron,
+  L = 1.00 nm → E₁ = 6.02 × 10⁻²⁰ J (0.376 eV); 1 → 2: ΔE = 1.81 × 10⁻¹⁹ J, λ = 1099 nm.
+- **~probability — BUILD:** `functionGraph` cos with `shade: { from, to }` (ψ² = (1/L)(1 −
+  cos(2nπx/L)), drawn exactly from derived a, b, k). Values n, L, x₁, x₂, probability P.
+  Relation: P = (x₂ − x₁) ÷ L − [sin(2nπx₂/L) − sin(2nπx₁/L)] ÷ (2nπ). Example: n = 1, 0 to
+  L/4 → 0.250 − 0.159 = 0.0908 (a classical particle: 0.25).
+- **~oscillator — BUILD (⏳ P1, `model: 'oscillator'`):** values atom masses m₁, m₂ (u),
+  reduced mass μ (kg), force constant k (N/m), frequency ν (Hz), wavenumber ν̃ (cm⁻¹),
+  zero-point energy E₀ (J), per mole (kJ/mol). Relations: μ = m₁m₂ ÷ (m₁ + m₂) × u;
+  ν = √(k ÷ μ) ÷ (2π); ν̃ = ν ÷ c (c in cm/s); E₀ = ½hν. Example: H–³⁵Cl (1.008, 34.97 u),
+  k = 480 N/m → μ = 1.627 × 10⁻²⁷ kg, ν = 8.64 × 10¹³ Hz, ν̃ = 2884 cm⁻¹, E₀ = 2.86 × 10⁻²⁰ J
+  (17.2 kJ/mol). Stronger bonds and lighter atoms absorb at higher ν̃ (the IR link).
+- **Verdict:** 3 calculators; two wait on P1.
+
+### physical-2#2 — Hydrogen atom
+
+- **Textbooks:** 5.61 (hydrogen-like energies, quantum numbers, nodes, radial distributions).
+- **Refresh:** `gen-chem-1#0` (Rydberg lines).
+- **Tests ask:**
+
+  | Question type                                      | Page              | Mark           |
+  | -------------------------------------------------- | ----------------- | -------------- |
+  | energy, nodes and degeneracy of an orbital (He⁺)   | main              | Solves (⏳ P2) |
+  | mean and most probable radius                      | ~radius           | Solves (⏳ P2) |
+  | which quantum-number sets are allowed              | ~quantum-numbers  | Solves         |
+
+- **Main — BUILD `he.chemistry.physical-2#2` (⏳ P2):** `orbitalDiagram` ladder with `Z`. Values:
+  nuclear charge Z (1–10), n (1–10), l (0 to n − 1), energy E (eV), radial nodes, angular
+  nodes, degeneracy g. Relations: E = −13.6Z² ÷ n²; radial = n − l − 1; angular = l; g = n².
+  Example: He⁺, 2p → E = −13.6 eV, 0 radial and 1 angular node, 4 orbitals at that energy.
+- **~radius — BUILD (⏳ P2, `mode: 'radial'`):** values Z, n, l, mean radius ⟨r⟩ (in a₀ and nm),
+  most probable radius r_mp (for l = n − 1). Relations: ⟨r⟩ = (a₀ ÷ 2Z)(3n² − l(l + 1));
+  r_mp = n²a₀ ÷ Z. Example: hydrogen 2p → ⟨r⟩ = 5a₀ = 0.265 nm, r_mp = 4a₀ = 0.212 nm; 1s r_mp
+  = a₀ = 0.0529 nm.
+- **~quantum-numbers — BUILD (sort):** bins "Allowed", "Not allowed: l is n or more", "Not
+  allowed: m_l is beyond ±l", "Not allowed: m_s is not ±½". Cards (n, l, m_l, m_s): (2, 1, −1,
+  +½), (3, 2, 2, −½), (1, 0, 0, +½), (4, 3, −3, −½); (2, 2, 0, +½), (1, 1, 0, −½); (3, 1, 2, +½),
+  (2, 0, 1, −½); (3, 2, 1, 1), (2, 1, 0, 0). Each wrong card breaks one rule only.
+- **Verdict:** 3 pages (2 calculators, 1 sort).
+
+### physical-2#3 — Molecular orbital theory
+
+- **Textbooks:** 5.61 (LCAO, the secular determinant, Hückel theory).
+- **Refresh:** `gen-chem-1#4~bond-order` (diatomic MO diagrams and bond order; not rebuilt).
+- **Tests ask:**
+
+  | Question type                                         | Page       | Mark           |
+  | ----------------------------------------------------- | ---------- | -------------- |
+  | bonding and antibonding energies of two AOs (2 × 2)   | main       | Solves         |
+  | Hückel energies; delocalization energy of a ring      | ~huckel    | Solves (⏳ P3) |
+  | σ, σ*, π or π* from how two orbitals overlap          | ~mo-types  | Solves         |
+
+- **Main — BUILD `he.chemistry.physical-2#3`:** `matrixGrid` (interim: the secular determinant
+  |α_A − E, β; β, α_B − E| = 0; P3 `heteronuclear` draws the two AO levels and the MOs). Values
+  α_A, α_B (eV), resonance integral β (eV, negative), bonding energy E₊, antibonding energy E₋,
+  splitting. Relations: E± = (α_A + α_B) ÷ 2 ∓ √(((α_A − α_B) ÷ 2)² + β²); splitting = E₋ − E₊.
+  Assumptions: overlap S neglected; equal α gives α ± β. Example: −10.0, −14.0, β = −3.0 →
+  −12.0 ∓ 3.61 → E₊ = −15.61 eV, E₋ = −8.39 eV, splitting 7.21 eV.
+- **~huckel — BUILD (⏳ P3, E7):** `orbitalDiagram` `frost`. Values ring carbons N (3–8), π
+  electrons (N minus the charge), π energy (in β, beyond Nα), the same electrons in isolated
+  double bonds (in β), delocalization energy, unpaired electrons. Relations: levels α +
+  2β cos(2πk ÷ N); fill from the lowest. Example: benzene: 2(2β) + 4(β) = 8β against 6β →
+  delocalization 2β; cyclobutadiene: 4β against 4β → 0, two unpaired (antiaromatic).
+- **~mo-types — BUILD (sort):** bins "σ bonding", "σ* antibonding", "π bonding", "π*
+  antibonding". Cards: two 1s in phase; 2s with 2s in phase; two 2p pointing at each other, in
+  phase (σ); two 1s out of phase; two 2p end on, out of phase (σ*); two 2p side by side, in
+  phase (π); side by side, out of phase (π*).
+- **Verdict:** 3 pages (2 calculators, 1 sort).
+
+### physical-2#4 — Spectroscopy
+
+- **Textbooks:** 5.61 and LibreTexts (rigid rotor, selection rules, Boltzmann populations,
+  vibrational spectra in #1).
+- **Tests ask:**
+
+  | Question type                                     | Page              | Mark           |
+  | ------------------------------------------------- | ----------------- | -------------- |
+  | B, I, bond length from line spacing (microwave)   | main              | Solves (⏳ P5) |
+  | population ratio of two levels                    | ~boltzmann        | Solves         |
+  | allowed or forbidden transition                   | ~selection-rules  | Solves         |
+  | absorbance and concentration (UV–vis)             | `analytical#2`    | Solves         |
+
+- **Main — BUILD `he.chemistry.physical-2#4` (⏳ P5, `rotational`):** values m₁, m₂ (u), μ (kg),
+  bond length r (pm), moment of inertia I (kg·m²), rotational constant B (cm⁻¹), lower level J,
+  line ν̃ (cm⁻¹). Relations: μ as above; I = μr²; B = h ÷ (8π²cI) (c in cm/s); ν̃ = 2B(J + 1).
+  Assumptions: a rigid rotor; absorption ΔJ = +1, so the lines are 2B apart; only polar
+  molecules show them. Example: H–³⁵Cl, r = 127.5 pm → I = 2.645 × 10⁻⁴⁷ kg·m², B = 10.58 cm⁻¹,
+  J = 0 → 1 at 21.2 cm⁻¹. startWith m₁, m₂, r (or the spacing for r).
+- **~boltzmann — BUILD:** `bars` (the two levels' shares). Values degeneracies g₁, g₂, gap ΔE
+  (cm⁻¹), T, ratio N₂ ÷ N₁. Relation: N₂ ÷ N₁ = (g₂ ÷ g₁)e^(−1.4388ΔE ÷ T) (hc ÷ k_B =
+  1.4388 cm·K). Example: 1000 cm⁻¹ at 298 K, equal g → 0.0080; HCl's J = 1 against J = 0
+  (g = 3 and 1, 21.2 cm⁻¹) → 2.71.
+- **~selection-rules — BUILD (sort):** bins Allowed, Forbidden. Cards: HCl rotation J = 0 → 1;
+  HCl vibration v = 0 → 1; hydrogen 2p → 1s (allowed); HCl rotation J = 0 → 2; N₂ vibration in
+  the IR (no dipole change); H₂ in the microwave (no permanent dipole); hydrogen 2s → 1s
+  (Δl = 0); v = 0 → 2 of a perfect harmonic oscillator (forbidden).
+- **Verdict:** 3 pages (2 calculators, 1 sort).
+
