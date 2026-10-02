@@ -168,7 +168,7 @@ export function layoutDevice(kind: DeviceCircuit, w: number, t: DeviceTexts, n: 
       lab('p0', X(8), T.y - 14, 'start');
       lab('p2', xc, bot + 22);
       lab('p1', xl, bot + 40);
-      wavePlot(bot + 56);
+      wavePlot(bot + 52);
       return s;
     }
 
@@ -267,7 +267,7 @@ export function layoutDevice(kind: DeviceCircuit, w: number, t: DeviceTexts, n: 
 
   /** The rectified wave: the bare |sin| dashed, the capacitor's voltage with its ripple. */
   function wavePlot(top: number) {
-    const box = { x: X(40), y: top + 12, w: w - X(40) - 28, h: 80 };
+    const box = { x: X(40), y: top + 12, w: w - X(40) - 28, h: 66 };
     s.height = box.y + box.h + 56;
     const { vp, vr, fr, vdc } = n;
     const yAxis = box.x;

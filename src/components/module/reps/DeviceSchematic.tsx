@@ -4,7 +4,7 @@ import type { NumOrVar } from '@/data/modules/typesGraphs';
 import type { DeviceSpec } from '@/data/modules/typesHe2d';
 
 import type { Calculator } from '../useCalculator';
-import { withPrefix } from './ampTexts';
+import { mul, withPrefix } from './ampTexts';
 import { Canvas, Caption, useRep } from './common';
 import { layoutDevice } from './deviceLayout';
 import { PARTS, devicePicture } from './deviceTexts';
@@ -65,7 +65,7 @@ export function DeviceSchematic({ spec, calc }: { spec: DeviceSpec; calc: Calcul
         if (v.current)
           out(
             v.power,
-            `${P(1)}${S(v.current, 'I')}`,
+            mul(P(1), S(v.current, 'I')),
             `${PV(1)} × ${V(v.current, 'A')}`,
             p[1]!,
             v.current,
@@ -95,7 +95,7 @@ export function DeviceSchematic({ spec, calc }: { spec: DeviceSpec; calc: Calcul
       case 'bridge':
         out(
           v.peak,
-          `${P(0)} − 2${spec.drop === undefined ? ' × 0.7 V' : S(spec.drop, 'V_D')}`,
+          `${P(0)} − ${spec.drop === undefined ? '2 × 0.7 V' : mul('2', S(spec.drop, 'V_D'))}`,
           `${PV(0)} − 2 × ${spec.drop === undefined ? '0.7 V' : V(spec.drop, 'V')}`,
           p[0]!,
           spec.drop ?? 0,
@@ -103,7 +103,7 @@ export function DeviceSchematic({ spec, calc }: { spec: DeviceSpec; calc: Calcul
         if (v.peak && v.frequency !== undefined)
           out(
             v.ripple,
-            `${S(v.peak, 'V_p')} ÷ (${S(v.frequency, 'f_r')}${P(1)}${P(2)})`,
+            `${S(v.peak, 'V_p')} ÷ (${mul(S(v.frequency, 'f_r'), P(1), P(2))})`,
             `${V(v.peak, 'V')} ÷ (${V(v.frequency, 'Hz')} × ${PV(1)} × ${PV(2)})`,
             v.peak,
             v.frequency,
@@ -125,7 +125,7 @@ export function DeviceSchematic({ spec, calc }: { spec: DeviceSpec; calc: Calcul
       case 'bjtDivider':
         out(
           v.base,
-          `${P(0)}${P(2)} ÷ (${P(1)} + ${P(2)})`,
+          `${mul(P(0), P(2))} ÷ (${P(1)} + ${P(2)})`,
           `${PV(0)} × ${PV(2)} ÷ (${PV(1)} + ${PV(2)})`,
           p[0]!,
           p[1]!,
@@ -158,13 +158,13 @@ export function DeviceSchematic({ spec, calc }: { spec: DeviceSpec; calc: Calcul
       case 'mosfetCS':
         out(
           v.gm,
-          `2${S(v.current, 'I_D')} ÷ ${S(v.overdrive, 'V_OV')}`,
+          `${mul('2', S(v.current, 'I_D'))} ÷ ${S(v.overdrive, 'V_OV')}`,
           `2 × ${V(v.current, 'A')} ÷ ${V(v.overdrive, 'V')}`,
           v.current ?? 0,
           v.overdrive ?? 0,
         );
         if (v.gm)
-          out(v.gain, `−${S(v.gm, 'g_m')}${P(0)}`, `−${V(v.gm, 'S')} × ${PV(0)}`, v.gm, p[0]!);
+          out(v.gain, `−${mul(S(v.gm, 'g_m'), P(0))}`, `−${V(v.gm, 'S')} × ${PV(0)}`, v.gm, p[0]!);
         lines.push(
           'In saturation; a small input swing at the gate moves I_D by g_m v_gs, and R_D turns it into the output.',
         );
@@ -187,7 +187,7 @@ export function DeviceSchematic({ spec, calc }: { spec: DeviceSpec; calc: Calcul
           );
         out(
           v.rp,
-          `${P(0)}${P(1)} ÷ (${P(0)} + ${P(1)})`,
+          `${mul(P(0), P(1))} ÷ (${P(0)} + ${P(1)})`,
           `${PV(0)} × ${PV(1)} ÷ (${PV(0)} + ${PV(1)})`,
           p[0]!,
           p[1]!,
@@ -195,7 +195,7 @@ export function DeviceSchematic({ spec, calc }: { spec: DeviceSpec; calc: Calcul
         if (v.gm && v.rp)
           out(
             v.gain,
-            `−${S(v.gm, 'g_m')}${S(v.rp, 'R_p')}`,
+            `−${mul(S(v.gm, 'g_m'), S(v.rp, 'R_p'))}`,
             `−${V(v.gm, 'S')} × ${V(v.rp, 'Ω')}`,
             v.gm,
             v.rp,

@@ -5,7 +5,7 @@ import type { AmpSpec } from '@/data/modules/typesHe2d';
 
 import type { Calculator } from '../useCalculator';
 import { layoutAmp } from './ampLayout';
-import { NAMES, ampPicture, withPrefix } from './ampTexts';
+import { NAMES, ampPicture, mul, withPrefix } from './ampTexts';
 import { Canvas, Caption, useRep } from './common';
 import { SchView } from './he2dKit';
 import { formulaOnly } from './hskKit';
@@ -67,12 +67,12 @@ export function OpAmpSchematic({ spec, calc }: { spec: AmpSpec; calc: Calculator
         if (o && g && i0 !== undefined)
           worked(
             known(o, g, i0),
-            `${vo} = ${S(g, 'A')}${S(i0, n.vin[0]!)} = ${rep.value(g)} × ${par(V(i0, 'V'))} = ${rep.value(o)}`,
+            `${vo} = ${mul(S(g, 'A'), S(i0, n.vin[0]!))} = ${rep.value(g)} × ${par(V(i0, 'V'))} = ${rep.value(o)}`,
           );
         if (kind === 'activeLowPass' && spec.cutoff)
           worked(
             known(spec.cutoff, spec.rf, spec.c),
-            `${S(spec.cutoff, 'f_c')} = 1 ÷ (2π${S(spec.rf, n.rf)}C) = ${rep.value(spec.cutoff)}`,
+            `${S(spec.cutoff, 'f_c')} = 1 ÷ (${mul('2π', S(spec.rf, n.rf), 'C')}) = ${rep.value(spec.cutoff)}`,
           );
         lines.push(
           kind === 'activeLowPass'
@@ -89,7 +89,7 @@ export function OpAmpSchematic({ spec, calc }: { spec: AmpSpec; calc: Calculator
         if (o && g && i0 !== undefined)
           worked(
             known(o, g, i0),
-            `${vo} = ${S(g, 'A')}${S(i0, 'vᵢₙ')} = ${rep.value(g)} × ${par(V(i0, 'V'))} = ${rep.value(o)}`,
+            `${vo} = ${mul(S(g, 'A'), S(i0, 'vᵢₙ'))} = ${rep.value(g)} × ${par(V(i0, 'V'))} = ${rep.value(o)}`,
           );
         lines.push('Virtual short: v₋ = v₊ = vᵢₙ; R_f and R_g divide vₒᵤₜ down to it.');
         break;
@@ -117,7 +117,7 @@ export function OpAmpSchematic({ spec, calc }: { spec: AmpSpec; calc: Calculator
         if (o)
           worked(
             known(o, i0, q0, spec.c, spec.time, spec.v0),
-            `${vo} = ${spec.v0 === undefined ? '' : `${S(spec.v0, 'v₀')} `}− ${S(i0, 'vᵢₙ')}${S(spec.time, 't')} ÷ (${S(q0, 'R')}${S(spec.c, 'C')}) = ${spec.v0 === undefined ? '' : `${V(spec.v0, 'V')} `}− ${V(i0, 'V')} × ${V(spec.time, 's')} ÷ (${V(q0, 'Ω')} × ${V(spec.c, 'F')}) = ${rep.value(o)}`,
+            `${vo} = ${spec.v0 === undefined ? '' : `${S(spec.v0, 'v₀')} `}− ${mul(S(i0, 'vᵢₙ'), S(spec.time, 't'))} ÷ (${mul(S(q0, 'R'), S(spec.c, 'C'))}) = ${spec.v0 === undefined ? '' : `${V(spec.v0, 'V')} `}− ${V(i0, 'V')} × ${V(spec.time, 's')} ÷ (${V(q0, 'Ω')} × ${V(spec.c, 'F')}) = ${rep.value(o)}`,
           );
         lines.push(
           'A steady input pushes a steady current vᵢₙ ÷ R into C, so the output ramps down in a straight line.',
@@ -127,12 +127,12 @@ export function OpAmpSchematic({ spec, calc }: { spec: AmpSpec; calc: Calculator
         if (spec.threshold)
           worked(
             known(spec.threshold, spec.rail, q0, spec.rf),
-            `${S(spec.threshold, 'V_TH')} = ${S(spec.rail, 'Vₛₐₜ')}${S(q0, 'R₁')} ÷ (${S(q0, 'R₁')} + ${S(spec.rf, 'R₂')}) = ${V(spec.rail, 'V')} × ${V(q0, 'Ω')} ÷ (${V(q0, 'Ω')} + ${V(spec.rf, 'Ω')}) = ${rep.value(spec.threshold)}`,
+            `${S(spec.threshold, 'V_TH')} = ${mul(S(spec.rail, 'Vₛₐₜ'), S(q0, 'R₁'))} ÷ (${S(q0, 'R₁')} + ${S(spec.rf, 'R₂')}) = ${V(spec.rail, 'V')} × ${V(q0, 'Ω')} ÷ (${V(q0, 'Ω')} + ${V(spec.rf, 'Ω')}) = ${rep.value(spec.threshold)}`,
           );
         if (spec.width)
           worked(
             known(spec.width, spec.threshold),
-            `${S(spec.width, 'V_H')} = 2${S(spec.threshold, 'V_TH')} = ${rep.value(spec.width)}`,
+            `${S(spec.width, 'V_H')} = ${mul('2', S(spec.threshold, 'V_TH'))} = ${rep.value(spec.width)}`,
           );
         lines.push(
           'Positive feedback: the output sits at a rail. Rising past +V_TH it drops to −Vₛₐₜ; falling past −V_TH it jumps back. Between them it remembers.',
@@ -142,12 +142,12 @@ export function OpAmpSchematic({ spec, calc }: { spec: AmpSpec; calc: Calculator
         if (g && spec.rf !== undefined && spec.rg !== undefined)
           worked(
             known(g, spec.rf, spec.rg),
-            `${S(g, 'G')} = 1 + 2${S(spec.rf, 'R')} ÷ ${S(spec.rg, 'R_g')} = 1 + 2 × ${V(spec.rf, 'Ω')} ÷ ${V(spec.rg, 'Ω')} = ${rep.value(g)}`,
+            `${S(g, 'G')} = 1 + ${mul('2', S(spec.rf, 'R'))} ÷ ${S(spec.rg, 'R_g')} = 1 + 2 × ${V(spec.rf, 'Ω')} ÷ ${V(spec.rg, 'Ω')} = ${rep.value(g)}`,
           );
         if (o && g)
           worked(
             known(o, g, i0),
-            `${vo} = ${S(g, 'G')}${S(i0, 'V_d')} = ${rep.value(g)} × ${V(i0, 'V')} = ${rep.value(o)}`,
+            `${vo} = ${mul(S(g, 'G'), S(i0, 'V_d'))} = ${rep.value(g)} × ${V(i0, 'V')} = ${rep.value(o)}`,
           );
         if (spec.common && g && spec.cmrr !== undefined)
           worked(
@@ -157,7 +157,7 @@ export function OpAmpSchematic({ spec, calc }: { spec: AmpSpec; calc: Calculator
         if (spec.hum && spec.common)
           worked(
             known(spec.hum, spec.common, i1),
-            `${S(spec.hum, 'hum')} = ${S(spec.common, 'A_c')}${S(i1, 'V_cm')} = ${rep.value(spec.common)} × ${V(i1, 'V')} = ${rep.value(spec.hum)}`,
+            `${S(spec.hum, 'hum')} = ${mul(S(spec.common, 'A_c'), S(i1, 'V_cm'))} = ${rep.value(spec.common)} × ${V(i1, 'V')} = ${rep.value(spec.hum)}`,
           );
         lines.push(
           'The buffers A₁ and A₂ amplify only the difference V_d; A₃ subtracts, so V_cm (the hum both electrodes share) mostly cancels.',
