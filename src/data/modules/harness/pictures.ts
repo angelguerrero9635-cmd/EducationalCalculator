@@ -2259,6 +2259,7 @@ export function repIssues(
       out.push(...he1fIssues(rep, (id) => (val(id) ?? NaN) * (byId.get(id)?.unitFactor ?? 1)));
       break;
     case 'potentialWell':
+    case 'unitCell':
       // In the variables' own units, which the check reads SI from.
       out.push(
         ...he2bIssues(

@@ -81,7 +81,52 @@ export interface PotentialWellSpec {
   more?: string[];
 }
 
-export type He2bSpec = PotentialWellSpec;
+// ─── HC16: a cubic unit cell, its planes and Bragg's law ─────────────────────
+
+/**
+ * A cubic cell in perspective with its atoms (shrunk, painted), counted to Z by where they sit
+ * (corner ⅛, edge ¼, face ½, inside 1); the touching direction lit with a and r; a lattice
+ * plane shaded with the next one and d; and Bragg's law on rows of atoms.
+ */
+export interface UnitCellSpec {
+  kind: 'unitCell';
+  /**
+   * The structure; or a variable whose value is the atoms per cell a page picks it by
+   * (1 simple, 2 body-centred, 4 face-centred cubic).
+   */
+  lattice: 'sc' | 'bcc' | 'fcc' | 'rocksalt' | 'cesiumChloride' | 'zincBlende' | (string & {});
+  /** Names of the atoms: the metal (or anion) and the cation ("Cu"; "Cl⁻", "Na⁺"). */
+  names?: [string, string?];
+  /** The edge a, the atom's radius r (or the anion's r₋) and the cation's r₊. */
+  edge?: NumOrVar;
+  radius?: NumOrVar;
+  cation?: NumOrVar;
+  /** Light the touching line (edge, face or body diagonal) with its radii and a. */
+  touching?: boolean;
+  /** Labelled values: atoms (or formula units) per cell Z, density, packing fraction. */
+  atoms?: NumOrVar;
+  density?: NumOrVar;
+  molar?: NumOrVar;
+  packing?: NumOrVar;
+  /** A plane (hkl) shaded with the next parallel plane, its intercepts and d. */
+  planes?: { h: NumOrVar; k: NumOrVar; l: NumOrVar; spacing?: NumOrVar };
+  /** Bragg's law: rows of atoms d apart, the rays at θ (or 2θ), λ and the order n. */
+  bragg?: {
+    spacing: NumOrVar;
+    angle?: NumOrVar;
+    twoTheta?: NumOrVar;
+    wavelength: NumOrVar;
+    order?: NumOrVar;
+  };
+  /** Draw the Bragg rows alone, without the cell. */
+  braggOnly?: boolean;
+  /** Further values labelled under the picture. */
+  more?: string[];
+}
+
+export type He2bSpec = PotentialWellSpec | UnitCellSpec;
+
+const LATTICE_NAMES = ['sc', 'bcc', 'fcc', 'rocksalt', 'cesiumChloride', 'zincBlende'];
 
 const ids = (xs: unknown[]): string[] =>
   xs.flatMap((x) =>
@@ -96,6 +141,10 @@ const ids = (xs: unknown[]): string[] =>
 
 /** The variable ids a group B picture reads (for the module tests). */
 export function he2bSpecVars(r: He2bSpec): string[] {
+  if (r.kind === 'unitCell') {
+    const { kind: _k, lattice, names: _n, ...rest } = r;
+    return [...(LATTICE_NAMES.includes(lattice) ? [] : [lattice]), ...ids(Object.values(rest))];
+  }
   const { kind: _k, model: _m, letter: _l, ...rest } = r;
   return ids(Object.values(rest));
 }

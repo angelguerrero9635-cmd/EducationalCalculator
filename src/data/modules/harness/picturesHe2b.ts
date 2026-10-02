@@ -4,6 +4,7 @@
  * `repIssues` in `pictures.ts`. Test-only.
  */
 import {
+  AVOGADRO,
   boxProbability,
   ENERGY_J,
   HBAR,
@@ -15,9 +16,19 @@ import {
   stepScatter,
   wellNodes,
 } from '@/components/module/reps/potentialWellMath';
+import {
+  cellZ,
+  edgeFromRadius,
+  LATTICES,
+  latticeOfZ,
+  packing,
+  planePolygon,
+  spacing,
+  type Lattice,
+} from '@/components/module/reps/unitCellMath';
 
 import type { NumOrVar } from '../typesGraphs';
-import type { He2bSpec, PotentialWellSpec } from '../typesHe2b';
+import type { He2bSpec, PotentialWellSpec, UnitCellSpec } from '../typesHe2b';
 
 /** Equal to 0.1% (or 10⁻⁶ near zero, below what a page shows). */
 const near = (a: number, b: number, tol = 1e-3) =>
@@ -41,6 +52,7 @@ export function he2bIssues(
   };
   const unit = (x: NumOrVar | undefined) => (typeof x === 'string' ? unitOf(x) : undefined);
   if (rep.kind === 'potentialWell') return potentialWellIssues(rep, get, unit);
+  if (rep.kind === 'unitCell') return unitCellIssues(rep, get, unit);
   return [];
 }
 
@@ -194,6 +206,112 @@ function potentialWellIssues(
     ) {
       const want = Math.sqrt(2 * m * mU * above * eU) / HBAR / kU;
       if (!near(kappa, want)) out.push(`potentialWell: κ ${kappa}, but √(2m(U − E)) ÷ ħ = ${want}`);
+    }
+  }
+  return out;
+}
+
+function unitCellIssues(
+  spec: UnitCellSpec,
+  get: Get,
+  unit: (x: NumOrVar | undefined) => string | undefined,
+): string[] {
+  const out: string[] = [];
+  const named = (LATTICES as string[]).includes(spec.lattice);
+  const code = named ? undefined : get(spec.lattice);
+  const lattice = named
+    ? (spec.lattice as Lattice)
+    : code === undefined
+      ? undefined
+      : latticeOfZ(code);
+  if (!named && code !== undefined && !lattice)
+    out.push(`unitCell: structure code ${code} is not 1, 2 or 4 atoms per cell`);
+  /** A length in metres by its unit (a bare number reads as the edge's unit). */
+  const m = (x: NumOrVar | undefined) => {
+    const v = get(x);
+    if (v === undefined) return undefined;
+    return v * (LENGTH_M[unit(x) ?? unit(spec.edge) ?? ''] ?? 1);
+  };
+  if (lattice) {
+    // Z per lattice, counted from the sites drawn.
+    const want = { sc: 1, bcc: 2, fcc: 4, rocksalt: 4, cesiumChloride: 1, zincBlende: 4 }[lattice];
+    if (
+      cellZ(lattice) !== want ||
+      (lattice !== 'sc' && lattice !== 'bcc' && lattice !== 'fcc' && cellZ(lattice, 1) !== want)
+    )
+      out.push(`unitCell: ${lattice} counts ${cellZ(lattice)} per cell, not ${want}`);
+    const Z = get(spec.atoms);
+    if (Z !== undefined && Z !== want)
+      out.push(`unitCell: Z ${Z}, but a ${lattice} cell holds ${want}`);
+    // a from r by the touching direction.
+    const a = m(spec.edge);
+    const r = m(spec.radius);
+    const ionic =
+      lattice === 'rocksalt' || lattice === 'cesiumChloride' || lattice === 'zincBlende';
+    const r2 = m(spec.cation);
+    if (a !== undefined && r !== undefined && (!ionic || r2 !== undefined)) {
+      const fromR = edgeFromRadius(lattice, r, r2 ?? 0);
+      if (!near(a, fromR)) out.push(`unitCell: a ${a} m, but r gives ${fromR} m (${lattice})`);
+    }
+    // ρ = ZM ÷ (N_A a³), a in cm.
+    const rho = get(spec.density);
+    const M = get(spec.molar);
+    if (a !== undefined && rho !== undefined && M !== undefined) {
+      const want2 = (cellZ(lattice) * M) / (AVOGADRO * (a * 100) ** 3);
+      if (!near(rho, want2)) out.push(`unitCell: ρ ${rho}, but ZM ÷ (N_A a³) = ${want2}`);
+    }
+    // Packing fraction Z(4/3)πr³ ÷ a³ (a fraction, or a percent by its unit).
+    const pf = get(spec.packing);
+    if (pf !== undefined && a !== undefined && r !== undefined) {
+      const f = packing(lattice, a, r, r2 ?? 0) * (unit(spec.packing) === '%' ? 100 : 1);
+      if (!near(pf, f)) out.push(`unitCell: packing ${pf}, but Z(4/3)πr³ ÷ a³ = ${f}`);
+    }
+  }
+  if (spec.planes) {
+    const [h, k, l] = [get(spec.planes.h), get(spec.planes.k), get(spec.planes.l)];
+    if (h !== undefined && k !== undefined && l !== undefined) {
+      if (![h, k, l].every((x) => Number.isInteger(x) && x >= 0) || h + k + l === 0)
+        out.push(`unitCell: (${h}${k}${l}) is not whole indices, not all 0`);
+      else {
+        // The plane drawn crosses each axis at a ÷ h (cell units 1 ÷ h), never where it is 0.
+        const poly = planePolygon(h, k, l, 1);
+        const idx = [h, k, l];
+        idx.forEach((v, i) => {
+          if (v === 0) return;
+          const p = [0, 0, 0];
+          p[i] = 1 / v;
+          const f = idx[0]! * p[0]! + idx[1]! * p[1]! + idx[2]! * p[2]!;
+          if (Math.abs(f - 1) > 1e-9) out.push(`unitCell: intercept ${i} is off the plane`);
+        });
+        if (poly.length < 3) out.push(`unitCell: (${h}${k}${l}) draws no plane in the cell`);
+        for (const p of poly)
+          if (Math.abs(h * p[0] + k * p[1] + l * p[2] - 1) > 1e-9)
+            out.push('unitCell: a plane corner is off the plane');
+        const a = get(spec.edge);
+        const d = get(spec.planes.spacing);
+        if (a !== undefined && d !== undefined && unit(spec.edge) === unit(spec.planes.spacing)) {
+          const want = spacing(a, h, k, l);
+          if (!near(d, want)) out.push(`unitCell: d ${d}, but a ÷ √(h² + k² + l²) = ${want}`);
+        }
+      }
+    }
+  }
+  if (spec.bragg) {
+    const b = spec.bragg;
+    const d = m(b.spacing);
+    const lam =
+      get(b.wavelength) === undefined
+        ? undefined
+        : get(b.wavelength)! * (LENGTH_M[unit(b.wavelength) ?? ''] ?? 1);
+    const tt = get(b.twoTheta);
+    const th = get(b.angle);
+    if (tt !== undefined && th !== undefined && !near(tt, 2 * th))
+      out.push(`unitCell: 2θ ${tt}, but 2 × θ = ${2 * th}`);
+    const theta = th ?? (tt === undefined ? undefined : tt / 2);
+    const n = get(b.order) ?? 1;
+    if (d !== undefined && lam !== undefined && theta !== undefined) {
+      const path = 2 * d * Math.sin((theta * Math.PI) / 180);
+      if (!near(n * lam, path)) out.push(`unitCell: nλ ${n * lam} m, but 2d sin θ = ${path} m`);
     }
   }
   return out;

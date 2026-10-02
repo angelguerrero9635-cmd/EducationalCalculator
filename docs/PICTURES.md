@@ -121,6 +121,7 @@ search or the sitemap, but the module tests and the harness run over it):
 | `controlVolume`    | a unit or steel device in a control volume; streams, Q̇, Ẇ, in = out   | College balances, devices (HC5)     |
 | `velocityProfile`  | tube, vessel, plates or film: v arrows, v_max = 2v_avg, τ_w; c lines  | College transport, blood (HC13)     |
 | `potentialWell`    | box, oscillator, step, barrier, bump: levels to scale, ψ, nodes, λ    | College quantum, chemistry (HC15)   |
+| `unitCell`         | cubic cell: atoms counted to Z, touching line; (hkl) and d; Bragg     | College solids, minerals (HC16)     |
 | `projectile`       | a launch to scale: path, vₓ and v_y at three points, H and R; drag θ  | Physics 2D motion, parametric (H59) |
 | `freeBody`         | a block on a floor, ramp or rope; forces to scale, W sin θ; the net   | Physics forces, inclines (H60)      |
 | `circularMotion`   | v tangent, v²/r to the center; Gm₁m₂/r² pulls; Kepler ellipse, areas  | Physics circles, gravity (H61)      |

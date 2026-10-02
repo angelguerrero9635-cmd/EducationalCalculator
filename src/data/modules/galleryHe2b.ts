@@ -3,7 +3,9 @@
  * college page that waits, built from the plan's worked example. Spread into gallery.ts.
  *
  * HC15 `potentialWell`: the quantum pages (docs/plans/he.physics.md, P19) and the particle in a
- * box and oscillator of physical chemistry (docs/plans/he.chemistry.md, P1).
+ * box and oscillator of physical chemistry (docs/plans/he.chemistry.md, P1). HC16 `unitCell`:
+ * solid-state structures (he.chemistry.md, P17), crystal structures (he.mechanical.md, P7) and
+ * crystallography (he.earth-geography.md, P7, P8).
  */
 import {
   AVOGADRO,
@@ -15,6 +17,7 @@ import {
   LIGHT,
   PLANCK,
 } from '@/components/module/reps/potentialWellMath';
+import { coordinationOf, edgePerRadius } from '@/components/module/reps/unitCellMath';
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
 import type { LayoutDef } from './layouts';
@@ -1038,6 +1041,685 @@ const bumpDemo = demo({
   },
 });
 
+// ── HC16: shared rules ──
+
+const NA_TEXT = '6.02214 × 10²³';
+/** cm per unit of the cell edge. */
+const CM: Record<string, [number, string]> = {
+  pm: [1e-10, '10⁻¹⁰'],
+  nm: [1e-7, '10⁻⁷'],
+  Å: [1e-8, '10⁻⁸'],
+};
+
+/** ρ = ZM ÷ (N_A a³), a in `unit`. */
+const densityRule = (Z: string, unit: string): Rule => {
+  const [k, kText] = CM[unit]!;
+  return {
+    relation: {
+      id: 'ρ = ZM ÷ (N_A a³)',
+      display: `{rho} = {${Z}} × {M} ÷ (${NA_TEXT} × ({a} × ${kText})³)`,
+      vars: ['rho', Z, 'M', 'a'],
+      residual: (x) => x.rho! * AVOGADRO * (x.a! * k) ** 3 - x[Z]! * x.M!,
+      solve: {
+        rho: (x) => div(x[Z]! * x.M!, AVOGADRO * (x.a! * k) ** 3),
+        M: (x) => div(x.rho! * AVOGADRO * (x.a! * k) ** 3, x[Z]!),
+        a: (x) => {
+          const q = div(x[Z]! * x.M!, x.rho! * AVOGADRO);
+          return q === undefined || q <= 0 ? undefined : Math.cbrt(q) / k;
+        },
+      },
+    },
+    steps: {
+      rho: st(
+        `{${Z}} × {M} ÷ (${NA_TEXT} × ({a} × ${kText})³)`,
+        `The mass of the cell’s ${Z === 'Z' ? 'Z' : 'n'} atoms over its volume, a in cm.`,
+      ),
+      M: st(
+        `{rho} × ${NA_TEXT} × ({a} × ${kText})³ ÷ {${Z}}`,
+        'The cell’s mass per mole, shared among its atoms.',
+      ),
+      a: st(
+        `∛({${Z}} × {M} ÷ ({rho} × ${NA_TEXT})) ÷ ${kText}`,
+        'The cell’s volume in cm³, its cube root, then back to the edge’s unit.',
+      ),
+    },
+  };
+};
+
+/** a from r by the touching direction, picked by Z (1 edge, 2 body diagonal, 4 face diagonal). */
+const EDGE_BY_Z = edgePerRadius;
+const touchRule = (Z: string): Rule => ({
+  relation: {
+    id: 'a from r',
+    display: '{a} = the edge per radius for {Z} atoms per cell × {r}',
+    vars: ['a', 'r', Z],
+    residual: (x) => x.a! - EDGE_BY_Z(x[Z]!) * x.r!,
+    solve: { a: (x) => EDGE_BY_Z(x[Z]!) * x.r!, r: (x) => x.a! / EDGE_BY_Z(x[Z]!) },
+  },
+  steps: {
+    a: {
+      expr: (v) => (v[Z] === 1 ? '2 × {r}' : v[Z] === 2 ? '4 × {r} ÷ √3' : '2 × √2 × {r}'),
+      how: (v) =>
+        v[Z] === 1
+          ? 'Simple cubic: the atoms touch along an edge, a = 2r.'
+          : v[Z] === 2
+            ? 'Body-centred: they touch along the body diagonal, √3a = 4r.'
+            : 'Face-centred: they touch along a face diagonal, √2a = 4r.',
+    },
+    r: {
+      expr: (v) => (v[Z] === 1 ? '{a} ÷ 2' : v[Z] === 2 ? '√3 × {a} ÷ 4' : '√2 × {a} ÷ 4'),
+      how: 'The touching line holds four radii (two for simple cubic).',
+    },
+  },
+});
+
+const packRule = (Z: string, percent: boolean): Rule => ({
+  relation: {
+    id: 'packing = Z(4/3)πr³ ÷ a³',
+    display: `{pf} = {${Z}} × 4 ÷ 3 × π × {r}³ ÷ {a}³${percent ? ' × 100' : ''}`,
+    vars: ['pf', Z, 'r', 'a'],
+    residual: (x) =>
+      x.pf! - ((x[Z]! * 4 * Math.PI * x.r! ** 3) / (3 * x.a! ** 3)) * (percent ? 100 : 1),
+    solve: {
+      pf: (x) => ((x[Z]! * 4 * Math.PI * x.r! ** 3) / (3 * x.a! ** 3)) * (percent ? 100 : 1),
+    },
+  },
+  steps: {
+    pf: st(
+      `{${Z}} × 4 ÷ 3 × π × {r}³ ÷ {a}³${percent ? ' × 100' : ''}`,
+      'The atoms’ volume in the cell over the cell’s volume.',
+    ),
+  },
+});
+
+const latticeCode = (id: string, symbol: string): VariableDef =>
+  quantity(id, symbol, 'Atoms per cell (SC 1, BCC 2, FCC 4)', undefined, 1, 4, 1, {
+    integer: true,
+    allowed: [1, 2, 4],
+  });
+
+// ── HC16: a metal's cell (inorganic#3, materials-science#0 and ~apf) ──
+
+const metalDemo = (
+  id: string,
+  title: string,
+  name: string,
+  z: number,
+  r: number,
+  M: number,
+  unit: 'pm' | 'nm',
+  percent: boolean,
+): ModuleDef => {
+  const a = EDGE_BY_Z(z) * r;
+  const k = CM[unit]![0];
+  return demo({
+    id,
+    title,
+    use: 'Use this for a metal’s cell edge, density and packing from its radius and structure.',
+    assumptions: [
+      'The atoms are hard spheres touching along the closest line of the cell.',
+      'A corner atom is shared by 8 cells, a face atom by 2: Z = 1, 2 or 4.',
+    ],
+    variables: [
+      latticeCode('Z', 'Z'),
+      quantity(
+        'r',
+        'r',
+        'Atomic radius',
+        unit,
+        unit === 'pm' ? 10 : 0.01,
+        unit === 'pm' ? 1000 : 1,
+        unit === 'pm' ? 0.1 : 0.0001,
+      ),
+      quantity(
+        'a',
+        'a',
+        'Cell edge',
+        unit,
+        unit === 'pm' ? 10 : 0.01,
+        unit === 'pm' ? 3000 : 3,
+        unit === 'pm' ? 0.1 : 0.0001,
+      ),
+      quantity('M', 'M', 'Molar mass', 'g/mol', 1, 500, 0.01),
+      quantity('rho', 'ρ', 'Density', 'g/cm³', 0.01, 50, 0.001),
+      quantity(
+        'pf',
+        percent ? 'packing' : 'APF',
+        percent ? 'Packing fraction' : 'Atomic packing factor',
+        percent ? '%' : undefined,
+        0,
+        percent ? 100 : 1,
+        percent ? 0.1 : 0.001,
+      ),
+    ],
+    ...rules(touchRule('Z'), densityRule('Z', unit), packRule('Z', percent)),
+    example: {
+      Z: z,
+      r,
+      a,
+      M,
+      rho: (z * M) / (AVOGADRO * (a * k) ** 3),
+      pf: ((z * 4 * Math.PI * r ** 3) / (3 * a ** 3)) * (percent ? 100 : 1),
+    },
+    startWith: ['Z', 'r', 'M'],
+    representation: {
+      kind: 'unitCell',
+      lattice: 'Z',
+      names: [name],
+      touching: true,
+      edge: 'a',
+      radius: 'r',
+      atoms: 'Z',
+      molar: 'M',
+      density: 'rho',
+      packing: 'pf',
+    },
+  });
+};
+
+const cellFcc = metalDemo(
+  'g.he-unitCell-fcc',
+  'Copper’s face-centred cell: edge, density and packing',
+  'Cu',
+  4,
+  128,
+  63.55,
+  'pm',
+  true,
+);
+const cellBcc = metalDemo(
+  'g.he-unitCell-bcc',
+  'Iron’s body-centred cell: the atomic packing factor',
+  'Fe',
+  2,
+  0.124,
+  55.85,
+  'nm',
+  false,
+);
+const cellSc = metalDemo(
+  'g.he-unitCell-sc',
+  'Polonium’s simple cubic cell: the loosest packing',
+  'Po',
+  1,
+  0.168,
+  209,
+  'nm',
+  false,
+);
+
+// ── HC16: ionic cells and the radius ratio (inorganic#3~radius-ratio) ──
+
+const IONIC: Record<
+  'rocksalt' | 'cesiumChloride' | 'zincBlende',
+  { k: number; text: string; how: string; z: number }
+> = {
+  rocksalt: {
+    k: 2,
+    text: '2 × ({rp} + {rm})',
+    how: 'The ions touch along an edge: a = 2(r₊ + r₋).',
+    z: 4,
+  },
+  cesiumChloride: {
+    k: 2 / Math.sqrt(3),
+    text: '2 × ({rp} + {rm}) ÷ √3',
+    how: 'They touch along the body diagonal: √3a = 2(r₊ + r₋).',
+    z: 1,
+  },
+  zincBlende: {
+    k: 4 / Math.sqrt(3),
+    text: '4 × ({rp} + {rm}) ÷ √3',
+    how: 'They touch a quarter of the way along the body diagonal: √3a = 4(r₊ + r₋).',
+    z: 4,
+  },
+};
+
+const ionicDemo = (
+  id: string,
+  title: string,
+  lattice: 'rocksalt' | 'cesiumChloride' | 'zincBlende',
+  names: [string, string],
+  rp: number,
+  rm: number,
+  M: number,
+): ModuleDef => {
+  const s = IONIC[lattice];
+  const a = s.k * (rp + rm);
+  return demo({
+    id,
+    title,
+    use: 'Use this for the coordination a radius ratio predicts, and an ionic cell’s edge and density.',
+    assumptions: [
+      'Hard-sphere ions; cation and anion touch, anions do not.',
+      'Ratio 0.225–0.414 → 4 neighbours, 0.414–0.732 → 6, above 0.732 → 8.',
+    ],
+    variables: [
+      quantity('rp', 'r₊', 'Cation radius', 'pm', 10, 400, 1),
+      quantity('rm', 'r₋', 'Anion radius', 'pm', 10, 400, 1),
+      quantity('ratio', 'r₊/r₋', 'Radius ratio', undefined, 0.01, 10, 0.001),
+      quantity('cn', 'CN', 'Coordination number', undefined, 4, 8, 1, {
+        integer: true,
+        allowed: [4, 6, 8],
+        derived: true,
+      }),
+      quantity('a', 'a', 'Cell edge', 'pm', 10, 3000, 0.1),
+      quantity('Z', 'Z', 'Formula units per cell', undefined, 1, 4, 1, {
+        integer: true,
+        allowed: [s.z],
+      }),
+      quantity('M', 'M', 'Formula mass', 'g/mol', 1, 1000, 0.01),
+      quantity('rho', 'ρ', 'Density', 'g/cm³', 0.01, 50, 0.001),
+    ],
+    ...rules(
+      {
+        relation: {
+          id: 'ratio = r₊ ÷ r₋',
+          display: '{ratio} = {rp} ÷ {rm}',
+          vars: ['ratio', 'rp', 'rm'],
+          residual: (x) => x.ratio! * x.rm! - x.rp!,
+          solve: {
+            ratio: (x) => div(x.rp!, x.rm!),
+            rp: (x) => x.ratio! * x.rm!,
+            rm: (x) => div(x.rp!, x.ratio!),
+          },
+        },
+        steps: {
+          ratio: st('{rp} ÷ {rm}', 'Divide the cation’s radius by the anion’s.'),
+          rp: st('{ratio} × {rm}', 'Multiply the anion’s radius by the ratio.'),
+          rm: st('{rp} ÷ {ratio}', 'Divide the cation’s radius by the ratio.'),
+        },
+      },
+      {
+        relation: {
+          id: 'CN from the ratio',
+          display: '{cn} = the coordination number for a radius ratio of {ratio}',
+          vars: ['cn', 'ratio'],
+          residual: (x) => x.cn! - coordinationOf(x.ratio!),
+          solve: { cn: (x) => coordinationOf(x.ratio!) },
+        },
+        steps: {
+          cn: st(
+            'the coordination number for a radius ratio of {ratio}',
+            'Below 0.414 four anions fit round the cation, to 0.732 six, above that eight.',
+          ),
+        },
+      },
+      {
+        relation: {
+          id: 'a from r₊ and r₋',
+          display: `{a} = ${s.text}`,
+          vars: ['a', 'rp', 'rm'],
+          residual: (x) => x.a! - s.k * (x.rp! + x.rm!),
+          solve: {
+            a: (x) => s.k * (x.rp! + x.rm!),
+            rp: (x) => x.a! / s.k - x.rm!,
+            rm: (x) => x.a! / s.k - x.rp!,
+          },
+        },
+        steps: {
+          a: st(s.text, s.how),
+          rp: st(`{a} ÷ ${r4text(s.k)} − {rm}`, 'Turn a back into r₊ + r₋, then take away r₋.'),
+          rm: st(`{a} ÷ ${r4text(s.k)} − {rp}`, 'Turn a back into r₊ + r₋, then take away r₊.'),
+        },
+      },
+      densityRule('Z', 'pm'),
+    ),
+    example: {
+      rp,
+      rm,
+      ratio: rp / rm,
+      cn: coordinationOf(rp / rm),
+      a,
+      Z: s.z,
+      M,
+      rho: (s.z * M) / (AVOGADRO * (a * 1e-10) ** 3),
+    },
+    startWith: ['rp', 'rm', 'M', 'Z'],
+    representation: {
+      kind: 'unitCell',
+      lattice,
+      names,
+      touching: true,
+      edge: 'a',
+      radius: 'rm',
+      cation: 'rp',
+      atoms: 'Z',
+      molar: 'M',
+      density: 'rho',
+      more: ['ratio', 'cn'],
+    },
+  });
+};
+
+const r4text = (k: number) => (k === 2 ? '2' : k === 2 / Math.sqrt(3) ? '(2 ÷ √3)' : '(4 ÷ √3)');
+
+const cellRockSalt = ionicDemo(
+  'g.he-unitCell-rocksalt',
+  'Sodium chloride: the radius ratio, six neighbours and the rock-salt cell',
+  'rocksalt',
+  ['Cl⁻', 'Na⁺'],
+  102,
+  181,
+  58.44,
+);
+const cellCsCl = ionicDemo(
+  'g.he-unitCell-cesiumChloride',
+  'Caesium chloride: a large cation, eight neighbours',
+  'cesiumChloride',
+  ['Cl⁻', 'Cs⁺'],
+  174,
+  181,
+  168.36,
+);
+const cellZnS = ionicDemo(
+  'g.he-unitCell-zincBlende',
+  'Zinc blende: a small cation, four neighbours',
+  'zincBlende',
+  ['S²⁻', 'Zn²⁺'],
+  60,
+  184,
+  97.47,
+);
+
+// ── HC16: a mineral's density from its cell (mineralogy#0~cell-density) ──
+
+const halite = {
+  Z: 4,
+  M: 58.44,
+  a: 5.64,
+  V: 5.64 ** 3,
+  rho: (4 * 58.44) / (AVOGADRO * 5.64 ** 3 * 1e-24),
+};
+
+const cellDensity = demo({
+  id: 'g.he-unitCell-density',
+  title: 'Halite’s density from its unit cell',
+  use: 'Use this for a mineral’s density from the formula units per cell, the molar mass and the cell edge.',
+  assumptions: ['A cubic cell: V = a³.', '1 Å³ = 10⁻²⁴ cm³.'],
+  variables: [
+    quantity('Z', 'Z', 'Formula units per cell', undefined, 1, 16, 1, { integer: true }),
+    quantity('M', 'M', 'Molar mass', 'g/mol', 1, 2000, 0.01),
+    quantity('a', 'a', 'Cell edge', 'Å', 2, 30, 0.001),
+    quantity('V', 'V', 'Cell volume', 'Å³', 8, 27000, 0.1),
+    quantity('rho', 'ρ', 'Density', 'g/cm³', 0.01, 30, 0.001),
+  ],
+  ...rules(
+    {
+      relation: {
+        id: 'V = a³',
+        display: '{V} = {a}³',
+        vars: ['V', 'a'],
+        residual: (x) => x.V! - x.a! ** 3,
+        solve: { V: (x) => x.a! ** 3, a: (x) => Math.cbrt(x.V!) },
+      },
+      steps: {
+        V: st('{a}³', 'A cube’s volume.'),
+        a: st('∛{V}', 'The cube root of the volume.'),
+      },
+    },
+    {
+      relation: {
+        id: 'ρ = ZM ÷ (N_A V)',
+        display: `{rho} = {Z} × {M} ÷ (${NA_TEXT} × {V} × 10⁻²⁴)`,
+        vars: ['rho', 'Z', 'M', 'V'],
+        residual: (x) => x.rho! * AVOGADRO * x.V! * 1e-24 - x.Z! * x.M!,
+        solve: {
+          rho: (x) => div(x.Z! * x.M!, AVOGADRO * x.V! * 1e-24),
+          M: (x) => div(x.rho! * AVOGADRO * x.V! * 1e-24, x.Z!),
+          V: (x) => div(x.Z! * x.M!, x.rho! * AVOGADRO * 1e-24),
+        },
+      },
+      steps: {
+        rho: st(
+          `{Z} × {M} ÷ (${NA_TEXT} × {V} × 10⁻²⁴)`,
+          'The cell’s mass (Z formula units) over its volume in cm³.',
+        ),
+        M: st(
+          `{rho} × ${NA_TEXT} × {V} × 10⁻²⁴ ÷ {Z}`,
+          'The cell’s mass per mole, shared among Z units.',
+        ),
+        V: st(
+          `{Z} × {M} ÷ ({rho} × ${NA_TEXT} × 10⁻²⁴)`,
+          'The cell’s mass over the density, in Å³.',
+        ),
+      },
+    },
+  ),
+  example: halite,
+  startWith: ['Z', 'M', 'a'],
+  representation: {
+    kind: 'unitCell',
+    lattice: 'rocksalt',
+    names: ['Cl⁻', 'Na⁺'],
+    edge: 'a',
+    more: ['Z', 'V', 'rho'],
+  },
+});
+
+// ── HC16: a plane's spacing and its peak (mineralogy#0~cubic-d) ──
+
+const SPACING_RULE: Rule = {
+  relation: {
+    id: 'd = a ÷ √(h² + k² + l²)',
+    display: '{d} = {a} ÷ √({h}² + {k}² + {l}²)',
+    vars: ['d', 'a', 'h', 'k', 'l'],
+    residual: (x) => x.d! * Math.sqrt(x.h! ** 2 + x.k! ** 2 + x.l! ** 2) - x.a!,
+    solve: {
+      d: (x) => div(x.a!, Math.sqrt(x.h! ** 2 + x.k! ** 2 + x.l! ** 2)),
+      a: (x) => x.d! * Math.sqrt(x.h! ** 2 + x.k! ** 2 + x.l! ** 2),
+    },
+  },
+  steps: {
+    d: st(
+      '{a} ÷ √({h}² + {k}² + {l}²)',
+      'In a cubic cell the planes (hkl) are a ÷ √(h² + k² + l²) apart.',
+    ),
+    a: st('{d} × √({h}² + {k}² + {l}²)', 'Multiply the spacing back up.'),
+  },
+};
+const NOT_ALL_ZERO: Rule = {
+  relation: {
+    id: 'h, k, l not all 0',
+    constraint: true,
+    display: '{h}² + {k}² + {l}² > 0',
+    vars: ['h', 'k', 'l'],
+    residual: (v: Values) => (v.h! ** 2 + v.k! ** 2 + v.l! ** 2 > 0 ? 0 : 1),
+    solve: {},
+    message: () => 'A plane needs at least one index that is not 0.',
+  },
+  steps: {},
+};
+const DEG = Math.PI / 180;
+/** nλ = 2d sin θ, θ in degrees. */
+const braggRule = (n: string | undefined): Rule => {
+  const nn = (x: Values) => (n ? x[n]! : 1);
+  const nT = n ? `{${n}} × ` : '';
+  return {
+    relation: {
+      id: 'nλ = 2d sin θ',
+      display: `${nT}{lam} = 2 × {d} × sin({th})`,
+      vars: [...(n ? [n] : []), 'lam', 'd', 'th'],
+      residual: (x) => nn(x) * x.lam! - 2 * x.d! * Math.sin(x.th! * DEG),
+      solve: {
+        lam: (x) => (2 * x.d! * Math.sin(x.th! * DEG)) / nn(x),
+        d: (x) => div(nn(x) * x.lam!, 2 * Math.sin(x.th! * DEG)),
+        th: (x) => {
+          const s = (nn(x) * x.lam!) / (2 * x.d!);
+          return s > 0 && s <= 1 ? Math.asin(s) / DEG : undefined;
+        },
+      },
+    },
+    steps: {
+      lam: st(
+        `2 × {d} × sin({th})${n ? ` ÷ {${n}}` : ''}`,
+        'The extra path 2d sin θ holds n wavelengths.',
+      ),
+      d: st(`${nT}{lam} ÷ (2 × sin({th}))`, 'Divide n wavelengths by 2 sin θ.'),
+      th: st(`sin⁻¹(${nT}{lam} ÷ (2 × {d}))`, 'The angle whose sine is nλ ÷ 2d.'),
+    },
+  };
+};
+const HALF_RULE: Rule = {
+  relation: {
+    id: 'θ = 2θ ÷ 2',
+    display: '{th} = {tt} ÷ 2',
+    vars: ['th', 'tt'],
+    residual: (x) => x.th! - x.tt! / 2,
+    solve: { th: (x) => x.tt! / 2, tt: (x) => 2 * x.th! },
+  },
+  steps: {
+    th: st('{tt} ÷ 2', 'The detector reads 2θ, the angle between the beam in and out.'),
+    tt: st('2 × {th}', 'Double the Bragg angle θ.'),
+  },
+};
+
+const index = (id: string) =>
+  quantity(id, id, `Miller index ${id}`, undefined, 0, 6, 1, { integer: true });
+const degrees = (id: string, symbol: string, name: string, max: number) =>
+  quantity(id, symbol, name, '°', 0.01, max, 0.01);
+
+const planesDemo = (
+  id: string,
+  title: string,
+  a: number,
+  h: number,
+  k: number,
+  l: number,
+): ModuleDef => {
+  const lam = 1.5406;
+  const d = a / Math.sqrt(h * h + k * k + l * l);
+  const th = Math.asin(lam / (2 * d)) / DEG;
+  return demo({
+    id,
+    title,
+    use: 'Use this for the spacing of a cubic plane (hkl) and the angle 2θ of its X-ray peak.',
+    assumptions: [
+      'Cubic cells only: other systems have their own d formulas.',
+      'First order (n = 1); copper Kα, λ = 1.5406 Å.',
+    ],
+    variables: [
+      quantity('a', 'a', 'Cell edge', 'Å', 2, 30, 0.001),
+      index('h'),
+      index('k'),
+      index('l'),
+      quantity('d', 'd', 'Plane spacing', 'Å', 0.1, 30, 0.001),
+      quantity('lam', 'λ', 'X-ray wavelength', 'Å', 0.5, 3, 0.0001),
+      degrees('th', 'θ', 'Bragg angle', 89.99),
+      degrees('tt', '2θ', 'Detector angle', 179.98),
+    ],
+    ...rules(SPACING_RULE, NOT_ALL_ZERO, braggRule(undefined), HALF_RULE),
+    example: { a, h, k, l, d, lam, th, tt: 2 * th },
+    startWith: ['a', 'h', 'k', 'l', 'lam'],
+    representation: {
+      kind: 'unitCell',
+      lattice: 'rocksalt',
+      names: ['Cl⁻', 'Na⁺'],
+      edge: 'a',
+      planes: { h: 'h', k: 'k', l: 'l', spacing: 'd' },
+      more: ['th', 'tt'],
+    },
+  });
+};
+
+const cellPlanes = planesDemo(
+  'g.he-unitCell-planes',
+  'Halite’s (200) planes: spacing and peak',
+  5.64,
+  2,
+  0,
+  0,
+);
+const cellPlanesHigh = planesDemo(
+  'g.he-unitCell-planes-high',
+  'Halite’s (321) planes: a steep plane, a small d',
+  5.64,
+  3,
+  2,
+  1,
+);
+
+// ── HC16: Bragg's law from a diffractometer (mineralogy#0) ──
+
+const braggDemo = (id: string, title: string, n: number, tt: number): ModuleDef => {
+  const lam = 1.5406;
+  const th = tt / 2;
+  return demo({
+    id,
+    title,
+    use: 'Use this for a plane spacing d from a diffraction peak at 2θ (Bragg’s law).',
+    assumptions: [
+      'Diffractometers report 2θ, the angle between the beam in and out.',
+      'A peak needs the extra path 2d sin θ to be a whole number of wavelengths.',
+    ],
+    variables: [
+      quantity('n', 'n', 'Order', undefined, 1, 4, 1, { integer: true }),
+      quantity('lam', 'λ', 'X-ray wavelength', 'Å', 0.5, 3, 0.0001),
+      degrees('tt', '2θ', 'Detector angle', 170),
+      degrees('th', 'θ', 'Bragg angle', 85),
+      quantity('d', 'd', 'Plane spacing', 'Å', 0.1, 100, 0.001),
+    ],
+    ...rules(HALF_RULE, braggRule('n')),
+    example: { n, lam, tt, th, d: (n * lam) / (2 * Math.sin(th * DEG)) },
+    startWith: ['tt', 'lam', 'n'],
+    representation: {
+      kind: 'unitCell',
+      lattice: 'sc',
+      braggOnly: true,
+      bragg: { spacing: 'd', angle: 'th', twoTheta: 'tt', wavelength: 'lam', order: 'n' },
+    },
+  });
+};
+
+const cellBragg = braggDemo(
+  'g.he-unitCell-bragg',
+  'Bragg’s law: quartz’s strongest peak',
+  1,
+  26.64,
+);
+const cellBraggOrder = braggDemo(
+  'g.he-unitCell-bragg-order2',
+  'Bragg’s law in second order: the same planes, twice the path',
+  2,
+  54.88,
+);
+
+// ── HC16: copper's (111) peak, the cell and the rows together (inorganic#3~bragg) ──
+
+const cu111 = (() => {
+  const [a, h, k, l, lam] = [361.5, 1, 1, 1, 154.2];
+  const d = a / Math.sqrt(3);
+  const th = Math.asin(lam / (2 * d)) / DEG;
+  return { a, h, k, l, lam, d, th, tt: 2 * th };
+})();
+
+const cellCopperBragg = demo({
+  id: 'g.he-unitCell-copper-bragg',
+  title: 'Copper’s (111) planes and their X-ray peak',
+  use: 'Use this for the spacing of a plane in a cubic metal and the angle of its diffraction peak.',
+  assumptions: ['d = a ÷ √(h² + k² + l²) for a cubic cell.', 'First order: λ = 2d sin θ.'],
+  variables: [
+    quantity('a', 'a', 'Cell edge', 'pm', 10, 3000, 0.1),
+    index('h'),
+    index('k'),
+    index('l'),
+    quantity('d', 'd', 'Plane spacing', 'pm', 1, 3000, 0.1),
+    quantity('lam', 'λ', 'X-ray wavelength', 'pm', 1, 1000, 0.1),
+    degrees('th', 'θ', 'Bragg angle', 89.99),
+    degrees('tt', '2θ', 'Detector angle', 179.98),
+  ],
+  ...rules(SPACING_RULE, NOT_ALL_ZERO, braggRule(undefined), HALF_RULE),
+  example: cu111,
+  startWith: ['a', 'h', 'k', 'l', 'lam'],
+  representation: {
+    kind: 'unitCell',
+    lattice: 'fcc',
+    names: ['Cu'],
+    edge: 'a',
+    planes: { h: 'h', k: 'k', l: 'l', spacing: 'd' },
+    bragg: { spacing: 'd', angle: 'th', twoTheta: 'tt', wavelength: 'lam' },
+  },
+});
+
 export const HE2B_GALLERY_MODULES: ModuleDef[] = [
   boxPhoton,
   boxHigh,
@@ -1050,6 +1732,18 @@ export const HE2B_GALLERY_MODULES: ModuleDef[] = [
   tunneling,
   stepDemo,
   bumpDemo,
+  cellFcc,
+  cellBcc,
+  cellSc,
+  cellRockSalt,
+  cellCsCl,
+  cellZnS,
+  cellDensity,
+  cellPlanes,
+  cellPlanesHigh,
+  cellBragg,
+  cellBraggOrder,
+  cellCopperBragg,
 ];
 
 export const HE2B_GALLERY_LAYOUTS: LayoutDef[] = [];

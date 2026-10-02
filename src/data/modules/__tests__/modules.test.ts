@@ -591,6 +591,7 @@ function representationVars(r: Representation): string[] {
     case 'velocityProfile':
       return he1fSpecVars(r);
     case 'potentialWell':
+    case 'unitCell':
       return he2bSpecVars(r);
     case 'projectile':
     case 'induction':
