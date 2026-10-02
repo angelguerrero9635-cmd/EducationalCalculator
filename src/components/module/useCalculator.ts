@@ -81,7 +81,10 @@ const clearGivens = (m: ModuleDef) =>
 /** Shared state for a module's formula inputs, units, table/chart/diagram and steps. */
 export function useCalculator(module: ModuleDef): Calculator {
   const [defaultSystem] = useUnitsPref();
-  const options = useMemo(() => unitOptions(module.variables, module.unitSystems), [module]);
+  const options = useMemo(
+    () => unitOptions(module.variables, module.unitSystems, module.unitSet),
+    [module],
+  );
 
   const [state, setState] = useState<{ choice: UnitChoice; calc: CalcState }>(() => {
     const choice: UnitChoice = {

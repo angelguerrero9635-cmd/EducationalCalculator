@@ -1,6 +1,7 @@
 import type { Relation, Values, VariableDef } from '@/engine/types';
 import type { Written } from './written';
 import type { UnitSystem } from '@/engine/units';
+import type { ModuleUnitSet } from '@/engine/unitSets';
 import type {
   FunctionMachineSpec,
   LineSystemSpec,
@@ -1766,4 +1767,10 @@ export interface ModuleDef {
    * stay available either way.
    */
   unitSystems?: UnitSystem[];
+  /**
+   * The coherent unit set the relations are written in ("N-mm-MPa"), or one per system
+   * ({ metric: 'N-mm-MPa', us: 'kip-in-ksi' }): inputs convert into it, and under a system with
+   * its own set the steps work in that set directly (`src/engine/unitSets.ts`).
+   */
+  unitSet?: ModuleUnitSet;
 }
