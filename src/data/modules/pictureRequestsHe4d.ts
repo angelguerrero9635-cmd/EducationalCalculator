@@ -4,4 +4,62 @@
  */
 import type { PictureRequest } from './pictureRequests';
 
-export const HE4D_REQUESTS: PictureRequest[] = [];
+const ask = (
+  id: string,
+  kind: string,
+  what: string,
+  pages: string[],
+  notes?: string,
+): PictureRequest => ({
+  id,
+  what,
+  kind,
+  pages,
+  status: 'requested',
+  gallery: [],
+  ...(notes ? { notes } : {}),
+});
+
+export const HE4D_REQUESTS: PictureRequest[] = [
+  {
+    ...ask(
+      'HC109',
+      'orbitalDiagram',
+      'orbitalDiagram ladder with Z: a hydrogen-like ion’s levels −13.6Z² ÷ n² to scale, the page’s level lit, the shell’s n² orbitals at one energy (subshell l lit) and a slice through one orbital with its radial nodes as rings and angular nodes as lines, lobes signed + and −; mode radial: P(r) = r²R²(r) against r in a₀, area 1 shaded, the radial nodes, ⟨r⟩ dashed, r_mp ringed',
+      ['he.chemistry.physical-2#2', 'he.chemistry.physical-2#2~radius'],
+      [
+        'From C-P2. Types in typesHe4d.ts (OrbitalLadderZ, OrbitalRadial); the Grades 9–12 boxes and ladder are unchanged (a ladder without Z draws as before).',
+        'Ladder: { kind: "orbitalDiagram", mode: "ladder", Z, n, l?, energy? (eV), radial?, angular?, degeneracy?, rydberg? (default 13.6) }. physical-2#2 main: { mode: "ladder", Z: "Z", n: "n", l: "l", energy: "E", radial: "rad", angular: "ang", degeneracy: "g" } (He⁺ 2p: −13.6 eV, 0 and 1 nodes, g = 4).',
+        'Radial: { kind: "orbitalDiagram", mode: "radial", Z, n, l, mean? (a₀), meanNm? (nm), peak? (a₀), peakNm? (nm), nodes? }. ~radius: { mode: "radial", Z: "Z", n: "n", l: "l", mean: "mean", meanNm: "meanNm", peak: "peak", peakNm: "peakNm" } (H 2p: ⟨r⟩ = 5a₀ = 0.265 nm, r_mp = 4a₀ = 0.212 nm). The peak drawn is always the tallest hump; pass `peak` only where the page’s relation is r_mp = n²a₀ ÷ Z (l = n − 1).',
+        'Z 1–10, n 1–10, l < n. Checks (harness/picturesHe4d.ts): E = −13.6Z²/n²; radial = n − l − 1; angular = l; g = n²; area under P(r) = 1; the curve’s node count = n − l − 1; ⟨r⟩ from the curve = (3n² − l(l + 1)) ÷ 2Z; r_mp = n² ÷ Z when l = n − 1; nm = a₀ × 0.0529177.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-orbitalDiagram-ladder-z',
+      'g.he-orbitalDiagram-ladder-z-high',
+      'g.he-orbitalDiagram-radial',
+      'g.he-orbitalDiagram-radial-3s',
+    ],
+  },
+  {
+    ...ask(
+      'HC110',
+      'orbitalDiagram',
+      'orbitalDiagram mode crystalField: the five free-ion d boxes split into t₂g and e_g by Δₒ, drawn to scale beside a bar of the pairing energy P, filled high or low spin (each electron where it costs least); tetrahedral (e below t₂) and square planar (four levels) by `geometry`; CFSE and the spin-only μ worked in the caption',
+      ['he.chemistry.inorganic#2', 'he.chemistry.inorganic#1'],
+      [
+        'From C-P4. Type in typesHe4d.ts (OrbitalCrystalField).',
+        'Fields: { kind: "orbitalDiagram", mode: "crystalField", d, split (Δ), pairing (P), geometry?: "octahedral" (default) | "tetrahedral" | "squarePlanar", t2g? (the lower set’s electrons), eg? (the upper set’s), unpaired?, cfse?, moment? (BM), ion?: "Fe²⁺", ligand?: "H₂O", unit? (default "cm⁻¹") }.',
+        'inorganic#2 main: { mode: "crystalField", d: "d", split: "split", pairing: "P", t2g: "t2g", eg: "eg", unpaired: "n", cfse: "cfse", moment: "mu", ion: "Fe²⁺", ligand: "H₂O" } (d⁶, 10,400 < 17,600 → t₂g⁴e_g², 4 unpaired, −4160 cm⁻¹, 4.90 BM; with CN⁻ at 33,000 → t₂g⁶, −44,000 cm⁻¹). inorganic#1 may show its d count the same way with fixed split and pairing, or leave it for the crystal-field page.',
+        'Checks (harness/picturesHe4d.ts): the boxes hold d electrons; octahedral d⁴–d⁷ low spin exactly when Δ > P; lower and upper counts, unpaired, CFSE = Σ(nᵢ × energyᵢ)Δ + (pairs beyond max(0, d − 5)) × P and μ = √(n(n + 2)) agree with the values.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-orbitalDiagram-crystal-field',
+      'g.he-orbitalDiagram-crystal-field-low',
+      'g.he-orbitalDiagram-crystal-field-tetrahedral',
+    ],
+  },
+];

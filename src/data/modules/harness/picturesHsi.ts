@@ -42,12 +42,14 @@ import { ionicChargeIssues } from './picturesHs3e';
 
 import type { ChemSpec } from '../typesChem';
 import type { HsiSpec } from '../typesHsi';
+import { isOrbitalHe4d } from '../typesHe4d';
 
 /** Equal to display rounding (values are read as shown, 4 decimals or 4 significant figures). */
 const near = (a: number, b: number, tol = 1e-4) =>
   Math.abs(a - b) <= tol * Math.max(1, Math.abs(a), Math.abs(b));
 
 export function hsiIssues(rep: HsiSpec, val: (id: string) => number | undefined): string[] {
+  if (isOrbitalHe4d(rep)) return []; // HC109, HC110: picturesHe4d.ts
   const out: string[] = [];
   const num = (x: string | number | undefined) =>
     x === undefined ? undefined : typeof x === 'number' ? x : val(x);

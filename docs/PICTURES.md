@@ -401,6 +401,9 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `phScale`          | `mode: 'buffer'`, `'aminoAcid'`          | HH curve, pKₐ ± 1 band, HA and A⁻ bars; amino acid curve and pI (HC71)        |
 | `phScale`          | `mode: 'pka'`                            | pKₐ ladder −10 to 50, two acids lit, arrow to the weaker; log K (HC73)        |
 | `beaker`           | `solution: { mode, … }`                  | solute as dots by moles; a dilution’s two beakers; solubility (H52)           |
+| `orbitalDiagram`   | `mode: 'ladder'`, `Z`, `n`, `l`          | −13.6Z² ÷ n² to scale, level n lit; n² boxes; ring and line nodes (HC109)     |
+| `orbitalDiagram`   | `mode: 'radial'`, `Z`, `n`, `l`          | P(r) = r²R² in a₀, area 1; radial nodes, ⟨r⟩ dashed, r_mp ringed (HC109)      |
+| `orbitalDiagram`   | `mode: 'crystalField'`, `d`, `split`     | d boxes split by Δ beside P to scale, high or low spin; CFSE, μ (HC110)       |
 | `rockLayers`       | `dating` (Grades 9–12)                   | ages on dated layers, a dike cutting across, index fossils, 100 atoms         |
 | `motionGraph`      | `kinematics: { view, at?, slope? }`      | signed v–t, + and − areas as Δx; x–t with a tangent at t₁; strobe (H58)       |
 | `energyTrack`      | `spring: { k, compression, … }`          | spring launcher, rough patch (heat fd), ramp; start and now bars (H63)        |

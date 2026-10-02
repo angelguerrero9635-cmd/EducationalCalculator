@@ -84,6 +84,8 @@ import { he3fIssues } from './picturesHe3f';
 import { he1fIssues } from './picturesHe1f';
 import { he2bIssues } from './picturesHe2b';
 import { he2jIssues } from './picturesHe2j';
+import { orbitalHe4dIssues } from './picturesHe4d';
+import { isOrbitalHe4d } from '../typesHe4d';
 import { he2eIssues, isHe2e } from './picturesHe2e';
 import { he2hIssues } from './picturesHe2h';
 import { fieldPlotIssues, he2gGraphIssues } from './picturesHe2g';
@@ -2244,6 +2246,7 @@ export function repIssues(
     case 'lewisStructure':
     case 'vsepr':
     case 'moleMap':
+      if (isOrbitalHe4d(rep)) out.push(...orbitalHe4dIssues(rep, val)); // HC109, HC110
       out.push(...hsiIssues(rep, (id) => val(id)));
       if (rep.kind === 'moleMap') out.push(...moleMapHs2dIssues(rep, (id) => val(id)));
       break;

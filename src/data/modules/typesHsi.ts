@@ -4,6 +4,7 @@
  * `types.ts` so that file's union only lists them. A `NumOrVar` field is a fixed number or a
  * variable id. Formulas are written plainly ("H2O", "NH4+"); the pictures print subscripts.
  */
+import { isOrbitalHe4d, orbitalHe4dVars, type OrbitalHe4dSpec } from './typesHe4d';
 import type { NumOrVar } from './typesGraphs';
 import { ionicChargeVars, type IonicCharges } from './typesHs3e';
 import { moleMapHs2dVars, type MoleMapLimiting } from './typesHs2d';
@@ -100,6 +101,8 @@ export interface AtomModelSpec {
  *   (nm, 1240 ÷ E) are checked.
  */
 export type OrbitalDiagramSpec =
+  /** College HC109, HC110: ladder with Z, radial, crystal field (`typesHe4d.ts`). */
+  | OrbitalHe4dSpec
   | {
       kind: 'orbitalDiagram';
       mode: 'boxes';
@@ -248,6 +251,7 @@ export type HsiSpec =
 
 /** Every variable id a group I spec refers to (for the module tests). */
 export function hsiSpecVars(r: HsiSpec): string[] {
+  if (isOrbitalHe4d(r)) return orbitalHe4dVars(r); // HC109, HC110
   const ids = (...xs: (NumOrVar | undefined)[]) =>
     xs.filter((x): x is string => typeof x === 'string');
   switch (r.kind) {
