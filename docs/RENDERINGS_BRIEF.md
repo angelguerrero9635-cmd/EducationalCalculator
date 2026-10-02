@@ -553,3 +553,14 @@ rails, HC20 and HC25 `freeBody` options and aircraft, HC21 `fieldPlot`, HC22 `bo
 `stressElement`, HC34 `chemDiagram` rate, HC35 `circularMotion` orbits, HC36 `globe`, HC37 and
 HC38 `functionGraph` `tangent`, `band` and `series`, and HC39 schematics `device` are drawn.
 Tracker entries are in `pictureRequestsHe2<x>.ts`, demos in `galleryHe2<x>.ts`.
+
+2026-10-02, college round 3: HC40–HC93 are drawn (heat exchangers, element chains,
+distributions, `gasPiston` P–V and real gases, energy profiles in G with steps and the bomb,
+numerical methods, surface plots, space objects, code traces, timing diagrams, graphs, schedule
+charts, fatigue diagrams, polar areas and the cycloid, related rates, instrument traces, cells,
+pathway details, Gibbs charts, shafts, road curves, connections, device curves, stem plots, bit
+fields, solids of revolution, series charts, optics, phase space, MO diagrams, titrations, VSEPR
+with 5–6 domains, mole maps, aquifers, refraction, GIS shoelace and buffers, projections, membrane
+potentials, dilution series, limbs, binary phase diagrams, machining, linkages, materials icons,
+laminae, rockets, open channels, hydrographs, block diagrams, dB budgets, quantizers and EM waves).
+Tracker entries are in `pictureRequestsHe3<x>.ts`, demos in `galleryHe3<x>.ts`.
