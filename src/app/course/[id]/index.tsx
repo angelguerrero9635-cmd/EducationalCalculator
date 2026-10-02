@@ -4,7 +4,7 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 import {
   Chip,
   DetailHeader,
-  EmptyState,
+  NotFound,
   LockedState,
   RefreshSection,
   SectionHeader,
@@ -38,7 +38,7 @@ export default function CourseScreen() {
   const course = getCourse(id);
   useTrackRecent(course?.id);
 
-  if (!course) return <EmptyState title="Course not found" message={id} />;
+  if (!course) return <NotFound />;
   if (isLocked(course.id)) return <LockedState />;
   const icons = topicIcons(course);
 

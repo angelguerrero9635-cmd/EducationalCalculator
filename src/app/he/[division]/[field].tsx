@@ -1,6 +1,7 @@
 import { Stack, useLocalSearchParams } from 'expo-router';
 
-import { CourseList, EmptyState } from '@/components';
+import { CourseList } from '@/components';
+import { NotFound } from '@/components/NotFound';
 import { PageMeta } from '@/components/PageMeta';
 import { fieldMeta } from '@/data/meta';
 import { getField, isDivision } from '@/data/selectors';
@@ -19,7 +20,7 @@ export default function FieldScreen() {
   const field = isDivision(division) ? getField(division, String(params.field)) : undefined;
 
   if (!isDivision(division) || !field) {
-    return <EmptyState title="Not found" message="This field doesn’t exist." />;
+    return <NotFound />;
   }
 
   return (

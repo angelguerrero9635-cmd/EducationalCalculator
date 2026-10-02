@@ -3,10 +3,11 @@ import { Text } from '@/components/Text';
 
 import type { RouteTarget } from '@/data/selectors';
 import { push } from '@/navigation';
-import { font, radius, space, useCardShadow, usePalette } from '@/theme';
+import { radius, space, type, useCardShadow, usePalette } from '@/theme';
 
 import { useInGroup } from './Group';
 import { Icon } from './Icon';
+import { webData } from './webData';
 
 export interface ListRowProps {
   title: string;
@@ -52,6 +53,8 @@ export function ListRow({
       disabled={!handlePress}
       accessibilityRole={handlePress ? 'button' : undefined}
       accessibilityState={selected !== undefined ? { selected } : undefined}
+      // Web: rows highlight under the pointer (src/app/+html.tsx).
+      {...webData(handlePress ? { hover: 'row' } : undefined)}
       style={({ pressed }) => [
         styles.row,
         inGroup
@@ -90,13 +93,8 @@ const styles = StyleSheet.create({
   card: { marginHorizontal: space.lg, marginBottom: space.sm, borderRadius: radius.lg },
   flush: { marginHorizontal: 0, marginBottom: 0, borderRadius: radius.md },
   text: { flex: 1, gap: 2 },
-  overline: {
-    fontSize: font.caption - 1,
-    fontWeight: '700',
-    textTransform: 'uppercase',
-    letterSpacing: 0.6,
-  },
-  title: { fontSize: font.body, fontWeight: '600' },
-  subtitle: { fontSize: font.caption + 1, lineHeight: 18 },
+  overline: { ...type.overline },
+  title: { ...type.body, fontWeight: '600' },
+  subtitle: { ...type.callout },
   empty: { width: 20 },
 });

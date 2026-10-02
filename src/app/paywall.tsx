@@ -17,6 +17,7 @@ export default function PaywallScreen() {
   return (
     <>
       <PageMeta
+        noindex
         title="Plans"
         description={`${SITE_NAME} plans: Kindergarten to Grade 12 for ${monthly(PRICES.k12.usd)}, and each college course for ${monthly(PRICES.course.usd)}.`}
       />

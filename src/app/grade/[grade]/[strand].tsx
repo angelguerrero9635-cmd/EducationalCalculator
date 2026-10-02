@@ -1,7 +1,7 @@
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { ScrollView, StyleSheet } from 'react-native';
 
-import { EmptyState, ListRow, SkillBox } from '@/components';
+import { NotFound, ListRow, SkillBox } from '@/components';
 import { PageMeta } from '@/components/PageMeta';
 import {
   gradeStrands,
@@ -36,7 +36,7 @@ export default function StrandScreen() {
   const view = isGrade(grade) ? strandView(grade, String(params.strand)) : undefined;
 
   if (!isGrade(grade) || !view) {
-    return <EmptyState title="Not found" message="There is no such topic in this grade." />;
+    return <NotFound />;
   }
   const where = `${gradeLabel(grade)} ${subjectLabel(view.subject)}`;
   const icons = skillIcons(view.skills);

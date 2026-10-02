@@ -3,7 +3,7 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 
 import {
   DetailHeader,
-  EmptyState,
+  NotFound,
   ListRow,
   LockedState,
   ModuleSections,
@@ -55,7 +55,7 @@ export default function TopicScreen() {
   const topic = topicOf(id) ?? type?.topic;
   useTrackRecent(topic ? id : undefined);
 
-  if (!topic) return <EmptyState title="Topic not found" />;
+  if (!topic) return <NotFound />;
   if (isLocked(topic.course.id)) return <LockedState />;
 
   const title = type?.title ?? topic.title;

@@ -1,7 +1,7 @@
 import { Stack, router, useLocalSearchParams } from 'expo-router';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
-import { EmptyState, SegmentedControl, Tile, TileGrid } from '@/components';
+import { EmptyState, NotFound, SegmentedControl, Tile, TileGrid } from '@/components';
 import { PageMeta } from '@/components/PageMeta';
 import { gradeMeta } from '@/data/meta';
 import { SUBJECTS, gradeStrands, isGrade, isSubject, subjectLabel } from '@/data/selectors';
@@ -24,7 +24,7 @@ export default function GradeScreen() {
   const subject: K12Subject = params.subject && isSubject(params.subject) ? params.subject : 'math';
 
   if (!isGrade(grade)) {
-    return <EmptyState title="Grade not found" message={`There is no grade “${grade}”.`} />;
+    return <NotFound />;
   }
   const strands = gradeStrands(grade, subject);
 

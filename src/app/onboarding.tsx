@@ -21,6 +21,7 @@ export default function OnboardingScreen() {
   return (
     <>
       <PageMeta
+        noindex
         title={'Welcome'}
         description="Get started: pick the grades or university fields you study."
       />

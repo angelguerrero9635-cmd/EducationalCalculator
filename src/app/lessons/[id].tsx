@@ -1,7 +1,7 @@
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { ScrollView, StyleSheet } from 'react-native';
 
-import { EmptyState, ListRow, SkillBox } from '@/components';
+import { NotFound, ListRow, SkillBox } from '@/components';
 import { PageMeta } from '@/components/PageMeta';
 import {
   getSkill,
@@ -26,7 +26,7 @@ export default function LessonsScreen() {
   const id = String(useLocalSearchParams<{ id: string }>().id);
   const skill = getSkill(id);
 
-  if (!skill) return <EmptyState title="Skill not found" message={id} />;
+  if (!skill) return <NotFound />;
   const types = problemTypes(skill.id);
   const where = `${gradeLabel(skill.grade)} ${subjectLabel(skill.subject)}`;
   const [icon] = skillIcons([skill]);

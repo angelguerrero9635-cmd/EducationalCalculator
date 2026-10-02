@@ -1,7 +1,7 @@
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { ScrollView, StyleSheet } from 'react-native';
 
-import { CourseList, EmptyState, Tile, TileGrid } from '@/components';
+import { CourseList, NotFound, Tile, TileGrid } from '@/components';
 import { PageMeta } from '@/components/PageMeta';
 import { divisionMeta } from '@/data/meta';
 import {
@@ -27,7 +27,7 @@ export default function DivisionScreen() {
   const division = String(useLocalSearchParams<{ division: string }>().division);
 
   if (!isDivision(division)) {
-    return <EmptyState title="Not found" message={`There is no division “${division}”.`} />;
+    return <NotFound />;
   }
 
   const view = divisionView(division);

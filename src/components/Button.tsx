@@ -1,22 +1,45 @@
-import { Pressable, StyleSheet } from 'react-native';
-import { Text } from '@/components/Text';
+import { Pressable, StyleSheet, View } from 'react-native';
 
-import { font, radius, space, usePalette } from '@/theme';
+import { Text } from '@/components/Text';
+import { motion, radius, space, type, usePalette } from '@/theme';
+
+import { Icon, type IconName } from './Icon';
 
 export interface ButtonProps {
   label: string;
   onPress?: () => void;
+  /** primary: filled accent; secondary: soft accent; link: a quiet text button (no underline). */
   variant?: 'primary' | 'secondary' | 'link';
+  /** regular 48 px, small 40 px. */
+  size?: 'regular' | 'small';
+  icon?: IconName;
   disabled?: boolean;
   testID?: string;
+  accessibilityLabel?: string;
 }
 
-export function Button({ label, onPress, variant = 'primary', disabled, testID }: ButtonProps) {
+export function Button({
+  label,
+  onPress,
+  variant = 'primary',
+  size = 'regular',
+  icon,
+  disabled,
+  testID,
+  accessibilityLabel,
+}: ButtonProps) {
   const c = usePalette();
   const isDisabled = disabled || !onPress;
-  const bg =
-    variant === 'primary' ? c.accent : variant === 'secondary' ? c.accentSoft : 'transparent';
-  const fg = variant === 'primary' ? c.onAccent : c.accent;
+  const bg = isDisabled
+    ? variant === 'link'
+      ? 'transparent'
+      : c.disabledBg
+    : variant === 'primary'
+      ? c.accent
+      : variant === 'secondary'
+        ? c.accentSoft
+        : 'transparent';
+  const fg = isDisabled ? c.textMuted : variant === 'primary' ? c.onAccent : c.accent;
 
   return (
     <Pressable
@@ -24,28 +47,34 @@ export function Button({ label, onPress, variant = 'primary', disabled, testID }
       onPress={onPress}
       disabled={isDisabled}
       accessibilityRole="button"
+      accessibilityLabel={accessibilityLabel}
       accessibilityState={{ disabled: isDisabled }}
       style={({ pressed }) => [
-        variant === 'link' ? styles.link : styles.button,
-        { backgroundColor: bg, opacity: isDisabled ? 0.4 : pressed ? 0.7 : 1 },
+        styles.button,
+        { minHeight: size === 'small' ? 40 : 48, backgroundColor: bg },
+        variant === 'link' && styles.link,
+        pressed && !isDisabled && { transform: [{ scale: motion.pressScale }], opacity: 0.9 },
       ]}
     >
-      <Text style={[styles.label, { color: fg }, variant === 'link' && styles.linkLabel]}>
-        {label}
-      </Text>
+      <View style={styles.row}>
+        {icon ? <Icon name={icon} size={20} color={fg} /> : null}
+        <Text style={[size === 'small' ? styles.labelSmall : styles.label, { color: fg }]}>
+          {label}
+        </Text>
+      </View>
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
   button: {
-    minHeight: 48,
-    borderRadius: radius.pill,
+    borderRadius: radius.md,
     paddingHorizontal: space.xl,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  link: { padding: space.sm, alignItems: 'center' },
-  label: { fontSize: font.body, fontWeight: '700' },
-  linkLabel: { fontWeight: '400', textDecorationLine: 'underline' },
+  link: { paddingHorizontal: space.md },
+  row: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
+  label: { ...type.body, fontWeight: '600' },
+  labelSmall: { ...type.callout, fontWeight: '600' },
 });

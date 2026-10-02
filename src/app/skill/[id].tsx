@@ -3,7 +3,7 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 
 import {
   DetailHeader,
-  EmptyState,
+  NotFound,
   ModuleSections,
   LockedState,
   RefreshSection,
@@ -43,7 +43,7 @@ export default function SkillScreen() {
   const skill = getSkill(id) ?? type?.skill;
   useTrackRecent(skill ? id : undefined);
 
-  if (!skill) return <EmptyState title="Skill not found" message={id} />;
+  if (!skill) return <NotFound />;
   if (isLocked(skill.id)) return <LockedState />;
 
   const title = type?.title ?? skill.title;
