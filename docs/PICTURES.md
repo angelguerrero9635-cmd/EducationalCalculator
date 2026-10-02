@@ -124,6 +124,8 @@ search or the sitemap, but the module tests and the harness run over it):
 | `potentialWell`    | box, oscillator, step, barrier, bump: levels to scale, ψ, nodes, λ    | College quantum, chemistry (HC15)   |
 | `unitCell`         | cubic cell: atoms counted to Z, touching line; (hkl) and d; Bragg     | College solids, minerals (HC16)     |
 | `globe`            | sun rays, noon angle, day dial; great circle; Euler pole; dipole; air | College earth and geography (HC36)  |
+| `stressStrain`     | σ–ε curve: E, 0.2% offset, UTS, necking; specimen; tube; two members  | College materials, biomech. (HC28)  |
+| `stressElement`    | element, turned to θ_p; Mohr's circle; 3 circles; loci, n; soil line  | College stress, soil (HC33)         |
 | `projectile`       | a launch to scale: path, vₓ and v_y at three points, H and R; drag θ  | Physics 2D motion, parametric (H59) |
 | `freeBody`         | a block on a floor, ramp or rope; forces to scale, W sin θ; the net   | Physics forces, inclines (H60)      |
 | `circularMotion`   | v tangent, v²/r to the center; Gm₁m₂/r² pulls; Kepler ellipse, areas  | Physics circles, gravity (H61)      |

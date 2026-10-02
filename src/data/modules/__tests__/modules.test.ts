@@ -37,6 +37,7 @@ import { he1gSpecVars } from '../typesHe1g';
 import { he1fSpecVars } from '../typesHe1f';
 import { he2bSpecVars } from '../typesHe2b';
 import { globeVars } from '../typesHe2k';
+import { he2jSpecVars } from '../typesHe2j';
 import { hskOptionVars, hskSpecVars } from '../typesHsk';
 import { he2fSpecVars, isHe2fSpec } from '../typesHe2f';
 import { he1hSpecVars } from '../typesHe1h';
@@ -606,6 +607,9 @@ function representationVars(r: Representation): string[] {
       return he2bSpecVars(r);
     case 'globe':
       return globeVars(r);
+    case 'stressStrain':
+    case 'stressElement':
+      return he2jSpecVars(r);
     case 'projectile':
     case 'induction':
     case 'charges':

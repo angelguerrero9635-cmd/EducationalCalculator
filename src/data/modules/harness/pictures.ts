@@ -79,6 +79,7 @@ import { phaseEnvelopeIssues, phaseSubstanceIssues } from './picturesHe1i';
 import { chemRateHe2kIssues, globeIssues } from './picturesHe2k';
 import { he1fIssues } from './picturesHe1f';
 import { he2bIssues } from './picturesHe2b';
+import { he2jIssues } from './picturesHe2j';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -2294,6 +2295,9 @@ export function repIssues(
           ),
         ),
       );
+    case 'stressStrain':
+    case 'stressElement':
+      out.push(...he2jIssues(rep, siOf(val, byId), byId)); // HC28, HC33
       break;
     case 'projectile':
     case 'induction':
