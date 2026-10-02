@@ -90,7 +90,7 @@ import { fieldPlotIssues, he2gGraphIssues } from './picturesHe2g';
 import { he3aGraphIssues } from './picturesHe3a';
 import { solidIssues, spaceObjectsIssues, surfacePlotIssues } from './picturesHe3b';
 import { he2cIssues } from './picturesHe2c';
-import { he4eNormalIssues } from './picturesHe4e';
+import { he4eAlleleIssues, he4eNormalIssues } from './picturesHe4e';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -2241,6 +2241,7 @@ export function repIssues(
     case 'alleleFrequencies':
     case 'immuneResponse':
       out.push(...hshIssues(rep, (id) => val(id)));
+      out.push(...he4eAlleleIssues(rep, val)); // HC151
       break;
     case 'unitChain':
     case 'atomModel':

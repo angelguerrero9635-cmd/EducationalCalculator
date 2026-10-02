@@ -3,6 +3,7 @@
  * college page that waits, built from the plan's worked example. Spread into gallery.ts.
  * HC114: `normalCurve` `family: 't'` (he.chemistry.analytical#0, ~t-test).
  * HC152: `normalCurve` `shift` (he.biology.evolution#0~breeders).
+ * HC151: `alleleFrequencies` `after` (he.biology.evolution#0).
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 import { invT } from '@/components/module/reps/statMath';
@@ -350,7 +351,108 @@ const SHIFT_DOWN = breederPage(
   { h2: 0.9, S: -6, m0: 80 },
 );
 
+// ─── HC151: one generation of selection (evolution#0) ─────────────────────────
+
+const wbarOf = (v: Values) =>
+  v.p! * v.p! * v.wAA! + 2 * v.p! * (1 - v.p!) * v.wAa! + (1 - v.p!) * (1 - v.p!) * v.waa!;
+const p2Of = (v: Values) => (v.p! * v.p! * v.wAA! + v.p! * (1 - v.p!) * v.wAa!) / v.wbar!;
+
+const selectionPage = (id: string, title: string, use: string, typed: Values) =>
+  page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'Random mating, a large population, no mutation or migration: only selection acts.',
+      'Fitnesses are relative survival (0 to 1); w̄ is the population’s mean fitness.',
+      'p′ counts the A alleles among the survivors: AA carry two, Aa one.',
+    ],
+    variables: [
+      num('p', 'p', 'Frequency of A', undefined, 0, 1, { step: 0.01 }),
+      num('wAA', 'w_AA', 'Fitness of AA', undefined, 0, 1, { step: 0.01 }),
+      num('wAa', 'w_Aa', 'Fitness of Aa', undefined, 0, 1, { step: 0.01 }),
+      num('waa', 'w_aa', 'Fitness of aa', undefined, 0, 1, { step: 0.01 }),
+      out('q', 'q', 'Frequency of a'),
+      out('wbar', 'w̄', 'Mean fitness'),
+      out('p2', 'p′', 'Frequency of A next generation'),
+      out('dp', 'Δp', 'Change in p'),
+    ],
+    rules: [
+      derive(
+        'q',
+        'q',
+        ['p'],
+        '{q} = 1 − {p}',
+        (v) => 1 - v.p!,
+        '1 − {p}',
+        'The two alleles’ frequencies add to 1.',
+      ),
+      derive(
+        'wbar',
+        'wbar',
+        ['p', 'q', 'wAA', 'wAa', 'waa'],
+        '{wbar} = {p}² × {wAA} + 2 × {p} × {q} × {wAa} + {q}² × {waa}',
+        wbarOf,
+        '{p}² × {wAA} + 2 × {p} × {q} × {wAa} + {q}² × {waa}',
+        'Each genotype’s Hardy–Weinberg share times its fitness, added.',
+      ),
+      derive(
+        'p2',
+        'p2',
+        ['p', 'q', 'wAA', 'wAa', 'wbar'],
+        '{p2} = ({p}² × {wAA} + {p} × {q} × {wAa}) ÷ {wbar}',
+        p2Of,
+        '({p}² × {wAA} + {p} × {q} × {wAa}) ÷ {wbar}',
+        'The A alleles among the survivors (all of AA’s, half of Aa’s), out of all survivors.',
+      ),
+      derive(
+        'dp',
+        'dp',
+        ['p2', 'p'],
+        '{dp} = {p2} − {p}',
+        (v) => v.p2! - v.p!,
+        '{p2} − {p}',
+        'The change in one generation.',
+      ),
+    ],
+    example: example(
+      typed,
+      ['q', (v) => 1 - v.p!],
+      ['wbar', wbarOf],
+      ['p2', p2Of],
+      ['dp', (v) => v.p2! - v.p!],
+    ),
+    startWith: ['p', 'wAA', 'wAa', 'waa'],
+    representation: {
+      kind: 'alleleFrequencies',
+      p: 'p',
+      q: 'q',
+      after: 'p2',
+      change: 'dp',
+      fitness: ['wAA', 'wAa', 'waa'],
+      mean: 'wbar',
+      keep: ['wAA', 'wAa', 'waa'],
+    },
+  });
+
+const SELECTION = selectionPage(
+  'g.he-alleleFrequencies-after',
+  'Allele frequency after one generation of selection',
+  'Use this for “p = 0.5 and aa survives half as well as AA and Aa. What is p in the next generation?”',
+  { p: 0.5, wAA: 1, wAa: 1, waa: 0.5 },
+);
+
+/** Near fixation, selection against the common allele: Δp is negative. */
+const SELECTION_AGAINST = selectionPage(
+  'g.he-alleleFrequencies-after-against',
+  'Selection against a common allele',
+  'Use this for “A is at 0.95 but AA survives at 0.7, Aa at 0.85 and aa at 1. How much does p fall in one generation?”',
+  { p: 0.95, wAA: 0.7, wAa: 0.85, waa: 1 },
+);
+
 export const HE4E_GALLERY_MODULES: ModuleDef[] = [
+  SELECTION,
+  SELECTION_AGAINST,
   T_INTERVAL,
   T_TEST,
   T_INTERVAL_TWO,

@@ -90,3 +90,28 @@ export function he4eNormalIssues(
   }
   return out;
 }
+
+/**
+ * HC151 on `alleleFrequencies` `after`: p′ lies in [0, 1]; the page's Δp is p′ − p (so the arrow,
+ * drawn from p to p′, points the way its sign says); w̄ = p²w_AA + 2pqw_Aa + q²w_aa.
+ */
+export function he4eAlleleIssues(rep: Representation, val: Val): string[] {
+  if (rep.kind !== 'alleleFrequencies' || !rep.after) return [];
+  const out: string[] = [];
+  const [p, p2] = [val(rep.p), val(rep.after)];
+  if (p2 !== undefined && (p2 < -1e-9 || p2 > 1 + 1e-9)) out.push(`p′ = ${p2} is outside 0 to 1`);
+  if (p !== undefined && p2 !== undefined && rep.change) {
+    const dp = val(rep.change);
+    if (dp !== undefined && !close(dp, p2 - p, 1e-6))
+      out.push(`Δp = ${dp} is not p′ − p = ${p2 - p}: the arrow would point the other way`);
+  }
+  if (p !== undefined && rep.fitness && rep.mean) {
+    const [wAA, wAa, waa, wbar] = [...rep.fitness.map(val), val(rep.mean)];
+    if ([wAA, wAa, waa, wbar].every((x) => x !== undefined)) {
+      const q = 1 - p;
+      const m = p * p * wAA! + 2 * p * q * wAa! + q * q * waa!;
+      if (!close(wbar!, m)) out.push(`w̄ = ${wbar} is not p²w_AA + 2pqw_Aa + q²w_aa = ${m}`);
+    }
+  }
+  return out;
+}

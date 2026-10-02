@@ -68,6 +68,7 @@ import { LinearFunction, LineSystem } from './Lines';
 import { FunctionGraph } from './FunctionGraph';
 import { FunctionGraphHe1d } from './FunctionGraphHe1d';
 import { NormalCurveHe4e } from './NormalCurveHe4e';
+import { AlleleFrequenciesAfterHe4e } from './AlleleFrequenciesAfterHe4e';
 import { BarsLogHe1d } from './BarsLogHe1d';
 import { FunctionMachine } from './FunctionMachine';
 import { Mapping } from './Mapping';
@@ -360,6 +361,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'gel':
       return <Gel spec={spec} calc={calc} />;
     case 'alleleFrequencies':
+      if (spec.after) return <AlleleFrequenciesAfterHe4e spec={spec} calc={calc} />; // HC151
       return <AlleleFrequencies spec={spec} calc={calc} />;
     case 'immuneResponse':
       return <ImmuneResponse spec={spec} calc={calc} />;

@@ -66,4 +66,21 @@ export const HE4E_REQUESTS: PictureRequest[] = [
     status: 'drawn',
     gallery: ['g.he-normalCurve-shift', 'g.he-normalCurve-shift-down'],
   },
+  {
+    ...ask(
+      'HC151',
+      'alleleFrequencies',
+      'One generation of selection: a second tray of beads for p′ beside p’s, both on one p scale with Δp arrowed from p to p′',
+      [`${B}evolution#0`],
+      [
+        'From B-P17. New option on alleleFrequencies (typesHe4e.ts AlleleFrequenciesHe4e, reps/AlleleFrequenciesAfterHe4e.tsx); without `after` the Hardy–Weinberg picture is unchanged.',
+        "Fields: { kind: 'alleleFrequencies', p, q?, after (p′, a variable id), change? (Δp), fitness? ([w_AA, w_Aa, w_aa], written in the caption), mean? (w̄), alleles?, keep?, fixed? }.",
+        'Two trays of 100 glass beads (Before: p, After: p′, counted from each) with a chevron between them; the p scale under both with p (ink) and p′ (amber) marked and Δp arrowed from p to p′ and written over it; the p handle stays on the scale. A "?" p′ leaves the second tray empty and draws no arrow. The genotype bars move to the caption’s fitness line.',
+        "Example: { kind: 'alleleFrequencies', p: 'p', q: 'q', after: 'p2', change: 'dp', fitness: ['wAA', 'wAa', 'waa'], mean: 'wbar', keep: ['wAA', 'wAa', 'waa'] }.",
+        'Harness (harness/picturesHe4e.ts): p′ in [0, 1]; Δp = p′ − p, so the arrow points the way its sign says; w̄ = p²w_AA + 2pqw_Aa + q²w_aa.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: ['g.he-alleleFrequencies-after', 'g.he-alleleFrequencies-after-against'],
+  },
 ];

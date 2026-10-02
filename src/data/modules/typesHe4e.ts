@@ -7,6 +7,7 @@
  * - HC114 `normalCurve` `family: 't'`: the t curve over the dashed normal, ±t⋆ marked, the
  *   interval x̄ ± t⋆s ÷ √n bracketed on a value axis lined up with the t axis, an observed t.
  * - HC152 `normalCurve` `shift`: the breeder's equation, parents above and offspring below.
+ * - HC151 `alleleFrequencies` `after`: p′ after one generation of selection beside p.
  */
 import type { NumOrVar } from './typesGraphs';
 
@@ -77,3 +78,22 @@ export function normalCurveHe4eVars(r: NormalCurveHe4e): string[] {
     ...ids(sh?.selected, sh?.response, sh?.h2, sh?.after),
   ];
 }
+
+// ─── HC151: alleleFrequencies after ────────────────────────────────────────────
+
+/**
+ * HC151 (B-P17): one generation of selection. `after` is p′ (a variable id): a second tray of
+ * 100 beads for p′ beside p's, both on one p scale with Δp arrowed from p to p′. `change` is
+ * the page's Δp (checked: p′ − p, and the arrow points its way); `fitness` the three genotype
+ * fitnesses w_AA, w_Aa, w_aa, written under the trays (with `mean`, w̄; checked).
+ */
+export interface AlleleFrequenciesHe4e {
+  after?: string;
+  change?: string;
+  fitness?: [NumOrVar, NumOrVar, NumOrVar];
+  mean?: string;
+}
+
+/** The variable ids HC151's fields name. */
+export const alleleHe4eVars = (r: AlleleFrequenciesHe4e): string[] =>
+  ids(r.after, r.change, ...(r.fitness ?? []), r.mean);
