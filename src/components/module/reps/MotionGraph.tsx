@@ -165,7 +165,8 @@ export function MotionGraph({ spec, calc }: { spec: MotionGraphSpec; calc: Calcu
                           fill={c.chartMuted}
                           textAnchor={p === 0 ? 'start' : 'end'}
                         >
-                          {withUnit(p, posUnit)}
+                          {/* The strip's end comes from the values: "?" while one is "?". */}
+                          {all || p === 0 ? withUnit(p, posUnit) : '?'}
                         </ChartText>
                       </G>
                     ))}

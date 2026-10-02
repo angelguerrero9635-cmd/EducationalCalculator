@@ -248,7 +248,7 @@ export function Wave({ spec, calc }: { spec: Spec; calc: Calculator }) {
       </Canvas>
       <Caption>
         {known
-          ? `Crest to crest is one wavelength, ${rep.value(spec.wavelength)}.${spec.amplitude ? ` The crest rises ${rep.value(spec.amplitude)} above the middle.` : ''}${spec.frequency ? ` ${formatNumber(rep.shown(spec.frequency))} waves pass each second.` : ''}`
+          ? `Crest to crest is one wavelength, ${rep.value(spec.wavelength)}.${spec.amplitude ? ` The crest rises ${rep.value(spec.amplitude)} above the middle.` : ''}${spec.frequency && rep.known(spec.frequency) ? ` ${formatNumber(rep.shown(spec.frequency))} waves pass each second.` : ''}`
           : 'Type the wavelength to draw the wave.'}
       </Caption>
       <Steppers

@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { View } from 'react-native';
 import Svg, { Defs, G, Line, LinearGradient, Path, Rect, Stop } from 'react-native-svg';
 
@@ -75,6 +75,8 @@ export function Spectrum({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const rep = useRep(calc);
   const ids = usePaintIds('rainbow', 'sliver');
   const start = useRef(0);
+  // The color handle stays mounted through its drag, even past the visible band's edge.
+  const [draggingColor, setDraggingColor] = useState(false);
   const perUnit = spec.meters ?? 1;
   const known = rep.known(spec.wavelength);
   const meters = Math.max(1e-16, rep.val(spec.wavelength) * perUnit);
@@ -297,7 +299,7 @@ export function Spectrum({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   setMeters(Number((10 ** log).toPrecision(2)));
                 }}
               />
-              {visible ? (
+              {visible || draggingColor ? (
                 <DragHandle
                   testID="drag-color"
                   x={zx(nm)}
@@ -305,7 +307,9 @@ export function Spectrum({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   label={`${v.name} (color)`}
                   onStart={() => {
                     start.current = zx(nm);
+                    setDraggingColor(true);
                   }}
+                  onEnd={() => setDraggingColor(false)}
                   onMove={(dx) => {
                     const px = Math.min(zoomX + zoomW, Math.max(zoomX, start.current + dx));
                     const at = 700 - ((px - zoomX) / zoomW) * 300;
