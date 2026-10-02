@@ -3,6 +3,7 @@ import { View } from 'react-native';
 import Svg, { Circle, G, Line, Path, Rect, TSpan } from 'react-native-svg';
 
 import type { CircuitNet, CircuitNetSpec, NetElement } from '@/data/modules/typesHe1h';
+import { subscriptRuns } from '@/engine/subscripts';
 import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
@@ -650,6 +651,32 @@ function Part({ slot, net }: { slot: Slot; net: CircuitNet }) {
   );
 }
 
+/**
+ * A label's symbol (italic) and the rest (upright) as spans, each "_" subscript (R_Th, V_out,
+ * I_N) drawn small and lowered, never as a raw underscore.
+ */
+function typeset([symbol, rest]: [string, string]) {
+  const runs = [
+    ...subscriptRuns(symbol).map((x) => ({ ...x, it: true })),
+    ...subscriptRuns(rest).map((x) => ({ ...x, it: false })),
+  ].filter((x) => x.s !== '');
+  const drop = SIZE * 0.3;
+  return runs.map((x, i) => {
+    const before = i > 0 && !!runs[i - 1]!.sub;
+    const dy = x.sub && !before ? drop : !x.sub && before ? -drop : 0;
+    return (
+      <TSpan
+        key={i}
+        dy={dy}
+        fontSize={x.sub ? SIZE * 0.75 : SIZE}
+        fontStyle={x.it ? 'italic' : 'normal'}
+      >
+        {x.s}
+      </TSpan>
+    );
+  });
+}
+
 /** A block of label lines at a spot, kept inside the canvas; a symbol before " = " in italics. */
 function Block({ spot, rows, w, plain }: { spot: Spot; rows: Row[]; w: number; plain?: boolean }) {
   const c = usePalette();
@@ -685,14 +712,7 @@ function Block({ spot, rows, w, plain }: { spot: Spot; rows: Row[]; w: number; p
             fill={r.color ?? c.chartInk}
             halo={c.card}
           >
-            {cut > 0 ? (
-              <>
-                <TSpan fontStyle="italic">{r.text.slice(0, cut)}</TSpan>
-                <TSpan>{r.text.slice(cut)}</TSpan>
-              </>
-            ) : (
-              r.text
-            )}
+            {typeset(cut > 0 ? [r.text.slice(0, cut), r.text.slice(cut)] : ['', r.text])}
           </ChartText>
         );
       })}
