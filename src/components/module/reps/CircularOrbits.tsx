@@ -349,19 +349,21 @@ function VisViva({ s, calc }: { s: CmVisViva; calc: Calculator }) {
                   <Circle cx={P.x} cy={P.y} r={4} fill={c.chartInk} />
                   <Circle cx={Pp.x} cy={C.y} r={3} fill={c.chartHighlight} />
                   <Circle cx={Pa.x} cy={C.y} r={3} fill={c.chartHighlight} />
+                  {/* The ends named beside them (a big body covers the perigee side); their
+                      values in a row under the orbit. */}
+                  <Tag x={Pp.x + 6} y={C.y + 5} text="r_p" anchor="start" chip={false} w={w} />
                   <Tag
-                    x={Pp.x}
-                    y={C.y + 20}
-                    text={`r_p = ${text(s.rp, rp, L)}`}
-                    anchor="end"
+                    x={Pa.x + 6}
+                    y={nearA ? C.y + 42 : C.y - 8}
+                    text="r_a"
+                    anchor="start"
                     chip={false}
                     w={w}
                   />
                   <Tag
-                    x={Pa.x}
-                    y={nearA ? C.y + 40 : C.y + 20}
-                    text={`r_a = ${text(s.ra, ra, L)}`}
-                    anchor="start"
+                    x={w / 2}
+                    y={H - 48}
+                    text={`r_p = ${text(s.rp, rp, L)}, r_a = ${text(s.ra, ra, L)}`}
                     chip={false}
                     w={w}
                   />

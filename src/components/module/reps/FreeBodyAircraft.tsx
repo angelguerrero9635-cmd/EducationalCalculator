@@ -481,11 +481,13 @@ export function FreeBodyAircraft({
                       dash={chart.dashFine}
                       head={8}
                     />
+                    {/* Left of its arrow while L leans a little; at a steep bank (the raised wing
+                        and φ's arc on the left) over its tip, above the nearly level L. */}
                     <Tag
-                      x={P.x + 6}
-                      y={P.y - k * W + 6}
+                      x={phi > 45 ? P.x + 6 : P.x - 12}
+                      y={phi > 45 ? P.y - k * W - 6 : P.y - k * W + 6}
                       text={`L cos φ = ${F(W, a.weight)}`}
-                      anchor="start"
+                      anchor={phi > 45 ? 'start' : 'end'}
                       color={c.forceNormal}
                       w={w}
                     />
@@ -526,9 +528,11 @@ export function FreeBodyAircraft({
                       w={w}
                     />
                     <Vec x1={P.x} y1={P.y} x2={P.x} y2={P.y + k * W} color={c.forceWeight} />
+                    {/* Left of W's tip, clear of the lowered right wing at a steep bank. */}
                     <Tag
-                      x={P.x}
-                      y={P.y + k * W + 16}
+                      x={P.x - 11}
+                      y={P.y + Math.max(k * W, 22) + 4}
+                      anchor="end"
                       text={`W${hasW ? ` = ${text(a.weight, W, 'N')}` : ''}`}
                       color={c.forceWeight}
                       w={w}
