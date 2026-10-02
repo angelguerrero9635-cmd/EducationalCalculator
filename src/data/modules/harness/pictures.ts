@@ -68,6 +68,7 @@ import { gasEnergyIssues, hs2cIssues, siOf } from './picturesHs2c';
 import { hs3aIssues, hs3aOptionIssues } from './picturesHs3a';
 import { sectionIssues } from './picturesHe1b';
 import { he1aIssues } from './picturesHe1a';
+import { complexPlaneHe2aIssues } from './picturesHe2a';
 import { gasMixtureIssues } from './picturesHs3e';
 import { netIssues, oscillatorIssues } from './picturesHe1h';
 import { skeletalIssues } from './picturesHe1c';
@@ -2183,6 +2184,7 @@ export function repIssues(
     case 'conicGraph':
     case 'matrixGrid':
       out.push(...hsdIssues(rep, (id) => val(id)), ...hs2gIssues(rep, val));
+      if (rep.kind === 'complexPlane') out.push(...complexPlaneHe2aIssues(rep, siOf(val, byId))); // HC14
       out.push(...hs3bIssues(rep, val, byId)); // H106: space, polar conics, turned conics
       break;
     case 'membrane':

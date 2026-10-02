@@ -318,6 +318,9 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `unitCircle`       | `solutions.also`                         | two values (sin x = −1/2 or 1): both lines, every solution marked (H98)       |
 | `complexPlane`     | `power: n`; `roots: n`                   | z, z², …, zⁿ in turn; the n nth roots on a circle, a regular n-gon (H99)      |
 | `complexPlane`     | `opFrom`                                 | a value picks the sum (1), difference (2 or −1) or product (3) (H105)         |
+| `complexPlane`     | `j`, `axes`, `reactances`, `zMag`        | Z = R + jX: R and jX legs, jX_L up, −jX_C down, the size, θ (HC14)            |
+| `complexPlane`     | `phasors`, `between`                     | a three-phase star, V_ab tip to tail, I at its own scale (HC14)               |
+| `complexPlane`     | `poles`, `zeros`, `locus`, `transfer`    | s-plane × and ○, root locus, σₐ, breakaway, poles at K (HC14)                 |
 | `matrixGrid`       | `mode: 'determinant'`, `cramer`          | D by its diagonals or the first-row expansion; D, Dx, Dy side by side (H99)   |
 | `matrixGrid`       | `steps: 'echelon' \| 'reduced'`          | row operations worked out from typed entries, a 0 row read out (H105)         |
 | `histogram`        | `range: { from?, to?, total? }`          | bars k = from to to lit and added: P(X ≥ 4) = P(4) + P(5) (H99)               |

@@ -12,6 +12,7 @@ import type {
   UnitCircleHs2g,
 } from './typesHs2g';
 import type { NumOrVar } from './typesGraphs';
+import type { ComplexPlaneHe2a } from './typesHe2a'; // HC14
 import type { ConicTurnedHs3b, PolarConicHs3b, VectorDiagramHs3b } from './typesHs3b';
 
 /** A trig function of the unit circle. */
@@ -152,7 +153,7 @@ export type ComplexOf = { re: NumOrVar; im: NumOrVar } | { modulus: NumOrVar; ar
  * `argument` mark |z| and arg z (variables checked); `polar` writes z = r(cos θ + i sin θ).
  * Drag z's point.
  */
-export interface ComplexPlaneSpec extends ComplexPlaneHs2g {
+export interface ComplexPlaneSpec extends ComplexPlaneHs2g, ComplexPlaneHe2a {
   kind: 'complexPlane';
   z: ComplexOf;
   conjugate?: boolean;

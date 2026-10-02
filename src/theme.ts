@@ -454,6 +454,25 @@ const light = {
   /** A bond dipole's crossed arrow. */
   dipole: '#C2410C',
   /**
+   * College HC14 and HC22 (round 2, group A): three-phase phasors a, b, c, a line value and a
+   * current; the R and jX legs of an impedance; root-locus branches and closed-loop poles; a Bode
+   * plot's gain, phase, asymptotes, margins and closed-loop gain.
+   */
+  phasorA: '#C2410C',
+  phasorB: '#1D4ED8',
+  phasorC: '#15803D',
+  phasorLine: '#7C3AED',
+  phasorCurrent: '#DB2777',
+  planeReal: '#0F766E',
+  planeImag: '#B45309',
+  planeLocus: '#2563EB',
+  planeClosed: '#DC2626',
+  bodeGain: '#2563EB',
+  bodePhase: '#B45309',
+  bodeAsymptote: '#7B8494',
+  bodeMargin: '#DC2626',
+  bodeClosed: '#0F766E',
+  /**
    * Physics (HS group K): force arrows by kind (weight, normal, friction, tension, applied, net);
    * the hot and cold reservoirs and work out of an engine; light rays; + and − charges and field
    * lines; a spring's steel; two carts' paint; a resistor's body; an iron core.
@@ -867,6 +886,20 @@ const dark: Palette = {
   trendShade: '#2DD4BF',
   onTrendShade: '#0D0F14',
   dipole: '#FB923C',
+  phasorA: '#FB8A4C',
+  phasorB: '#6EA3FF',
+  phasorC: '#4ADE80',
+  phasorLine: '#B794F6',
+  phasorCurrent: '#F472B6',
+  planeReal: '#2DD4BF',
+  planeImag: '#F2B53A',
+  planeLocus: '#6EA3FF',
+  planeClosed: '#F87171',
+  bodeGain: '#6EA3FF',
+  bodePhase: '#F2B53A',
+  bodeAsymptote: '#8A93A5',
+  bodeMargin: '#F87171',
+  bodeClosed: '#2DD4BF',
   forceWeight: '#FB8A4C',
   forceNormal: '#6EA3FF',
   forceFriction: '#E0A04A',

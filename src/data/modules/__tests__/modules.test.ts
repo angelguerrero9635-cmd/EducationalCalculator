@@ -41,6 +41,7 @@ import { hs2cSpecVars } from '../typesHs2c';
 import { hs3aSpecVars } from '../typesHs3a';
 import { he1bSpecVars } from '../typesHe1b';
 import { he1aSpecVars } from '../typesHe1a';
+import { complexPlaneHe2aVars } from '../typesHe2a';
 import { isStandIn, pages } from '../harness/scope';
 import { treeChanceVars, twoWayVars, vennChanceVars } from '../harness/picturesHse';
 
@@ -537,7 +538,12 @@ function representationVars(r: Representation): string[] {
     case 'polarGrid':
     case 'conicGraph':
     case 'matrixGrid':
-      return [...hsdSpecVars(r), ...hs2gSpecVars(r), ...hs3bSpecVars(r)];
+      return [
+        ...hsdSpecVars(r),
+        ...hs2gSpecVars(r),
+        ...hs3bSpecVars(r),
+        ...(r.kind === 'complexPlane' ? complexPlaneHe2aVars(r) : []), // HC14
+      ];
     case 'membrane':
     case 'dnaStrand':
       return hsgSpecVars(r);

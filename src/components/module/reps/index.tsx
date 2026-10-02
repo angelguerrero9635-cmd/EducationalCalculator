@@ -185,6 +185,7 @@ import { Hs3cPicture } from './Hs3cPicture';
 import { FluidSystem } from './FluidSystem';
 import { ControlVolume } from './ControlVolume';
 import { VelocityProfile } from './VelocityProfile';
+import { ComplexPlaneHe2a } from './ComplexPlaneHe2a';
 import { MotionGraphHs } from './MotionGraphHs';
 import { HskView } from './HskView';
 import { Hs2cView } from './Hs2cView';
@@ -302,6 +303,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       if (spec.curve?.shape === 'conic') return <PolarConic spec={spec} calc={calc} />; // H106
       return <PolarGrid spec={spec} calc={calc} />;
     case 'complexPlane':
+      if (spec.j || spec.axes || spec.phasors || spec.poles || spec.zeros || spec.locus)
+        return <ComplexPlaneHe2a spec={spec} calc={calc} />; // HC14
       return spec.power !== undefined || spec.roots !== undefined ? (
         <ComplexPowers spec={spec} calc={calc} />
       ) : (
