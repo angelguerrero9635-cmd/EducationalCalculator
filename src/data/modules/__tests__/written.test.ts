@@ -169,6 +169,30 @@ describe('simplify chain', () => {
     ]);
     expect(simplifyChain('3 × (2 + 4)²')).toEqual(['3 × 6²', '3 × 36', '108']);
   });
+
+  it('works logs, powers of e, fractional powers and ∜ one stage a line (HE-E18)', () => {
+    // A log's value is written to 4 figures, and the working goes on from it.
+    expect(simplifyChain('ln(3000 ÷ 2000) ÷ 0.05')).toEqual([
+      'ln(1.5) ÷ 0.05',
+      '0.4055 ÷ 0.05',
+      '8.11',
+    ]);
+    // Arithmetic inside a log is rounded with it; a last division that needs rounding ends it.
+    expect(simplifyChain('log₁₀(900.407 ÷ 800) ÷ log₁₀(1.03)')).toEqual([
+      'log₁₀(1.1255) ÷ log₁₀(1.03)',
+      '0.051345 ÷ 0.012837',
+    ]);
+    expect(simplifyChain('300 × (1000 ÷ 850)^0.286')).toEqual([
+      '300 × 1.1765^(0.286)',
+      '300 × 1.0476',
+      '314.28',
+    ]);
+    expect(simplifyChain('∜(400 ÷ 25) × 3')).toEqual(['∜16 × 3', '2 × 3', '6']);
+    expect(simplifyChain('∜(500 ÷ 25) × 3')).toEqual(['∜20 × 3', '2.115 × 3', '6.345']);
+    // A root of 2 or an angle still ends the working (no log, power of e or ∜ in the line).
+    expect(simplifyChain('√(24.5/0.25)')).toEqual(['√98']);
+    expect(simplifyChain('10 ÷ 3 + 1')).toEqual([]);
+  });
 });
 
 describe('Grade 5 written work', () => {
@@ -310,16 +334,22 @@ describe('a printed line', () => {
 });
 
 describe('simplify chain: logs, e and bars', () => {
-  it('works a log or e to a power only when it comes out exactly', () => {
+  it('works a log or e to a power exactly where it can, else to 4 figures (HE-E18)', () => {
     expect(simplifyChain('ln(1 + 0.02 × 600 ÷ 15) ÷ 0.02')).toEqual([
       'ln(1 + 12 ÷ 15) ÷ 0.02',
       'ln(1 + 0.8) ÷ 0.02',
       'ln(1.8) ÷ 0.02',
+      '0.5878 ÷ 0.02',
+      '29.39',
     ]);
     expect(simplifyChain('log₁₀ 1000 ÷ log₁₀ 100')).toEqual(['3 ÷ 2', '1.5']);
     expect(simplifyChain('log₂(2 × 16)')).toEqual(['log₂(32)', '5']);
     expect(simplifyChain('2 + log_10(10 × 100)')).toEqual(['2 + log_10(1,000)', '2 + 3', '5']);
-    expect(simplifyChain('2,000 × e^(0.05 × 8)')).toEqual(['2,000 × e^(0.4)']);
+    expect(simplifyChain('2,000 × e^(0.05 × 8)')).toEqual([
+      '2,000 × e^(0.4)',
+      '2,000 × 1.492',
+      '2,984',
+    ]);
     expect(simplifyChain('|3 − 7| × 2')).toEqual(['|−4| × 2', '4 × 2', '8']);
     expect(simplifyChain('ln(2 × 0.5) + 1')).toEqual(['ln(1) + 1', '0 + 1', '1']);
   });
