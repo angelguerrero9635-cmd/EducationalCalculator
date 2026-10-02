@@ -5,6 +5,55 @@ helpers, pictures, tests, harness) could have prevented are turned into engine w
 next section is written, so each section starts from a better engine than the last. One entry
 per review; each line names the finding and what the engine now does about it.
 
+## E33: category answers, relations that switch, and roots a rule keeps (HE-E11, E12, E15)
+
+- **A college answer is often a word worked out from thresholds** (laminar or turbulent,
+  underdamped, LOS C, converges), and only s.9's silent/missense/nonsense did that, with its
+  own phrases. → `engine/cases.ts`: `categoryVariable` (the words coded 1, 2, 3 in `labels`,
+  derived, or `pick: true` for a choice box) and `classify` (bands, first match wins, each
+  with its test as a template, "{Re} ≥ 2300"). The box, the steps and the check show the word
+  (the `labels` path s.9 already used); the step's case line says why ("3400 ≥ 2300:
+  turbulent") and the check repeats the test ("3400 ≥ 2300, so turbulent"). One way: the
+  thresholds are never worked backward. s.9.biotechnology~substitution is unchanged (its
+  effect is from codons, not thresholds; it keeps its phrases).
+- **A relation that switches at a limit or by a choice had no way to be inverted case by
+  case** (64 ÷ Re below 2,300, Blasius above; order 0, 1 or 2; subsonic or supersonic). →
+  `Relation.branches` (`Branch`: name, `when` template, `applies`, residual, optional `solve`,
+  `display`, `check`) built by `piecewise`. Its residual is the case that applies; a value
+  every case rearranges for is solved exactly, each answer kept only where its own case
+  applies (f = 0.05 gives Re = 1,280, not the Blasius 1,596, which would be laminar); any other
+  value is found in `solve.ts` case by case (a choice box's codes tried, so the order the
+  numbers fit is found; else roots of each case's formula across the range). `TraceStep.branch`
+  names the case; `branchOf` and `byCase` give it to step text.
+- **The step must say which case applies.** → `buildSteps` (one additive hook): a step from a
+  relation with `branches` shows that case's `display` as its rule and opens its work with the
+  case line, printed with more figures when the shown ones would read false (2,299.96 is
+  "2299.96 < 2300", not "2,300 < 2,300"); the check uses the case's `check` or `display`. A
+  case line already shown in an earlier step is not repeated. No page has `branches` yet, so
+  no K–12 walkthrough changes (the units and unit-set suites build every page's steps).
+- **Two or three physical roots** (the ICE quadratic's negative root, a cubic equation of
+  state, σ₁ ≥ σ₂ ≥ σ₃). → `realRoots` (closed-form quadratics and cubics, three real roots by
+  the cosine rule so a symmetric tensor never loses a pair to rounding, a repeated root as
+  often as it repeats; Durand–Kerner above degree 3; Newton-polished), `rootRule` (the root a
+  stated rule keeps: a test, or least, greatest, median; the step writes the quadratic formula
+  with the sign kept, or "greatest of −1, 2, 5" for a cubic, then "Rejected: 0.139, since x
+  must leave every concentration at least 0"; inputs worked back numerically unless
+  `backward: false`) and `orderedRoots` (σ₁, σ₂, σ₃ or ω₁ < ω₂, one way). A branch the
+  student picks (subsonic or supersonic, vapor or liquid) is a `piecewise` case on a
+  `categoryVariable({ pick: true })`.
+- **The harness must check the word and the case.** → `harness/cases.ts` `caseIssues`, hooked
+  into `sampling.test.ts`: the case named is the one the values are in, its comparisons hold
+  as printed (`comparisonHolds`, also used by `buildSteps`), no other case is named, and a
+  category answer reads as its code's word (then its substituted line is not read by phrases).
+- Tests: `engine/__tests__/cases.test.ts` (roots, friction factor both ways and numerically,
+  reaction order by choice and found back, damping regime, ICE root and K back, principal
+  stresses with a double root, A/A* subsonic and supersonic), `harness/__tests__/cases.test.ts`
+  (walkthroughs of synthetic pages: case lines, words, checks, quadratic and rank lines read by
+  the harness). Pages run by id: m.9.quadratic-formula, m.10.law-sines-cosines,
+  m.11.polynomial-equations, s.9.biotechnology~substitution, s.10.atomic-structure~ions,
+  s.10.electrons-in-atoms~ions, s.10.rates-equilibrium, s.10.acids-bases, every `he.` page; the
+  engine suites.
+
 ## E31: college units, temperature differences, unit sets and constants (HE-E5, E26, E9)
 
 - **The college plans need about 300 units the registry lacked, and a temperature difference
