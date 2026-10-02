@@ -37,6 +37,20 @@ import { HE3J_REQUESTS } from './pictureRequestsHe3j';
 import { HE3K_REQUESTS } from './pictureRequestsHe3k';
 import { HE3L_REQUESTS } from './pictureRequestsHe3l';
 import { HE3M_REQUESTS } from './pictureRequestsHe3m';
+import { HE4A_REQUESTS } from './pictureRequestsHe4a';
+import { HE4B_REQUESTS } from './pictureRequestsHe4b';
+import { HE4C_REQUESTS } from './pictureRequestsHe4c';
+import { HE4D_REQUESTS } from './pictureRequestsHe4d';
+import { HE4E_REQUESTS } from './pictureRequestsHe4e';
+import { HE4F_REQUESTS } from './pictureRequestsHe4f';
+import { HE4G_REQUESTS } from './pictureRequestsHe4g';
+import { HE4H_REQUESTS } from './pictureRequestsHe4h';
+import { HE4I_REQUESTS } from './pictureRequestsHe4i';
+import { HE4J_REQUESTS } from './pictureRequestsHe4j';
+import { HE4K_REQUESTS } from './pictureRequestsHe4k';
+import { HE4L_REQUESTS } from './pictureRequestsHe4l';
+import { HE4M_REQUESTS } from './pictureRequestsHe4m';
+import { HE4N_REQUESTS } from './pictureRequestsHe4n';
 
 export const HE_PICTURE_REQUESTS: PictureRequest[] = [
   ...HE1A_REQUESTS,
@@ -72,4 +86,18 @@ export const HE_PICTURE_REQUESTS: PictureRequest[] = [
   ...HE3K_REQUESTS,
   ...HE3L_REQUESTS,
   ...HE3M_REQUESTS,
+  ...HE4A_REQUESTS,
+  ...HE4B_REQUESTS,
+  ...HE4C_REQUESTS,
+  ...HE4D_REQUESTS,
+  ...HE4E_REQUESTS,
+  ...HE4F_REQUESTS,
+  ...HE4G_REQUESTS,
+  ...HE4H_REQUESTS,
+  ...HE4I_REQUESTS,
+  ...HE4J_REQUESTS,
+  ...HE4K_REQUESTS,
+  ...HE4L_REQUESTS,
+  ...HE4M_REQUESTS,
+  ...HE4N_REQUESTS,
 ];
