@@ -55,3 +55,90 @@ it('compares tiny values relative to their size, down to 10⁻³⁵ (HE-E10)', (
   expect(evaluate('6.626 × 10⁻³⁴ × 3 × 10⁸ ÷ (5 × 10⁻⁷)')).toBeCloseTo(3.9756e-19, 30);
   expect(evaluate('1.5 × 10³⁷ ÷ 10³⁰')).toBeCloseTo(1.5e7, 0);
 });
+
+describe('college phrases (HE-E8)', () => {
+  it('reads logs: log alone is base 10, log₂, and a log of one number without its bracket', () => {
+    expect(evaluate('20 log(1000)')).toBeCloseTo(60, 9);
+    expect(evaluate('10 × log₁₀(2)')).toBeCloseTo(3.0103, 4);
+    expect(evaluate('log₂(256)')).toBeCloseTo(8, 12);
+    expect(evaluate('log₂ 16 + 1')).toBeCloseTo(5, 12);
+    expect(evaluate('ln 2 ÷ 0.05')).toBeCloseTo(13.8629, 4);
+    expect(evaluate('log 1000')).toBeCloseTo(3, 12);
+    expect(evaluate('2 sin(30°)')).toBeCloseTo(1, 12);
+  });
+
+  it('reads decibels and dBm', () => {
+    expect(evaluate('26.0 dB + 34.0 dB')).toBeCloseTo(60, 9);
+    expect(evaluate('20 dB as a voltage ratio')).toBeCloseTo(10, 9);
+    expect(evaluate('3.0103 dB as a power ratio')).toBeCloseTo(2, 4);
+    expect(evaluate('30 dBm in W')).toBeCloseTo(1, 9);
+    expect(evaluate('30 dBm + 3 dBi + 3 dBi − 100.0 dB')).toBeCloseTo(-64, 9);
+    expect(evaluate('100 mW in dBm')).toBeCloseTo(20, 9);
+  });
+
+  it('reads phasors (∠ and j), floor, ceiling and mod', () => {
+    expect(evaluate('10∠36.87°')).toBe(10);
+    expect(evaluate('the real part of 10∠36.87°')).toBeCloseTo(8, 3);
+    expect(evaluate('the imaginary part of 10∠36.87°')).toBeCloseTo(6, 3);
+    expect(evaluate('|8 + j6|')).toBeCloseTo(10, 12);
+    expect(evaluate('|40 − j30|')).toBeCloseTo(50, 12);
+    expect(evaluate('the angle of (8 + j6)')).toBeCloseTo(36.8699, 4);
+    expect(evaluate('the angle of (8 − j6)')).toBeCloseTo(-36.8699, 4);
+    expect(evaluate('⌈1000 ÷ 64⌉')).toBe(16);
+    expect(evaluate('⌊log₂(1000)⌋')).toBe(9);
+    expect(evaluate('(17 + 9) mod 12')).toBe(2);
+    expect(evaluate('max(3 − 1, 4) + min(2, 5)')).toBe(6);
+  });
+
+  it('reads double factorials, fractional powers and powers of ten', () => {
+    expect(evaluate('(2 × 4 − 3)!!')).toBe(15);
+    expect(evaluate('7!!')).toBe(105);
+    expect(evaluate('6!!')).toBe(48);
+    expect(evaluate('5!')).toBe(120);
+    expect(evaluate('64^0.75')).toBeCloseTo(22.6274, 4);
+    expect(evaluate('10^(−6 ÷ 2)')).toBeCloseTo(0.001, 12);
+    expect(evaluate('300 × (800 ÷ 100)^((1.4 − 1)/1.4)')).toBeCloseTo(543.4, 1);
+  });
+
+  it('works out an integral with its limits at the page’s values (∫ results as values)', () => {
+    expect(evaluate('∫ from 1 to 3 of (x² + 1) dx')).toBeCloseTo(32 / 3, 9);
+    expect(evaluate('∫ from 1 to 4 of 3x dx')).toBeCloseTo(22.5, 9);
+    expect(evaluate('∫ from 0.001 to 0.002 of (8.314 × 300 ÷ V) dV')).toBeCloseTo(
+      8.314 * 300 * Math.log(2),
+      6,
+    );
+    // The d and its variable over a bracket, and a root at an end.
+    expect(evaluate('∫ from 0 to 0.5 of dX ÷ (0.2 × (1 − X))')).toBeCloseTo(
+      -Math.log(0.5) / 0.2,
+      6,
+    );
+    expect(evaluate('∫ from 0 to 1 of √x dx')).toBeCloseTo(2 / 3, 3);
+    expect(evaluate('2 × ∫ from 0 to π of sin(t) dt')).toBeCloseTo(4, 9);
+    // An integral said equal to a wrong number is caught; one with a letter left is unread.
+    expect(evaluate('∫ from 0 to 2 of (x² + 1) dx')).not.toBeCloseTo(10, 3);
+    expect(evaluate('∫ from a to 2 of x dx')).toBeUndefined();
+  });
+
+  it('reads sign conventions and label words', () => {
+    expect(evaluate('12.5 kN tension')).toBe(12.5);
+    expect(evaluate('12.5 kN compression')).toBe(-12.5);
+    expect(evaluate('(3 × 4) in compression')).toBe(-12);
+    expect(evaluate('40 kN·m sagging')).toBe(40);
+    expect(evaluate('40 kN·m hogging')).toBe(-40);
+    // (the net heat adds them: a heat out is negative)
+    expect(evaluate('500 kJ heat in + 200 kJ heat out')).toBe(300);
+    expect(evaluate('0.0215 (found numerically)')).toBe(0.0215);
+    expect(evaluate('0.0215, by trial')).toBe(0.0215);
+    expect(evaluate('(300 + 350) ÷ 2 (film temperature)')).toBe(325);
+    expect(evaluate('LMTD(60, 20)')).toBeCloseTo(40 / Math.log(3), 12);
+    expect(evaluate('the LMTD of 30 and 30')).toBe(30);
+    expect(evaluate('ln 2 ÷ 0.1, for a first-order reaction')).toBeCloseTo(6.9315, 4);
+  });
+
+  it('keeps a name’s e with a prime or a bar a name, never Euler’s number', () => {
+    expect(evaluate('e′ + 1')).toBeUndefined();
+    expect(evaluate('e + 1')).toBeCloseTo(Math.E + 1, 12);
+    // An ordered pair is not a number.
+    expect(evaluate('(3, 4)')).toBeUndefined();
+  });
+});

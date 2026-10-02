@@ -74,11 +74,11 @@ export const SIGMA = new RegExp(
 /**
  * A definite integral with its limits as the steps write it (HE-E7): "∫ from 0 to 2 of (x² + 1)
  * dx", "∫ from V₁ to V₂ of P dV", "∫ from 0 to X of dX ÷ (k(1 − X))". The limits are one token
- * each; the body is a bracket (one bracket deep inside, maybe raised to a power) or one term,
- * then its d and variable; or d and the variable over a bracket or term.
+ * each; the body is a bracket (one bracket deep inside, maybe raised to a power) or one term
+ * (sin(t) too), then its d and variable; or d and the variable over a bracket or term.
  */
 const D_VAR = String.raw`d\p{L}\p{M}*(?:_[\p{L}\d]+)?[₀-₉]*`;
-const INT_TERM = String.raw`\((?:[^()]|\([^()]*\))*\)(?:${SUP}|\^\S+)?|[^\s,;()]*[^\s,;.()]`;
+const INT_TERM = String.raw`\((?:[^()]|\([^()]*\))*\)(?:${SUP}|\^\S+)?|\d*(?:\.\d+)?\p{L}+[₀-₉]*\([^()]*\)|[^\s,;()]*[^\s,;.()]`;
 export const INTEGRAL = new RegExp(
   String.raw`∫ from (?<lo>[^\s()]+) to (?<hi>[^\s()]+) of (?<body>(?<ib>${INT_TERM}) (?<dv>${D_VAR})(?![\p{L}\p{M}\d_])|(?<dv2>${D_VAR}) ÷ (?<ib2>${INT_TERM}))`,
   'gu',
