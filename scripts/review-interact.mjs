@@ -34,7 +34,8 @@
 // box can be varied, the text stays flagged.
 // Gallery demos (g.…) are opened under /gallery, every other page under /skill. A page whose
 // check fails is one ERROR line; the run goes on (and restarts its server if it stopped). The
-// reports are rewritten after each page. PORT picks the server's port (runs side by side).
+// reports are rewritten after each page. PORT picks the server's port (runs side by side). A
+// renderer hung for 30 s (a solver search on every move) is an ERROR too, and a new page opens.
 // Uses the globally installed Playwright and the pre-installed Chromium; serves dist/ itself.
 import { spawn } from 'node:child_process';
 import { mkdirSync, writeFileSync } from 'node:fs';
@@ -85,10 +86,16 @@ async function phone(colorScheme) {
     .catch(() => {});
   return p;
 }
-const page = await phone('light');
 // Page errors (uncaught exceptions), for the end drags.
 const pageErrors = [];
-page.on('pageerror', (e) => pageErrors.push(String(e?.message ?? e).split('\n')[0]));
+/** A fresh phone page that reports its errors and gives up on a hung renderer after 30 s. */
+async function freshPage() {
+  const p = await phone('light');
+  p.setDefaultTimeout(30000);
+  p.on('pageerror', (e) => pageErrors.push(String(e?.message ?? e).split('\n')[0]));
+  return p;
+}
+let page = await freshPage();
 // Explore scenes are shot in dark mode too (a figure's colours on the dark card).
 const dark = await phone('dark');
 
@@ -675,6 +682,11 @@ async function guarded(id, run) {
     errors.push(`- **ERROR** ${id}: the check failed: ${msg}`);
     lines.push(`- **ERROR** ${id}: the check failed: ${msg}`);
     if (/ERR_CONNECTION_REFUSED|ECONNREFUSED/.test(msg)) await serve();
+    // A renderer hung in a drag (a solver search on every move) stays hung: a new page.
+    if (/Timeout|timeout/.test(msg)) {
+      await page.close().catch(() => {});
+      page = await freshPage();
+    }
   }
 }
 for (const id of ids) {
