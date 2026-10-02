@@ -40,6 +40,7 @@ import type { BarFlows, Hs2eSpec } from './typesHs2e';
 import type { Hs3dSpec, PieStage } from './typesHs3d';
 import type { SkeletalSpec } from './typesHe1c';
 import type { PhaseEnvelopeSpec } from './typesHe1i';
+import type { He2cSpec } from './typesHe2c';
 import type { BeamSpec } from './typesHe1a';
 
 /**
@@ -1141,6 +1142,8 @@ export type Representation =
   | ChemDiagramSpec
   /** College round 1, group I (HC8): a binary's Pxy, Txy or x–y diagram (`typesHe1i.ts`). */
   | PhaseEnvelopeSpec
+  /** College round 2, group C: HC17 property diagram, HC23 thermal wall (`typesHe2c.ts`). */
+  | He2cSpec
   /** Grades 9–12 physics, group HK: projectile, free body, … (specs in typesHsk.ts). */
   | HskSpec
   /** Grades 9–12 physics round 2, group H2C: impulse, … (specs in typesHs2c.ts). */

@@ -73,6 +73,7 @@ import { netIssues, oscillatorIssues } from './picturesHe1h';
 import { skeletalIssues } from './picturesHe1c';
 import { phaseEnvelopeIssues, phaseSubstanceIssues } from './picturesHe1i';
 import { he1fIssues } from './picturesHe1f';
+import { he2cIssues } from './picturesHe2c';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -2256,6 +2257,9 @@ export function repIssues(
     case 'velocityProfile':
       // In formula units, as the picture draws them.
       out.push(...he1fIssues(rep, (id) => (val(id) ?? NaN) * (byId.get(id)?.unitFactor ?? 1)));
+      break;
+    case 'propertyDiagram':
+      out.push(...he2cIssues(rep, (id) => (val(id) ?? NaN) * (byId.get(id)?.unitFactor ?? 1)));
       break;
     case 'projectile':
     case 'induction':

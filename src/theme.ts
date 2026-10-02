@@ -395,6 +395,8 @@ const light = {
   gasMixB: '#D8413A',
   gasMixC: '#3563C9',
   gasMixD: '#2A9D7C',
+  /** HC17 propertyDiagram: the liquid + vapor region under water's vapor dome. */
+  propDome: '#E2EBF7',
   /** The brick wall a ladder leans on (triangleSolver's ladder scene) and its mortar lines. */
   ladderWall: '#B5654A',
   ladderWallDark: '#8A4632',
@@ -823,6 +825,7 @@ const dark: Palette = {
   gasMixB: '#E2605A',
   gasMixC: '#5B86E0',
   gasMixD: '#3DB894',
+  propDome: '#1C2A3D',
   ladderWall: '#8C4B37',
   ladderWallDark: '#5E3023',
   normalReject: '#F0716B',
