@@ -130,17 +130,23 @@ describeOrSkip('review dump', () => {
         }
       }
       for (const [label, set] of edgeCases) {
-        // The edged values go last, as a student types them: a value that doesn't fit is then
-        // the one rejected, with the reason the page shows (not an older one dropped silently).
-        const order = [
-          ...m.startWith.filter((id) => !(id in set)),
-          ...m.startWith.filter((id) => id in set),
-        ];
-        const result = solve(
-          m,
-          order.map((id) => ({ id, value: set[id] ?? m.example[id]! })),
+        // The edged values go last, as a student types them, with only the other opening
+        // values that fit them (an older one that conflicts is left out, so the edge itself is
+        // walked through); with none that fits, the edge alone, and its refusal if it has one.
+        const edged = m.startWith.filter((id) => id in set);
+        const others: string[] = [];
+        const givens = (ids: string[]) =>
+          ids.map((id) => ({ id, value: set[id] ?? m.example[id]! }));
+        for (const id of m.startWith.filter((x) => !(x in set))) {
+          const r = solve(m, givens([...others, id, ...edged]));
+          if (!r.rejected && r.cleared.length === 0) others.push(id);
+        }
+        const order = [...others, ...edged];
+        const result = solve(m, givens(order));
+        const left = m.startWith.filter((id) => !order.includes(id));
+        lines.push(
+          `-- edge ${label}: ${order.join(', ')}${left.length ? ` (left out: ${left.join(', ')})` : ''}`,
         );
-        lines.push(`-- edge ${label}: ${order.join(', ')}`);
         lines.push(
           ...(result.rejected
             ? [`  rejected: ${result.rejected.reason}`]
