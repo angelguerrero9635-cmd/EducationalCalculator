@@ -100,7 +100,13 @@ function rewrite(path) {
 /** Resolves a URL path to a file in dist/, as Vercel's static routing would. */
 function resolve(path) {
   const file = (p) => {
-    const f = normalize(join(DIST, decodeURIComponent(p)));
+    let decoded;
+    try {
+      decoded = decodeURIComponent(p);
+    } catch {
+      return undefined; // a malformed escape is no file (and must not stop the server)
+    }
+    const f = normalize(join(DIST, decoded));
     return f.startsWith(DIST) && existsSync(f) && statSync(f).isFile() ? f : undefined;
   };
   return (

@@ -26,6 +26,13 @@
 // show the example's value of a box now "?" (**ERROR**, naming the value and the text it is
 // in). A number that is also a known box's value, or an axis tick (a bare number, percent,
 // degrees or imaginary tick in a run of evenly spaced ones), is not flagged; 0 is never matched.
+// Nor is a text that reads the same when the "?" box is typed with another number (the same
+// first edit, then the box moved a step of its own size, or doubled or halved, in its range): it
+// does not come from that box ("n = 2" on a ladder, the unit circle's π/4 family, "2V", the
+// 68–95–99.7 brackets); the line notes it as fixed text. Only texts that then change are flagged.
+// Gallery demos (g.…) are opened under /gallery, every other page under /skill. A page whose
+// check fails is one ERROR line; the run goes on (and restarts its server if it stopped). The
+// reports are rewritten after each page. PORT picks the server's port (runs side by side).
 // Uses the globally installed Playwright and the pre-installed Chromium; serves dist/ itself.
 import { spawn } from 'node:child_process';
 import { mkdirSync, writeFileSync } from 'node:fs';
@@ -45,19 +52,26 @@ const ids = args.filter(
 );
 mkdirSync(join(out, 'scenes'), { recursive: true });
 
-const port = 8900 + Math.floor(Math.random() * 90);
-const server = spawn('node', ['scripts/verify-ssr.mjs', '--serve', String(port)], {
-  stdio: 'ignore',
-});
+// Runs side by side each take their own port (PORT), so one run's server is never another's.
+const port = Number(process.env.PORT) || 8900 + Math.floor(Math.random() * 90);
 const base = `http://localhost:${port}`;
-for (let i = 0; i < 50; i++) {
-  try {
-    await fetch(base);
-    break;
-  } catch {
-    await new Promise((r) => setTimeout(r, 200));
+let server;
+/** Starts (or restarts) the static server for dist/ and waits until it answers. */
+async function serve() {
+  server?.kill();
+  server = spawn('node', ['scripts/verify-ssr.mjs', '--serve', String(port)], {
+    stdio: 'ignore',
+  });
+  for (let i = 0; i < 50; i++) {
+    try {
+      await fetch(base);
+      return;
+    } catch {
+      await new Promise((r) => setTimeout(r, 200));
+    }
   }
 }
+await serve();
 const browser = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium' });
 /** A phone-sized page past the first-launch onboarding, light or dark. */
 async function phone(colorScheme) {
@@ -77,6 +91,9 @@ page.on('pageerror', (e) => pageErrors.push(String(e?.message ?? e).split('\n')[
 const dark = await phone('dark');
 
 const safe = (id) => id.replace(/[^\w.~-]/g, '_');
+/** A page's url: gallery demos (g.…) live under /gallery, every lesson page under /skill. */
+const urlOf = (id) =>
+  `${base}/${id.startsWith('g.') ? 'gallery' : 'skill'}/${encodeURIComponent(id)}`;
 // Each box: its id, its value ("?" when empty), its status (given, example, derived) and its
 // range in the shown unit (data-min, data-max; null when it has none).
 const boxes = () =>
@@ -459,6 +476,45 @@ async function dragToEnds(h) {
   }
   return out;
 }
+/** A number as a box takes it: no exponent, no float dust ("0.30000000000000004"). */
+const plain = (x) => {
+  const t = String(Number(x.toPrecision(10)));
+  return /e/.test(t) ? null : t;
+};
+/**
+ * The picture's texts after the same first edit and then another number typed in the "?" box
+ * `u` (its example value moved a step of its own size, or doubled or halved, inside its range),
+ * or null when no other number was taken. Those are the texts that do not come from `u`.
+ */
+async function textsWhenVaried(edited, how, u) {
+  const v = Math.abs(parseShown(u.value));
+  const step = Math.max(v >= 1 || Number.isInteger(v) ? 1 : 0, 10 ** Math.floor(Math.log10(v)));
+  const sign = parseShown(u.value) < 0 ? -1 : 1;
+  const inRange = (x) =>
+    x !== 0 &&
+    Number.isFinite(x) &&
+    (u.min === null || x >= u.min - 1e-9) &&
+    (u.max === null || x <= u.max + 1e-9);
+  const candidates = uniq(
+    [v + step, v - step, 2 * v, v / 2]
+      .map((x) => sign * x)
+      .filter(inRange)
+      .map(plain),
+  ).filter((t) => t !== null);
+  for (const text of candidates) {
+    await page.reload({ waitUntil: 'networkidle' });
+    await page.waitForTimeout(200);
+    const was = (await boxes()).find((b) => b.id === edited)?.value;
+    await typeInto(edited, how.startsWith('cleared') ? '' : was).catch(() => {});
+    await typeInto(u.id, text).catch(() => {});
+    const now = (await boxes()).find((b) => b.id === u.id);
+    const got = parseShown(now?.value ?? '?');
+    if (!Number.isFinite(got) || Math.abs(got - Number(text)) > 1e-6 * Math.max(1, Math.abs(got)))
+      continue;
+    return await pictureTexts();
+  }
+  return null;
+}
 /**
  * The first edit on each typed box in turn, from the opening page (its number typed again, or
  * the box cleared when that leaves no "?"): a number in the picture's text that is the
@@ -506,11 +562,34 @@ async function unknowns(id) {
         const key = `${p.text} (the example's ${us.map((u) => `${u.id} = ${u.value}`).join(' or ')})`;
         found.set(key, uniq([...(found.get(key) ?? []), `"${t}"`]));
       }
+    // A text that reads the same when the "?" box is typed with another number does not come
+    // from that box (a fixed label that happens to equal the example: "n = 2", "2V", the unit
+    // circle's π/4 family): not a leak. Each "?" box behind a hit is given another number, from
+    // the same first edit, and only the texts that then change (or go) are flagged.
+    const fixed = [];
+    const varied = new Map();
+    for (const u of unknown) {
+      if (![...found.keys()].some((k) => k.includes(`${u.id} = ${u.value}`))) continue;
+      varied.set(u.id, await textsWhenVaried(edited, how, u));
+    }
+    for (const [k, ts] of found) {
+      const us = unknown.filter((u) => k.includes(`${u.id} = ${u.value}`));
+      const kept = ts.filter((t) =>
+        us.some((u) => {
+          const after = varied.get(u.id);
+          return !after || !after.includes(t);
+        }),
+      );
+      for (const t of ts) if (!kept.includes(t)) fixed.push(t);
+      if (kept.length) found.set(k, kept);
+      else found.delete(k);
+    }
     const hits = [...found].map(([k, ts]) => `${k} in ${ts.join(', ')}`);
     if (pageErrors.length > errs) hits.push(`page error: ${pageErrors.slice(errs).join(' | ')}`);
     out.push({
       line: `${id} ${how}: ? in ${unknown.map((b) => b.id).join(', ') || '(none)'}`,
       hits: uniq(hits),
+      fixed: uniq(fixed),
     });
   }
   return out;
@@ -521,7 +600,10 @@ async function checkUnknowns(id) {
     if (u.hits.length) {
       unknownLines.push(`- **ERROR** ${u.line}; the picture shows ${u.hits.join('; ')}`);
       unknownErrors.push(`- **ERROR** ${u.line}: ${u.hits.join('; ')}`);
-    } else unknownLines.push(`- ${u.line}`);
+    } else
+      unknownLines.push(
+        `- ${u.line}${u.fixed.length ? ` (fixed text, not from the box: ${u.fixed.map((t) => `"${t}"`).join(', ')})` : ''}`,
+      );
   }
 }
 const errors = [];
@@ -544,12 +626,62 @@ const lines = [
   '',
 ];
 let scenes = 0;
+/** The two reports as they stand (written after each page, so a long run can be watched). */
+const flush = () => {
+  writeFileSync(
+    join(out, 'drags.md'),
+    [...lines, '', '## Errors', '', ...(errors.length ? errors : ['None.'])].join('\n') + '\n',
+  );
+  writeFileSync(
+    join(out, 'unknowns.md'),
+    [
+      ...unknownLines,
+      '',
+      '## Errors',
+      '',
+      ...(unknownErrors.length ? unknownErrors : ['None.']),
+    ].join('\n') + '\n',
+  );
+};
+/**
+ * One page's checks; a failure (a page that will not load, a handle gone before its drag) is one
+ * ERROR line, not the end of the run, and a server that stopped answering is started again.
+ */
+async function guarded(id, run) {
+  try {
+    await run();
+  } catch (e) {
+    const msg = String(e?.message ?? e).split('\n')[0];
+    errors.push(`- **ERROR** ${id}: the check failed: ${msg}`);
+    lines.push(`- **ERROR** ${id}: the check failed: ${msg}`);
+    if (/ERR_CONNECTION_REFUSED|ECONNREFUSED/.test(msg)) await serve();
+  }
+}
 for (const id of ids) {
-  await page.goto(`${base}/skill/${encodeURIComponent(id)}`, { waitUntil: 'networkidle' });
+  await guarded(id, () => checkPage(id));
+  flush();
+}
+for (const id of unknownsOnly) {
+  await guarded(id, async () => {
+    await page.goto(urlOf(id), { waitUntil: 'networkidle' });
+    await checkUnknowns(id);
+  });
+  flush();
+}
+flush();
+console.log(
+  `${scenes} scenes in ${join(out, 'scenes')}; drags in ${join(out, 'drags.md')}; ${errors.length} errors; unknowns in ${join(out, 'unknowns.md')}; ${unknownErrors.length} errors`,
+);
+await browser.close();
+server.kill();
+
+/** Every check on one page: scenes, each handle's drags, then the "?" check. */
+async function checkPage(id) {
+  await page.goto(urlOf(id), { waitUntil: 'networkidle' });
   await page.waitForTimeout(300);
   // Every scene of an exploration, light and then dark.
   const n = await page.locator('[data-testid^="scene-"]').count();
-  if (n) await dark.goto(`${base}/skill/${encodeURIComponent(id)}`, { waitUntil: 'networkidle' });
+  if (n) await dark.goto(urlOf(id), { waitUntil: 'networkidle' });
   for (const [p, suffix] of n
     ? [
         [page, ''],
@@ -646,16 +778,3 @@ for (const id of ids) {
   }
   await checkUnknowns(id);
 }
-for (const id of unknownsOnly) {
-  await page.goto(`${base}/skill/${encodeURIComponent(id)}`, { waitUntil: 'networkidle' });
-  await checkUnknowns(id);
-}
-lines.push('', '## Errors', '', ...(errors.length ? errors : ['None.']));
-writeFileSync(join(out, 'drags.md'), lines.join('\n') + '\n');
-unknownLines.push('', '## Errors', '', ...(unknownErrors.length ? unknownErrors : ['None.']));
-writeFileSync(join(out, 'unknowns.md'), unknownLines.join('\n') + '\n');
-console.log(
-  `${scenes} scenes in ${join(out, 'scenes')}; drags in ${join(out, 'drags.md')}; ${errors.length} errors; unknowns in ${join(out, 'unknowns.md')}; ${unknownErrors.length} errors`,
-);
-await browser.close();
-server.kill();
