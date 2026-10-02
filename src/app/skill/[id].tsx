@@ -1,9 +1,9 @@
 import { Stack, useLocalSearchParams } from 'expo-router';
-import { ScrollView, StyleSheet, View } from 'react-native';
 
 import {
   DetailHeader,
   NotFound,
+  Page,
   ModuleSections,
   LockedState,
   RefreshSection,
@@ -23,11 +23,11 @@ import {
   skillPageId,
   skillRoute,
   subjectLabel,
+  trailOf,
 } from '@/data/selectors';
 import { lessonIcons } from '@/data/icons';
 import { gradeLabel, SKILLS } from '@/data/taxonomy';
 import { useTrackRecent } from '@/state';
-import { space, usePalette } from '@/theme';
 import { prerenderIds } from '@/data/prerender';
 
 /** Pre-render every skill page (web static rendering). */
@@ -36,7 +36,6 @@ export function generateStaticParams(): { id: string }[] {
 }
 
 export default function SkillScreen() {
-  const c = usePalette();
   const id = skillPageId(String(useLocalSearchParams<{ id: string }>().id));
   // A skill's main module, or one of its problem types ("m.1.add-sub-20~compare").
   const type = getProblemType(id);
@@ -65,22 +64,14 @@ export default function SkillScreen() {
     icons[lessonId === skill.id ? 0 : types.findIndex((t) => t.id === lessonId) + 1];
 
   return (
-    <ScrollView
-      contentInsetAdjustmentBehavior="automatic"
-      keyboardShouldPersistTaps="handled"
-      keyboardDismissMode="on-drag"
-      automaticallyAdjustKeyboardInsets
-      style={{ backgroundColor: c.background }}
-    >
+    <Page width="read" keyboardDismissMode="on-drag" automaticallyAdjustKeyboardInsets>
       <Stack.Screen options={{ title }} />
       <PageMeta {...(type ? problemTypeMeta(type) : skillMeta(skill))} />
       <DetailHeader
+        overline={`${gradeLabel(skill.grade)} ${subjectLabel(skill.subject)} · ${type ? 'Problem type' : skill.strand}`}
         title={title}
-        lines={[
-          `${gradeLabel(skill.grade)} · ${subjectLabel(skill.subject)}`,
-          type ? `Problem type · ${skill.title}` : `Strand: ${skill.strand}`,
-          ...(type?.use ? [type.use] : []),
-        ]}
+        lines={type?.use ? [type.use] : []}
+        trail={trailOf('skill/[id]', { id })}
       />
       <ModuleSections id={id} />
       {/* What to review first sits with the other lessons, after this one's content. */}
@@ -103,11 +94,6 @@ export default function SkillScreen() {
           </TileGrid>
         </>
       ) : null}
-      <View style={styles.end} />
-    </ScrollView>
+    </Page>
   );
 }
-
-const styles = StyleSheet.create({
-  end: { height: space.xxl },
-});

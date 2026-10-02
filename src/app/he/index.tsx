@@ -1,6 +1,4 @@
-import { ScrollView, StyleSheet } from 'react-native';
-
-import { Tile, TileGrid } from '@/components';
+import { DetailHeader, Page, Tile, TileGrid } from '@/components';
 import { PageMeta } from '@/components/PageMeta';
 import { divisionIcon } from '@/data/icons';
 import {
@@ -11,22 +9,24 @@ import {
   divisionTone,
   divisionView,
 } from '@/data/selectors';
-import { space, usePalette } from '@/theme';
 
 /** Higher education: a box for every division. */
 export default function HigherEdScreen() {
-  const c = usePalette();
   return (
     <>
       <PageMeta
         title={'Higher Education'}
         description="University math, science and engineering courses, by division and field, with topics and worked examples."
       />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={{ backgroundColor: c.background }}
-        contentContainerStyle={styles.page}
-      >
+      <Page>
+        <DetailHeader
+          title="College"
+          lines={['University math, science and engineering, by division and field.']}
+          trail={[
+            { label: 'Browse', target: { pathname: '/browse', params: {} } },
+            { label: 'College' },
+          ]}
+        />
         <TileGrid>
           {DIVISIONS.map((d) => {
             const view = divisionView(d);
@@ -47,11 +47,7 @@ export default function HigherEdScreen() {
             );
           })}
         </TileGrid>
-      </ScrollView>
+      </Page>
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  page: { paddingVertical: space.lg },
-});

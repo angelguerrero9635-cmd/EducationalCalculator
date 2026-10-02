@@ -1,23 +1,26 @@
-import { ScrollView, StyleSheet } from 'react-native';
+import type { ReactNode } from 'react';
 
 import { courseIcons } from '@/data/icons';
 import { courseRoute, courseSummary } from '@/data/selectors';
 import type { Course } from '@/data/taxonomy';
-import { space, usePalette } from '@/theme';
 
 import { EmptyState } from './EmptyState';
+import { Page } from './Page';
 import { Tile, TileGrid } from './Tile';
 
 /** Courses as boxes: an icon for the subject, the course's name and a short summary. */
-export function CourseList({ courses }: { courses: readonly Course[] }) {
-  const c = usePalette();
+export function CourseList({
+  courses,
+  header,
+}: {
+  courses: readonly Course[];
+  /** The page's title block, above the courses. */
+  header?: ReactNode;
+}) {
   const icons = courseIcons(courses);
   return (
-    <ScrollView
-      contentInsetAdjustmentBehavior="automatic"
-      style={{ backgroundColor: c.background }}
-      contentContainerStyle={styles.page}
-    >
+    <Page>
+      {header}
       {courses.length ? (
         <TileGrid>
           {courses.map((course, i) => (
@@ -35,10 +38,6 @@ export function CourseList({ courses }: { courses: readonly Course[] }) {
       ) : (
         <EmptyState title="No courses here yet" />
       )}
-    </ScrollView>
+    </Page>
   );
 }
-
-const styles = StyleSheet.create({
-  page: { paddingVertical: space.lg },
-});

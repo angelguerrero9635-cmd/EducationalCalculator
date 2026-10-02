@@ -1,7 +1,6 @@
 import { Stack, useLocalSearchParams } from 'expo-router';
-import { ScrollView, StyleSheet } from 'react-native';
 
-import { NotFound, ListRow, SkillBox } from '@/components';
+import { DetailHeader, ListRow, NotFound, Page, SkillBox } from '@/components';
 import { PageMeta } from '@/components/PageMeta';
 import {
   gradeStrands,
@@ -11,10 +10,10 @@ import {
   strandView,
   subjectLabel,
   SUBJECTS,
+  trailOf,
 } from '@/data/selectors';
 import { skillIcons } from '@/data/icons';
 import { gradeLabel, GRADES } from '@/data/taxonomy';
-import { space, usePalette } from '@/theme';
 
 /** Pre-render every strand page (web static rendering). */
 export function generateStaticParams(): { grade: string; strand: string }[] {
@@ -30,7 +29,6 @@ export function generateStaticParams(): { grade: string; strand: string }[] {
  * (the main lesson, then each problem type) as rows inside.
  */
 export default function StrandScreen() {
-  const c = usePalette();
   const params = useLocalSearchParams<{ grade: string; strand: string }>();
   const grade = String(params.grade);
   const view = isGrade(grade) ? strandView(grade, String(params.strand)) : undefined;
@@ -48,11 +46,12 @@ export default function StrandScreen() {
         title={`${view.title} – ${where}`}
         description={`${where}: ${view.skills.map((s) => s.title).join(', ')}.`}
       />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={{ backgroundColor: c.background }}
-        contentContainerStyle={styles.page}
-      >
+      <Page width="read">
+        <DetailHeader
+          overline={where}
+          title={view.title}
+          trail={trailOf('grade/[grade]/[strand]', { grade, strand: String(params.strand) })}
+        />
         {view.skills.map((s, i) => {
           const types = problemTypes(s.id);
           return (
@@ -76,11 +75,7 @@ export default function StrandScreen() {
             </SkillBox>
           );
         })}
-      </ScrollView>
+      </Page>
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  page: { paddingVertical: space.lg },
-});

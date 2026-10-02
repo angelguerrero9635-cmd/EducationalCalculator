@@ -97,7 +97,7 @@ async function phone(colorScheme) {
   const p = await browser.newPage({ viewport: { width: 390, height: 900 }, colorScheme });
   await p.goto(base + '/');
   await p
-    .getByText('Skip', { exact: true })
+    .getByText(/^Skip( for now)?$/)
     .click({ timeout: 5000 })
     .catch(() => {});
   return p;

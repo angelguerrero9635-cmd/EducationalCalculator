@@ -44,10 +44,7 @@ const CHECKS = [
   [
     '/skill/m.1.add-sub-20~compare',
     200,
-    [
-      'Solve compare problems: Add and subtract within 20',
-      'Problem type · Add and subtract within 20',
-    ],
+    ['Solve compare problems: Add and subtract within 20', 'Grade 1 Math · Problem type'],
   ],
   [
     '/skill/m.K.position-words',
@@ -57,7 +54,7 @@ const CHECKS = [
   [
     '/skill/s.K.pushes-pulls',
     200,
-    ['Pushes and pulls – Kindergarten Science', 'Kindergarten · Science'],
+    ['Pushes and pulls – Kindergarten Science', 'Kindergarten Science ·'],
   ],
   [
     '/course/he.math.calc-1',

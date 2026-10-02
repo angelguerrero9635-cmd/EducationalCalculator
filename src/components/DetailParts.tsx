@@ -1,26 +1,51 @@
 import { router } from 'expo-router';
-import { monthly, PRICES } from '@/config/pricing';
-import { Pressable, StyleSheet, View } from 'react-native';
-import { Text } from '@/components/Text';
+import { Platform, Pressable, StyleSheet, View } from 'react-native';
 
-import type { RefreshRow } from '@/data/selectors';
+import { Text } from '@/components/Text';
+import { monthly, PRICES } from '@/config/pricing';
+import type { Crumb, RefreshRow } from '@/data/selectors';
 import { push } from '@/navigation';
-import { font, radius, space, usePalette } from '@/theme';
+import { font, radius, space, type, usePalette } from '@/theme';
+
+import { useLayoutSize } from './layoutSize';
+import { Breadcrumbs } from './shell/Breadcrumbs';
+import { webData } from './webData';
 
 import { EmptyState } from './EmptyState';
 import { Icon } from './Icon';
 import { SectionHeader } from './SectionHeader';
 
-/** Title block at the top of a detail screen. */
-export function DetailHeader({ title, lines }: { title: string; lines: string[] }) {
+/**
+ * The title block at the top of a page: on phones the breadcrumbs (wide screens show them in
+ * the top bar), an optional overline, the page's title and its subtitle lines.
+ */
+export function DetailHeader({
+  title,
+  lines = [],
+  overline,
+  trail,
+}: {
+  title: string;
+  lines?: string[];
+  overline?: string;
+  trail?: Crumb[];
+}) {
   const c = usePalette();
+  const size = useLayoutSize();
+  const showTrail = trail && trail.length > 1 && (Platform.OS === 'web' || size !== 'wide');
   return (
     <View style={styles.header}>
-      <Text accessibilityRole="header" style={[styles.title, { color: c.text }]}>
+      {showTrail ? (
+        <View {...webData({ shell: 'narrow' })} style={styles.trail}>
+          <Breadcrumbs trail={trail} scroll />
+        </View>
+      ) : null}
+      {overline ? <Text style={[type.overline, { color: c.accent }]}>{overline}</Text> : null}
+      <Text accessibilityRole="header" style={[type.title1, { color: c.text }]}>
         {title}
       </Text>
       {lines.map((line) => (
-        <Text key={line} style={[styles.line, { color: c.textMuted }]}>
+        <Text key={line} style={[type.callout, { color: c.textMuted }]}>
           {line}
         </Text>
       ))}
@@ -86,9 +111,13 @@ export function LockedState() {
 }
 
 const styles = StyleSheet.create({
-  header: { padding: space.lg, gap: space.xs },
-  title: { fontSize: font.title, fontWeight: '700' },
-  line: { fontSize: font.body - 1 },
+  header: {
+    paddingHorizontal: space.lg,
+    paddingTop: space.lg,
+    paddingBottom: space.md,
+    gap: space.xs,
+  },
+  trail: { marginBottom: space.sm },
   note: { fontSize: font.caption + 1, padding: space.lg },
   chips: {
     flexDirection: 'row',

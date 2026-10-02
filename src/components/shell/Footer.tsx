@@ -49,6 +49,7 @@ export function Footer() {
 
 const styles = StyleSheet.create({
   footer: {
+    alignSelf: 'stretch',
     marginTop: space.xxxl,
     paddingVertical: space.xl,
     borderTopWidth: StyleSheet.hairlineWidth,

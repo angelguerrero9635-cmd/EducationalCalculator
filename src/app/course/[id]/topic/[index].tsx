@@ -1,10 +1,9 @@
 import { Stack, useLocalSearchParams } from 'expo-router';
-import { ScrollView, StyleSheet, View } from 'react-native';
 
 import {
   DetailHeader,
   NotFound,
-  ListRow,
+  Page,
   LockedState,
   ModuleSections,
   SectionHeader,
@@ -16,7 +15,6 @@ import { isLocked } from '@/config/access';
 import { topicLessonIcons } from '@/data/icons';
 import { problemTypeMeta, topicMeta } from '@/data/meta';
 import {
-  courseRoute,
   getProblemType,
   pageRoute,
   problemTypes,
@@ -24,11 +22,11 @@ import {
   topicOf,
   topicKey,
   topicPageId,
+  trailOf,
 } from '@/data/selectors';
 import { prerenderIds } from '@/data/prerender';
 import { COURSES } from '@/data/taxonomy';
 import { useTrackRecent } from '@/state';
-import { space, usePalette } from '@/theme';
 
 /**
  * Pre-render every course topic page and every topic problem type (web static rendering): the
@@ -48,7 +46,6 @@ export function generateStaticParams(): { id: string; index: string }[] {
 
 /** A course topic's lesson, or one of its problem types, laid out like a skill page. */
 export default function TopicScreen() {
-  const c = usePalette();
   const params = useLocalSearchParams<{ id: string; index: string }>();
   const id = topicPageId(String(params.id), String(params.index));
   const type = getProblemType(id);
@@ -76,20 +73,18 @@ export default function TopicScreen() {
   ];
 
   return (
-    <ScrollView
-      contentInsetAdjustmentBehavior="automatic"
-      keyboardShouldPersistTaps="handled"
-      keyboardDismissMode="on-drag"
-      automaticallyAdjustKeyboardInsets
-      style={{ backgroundColor: c.background }}
-    >
+    <Page width="read" keyboardDismissMode="on-drag" automaticallyAdjustKeyboardInsets>
       <Stack.Screen options={{ title }} />
       <PageMeta {...(type ? problemTypeMeta(type) : topicMeta(topic.course.id, topic.index)!)} />
       <DetailHeader
+        overline={`${topic.course.title}${type ? ' · Problem type' : ''}`}
         title={title}
-        lines={type ? [`Problem type · ${topic.title}`, ...(type.use ? [type.use] : [])] : []}
+        lines={type?.use ? [type.use] : []}
+        trail={trailOf('course/[id]/topic/[index]', {
+          id: String(params.id),
+          index: String(params.index),
+        })}
       />
-      <ListRow overline="Course" title={topic.course.title} route={courseRoute(topic.course.id)} />
       <ModuleSections id={id} />
       {related.length ? (
         <>
@@ -109,11 +104,6 @@ export default function TopicScreen() {
           </TileGrid>
         </>
       ) : null}
-      <View style={styles.end} />
-    </ScrollView>
+    </Page>
   );
 }
-
-const styles = StyleSheet.create({
-  end: { height: space.xxl },
-});

@@ -1,6 +1,7 @@
-import { ScrollView, StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
-import { SectionHeader, Tile, TileGrid } from '@/components';
+import { DetailHeader, Page, SectionHeader, Tile, TileGrid } from '@/components';
+import { Text } from '@/components/Text';
 import { PageMeta } from '@/components/PageMeta';
 import { divisionIcon } from '@/data/icons';
 import {
@@ -14,8 +15,16 @@ import {
   gradeRoute,
   gradeTone,
 } from '@/data/selectors';
-import { GRADES, gradeLabel, skillsFor } from '@/data/taxonomy';
-import { space, usePalette } from '@/theme';
+import { GRADES, gradeLabel, skillsFor, type Grade } from '@/data/taxonomy';
+import { space, type, usePalette } from '@/theme';
+
+/** Grades in school bands, so the wide grid never leaves a lone tile. */
+const BANDS: { label: string; grades: readonly Grade[] }[] = [
+  { label: 'Kindergarten to Grade 2', grades: GRADES.slice(0, 3) },
+  { label: 'Grades 3 to 5', grades: GRADES.slice(3, 6) },
+  { label: 'Grades 6 to 8', grades: GRADES.slice(6, 9) },
+  { label: 'Grades 9 to 12', grades: GRADES.slice(9) },
+];
 
 /** Browse: a box for every grade (K–12) and for every college division. */
 export default function BrowseScreen() {
@@ -26,26 +35,27 @@ export default function BrowseScreen() {
         title={'Browse'}
         description="Browse every lesson by level: Kindergarten through Grade 12 math and science, and university math, science and engineering courses."
       />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={{ backgroundColor: c.background }}
-        contentContainerStyle={styles.page}
-      >
-        <SectionHeader title="School · Kindergarten to Grade 12" />
-        <TileGrid>
-          {GRADES.map((g) => (
-            <Tile
-              key={g}
-              testID={`browse-grade-${g}`}
-              badge={gradeBadge(g)}
-              tone={gradeTone(g)}
-              title={gradeLabel(g)}
-              subtitle={`${skillsFor(g, 'math').length} math · ${skillsFor(g, 'science').length} science`}
-              route={gradeRoute(g)}
-            />
-          ))}
-        </TileGrid>
-
+      <Page>
+        <DetailHeader title="Browse" lines={['Every lesson, from Kindergarten to university.']} />
+        <SectionHeader title="School" />
+        {BANDS.map((band) => (
+          <View key={band.label}>
+            <Text style={[type.overline, styles.band, { color: c.textMuted }]}>{band.label}</Text>
+            <TileGrid>
+              {band.grades.map((g) => (
+                <Tile
+                  key={g}
+                  testID={`browse-grade-${g}`}
+                  badge={gradeBadge(g)}
+                  tone={gradeTone(g)}
+                  title={gradeLabel(g)}
+                  subtitle={`${skillsFor(g, 'math').length} math · ${skillsFor(g, 'science').length} science`}
+                  route={gradeRoute(g)}
+                />
+              ))}
+            </TileGrid>
+          </View>
+        ))}
         <SectionHeader title="College" />
         <TileGrid>
           {DIVISIONS.map((d) => {
@@ -67,11 +77,11 @@ export default function BrowseScreen() {
             );
           })}
         </TileGrid>
-      </ScrollView>
+      </Page>
     </>
   );
 }
 
 const styles = StyleSheet.create({
-  page: { paddingBottom: space.xxl },
+  band: { paddingHorizontal: space.lg, paddingTop: space.sm, paddingBottom: space.sm },
 });

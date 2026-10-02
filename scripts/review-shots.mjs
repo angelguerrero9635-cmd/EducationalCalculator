@@ -78,7 +78,7 @@ try {
     // Skip the first-launch onboarding once per page (it is stored in the browser).
     await page.goto(base + '/');
     await page
-      .getByText('Skip', { exact: true })
+      .getByText(/^Skip( for now)?$/)
       .click({ timeout: 5000 })
       .catch(() => {});
     for (const id of ids) {
