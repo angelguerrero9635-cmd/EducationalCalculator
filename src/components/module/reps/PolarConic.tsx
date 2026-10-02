@@ -67,7 +67,10 @@ export function PolarConic({ spec, calc }: { spec: PolarGridSpec; calc: Calculat
   const drag = useRef({ x: 0, y: 0 });
 
   // Caption.
-  const eq = polarConicText(parts);
+  const letter = (x: number | string | undefined) =>
+    typeof x === 'string' && !rep.known(x) ? rep.variable(x).symbol : undefined;
+  const letters = { k: letter(curve.k), m: letter(curve.m), n: letter(curve.n) };
+  const eq = polarConicText(parts, letters);
   const lines: string[] = [];
   if (!curveKnown) lines.push(`${eq} with a value still to type.`);
   else if (n === 0)
@@ -138,6 +141,20 @@ export function PolarConic({ spec, calc }: { spec: PolarGridSpec; calc: Calculat
               : undefined;
           const inside = pPos && Math.hypot(pPos.x, pPos.y) <= win.value.outer * 1.001;
           const pp = pPos && inside ? P(pPos.x, pPos.y) : undefined;
+          // The handle stays on the picture while P runs off it (r grows without end as the
+          // bottom nears 0): on the rim, toward P.
+          const rimAt = (x: number, y: number) => {
+            const l = Math.hypot(x, y) || 1;
+            const o = win.value.outer;
+            return P((x / l) * o, (y / l) * o);
+          };
+          const handleAt =
+            pp ??
+            (pt
+              ? pPos
+                ? rimAt(pPos.x, pPos.y)
+                : rimAt(Math.cos(pt.th * RAD), Math.sin(pt.th * RAD))
+              : undefined);
           const dirOn = at !== undefined && Math.abs(at) < win.value.outer;
           const foot =
             pPos && at !== undefined ? (fn === 'sin' ? P(pPos.x, at) : P(at, pPos.y)) : undefined;
@@ -256,7 +273,7 @@ export function PolarConic({ spec, calc }: { spec: PolarGridSpec; calc: Calculat
                   <MathChip
                     x={fn === 'sin' ? cx - R * 0.55 : P(at!, 0).x + (at! < 0 ? 6 : -6)}
                     y={fn === 'sin' ? P(0, at!).y + (at! < 0 ? 18 : -8) : cy - R * 0.62}
-                    text={`${fn === 'sin' ? 'y' : 'x'} = ${short(at!)}`}
+                    text={`${fn === 'sin' ? 'y' : 'x'} = ${curveKnown ? short(at!) : '?'}`}
                     anchor={fn === 'sin' ? 'middle' : at! < 0 ? 'start' : 'end'}
                     w={w}
                     h={h}
@@ -371,7 +388,7 @@ export function PolarConic({ spec, calc }: { spec: PolarGridSpec; calc: Calculat
                 <MathChip
                   x={8}
                   y={20}
-                  text={polarConicText(parts)}
+                  text={eq}
                   anchor="start"
                   w={w}
                   h={h}
@@ -379,14 +396,18 @@ export function PolarConic({ spec, calc }: { spec: PolarGridSpec; calc: Calculat
                   size={chart.value}
                 />
               </Svg>
-              {!spec.fixed && spec.point && typeof spec.point.theta === 'string' && pp ? (
+              {!spec.fixed &&
+              spec.point &&
+              typeof spec.point.theta === 'string' &&
+              handleAt &&
+              (pp || win.frozen) ? (
                 <DragHandle
                   testID="drag-point"
-                  x={pp.x}
-                  y={pp.y}
+                  x={handleAt.x}
+                  y={handleAt.y}
                   label="the point P along the conic"
                   onStart={() => {
-                    drag.current = { x: pp.x, y: pp.y };
+                    drag.current = { x: handleAt.x, y: handleAt.y };
                     win.freeze();
                   }}
                   onMove={(dx, dy) => {

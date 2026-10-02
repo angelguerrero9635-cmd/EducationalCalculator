@@ -7,6 +7,7 @@ import { formatNumber } from '@/engine/format';
 import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
+import { angleDrag, wrap360 } from './angleDrag';
 import { Canvas, Caption, DragHandle, useFrozen, useRep } from './common';
 import { arrowHead, makeFrame } from './graphKit';
 import { HsdGrid, niceStep, niceWindow } from './hsdGrid';
@@ -62,13 +63,25 @@ export function PolarGrid({ spec, calc }: { spec: PolarGridSpec; calc: Calculato
         .map((k) => [k, num((o as Record<string, number | string>)[k]!)]),
     );
   const drag = useRef({ x: 0, y: 0 });
+  const turn = useRef<(dx: number, dy: number) => number>(() => 0);
 
   // ── Parametric: an x-y grid. ──
   const par = spec.parametric;
   const pv = par ? read(par, PATH_FIELDS[par.family]) : {};
   const t = par ? num(par.t) : 0;
   // The ellipse's t is an angle, in degrees.
-  const tText = par?.family === 'ellipse' ? `${short(t)}°` : short(t);
+  // A "?" t reads "?", and the point's coordinates read "?" until t and the path's numbers are
+  // all typed: never the example's point behind a "?".
+  const tText =
+    par && !isKnown(par.t) ? '?' : par?.family === 'ellipse' ? `${short(t)}°` : short(t);
+  const pathKnown =
+    !!par &&
+    isKnown(par.t) &&
+    PATH_FIELDS[par.family].every((k) =>
+      isKnown((par as unknown as Record<string, number | string>)[k]),
+    );
+  const xyText = (p: { x: number; y: number }) =>
+    pathKnown ? `(${short(p.x)}, ${short(p.y)})` : '(?, ?)';
   // The path over its range, stretched to reach a t typed past either end.
   const [t0, t1] = par ? [Math.min(par.range[0], t), Math.max(par.range[1], t)] : [0, 0];
   const samples = par
@@ -175,7 +188,7 @@ export function PolarGrid({ spec, calc }: { spec: PolarGridSpec; calc: Calculato
     const p = pathAt(par, pv, t);
     lines.push(
       isKnown(par.t)
-        ? `At t = ${tText} the point is (${short(p.x)}, ${short(p.y)}). The arrows show the way t runs.`
+        ? `At t = ${tText} the point is ${xyText(p)}. The arrows show the way t runs.`
         : 't = ?',
     );
   }
@@ -262,7 +275,7 @@ export function PolarGrid({ spec, calc }: { spec: PolarGridSpec; calc: Calculato
                     <MathChip
                       x={f.sx(at.x) + (at.x < 0 ? -10 : 10)}
                       y={f.sy(at.y) + 24}
-                      text={`t = ${tText}: (${short(at.x)}, ${short(at.y)})`}
+                      text={`t = ${tText}: ${xyText(at)}`}
                       anchor={at.x < 0 ? 'end' : 'start'}
                       w={w}
                       h={h}
@@ -468,13 +481,15 @@ export function PolarGrid({ spec, calc }: { spec: PolarGridSpec; calc: Calculato
                   label="the point (r, θ)"
                   onStart={() => {
                     drag.current = { x: p.x, y: p.y };
+                    turn.current = angleDrag({ x: p.x - cx, y: p.y - cy }, pt.th);
                     win.freeze();
                   }}
                   onMove={(dx, dy) => {
                     const x = (drag.current.x + dx - cx) / k;
                     const y = -(drag.current.y + dy - cy) / k;
-                    let th = Math.atan2(y, x) / RAD;
-                    if (th < 0) th += 360;
+                    // On a curve θ turns on as the finger passes the pole (a rose's petal
+                    // tip), never 180° at once; alone, the point is where the finger is.
+                    const th = wrap360(spec.curve ? turn.current(dx, dy) : Math.atan2(y, x) / RAD);
                     const next: Record<string, number> = {};
                     const { r: rId, theta: tId } = spec.point!;
                     if (typeof tId === 'string') next[tId] = rep.snapTo(tId, th);

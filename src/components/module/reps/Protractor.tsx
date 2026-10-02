@@ -7,6 +7,7 @@ import { formatNumber } from '@/engine/format';
 import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
+import { angleDrag } from './angleDrag';
 import { Canvas, Caption, ChartText, DragHandle, useRep } from './common';
 import { Steppers } from './Steppers';
 
@@ -22,7 +23,8 @@ type Spec = Extract<Representation, { kind: 'protractor' }>;
 export function Protractor({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const c = usePalette();
   const rep = useRep(calc);
-  const start = useRef({ a: 0, cx: 0, cy: 0, r: 1 });
+  // The angle the drag has turned to: continuous as the pointer passes the vertex (angleDrag).
+  const turn = useRef<(dx: number, dy: number) => number>(() => 0);
   const known = rep.known(spec.angle);
   const clamp = (x: number) => Math.min(180, Math.max(0, x));
   const arms = spec.arms;
@@ -200,13 +202,13 @@ export function Protractor({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     y={hy}
                     label={rep.variable(id).name}
                     onStart={() => {
-                      start.current = { a: at, cx, cy, r: R * (arms ? 0.86 : 0.8) };
+                      turn.current = angleDrag({ x: hx - cx, y: hy - cy }, at, {
+                        min: 0,
+                        max: 180,
+                      });
                     }}
                     onMove={(dx, dy) => {
-                      const s = start.current;
-                      const [sx, sy] = toXY(s.a, s.r);
-                      const deg = (-Math.atan2(sy + dy - s.cy, sx + dx - s.cx) * 180) / Math.PI;
-                      const next = Math.min(180, Math.max(0, Math.round(deg)));
+                      const next = Math.round(turn.current(dx, dy));
                       calc.set(
                         {
                           ...(arms

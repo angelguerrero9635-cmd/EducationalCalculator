@@ -12,6 +12,7 @@ import { ownCenter, pointSymmetryText } from './transformHs3b';
 import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
+import { angleDrag } from './angleDrag';
 import { Canvas, Caption, ChartText, DragHandle, useFrozen, useRep } from './common';
 import {
   Arrow,
@@ -79,6 +80,8 @@ export function Transformation({ spec, calc }: { spec: TransformationSpec; calc:
   const rep = useRep(calc);
   const read = reader(rep);
   const start = useRef({ a: 0, b: 0 });
+  // A turn's angle as the drag has turned it: continuous past the center (angleDrag).
+  const turn = useRef<(dx: number, dy: number) => number>(() => 0);
   const fig = spec.figure.map(([x, y]) => ({ x: read(x), y: read(y) }));
   const pts = fig.map((p) => [p.x.value, p.y.value] as Pt);
   const figKnown = fig.every((p) => p.x.known && p.y.known);
@@ -667,15 +670,17 @@ export function Transformation({ spec, calc }: { spec: TransformationSpec; calc:
                   label={`the image ${prime(0)}`}
                   onStart={() => {
                     start.current = { a: aHandle[0], b: aHandle[1] };
+                    turn.current = angleDrag(
+                      { x: aHandle[0] - cxp, y: aHandle[1] - cyp },
+                      rep.val(spec.angle as string),
+                    );
                     ext.freeze();
                   }}
                   onMove={(dx, dy) => {
                     const id = spec.angle as string;
-                    // The turn from A to where the finger is, about the center.
-                    const x = start.current.a + dx - cxp;
-                    const y = -(start.current.b + dy - cyp);
-                    const from = Math.atan2(a[1] - v.center[1], a[0] - v.center[0]);
-                    let deg = ((Math.atan2(y, x) - from) * 180) / Math.PI;
+                    // The turn from A to where the finger is, about the center, turning on
+                    // as the finger passes the center (never 340° at once).
+                    let deg = turn.current(dx, dy);
                     // Keep the turn the same way round as it was, within one full turn.
                     const variable = rep.variable(id);
                     const lo = variable.min ?? -360;

@@ -6,6 +6,7 @@ import type { Representation } from '@/data/modules';
 import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
+import { angleDrag, wrap360 } from './angleDrag';
 import { Canvas, Caption, ChartText, DragHandle, fitLabel, useRep } from './common';
 import { Steppers } from './Steppers';
 
@@ -54,6 +55,8 @@ export function Angles({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const sym = (id: string) => (rep.words ? rep.variable(id).name : rep.variable(id).symbol);
   const start = useRef({ a: 0, cx: 0, cy: 0, r: 1 });
   const startW = useRef({ b: 0, cx: 0, cy: 0, r: 1 });
+  // The angle the drag has turned to: continuous as the pointer passes the vertex (angleDrag).
+  const turn = useRef<(dx: number, dy: number) => number>(() => 0);
   const toXY = (deg: number, r: number, cx: number, cy: number) => {
     const t = (-deg * Math.PI) / 180;
     return [cx + r * Math.cos(t), cy + r * Math.sin(t)] as const;
@@ -131,16 +134,6 @@ export function Angles({ spec, calc }: { spec: Spec; calc: Calculator }) {
               },
               rep.slide(first),
             );
-          };
-          const angleAt = (
-            s: { cx: number; cy: number; r: number },
-            from: number,
-            dx: number,
-            dy: number,
-          ) => {
-            const [sx, sy] = toXY(from, s.r, s.cx, s.cy);
-            const deg = (-Math.atan2(sy + dy - s.cy, sx + dx - s.cx) * 180) / Math.PI;
-            return ((Math.round(deg) % 360) + 360) % 360;
           };
           // The whole angle's label sits on its bisector, which is the middle ray when the two
           // angles are equal: then it moves 14° into the bigger part, where nothing is drawn.
@@ -222,8 +215,16 @@ export function Angles({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   label={rep.variable(first).name}
                   onStart={() => {
                     start.current = { a, cx, cy, r };
+                    turn.current = angleDrag(
+                      { x: hx - cx, y: hy - cy },
+                      a,
+                      fixed === undefined ? {} : { min: 0, max: fixed },
+                    );
                   }}
-                  onMove={(dx, dy) => moveFirst(angleAt(start.current, start.current.a, dx, dy))}
+                  onMove={(dx, dy) => {
+                    const deg = Math.round(turn.current(dx, dy));
+                    moveFirst(fixed === undefined ? wrap360(deg) : deg);
+                  }}
                 />
               ) : null}
               {cross && draggable ? (
@@ -235,10 +236,16 @@ export function Angles({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   label={rep.variable(first).name}
                   onStart={() => {
                     start.current = { a, cx, cy, r };
+                    turn.current = angleDrag(
+                      { x: ox - cx, y: oy - cy },
+                      a + 180,
+                      fixed === undefined ? {} : { min: 180, max: 180 + fixed },
+                    );
                   }}
-                  onMove={(dx, dy) =>
-                    moveFirst((angleAt(start.current, start.current.a + 180, dx, dy) + 180) % 360)
-                  }
+                  onMove={(dx, dy) => {
+                    const deg = Math.round(turn.current(dx, dy)) - 180;
+                    moveFirst(fixed === undefined ? wrap360(deg) : deg);
+                  }}
                 />
               ) : null}
               {/* The outer ray moves the second angle; the first stays where it is. A fixed whole
@@ -251,11 +258,14 @@ export function Angles({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   label={rep.variable(second).name}
                   onStart={() => {
                     startW.current = { b, cx, cy, r };
+                    turn.current = angleDrag({ x: wx - cx, y: wy - cy }, a + b, {
+                      min: a,
+                      max: a + 359,
+                    });
                   }}
                   onMove={(dx, dy) => {
-                    const next = angleAt(startW.current, a + startW.current.b, dx, dy);
                     // The whole ray's angle, less the first angle, is the second (never below 0).
-                    const deg = (((next - a) % 360) + 360) % 360;
+                    const deg = Math.round(turn.current(dx, dy)) - a;
                     calc.set(
                       {
                         ...rep.pin([first]),
