@@ -210,6 +210,9 @@ import { PotentialWell } from './PotentialWell';
 import { UnitCell } from './UnitCell';
 import { InstrumentTrace } from './InstrumentTrace';
 import { CombustionTrain } from './CombustionTrain';
+import { BinaryPhase } from './BinaryPhase';
+import { Machining } from './Machining';
+import { Linkage } from './Linkage';
 import { Globe } from './Globe';
 import { Aquifer } from './Aquifer';
 import { Refraction } from './Refraction';
@@ -425,6 +428,12 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <PhaseSpace spec={spec} calc={calc} />; // HC69
     case 'unitCell':
       return <UnitCell spec={spec} calc={calc} />;
+    case 'binaryPhase':
+      return <BinaryPhase spec={spec} calc={calc} />;
+    case 'machining':
+      return <Machining spec={spec} calc={calc} />;
+    case 'linkage':
+      return <Linkage spec={spec} calc={calc} />;
     case 'globe':
       return <Globe spec={spec} calc={calc} />;
     case 'aquifer':

@@ -163,6 +163,9 @@ const PICTURE_NAMES: Record<string, string> = {
     'a cross-section of an aquifer: wells, the water table, a piezometer or a cone of depression',
   refraction: 'a seismic or radar survey: rays through layers and the travel-time graph',
   projection: 'a world map projection: its graticule, Tissot circles and a parallel’s height',
+  binaryPhase: 'a binary phase diagram with a tie line and the lever rule',
+  machining: 'a turning or milling cut, or the surface a tool nose leaves',
+  linkage: 'a ladder, a rolling wheel or a linkage with its instantaneous centre',
   globe:
     'a globe: the Sun’s rays, a great-circle route, a turning plate, a dipole field or a ring of air',
   stressStrain:

@@ -90,6 +90,7 @@ import { he3fIssues } from './picturesHe3f';
 import { he3mIssues, planeGisIssues } from './picturesHe3m';
 import { he1fIssues } from './picturesHe1f';
 import { he2bIssues } from './picturesHe2b';
+import { he3iIssues, limbIssues } from './picturesHe3i';
 import { he2jIssues } from './picturesHe2j';
 import { he2eIssues, isHe2e } from './picturesHe2e';
 import { he2hIssues } from './picturesHe2h';
@@ -2362,6 +2363,11 @@ export function repIssues(
     case 'instrumentTrace':
       out.push(...instrumentTraceIssues(rep, val)); // HC55
       break;
+    case 'binaryPhase':
+    case 'machining':
+    case 'linkage':
+      out.push(...he3iIssues(rep, siOf(val, byId), byId)); // HC82–HC84
+      break;
     case 'globe':
       // In formula units (a distance in km, a speed in m/s), as the picture draws them.
       out.push(
@@ -2433,6 +2439,8 @@ export function repIssues(
         out.push(...he3lIssues(rep, siOf(val, byId), byId)); // HC68
         break;
       }
+      if (rep.kind === 'simpleMachine' && rep.limb)
+        return [...out, ...limbIssues(rep, siOf(val, byId), byId)]; // HC81
       if (isHe2e(rep)) {
         out.push(...he2eIssues(rep, siOf(val, byId)));
         break;

@@ -128,6 +128,9 @@ search or the sitemap, but the module tests and the harness run over it):
 | `unitCell`         | cubic cell: atoms counted to Z, touching line; (hkl) and d; Bragg     | College solids, minerals (HC16)     |
 | `phaseSpace`       | oscillator ellipse, flow (ẋ, ṗ), area; pendulum θ–ω; bead on a hoop   | College classical mech. (HC69)      |
 | `instrumentTrace`  | NMR n + 1 multiplets, integrals; chromatogram R; rotor lines 2B apart | College spectroscopy (HC55)         |
+| `binaryPhase`      | lens, eutectic, steel corner: C₀, tie line, lever arms, fraction bars | College phase diagrams (HC82)       |
+| `machining`        | turning, milling: D, N, v = πDN, f, d; the ideal finish's cusps, R_a  | College machining (HC83)            |
+| `linkage`          | ladder or rolling wheel: IC, v ⟂ rays ∝ r, ω; a loop's n, j₁, j₂, M   | College dynamics, linkages (HC84)   |
 | `globe`            | sun rays, noon angle, day dial; great circle; Euler pole; dipole; air | College earth and geography (HC36)  |
 | `refraction`       | layers, shot and geophones, rays at i_c; t–x lines, x_c; hyperbola    | College geophysics (HC76)           |
 | `projection`       | a cylinder map by formula: graticule, Tissot k_E and k_N, y of φ lit  | College cartography (HC78)          |

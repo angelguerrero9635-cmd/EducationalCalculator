@@ -37,6 +37,7 @@ import type { Hs3aSpec } from './typesHs3a';
 import type { He1bSpec } from './typesHe1b';
 import type { He1fSpec } from './typesHe1f';
 import type { He2bSpec } from './typesHe2b';
+import type { He3iSpec } from './typesHe3i';
 import type { GlobeSpec } from './typesHe2k';
 import type { InstrumentTraceSpec } from './typesHe3e';
 import type { He3mSpec, PlaneGis } from './typesHe3m';
@@ -1190,6 +1191,8 @@ export type Representation =
   | He1fSpec
   /** College round 2, group B: HC15 potential well, HC16 unit cell (`typesHe2b.ts`). */
   | He2bSpec
+  /** College round 3, group I: HC82 binary phase, HC83 machining, HC84 linkage (`typesHe3i.ts`). */
+  | He3iSpec
   /** College round 2, group K: HC36 `globe` (`typesHe2k.ts`). */
   | GlobeSpec
   /** College round 3, group E: HC55 `instrumentTrace` (`typesHe3e.ts`). */

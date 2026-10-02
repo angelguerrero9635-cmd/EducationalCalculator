@@ -37,6 +37,7 @@ import { hs3cSpecVars } from '../typesHs3c';
 import { he1gSpecVars } from '../typesHe1g';
 import { he1fSpecVars } from '../typesHe1f';
 import { he2bSpecVars } from '../typesHe2b';
+import { he3iSpecVars } from '../typesHe3i';
 import { globeVars } from '../typesHe2k';
 import { instrumentTraceVars } from '../typesHe3e';
 import { he3mVars, planeGisVars } from '../typesHe3m';
@@ -647,6 +648,10 @@ function representationVars(r: Representation): string[] {
       return he2bSpecVars(r);
     case 'phaseSpace':
       return he3lSpecVars(r); // HC69
+    case 'binaryPhase':
+    case 'machining':
+    case 'linkage':
+      return he3iSpecVars(r);
     case 'globe':
       return globeVars(r);
     case 'instrumentTrace':
