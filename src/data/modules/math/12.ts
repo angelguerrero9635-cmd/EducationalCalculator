@@ -2127,6 +2127,7 @@ const MATH_12_MATRICES: ModuleDef[] = [
     ),
     example: { d1: 6, d2: 3, d3: 2, x: 1, y: 2, z: 3 },
     startWith: ['d1', 'd2', 'd3'],
+    equation: '[[1, 1, 1 | {d1}; 2, −1, 1 | {d2}; 1, 2, −1 | {d3}]]\nx = {x}, y = {y}, z = {z}',
     representation: {
       kind: 'matrixGrid',
       mode: 'rowReduce',
