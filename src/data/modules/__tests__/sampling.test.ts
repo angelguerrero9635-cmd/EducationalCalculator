@@ -24,6 +24,7 @@ import {
   type System,
 } from '@/engine/solve';
 import { parseNumber } from '@/engine/format';
+import { SIGMA } from '@/engine/latex';
 import { changeUnits, initialState, setValues, type CalcState } from '@/engine/state';
 import type { Values, VariableDef } from '@/engine/types';
 import {
@@ -42,6 +43,7 @@ import {
   PLURAL,
   evaluate,
   evaluateAll,
+  expandSums,
   plainWalkthrough,
   setAngleUnit,
   shownClose,
@@ -517,6 +519,22 @@ function checkSteps(c: Ctx, res: SolveResult, where: string) {
       }
     }
   }
+  // A sum with its limits said equal to a number ("Σ from k = 1 to 8 of (3k − 1) = 100", in a
+  // step's lines or its sentence) must add up to it, term by term.
+  for (const s of w.steps) {
+    for (const line of [s.how, ...s.lines]) {
+      for (const m of line.matchAll(SIGMA)) {
+        const said = /^ = (-?[\d,]+(?:\.\d+)?)(?![\d.,]|\s*[×÷+−*/^])/.exec(
+          line.slice(m.index! + m[0].length),
+        );
+        if (!said) continue;
+        const x = evaluate(m[0]);
+        if (x === undefined || !shownClose(x, Number(parseNumber(said[1]!)))) {
+          c.f.add('error', `${c.label}sum doesn't add up: "${line}"`, where);
+        }
+      }
+    }
+  }
   // Counting lines ("Count on from 4: 5, 6, 7 → 3", "Count by 5s to 25: 5, 10, …, 25 → 5"):
   // the list goes up (or back) by the step from the start, and the arrow is either how many
   // numbers were said or the number reached. When the step's answer is the number reached,
@@ -606,8 +624,9 @@ function checkSteps(c: Ctx, res: SolveResult, where: string) {
   }
   for (const chk of w.check) {
     if (!chk.ok) c.f.add('error', `${c.label}check line doesn't balance: "${chk.formula}"`, where);
-    // Comparisons ("3/8 < 5/8, 2 parts apart"): the sign must match the two sides.
-    const formula = chk.formula
+    // Comparisons ("3/8 < 5/8, 2 parts apart"): the sign must match the two sides. A sum with
+    // its limits ("Σ from k = 1 to 8 of (3k − 1)") is worked out first, so its "k = 1" is no side.
+    const formula = expandSums(chk.formula)
       .replace(/, (\d+) (?:parts? )?apart$/, '')
       // "Faces: 2 + 4 = 6", "3 + 4 = 7 in all", "5¢ + 10¢ = 15¢"
       .replace(/^[A-Za-z][^:=]*: /, '')

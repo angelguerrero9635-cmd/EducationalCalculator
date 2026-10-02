@@ -1,4 +1,4 @@
-import { evaluate } from '../evaluate';
+import { evaluate, expandSums } from '../evaluate';
 
 it('reads floor, gcd, mod, remainders and radians', () => {
   expect(evaluate('⌊23 ÷ 4⌋')).toBe(5);
@@ -27,4 +27,17 @@ it('reads a root written exactly (E22)', () => {
   expect(evaluate('3√2')).toBeCloseTo(3 * Math.SQRT2, 12);
   expect(evaluate('−(√6 + √2)/4')).toBeCloseTo(-(Math.sqrt(6) + Math.SQRT2) / 4, 12);
   expect(evaluate('(√6 − √2)/4 ÷ ((√6 + √2)/4)')).toBeCloseTo(2 - Math.sqrt(3), 12);
+});
+
+it('adds a sum with its limits term by term, so a wrong sum fails (E5)', () => {
+  expect(evaluate('Σ from k = 1 to 8 of (3k − 1)')).toBe(100);
+  expect(evaluate('Σ from k = 1 to 8 of (3k + (-1))')).toBe(100);
+  expect(evaluate('Σ from k = 0 to 4 of 2^k')).toBe(31);
+  expect(evaluate('Σ from i = 1 to 3 of (i − 2)²')).toBe(2);
+  expect(evaluate('2 × Σ from k = -1 to 1 of k² + 1')).toBe(5);
+  expect(expandSums('Σ from k = 1 to 8 of (3k − 1) = 100')).toBe('(100) = 100');
+  expect(expandSums('Σ from k = 1 to 8 of (3k − 1) = 99')).toBe('(100) = 99');
+  // Limits that are not whole numbers in order leave the sum unread.
+  expect(evaluate('Σ from k = 1.5 to 8 of k')).toBeUndefined();
+  expect(evaluate('Σ from k = 8 to 1 of k')).toBeUndefined();
 });

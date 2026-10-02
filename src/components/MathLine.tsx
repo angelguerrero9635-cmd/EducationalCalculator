@@ -3,6 +3,7 @@ import { StyleSheet, View, type StyleProp, type TextStyle } from 'react-native';
 import { Text } from '@/components/Text';
 import {
   splitLine,
+  spokenMath,
   toLatex,
   withoutOuterBrackets,
   type LatexOptions,
@@ -34,11 +35,21 @@ export function MathLine({
   style?: StyleProp<TextStyle>;
 }) {
   const tex = toLatex(text, band, symbols, options);
-  if (tex === undefined) return <Text style={style}>{after ? `${text}${after}` : text}</Text>;
+  // What a screen reader says: "Σ from k = 1 to 8 of …" reads "the sum from k = 1 to 8 of …".
+  const spoken = spokenMath(`${text}${after ?? ''}`);
+  if (tex === undefined)
+    return (
+      <Text
+        style={style}
+        {...(spoken !== `${text}${after ?? ''}` ? { accessibilityLabel: spoken } : {})}
+      >
+        {after ? `${text}${after}` : text}
+      </Text>
+    );
   const flat = StyleSheet.flatten(style) ?? {};
   const size = flat.fontSize ?? font.body;
   return (
-    <View style={styles.line} accessible accessibilityLabel={`${text}${after ?? ''}`}>
+    <View style={styles.line} accessible accessibilityLabel={spoken}>
       {[...splitLine(tex), ...(after ? [{ t: 'text' as const, s: after }] : [])].flatMap(
         (piece, i) =>
           piece.t === 'text'
@@ -93,6 +104,16 @@ function MathNodes({
               <Text style={at(size)}>{n.block}</Text>
             </View>
           </View>
+        ) : n.t === 'sum' ? (
+          // Σ with its upper limit above and its lower limit below, then its body.
+          <View key={i} style={styles.row}>
+            <View style={styles.sum}>
+              <MathNodes nodes={n.upper} style={style} size={size * 0.65} />
+              <Text style={[at(size * 1.5), styles.sigma]}>Σ</Text>
+              <MathNodes nodes={n.lower} style={style} size={size * 0.65} />
+            </View>
+            <MathNodes nodes={n.body} style={style} size={size} />
+          </View>
         ) : n.t === 'sup' ? (
           <View key={i} style={styles.row}>
             <MathNodes nodes={n.base} style={style} size={size} />
@@ -121,4 +142,6 @@ const styles = StyleSheet.create({
   italic: { fontStyle: 'italic' },
   radicand: { borderTopWidth: 1.5, paddingHorizontal: 1, marginTop: 2 },
   repeat: { borderTopWidth: 1.5, marginTop: 2 },
+  sum: { alignItems: 'center', marginRight: 3 },
+  sigma: { marginVertical: -2 },
 });

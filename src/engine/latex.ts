@@ -7,8 +7,9 @@
  * Commands: `\frac{a}{b}` (a/b), `\tfrac{a}{b}` (a/b inside a sentence, drawn smaller),
  * `\half` (½), `\divfrac{a}{b}` (a ÷ b drawn stacked), `{b}^{e}` (a power the text writes b²),
  * `\pow{b}{e}` (a power the text writes b^e), `\sqrt{x}`, `\mathit{x}` (a letter that stands for
- * a number), `\rep{0.1666…}` (a repeating decimal, a bar over its block) and symbol commands
- * (\times, \div, \le, …).
+ * a number), `\rep{0.1666…}` (a repeating decimal, a bar over its block),
+ * `\sum_{k=1}^{n}{body}` (a sum with its limits, which the text writes "Σ from k = 1 to n of
+ * (body)") and symbol commands (\times, \div, \le, …).
  */
 
 import { repeatingParts } from './format';
@@ -41,6 +42,23 @@ const NOT_UNIT = String.raw`(?<!\d[  ])`;
 const OPERAND = String.raw`\([^()]*\)|\d[\d,]*(?:\.\d+)?\p{L}?|\p{L}+(?:_[A-Za-z0-9]+)?${SUB}`;
 
 const letterBand = (band: MathBand) => band === 'middle' || band === 'standard';
+
+/**
+ * A sum with its limits as the steps write it (E5): "Σ from k = 1 to 8 of (3k − 1)". The
+ * limits are one token each (a number, a letter, a value put in); the body is a bracket (one
+ * bracket deep inside, maybe raised to a power: (x − 5)²) or one term (k², 2^k, 1/k).
+ */
+export const SIGMA = new RegExp(
+  String.raw`Σ from (?<si>\p{L}) = (?<lo>[^\s()]+) to (?<hi>[^\s()]+) of (?<sb>\((?:[^()]|\([^()]*\))*\)(?:${SUP}|\^\S+)?|[^\s,;()]*[^\s,;.()])`,
+  'gu',
+);
+
+/** The text a screen reader says for a line: "Σ from k = 1 to 8 of …" is "the sum from …". */
+export const spokenMath = (line: string) =>
+  line.replace(/Σ from (?=\p{L} = )/gu, (_, at: number) =>
+    // Capital at the start of a sentence.
+    /^$|[.:;]\s+$/.test(line.slice(0, at)) ? 'The sum from ' : 'the sum from ',
+  );
 
 /** One pattern for everything inside a line that is drawn as math, by band. */
 function atomPattern(band: MathBand): RegExp {
@@ -229,6 +247,14 @@ export function toLatex(
     return segs.map((x) => (x.tex !== undefined ? `$${x.tex}$` : escapeDollars(x.s))).join('');
   }
   let segs: Seg[] = [{ s: line }];
+  // A sum with its limits (high school and college): Σ, its limits above and below, its body.
+  if (band === 'standard') {
+    segs = pass(segs, SIGMA, (m) => {
+      const { si, lo, hi, sb } = m.groups!;
+      const index = innerTex(si!, band, [...symbols, si!]);
+      return `\\sum_{${index}=${innerTex(lo!, band, symbols)}}^{${innerTex(hi!, band, symbols)}}{${innerTex(sb!, band, [...symbols, si!], true)}}`;
+    });
+  }
   // Divisions drawn stacked: every one in high school and college; on Grade 6 letter pages only
   // in a line that solves for a letter (4x ÷ 4 = 30 ÷ 4). Never beside a remainder.
   const sym = symbolPattern(symbols);
@@ -293,7 +319,9 @@ export type MathNode =
   | { t: 'sup'; base: MathNode[]; exp: MathNode[]; caret?: boolean }
   | { t: 'sqrt'; body: MathNode[] }
   /** \rep{0.1666…}: a repeating decimal, drawn with a bar over its block (0.16̅). */
-  | { t: 'rep'; lead: string; block: string; src: string };
+  | { t: 'rep'; lead: string; block: string; src: string }
+  /** \sum_{k=1}^{n}{body}: Σ with its limits below and above, then its body. */
+  | { t: 'sum'; lower: MathNode[]; upper: MathNode[]; body: MathNode[] };
 
 /** Symbol commands, drawn as their characters. */
 const SYMBOLS: Record<string, string> = {
@@ -366,6 +394,17 @@ export function parseMath(src: string): MathNode[] {
           const parts = repeatingParts(src);
           if (!parts) throw new Error(`not a repeating decimal: ${src}`);
           nodes.push({ t: 'rep', ...parts, src });
+        } else if (name === 'sum') {
+          // \sum_{k=1}^{n}{body}: both limits, then the body, each braced.
+          const limit = (mark: string) => {
+            while (src[i] === ' ') i++;
+            if (src[i] !== mark) throw new Error(`\\sum needs ${mark} in "${src}"`);
+            i++;
+            return braced();
+          };
+          const lower = limit('_');
+          const upper = limit('^');
+          nodes.push({ t: 'sum', lower, upper, body: braced() });
         } else if (name === 'sqrt') {
           nodes.push({ t: 'sqrt', body: braced() });
         } else if (name === 'mathit') {
@@ -429,6 +468,8 @@ export function plainMath(nodes: MathNode[]): string {
         ? `${plainMath(n.base)}^${plainMath(n.exp)}`
         : `${plainMath(n.base)}${toSuper(plainMath(n.exp))}`;
     } else if (n.t === 'rep') out += n.src;
+    else if (n.t === 'sum')
+      out += `Σ from ${plainMath(n.lower).replace(/\s*=\s*/, ' = ')} to ${plainMath(n.upper)} of ${plainMath(n.body)}`;
     else out += `√${plainMath(n.body)}`;
   });
   return out;
