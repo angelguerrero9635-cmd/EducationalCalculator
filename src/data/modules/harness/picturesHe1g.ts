@@ -144,9 +144,10 @@ export function he1gIssues(rep: He1gSpec, val: Val, byId: Map<string, VariableDe
       const F = jetForce(mdot, V, th);
       same(rep.forceX, F.Fx, 'Fₓ');
       same(rep.forceY, F.Fy, 'F_y');
-      // The force on the vane opposes the jet's change of momentum (cos θ − 1, sin θ).
+      // The force on the vane, (Fₓ, −F_y) with y the way the jet turns, opposes the jet's
+      // change of momentum (cos θ − 1, sin θ).
       const t = (th * Math.PI) / 180;
-      const dot = F.Fx * (Math.cos(t) - 1) + F.Fy * Math.sin(t);
+      const dot = F.Fx * (Math.cos(t) - 1) - F.Fy * Math.sin(t);
       if (!(dot <= 1e-9)) out.push(`${tag}: the force does not oppose the jet's turn`);
       break;
     }

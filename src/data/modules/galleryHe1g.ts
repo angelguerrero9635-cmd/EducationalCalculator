@@ -1072,22 +1072,22 @@ const pipeNetwork = (() => {
 const hwRule = (id: string, hf: string, Q: string, L: string, D: string) =>
   rule(
     id,
-    `{${hf}} = 10.67 × {${L}} × {${Q}}^1.852 ÷ ({C}^1.852 × {${D}}^4.87)`,
+    `{${hf}} = 10.67 × {${L}} × {${Q}}^1.852 ÷ ({C}^1.852 × {${D}}^(4.87))`,
     (v) => v[hf]! - hazenWilliams(v[L]!, v[Q]!, v.C!, v[D]!),
     {
       [hf]: [
         (v) => hazenWilliams(v[L]!, v[Q]!, v.C!, v[D]!),
-        `10.67 × {${L}} × {${Q}}^1.852 ÷ ({C}^1.852 × {${D}}^4.87)`,
+        `10.67 × {${L}} × {${Q}}^1.852 ÷ ({C}^1.852 × {${D}}^(4.87))`,
         'Hazen–Williams (SI): longer, faster and narrower pipes lose more head; a smoother pipe (larger C) loses less.',
       ],
       [Q]: [
         (v) => ((v[hf]! * v.C! ** 1.852 * v[D]! ** 4.87) / (10.67 * v[L]!)) ** (1 / 1.852),
-        `({${hf}} × {C}^1.852 × {${D}}^4.87 ÷ (10.67 × {${L}}))^(1 ÷ 1.852)`,
+        `({${hf}} × {C}^1.852 × {${D}}^(4.87) ÷ (10.67 × {${L}}))^(1 ÷ 1.852)`,
         'Solve for Q^1.852, then take the 1.852th root.',
       ],
       [L]: [
         (v) => div(v[hf]! * v.C! ** 1.852 * v[D]! ** 4.87, 10.67 * v[Q]! ** 1.852),
-        `{${hf}} × {C}^1.852 × {${D}}^4.87 ÷ (10.67 × {${Q}}^1.852)`,
+        `{${hf}} × {C}^1.852 × {${D}}^(4.87) ÷ (10.67 × {${Q}}^1.852)`,
         'Solve Hazen–Williams for L.',
       ],
       [D]: [
@@ -1097,7 +1097,7 @@ const hwRule = (id: string, hf: string, Q: string, L: string, D: string) =>
       ],
       C: [
         (v) => ((10.67 * v[L]! * v[Q]! ** 1.852) / (v[hf]! * v[D]! ** 4.87)) ** (1 / 1.852),
-        `(10.67 × {${L}} × {${Q}}^1.852 ÷ ({${hf}} × {${D}}^4.87))^(1 ÷ 1.852)`,
+        `(10.67 × {${L}} × {${Q}}^1.852 ÷ ({${hf}} × {${D}}^(4.87)))^(1 ÷ 1.852)`,
         'Solve for C^1.852, then take the 1.852th root.',
       ],
     },
@@ -1471,6 +1471,380 @@ const fullSlow = fullDemo(
   { Q: 0.05, n: 0.013, S: 0.001 },
 );
 
+// ── Boundary layers and models (fluid-mechanics#5, #3) ──
+
+const reynoldsL = rule(
+  'Re_L = VL ÷ ν',
+  '{Re} = {V} × {L} ÷ {nu}',
+  (v) => v.Re! - (v.V! * v.L!) / v.nu!,
+  {
+    Re: [
+      (v) => div(v.V! * v.L!, v.nu!),
+      '{V} × {L} ÷ {nu}',
+      'Reynolds number at the plate’s end: speed times length over ν.',
+    ],
+    V: [(v) => div(v.Re! * v.nu!, v.L!), '{Re} × {nu} ÷ {L}', 'Multiply Re by ν and divide by L.'],
+    L: [(v) => div(v.Re! * v.nu!, v.V!), '{Re} × {nu} ÷ {V}', 'Multiply Re by ν and divide by V.'],
+    nu: [(v) => div(v.V! * v.L!, v.Re!), '{V} × {L} ÷ {Re}', 'Divide VL by Re.'],
+  },
+);
+
+const plate = (() => {
+  const [V, L, nu, rho, b] = [5, 1, 1.5e-5, 1.2, 0.5];
+  const Re = (V * L) / nu;
+  const Cf = 1.328 / Math.sqrt(Re);
+  const laminar: Rule = {
+    relation: {
+      id: 'Re_L < 5 × 10⁵',
+      constraint: true,
+      display: '{Re} is under 5 × 10⁵',
+      vars: ['Re'],
+      residual: (v) => (v.Re! < 5e5 ? 0 : 1),
+      solve: {},
+      message: (v) =>
+        v.Re! < 5e5
+          ? undefined
+          : 'Past Re = 5 × 10⁵ the layer turns turbulent: use the turbulent page.',
+    },
+    steps: {},
+  };
+  return demo(
+    'g.he-fluid-system-plate',
+    'A laminar boundary layer on a flat plate',
+    'Use this for “Air at 5 m/s flows along a 1 m plate 0.5 m wide. Find δ at the end and the drag on one side.”',
+    {
+      assumptions: [
+        'A smooth flat plate along the stream, no pressure change along it (Blasius).',
+        'Laminar all the way: Re_L under 5 × 10⁵. Drag on one side.',
+      ],
+      variables: [
+        q('V', 'V', 'Stream speed', 'm/s', 0.01, 300, 0.1),
+        q('L', 'L', 'Plate length', 'm', 0.001, 100, 0.01),
+        q('nu', 'ν', 'Kinematic viscosity', 'm²/s', 1e-8, 1e-2, 1e-8, { scientific: true }),
+        q('rho', 'ρ', 'Density', 'kg/m³', 0.01, 20000, 0.01),
+        q('b', 'b', 'Plate width', 'm', 0.001, 100, 0.01),
+        q('Re', 'Re_L', 'Reynolds number at L', undefined, 1, 1e10, 1),
+        q('delta', 'δ', 'Layer thickness at L', 'm', 0, 10, 0.0001, {
+          units: ['mm', 'm'],
+          shownIn: 'mm',
+        }),
+        q('Cf', 'C_f', 'Drag coefficient', undefined, 0, 1, 0.00001),
+        q('FD', 'F_D', 'Drag force', 'N', 0, 1e9, 0.0001),
+      ],
+      ...rules(
+        laminar,
+        reynoldsL,
+        rule(
+          'δ = 5L ÷ √Re_L',
+          '{delta} = 5 × {L} ÷ √{Re}',
+          (v) => v.delta! - (5 * v.L!) / Math.sqrt(v.Re!),
+          {
+            delta: [
+              (v) => (5 * v.L!) / Math.sqrt(v.Re!),
+              '5 × {L} ÷ √{Re}',
+              'Blasius: the layer is 5x ÷ √Re_x thick, so it grows as √x.',
+            ],
+            L: [(v) => div(v.delta! * Math.sqrt(v.Re!), 5), '{delta} × √{Re} ÷ 5', 'Solve for L.'],
+            Re: [
+              (v) => (v.delta! > 0 ? ((5 * v.L!) / v.delta!) ** 2 : undefined),
+              '(5 × {L} ÷ {delta})²',
+              'Solve for √Re, then square.',
+            ],
+          },
+        ),
+        rule(
+          'C_f = 1.328 ÷ √Re_L',
+          '{Cf} = 1.328 ÷ √{Re}',
+          (v) => v.Cf! - 1.328 / Math.sqrt(v.Re!),
+          {
+            Cf: [
+              (v) => 1.328 / Math.sqrt(v.Re!),
+              '1.328 ÷ √{Re}',
+              'Blasius’s skin friction over the whole plate.',
+            ],
+            Re: [
+              (v) => (v.Cf! > 0 ? (1.328 / v.Cf!) ** 2 : undefined),
+              '(1.328 ÷ {Cf})²',
+              'Solve for √Re, then square.',
+            ],
+          },
+        ),
+        rule(
+          'F_D = ½ρV²C_f bL',
+          '{FD} = ½ × {rho} × {V}² × {Cf} × {b} × {L}',
+          (v) => v.FD! - 0.5 * v.rho! * v.V! ** 2 * v.Cf! * v.b! * v.L!,
+          {
+            FD: [
+              (v) => 0.5 * v.rho! * v.V! ** 2 * v.Cf! * v.b! * v.L!,
+              '½ × {rho} × {V}² × {Cf} × {b} × {L}',
+              'Drag is C_f times the dynamic pressure ½ρV² times the wetted area bL.',
+            ],
+            rho: [
+              (v) => div(2 * v.FD!, v.V! ** 2 * v.Cf! * v.b! * v.L!),
+              '2 × {FD} ÷ ({V}² × {Cf} × {b} × {L})',
+              'Solve for ρ.',
+            ],
+            Cf: [
+              (v) => div(2 * v.FD!, v.rho! * v.V! ** 2 * v.b! * v.L!),
+              '2 × {FD} ÷ ({rho} × {V}² × {b} × {L})',
+              'Solve for C_f.',
+            ],
+            b: [
+              (v) => div(2 * v.FD!, v.rho! * v.V! ** 2 * v.Cf! * v.L!),
+              '2 × {FD} ÷ ({rho} × {V}² × {Cf} × {L})',
+              'Solve for b.',
+            ],
+            V: null,
+            L: null,
+          },
+        ),
+      ),
+      example: {
+        V,
+        L,
+        nu,
+        rho,
+        b,
+        Re,
+        delta: (5 * L) / Math.sqrt(Re),
+        Cf,
+        FD: 0.5 * rho * V * V * Cf * b * L,
+      },
+      startWith: ['V', 'L', 'nu', 'rho', 'b'],
+      pictureLabels: ['rho', 'b', 'Cf', 'FD'],
+      representation: {
+        kind: 'fluidSystem',
+        mode: 'plate',
+        speed: 'V',
+        length: 'L',
+        viscosity: 'nu',
+        thickness: 'delta',
+        reynolds: 'Re',
+        g: G,
+      },
+    },
+  );
+})();
+
+const plateTurbulent = (() => {
+  const [V, L, nu] = [3, 2, 1.0e-6];
+  const Re = (V * L) / nu;
+  return demo(
+    'g.he-fluid-system-plate-turbulent',
+    'A turbulent layer on a long plate in water',
+    'Use this for “Water at 3 m/s flows along a 2 m plate. How thick is the turbulent layer at the end?”',
+    {
+      assumptions: [
+        'Turbulent from the leading edge (the 1/7-power fit), smooth plate, no pressure change along it.',
+      ],
+      variables: [
+        q('V', 'V', 'Stream speed', 'm/s', 0.01, 300, 0.1),
+        q('L', 'L', 'Plate length', 'm', 0.001, 1000, 0.01),
+        q('nu', 'ν', 'Kinematic viscosity', 'm²/s', 1e-8, 1e-2, 1e-8, { scientific: true }),
+        q('Re', 'Re_L', 'Reynolds number at L', undefined, 1, 1e11, 1),
+        q('delta', 'δ', 'Layer thickness at L', 'm', 0, 100, 0.0001, {
+          units: ['mm', 'm'],
+          shownIn: 'mm',
+        }),
+        q('Cf', 'C_f', 'Drag coefficient', undefined, 0, 1, 0.00001),
+      ],
+      ...rules(
+        reynoldsL,
+        rule(
+          'δ = 0.37L ÷ Re_L^0.2',
+          '{delta} = 0.37 × {L} ÷ {Re}^0.2',
+          (v) => v.delta! - (0.37 * v.L!) / v.Re! ** 0.2,
+          {
+            delta: [
+              (v) => (0.37 * v.L!) / v.Re! ** 0.2,
+              '0.37 × {L} ÷ {Re}^0.2',
+              'The turbulent fit: δ = 0.37x ÷ Re_x^0.2, so it grows as x^0.8, faster than a laminar layer.',
+            ],
+            L: [
+              (v) => (v.delta! * v.Re! ** 0.2) / 0.37,
+              '{delta} × {Re}^0.2 ÷ 0.37',
+              'Solve for L.',
+            ],
+            Re: [
+              (v) => (v.delta! > 0 ? ((0.37 * v.L!) / v.delta!) ** 5 : undefined),
+              '(0.37 × {L} ÷ {delta})^5',
+              'Solve for Re^0.2, then raise to the 5th power.',
+            ],
+          },
+        ),
+        rule(
+          'C_f = 0.074 ÷ Re_L^0.2',
+          '{Cf} = 0.074 ÷ {Re}^0.2',
+          (v) => v.Cf! - 0.074 / v.Re! ** 0.2,
+          {
+            Cf: [
+              (v) => 0.074 / v.Re! ** 0.2,
+              '0.074 ÷ {Re}^0.2',
+              'The turbulent skin friction over the whole plate.',
+            ],
+            Re: [
+              (v) => (v.Cf! > 0 ? (0.074 / v.Cf!) ** 5 : undefined),
+              '(0.074 ÷ {Cf})^5',
+              'Solve for Re^0.2, then raise to the 5th power.',
+            ],
+          },
+        ),
+      ),
+      example: { V, L, nu, Re, delta: (0.37 * L) / Re ** 0.2, Cf: 0.074 / Re ** 0.2 },
+      startWith: ['V', 'L', 'nu'],
+      pictureLabels: ['Cf'],
+      representation: {
+        kind: 'fluidSystem',
+        mode: 'plate',
+        speed: 'V',
+        length: 'L',
+        viscosity: 'nu',
+        thickness: 'delta',
+        reynolds: 'Re',
+        turbulent: true,
+        g: G,
+      },
+    },
+  );
+})();
+
+const modelReynolds = (() => {
+  const [Vp, Lp, Lm, nuP, nuM] = [30, 4, 1, 1.5e-5, 1.5e-5];
+  return demo(
+    'g.he-fluid-system-model',
+    'A car and its model matched by Reynolds number',
+    'Use this for “A 1:4 model of a car that drives at 30 m/s is tested in the same air. How fast must the air be?”',
+    {
+      assumptions: [
+        'The model is geometrically similar; viscous drag rules, so Reynolds numbers are matched.',
+      ],
+      variables: [
+        q('Vp', 'V_p', 'Prototype speed', 'm/s', 0.01, 1000, 0.1),
+        q('Lp', 'L_p', 'Prototype length', 'm', 0.001, 1000, 0.01),
+        q('Lm', 'L_m', 'Model length', 'm', 0.001, 1000, 0.01),
+        q('nuP', 'ν_p', 'Prototype fluid’s ν', 'm²/s', 1e-8, 1e-2, 1e-8, { scientific: true }),
+        q('nuM', 'ν_m', 'Model fluid’s ν', 'm²/s', 1e-8, 1e-2, 1e-8, { scientific: true }),
+        q('Vm', 'V_m', 'Model speed', 'm/s', 0.01, 1e5, 0.1),
+        q('Re', 'Re', 'Reynolds number', undefined, 1, 1e12, 1),
+      ],
+      ...rules(
+        rule(
+          'Re_p = V_pL_p ÷ ν_p',
+          '{Re} = {Vp} × {Lp} ÷ {nuP}',
+          (v) => v.Re! - (v.Vp! * v.Lp!) / v.nuP!,
+          {
+            Re: [
+              (v) => div(v.Vp! * v.Lp!, v.nuP!),
+              '{Vp} × {Lp} ÷ {nuP}',
+              'The prototype’s Reynolds number.',
+            ],
+            Vp: [(v) => div(v.Re! * v.nuP!, v.Lp!), '{Re} × {nuP} ÷ {Lp}', 'Solve for V_p.'],
+            Lp: [(v) => div(v.Re! * v.nuP!, v.Vp!), '{Re} × {nuP} ÷ {Vp}', 'Solve for L_p.'],
+            nuP: [(v) => div(v.Vp! * v.Lp!, v.Re!), '{Vp} × {Lp} ÷ {Re}', 'Solve for ν_p.'],
+          },
+        ),
+        rule(
+          'V_mL_m ÷ ν_m = Re',
+          '{Vm} × {Lm} ÷ {nuM} = {Re}',
+          (v) => (v.Vm! * v.Lm!) / v.nuM! - v.Re!,
+          {
+            Vm: [
+              (v) => div(v.Re! * v.nuM!, v.Lm!),
+              '{Re} × {nuM} ÷ {Lm}',
+              'The model must reach the same Re: V_m = Re × ν_m ÷ L_m.',
+            ],
+            Lm: [(v) => div(v.Re! * v.nuM!, v.Vm!), '{Re} × {nuM} ÷ {Vm}', 'Solve for L_m.'],
+            nuM: [(v) => div(v.Vm! * v.Lm!, v.Re!), '{Vm} × {Lm} ÷ {Re}', 'Solve for ν_m.'],
+            Re: [
+              (v) => div(v.Vm! * v.Lm!, v.nuM!),
+              '{Vm} × {Lm} ÷ {nuM}',
+              'The model’s Reynolds number.',
+            ],
+          },
+        ),
+      ),
+      example: { Vp, Lp, Lm, nuP, nuM, Vm: (Vp * Lp * nuM) / (Lm * nuP), Re: (Vp * Lp) / nuP },
+      startWith: ['Vp', 'Lp', 'Lm', 'nuP', 'nuM'],
+      representation: {
+        kind: 'fluidSystem',
+        mode: 'model',
+        rule: 'reynolds',
+        protoSpeed: 'Vp',
+        protoLength: 'Lp',
+        modelLength: 'Lm',
+        modelSpeed: 'Vm',
+        protoViscosity: 'nuP',
+        modelViscosity: 'nuM',
+        reynolds: 'Re',
+        body: 'car',
+        g: G,
+      },
+    },
+  );
+})();
+
+const modelFroude = (() => {
+  const [Vp, Lp, Lm] = [10, 100, 4];
+  return demo(
+    'g.he-fluid-system-model-froude',
+    'A ship and its model matched by Froude number',
+    'Use this for “A 100 m ship sails at 10 m/s. How fast should a 4 m model (1:25) be towed?”',
+    {
+      assumptions: [
+        'Waves rule the drag, so Froude numbers V ÷ √(gL) are matched; g is the same for both.',
+      ],
+      variables: [
+        q('Vp', 'V_p', 'Ship speed', 'm/s', 0.01, 1000, 0.1),
+        q('Lp', 'L_p', 'Ship length', 'm', 0.01, 1000, 0.1),
+        q('Lm', 'L_m', 'Model length', 'm', 0.001, 1000, 0.01),
+        q('Vm', 'V_m', 'Model speed', 'm/s', 0, 1000, 0.01),
+      ],
+      ...rules(
+        rule(
+          'V_m = V_p√(L_m ÷ L_p)',
+          '{Vm} = {Vp} × √({Lm} ÷ {Lp})',
+          (v) => v.Vm! - v.Vp! * Math.sqrt(v.Lm! / v.Lp!),
+          {
+            Vm: [
+              (v) => v.Vp! * Math.sqrt(v.Lm! / v.Lp!),
+              '{Vp} × √({Lm} ÷ {Lp})',
+              'Equal V ÷ √(gL): the speed scales as the square root of the length.',
+            ],
+            Vp: [
+              (v) => div(v.Vm!, Math.sqrt(v.Lm! / v.Lp!)),
+              '{Vm} ÷ √({Lm} ÷ {Lp})',
+              'Solve for V_p.',
+            ],
+            Lm: [
+              (v) => div(v.Lp! * v.Vm! ** 2, v.Vp! ** 2),
+              '{Lp} × ({Vm} ÷ {Vp})²',
+              'Square the speed ratio.',
+            ],
+            Lp: [
+              (v) => div(v.Lm! * v.Vp! ** 2, v.Vm! ** 2),
+              '{Lm} × ({Vp} ÷ {Vm})²',
+              'Square the speed ratio.',
+            ],
+          },
+        ),
+      ),
+      example: { Vp, Lp, Lm, Vm: Vp * Math.sqrt(Lm / Lp) },
+      startWith: ['Vp', 'Lp', 'Lm'],
+      representation: {
+        kind: 'fluidSystem',
+        mode: 'model',
+        rule: 'froude',
+        protoSpeed: 'Vp',
+        protoLength: 'Lp',
+        modelLength: 'Lm',
+        modelSpeed: 'Vm',
+        body: 'ship',
+        g: G,
+      },
+    },
+  );
+})();
+
 export const HE1G_GALLERY_MODULES: ModuleDef[] = [
   tank,
   tankDeep,
@@ -1496,6 +1870,10 @@ export const HE1G_GALLERY_MODULES: ModuleDef[] = [
   loopFlip,
   full,
   fullSlow,
+  plate,
+  plateTurbulent,
+  modelReynolds,
+  modelFroude,
 ];
 
 export const HE1G_GALLERY_LAYOUTS: LayoutDef[] = [];
