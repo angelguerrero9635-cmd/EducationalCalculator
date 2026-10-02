@@ -146,6 +146,8 @@ const PICTURE_NAMES: Record<string, string> = {
   habitableZone: 'a star’s habitable zone and a planet’s orbit',
   parallax: 'a near star’s parallax against far stars',
   fluidSystem: 'a fluid system: a tank, gauge, gate, meter, jet, pipe or plate',
+  controlVolume: 'a process unit or device with its streams balanced',
+  velocityProfile: 'velocity or concentration profiles across a tube, gap or film',
   matrixGrid: 'matrices in brackets',
   membrane: 'cell membrane with particles on each side',
   dnaStrand: 'DNA ladder, mRNA and amino acids',

@@ -34,6 +34,7 @@ import { hslSpecVars } from '../typesHsl';
 import { hs2fSpecVars } from '../typesHs2f';
 import { hs3cSpecVars } from '../typesHs3c';
 import { he1gSpecVars } from '../typesHe1g';
+import { he1fSpecVars } from '../typesHe1f';
 import { hskOptionVars, hskSpecVars } from '../typesHsk';
 import { he1hSpecVars } from '../typesHe1h';
 import { hs2cSpecVars } from '../typesHs2c';
@@ -585,6 +586,9 @@ function representationVars(r: Representation): string[] {
       return hs3cSpecVars(r);
     case 'fluidSystem':
       return he1gSpecVars(r);
+    case 'controlVolume':
+    case 'velocityProfile':
+      return he1fSpecVars(r);
     case 'projectile':
     case 'induction':
     case 'charges':
