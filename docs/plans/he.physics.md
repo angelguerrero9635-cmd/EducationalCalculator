@@ -103,10 +103,10 @@ Vol. 1 (UP-V1), chapters 2–15; AP Physics C: Mechanics is the bridge level.
   φ = tan⁻¹(v_y/vₓ). Example: 20 m/s at 30°, h = 0, t = 1.5 s → x = 25.98 m, y = 15 − 11.025 =
   3.975 m, v_y = −4.7 m/s, v = 17.95 m/s at −15.2°. startWith v₀, θ, h, t.
 - **Answers:** v and a from x(t) (AP C Mech FR staple) — ~calculus Solves; turnaround time —
-  ~calculus Solves (v = 0 by the quadratic); constant-a pairs — main Solves; velocity vector of
+  ~calculus Solves (v = 0 by the quadratic); constant-a pairs — main Partly (multi-phase motions: elevator trips, a stone released from a rocket); velocity vector of
   a projectile at a time — ~projectile-at-t Solves; x(t) from a(t) by integrating — Partly (the
   inverse direction: same polynomial page read backwards once E2 lands); relative velocity —
-  s.11 `~boat` (Refresh).
+  s.11 `~boat` (Refresh); average acceleration vector and centripetal acceleration on a loop — No [new-page].
 - **Verdict:** 3 pages (1 kept, 2 new).
 
 ### UP1#1 he.physics.university-1#1 — Newton's laws
@@ -136,10 +136,10 @@ Vol. 1 (UP-V1), chapters 2–15; AP Physics C: Mechanics is the bridge level.
   radius r (1–10⁴ m), bank angle θ (0–80°), speed v, mass m, normal force N. Relations:
   tan θ = v² ÷ (rg); N = mg ÷ cos θ. Example: r = 50 m, θ = 15° → v = √(490 × 0.2679) =
   11.46 m/s. Interim: `freeBody` incline (N and W drawn, net force to the center).
-- **Answers:** connected blocks and pulleys (AP C Mech FR) — main, ~atwood Solves; terminal speed,
+- **Answers:** connected blocks and pulleys (AP C Mech FR) — main, ~atwood Partly (two-pulley constraints, incline with static friction, stacked blocks); terminal speed,
   v(t) with linear drag — ~drag Solves; banked curve — ~banked Solves; quadratic drag v_T =
   √(2mg/(ρCA)) — Partly (only terminal speed; add as a value if the research shows it is common);
-  static friction "will it slide" — s.11 dynamics-vectors (Refresh).
+  static friction "will it slide" — s.11 dynamics-vectors (Refresh); Partly at this level (stacked blocks, capstan, cube against a wall); forces in an accelerating or rotating frame (rope angle in a braking truck, tension in a whirled rope) — No [new-page].
 - **Verdict:** 4 pages.
 
 ### UP1#2 he.physics.university-1#2 — Work and energy
@@ -170,8 +170,8 @@ Vol. 1 (UP-V1), chapters 2–15; AP Physics C: Mechanics is the bridge level.
 - **Answers:** work of a spring / speed from a compressed spring — main Solves; work of a variable
   force F(x) — ~power-law-force Solves for powers, Partly for other F(x) (E2); F from U(x),
   equilibria and stability (UP-V1 8.4) — ~potential-curve Solves; turning points for energy E —
-  Partly (P18 `level`); energy with friction — ~friction-energy Solves; power P = Fv — s.11
-  (Refresh).
+  Partly (P18 `level`); energy with friction — ~friction-energy Partly (chained through a collision); power P = Fv — s.11
+  (Refresh); lab analysis: linearize data, slope gives k, μ or g (an AP C free-response every year) — No [new-page].
 - **Verdict:** 4 pages.
 
 ### UP1#3 he.physics.university-1#3 — Momentum
@@ -202,10 +202,9 @@ Vol. 1 (UP-V1), chapters 2–15; AP Physics C: Mechanics is the bridge level.
   end mass m_f (< m₀), Δv. Example: u = 2500 m/s, 5000 kg to 2000 kg → Δv = 2500 × 0.9163 =
   2291 m/s. Picture: `functionGraph` log of the mass ratio with the point.
 - **Answers:** 2D collision speed and direction — main Solves; elastic 1D with both moving —
-  ~elastic Solves; center of mass of point masses — ~center-of-mass Solves (continuous rod with
+  ~elastic Solves; center of mass of point masses — ~center-of-mass Solves (items ask non-uniform rods and a projectile splitting: Partly) (continuous rod with
   λ(x) — No; propose later with E2); impulse from an F–t graph — ~impulse-curve Solves for a
-  triangle, Partly for other shapes; rocket equation — ~rocket Solves; ballistic pendulum —
-  Partly (main 1D case plus s.11 energy; a `~ballistic` page if the research ranks it high).
+  triangle, Partly for other shapes; rocket equation — ~rocket Partly (two-stage rocket, raindrop gaining mass); ballistic pendulum — Partly; ranked high (bullet in a block, acrobat catch, AP C 2024–2025): `~ballistic` [new-page]; variable mass (raindrop gaining mass) — No.
 - **Verdict:** 5 pages.
 
 ### UP1#4 he.physics.university-1#4 — Rotation and torque
@@ -235,10 +234,9 @@ Vol. 1 (UP-V1), chapters 2–15; AP Physics C: Mechanics is the bridge level.
   Values: weight W, angle with the floor θ (1–89°), wall force N_w, floor normal N_f, friction f,
   least μₛ. Relations: N_f = W; N_w = W ÷ (2 tan θ); f = N_w; μₛ ≥ 1 ÷ (2 tan θ). Example:
   W = 200 N, θ = 60° → N_w = f = 57.7 N, μₛ ≥ 0.289.
-- **Answers:** rolling race and speed at the bottom — main Solves; I by the parallel-axis theorem —
+- **Answers:** rolling race and speed at the bottom — main Partly (sliding then rolling, yo-yo, heights reached on a ramp); I by the parallel-axis theorem —
   ~parallel-axis Solves (rod; other shapes by c); pulley with mass — ~pulley-inertia Solves;
-  spinning skater, KE change — ~angular-momentum Solves; ladder or beam statics — ~ladder Solves
-  (ladder only; a cable-held beam is `~beam` if research ranks it); torque τ = rF sin θ — s.11
+  spinning skater, KE change — ~angular-momentum Partly (pivoted rods striking, a cube tipping); ladder or beam statics — ~ladder Partly; cable-held beam and pivoted rod with a string ranked high (8.01SC, AP C 2024): `~beam` [new-page]; torque τ = rF sin θ — s.11
   rotation (Refresh).
 - **Verdict:** 5 pages.
 
@@ -262,9 +260,9 @@ Vol. 1 (UP-V1), chapters 2–15; AP Physics C: Mechanics is the bridge level.
   d = L/2 → T = 2π√(2L/3g) = 1.64 s. Interim: `pendulum` (simple, with L = 2/3 m: the equivalent
   length, said in an assumption).
 - **Answers:** A and φ from initial conditions — main Solves; x, v at a time — main Solves;
-  damped amplitude decay, Q — ~damped Solves; physical pendulum period — ~physical-pendulum
+  damped amplitude decay, Q — ~damped Partly (damping read from a graph); physical pendulum period — ~physical-pendulum
   Solves; driven resonance amplitude — No (propose `~driven` after the research; P8 can draw it);
-  spring period T = 2π√(m/k) — s.11.oscillations (Refresh).
+  spring period T = 2π√(m/k) — s.11.oscillations (Refresh); springs in series and parallel, effective k — No [new-page]; small oscillations about the minimum of U(x) — No [new-page].
 - **Verdict:** 3 pages.
 
 ## Course 2. he.physics.university-2 — University Physics II: Electricity & Magnetism
@@ -297,7 +295,7 @@ chapters 5–16; AP Physics C: E&M is the bridge level.
 - **Answers:** E inside and outside a charged sphere, flux through a closed surface — main
   Solves; line and sheet fields — ~line, ~plane Solve; net field from two charges — ~superposition
   Solves on a line, Partly off the line (needs 2D: `charges` with a point off axis; propose with
-  P10); field of a ring or rod by integration — EM#0 (Refresh up); flux EA cos θ through a flat
+  P10); field of a ring or rod by integration — EM#0 (Refresh up; AP C 2026 integrates two rods); flux EA cos θ through a flat
   surface — main's assumption only, Partly.
 - **Verdict:** 4 pages.
 
@@ -327,7 +325,7 @@ chapters 5–16; AP Physics C: E&M is the bridge level.
   cylindrical capacitor — ~coax Solves; spherical capacitor C = 4πε₀ab/(b − a) — No (add as an
   `allowed` geometry on ~coax if research ranks it); potential and work near a charged sphere —
   ~sphere-potential Solves; dielectric with battery on or off — ~dielectric Solves for off, Partly
-  for on (one assumption flips: V fixed; propose a `connected` choice).
+  for on (one assumption flips: V fixed; propose a `connected` choice); E from V by the gradient — No [new-page].
 - **Verdict:** 4 pages.
 
 ### UP2#2 he.physics.university-2#2 — DC circuits
@@ -352,8 +350,8 @@ chapters 5–16; AP Physics C: E&M is the bridge level.
 - **Answers:** two-loop Kirchhoff (AP C E&M FR, UP-V2 10.3) — main Solves; RC charging q(t),
   I(t), time to a fraction — ~rc-charging Solves (t from q by the log); RC discharging — Partly
   (propose `~rc-discharging`, the same page with q = Q₀e^(−t/τ)); terminal voltage, best load —
-  ~internal-resistance Solves; resistivity R = ρL/A — s.11.circuits (Refresh); Ohm's law,
-  series–parallel — s.11 and `he.engineering.circuits-1#0`.
+  ~internal-resistance Solves; resistivity R = ρL/A — s.11.circuits (Refresh; Partly: coax and wire sizing); Ohm's law,
+  series–parallel — s.11 and `he.engineering.circuits-1#0`; charge from a current that varies in time, q = ∫ I dt — No [new-page].
 - **Verdict:** 3 pages.
 
 ### UP2#3 he.physics.university-2#3 — Magnetic fields and induction
@@ -382,11 +380,8 @@ chapters 5–16; AP Physics C: E&M is the bridge level.
 - **~rl-circuit — BUILD:** Values ε, R, L, τ = L/R, t, I, final energy U. Relations:
   I = (ε/R)(1 − e^(−t/τ)); U = ½L(ε/R)². Example: 12 V, 6 Ω, 3 H → τ = 0.5 s; at 0.5 s,
   I = 2(1 − e⁻¹) = 1.26 A; U = 6 J. Picture: `functionGraph` exponential approach.
-- **Answers:** Faraday's law, induced current — main Solves; rod on rails (AP C E&M FR) —
-  ~moving-rod Solves; field of a long wire, force between wires — ~wire-field Solves; solenoid
-  field and inductance — ~solenoid Solves; radius and cyclotron frequency — ~charged-particle
-  Solves; RL rise — ~rl-circuit Solves; a loop rotating in a field (generator ε = NBAω sin ωt) —
-  No (propose `~generator` with `induction`; s.11 has the motor–generator sort).
+- **Answers:** Faraday's law, induced current — main Solves; rod on rails (AP C E&M FR) — ~moving-rod Partly (spring-launched bar, loop through field regions); field of a long wire, force between wires — ~wire-field Solves; solenoid
+  field and inductance — ~solenoid Solves; radius and cyclotron frequency — ~charged-particle Partly (velocity selector, Hall effect, force directions); RL rise — ~rl-circuit Solves; a loop rotating in a field (generator ε = NBAω sin ωt) — No; ranked high (AP C 2025, Ellingson 8.7 twice): `~generator` [new-page].
 - **Verdict:** 6 pages.
 
 ### UP2#4 he.physics.university-2#4 — AC circuits
@@ -407,10 +402,9 @@ chapters 5–16; AP Physics C: E&M is the bridge level.
 - **~ac-power — BUILD:** Values V, I, φ, power factor cos φ, average power P, R. Relations:
   P = VI cos φ; P = I²R; cos φ = R/Z. Example (the main page's circuit): cos φ = 0.802,
   P = 120 × 3.21 × 0.802 = 309 W = 3.21² × 30. Picture: `complexPlane` (R on the real axis).
-- **Answers:** impedance, current and phase (UP-V2 15.3) — main Solves; resonant frequency, Q —
-  ~resonance Solves; average power and power factor — ~ac-power Solves; reactance of one part —
+- **Answers:** impedance, current and phase (UP-V2 15.3) — main Solves; resonant frequency, Q — ~resonance Partly (tuner capacitance range); average power and power factor — ~ac-power Solves; reactance of one part —
   main Solves; transformer turns ratio — s.11.electromagnetism (Refresh); phasor diagram reading
-  — main's picture.
+  — main's picture; inductors in series and parallel — No.
 - **Verdict:** 3 pages.
 
 ## Course 3. he.physics.university-3 — University Physics III: Waves, Optics & Modern
@@ -437,9 +431,8 @@ Prerequisite: UP2. Textbooks: UP-V1 16–17 (waves, sound) and OpenStax Universi
   I = 7.96 × 10⁻⁴ W/m², β = 89.0 dB. Picture: table (interim) sweeping r (1, 2, 4, 8 m): −6 dB a
   doubling.
 - **Answers:** speed on a string, λ from f — main Solves; wave function parameters from
-  y = A sin(kx − ωt) — main Solves; power carried — main Solves; harmonics of a string —
-  ~standing-string Solves; decibels and the inverse square — ~intensity-db Solves; beats f = |f₁ − f₂| and Doppler
-  — s.11.sound-waves (Refresh).
+  y = A sin(kx − ωt) — main Solves; power carried — main Solves; harmonics of a string — ~standing-string Partly (free end, open and closed pipes); decibels and the inverse square — ~intensity-db Solves; beats f = |f₁ − f₂| and Doppler
+  — s.11.sound-waves (Refresh); normal modes from an initial shape by Fourier series (8.03SC) — No [new-page]; dispersion, group and phase velocity — No [new-page].
 - **Verdict:** 3 pages.
 
 ### UP3#1 he.physics.university-3#1 — Interference and diffraction
@@ -465,7 +458,7 @@ Prerequisite: UP2. Textbooks: UP-V1 16–17 (waves, sound) and OpenStax Universi
   Solves; grating angles and orders — ~grating Solves; thin-film color, least thickness —
   ~thin-film Solves; Rayleigh resolution θ = 1.22λ/D — No (propose `~resolution` with the
   `rayDiagram` telescope); two-slit intensity I₀cos²(πd sin θ/λ) — Partly (add I as a value on
-  main if the research ranks it).
+  main if the research ranks it); Michelson fringe counting — No [new-page]; read a diffraction pattern (which slits, which wavelength) — No [new-page]; geometric optics (refraction, fibres, telescopes) — No (no taxonomy topic).
 - **Verdict:** 4 pages.
 
 ### UP3#2 he.physics.university-3#2 — Special relativity
@@ -489,8 +482,7 @@ Prerequisite: UP2. Textbooks: UP-V1 16–17 (waves, sound) and OpenStax Universi
   Relations: x′ = γ(x − β·ct); ct′ = γ(ct − βx); s² = (ct)² − x². Example: β = 0.6, x = 900 m,
   ct = 600 m → x′ = 675 m, ct′ = 75 m; s² = −450,000 m² in both frames.
 - **Answers:** dilated lifetime, contracted length — main Solves; relativistic velocity addition
-  — ~velocity-addition Solves; total and kinetic energy, momentum, speed from K —
-  ~energy-momentum Solves; Lorentz transformation of an event, simultaneity — ~lorentz Solves;
+  — ~velocity-addition Solves; total and kinetic energy, momentum, speed from K — ~energy-momentum Partly (decay products, ultrarelativistic limits); Lorentz transformation of an event, simultaneity — ~lorentz Solves;
   invariant interval — ~lorentz Solves; Doppler for light — No (s.12 cosmology redshift covers
   z; propose later).
 - **Verdict:** 4 pages.
@@ -524,8 +516,8 @@ Prerequisite: UP2. Textbooks: UP-V1 16–17 (waves, sound) and OpenStax Universi
   λ = 1240/ΔE. Example: 3 → 2: ΔE = 1.89 eV, λ = 656 nm (H-alpha, Balmer).
 - **Answers:** Compton shift and electron energy — main Solves; stopping potential, threshold —
   ~photoelectric Solves; de Broglie wavelength of an accelerated electron — ~de-broglie Solves;
-  least speed uncertainty — ~uncertainty Solves; hydrogen line wavelengths — ~bohr Solves;
-  blackbody peak and power — TS#3~photon-gas (cross-link).
+  least speed uncertainty — ~uncertainty Solves; hydrogen line wavelengths — ~bohr Partly (Z scaling, positronium reduced mass);
+  blackbody peak and power — TS#3~photon-gas (cross-link); atomic spectra and scales (X-ray lines, Franck–Hertz, Z scaling) — No (no taxonomy topic).
 - **Verdict:** 5 pages.
 
 ### UP3#4 he.physics.university-3#4 — Nuclear physics
@@ -589,8 +581,8 @@ Mechanics (LibreTexts); Tong, Classical Dynamics.
 - **Answers:** derive the equation of motion for a given system (Taylor 7) — the sequence names
   the method, Partly (no symbolic engine: the result is checked, not derived for any system);
   Atwood with a massive pulley — ~atwood Solves; bead on a rotating hoop, equilibria and
-  stability — ~bead-hoop Solves; pendulum on a moving support, double pendulum — No (symbolic;
-  "no page" unless a closed form is common in the research).
+  stability — ~bead-hoop Solves; pendulum on a moving support, double pendulum — No (7 items, the most common kind) (symbolic;
+  "no page" unless a closed form is common in the research); calculus of variations (brachistochrone, catenary) — No [new-page].
 - **Verdict:** 3 pages (1 sequence, 2 calculators).
 
 ### CM#1 he.physics.classical-mechanics#1 — Hamiltonian mechanics
@@ -611,7 +603,7 @@ Mechanics (LibreTexts); Tong, Classical Dynamics.
 - **Answers:** Hamilton's equations for a given H — main Solves for the oscillator, Partly
   otherwise; phase-space trajectories and areas — main Solves; libration vs rotation —
   ~pendulum-phase Solves; Legendre transform from L to H — No (symbolic; the main page's
-  assumption states H = pẋ − L for this system); Poisson brackets — no page (symbolic).
+  assumption states H = pẋ − L for this system); Poisson brackets — no page (symbolic); canonical transformations, Hamilton–Jacobi, action–angle variables — No [new-page] (11 items, 8.09).
 - **Verdict:** 2 pages.
 
 ### CM#2 he.physics.classical-mechanics#2 — Central forces
@@ -641,7 +633,7 @@ Mechanics (LibreTexts); Tong, Classical Dynamics.
   ~turning-points Solves; escape speed — ~escape Solves; Hohmann transfer — ~hohmann Solves;
   the orbit equation r(θ) = p ÷ (1 + e cos θ) — Partly (main's picture; propose θ as a value if
   ranked); two-body reduced mass — main's assumption, Partly; power-law forces other than 1/r² —
-  No.
+  No; scattering cross-section (hard sphere, Rutherford) — No [new-page].
 - **Verdict:** 4 pages.
 
 ### CM#3 he.physics.classical-mechanics#3 — Rigid-body motion
@@ -665,7 +657,7 @@ Mechanics (LibreTexts); Tong, Classical Dynamics.
   Solves; Coriolis deflection, Foucault pendulum — ~coriolis Solves; Euler's equations for torque-
   free motion of a symmetric top (body-frame precession Ω_b = ω₃(I₃ − I₁)/I₁) — No (propose
   `~free-top` once P22 draws the body cone); inertia tensor with products of inertia — No
-  (needs 3 × 3; E5 is 2 × 2).
+  (needs 3 × 3; E5 is 2 × 2); Euler angles and rotation matrices — No.
 - **Verdict:** 3 pages.
 
 ### CM#4 he.physics.classical-mechanics#4 — Coupled oscillations
@@ -718,7 +710,7 @@ Electromagnetics Vol. 1–2; Tong, Electromagnetism; MIT OCW 8.07.
   Solve; line segment — No (propose `~segment`, the same pattern); method of images — ~images
   Solves (plane; sphere images — No); dipole potential and field — ~dipole Solves for V; energy of
   a charge configuration W = ½Σ qV — No (propose with P24); Laplace's equation by separation —
-  no page (a derivation; its results feed ~images and the assumptions).
+  no page (a derivation; its results feed ~images and the assumptions); multipole expansion and Laplace in spherical coordinates — No [new-page]; divergence and curl of a given field — No [new-page]; fields in dielectrics, D and bound charge — Partly (UP2#1~dielectric).
 - **Verdict:** 4 pages.
 
 ### EM#1 he.physics.electromagnetism#1 — Magnetostatics
@@ -741,7 +733,7 @@ Electromagnetics Vol. 1–2; Tong, Electromagnetism; MIT OCW 8.07.
 - **Answers:** field of a loop on its axis — main Solves; Ampère's law, inside and outside a
   wire — ~ampere-wire Solves; toroid, solenoid — ~toroid Solves, solenoid in UP2#3~solenoid;
   magnetic dipole torque and energy — ~loop-torque Solves; vector potential A — no page (calc-3
-  symbolic); field of a finite straight segment — No (propose with P14).
+  symbolic); field of a finite straight segment — No (propose with P14); magnetization and magnetic dipoles in matter — No [new-page].
 - **Verdict:** 4 pages.
 
 ### EM#2 he.physics.electromagnetism#2 — Maxwell's equations
@@ -786,8 +778,7 @@ Electromagnetics Vol. 1–2; Tong, Electromagnetism; MIT OCW 8.07.
 - **Answers:** E₀, B₀ from intensity; radiation pressure and force on a sail — main Solves;
   intensity and field from a lamp or antenna — ~point-source Solves; normal-incidence reflection —
   ~reflection Solves; oblique Fresnel equations, Brewster's angle — Partly (Brewster
-  tan θ_B = n₂/n₁ fits ~reflection as a value; propose it); waves in conductors, skin depth — No
-  (propose `~skin-depth` after the research).
+  tan θ_B = n₂/n₁ fits ~reflection as a value; propose it); waves in conductors, skin depth — No; ranked high (9 items, Ellingson Vol. 2): `~skin-depth` [new-page]; radiation from accelerating charges and dipoles (Larmor) — No [new-page]; waveguide modes and cutoff — No [new-page].
 - **Verdict:** 3 pages.
 
 ## Course 6. he.physics.quantum — Quantum Mechanics
@@ -826,7 +817,7 @@ OCW 8.04/8.05; Tong, Quantum Mechanics; LibreTexts (Fitzpatrick).
   Partly, E2); expectation values and uncertainties — ~spread Solves; measurement outcomes of a
   superposition — ~superposition Solves; commutators of standard pairs — ~commute Solves;
   time evolution of a superposition (|ψ|² sloshing at (E₂ − E₁)/ħ) — Partly (propose t as a value
-  on ~superposition once P19 animates).
+  on ~superposition once P19 animates); linear-algebra formalism: bases, operators as matrices — No [new-page].
 - **Verdict:** 4 pages (1 sort).
 
 ### QM#1 he.physics.quantum#1 — Solving the Schrödinger equation
@@ -851,7 +842,7 @@ OCW 8.04/8.05; Tong, Quantum Mechanics; LibreTexts (Fitzpatrick).
 - **Answers:** energy levels and transition wavelength in a box — main Solves; oscillator levels
   and photon — ~harmonic Solves; tunneling probability estimate — ~tunneling Solves; reflection at
   a step — ~step Solves; finite square well bound states — No (a transcendental root, E10; propose
-  `~finite-well` after); hydrogen radial solutions — QM#2 and UP3#3~bohr.
+  `~finite-well` after); hydrogen radial solutions — QM#2 and UP3#3~bohr; 3-D box and isotropic well, degeneracy — No [new-page].
 - **Verdict:** 4 pages.
 
 ### QM#2 he.physics.quantum#2 — Angular momentum and spin
@@ -875,7 +866,7 @@ OCW 8.04/8.05; Tong, Quantum Mechanics; LibreTexts (Fitzpatrick).
 - **Answers:** |L|, L_z, the cone angle — main Solves; Stern–Gerlach probabilities —
   ~spin-measurement Solves; Zeeman splitting, ESR frequency — ~zeeman Solves; allowed total j and
   state counts — ~addition Solves; Pauli matrices and spin eigenvectors along x — Partly (the
-  2 × 2 eigenproblem on QM#3~two-level; propose `~pauli`); Clebsch–Gordan coefficients — No.
+  2 × 2 eigenproblem on QM#3~two-level; propose `~pauli`); Clebsch–Gordan coefficients — No; 3-D oscillator degeneracy and ℓ content — No [new-page].
 - **Verdict:** 4 pages.
 
 ### QM#3 he.physics.quantum#3 — Perturbation theory
@@ -929,7 +920,7 @@ Tong, Statistical Physics; LibreTexts (Fitzpatrick).
   ~adiabatic Solves; cycle efficiency — ~otto Solves (Carnot in s.11.thermodynamics, Refresh);
   C_V, C_P by equipartition — ~heat-capacity Solves; full cycle on a P–V diagram (net work as the
   enclosed area) — Partly (needs P27 `cycle`; propose `~cycle`); free expansion ΔS = nR ln(V₂/V₁)
-  — main's assumption, Partly.
+  — main's assumption, Partly; response functions and Maxwell relations for a given equation of state — No [new-page].
 - **Verdict:** 4 pages.
 
 ### TS#1 he.physics.thermal-statistical#1 — Entropy and ensembles
@@ -957,7 +948,7 @@ Tong, Statistical Physics; LibreTexts (Fitzpatrick).
   — Partly, E9); temperature from 1/T = ∂S/∂U for two solids sharing energy — No (propose
   `~sharing`: Ω_A × Ω_B by q_A on `table` with `graph: { best }`, which rings the most likely
   split); which ensemble — ~ensembles
-  Solves.
+  Solves; probability distributions: normalize, mean, variance (8.044 opens with these) — No [new-page].
 - **Verdict:** 4 pages (1 sort).
 
 ### TS#2 he.physics.thermal-statistical#2 — Partition functions
@@ -981,8 +972,7 @@ Tong, Statistical Physics; LibreTexts (Fitzpatrick).
 - **Answers:** populations and mean energy of levels — main Solves; Einstein solid heat
   capacity, mean quanta — ~oscillator Solves (C_V as a value — Partly, propose); ideal-gas Z and
   the classical limit — ~thermal-wavelength Solves; Maxwell speeds — ~speeds Solves; free energy
-  F = −k_BT ln Z and S from Z — Partly (add F as a value on main; propose); paramagnet
-  magnetization tanh(μB/k_BT) — No (propose `~paramagnet` on the main page's pattern).
+  F = −k_BT ln Z and S from Z — Partly (add F as a value on main; propose); paramagnet magnetization tanh(μB/k_BT) — No; ranked high (3 items, 8.044): `~paramagnet` [new-page]; 1-D Ising chain — No [new-page].
 - **Verdict:** 4 pages.
 
 ### TS#3 he.physics.thermal-statistical#3 — Quantum statistics
@@ -1004,7 +994,7 @@ Tong, Statistical Physics; LibreTexts (Fitzpatrick).
 - **Answers:** occupancies compared — main Solves; Fermi energy, temperature, speed — ~fermi-energy
   Solves; Wien and Stefan–Boltzmann — ~photon-gas Solves; BEC temperature — ~bec Solves; electron
   heat capacity C ≈ (π²/2)Nk_B(T/T_F) — Partly (propose as a value on ~fermi-energy); degeneracy
-  pressure of a white dwarf — No.
+  pressure of a white dwarf — No; Fermi and photon gases in two dimensions — No [new-page].
 - **Verdict:** 4 pages.
 
 ## Pictures for the pictures chat

@@ -1,0 +1,167 @@
+{
+ "id": "hefferon-linear-algebra",
+ "curriculum": "Linear Algebra",
+ "publisher": "Jim Hefferon (Saint Michael's College)",
+ "edition": "4th edition (2020 PDF)",
+ "subject": "math",
+ "level": "college",
+ "content": "full",
+ "license": {
+  "name": "CC BY-SA 3.0 US",
+  "url": "https://creativecommons.org/licenses/by-sa/3.0/us/",
+  "attribution": "Jim Hefferon, Linear Algebra, https://hefferon.net/linearalgebra/. Use under either the GNU FDL or CC BY-SA 3.0 US at your discretion (https://hefferon.net/source.html); recorded under CC BY-SA 3.0 US."
+ },
+ "terms": "Dual GFDL / CC BY-SA 3.0 US: recorded under CC BY-SA.",
+ "sourceUrl": "https://hefferon.net/linearalgebra/",
+ "retrieved": "2026-10-02",
+ "notes": "Chapters and sections from the PDF outline (jheffero.w3.uvm.edu/linearalgebra/book.pdf). Each chapter ends with 'Topics' (input-output analysis, Markov chains, line of best fit, Cramer's rule, method of powers…) not listed here. robots.txt allows all but /wp-admin.",
+ "books": [
+  {
+   "title": "Linear Algebra (Hefferon), 4th ed.",
+   "url": "https://hefferon.net/linearalgebra/",
+   "units": [
+    {
+     "n": "One",
+     "title": "Linear Systems",
+     "topics": [
+      "he.math.linear-algebra#0"
+     ],
+     "sections": [
+      {
+       "n": "One.I",
+       "title": "Solving Linear Systems",
+       "topics": [
+        "he.math.linear-algebra#0"
+       ]
+      },
+      {
+       "n": "One.II",
+       "title": "Linear Geometry",
+       "topics": [
+        "he.math.calc-3#0"
+       ]
+      },
+      {
+       "n": "One.III",
+       "title": "Reduced Echelon Form",
+       "topics": [
+        "he.math.linear-algebra#0"
+       ]
+      }
+     ]
+    },
+    {
+     "n": "Two",
+     "title": "Vector Spaces",
+     "topics": [
+      "he.math.linear-algebra#1"
+     ],
+     "sections": [
+      {
+       "n": "Two.I",
+       "title": "Definition of Vector Space"
+      },
+      {
+       "n": "Two.II",
+       "title": "Linear Independence"
+      },
+      {
+       "n": "Two.III",
+       "title": "Basis and Dimension"
+      }
+     ]
+    },
+    {
+     "n": "Three",
+     "title": "Maps Between Spaces",
+     "topics": [
+      "he.math.linear-algebra#1"
+     ],
+     "sections": [
+      {
+       "n": "Three.I",
+       "title": "Isomorphisms"
+      },
+      {
+       "n": "Three.II",
+       "title": "Homomorphisms"
+      },
+      {
+       "n": "Three.III",
+       "title": "Computing Linear Maps"
+      },
+      {
+       "n": "Three.IV",
+       "title": "Matrix Operations",
+       "topics": [
+        "he.math.linear-algebra#0"
+       ]
+      },
+      {
+       "n": "Three.V",
+       "title": "Change of Basis"
+      },
+      {
+       "n": "Three.VI",
+       "title": "Projection",
+       "topics": [
+        "he.math.linear-algebra#4"
+       ]
+      }
+     ],
+     "note": "maps, kernel and range, change of basis: plan gap 'linear transformations', filed under #1"
+    },
+    {
+     "n": "Four",
+     "title": "Determinants",
+     "topics": [
+      "he.math.linear-algebra#2"
+     ],
+     "sections": [
+      {
+       "n": "Four.I",
+       "title": "Definition"
+      },
+      {
+       "n": "Four.II",
+       "title": "Geometry of Determinants"
+      },
+      {
+       "n": "Four.III",
+       "title": "Laplace's Formula"
+      }
+     ]
+    },
+    {
+     "n": "Five",
+     "title": "Similarity",
+     "topics": [
+      "he.math.linear-algebra#3"
+     ],
+     "sections": [
+      {
+       "n": "Five.I",
+       "title": "Complex Vector Spaces"
+      },
+      {
+       "n": "Five.II",
+       "title": "Similarity"
+      },
+      {
+       "n": "Five.III",
+       "title": "Nilpotence",
+       "topics": [],
+       "note": "no college topic: nilpotence"
+      },
+      {
+       "n": "Five.IV",
+       "title": "Jordan Form",
+       "topics": [],
+       "note": "no college topic: jordan form"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,405 @@
+{
+ "id": "trench-diffeq",
+ "curriculum": "Elementary Differential Equations with Boundary Value Problems",
+ "publisher": "William F. Trench (Trinity University); LibreTexts edition",
+ "edition": "LibreTexts (last modified 2024-06-23)",
+ "subject": "math",
+ "level": "college",
+ "content": "full",
+ "license": {
+  "name": "CC BY-NC-SA 3.0",
+  "url": "https://creativecommons.org/licenses/by-nc-sa/3.0/",
+  "attribution": "William F. Trench, Elementary Differential Equations with Boundary Value Problems, shared on LibreTexts under CC BY-NC-SA 3.0 (page licence tag license:ccbyncsa, licenseversion:30)."
+ },
+ "terms": "CC BY-NC-SA 3.0: section list only; no exercise recorded.",
+ "sourceUrl": "https://math.libretexts.org/Bookshelves/Differential_Equations/Elementary_Differential_Equations_with_Boundary_Value_Problems_(Trench)",
+ "retrieved": "2026-10-02",
+ "notes": "Chapter and section titles from the LibreTexts chapter pages (each section has a matching 'E' exercises page). robots.txt asks Crawl-delay 5; kept.",
+ "books": [
+  {
+   "title": "Elementary Differential Equations with Boundary Value Problems",
+   "url": "https://math.libretexts.org/Bookshelves/Differential_Equations/Elementary_Differential_Equations_with_Boundary_Value_Problems_(Trench)",
+   "units": [
+    {
+     "n": "1",
+     "title": "Introduction",
+     "topics": [
+      "he.math.diff-eq#0"
+     ],
+     "sections": [
+      {
+       "n": "1.1",
+       "title": "Applications Leading to Differential Equations"
+      },
+      {
+       "n": "1.2",
+       "title": "Basic Concepts"
+      },
+      {
+       "n": "1.3",
+       "title": "Direction Fields for First Order Equations"
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "title": "First Order Equations",
+     "topics": [
+      "he.math.diff-eq#0"
+     ],
+     "sections": [
+      {
+       "n": "2.1",
+       "title": "Linear First Order Equations"
+      },
+      {
+       "n": "2.2",
+       "title": "Separable Equations"
+      },
+      {
+       "n": "2.3",
+       "title": "Existence and Uniqueness of Solutions of Nonlinear Equations"
+      },
+      {
+       "n": "2.4",
+       "title": "Transformation of Nonlinear Equations into Separable Equations"
+      },
+      {
+       "n": "2.5",
+       "title": "Exact Equations"
+      },
+      {
+       "n": "2.6",
+       "title": "Integrating Factors"
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "title": "Numerical Methods",
+     "topics": [
+      "he.math.diff-eq#0"
+     ],
+     "sections": [
+      {
+       "n": "3.1",
+       "title": "Euler's Method"
+      },
+      {
+       "n": "3.2",
+       "title": "The Improved Euler Method and Related Methods"
+      },
+      {
+       "n": "3.3",
+       "title": "The Runge-Kutta Method"
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "title": "Applications of First Order Equations",
+     "topics": [
+      "he.math.diff-eq#0"
+     ],
+     "sections": [
+      {
+       "n": "4.1",
+       "title": "Growth and Decay"
+      },
+      {
+       "n": "4.2",
+       "title": "Cooling and Mixing"
+      },
+      {
+       "n": "4.3",
+       "title": "Elementary Mechanics"
+      },
+      {
+       "n": "4.4",
+       "title": "Autonomous Second Order Equations"
+      },
+      {
+       "n": "4.5",
+       "title": "Applications to Curves"
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "title": "Linear Second Order Equations",
+     "topics": [
+      "he.math.diff-eq#1"
+     ],
+     "sections": [
+      {
+       "n": "5.1",
+       "title": "Homogeneous Linear Equations"
+      },
+      {
+       "n": "5.2",
+       "title": "Constant Coefficient Homogeneous Equations"
+      },
+      {
+       "n": "5.3",
+       "title": "Nonhomogeneous Linear Equations"
+      },
+      {
+       "n": "5.4",
+       "title": "The Method of Undetermined Coefficients I"
+      },
+      {
+       "n": "5.5",
+       "title": "The Method of Undetermined Coefficients II"
+      },
+      {
+       "n": "5.6",
+       "title": "Reduction of Order"
+      },
+      {
+       "n": "5.7",
+       "title": "Variation of Parameters"
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "title": "Applications of Linear Second Order Equations",
+     "topics": [
+      "he.math.diff-eq#1"
+     ],
+     "sections": [
+      {
+       "n": "6.1",
+       "title": "Spring Problems I"
+      },
+      {
+       "n": "6.2",
+       "title": "Spring Problems II"
+      },
+      {
+       "n": "6.3",
+       "title": "The RLC Circuit"
+      },
+      {
+       "n": "6.4",
+       "title": "Motion Under a Central Force"
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "title": "Series Solutions of Linear Second Order Equations",
+     "topics": [
+      "he.math.diff-eq#4"
+     ],
+     "sections": [
+      {
+       "n": "7.1",
+       "title": "Prelude to Series Solutions of Linear Second Order Equations"
+      },
+      {
+       "n": "7.2",
+       "title": "Review of Power Series"
+      },
+      {
+       "n": "7.3",
+       "title": "Series Solutions Near an Ordinary Point I"
+      },
+      {
+       "n": "7.4",
+       "title": "Series Solutions Near an Ordinary Point II"
+      },
+      {
+       "n": "7.5",
+       "title": "Regular Singular Points Euler Equations"
+      },
+      {
+       "n": "7.6",
+       "title": "The Method of Frobenius I"
+      },
+      {
+       "n": "7.7",
+       "title": "The Method of Frobenius II"
+      },
+      {
+       "n": "7.8",
+       "title": "The Method of Frobenius III"
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "title": "Laplace Transforms",
+     "topics": [
+      "he.math.diff-eq#2"
+     ],
+     "sections": [
+      {
+       "n": "8.1",
+       "title": "Introduction to the Laplace Transform"
+      },
+      {
+       "n": "8.2",
+       "title": "The Inverse Laplace Transform"
+      },
+      {
+       "n": "8.3",
+       "title": "Solution of Initial Value Problems"
+      },
+      {
+       "n": "8.4",
+       "title": "The Unit Step Function"
+      },
+      {
+       "n": "8.5",
+       "title": "Constant Coefficient Equations with Piecewise Continuous Forcing Functions"
+      },
+      {
+       "n": "8.6",
+       "title": "Convolution"
+      },
+      {
+       "n": "8.7",
+       "title": "Constant Coefficient Equations with Impulses"
+      },
+      {
+       "n": "8.8",
+       "title": "A Brief Table of Laplace Transforms"
+      }
+     ]
+    },
+    {
+     "n": "9",
+     "title": "Linear Higher Order Differential Equations",
+     "topics": [
+      "he.math.diff-eq#1"
+     ],
+     "sections": [
+      {
+       "n": "9.1",
+       "title": "Introduction to Linear Higher Order Equations"
+      },
+      {
+       "n": "9.2",
+       "title": "Higher Order Constant Coefficient Homogeneous Equations"
+      },
+      {
+       "n": "9.3",
+       "title": "Undetermined Coefficients for Higher Order Equations"
+      },
+      {
+       "n": "9.4",
+       "title": "Variation of Parameters for Higher Order Equations"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "title": "Linear Systems of Differential Equations",
+     "topics": [
+      "he.math.diff-eq#3"
+     ],
+     "sections": [
+      {
+       "n": "10.1",
+       "title": "Introduction to Systems of Differential Equations"
+      },
+      {
+       "n": "10.2",
+       "title": "Linear Systems of Differential Equations"
+      },
+      {
+       "n": "10.3",
+       "title": "Basic Theory of Homogeneous Linear Systems"
+      },
+      {
+       "n": "10.4",
+       "title": "Constant Coefficient Homogeneous Systems I"
+      },
+      {
+       "n": "10.5",
+       "title": "Constant Coefficient Homogeneous Systems II"
+      },
+      {
+       "n": "10.6",
+       "title": "Constant Coefficient Homogeneous Systems III"
+      },
+      {
+       "n": "10.7",
+       "title": "Variation of Parameters for Nonhomogeneous Linear Systems"
+      }
+     ]
+    },
+    {
+     "n": "11",
+     "title": "Boundary Value Problems and Fourier Expansions",
+     "topics": [],
+     "note": "Fourier series, PDEs and boundary value problems: not in the taxonomy",
+     "sections": [
+      {
+       "n": "11.1",
+       "title": "Eigenvalue Problems for y'' + λy = 0",
+       "topics": []
+      },
+      {
+       "n": "11.2",
+       "title": "Fourier Series I",
+       "topics": []
+      },
+      {
+       "n": "11.3",
+       "title": "Fourier Series II",
+       "topics": []
+      }
+     ]
+    },
+    {
+     "n": "12",
+     "title": "Fourier Solutions of Partial Differential Equations",
+     "topics": [],
+     "note": "Fourier series, PDEs and boundary value problems: not in the taxonomy",
+     "sections": [
+      {
+       "n": "12.1",
+       "title": "The Heat Equation",
+       "topics": []
+      },
+      {
+       "n": "12.2",
+       "title": "The Wave Equation",
+       "topics": []
+      },
+      {
+       "n": "12.3",
+       "title": "Laplace's Equation in Rectangular Coordinates",
+       "topics": []
+      },
+      {
+       "n": "12.4",
+       "title": "Laplace's Equation in Polar Coordinates",
+       "topics": []
+      }
+     ]
+    },
+    {
+     "n": "13",
+     "title": "Boundary Value Problems for Second Order Linear Equations",
+     "topics": [],
+     "note": "Fourier series, PDEs and boundary value problems: not in the taxonomy",
+     "sections": [
+      {
+       "n": "13.1",
+       "title": "Boundary Value Problems",
+       "topics": []
+      },
+      {
+       "n": "13.2",
+       "title": "Sturm-Liouville Problems",
+       "topics": []
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

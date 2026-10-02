@@ -1,0 +1,989 @@
+{
+ "id": "active-calculus",
+ "curriculum": "Active Calculus and Active Calculus – Multivariable",
+ "publisher": "Matthew Boelkins (single variable); Nicholas Long, Mitchel T. Keller and Steven Schlicker (multivariable)",
+ "edition": "Single 2nd ed. (2025); Multivariable 2nd ed. (2026)",
+ "subject": "math",
+ "level": "college",
+ "content": "full",
+ "license": {
+  "name": "CC BY-SA 4.0",
+  "url": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "attribution": "© 2012–2025 Matthew Boelkins, Active Calculus 2nd ed.; © 2013–2026 Nicholas Long, Mitchel T. Keller and Steven Schlicker, Active Calculus – Multivariable 2nd ed. Licensed CC BY-SA 4.0 (colophon of each book)."
+ },
+ "terms": "CC BY-SA 4.0: question text may be copied with attribution (section exercises not drawn from the WeBWorK library).",
+ "sourceUrl": "https://activecalculus.org/",
+ "retrieved": "2026-10-02",
+ "notes": "Chapters and sections from the books' front matter. Examples, ranges and notation are our summary of each section's static exercises (read for research/questions/college/math.jsonl) and activities; WeBWorK library exercises were skipped (their licence is the WeBWorK Open Problem Library's, not the book's). robots.txt asks a 20 s crawl delay; it was kept.",
+ "books": [
+  {
+   "title": "Active Calculus, 2nd ed. (single variable)",
+   "url": "https://activecalculus.org/single2e/",
+   "units": [
+    {
+     "n": "1",
+     "title": "Understanding the Derivative",
+     "topics": [
+      "he.math.calc-1#1"
+     ],
+     "notation": [
+      "ln x for the natural log; f′(x) and Leibniz dy/dx; units of the derivative stressed"
+     ],
+     "sections": [
+      {
+       "n": "1.1",
+       "title": "How do we measure velocity?",
+       "url": "https://activecalculus.org/single2e/sec-1-1-vel.html",
+       "topics": [
+        "he.math.calc-1#1"
+       ],
+       "examples": [
+        "average velocity from a height graph or formula",
+        "census data: average rate of change"
+       ],
+       "ranges": [
+        "heights in feet or metres (0–200)",
+        "times 0–5 s"
+       ]
+      },
+      {
+       "n": "1.2",
+       "title": "The notion of limit",
+       "url": "https://activecalculus.org/single2e/sec-1-2-lim.html",
+       "topics": [
+        "he.math.calc-1#0"
+       ],
+       "examples": [
+        "limit of a rational function with a removable zero (estimate then factor)",
+        "limits at a jump of |x|/x type",
+        "sketch graphs with stated limits"
+       ],
+       "ranges": [
+        "a between −3 and 3"
+       ],
+       "notation": [
+        "lim_{x→a} f(x); DNE for does not exist"
+       ]
+      },
+      {
+       "n": "1.3",
+       "title": "The derivative of a function at a point",
+       "url": "https://activecalculus.org/single2e/sec-1-3-derivative-pt.html",
+       "topics": [
+        "he.math.calc-1#1"
+       ],
+       "examples": [
+        "secant vs tangent slopes on a graph",
+        "derivative at a point by the limit definition",
+        "growth rate of an exponential population model"
+       ],
+       "notation": [
+        "f′(a) = lim_{h→0} (f(a+h) − f(a))/h"
+       ]
+      },
+      {
+       "n": "1.4",
+       "title": "The derivative function",
+       "url": "https://activecalculus.org/single2e/sec-1-4-derivative-fxn.html",
+       "topics": [
+        "he.math.calc-1#1"
+       ],
+       "examples": [
+        "sketch f′ from f",
+        "limit-definition derivative of a quadratic"
+       ]
+      },
+      {
+       "n": "1.5",
+       "title": "Interpreting, estimating, and using the derivative",
+       "url": "https://activecalculus.org/single2e/sec-1-5-units.html",
+       "topics": [
+        "he.math.calc-1#1"
+       ],
+       "examples": [
+        "central-difference estimate",
+        "meaning and units of f′ in context (dose, car value)"
+       ],
+       "ranges": [
+        "h = 0.01 for difference quotients"
+       ],
+       "notation": [
+        "central difference (f(a+h) − f(a−h))/(2h)"
+       ]
+      },
+      {
+       "n": "1.6",
+       "title": "The second derivative",
+       "url": "https://activecalculus.org/single2e/sec-1-6-second-d.html",
+       "topics": [
+        "he.math.calc-1#1"
+       ],
+       "examples": [
+        "concavity from f″ sign",
+        "acceleration from a height table"
+       ]
+      },
+      {
+       "n": "1.7",
+       "title": "Limits, continuity, and differentiability",
+       "url": "https://activecalculus.org/single2e/sec-1-7-lim-cont-diff.html",
+       "topics": [
+        "he.math.calc-1#0"
+       ],
+       "examples": [
+        "piecewise-linear graph: where limits, continuity, differentiability fail",
+        "√|x| not differentiable at 0"
+       ]
+      },
+      {
+       "n": "1.8",
+       "title": "The tangent line approximation",
+       "url": "https://activecalculus.org/single2e/sec-1-8-tan-line-approx.html",
+       "topics": [
+        "he.math.calc-1#1"
+       ],
+       "examples": [
+        "local linearization and over/under by concavity",
+        "tangent-line estimate from a temperature table"
+       ],
+       "notation": [
+        "L(x) = f(a) + f′(a)(x − a)"
+       ]
+      }
+     ]
+    },
+    {
+     "n": "2",
+     "title": "Computing Derivatives",
+     "topics": [
+      "he.math.calc-1#1"
+     ],
+     "sections": [
+      {
+       "n": "2.1",
+       "title": "Elementary derivative rules",
+       "url": "https://activecalculus.org/single2e/sec-2-1-elem-rules.html",
+       "examples": [
+        "sum and constant-multiple rules from values of f, g, f′, g′ at a point"
+       ]
+      },
+      {
+       "n": "2.2",
+       "title": "The sine and cosine functions",
+       "url": "https://activecalculus.org/single2e/sec-2-2-sin-cos.html",
+       "examples": [
+        "tangent line to a trig combination at π/4"
+       ]
+      },
+      {
+       "n": "2.3",
+       "title": "The product and quotient rules",
+       "url": "https://activecalculus.org/single2e/sec-2-3-prod-quot.html",
+       "examples": [
+        "product and quotient rules from a table of values",
+        "derivatives of piecewise-linear graphs at points",
+        "revenue = price × quantity in context"
+       ]
+      },
+      {
+       "n": "2.4",
+       "title": "Derivatives of other trigonometric functions",
+       "url": "https://activecalculus.org/single2e/sec-2-4-other-trig.html"
+      },
+      {
+       "n": "2.5",
+       "title": "The chain rule",
+       "url": "https://activecalculus.org/single2e/sec-2-5-chain.html",
+       "examples": [
+        "chain rule with an unknown inner function u(x)",
+        "chain rule from graphs",
+        "rate of volume change in a spherical tank"
+       ]
+      },
+      {
+       "n": "2.6",
+       "title": "Derivatives of inverse functions",
+       "url": "https://activecalculus.org/single2e/sec-2-6-inverse.html",
+       "examples": [
+        "derivative of an inverse at a point as a reciprocal slope"
+       ]
+      },
+      {
+       "n": "2.7",
+       "title": "Derivatives of functions given implicitly",
+       "url": "https://activecalculus.org/single2e/sec-2-7-implicit.html",
+       "examples": [
+        "horizontal and vertical tangents of an implicit curve",
+        "tangent line to sin(x + y) + cos(x − y) = 1"
+       ]
+      }
+     ]
+    },
+    {
+     "n": "3",
+     "title": "Using Derivatives",
+     "topics": [
+      "he.math.calc-1#2"
+     ],
+     "sections": [
+      {
+       "n": "3.1",
+       "title": "Related rates",
+       "url": "https://activecalculus.org/single2e/sec-3-1-rel-rates.html",
+       "topics": [
+        "he.math.calc-1#2"
+       ],
+       "examples": [
+        "boat pulled to a dock over a pulley",
+        "pool with a sloping bottom",
+        "baseball runner angle",
+        "conical sand pile"
+       ],
+       "ranges": [
+        "lengths 5–100 ft",
+        "rates 1–24 ft/s or ft³/min"
+       ]
+      },
+      {
+       "n": "3.2",
+       "title": "Using derivatives to evaluate limits",
+       "url": "https://activecalculus.org/single2e/sec-3-2-LHR.html",
+       "topics": [
+        "he.math.calc-1#1"
+       ],
+       "examples": [
+        "L'Hôpital's rule on 0/0 and ∞/∞ forms"
+       ]
+      },
+      {
+       "n": "3.3",
+       "title": "Using derivatives to identify extreme values",
+       "url": "https://activecalculus.org/single2e/sec-3-3-tests.html",
+       "topics": [
+        "he.math.calc-1#2"
+       ],
+       "examples": [
+        "first- and second-derivative sign charts",
+        "zeros of h from the graph of h′"
+       ]
+      },
+      {
+       "n": "3.4",
+       "title": "Using derivatives to describe families of functions",
+       "url": "https://activecalculus.org/single2e/sec-3-4-families.html",
+       "topics": [
+        "he.math.calc-1#2"
+       ],
+       "examples": [
+        "critical points of parameter families (x³ − ax², Gaussian)"
+       ]
+      },
+      {
+       "n": "3.5",
+       "title": "Global optimization",
+       "url": "https://activecalculus.org/single2e/sec-3-5-optimization.html",
+       "topics": [
+        "he.math.calc-1#2"
+       ],
+       "examples": [
+        "closed-interval method on a shifted sinusoid",
+        "absolute extrema of parameter families"
+       ]
+      },
+      {
+       "n": "3.6",
+       "title": "Applied optimization",
+       "url": "https://activecalculus.org/single2e/sec-3-6-applied-opt.html",
+       "topics": [
+        "he.math.calc-1#2"
+       ],
+       "examples": [
+        "box from two materials on a budget",
+        "fenced pens",
+        "cable between two poles",
+        "tank with hemispherical ends at least cost"
+       ],
+       "ranges": [
+        "costs $1.50–$5 per ft²",
+        "volumes about 1000 ft³"
+       ]
+      }
+     ]
+    },
+    {
+     "n": "4",
+     "title": "The Definite Integral",
+     "topics": [
+      "he.math.calc-1#3"
+     ],
+     "sections": [
+      {
+       "n": "4.1",
+       "title": "Determining distance traveled from velocity",
+       "url": "https://activecalculus.org/single2e/sec-4-1-velocity-distance.html",
+       "examples": [
+        "distance as area under a velocity graph",
+        "pollution total as area"
+       ]
+      },
+      {
+       "n": "4.2",
+       "title": "Riemann sums",
+       "url": "https://activecalculus.org/single2e/sec-4-2-Riemann.html",
+       "examples": [
+        "M₄ for a linear function with Δx and nodes listed",
+        "left/right/midpoint sums from a braking-car table"
+       ],
+       "notation": [
+        "L_n, R_n, M_n; Δx = (b − a)/n"
+       ]
+      },
+      {
+       "n": "4.3",
+       "title": "The definite integral",
+       "url": "https://activecalculus.org/single2e/sec-4-3-definite-integral.html",
+       "examples": [
+        "integrals of lines and circle arcs by geometry",
+        "displacement vs distance"
+       ]
+      },
+      {
+       "n": "4.4",
+       "title": "The Fundamental Theorem of Calculus",
+       "url": "https://activecalculus.org/single2e/sec-4-4-FTC.html",
+       "examples": [
+        "piecewise integrand by the FTC",
+        "average velocity as average value",
+        "climb time from a rate table"
+       ]
+      }
+     ]
+    },
+    {
+     "n": "5",
+     "title": "Evaluating Integrals",
+     "topics": [],
+     "note": "split between Calculus I (#3, #4) and Calculus II (#0)",
+     "sections": [
+      {
+       "n": "5.1",
+       "title": "Constructing accurate graphs of antiderivatives",
+       "url": "https://activecalculus.org/single2e/sec-5-1-antid-graphs.html",
+       "topics": [
+        "he.math.calc-1#3"
+       ],
+       "examples": [
+        "position from velocity with given areas"
+       ]
+      },
+      {
+       "n": "5.2",
+       "title": "The Second Fundamental Theorem of Calculus",
+       "url": "https://activecalculus.org/single2e/sec-5-2-FTC2.html",
+       "topics": [
+        "he.math.calc-1#3"
+       ],
+       "examples": [
+        "F(x) = ∫ g from a graph with shaded areas",
+        "beach sand added and removed (net-change model)"
+       ]
+      },
+      {
+       "n": "5.3",
+       "title": "Integration by substitution",
+       "url": "https://activecalculus.org/single2e/sec-5-3-substitution.html",
+       "topics": [
+        "he.math.calc-1#4"
+       ],
+       "examples": [
+        "∫ tan x by rewriting",
+        "x√(x − 1) with back-substitution",
+        "sin³x by an identity"
+       ]
+      },
+      {
+       "n": "5.4",
+       "title": "Integration by parts",
+       "url": "https://activecalculus.org/single2e/sec-5-4-parts.html",
+       "topics": [
+        "he.math.calc-2#0"
+       ],
+       "examples": [
+        "t e^(−2t) accumulation",
+        "substitution then parts",
+        "choose a method"
+       ]
+      },
+      {
+       "n": "5.5",
+       "title": "Other options for finding algebraic antiderivatives",
+       "url": "https://activecalculus.org/single2e/sec-5-5-other-opt.html",
+       "topics": [
+        "he.math.calc-2#0"
+       ],
+       "examples": [
+        "partial fractions with a CAS check",
+        "table of integrals after substitution"
+       ]
+      },
+      {
+       "n": "5.6",
+       "title": "Numerical integration",
+       "url": "https://activecalculus.org/single2e/sec-5-6-num-int.html",
+       "topics": [],
+       "note": "no college topic: numerical integration (trapezoid, midpoint, Simpson)",
+       "examples": [
+        "trapezoid, midpoint and Simpson estimates",
+        "error direction from monotonicity and concavity",
+        "dam flow from a table"
+       ]
+      }
+     ]
+    },
+    {
+     "n": "6",
+     "title": "Using Definite Integrals",
+     "topics": [
+      "he.math.calc-2#2"
+     ],
+     "sections": [
+      {
+       "n": "6.1",
+       "title": "Using definite integrals to find area and length",
+       "url": "https://activecalculus.org/single2e/sec-6-1-area.html",
+       "topics": [
+        "he.math.calc-2#2"
+       ],
+       "examples": [
+        "area between curves in x or y",
+        "parameter giving a set area",
+        "average value"
+       ]
+      },
+      {
+       "n": "6.2",
+       "title": "Using definite integrals to find volume",
+       "url": "https://activecalculus.org/single2e/sec-6-2-volume.html",
+       "topics": [
+        "he.math.calc-2#2"
+       ],
+       "examples": [
+        "disks and washers about various axes",
+        "region between sin and cos"
+       ]
+      },
+      {
+       "n": "6.3",
+       "title": "Density, mass, and center of mass",
+       "url": "https://activecalculus.org/single2e/sec-6-3-mass.html",
+       "topics": [],
+       "note": "no college topic: mass and centre of mass",
+       "examples": [
+        "rod with exponential density",
+        "centre of mass of a region"
+       ],
+       "ranges": [
+        "rod lengths 10 cm; densities g/cm"
+       ]
+      },
+      {
+       "n": "6.4",
+       "title": "Physics applications: work, force, and pressure",
+       "url": "https://activecalculus.org/single2e/sec-6-4-physics.html",
+       "topics": [
+        "he.math.calc-2#2"
+       ],
+       "examples": [
+        "pumping water out of a tank",
+        "force on the end of a buried cylindrical tank"
+       ],
+       "ranges": [
+        "water weight density 62.4 lb/ft³"
+       ],
+       "notation": [
+        "US customary units (ft, lb) in pumping problems"
+       ]
+      },
+      {
+       "n": "6.5",
+       "title": "Improper integrals",
+       "url": "https://activecalculus.org/single2e/sec-6-5-improper.html",
+       "topics": [
+        "he.math.calc-2#1"
+       ],
+       "examples": [
+        "converge or diverge with justification",
+        "comparison for ∫ 1/(1 + x³)"
+       ]
+      }
+     ]
+    },
+    {
+     "n": "7",
+     "title": "Differential Equations",
+     "topics": [
+      "he.math.diff-eq#0"
+     ],
+     "note": "Active Calculus closes single-variable calculus with a first-order ODE chapter; the taxonomy files it under Differential Equations #0.",
+     "sections": [
+      {
+       "n": "7.1",
+       "title": "An introduction to differential equations",
+       "url": "https://activecalculus.org/single2e/sec-7-1-diff-eq-intro.html",
+       "examples": [
+        "Newton's law of cooling",
+        "check candidate solutions"
+       ]
+      },
+      {
+       "n": "7.2",
+       "title": "Qualitative behavior of solutions to differential equations",
+       "url": "https://activecalculus.org/single2e/sec-7-2-qualitative.html",
+       "examples": [
+        "slope fields",
+        "equilibria and stability of population models"
+       ]
+      },
+      {
+       "n": "7.3",
+       "title": "Euler's method",
+       "url": "https://activecalculus.org/single2e/sec-7-3-euler.html",
+       "examples": [
+        "Euler steps for cooling",
+        "improved Euler"
+       ]
+      },
+      {
+       "n": "7.4",
+       "title": "Separable differential equations",
+       "url": "https://activecalculus.org/single2e/sec-7-4-separable.html",
+       "examples": [
+        "radioactive decay",
+        "Torricelli draining tank",
+        "Gompertz model"
+       ]
+      },
+      {
+       "n": "7.5",
+       "title": "Modeling with differential equations",
+       "url": "https://activecalculus.org/single2e/sec-7-5-modeling.html",
+       "examples": [
+        "annuity",
+        "skydiver with drag",
+        "brine mixing"
+       ],
+       "ranges": [
+        "tanks 100 gal, 3 gal/min, 20 g/gal"
+       ]
+      },
+      {
+       "n": "7.6",
+       "title": "Population growth and the logistic equation",
+       "url": "https://activecalculus.org/single2e/sec-7-6-logistic.html",
+       "examples": [
+        "rumour spread",
+        "logistic fish model with harvesting"
+       ]
+      }
+     ]
+    },
+    {
+     "n": "8",
+     "title": "Taylor Polynomials and Taylor Series",
+     "topics": [
+      "he.math.calc-2#4"
+     ],
+     "note": "The 2nd edition has no separate sequences-and-series-tests chapter: convergence tests (Calculus II #3) are not taught beyond geometric sums.",
+     "sections": [
+      {
+       "n": "8.1",
+       "title": "Extending local linearization",
+       "url": "https://activecalculus.org/single2e/sec-8-1-linear-poly.html",
+       "topics": [
+        "he.math.calc-2#4"
+       ]
+      },
+      {
+       "n": "8.2",
+       "title": "Taylor polynomials",
+       "url": "https://activecalculus.org/single2e/sec-8-2-taylor-poly.html",
+       "topics": [
+        "he.math.calc-2#4"
+       ],
+       "examples": [
+        "T₄ from derivative values",
+        "accuracy of ln(1 + x) polynomials"
+       ],
+       "notation": [
+        "T_n(x)"
+       ]
+      },
+      {
+       "n": "8.3",
+       "title": "Geometric sums",
+       "url": "https://activecalculus.org/single2e/sec-8-3-geometric.html",
+       "topics": [
+        "he.math.calc-2#3"
+       ],
+       "examples": [
+        "bouncing ball distance",
+        "geometric vs linear pay"
+       ]
+      },
+      {
+       "n": "8.4",
+       "title": "Taylor series",
+       "url": "https://activecalculus.org/single2e/sec-8-4-taylor-series.html",
+       "topics": [
+        "he.math.calc-2#4"
+       ]
+      },
+      {
+       "n": "8.5",
+       "title": "Finding and using Taylor series",
+       "url": "https://activecalculus.org/single2e/sec-8-5-finding-using-taylor-series.html",
+       "topics": [
+        "he.math.calc-2#4"
+       ],
+       "examples": [
+        "Fresnel integrals term by term",
+        "limits from series"
+       ]
+      },
+      {
+       "n": "8.6",
+       "title": "Quantifying the accuracy of approximations",
+       "url": "https://activecalculus.org/single2e/sec-8-6-accuracy-of-approx.html",
+       "topics": [
+        "he.math.calc-2#4"
+       ],
+       "examples": [
+        "error bound for a π estimate"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Active Calculus – Multivariable, 2nd ed.",
+   "url": "https://activecalculus.org/multi2e/",
+   "units": [
+    {
+     "n": "9",
+     "title": "Precalculus of Multivariable Functions",
+     "topics": [
+      "he.math.calc-3#0"
+     ],
+     "sections": [
+      {
+       "n": "9.1",
+       "title": "Why Multivariable?",
+       "url": "https://activecalculus.org/multi2e/intro_C_MVPrecalc.html"
+      },
+      {
+       "n": "9.2",
+       "title": "Three Dimensional Space",
+       "url": "https://activecalculus.org/multi2e/S-Precalc-3Dcoord.html"
+      },
+      {
+       "n": "9.3",
+       "title": "Vectors",
+       "url": "https://activecalculus.org/multi2e/S-Precalc-Vectors.html"
+      },
+      {
+       "n": "9.4",
+       "title": "The Dot Product",
+       "url": "https://activecalculus.org/multi2e/S-Precalc-DotProduct.html"
+      },
+      {
+       "n": "9.5",
+       "title": "The Cross Product",
+       "url": "https://activecalculus.org/multi2e/S-Precalc-CrossProduct.html"
+      },
+      {
+       "n": "9.6",
+       "title": "Lines in Space",
+       "url": "https://activecalculus.org/multi2e/S-Precalc-Lines.html"
+      },
+      {
+       "n": "9.7",
+       "title": "Planes in Space",
+       "url": "https://activecalculus.org/multi2e/S-Precalc-Planes.html"
+      },
+      {
+       "n": "9.8",
+       "title": "Common Graphs in Three Dimensions",
+       "url": "https://activecalculus.org/multi2e/S-Precalc-CommonGraphs.html"
+      },
+      {
+       "n": "9.9",
+       "title": "Polar, Cylindrical, and Spherical Coordinates",
+       "url": "https://activecalculus.org/multi2e/S-Precalc-OtherCoordSystems.html",
+       "topics": [],
+       "note": "no college topic: cylindrical and spherical coordinates"
+      }
+     ]
+    },
+    {
+     "n": "10",
+     "title": "Vector-Valued Functions of One Variable",
+     "topics": [
+      "he.math.calc-3#0"
+     ],
+     "note": "Vector-valued functions and curvature: the plan places them under Calculus III #0 (gap: arc length and curvature).",
+     "sections": [
+      {
+       "n": "10.1",
+       "title": "Classic Calculus Approach",
+       "url": "https://activecalculus.org/multi2e/C_VVF_classic-calc-approach.html"
+      },
+      {
+       "n": "10.2",
+       "title": "Vector-Valued Functions of One Variable",
+       "url": "https://activecalculus.org/multi2e/S-VVF-Plotting.html"
+      },
+      {
+       "n": "10.3",
+       "title": "Calculus of Vector-Valued Functions of One Variable",
+       "url": "https://activecalculus.org/multi2e/S-VVF-Calculus.html"
+      },
+      {
+       "n": "10.4",
+       "title": "Arc Length",
+       "url": "https://activecalculus.org/multi2e/S-VVF-ArcLength.html"
+      },
+      {
+       "n": "10.5",
+       "title": "The TNB Frame",
+       "url": "https://activecalculus.org/multi2e/S-VVF-TNB.html"
+      },
+      {
+       "n": "10.6",
+       "title": "Curvature",
+       "url": "https://activecalculus.org/multi2e/S-VVF-Curvature.html"
+      },
+      {
+       "n": "10.7",
+       "title": "Splitting the Acceleration Vector",
+       "url": "https://activecalculus.org/multi2e/S-VVF-Splitting-Acceleration.html"
+      }
+     ]
+    },
+    {
+     "n": "11",
+     "title": "Derivatives of Multivariable Functions",
+     "topics": [
+      "he.math.calc-3#1"
+     ],
+     "sections": [
+      {
+       "n": "11.1",
+       "title": "Calculus of Several Variables",
+       "url": "https://activecalculus.org/multi2e/intro-C-MVF.html"
+      },
+      {
+       "n": "11.2",
+       "title": "Functions of Several Variables",
+       "url": "https://activecalculus.org/multi2e/S-MV-Functions.html"
+      },
+      {
+       "n": "11.3",
+       "title": "Limits",
+       "url": "https://activecalculus.org/multi2e/S-mv_deriv-Limits.html"
+      },
+      {
+       "n": "11.4",
+       "title": "First-Order Partial Derivatives",
+       "url": "https://activecalculus.org/multi2e/S-mv_deriv-first_order.html"
+      },
+      {
+       "n": "11.5",
+       "title": "Second-Order Partial Derivatives",
+       "url": "https://activecalculus.org/multi2e/S-mv_deriv-second_order.html"
+      },
+      {
+       "n": "11.6",
+       "title": "Linearization: Tangent Planes and Differentials",
+       "url": "https://activecalculus.org/multi2e/S-mv_deriv-linearization.html"
+      },
+      {
+       "n": "11.7",
+       "title": "The Multivariable Chain Rule",
+       "url": "https://activecalculus.org/multi2e/S_mv_deriv-chain_rule.html"
+      },
+      {
+       "n": "11.8",
+       "title": "Directional Derivatives and the Gradient",
+       "url": "https://activecalculus.org/multi2e/S-mv_deriv-directional.html"
+      },
+      {
+       "n": "11.9",
+       "title": "Higher Dimensions",
+       "url": "https://activecalculus.org/multi2e/S-MV-HD.html"
+      },
+      {
+       "n": "11.10",
+       "title": "Optimization",
+       "url": "https://activecalculus.org/multi2e/S-mv_deriv-optimization.html"
+      },
+      {
+       "n": "11.11",
+       "title": "Constrained Optimization: Lagrange Multipliers",
+       "url": "https://activecalculus.org/multi2e/S-mv_deriv-lagrange.html"
+      }
+     ]
+    },
+    {
+     "n": "12",
+     "title": "Multiple Integrals",
+     "topics": [
+      "he.math.calc-3#2"
+     ],
+     "sections": [
+      {
+       "n": "12.1",
+       "title": "Integrating Functions of Several Variables",
+       "url": "https://activecalculus.org/multi2e/C_MI-2.html"
+      },
+      {
+       "n": "12.2",
+       "title": "Double Riemann Sums and Double Integrals over Rectangles",
+       "url": "https://activecalculus.org/multi2e/sec-mult_ints-double_ints_rects.html"
+      },
+      {
+       "n": "12.3",
+       "title": "Iterated Integrals",
+       "url": "https://activecalculus.org/multi2e/sec-mult_int-iterated.html"
+      },
+      {
+       "n": "12.4",
+       "title": "Double Integrals over General Regions",
+       "url": "https://activecalculus.org/multi2e/S-mult_ints-general.html"
+      },
+      {
+       "n": "12.5",
+       "title": "Applications of Double Integrals",
+       "url": "https://activecalculus.org/multi2e/S-11-4-Double-Integrals-Applications.html"
+      },
+      {
+       "n": "12.6",
+       "title": "Double Integrals in Polar Coordinates",
+       "url": "https://activecalculus.org/multi2e/S-mult_ints-double_ints_polar.html"
+      },
+      {
+       "n": "12.7",
+       "title": "Triple Integrals",
+       "url": "https://activecalculus.org/multi2e/sec-mult_ints-triple.html"
+      },
+      {
+       "n": "12.8",
+       "title": "Triple Integrals in Cylindrical and Spherical Coordinates",
+       "url": "https://activecalculus.org/multi2e/S-11-8-Triple-Integrals-Cylindrical-Spherical.html"
+      },
+      {
+       "n": "12.9",
+       "title": "Change of Variables",
+       "url": "https://activecalculus.org/multi2e/S-11-9-Change-of-Variable.html",
+       "note": "change of variables: a plan gap, kept under #2"
+      }
+     ]
+    },
+    {
+     "n": "13",
+     "title": "Vector Calculus",
+     "topics": [
+      "he.math.calc-3#3"
+     ],
+     "sections": [
+      {
+       "n": "13.1",
+       "title": "Integrating Multivariable Vector-Valued Functions",
+       "url": "https://activecalculus.org/multi2e/C_Vector-2.html"
+      },
+      {
+       "n": "13.2",
+       "title": "Vector Fields",
+       "url": "https://activecalculus.org/multi2e/S_Vector_VectorFields.html"
+      },
+      {
+       "n": "13.3",
+       "title": "The Idea of a Line Integral",
+       "url": "https://activecalculus.org/multi2e/S_Vector_IdeaLineIntegral.html"
+      },
+      {
+       "n": "13.4",
+       "title": "Using Parameterizations to Calculate Line Integrals",
+       "url": "https://activecalculus.org/multi2e/S_Vector_ParamLineIntegrals.html"
+      },
+      {
+       "n": "13.5",
+       "title": "Path-Independent Vector Fields and the Fundamental Theorem of Calculus for Line Integrals",
+       "url": "https://activecalculus.org/multi2e/S_Vector_FTCLI.html"
+      },
+      {
+       "n": "13.6",
+       "title": "Line Integrals of Scalar Functions",
+       "url": "https://activecalculus.org/multi2e/S_Vector_ScalarLineIntegral.html"
+      },
+      {
+       "n": "13.7",
+       "title": "The Divergence of a Vector Field",
+       "url": "https://activecalculus.org/multi2e/S_Vector_Div.html",
+       "topics": [
+        "he.math.calc-3#4"
+       ]
+      },
+      {
+       "n": "13.8",
+       "title": "The Curl of a Vector Field",
+       "url": "https://activecalculus.org/multi2e/S_Vector_Curl.html",
+       "topics": [
+        "he.math.calc-3#4"
+       ]
+      },
+      {
+       "n": "13.9",
+       "title": "Green’s Theorem",
+       "url": "https://activecalculus.org/multi2e/S_Vector_GreensTheorem.html",
+       "topics": [
+        "he.math.calc-3#4"
+       ]
+      },
+      {
+       "n": "13.10",
+       "title": "Parameterizations of Surfaces and Surface Area",
+       "url": "https://activecalculus.org/multi2e/S_Parametric_Surfaces_Surface_Area.html"
+      },
+      {
+       "n": "13.11",
+       "title": "Flux Integrals",
+       "url": "https://activecalculus.org/multi2e/S_Vector_FluxInt.html"
+      },
+      {
+       "n": "13.12",
+       "title": "Surface Integrals of Scalar Valued Functions",
+       "url": "https://activecalculus.org/multi2e/S_Vector_ScalarSurfaceIntegral.html"
+      },
+      {
+       "n": "13.13",
+       "title": "Stokes’ Theorem",
+       "url": "https://activecalculus.org/multi2e/S_Vector_StokesThm.html",
+       "topics": [
+        "he.math.calc-3#4"
+       ]
+      },
+      {
+       "n": "13.14",
+       "title": "The Divergence Theorem",
+       "url": "https://activecalculus.org/multi2e/S_Vector_DivThm.html",
+       "topics": [
+        "he.math.calc-3#4"
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

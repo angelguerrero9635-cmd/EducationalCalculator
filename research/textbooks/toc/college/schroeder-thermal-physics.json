@@ -1,0 +1,106 @@
+{
+ "id": "schroeder-thermal-physics",
+ "curriculum": "An Introduction to Thermal Physics",
+ "publisher": "Daniel V. Schroeder (Addison Wesley; Oxford University Press reissue)",
+ "edition": "2000 (OUP reissue 2021)",
+ "subject": "physics",
+ "level": "college",
+ "content": "titles",
+ "license": {
+  "name": "All rights reserved",
+  "url": "https://physics.weber.edu/thermal/overview.html",
+  "attribution": "Titles only, from the publisher's or author's public table of contents; no other content."
+ },
+ "terms": "Commercial: part and chapter titles only.",
+ "sourceUrl": "https://physics.weber.edu/thermal/overview.html",
+ "retrieved": "2026-10-02",
+ "notes": "Titles from the author's overview page (fetched; robots.txt returned 404, so no rules). The page's chapter summaries were read but not recorded.",
+ "books": [
+  {
+   "title": "An Introduction to Thermal Physics",
+   "url": "https://physics.weber.edu/thermal/overview.html",
+   "units": [
+    {
+     "n": "I",
+     "title": "Fundamentals",
+     "topics": [],
+     "note": "part heading",
+     "sections": [
+      {
+       "n": "1",
+       "title": "Energy in Thermal Physics",
+       "topics": [
+        "he.physics.thermal-statistical#0"
+       ]
+      },
+      {
+       "n": "2",
+       "title": "The Second Law",
+       "topics": [
+        "he.physics.thermal-statistical#1"
+       ]
+      },
+      {
+       "n": "3",
+       "title": "Interactions and Implications",
+       "topics": [
+        "he.physics.thermal-statistical#0",
+        "he.physics.thermal-statistical#1"
+       ]
+      }
+     ]
+    },
+    {
+     "n": "II",
+     "title": "Thermodynamics",
+     "topics": [],
+     "note": "part heading",
+     "sections": [
+      {
+       "n": "4",
+       "title": "Engines and Refrigerators",
+       "topics": [
+        "he.physics.thermal-statistical#0"
+       ]
+      },
+      {
+       "n": "5",
+       "title": "Free Energy and Chemical Thermodynamics",
+       "topics": [
+        "he.physics.thermal-statistical#0"
+       ]
+      }
+     ]
+    },
+    {
+     "n": "III",
+     "title": "Statistical Mechanics",
+     "topics": [],
+     "note": "part heading",
+     "sections": [
+      {
+       "n": "6",
+       "title": "Boltzmann Statistics",
+       "topics": [
+        "he.physics.thermal-statistical#2"
+       ]
+      },
+      {
+       "n": "7",
+       "title": "Quantum Statistics",
+       "topics": [
+        "he.physics.thermal-statistical#3"
+       ]
+      },
+      {
+       "n": "8",
+       "title": "Systems of Interacting Particles",
+       "topics": [],
+       "note": "no college topic: interacting systems, Ising model"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}
