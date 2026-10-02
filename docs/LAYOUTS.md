@@ -254,3 +254,7 @@ College card figure `skeletal` (HC2, `layouts/skeletalCard.tsx`, `typesHe1c.ts`)
 112 × 76 from a SMILES-like spec (`CC(=O)OCC`, `c1cc[nH]c1`, `C[C@H](O)CC`), its group lit
 (`carboxyl`, `ester`, `amide`, `nitrile`, `aldehyde`, `ketone`, `hydroxyl`, `amine`, … or atom
 numbers), the parent chain numbered, and CIP ranks with R or S on `center`.
+
+College card figure `ir` (HC55, `layouts/irCard.tsx`, `typesHe3e.ts`): `{ kind: 'ir', bands:
+[{ at, to?, strength?, shape? }] }`, an IR spectrum at 140 × 60 computed from its bands (sharp,
+broad, or a very broad range `at`–`to`), 4000 → 400 cm⁻¹.

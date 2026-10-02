@@ -84,6 +84,7 @@ import { he2eIssues, isHe2e } from './picturesHe2e';
 import { he2hIssues } from './picturesHe2h';
 import { fieldPlotIssues, he2gGraphIssues } from './picturesHe2g';
 import { he2cIssues } from './picturesHe2c';
+import { instrumentTraceIssues } from './picturesHe3e';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -2289,6 +2290,9 @@ export function repIssues(
           (id) => byId.get(id)?.unit,
         ),
       );
+      break;
+    case 'instrumentTrace':
+      out.push(...instrumentTraceIssues(rep, val)); // HC55
       break;
     case 'globe':
       // In formula units (a distance in km, a speed in m/s), as the picture draws them.

@@ -192,6 +192,7 @@ import { ComplexPlaneHe2a } from './ComplexPlaneHe2a';
 import { Bode } from './Bode';
 import { PotentialWell } from './PotentialWell';
 import { UnitCell } from './UnitCell';
+import { InstrumentTrace } from './InstrumentTrace';
 import { Globe } from './Globe';
 import { StressStrain } from './StressStrain';
 import { StressElement } from './StressElement';
@@ -278,6 +279,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <Neuron spec={spec} calc={calc} />;
     case 'skeletal':
       return <Skeletal spec={spec} calc={calc} />;
+    case 'instrumentTrace':
+      return <InstrumentTrace spec={spec} calc={calc} />; // HC55
     case 'gasPiston':
     case 'energyProfile':
     case 'equilibriumChart':

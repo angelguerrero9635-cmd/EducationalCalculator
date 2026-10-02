@@ -37,6 +37,7 @@ import { he1gSpecVars } from '../typesHe1g';
 import { he1fSpecVars } from '../typesHe1f';
 import { he2bSpecVars } from '../typesHe2b';
 import { globeVars } from '../typesHe2k';
+import { instrumentTraceVars } from '../typesHe3e';
 import { he2jSpecVars } from '../typesHe2j';
 import { fieldPlotVars } from '../typesHe2g';
 import { he2cSpecVars } from '../typesHe2c';
@@ -610,6 +611,8 @@ function representationVars(r: Representation): string[] {
       return he2bSpecVars(r);
     case 'globe':
       return globeVars(r);
+    case 'instrumentTrace':
+      return instrumentTraceVars(r); // HC55
     case 'stressStrain':
     case 'stressElement':
       return he2jSpecVars(r);
