@@ -19,23 +19,24 @@ Where the work stands, for the next session. Everything listed as merged is on
   chat prompt), `docs/HE_NEEDS.md` (32 engine needs), `docs/HE_TAXONOMY_GAPS.md` (applied).
 - College engine needs done: HE-E1–E12, E14–E19, E21, E25, E26 (E14/E18 merged: closed forms and trial lines replace "Try numbers until both sides match"; 54 K–12 pages' steps changed) (see HE_NEEDS status lines).
 
-## In progress when this note was written (local worktrees, not yet merged)
+## Small fixes left
 
-1. **Picture leftovers from the sweep** — worktree `.claude/worktrees/agent-ac5db7aa6447d4eef`,
-   several commits (handles that stood still now move or hide, angle handles past the vertex,
-   false-positive rules) plus uncommitted component edits. Backed up to branch
-   `backup/picture-leftovers`; if the worktree is gone, finish from that branch (the
-   remaining list is in `docs/REVIEW_LOG.md`).
-   Also add: a DMS angle label in a picture shows a second ° (reps/common.tsx, from HE-E19).
+- Picture leftovers from the sweep are merged; three remain (top entry of `docs/REVIEW_LOG.md`):
+  the rational-function zero handle unmounts on the pole; m.9.quadratic-formula~inequality
+  disagrees with the box on b's sign after a vertex drag; a false positive on
+  g.s9-biotechnology-start-stop.
+- A DMS angle label in a picture shows a second ° (reps/common.tsx, from HE-E19).
+- s.9 whole-count pages still allowlisted (pcr, population-ecology, doubling, herd-immunity).
+- The backup branches `backup/he-e14-e18-trials-logs` and `backup/picture-leftovers` are no
+  longer needed (both merged); delete them when the owner agrees.
 
 ## Next steps
 
-1. Merge the picture leftovers when it finishes (quick checks, push).
-2. Engine needs left: HE-E13 (named data rows), E20 (special functions), E22 (sums, series,
+1. Engine needs left: HE-E13 (named data rows), E20 (special functions), E22 (sums, series,
    recurrences), E23 (data lists), E24 (limits with reasons), E27 (water/steam), E28 (statistics
    critical values), E29 (chemistry structure models), E30 (money), E31 (integral templates),
    E32 typed functions (later). HE-E6 typesetting of dy/dx, [F] from a to b and lim is partly left.
-3. Plan pages for the 75 topics and 5 courses added from the taxonomy gaps (the plans predate them).
-4. Give `docs/RENDERINGS_HE.md` round 1 to the pictures chat; give `docs/RESEARCH_HE.md` to a
+2. Plan pages for the 75 topics and 5 courses added from the taxonomy gaps (the plans predate them).
+3. Give `docs/RENDERINGS_HE.md` round 1 to the pictures chat; give `docs/RESEARCH_HE.md` to a
    research chat.
-5. Build college pages from the plans (pictures and engine needs permitting); review them.
+4. Build college pages from the plans (pictures and engine needs permitting); review them.
