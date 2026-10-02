@@ -1,0 +1,151 @@
+{
+  "id": "schmittner-introduction-to-climate-science",
+  "curriculum": "Introduction to Climate Science",
+  "publisher": "Oregon State University (LibreTexts Geosciences edition)",
+  "edition": "2021 LibreTexts edition",
+  "subject": "geography",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0 (LibreTexts pages); CC BY-NC 4.0 (OSU original)",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Introduction to Climate Science by Andreas Schmittner, Oregon State University; LibreTexts Geosciences edition."
+  },
+  "terms": {
+    "unit": "Chapter",
+    "lesson": "Section"
+  },
+  "sourceUrl": "https://geo.libretexts.org/Bookshelves/Meteorology_and_Climate_Science/Introduction_to_Climate_Science_(Schmittner_2021)/01%3A_Chapters",
+  "retrieved": "2026-10-02",
+  "notes": "Each chapter is one page. The OSU copy (open.oregonstate.education) answered 403 to every request, robots.txt included; the LibreTexts pages state CC BY-NC-SA 4.0 while the plan read CC BY-NC 4.0 on OSU: the stricter NC terms apply either way (type only).",
+  "books": [
+    {
+      "grade": "college",
+      "url": "https://geo.libretexts.org/Bookshelves/Meteorology_and_Climate_Science/Introduction_to_Climate_Science_(Schmittner_2021)/01%3A_Chapters",
+      "units": [
+        {
+          "n": "1.01",
+          "title": "Weather",
+          "url": "https://geo.libretexts.org/Bookshelves/Meteorology_and_Climate_Science/Introduction_to_Climate_Science_(Schmittner_2021)/01%3A_Chapters/1.01%3A_Weather",
+          "topics": [
+            "he.geography.climatology#0"
+          ],
+          "examples": [
+            "chapter questions (list at the chapter end): recorded as types (SCHM-*)"
+          ],
+          "lessons": []
+        },
+        {
+          "n": "1.02",
+          "title": "Observations",
+          "url": "https://geo.libretexts.org/Bookshelves/Meteorology_and_Climate_Science/Introduction_to_Climate_Science_(Schmittner_2021)/01%3A_Chapters/1.02%3A_Observations",
+          "topics": [
+            "he.geography.climatology#2"
+          ],
+          "examples": [
+            "chapter questions (list at the chapter end): recorded as types (SCHM-*)"
+          ],
+          "lessons": []
+        },
+        {
+          "n": "1.03",
+          "title": "Paleoclimate",
+          "url": "https://geo.libretexts.org/Bookshelves/Meteorology_and_Climate_Science/Introduction_to_Climate_Science_(Schmittner_2021)/01%3A_Chapters/1.03%3A_Paleoclimate",
+          "topics": [
+            "he.geography.climatology#2",
+            "he.earth-science.historical-geology#3"
+          ],
+          "examples": [
+            "chapter questions (list at the chapter end): recorded as types (SCHM-*)"
+          ],
+          "lessons": []
+        },
+        {
+          "n": "1.04",
+          "title": "Theory",
+          "url": "https://geo.libretexts.org/Bookshelves/Meteorology_and_Climate_Science/Introduction_to_Climate_Science_(Schmittner_2021)/01%3A_Chapters/1.04%3A_Theory",
+          "topics": [
+            "he.geography.climatology#0"
+          ],
+          "examples": [
+            "chapter questions (list at the chapter end): recorded as types (SCHM-*)"
+          ],
+          "lessons": []
+        },
+        {
+          "n": "1.05",
+          "title": "Carbon",
+          "url": "https://geo.libretexts.org/Bookshelves/Meteorology_and_Climate_Science/Introduction_to_Climate_Science_(Schmittner_2021)/01%3A_Chapters/1.05%3A_Carbon",
+          "topics": [
+            "he.geography.climatology#3"
+          ],
+          "examples": [
+            "chapter questions (list at the chapter end): recorded as types (SCHM-*)"
+          ],
+          "lessons": []
+        },
+        {
+          "n": "1.06",
+          "title": "Processes",
+          "url": "https://geo.libretexts.org/Bookshelves/Meteorology_and_Climate_Science/Introduction_to_Climate_Science_(Schmittner_2021)/01%3A_Chapters/1.06%3A_Processes",
+          "topics": [
+            "he.geography.climatology#1",
+            "he.geography.climatology#3"
+          ],
+          "lessons": []
+        },
+        {
+          "n": "1.07",
+          "title": "Models",
+          "url": "https://geo.libretexts.org/Bookshelves/Meteorology_and_Climate_Science/Introduction_to_Climate_Science_(Schmittner_2021)/01%3A_Chapters/1.07%3A_Models",
+          "topics": [
+            "he.geography.climatology#3"
+          ],
+          "examples": [
+            "chapter questions (list at the chapter end): recorded as types (SCHM-*)"
+          ],
+          "lessons": []
+        },
+        {
+          "n": "1.08",
+          "title": "Impacts",
+          "url": "https://geo.libretexts.org/Bookshelves/Meteorology_and_Climate_Science/Introduction_to_Climate_Science_(Schmittner_2021)/01%3A_Chapters/1.08%3A_Impacts",
+          "topics": [
+            "he.geography.climatology#3"
+          ],
+          "examples": [
+            "chapter questions (list at the chapter end): recorded as types (SCHM-*)"
+          ],
+          "lessons": []
+        },
+        {
+          "n": "1.09",
+          "title": "Economics",
+          "url": "https://geo.libretexts.org/Bookshelves/Meteorology_and_Climate_Science/Introduction_to_Climate_Science_(Schmittner_2021)/01%3A_Chapters/1.09%3A_Economics",
+          "topics": [],
+          "notes": "Economics, ethics and solutions: no topic.",
+          "lessons": []
+        },
+        {
+          "n": "1.10",
+          "title": "Ethics",
+          "url": "https://geo.libretexts.org/Bookshelves/Meteorology_and_Climate_Science/Introduction_to_Climate_Science_(Schmittner_2021)/01%3A_Chapters/1.10%3A_Ethics",
+          "topics": [],
+          "notes": "Economics, ethics and solutions: no topic.",
+          "lessons": []
+        },
+        {
+          "n": "1.11",
+          "title": "Solutions",
+          "url": "https://geo.libretexts.org/Bookshelves/Meteorology_and_Climate_Science/Introduction_to_Climate_Science_(Schmittner_2021)/01%3A_Chapters/1.11%3A_Solutions",
+          "topics": [],
+          "notes": "Economics, ethics and solutions: no topic.",
+          "examples": [
+            "chapter questions (list at the chapter end): recorded as types (SCHM-*)"
+          ],
+          "lessons": []
+        }
+      ]
+    }
+  ]
+}
