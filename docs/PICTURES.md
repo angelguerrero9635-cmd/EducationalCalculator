@@ -460,6 +460,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `pascalTriangle`   | `fraction.b`, `fraction.r`               | exactly k of r: C(a, k) × C(b, r − k) ÷ C(a + b, r), to 60 (H113)             |
 | `reserve`          | `growth: id`, `lasts: id`                | use growing g% a year: slices grow, empty at T, beside steady Q ÷ r (H115)    |
 | `photoelectric`    | `blank: true`                            | a "?" value draws nothing (no example φ, Kₘₐₓ or λ₀ faded behind it) (H116)   |
+| `photoelectric`    | `mode: 'compton'`, `angle`               | photon in, λ′ out at θ, electron at φ; p = p′ + pₑ closed; λ, λ′ (HC105)      |
 | `impulse`          | `shape`, `peak`, `time`, `mass?`         | rectangle, triangle or half-sine F–t pulse, area J; F_avg dashed; Δv (HC101)  |
 
 If no existing representation fits, add a new kind in `src/components/module/reps/` rather than

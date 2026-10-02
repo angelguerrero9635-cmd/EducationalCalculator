@@ -784,6 +784,151 @@ const additionNearC = additionDemo(
   [0.9, 0.9],
 );
 
+// ── HC105: Compton scattering (university-3#3) ──
+
+const COMPTON = 2.426;
+const HC = 1240;
+const DEG_C = Math.PI / 180;
+
+const comptonDemo = (id: string, title: string, use: string, [lam, th]: [number, number]) => {
+  const dl = COMPTON * (1 - Math.cos(th * DEG_C));
+  const lamp = lam + dl;
+  return demo({
+    id,
+    title,
+    use,
+    assumptions: [
+      'The electron starts free and at rest; energy and momentum are both kept.',
+      'h ÷ (mₑc) = 2.426 pm and hc = 1240 keV·pm.',
+      'The shift Δλ depends only on the angle, not on λ.',
+    ],
+    variables: [
+      quantity('lam', 'λ', 'Incoming wavelength', 'pm', 1, 1000, 0.01),
+      quantity('th', 'θ', 'Scattering angle', '°', 0, 180, 0.1),
+      quantity('dl', 'Δλ', 'Wavelength shift', 'pm', 0, 4.852, 0.0001),
+      quantity('lamp', 'λ′', 'Scattered wavelength', 'pm', 1, 1005, 0.01),
+      quantity('E', 'E', 'Incoming photon energy', 'keV', 1, 1240, 0.001),
+      quantity('Ep', 'E′', 'Scattered photon energy', 'keV', 1, 1240, 0.001),
+      quantity('K', 'K', 'Electron’s kinetic energy', 'keV', 0, 1240, 0.001),
+    ],
+    ...rules(
+      {
+        relation: {
+          id: 'Δλ = (h ÷ mₑc)(1 − cos θ)',
+          display: '{dl} = 2.426 × (1 − cos({th}°))',
+          vars: ['dl', 'th'],
+          residual: (v) => v.dl! - COMPTON * (1 - Math.cos(v.th! * DEG_C)),
+          solve: {
+            dl: (v) => COMPTON * (1 - Math.cos(v.th! * DEG_C)),
+            th: (v) => {
+              const x = 1 - v.dl! / COMPTON;
+              return Math.acos(Math.max(-1, Math.min(1, x))) / DEG_C;
+            },
+          },
+        },
+        steps: {
+          dl: st('2.426 × (1 − cos({th}°))', 'The Compton shift: h ÷ (mₑc) times 1 − cos θ.'),
+          th: st(
+            'cos⁻¹(1 − {dl} ÷ 2.426)',
+            'Divide the shift by 2.426 pm, take it from 1, then take cos⁻¹.',
+          ),
+        },
+      },
+      {
+        relation: {
+          id: 'λ′ = λ + Δλ',
+          display: '{lamp} = {lam} + {dl}',
+          vars: ['lamp', 'lam', 'dl'],
+          residual: (v) => v.lamp! - v.lam! - v.dl!,
+          solve: {
+            lamp: (v) => v.lam! + v.dl!,
+            lam: (v) => v.lamp! - v.dl!,
+            dl: (v) => v.lamp! - v.lam!,
+          },
+        },
+        steps: {
+          lamp: st('{lam} + {dl}', 'The scattered photon’s wave is longer by the shift.'),
+          lam: st('{lamp} − {dl}', 'Take the shift off the scattered wavelength.'),
+          dl: st('{lamp} − {lam}', 'The shift is how much longer λ′ is than λ.'),
+        },
+      },
+      {
+        relation: {
+          id: 'E = hc ÷ λ',
+          display: '{E} = 1240 ÷ {lam}',
+          vars: ['E', 'lam'],
+          residual: (v) => v.E! * v.lam! - HC,
+          solve: { E: (v) => div(HC, v.lam!), lam: (v) => div(HC, v.E!) },
+        },
+        steps: {
+          E: st('1240 ÷ {lam}', 'A photon’s energy is hc ÷ λ, with hc = 1240 keV·pm.'),
+          lam: st('1240 ÷ {E}', 'Divide hc by the energy.'),
+        },
+      },
+      {
+        relation: {
+          id: 'E′ = hc ÷ λ′',
+          display: '{Ep} = 1240 ÷ {lamp}',
+          vars: ['Ep', 'lamp'],
+          residual: (v) => v.Ep! * v.lamp! - HC,
+          solve: { Ep: (v) => div(HC, v.lamp!), lamp: (v) => div(HC, v.Ep!) },
+        },
+        steps: {
+          Ep: st('1240 ÷ {lamp}', 'The same for the scattered photon, with its longer λ′.'),
+          lamp: st('1240 ÷ {Ep}', 'Divide hc by the scattered energy.'),
+        },
+      },
+      {
+        relation: {
+          id: 'K = E − E′',
+          display: '{K} = {E} − {Ep}',
+          vars: ['K', 'E', 'Ep'],
+          residual: (v) => v.K! - (v.E! - v.Ep!),
+          solve: {
+            K: (v) => v.E! - v.Ep!,
+            E: (v) => v.K! + v.Ep!,
+            Ep: (v) => v.E! - v.K!,
+          },
+        },
+        steps: {
+          K: st('{E} − {Ep}', 'Energy is kept: what the photon lost, the electron carries off.'),
+          E: st('{K} + {Ep}', 'Add the electron’s share back to the scattered photon’s.'),
+          Ep: st('{E} − {K}', 'Take the electron’s share from the incoming energy.'),
+        },
+      },
+    ),
+    example: { lam, th, dl, lamp, E: HC / lam, Ep: HC / lamp, K: HC / lam - HC / lamp },
+    startWith: ['lam', 'th'],
+    representation: {
+      kind: 'photoelectric',
+      mode: 'compton',
+      wavelength: 'lam',
+      angle: 'th',
+      shift: 'dl',
+      scattered: 'lamp',
+      energy: 'E',
+      scatteredEnergy: 'Ep',
+      kinetic: 'K',
+      compton: COMPTON,
+      hc: HC,
+    },
+  });
+};
+
+const compton = comptonDemo(
+  'g.he-photoelectric-compton',
+  'Compton scattering: an X-ray photon bounces off an electron',
+  'Use this for 71 pm X-rays scattered through 90°: the shift, the new wavelength and the energy the electron takes.',
+  [71, 90],
+);
+
+const comptonBack = comptonDemo(
+  'g.he-photoelectric-compton-backscatter',
+  'A gamma ray bounced straight back: the largest shift',
+  'Use this for a 5 pm gamma ray scattered back through 180°: the wavelength doubles and the electron takes half the energy.',
+  [5, 180],
+);
+
 export const HE4C_GALLERY_MODULES: ModuleDef[] = [
   polynomial,
   polynomialLong,
@@ -798,6 +943,8 @@ export const HE4C_GALLERY_MODULES: ModuleDef[] = [
   lorentzFast,
   addition,
   additionNearC,
+  compton,
+  comptonBack,
 ];
 
 export const HE4C_GALLERY_LAYOUTS: LayoutDef[] = [];

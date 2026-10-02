@@ -123,3 +123,33 @@ export function fromPrimed(beta: number, xp: number, ctp: number) {
 
 /** Relativistic velocity addition in units of c: u = (v + u′) ÷ (1 + vu′). */
 export const addVelocities = (v: number, up: number) => (v + up) / (1 + v * up);
+
+// ─── HC105 Compton scattering ────────────────────────────────────────────────
+
+/** h ÷ (mₑc) in pm and hc in keV·pm (the plan's values; a page may pass its own). */
+export const COMPTON_PM = 2.426;
+export const HC_KEV_PM = 1240;
+
+/**
+ * A photon of λ (pm) scattered through θ (°) by a free electron at rest: Δλ, λ′, the energies
+ * (keV), the electron's K and its recoil angle φ (° below the axis), and the momenta in units of
+ * h per pm (p = 1 ÷ λ) with the electron's from p = p′ + pₑ.
+ */
+export function comptonOf(lam: number, thetaDeg: number, C = COMPTON_PM, hc = HC_KEV_PM) {
+  const th = (thetaDeg * Math.PI) / 180;
+  const shift = C * (1 - Math.cos(th));
+  const lamP = lam + shift;
+  const [p, pp] = [1 / lam, 1 / lamP];
+  const pe = { x: p - pp * Math.cos(th), y: -pp * Math.sin(th) };
+  return {
+    shift,
+    lamP,
+    E: hc / lam,
+    Ep: hc / lamP,
+    K: hc / lam - hc / lamP,
+    p,
+    pp,
+    pe,
+    phi: Math.abs(pe.y) < 1e-12 * p ? 0 : (Math.atan2(-pe.y, pe.x) * 180) / Math.PI,
+  };
+}

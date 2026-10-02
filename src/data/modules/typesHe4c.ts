@@ -1,6 +1,7 @@
 /**
  * College pictures, round 4, group C (docs/RENDERINGS_HE.md): HC99 `motionGraph` `polynomial`,
- * HC101 `impulse` `shape`, HC103 `pendulum` `rod`, HC104 the new kind `spacetime`.
+ * HC101 `impulse` `shape`, HC103 `pendulum` `rod`, HC104 the new kind `spacetime`, HC105
+ * `photoelectric` `mode: 'compton'`.
  * Kept apart from `types.ts` so the union only names them.
  *
  * Every string is a variable id; a `NumOrVar` is a fixed number or one. A value is read in its
@@ -122,10 +123,39 @@ export type SpacetimeSpec = { kind: 'spacetime'; fixed?: boolean } & (
     }
 );
 
+// ─── HC105 photoelectric compton ─────────────────────────────────────────────
+
+/**
+ * Compton scattering: a photon of `wavelength` λ (pm) hits a free electron at rest and leaves at
+ * `angle` θ (°) with the longer λ′ = λ + (h ÷ mₑc)(1 − cos θ); the electron recoils at φ below
+ * the axis. The photons are drawn as waves and every arrow to one momentum scale (p ∝ 1 ÷ λ),
+ * with pₑ copied dashed from p′'s tip to close p = p′ + pₑ; under it λ and λ′ as wave strips to
+ * one scale, six waves each, the gap 6Δλ bracketed. Energies in keV: E = hc ÷ λ. Drag the
+ * scattered photon round for θ.
+ */
+export interface PhotoelectricComptonSpec {
+  kind: 'photoelectric';
+  mode: 'compton';
+  wavelength: NumOrVar;
+  angle: NumOrVar;
+  /** Δλ and λ′ (pm); E, E′ and the electron's K (keV); the electron's angle φ (°). */
+  shift?: string;
+  scattered?: string;
+  energy?: string;
+  scatteredEnergy?: string;
+  kinetic?: string;
+  electronAngle?: string;
+  /** The page's constants: h ÷ (mₑc) in pm (default 2.426) and hc in keV·pm (default 1240). */
+  compton?: number;
+  hc?: number;
+  fixed?: boolean;
+}
+
 // ─── The union ───────────────────────────────────────────────────────────────
 
 /** Group HE4C's options on kinds that exist (sent to He4cView before the kind's own picture). */
-export type He4cOptionSpec = MotionGraphHe4cSpec | ImpulseShapeSpec | PendulumRodSpec;
+export type He4cOptionSpec =
+  MotionGraphHe4cSpec | ImpulseShapeSpec | PendulumRodSpec | PhotoelectricComptonSpec;
 
 /** Every picture of group HE4C. */
 export type He4cSpec = He4cOptionSpec | SpacetimeSpec;
@@ -135,6 +165,7 @@ export function isHe4cOption(r: Representation): r is He4cOptionSpec {
   if (r.kind === 'motionGraph') return 'polynomial' in r;
   if (r.kind === 'impulse') return 'shape' in r;
   if (r.kind === 'pendulum') return 'rod' in r;
+  if (r.kind === 'photoelectric') return 'mode' in r && r.mode === 'compton';
   return false;
 }
 
@@ -150,6 +181,17 @@ export function he4cSpecVars(r: He4cSpec): string[] {
     }
     case 'impulse':
       return ids(r.peak, r.time, r.impulse, r.average, r.mass, r.change);
+    case 'photoelectric':
+      return ids(
+        r.wavelength,
+        r.angle,
+        r.shift,
+        r.scattered,
+        r.energy,
+        r.scatteredEnergy,
+        r.kinetic,
+        r.electronAngle,
+      );
     case 'spacetime':
       return r.mode === 'lorentz'
         ? ids(r.speed, r.x, r.ct, r.gamma, r.xPrime, r.ctPrime, r.interval)

@@ -6,6 +6,7 @@ import type { He4cOptionSpec } from '@/data/modules/typesHe4c';
 
 import type { Calculator } from '../useCalculator';
 import { ImpulseShape } from './ImpulseShape';
+import { Compton } from './Compton';
 import { MotionPolynomial } from './MotionPolynomial';
 import { PendulumRod } from './PendulumRod';
 
@@ -17,5 +18,7 @@ export function He4cView({ spec, calc }: { spec: He4cOptionSpec; calc: Calculato
       return <ImpulseShape spec={spec} calc={calc} />; // HC101
     case 'pendulum':
       return <PendulumRod spec={spec} calc={calc} />; // HC103
+    case 'photoelectric':
+      return <Compton spec={spec} calc={calc} />; // HC105
   }
 }

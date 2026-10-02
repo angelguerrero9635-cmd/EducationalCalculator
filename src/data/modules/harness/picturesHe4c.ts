@@ -5,8 +5,11 @@
  */
 import {
   addVelocities,
+  COMPTON_PM,
+  comptonOf,
   cubicAt,
   fromPrimed,
+  HC_KEV_PM,
   lorentzOf,
   PULSE_SHARE,
   pulseForce,
@@ -77,6 +80,30 @@ export function he4cIssues(rep: He4cSpec, val: Val): string[] {
       if (avg !== undefined && !near(avg * dt, J))
         out.push(`impulse: F_avg·Δt ${avg * dt} ≠ J ${J}`);
       if (m !== undefined && m > 0) same(rep.change, J / m, 'Δv = J ÷ m');
+      break;
+    }
+    case 'photoelectric': {
+      // HC105: λ′ − λ = (h ÷ mₑc)(1 − cos θ); the energies; momentum closes in x and y.
+      const [lam, th] = [read(rep.wavelength), read(rep.angle)];
+      if (lam !== undefined && lam <= 0)
+        out.push(`photoelectric: wavelength ${lam} is not positive`);
+      if (th !== undefined && (th < 0 || th > 180))
+        out.push(`photoelectric: angle ${th} is not 0° to 180°`);
+      if (lam === undefined || th === undefined || lam <= 0) break;
+      const C = rep.compton ?? COMPTON_PM;
+      const k = comptonOf(lam, th, C, rep.hc ?? HC_KEV_PM);
+      if (!near(k.lamP - lam, C * (1 - Math.cos((th * Math.PI) / 180)), 1e-6))
+        out.push(`photoelectric: λ′ − λ = ${k.lamP - lam} is not the Compton shift`);
+      const t = (th * Math.PI) / 180;
+      const [sx, sy] = [k.pp * Math.cos(t) + k.pe.x - k.p, k.pp * Math.sin(t) + k.pe.y];
+      if (Math.abs(sx) > 1e-9 * k.p || Math.abs(sy) > 1e-9 * k.p)
+        out.push(`photoelectric: momentum doesn't close (${sx}, ${sy})`);
+      same(rep.shift, k.shift, 'Δλ = (h ÷ mₑc)(1 − cos θ):', C);
+      same(rep.scattered, k.lamP, 'λ′ = λ + Δλ:');
+      same(rep.energy, k.E, 'E = hc ÷ λ:');
+      same(rep.scatteredEnergy, k.Ep, 'E′ = hc ÷ λ′:');
+      same(rep.kinetic, k.K, 'K = E − E′:', k.E);
+      same(rep.electronAngle, k.phi, 'the electron’s angle φ:');
       break;
     }
     case 'spacetime': {

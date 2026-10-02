@@ -106,4 +106,21 @@ export const HE4C_REQUESTS: PictureRequest[] = [
       'g.he-spacetime-addition-near-c',
     ],
   },
+  {
+    ...ask(
+      'HC105',
+      'photoelectric',
+      'Compton scattering: a photon in, the scattered photon at θ with its longer wave, the electron recoiling at φ, every arrow on one momentum scale with p = p′ + pₑ closed, and λ and λ′ as wave strips to one scale',
+      { [`${P}university-3#3`]: '"compton"' },
+      [
+        'From P-P17. New mode on photoelectric (typesHe4c.ts PhotoelectricComptonSpec, reps/Compton.tsx, sums in reps/he4cMath.ts); the photoelectric-effect picture is unchanged.',
+        "Fields: { kind: 'photoelectric', mode: 'compton', wavelength (λ, pm), angle (θ, °), shift? (Δλ, pm), scattered? (λ′, pm), energy? (E, keV), scatteredEnergy? (E′, keV), kinetic? (K, keV), electronAngle? (φ, ° below the axis), compton? (h ÷ mₑc in pm, the page's constant, default 2.426), hc? (keV·pm, default 1240), fixed? }.",
+        "Example (UP3#3 main): { kind: 'photoelectric', mode: 'compton', wavelength: 'lam', angle: 'th', shift: 'dl', scattered: 'lamp', energy: 'E', scatteredEnergy: 'Ep', kinetic: 'K', compton: 2.426, hc: 1240 }.",
+        'The scene: the incoming photon as a wave arriving at the electron (a lit ball), p carried on dashed past it, the scattered photon at θ (its drawn wave longer by λ′ ÷ λ) and the electron’s arrow at φ, all on one momentum scale (p ∝ 1 ÷ λ), pₑ copied dashed from p′’s tip to p’s tip; near 180° the returning photon is drawn just under the axis. Under it six waves of λ and of λ′ on one scale with the gap 6Δλ as a bar. The caption works Δλ, λ′, E, E′, K and φ. Drag the scattered photon round (0° to 180°) for θ. A "?" λ or θ draws no scattering.',
+        'Harness (harness/picturesHe4c.ts): λ′ − λ = (h ÷ mₑc)(1 − cos θ); momentum closes in x and y; Δλ, λ′, E, E′, K and φ agree with the page.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: ['g.he-photoelectric-compton', 'g.he-photoelectric-compton-backscatter'],
+  },
 ];
