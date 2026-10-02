@@ -1001,6 +1001,198 @@ const rodNear = rodAxis(
   { M: 1.2, L: 0.9, d: 0.1 },
 );
 
+// ── HC106: a gyroscope's precession (classical-mechanics#3) ──
+
+/** classical-mechanics#3 main: Ω = τ ÷ L for a fast-spinning disk on a level axle. */
+function gyroscope(id: string, title: string, use: string, ex: Values): ModuleDef {
+  const I = 0.5 * ex.m! * ex.R! ** 2;
+  const L = I * ex.w!;
+  const tau = ex.m! * G_PHYS * ex.r!;
+  const Om = tau / L;
+  return page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'Fast spin: L is far larger than the angular momentum of the precession itself.',
+      'The axle stays level; the torque turns L sideways, not down.',
+      'The rotor is a uniform disk, I = ½mR², and g = 9.8 m/s².',
+    ],
+    variables: [
+      num('m', 'm', 'Rotor mass', 'kg', 0.001, 1000, { step: 0.1 }),
+      num('R', 'R', 'Rotor radius', 'm', 0.001, 10, { step: 0.01 }),
+      num('w', 'ω', 'Spin rate', 'rad/s', 0.1, 1e5, { step: 1 }),
+      num('r', 'r', 'Pivot to rotor center', 'm', 0.001, 10, { step: 0.01 }),
+      got('I', 'I', 'Moment of inertia', 'kg·m²', 0, 1e6, { scientific: true }),
+      got('L', 'L', 'Spin angular momentum', 'kg·m²/s', 0, 1e9),
+      got('tau', 'τ', 'Torque of the weight', 'N·m', 0, 1e9),
+      got('Om', 'Ω', 'Precession rate', 'rad/s', 0, 1e9),
+      got('Tp', 'T_p', 'Precession period', 's', 0, 1e9),
+    ],
+    rules: [
+      rule(
+        'I = ½mR²',
+        '{I} = 0.5 × {m} × {R}²',
+        ['I', 'm', 'R'],
+        (x) => x.I! - 0.5 * x.m! * x.R! ** 2,
+        {
+          I: [
+            (x) => 0.5 * x.m! * x.R! ** 2,
+            '0.5 × {m} × {R}²',
+            'A uniform disk about its axle: half m R squared.',
+          ],
+        },
+      ),
+      times('L = Iω', 'L', 'I', 'w', 'The spin angular momentum points along the axle: I times ω.'),
+      rule(
+        'τ = mgr',
+        `{tau} = {m} × ${G_PHYS} × {r}`,
+        ['tau', 'm', 'r'],
+        (x) => x.tau! - x.m! * G_PHYS * x.r!,
+        {
+          tau: [
+            (x) => x.m! * G_PHYS * x.r!,
+            `{m} × ${G_PHYS} × {r}`,
+            'The weight pulls down r from the pivot: τ = mgr.',
+          ],
+        },
+      ),
+      over(
+        'Ω = τ/L',
+        'Om',
+        'tau',
+        'L',
+        'Each second the torque adds τ sideways to L, turning it by τ ÷ L.',
+      ),
+      rule('T_p = 2π/Ω', '{Tp} = 2 × π ÷ {Om}', ['Tp', 'Om'], (x) => x.Tp! * x.Om! - 2 * Math.PI, {
+        Tp: [
+          (x) => div(2 * Math.PI, x.Om!),
+          '2 × π ÷ {Om}',
+          'One full turn, 2π, at Ω radians a second.',
+        ],
+      }),
+    ],
+    example: { ...ex, I, L, tau, Om, Tp: (2 * Math.PI) / Om },
+    startWith: ['m', 'R', 'w', 'r'],
+    representation: {
+      kind: 'rotor',
+      shape: 0.5,
+      mass: 'm',
+      radius: 'R',
+      inertia: 'I',
+      precession: {
+        r: 'r',
+        omega: 'w',
+        g: G_PHYS,
+        L: 'L',
+        torque: 'tau',
+        rate: 'Om',
+        period: 'Tp',
+      },
+      fixed: true,
+    },
+  });
+}
+
+const gyroMain = gyroscope(
+  'g.he-rotor-precession',
+  'A gyroscope precesses: Ω = mgr ÷ (Iω)',
+  'Use this for “A 0.5 kg disk, R = 4 cm, spins at 300 rad/s, 5 cm from the pivot. Find the precession rate.”',
+  { m: 0.5, R: 0.04, w: 300, r: 0.05 },
+);
+
+const gyroSlow = gyroscope(
+  'g.he-rotor-precession-slow',
+  'A slow spin: the precession is fast and the rule only rough',
+  'Use this for “The same gyroscope spins at only 40 rad/s. How fast does it precess, and can we trust it?”',
+  { m: 0.5, R: 0.04, w: 40, r: 0.05 },
+);
+
+// ── HC107: a thin plate's principal axes (classical-mechanics#3~principal-axes) ──
+
+/** classical-mechanics#3~principal-axes: I₁ = Mb²/12, I₂ = Ma²/12, I₃ = I₁ + I₂. */
+function plateAxes(id: string, title: string, use: string, ex: Values): ModuleDef {
+  const i1 = (ex.M! * ex.b! ** 2) / 12;
+  const i2 = (ex.M! * ex.a! ** 2) / 12;
+  const side = (I: string, s: string, axis: string) =>
+    rule(
+      `${I === 'i1' ? 'I₁ = Mb²/12' : 'I₂ = Ma²/12'}`,
+      `{${I}} = {M} × {${s}}² ÷ 12`,
+      [I, 'M', s],
+      (x) => 12 * x[I]! - x.M! * x[s]! ** 2,
+      {
+        [I]: [
+          (x) => (x.M! * x[s]! ** 2) / 12,
+          `{M} × {${s}}² ÷ 12`,
+          `About the axis along ${axis}, the mass spreads across the other side: like a rod of that length.`,
+        ],
+        [s]: [
+          (x) => Math.sqrt((12 * x[I]!) / x.M!),
+          `√(12 × {${I}} ÷ {M})`,
+          'Turn the rod rule round for the side.',
+        ],
+        M: [
+          (x) => div(12 * x[I]!, x[s]! ** 2),
+          `12 × {${I}} ÷ {${s}}²`,
+          'Turn the rod rule round for the mass.',
+        ],
+      },
+    );
+  return page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'A thin uniform plate: its thickness is too small to count.',
+      'The perpendicular-axis theorem: for a flat body, I₃ = I₁ + I₂.',
+      'Spin about the largest or smallest moment is steady; about the middle one it tumbles (the tennis-racket theorem).',
+    ],
+    variables: [
+      num('M', 'M', 'Plate mass', 'kg', 0.001, 1e4, { step: 0.1 }),
+      num('a', 'a', 'Side a', 'm', 0.001, 100, { step: 0.01 }),
+      num('b', 'b', 'Side b', 'm', 0.001, 100, { step: 0.01 }),
+      num('i1', 'I₁', 'Moment, axis along a', 'kg·m²', 0, 1e8),
+      num('i2', 'I₂', 'Moment, axis along b', 'kg·m²', 0, 1e8),
+      num('i3', 'I₃', 'Moment square to the plate', 'kg·m²', 0, 1e8),
+    ],
+    rules: [
+      side('i1', 'b', 'a'),
+      side('i2', 'a', 'b'),
+      rule('I₃ = I₁ + I₂', '{i3} = {i1} + {i2}', ['i3', 'i1', 'i2'], (x) => x.i3! - x.i1! - x.i2!, {
+        i3: [
+          (x) => x.i1! + x.i2!,
+          '{i1} + {i2}',
+          'The perpendicular-axis theorem: add the two in-plane moments.',
+        ],
+        i1: [(x) => x.i3! - x.i2!, '{i3} − {i2}', 'Take I₂ from I₃.'],
+        i2: [(x) => x.i3! - x.i1!, '{i3} − {i1}', 'Take I₁ from I₃.'],
+      }),
+    ],
+    example: { ...ex, i1, i2, i3: i1 + i2 },
+    startWith: ['M', 'a', 'b'],
+    representation: {
+      kind: 'rotor',
+      mass: 'M',
+      plate: { a: 'a', b: 'b', i1: 'i1', i2: 'i2', i3: 'i3' },
+      fixed: true,
+    },
+  });
+}
+
+const plateMain = plateAxes(
+  'g.he-rotor-plate',
+  'A plate’s three principal axes, and the one that tumbles',
+  'Use this for “A 3 kg plate is 0.4 m by 0.3 m. Find its principal moments. Which spin is unstable?”',
+  { M: 3, a: 0.4, b: 0.3 },
+);
+
+const plateSquare = plateAxes(
+  'g.he-rotor-plate-square',
+  'A square plate: two equal moments, no middle axis',
+  'Use this for “A 2 kg square plate 0.3 m on a side. Find I₁, I₂ and I₃.”',
+  { M: 2, a: 0.3, b: 0.3 },
+);
+
 export const HE4B_GALLERY_MODULES: ModuleDef[] = [
   projectMain,
   projectObtuse,
@@ -1021,6 +1213,10 @@ export const HE4B_GALLERY_MODULES: ModuleDef[] = [
   rollingHoop,
   rodEnd,
   rodNear,
+  gyroMain,
+  gyroSlow,
+  plateMain,
+  plateSquare,
 ];
 
 export const HE4B_GALLERY_LAYOUTS: LayoutDef[] = [];

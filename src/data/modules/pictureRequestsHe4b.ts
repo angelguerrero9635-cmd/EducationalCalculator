@@ -101,4 +101,30 @@ export const HE4B_REQUESTS: PictureRequest[] = [
       "Example (university-1#4~parallel-axis): { kind: 'rotor', mass: 'M', rod: { length: 'L', d: 'd', icm: 'Icm', inertia: 'I' }, fixed: true }.",
     ].join(' '),
   },
+  {
+    id: 'HC106',
+    kind: 'rotor',
+    what: 'A gyroscope on a pivot: the rotor spinning on a level axle r out, L along the axle, mg down, τ = mgr into the page, and the precession circle round the post with Ω = τ ÷ L',
+    pages: [`${P}classical-mechanics#3`],
+    status: 'drawn',
+    gallery: ['g.he-rotor-precession', 'g.he-rotor-precession-slow'],
+    notes: [
+      'From P-P21 (HE-physics-P21). Option `precession` on `rotor` (PrecessionOf in typesHe4b.ts, drawn by RotorPrecession.tsx through RotorHe4b.tsx; checked by he4bIssues in harness/picturesHe4b.ts: L = Iω, τ = mgr, Ω = mgr ÷ (Iω), T_p = 2π/Ω, with I = cmR² from the rotor’s shape, ½ when none is given). Off unless a page sets it. When Ω is more than a tenth of ω the caption says the fast-spin rule is rough.',
+      "Fields: precession: { r, omega, g? (default 9.8; pass the page's g), L?, torque?, rate?, period? } with the rotor's mass, radius, shape (0.5 for a disk) and inertia. Drawn fixed.",
+      "Example (classical-mechanics#3): { kind: 'rotor', shape: 0.5, mass: 'm', radius: 'R', inertia: 'I', precession: { r: 'r', omega: 'w', g: 9.8, L: 'L', torque: 'tau', rate: 'Om', period: 'Tp' }, fixed: true }.",
+    ].join(' '),
+  },
+  {
+    id: 'HC107',
+    kind: 'rotor',
+    what: 'A thin a × b plate to scale with its three principal axes through the center, each moment written on it, the middle axis dashed and marked “tumbles”',
+    pages: [`${P}classical-mechanics#3~principal-axes`],
+    status: 'drawn',
+    gallery: ['g.he-rotor-plate', 'g.he-rotor-plate-square'],
+    notes: [
+      'From P-P22 (HE-physics-P22). Option `plate` on `rotor` (PlateOf in typesHe4b.ts, drawn by RotorPlate.tsx through RotorHe4b.tsx; checked by he4bIssues in harness/picturesHe4b.ts: I₁ = Mb²/12, I₂ = Ma²/12, I₃ = I₁ + I₂). Off unless a page sets it. A square plate (a = b) has no middle axis, and none is marked.',
+      "Fields: plate: { a, b, i1?, i2?, i3? } with the rotor's mass (axis 1 lies along a, axis 2 along b, axis 3 square to the plate). Drawn fixed.",
+      "Example (classical-mechanics#3~principal-axes): { kind: 'rotor', mass: 'M', plate: { a: 'a', b: 'b', i1: 'i1', i2: 'i2', i3: 'i3' }, fixed: true }.",
+    ].join(' '),
+  },
 ];

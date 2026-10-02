@@ -456,6 +456,8 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `rotor`            | `hollow: true`                           | the hollow ball (c = ⅔, a shell cut open) in the compare row (H111)           |
 | `rotor`            | `rolling: { height, shapes? }`           | a ramp of drop h, v and ω at the bottom, K_t + K_r = mgh bars; a race (HC102) |
 | `rotor`            | `rod: { length, d? }`                    | a rod, center axis dashed, the axis d away lit; I = I_cm + Md² bar (HC102)    |
+| `rotor`            | `precession: { r, omega }`               | a gyroscope on a pivot: L along the axle, mg, τ = mgr, the Ω circle (HC106)   |
+| `rotor`            | `plate: { a, b }`                        | a thin plate, its principal axes with I₁, I₂, I₃; the middle tumbles (HC107)  |
 | `normalCurve`      | `f.tailsFrom: id`                        | one tail or two as the Hₐ value says (1, 3, 4 right; 0, 6 both) (H112)        |
 | `pascalTriangle`   | `fraction.b`, `fraction.r`               | exactly k of r: C(a, k) × C(b, r − k) ÷ C(a + b, r), to 60 (H113)             |
 | `reserve`          | `growth: id`, `lasts: id`                | use growing g% a year: slices grow, empty at T, beside steady Q ÷ r (H115)    |

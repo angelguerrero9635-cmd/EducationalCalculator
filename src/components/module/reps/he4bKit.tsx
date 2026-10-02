@@ -94,6 +94,17 @@ export function labelPlacer(w: number, h: number, avoid: { x: number; y: number 
       boxes.push(chipBox(pick.x, pick.y, text, pick.anchor, size));
       return pick;
     },
+    /** Two lines, the second `gap` px under the first: a spot where both are clear. */
+    putPair(first: string, second: string, spots: Spot[], gap = 15) {
+      const all = spots.map((s) => ({ ...s, anchor: s.anchor ?? ('middle' as const) }));
+      const both = (s: (typeof all)[number]) => [
+        chipBox(s.x, s.y, first, s.anchor),
+        chipBox(s.x, s.y + gap, second, s.anchor),
+      ];
+      const pick = all.find((s) => both(s).every(clearOf)) ?? all[0]!;
+      boxes.push(...both(pick));
+      return pick;
+    },
     /** Marks a box as taken (a label drawn some other way). */
     take(b: Box) {
       boxes.push(b);
