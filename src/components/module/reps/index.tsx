@@ -193,6 +193,7 @@ import { Bode } from './Bode';
 import { PotentialWell } from './PotentialWell';
 import { UnitCell } from './UnitCell';
 import { Globe } from './Globe';
+import { Aquifer } from './Aquifer';
 import { StressStrain } from './StressStrain';
 import { StressElement } from './StressElement';
 import { Wing } from './Wing';
@@ -371,6 +372,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <UnitCell spec={spec} calc={calc} />;
     case 'globe':
       return <Globe spec={spec} calc={calc} />;
+    case 'aquifer':
+      return <Aquifer spec={spec} calc={calc} />; // HC75
     case 'stressStrain':
       return <StressStrain spec={spec} calc={calc} />;
     case 'stressElement':

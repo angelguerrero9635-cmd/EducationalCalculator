@@ -77,6 +77,7 @@ import { isHe2fSpec } from '../typesHe2f';
 import { skeletalIssues } from './picturesHe1c';
 import { phaseEnvelopeIssues, phaseSubstanceIssues } from './picturesHe1i';
 import { chemRateHe2kIssues, globeIssues } from './picturesHe2k';
+import { he3mIssues } from './picturesHe3m';
 import { he1fIssues } from './picturesHe1f';
 import { he2bIssues } from './picturesHe2b';
 import { he2jIssues } from './picturesHe2j';
@@ -2298,6 +2299,16 @@ export function repIssues(
             v === undefined || typeof x === 'number' ? v : v * (byId.get(x)?.unitFactor ?? 1))(
             val(x),
           ),
+        ),
+      );
+      break;
+    case 'aquifer':
+      // In formula units, as the picture draws them (HC75).
+      out.push(
+        ...he3mIssues(rep, (x) =>
+          typeof x === 'number'
+            ? x
+            : ((v) => (v === undefined ? v : v * (byId.get(x)?.unitFactor ?? 1)))(val(x)),
         ),
       );
       break;
