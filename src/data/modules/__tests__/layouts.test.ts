@@ -3,9 +3,10 @@
  * together (every card has a group, every scene fits the figure), and everything a student
  * reads meets the same reading-level and formatting rules as a calculator page.
  */
-import { getSkill } from '@/data/selectors';
+import { getProblemType, getSkill, problemTypes, topicOf } from '@/data/selectors';
 
-import { LAYOUTS, gradeOf, moduleOwner } from '..';
+import { LAYOUTS, getLayout, getPage, gradeOf, moduleOwner } from '..';
+import { COLLEGE_LAYOUTS } from '../layouts';
 import type { Figure, LayoutDef, Scene } from '../layouts';
 import { isStandIn, pages } from '../harness/scope';
 import { HSL_SCENE_FIELD } from '../typesHsl';
@@ -61,8 +62,13 @@ const SCENE_FIELD: Record<Figure['kind'], keyof Scene | undefined> = {
   dichotomousKey: 'key',
 };
 
-/** Longest sentence per grade (as in standards.test.ts). */
-function wordLimit(grade: string | undefined): number | undefined {
+/**
+ * Longest sentence per grade (as in standards.test.ts); a college page (`he.…`) reads at the
+ * Grade 12 limit, 35 words (HE-E3).
+ */
+function wordLimit(id: string): number | undefined {
+  if (id.startsWith('he.')) return 35;
+  const grade = gradeOf(id);
   if (grade === undefined) return undefined;
   const g = grade === 'K' ? 0 : Number(grade);
   if (g <= 1) return 12;
@@ -135,10 +141,25 @@ it('layout ids are unique and never shared with a calculator module', async () =
   expect(ids.filter((id) => MODULES.some((m) => m.id === id))).toEqual([]);
 });
 
+it('college layouts are read under their topic ids (HE-E2)', () => {
+  expect(COLLEGE_LAYOUTS.length).toBeGreaterThan(0);
+  for (const l of COLLEGE_LAYOUTS) {
+    // A topic (`<courseId>#<i>`) or its problem type (`…#<i>~<slug>`), in LAYOUTS.
+    expect(l.id).toMatch(/^he\.[\w-]+\.[\w-]+#\d+(~[\w-]+)?$/);
+    expect(LAYOUTS).toContain(l);
+    expect(getLayout(l.id)).toBe(l);
+    expect(getPage(l.id)).toBe(l);
+    if (l.id.includes('~')) {
+      expect(getProblemType(l.id)?.topic?.key).toBe(moduleOwner(l.id));
+      expect(problemTypes(moduleOwner(l.id)).map((t) => t.id)).toContain(l.id);
+    }
+  }
+});
+
 describe.each(pages(LAYOUTS))('layout %s', (id, l) => {
   if (isStandIn(id)) return void it.skip('no pages in scope', () => {});
-  it('belongs to a skill, with a title and use line when it is a problem type', () => {
-    expect(getSkill(moduleOwner(l.id))).toBeDefined();
+  it('belongs to a skill or course topic, with a title and use line when it is a problem type', () => {
+    expect(getSkill(moduleOwner(l.id)) ?? topicOf(moduleOwner(l.id))).toBeDefined();
     if (l.id.includes('~')) {
       expect(l.title).toBeTruthy();
       expect(l.use).toMatch(/^Use this/);
@@ -223,7 +244,7 @@ describe.each(pages(LAYOUTS))('layout %s', (id, l) => {
   });
 
   it('reads at the grade level and is formatted the way the copy editor expects', () => {
-    const limit = wordLimit(gradeOf(l.id));
+    const limit = wordLimit(l.id);
     const failures = studentText(l).flatMap(({ where, text, prose }) => {
       const out: string[] = [];
       const bad = FORMAT.find(([re]) => re.test(text));

@@ -119,10 +119,11 @@ export const PROBLEM_TYPE_IDS = ALL_PAGE_IDS.filter((id) => getProblemType(id)?.
 /** Every course-topic problem-type page id (for pre-rendering topic pages). */
 export const TOPIC_TYPE_IDS = ALL_PAGE_IDS.filter((id) => getProblemType(id)?.topic);
 
-export const getCourse = (id: string): Course | undefined => {
+// A function declaration (hoisted): the problem-type id lists below call it at load time.
+export function getCourse(id: string): Course | undefined {
   const node = getNode(id);
-  return node && !isSkill(node) ? node : undefined;
-};
+  return node && !('grade' in node) ? node : undefined;
+}
 
 /** A course's field title, e.g. "Mechanical" (every course belongs to one field). */
 export function fieldsSummary(course: Course): string {
@@ -442,7 +443,9 @@ export function search(query: string, index = getSearchIndex(), limit = 100): Se
 
 // ─── Topics ──────────────────────────────────────────────────────────────────
 
-export const topicKey = (courseId: string, index: number) => `${courseId}#${index}`;
+export function topicKey(courseId: string, index: number) {
+  return `${courseId}#${index}`;
+}
 
 export function getTopic(courseId: string, index: number): Topic | undefined {
   const course = getCourse(courseId);
