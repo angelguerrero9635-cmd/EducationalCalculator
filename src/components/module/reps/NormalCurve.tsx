@@ -68,8 +68,11 @@ export function NormalCurve({ spec, calc }: { spec: NormalCurveSpec; calc: Calcu
   }
   if (spec.sample && model.pop) {
     const n = get(spec.sample.n)!;
+    // A "?" spread or sample size: the rule only, not worked with the example's numbers.
     lines.push(
-      `Means of samples of ${sym(spec.sample.n, 'n')} = ${num(n)}: σ/√n = ${num(sigma)}/√${num(n)} = ${num(model.s)}.`,
+      known(spec.sd) && known(spec.sample.n)
+        ? `Means of samples of ${sym(spec.sample.n, 'n')} = ${num(n)}: σ/√n = ${num(sigma)}/√${num(n)} = ${num(model.s)}.`
+        : `Means of samples of ${sym(spec.sample.n, 'n')}: their spread is σ/√n.`,
     );
   }
   const areaText = (regions: Span[]) =>
