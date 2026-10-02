@@ -196,6 +196,7 @@ export function hsiIssues(rep: HsiSpec, val: (id: string) => number | undefined)
       break;
     }
     case 'vsepr': {
+      if (rep.mode === 'expanded' || rep.mode === 'complex') break; // HC72: picturesHe3e.ts
       if (rep.mode === 'hbonds') {
         const n = num(rep.molecules);
         if (n !== undefined && (n !== Math.round(n) || n < 2 || n > 5))

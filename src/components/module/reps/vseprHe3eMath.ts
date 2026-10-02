@@ -92,7 +92,8 @@ export function expandedDirections(bonded: number, lone: number): { bonds: Vec[]
   const l = Math.round(lone);
   const d = b + l;
   if (d === 5) {
-    const eqs = [eq(-90), eq(30), eq(150)];
+    // The first lone pair to the left in the page, the bonds' equatorial pair front and back.
+    const eqs = [eq(180), eq(-60), eq(60)];
     const lonePlaces = eqs.slice(0, l);
     const bonds = [UP, DOWN, ...eqs.slice(l)];
     // A T or a line keeps its bonds in the page: the lone pairs lean back.
@@ -112,6 +113,45 @@ export function expandedDirections(bonded: number, lone: number): { bonds: Vec[]
 /** The angle (degrees) between two directions. */
 export const angleBetween = (a: Vec, b: Vec) =>
   Math.acos(Math.max(-1, Math.min(1, a[0] * b[0] + a[1] * b[1] + a[2] * b[2]))) / RAD;
+
+/** The two bonds whose angle is marked: the smallest angle, the pair nearest the page. */
+export function markedPair(bonds: Vec[]): [number, number] {
+  let best: [number, number] = [0, 1];
+  let key = Infinity;
+  for (let i = 0; i < bonds.length; i++)
+    for (let j = i + 1; j < bonds.length; j++) {
+      const k =
+        Math.round(angleBetween(bonds[i]!, bonds[j]!) * 10) * 10 +
+        Math.abs(bonds[i]![2]) +
+        Math.abs(bonds[j]![2]);
+      if (k < key - 1e-9) {
+        key = k;
+        best = [i, j];
+      }
+    }
+  return best;
+}
+
+/**
+ * A direction for a straight (180°) arc to bend through: square to the pair and clear of
+ * every place drawn.
+ */
+export function freeBend(a: Vec, places: Vec[]): Vec {
+  const r = Math.SQRT1_2;
+  const tries: Vec[] = [
+    [0, 1, 0],
+    [r, r, 0],
+    [-r, r, 0],
+    [r, 0, r],
+    [0, r, r],
+    [1, 0, 0],
+  ];
+  const dot = (p: Vec, q: Vec) => p[0] * q[0] + p[1] * q[1] + p[2] * q[2];
+  return (
+    tries.find((t) => Math.abs(dot(t, a)) < 1e-6 && places.every((p) => angleBetween(p, t) > 20)) ??
+    tries.find((t) => Math.abs(dot(t, a)) < 1e-6) ?? [0, 0, 1]
+  );
+}
 
 // ─── Complexes ───────────────────────────────────────────────────────────────
 

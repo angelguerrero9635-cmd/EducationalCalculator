@@ -5,12 +5,14 @@
  * HC55: `instrumentTrace` (C-P5): ¹H NMR, a chromatogram, a rotational spectrum, and the IR
  * sort's `ir` cards.
  * HC70: `orbitalDiagram` mode `mo` (C-P3): diatomic MOs, a heteronuclear pair, Frost circles.
+ * HC72: `vsepr` modes `expanded` (5–6 domains) and `complex` (C-P13).
  */
 import { diatomicMOs, frost, heteronuclear } from '@/components/module/reps/orbitalMoMath';
+import { domainAngleOf } from '@/components/module/reps/vseprHe3eMath';
 import type { Relation, VariableDef } from '@/engine/types';
 
 import type { LayoutDef } from './layouts';
-import type { ModuleDef, StepText } from './types';
+import type { ModuleDef, Representation, StepText } from './types';
 import type { IrBand } from './typesHe3e';
 
 /** A relation and its step text, built together so a demo lists both from one place. */
@@ -981,6 +983,242 @@ const HC70_DEMOS: ModuleDef[] = [
   ),
 ];
 
-export const HE3E_GALLERY_MODULES: ModuleDef[] = [...HC55_DEMOS, ...HC70_DEMOS];
+// ─── HC72 vsepr 5–6 domains (gen-chem-1#4) and complexes (inorganic#1) ──────
+
+const loneRule: Rule = {
+  relation: {
+    id: 'l = (V − 2b − o) ÷ 2',
+    display: '{l} = ({V} − 2 × {b} − {o}) ÷ 2',
+    vars: ['l', 'V', 'b', 'o'],
+    residual: (v) => 2 * v.l! - (v.V! - 2 * v.b! - v.o!),
+    solve: {
+      l: (v) => (v.V! - 2 * v.b! - v.o!) / 2,
+      V: (v) => 2 * v.l! + 2 * v.b! + v.o!,
+      o: (v) => v.V! - 2 * v.b! - 2 * v.l!,
+    },
+  },
+  steps: {
+    l: st(
+      '({V} − 2 × {b} − {o}) ÷ 2',
+      'Take the bonds’ pairs and the outer atoms’ lone electrons from V; halve what is left.',
+    ),
+    V: st(
+      '2 × {l} + 2 × {b} + {o}',
+      'Add the center’s lone electrons, the bonds’ electrons and the outer ones.',
+    ),
+    o: st('{V} − 2 × {b} − 2 × {l}', 'What the bonds and the center’s lone pairs leave.'),
+  },
+};
+
+const domainRule: Rule = {
+  relation: {
+    id: 'd = b + l',
+    display: '{d} = {b} + {l}',
+    vars: ['d', 'b', 'l'],
+    residual: (v) => v.d! - v.b! - v.l!,
+    solve: { d: (v) => v.b! + v.l!, b: (v) => v.d! - v.l!, l: (v) => v.d! - v.b! },
+  },
+  steps: {
+    d: st('{b} + {l}', 'Each bonded atom and each lone pair is one electron domain.'),
+    b: st('{d} − {l}', 'Domains less lone pairs.'),
+    l: st('{d} − {b}', 'Domains less bonded atoms.'),
+  },
+};
+
+const thetaRule: Rule = {
+  relation: {
+    id: 'θ from d',
+    display: '{theta} = smallest angle between {d} domains',
+    vars: ['theta', 'd'],
+    residual: (v) => v.theta! - domainAngleOf(v.d!),
+    solve: { theta: (v) => domainAngleOf(v.d!), d: () => undefined },
+  },
+  steps: {
+    theta: {
+      expr: 'smallest angle between {d} domains',
+      how: 'Two domains 180°, three 120°, four 109.5°, five and six 90° at the closest.',
+    },
+  },
+};
+
+const vseprDemo = (
+  id: string,
+  title: string,
+  formula: string,
+  [V, b, o]: [number, number, number],
+): ModuleDef => {
+  const l = (V - 2 * b - o) / 2;
+  return {
+    id,
+    title,
+    use: `Use this for “Give the shape, the smallest bond angle and the hybridization of ${formula}.”`,
+    assumptions: [
+      'Count an ion’s charge in V; hybrid orbitals = domains (sp, sp², sp³, sp³d, sp³d²).',
+      'Lone pairs take the roomiest places: equatorial in 5 domains, trans in 6.',
+    ],
+    variables: [
+      whole('V', 'V', 'Valence electrons', 60),
+      quantity('b', 'b', 'Bonded atoms', undefined, 2, 6, 1, { integer: true }),
+      whole('o', 'o', 'Lone electrons on the outer atoms', 42),
+      quantity('l', 'l', 'Lone pairs on the center', undefined, 0, 3, 1, { integer: true }),
+      quantity('d', 'd', 'Electron domains', undefined, 2, 6, 1, { integer: true }),
+      quantity('theta', 'θ', 'Smallest ideal angle', '°', 90, 180, 0.5),
+    ],
+    ...rules(loneRule, domainRule, thetaRule),
+    example: { V, b, o, l, d: b + l, theta: domainAngleOf(b + l) },
+    startWith: ['V', 'b', 'o'],
+    representation: {
+      kind: 'vsepr',
+      mode: 'expanded',
+      bonded: 'b',
+      lone: 'l',
+      angle: 'theta',
+      domains: 'd',
+    },
+  };
+};
+
+const oxidationRule: Rule = {
+  relation: {
+    id: 'oxidation state = q − ligand charge',
+    display: '{ox} = {q} − {L}',
+    vars: ['ox', 'q', 'L'],
+    residual: (v) => v.ox! - (v.q! - v.L!),
+    solve: { ox: (v) => v.q! - v.L!, q: (v) => v.ox! + v.L!, L: (v) => v.q! - v.ox! },
+  },
+  steps: {
+    ox: st('{q} − {L}', 'The ion’s charge less what the ligands bring.'),
+    q: st('{ox} + {L}', 'The metal’s charge plus the ligands’.'),
+    L: st('{q} − {ox}', 'The ion’s charge less the metal’s.'),
+  },
+};
+
+const dCountRule: Rule = {
+  relation: {
+    id: 'd count = group − oxidation state',
+    display: '{dn} = {G} − {ox}',
+    vars: ['dn', 'G', 'ox'],
+    residual: (v) => v.dn! - (v.G! - v.ox!),
+    solve: { dn: (v) => v.G! - v.ox!, G: (v) => v.dn! + v.ox!, ox: (v) => v.G! - v.dn! },
+  },
+  steps: {
+    dn: st(
+      '{G} − {ox}',
+      'The group number counts the metal’s valence electrons; the charge takes some away.',
+    ),
+    G: st('{dn} + {ox}', 'd electrons plus the oxidation state.'),
+    ox: st('{G} − {dn}', 'The group less the d electrons.'),
+  },
+};
+
+const complexDemo = (
+  id: string,
+  title: string,
+  formula: string,
+  complex: Extract<Representation, { kind: 'vsepr'; mode: 'complex' }>['complex'],
+  [q, L, G]: [number, number, number],
+): ModuleDef => {
+  const cn = complex.ligands.reduce((s, x) => s + x.count, 0);
+  return {
+    id,
+    title,
+    use: `Use this for “Find the oxidation state, d count and coordination number of ${formula}.”`,
+    assumptions: [
+      'NH₃ and H₂O are neutral ligands, Cl⁻ and CN⁻ carry −1; the d count is the group number less the oxidation state.',
+      complex.isomer
+        ? `The minority ligand is drawn ${complex.isomer}; the coordination number counts the donor atoms.`
+        : 'The coordination number counts the donor atoms on the metal.',
+    ],
+    variables: [
+      quantity('q', 'q', 'Charge of the complex ion', undefined, -4, 4, 1, { integer: true }),
+      quantity('L', 'L', 'Total ligand charge', undefined, -6, 0, 1, { integer: true }),
+      quantity('ox', 'ox', 'Oxidation state of the metal', undefined, -2, 8, 1, { integer: true }),
+      quantity('G', 'G', 'Group of the metal', undefined, 3, 12, 1, { integer: true }),
+      quantity('dn', 'd', 'd electrons', undefined, 0, 10, 1, { integer: true }),
+      quantity('CN', 'CN', 'Coordination number', undefined, cn, cn, 1, { integer: true }),
+    ],
+    ...rules(oxidationRule, dCountRule),
+    standalone: {
+      vars: ['CN'],
+      why: 'The coordination number is counted on the drawing: the donor atoms on this metal.',
+    },
+    example: { q, L, ox: q - L, G, dn: G - (q - L), CN: cn },
+    startWith: ['q', 'L', 'G', 'CN'],
+    representation: {
+      kind: 'vsepr',
+      mode: 'complex',
+      complex: { ...complex, formula },
+      coordination: 'CN',
+    },
+  };
+};
+
+const HC72_DEMOS: ModuleDef[] = [
+  vseprDemo(
+    'g.he-vsepr-expanded',
+    'XeF₄: six domains, two lone pairs trans, square planar',
+    'XeF₄',
+    [36, 4, 24],
+  ),
+  vseprDemo(
+    'g.he-vsepr-expanded-seesaw',
+    'SF₄: five domains, the lone pair equatorial',
+    'SF₄',
+    [34, 4, 24],
+  ),
+  vseprDemo(
+    'g.he-vsepr-expanded-linear',
+    'XeF₂: three lone pairs equatorial leave a line',
+    'XeF₂',
+    [22, 2, 12],
+  ),
+  complexDemo(
+    'g.he-vsepr-complex-cis',
+    'cis-[Co(NH₃)₄Cl₂]⁺: the two Cl 90° apart',
+    '[Co(NH₃)₄Cl₂]⁺',
+    {
+      metal: 'Co',
+      geometry: 'octahedral',
+      ligands: [
+        { name: 'NH3', count: 4, donor: 'N' },
+        { name: 'Cl', count: 2, donor: 'Cl' },
+      ],
+      isomer: 'cis',
+    },
+    [1, -2, 9],
+  ),
+  complexDemo(
+    'g.he-vsepr-complex-mer',
+    'mer-[Co(NH₃)₃Cl₃]: three Cl in a plane through the metal',
+    '[Co(NH₃)₃Cl₃]',
+    {
+      metal: 'Co',
+      geometry: 'octahedral',
+      ligands: [
+        { name: 'NH3', count: 3, donor: 'N' },
+        { name: 'Cl', count: 3, donor: 'Cl' },
+      ],
+      isomer: 'mer',
+    },
+    [0, -3, 9],
+  ),
+  complexDemo(
+    'g.he-vsepr-complex-trans',
+    'trans-[Pt(NH₃)₂Cl₂]: square planar, the Cl opposite',
+    '[Pt(NH₃)₂Cl₂]',
+    {
+      metal: 'Pt',
+      geometry: 'squarePlanar',
+      ligands: [
+        { name: 'NH3', count: 2, donor: 'N' },
+        { name: 'Cl', count: 2, donor: 'Cl' },
+      ],
+      isomer: 'trans',
+    },
+    [0, -2, 10],
+  ),
+];
+
+export const HE3E_GALLERY_MODULES: ModuleDef[] = [...HC55_DEMOS, ...HC70_DEMOS, ...HC72_DEMOS];
 
 export const HE3E_GALLERY_LAYOUTS: LayoutDef[] = [irBands];

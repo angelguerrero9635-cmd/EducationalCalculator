@@ -17,6 +17,7 @@ import { atomRadius, subscript } from './chem';
 import { Canvas, Caption, ChartText, useRep } from './common';
 import { reader } from './graphKit';
 import { AtomBall, useAtomPaint } from './MoleculeArt';
+import { VseprHe3e } from './VseprHe3e';
 import {
   directions,
   electronegativity,
@@ -31,6 +32,8 @@ const RAD = Math.PI / 180;
 
 export function Vsepr({ spec, calc }: { spec: VseprSpec; calc: Calculator }) {
   if (spec.mode === 'hbonds') return <HydrogenBonds spec={spec} calc={calc} />;
+  if (spec.mode === 'expanded' || spec.mode === 'complex')
+    return <VseprHe3e spec={spec} calc={calc} />; // HC72
   return <Shape spec={spec} calc={calc} />;
 }
 

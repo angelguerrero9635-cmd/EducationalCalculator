@@ -16,9 +16,19 @@ import {
 } from '@/components/module/reps/instrumentTraceMath';
 import { diatomicMOs, frost, heteronuclear, secular } from '@/components/module/reps/orbitalMoMath';
 import { parseSmiles } from '@/components/module/reps/skeletalMath';
+import {
+  angleBetween,
+  complexPlaces,
+  domainAngleOf,
+  expandedDirections,
+  expandedShape,
+  isomerFits,
+  isomerPlaces,
+} from '@/components/module/reps/vseprHe3eMath';
 
 import type { LayoutDef } from '../layouts';
 import type { InstrumentTraceSpec, IrCard, OrbitalMoSpec } from '../typesHe3e';
+import type { VseprSpec } from '../typesHsi';
 
 type Val = (x: string | number) => number | undefined;
 
@@ -215,5 +225,72 @@ export function orbitalMoIssues(rep: OrbitalMoSpec, val: Val): string[] {
       break;
     }
   }
+  return out;
+}
+
+/** HC72: lone pairs equatorial in 5 domains, trans in 6; angles; a complex's isomer places. */
+export function vseprHe3eIssues(rep: VseprSpec, val: Val): string[] {
+  const out: string[] = [];
+  if (rep.mode === 'expanded') {
+    const [b, l] = [val(rep.bonded), val(rep.lone)];
+    if (b === undefined || l === undefined) return out;
+    const shape = expandedShape(b, l);
+    if (!shape || b !== Math.round(b) || l !== Math.round(l)) {
+      out.push(`vsepr: ${b} bonded atoms and ${l} lone pairs: no shape drawn (2–6 domains)`);
+      return out;
+    }
+    const d = b + l;
+    const dirs = expandedDirections(b, l);
+    if (dirs.bonds.length !== b || dirs.lone.length !== l)
+      out.push(`vsepr: ${dirs.bonds.length} bonds and ${dirs.lone.length} lone pairs drawn`);
+    if (d === 5 && dirs.lone.some((v) => Math.abs(v[1]) > 1e-9))
+      out.push('vsepr: a lone pair is not equatorial in 5 domains');
+    if (d === 6 && l === 2 && Math.abs(angleBetween(dirs.lone[0]!, dirs.lone[1]!) - 180) > 1e-6)
+      out.push('vsepr: the two lone pairs are not trans in 6 domains');
+    // Every two domains at least θ apart, and some two exactly θ.
+    const all = [...dirs.bonds, ...dirs.lone];
+    let least = 180;
+    for (let i = 0; i < all.length; i++)
+      for (let j = i + 1; j < all.length; j++)
+        least = Math.min(least, angleBetween(all[i]!, all[j]!));
+    // 2–4 domains keep the Grades 9–12 measured angles (H₂O 104.5°); 5–6 are ideal.
+    if (d >= 5 && Math.abs(least - shape.domainAngle) > 0.6)
+      out.push(`vsepr: domains drawn ${least.toFixed(1)}° apart, θ is ${shape.domainAngle}°`);
+    const a = rep.angle === undefined ? undefined : val(rep.angle);
+    if (a !== undefined && Math.abs(a - domainAngleOf(d)) > 1e-9)
+      out.push(`vsepr: θ for ${d} domains is ${domainAngleOf(d)}°, the value shows ${a}`);
+    const dv = rep.domains === undefined ? undefined : val(rep.domains);
+    if (dv !== undefined && dv !== d) out.push(`vsepr: ${d} domains drawn, the value shows ${dv}`);
+    return out;
+  }
+  if (rep.mode !== 'complex') return out;
+  const cx = rep.complex;
+  const places = complexPlaces(cx.geometry);
+  const total = cx.ligands.reduce((s, x) => s + x.count, 0);
+  if (total !== places.length)
+    out.push(`vsepr: ${total} ligands on a ${cx.geometry} metal with ${places.length} places`);
+  if (cx.ligands.length < 1 || cx.ligands.length > 2) out.push('vsepr: one or two kinds of ligand');
+  const minor = cx.ligands[1]?.count ?? 0;
+  if (cx.isomer) {
+    if (!isomerFits(cx.geometry, minor, cx.isomer))
+      out.push(`vsepr: no ${cx.isomer} isomer with ${minor} of a ligand, ${cx.geometry}`);
+    else {
+      const lit = isomerPlaces(cx.geometry, minor, cx.isomer).map((i) => places[i]!);
+      const angs: number[] = [];
+      for (let i = 0; i < lit.length; i++)
+        for (let j = i + 1; j < lit.length; j++)
+          angs.push(Math.round(angleBetween(lit[i]!, lit[j]!)));
+      const want = {
+        cis: (x: number[]) => x.every((y) => y === 90),
+        trans: (x: number[]) => x.every((y) => y === 180),
+        fac: (x: number[]) => x.every((y) => y === 90),
+        mer: (x: number[]) => x.filter((y) => y === 180).length === 1,
+      }[cx.isomer];
+      if (!want(angs)) out.push(`vsepr: ${cx.isomer} places at ${angs.join(', ')}°`);
+    }
+  }
+  const cn = rep.coordination === undefined ? undefined : val(rep.coordination);
+  if (cn !== undefined && cn !== total)
+    out.push(`vsepr: ${total} ligands drawn, the coordination number shows ${cn}`);
   return out;
 }

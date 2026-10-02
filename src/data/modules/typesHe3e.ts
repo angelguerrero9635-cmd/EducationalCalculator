@@ -193,7 +193,7 @@ export function orbitalMoVars(r: OrbitalMoSpec): string[] {
  * `bonded` atoms (2–6) and `lone` pairs (0–3) on the central atom: the 2–4 domain shapes, and
  * from 5 the trigonal bipyramid, seesaw, T and line (lone pairs equatorial), from 6 the
  * octahedron, square pyramid and square plane (two lone pairs trans). The hybrid (sp … sp³d²)
- * and shape are named; the angle between the first two bonds marked. `angle` (θ, the smallest
+ * and shape are named; the smallest bond angle marked (the pair nearest the page). `angle` (θ, the smallest
  * ideal angle between domains: 180°, 120°, 109.5°, 90°, 90°) and `domains` (d = b + l) are
  * checked. `central` and `outer` draw another molecule than the shape's example.
  */

@@ -84,7 +84,7 @@ import { he2eIssues, isHe2e } from './picturesHe2e';
 import { he2hIssues } from './picturesHe2h';
 import { fieldPlotIssues, he2gGraphIssues } from './picturesHe2g';
 import { he2cIssues } from './picturesHe2c';
-import { instrumentTraceIssues, orbitalMoIssues } from './picturesHe3e';
+import { instrumentTraceIssues, orbitalMoIssues, vseprHe3eIssues } from './picturesHe3e';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -2229,6 +2229,7 @@ export function repIssues(
       out.push(...hsiIssues(rep, (id) => val(id)));
       if (rep.kind === 'orbitalDiagram' && rep.mode === 'mo')
         out.push(...orbitalMoIssues(rep, val)); // HC70
+      if (rep.kind === 'vsepr') out.push(...vseprHe3eIssues(rep, val)); // HC72
       if (rep.kind === 'moleMap') out.push(...moleMapHs2dIssues(rep, (id) => val(id)));
       break;
     case 'gasPiston':

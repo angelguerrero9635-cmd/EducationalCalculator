@@ -7,7 +7,7 @@
 import type { NumOrVar } from './typesGraphs';
 import { ionicChargeVars, type IonicCharges } from './typesHs3e';
 import { moleMapHs2dVars, type MoleMapLimiting } from './typesHs2d';
-import { orbitalMoVars, type OrbitalMoSpec } from './typesHe3e';
+import { orbitalMoVars, vseprHe3eVars, type OrbitalMoSpec, type VseprHe3eSpec } from './typesHe3e';
 
 /** One conversion factor in a chain: `top` `topUnit` over `bottom` `bottomUnit` (1000 m / 1 km). */
 export interface ChainFactor {
@@ -217,7 +217,9 @@ export type VseprSpec =
       angle?: string;
       polar?: boolean;
     }
-  | { kind: 'vsepr'; mode: 'hbonds'; molecules: NumOrVar; bonds?: string };
+  | { kind: 'vsepr'; mode: 'hbonds'; molecules: NumOrVar; bonds?: string }
+  /** College HC72: 5–6 domains and complexes (`typesHe3e.ts`). */
+  | VseprHe3eSpec;
 
 /**
  * The mole map (H50): the `moles` of a substance in the middle, joined to its `mass` (× the
@@ -277,6 +279,7 @@ export function hsiSpecVars(r: HsiSpec): string[] {
         ...moleMapHs2dVars(r),
       );
     case 'vsepr':
+      if (r.mode === 'expanded' || r.mode === 'complex') return vseprHe3eVars(r); // HC72
       return r.mode === 'hbonds' ? ids(r.molecules, r.bonds) : ids(r.bonded, r.lone, r.angle);
     case 'lewisStructure':
       switch (r.mode) {

@@ -84,4 +84,33 @@ export const HE3E_REQUESTS: PictureRequest[] = [
       'g.he-orbitalDiagram-mo-frost-antiaromatic',
     ],
   },
+  {
+    ...ask(
+      'HC72',
+      'vsepr',
+      'Molecular shape with 5–6 electron domains (lone pairs equatorial in 5, trans in 6) and the hybrid named; a metal complex with its ligands placed cis, trans, fac or mer',
+      {
+        [`${C}gen-chem-1#4`]: "mode 'expanded': the shape, θ and the hybrid from V, b and o",
+        [`${C}inorganic#1`]: "mode 'complex': the metal, its ligands and the coordination number",
+        [`${C}inorganic#1~isomers`]:
+          "mode 'complex' with isomer (the sort's cards stay text until a complex card is asked for)",
+      },
+      [
+        'From C-P13 (typesHe3e.ts VseprExpandedSpec and VseprComplexSpec, reps/VseprHe3e.tsx, the geometry in reps/vseprHe3eMath.ts; one hook line in Vsepr.tsx). Off unless a page sets mode expanded or complex; shape and hbonds are unchanged.',
+        "Fields: { kind: 'vsepr', mode: 'expanded', bonded (b, 2–6), lone (l, 0–3), angle? (θ, the smallest ideal angle between domains, checked), domains? (d = b + l, checked), central?, outer?, formula? (another molecule than the shape's example) } | { kind: 'vsepr', mode: 'complex', complex: { metal, geometry: 'octahedral' | 'squarePlanar' | 'tetrahedral', ligands: [{ name, count, donor }] (one or two, the majority first), isomer?: 'cis' | 'trans' | 'fac' | 'mer', formula? }, coordination? (CN, checked) }.",
+        "Example (gen-chem-1#4): { kind: 'vsepr', mode: 'expanded', bonded: 'b', lone: 'l', angle: 'theta', domains: 'd' } with V = 36, b = 4, o = 24 (XeF₄). Example (inorganic#1): { kind: 'vsepr', mode: 'complex', complex: { metal: 'Co', geometry: 'octahedral', ligands: [{ name: 'NH3', count: 5, donor: 'N' }, { name: 'Cl', count: 1, donor: 'Cl' }], formula: '[Co(NH3)5Cl]2+' }, coordination: 'CN' }.",
+        'Shapes drawn: linear, trigonal planar, bent, tetrahedral, trigonal pyramidal; trigonal bipyramidal, seesaw, T-shaped, linear (5); octahedral, square pyramidal, square planar (6), each with an example molecule (PCl₅, SF₄, ClF₃, XeF₂, SF₆, BrF₅, XeF₄). An isomer the ligands cannot make draws faded with the reason. Step phrase: “smallest angle between 6 domains” (harness/phrasesHe3e.ts).',
+        'Checks (harness/picturesHe3e.ts): lone pairs equatorial in 5 domains and trans in 6; the domains drawn at least θ apart; θ and d; ligands = places; cis 90°, trans 180°, fac three at 90°, mer one pair trans; CN = the ligands drawn.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-vsepr-expanded',
+      'g.he-vsepr-expanded-seesaw',
+      'g.he-vsepr-expanded-linear',
+      'g.he-vsepr-complex-cis',
+      'g.he-vsepr-complex-mer',
+      'g.he-vsepr-complex-trans',
+    ],
+  },
 ];
