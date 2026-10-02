@@ -83,6 +83,7 @@ import { he2jIssues } from './picturesHe2j';
 import { he2eIssues, isHe2e } from './picturesHe2e';
 import { he2hIssues } from './picturesHe2h';
 import { fieldPlotIssues, he2gGraphIssues } from './picturesHe2g';
+import { he2cIssues } from './picturesHe2c';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -2308,6 +2309,10 @@ export function repIssues(
     case 'duct':
     case 'supersonicFlow':
       out.push(...he2hIssues(rep, (id) => (val(id) ?? NaN) * (byId.get(id)?.unitFactor ?? 1)));
+      break;
+    case 'propertyDiagram':
+    case 'thermalWall':
+      out.push(...he2cIssues(rep, (id) => (val(id) ?? NaN) * (byId.get(id)?.unitFactor ?? 1)));
       break;
     case 'projectile':
     case 'induction':
