@@ -1,0 +1,124 @@
+{
+  "id": "elsevier-enderle-bronzino-bme-3e",
+  "curriculum": "Enderle and Bronzino, Introduction to Biomedical Engineering",
+  "publisher": "Elsevier (Academic Press)",
+  "edition": "3rd edition",
+  "subject": "bio",
+  "level": "college",
+  "content": "titles",
+  "terms": {
+    "unit": "Chapter",
+    "lesson": null,
+    "part": "Part"
+  },
+  "license": null,
+  "sourceUrl": "https://shop.elsevier.com/books/introduction-to-biomedical-engineering/enderle/978-0-12-374979-6",
+  "retrieved": "2026-10-02",
+  "notes": "Titles only (all rights reserved). Chapter titles as listed on the publisher's public product page (robots.txt allows it; no login). Chapter numbers are by order on that page. ",
+  "books": [
+    {
+      "url": "https://shop.elsevier.com/books/introduction-to-biomedical-engineering/enderle/978-0-12-374979-6",
+      "units": [
+        {
+          "n": "1",
+          "title": "Biomedical Engineering",
+          "topics": [],
+          "notes": "No taxonomy topic."
+        },
+        {
+          "n": "2",
+          "title": "Moral and Ethical Issues",
+          "topics": [],
+          "notes": "No taxonomy topic."
+        },
+        {
+          "n": "3",
+          "title": "Anatomy and Physiology",
+          "topics": ["he.biology.anatomy-physiology#0"]
+        },
+        {
+          "n": "4",
+          "title": "Biomechanics",
+          "topics": [
+            "he.engineering.biomechanics#0",
+            "he.engineering.biomechanics#1",
+            "he.engineering.biomechanics#2"
+          ]
+        },
+        {
+          "n": "5",
+          "title": "Biomaterials",
+          "topics": [
+            "he.engineering.biomaterials#0",
+            "he.engineering.biomaterials#1",
+            "he.engineering.biomaterials#2"
+          ]
+        },
+        {
+          "n": "6",
+          "title": "Tissue Engineering",
+          "topics": [
+            "he.engineering.tissue-engineering#0",
+            "he.engineering.tissue-engineering#1",
+            "he.engineering.tissue-engineering#2"
+          ]
+        },
+        {
+          "n": "7",
+          "title": "Compartmental Modeling",
+          "topics": ["he.engineering.biotransport#3"]
+        },
+        {
+          "n": "8",
+          "title": "Biochemical Reactions and Enzyme Kinetics",
+          "topics": ["he.biology.principles-1#2"]
+        },
+        {
+          "n": "9",
+          "title": "Bioinstrumentation",
+          "topics": ["he.engineering.bioinstrumentation#1", "he.engineering.bioinstrumentation#3"]
+        },
+        {
+          "n": "10",
+          "title": "Biomedical Sensors",
+          "topics": ["he.engineering.bioinstrumentation#0"]
+        },
+        {
+          "n": "11",
+          "title": "Biosignal Processing",
+          "topics": ["he.engineering.bioinstrumentation#3"]
+        },
+        {
+          "n": "12",
+          "title": "Bioelectric Phenomena",
+          "topics": ["he.biology.cell-molecular#0", "he.biology.anatomy-physiology#2"]
+        },
+        {
+          "n": "13",
+          "title": "Physiological Modeling",
+          "topics": ["he.biology.anatomy-physiology#2"]
+        },
+        {
+          "n": "14",
+          "title": "Biomedical Transport Processes",
+          "topics": ["he.engineering.biotransport#0", "he.engineering.biotransport#2"]
+        },
+        {
+          "n": "15",
+          "title": "Radiation Imaging",
+          "topics": ["he.engineering.bioinstrumentation#2"]
+        },
+        {
+          "n": "16",
+          "title": "Medical Imaging",
+          "topics": ["he.engineering.bioinstrumentation#2"]
+        },
+        {
+          "n": "17",
+          "title": "Biomedical Optics and Lasers",
+          "topics": ["he.engineering.bioinstrumentation#2"]
+        }
+      ]
+    }
+  ]
+}

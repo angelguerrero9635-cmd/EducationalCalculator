@@ -1,0 +1,89 @@
+{
+  "id": "elsevier-ratner-biomaterials-science-4e",
+  "curriculum": "Wagner, Sakiyama-Elbert, Zhang and Yaszemski (eds.), Biomaterials Science: An Introduction to Materials in Medicine (Ratner)",
+  "publisher": "Elsevier (Academic Press)",
+  "edition": "4th edition (2020)",
+  "subject": "bio",
+  "level": "college",
+  "content": "titles",
+  "terms": {
+    "unit": "Part",
+    "lesson": "Section"
+  },
+  "license": null,
+  "sourceUrl": "https://shop.elsevier.com/books/biomaterials-science/wagner/978-0-12-816137-1",
+  "retrieved": "2026-10-02",
+  "notes": "Titles only (all rights reserved). Parts and sections from the publisher's product page (robots.txt allows it); the page also lists the many chapter headings, which are not copied here.",
+  "books": [
+    {
+      "url": "https://shop.elsevier.com/books/biomaterials-science/wagner/978-0-12-816137-1",
+      "units": [
+        {
+          "n": "1",
+          "title": "Materials Science and Engineering",
+          "topics": ["he.engineering.biomaterials#1"],
+          "lessons": [
+            {
+              "n": "1.1",
+              "title": "Overview of Biomaterials"
+            },
+            {
+              "n": "1.2",
+              "title": "Properties of Materials"
+            },
+            {
+              "n": "1.3",
+              "title": "Classes of Materials Used in Medicine"
+            },
+            {
+              "n": "1.4",
+              "title": "Materials Processing"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Biology and Medicine",
+          "topics": [
+            "he.engineering.biomaterials#0",
+            "he.engineering.biomaterials#2",
+            "he.engineering.biomaterials#3",
+            "he.engineering.tissue-engineering#0"
+          ],
+          "lessons": [
+            {
+              "n": "2.1",
+              "title": "Some Background Concepts"
+            },
+            {
+              "n": "2.2",
+              "title": "Host Reaction to Biomaterials and Their Evaluation"
+            },
+            {
+              "n": "2.3",
+              "title": "Characterization of Biomaterials"
+            },
+            {
+              "n": "2.4",
+              "title": "Degradation of Materials in the Biological Environment"
+            },
+            {
+              "n": "2.5",
+              "title": "Applications of Biomaterials"
+            },
+            {
+              "n": "2.6",
+              "title": "Applications of Biomaterials in Functional Tissue Engineering"
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "The Medical Product Life Cycle",
+          "topics": ["he.engineering.biomaterials#3"],
+          "lessons": []
+        }
+      ]
+    }
+  ]
+}

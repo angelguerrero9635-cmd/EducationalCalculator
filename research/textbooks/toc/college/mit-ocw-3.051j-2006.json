@@ -1,0 +1,138 @@
+{
+  "id": "mit-ocw-3.051j-2006",
+  "curriculum": "MIT OCW 3.051J / 20.340J Materials for Biomedical Applications",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Spring 2006",
+  "subject": "bio",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Anne Mayes. 3.051J / 20.340J Materials for Biomedical Applications. Spring 2006. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu. License: Creative Commons BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Part",
+    "lesson": "Lecture"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/3-051j-materials-for-biomedical-applications-spring-2006/",
+  "retrieved": "2026-10-02",
+  "notes": "Reference only (CC BY-NC-SA 4.0; OCW terms https://ocw.mit.edu/pages/privacy-and-terms-of-use/). Lecture list and order from the course calendar or lecture-notes page; examples, ranges and notation are our words, read from the exams and problem sets (no problem text or numbers copied). Third-party figures inside OCW PDFs are outside the licence and were not used. Problem sets 1–7 and the practice final read for the records.",
+  "books": [
+    {
+      "course": "3.051J / 20.340J",
+      "url": "https://ocw.mit.edu/courses/3-051j-materials-for-biomedical-applications-spring-2006/",
+      "units": [
+        {
+          "n": "1",
+          "title": "Biomaterial surfaces",
+          "topics": ["he.engineering.biomaterials#0", "he.engineering.biomaterials#2"],
+          "examples": [
+            "surface composition from contact angles",
+            "fretting corrosion half-reactions and Nernst potential"
+          ],
+          "lessons": [
+            {
+              "n": "1",
+              "title": "Biomaterials defined; structural hierarchy",
+              "topics": ["he.engineering.biomaterials#1"]
+            },
+            {
+              "n": "2",
+              "title": "Surface physics: energy, adsorption, segregation",
+              "topics": ["he.engineering.biomaterials#0"]
+            },
+            {
+              "n": "3–4",
+              "title": "Surface chemistry: chemisorption, corrosion, hydrolysis",
+              "topics": ["he.engineering.biomaterials#2"]
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Protein and cell interactions",
+          "topics": ["he.engineering.tissue-engineering#1", "he.engineering.biomaterials#0"],
+          "examples": [
+            "work of adhesion W = γ(1 + cos θ)",
+            "persistent random walk speed and persistence time",
+            "XPS peak assignment"
+          ],
+          "notation": ["θ = KC/(1 + KC) (Langmuir)"],
+          "lessons": [
+            {
+              "n": "5–6",
+              "title": "Protein adsorption: Langmuir model",
+              "topics": ["he.engineering.tissue-engineering#1"]
+            },
+            {
+              "n": "7–8",
+              "title": "Host response: adhesion, coagulation, complement",
+              "topics": ["he.engineering.biomaterials#0"]
+            },
+            {
+              "n": "9–10",
+              "title": "Surface modification",
+              "topics": ["he.engineering.biomaterials#1"]
+            },
+            {
+              "n": "11–12",
+              "title": "Surface characterization: XPS, SIMS, contact angle, AFM",
+              "topics": ["he.engineering.biomaterials#1"]
+            },
+            {
+              "n": "13–14",
+              "title": "Quantifying cell behaviour",
+              "topics": ["he.engineering.tissue-engineering#1"]
+            },
+            {
+              "n": "15–16",
+              "title": "Statistical analysis",
+              "topics": []
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Devices",
+          "topics": [
+            "he.engineering.bioinstrumentation#0",
+            "he.engineering.biomaterials#3",
+            "he.engineering.biotransport#2"
+          ],
+          "examples": [
+            "release exponent n in M_t = k tⁿ",
+            "encapsulation device: membrane choice and length"
+          ],
+          "lessons": [
+            {
+              "n": "17",
+              "title": "Biosensors and diagnostic devices",
+              "topics": ["he.engineering.bioinstrumentation#0"]
+            },
+            {
+              "n": "18–20",
+              "title": "Controlled release",
+              "topics": ["he.engineering.biomaterials#2", "he.engineering.biotransport#2"]
+            },
+            {
+              "n": "21",
+              "title": "Organ replacement; bone substitutes",
+              "topics": ["he.engineering.biomaterials#3"]
+            },
+            {
+              "n": "22–23",
+              "title": "Tissue engineering: scaffolds, encapsulation",
+              "topics": ["he.engineering.tissue-engineering#0"]
+            },
+            {
+              "n": "24",
+              "title": "FDA regulatory issues",
+              "topics": ["he.engineering.biomaterials#3"]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
