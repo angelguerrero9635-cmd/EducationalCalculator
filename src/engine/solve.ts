@@ -128,7 +128,8 @@ const normalizeValue = (variable: VariableDef, x: number) => {
  * notation with no step. Only near 0: elsewhere values are compared relative to their size.
  */
 export function floorOf(v: VariableDef | undefined): number {
-  const step = v?.step !== undefined && v.step > 0 ? v.step : v?.scientific ? 1e-30 : 1;
+  // (10⁻⁴⁵: a value in scientific notation down to 10⁻³⁵ keeps its 4 figures apart, HE-E10)
+  const step = v?.step !== undefined && v.step > 0 ? v.step : v?.scientific ? 1e-45 : 1;
   return TOLERANCE * Math.min(1, step);
 }
 

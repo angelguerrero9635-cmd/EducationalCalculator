@@ -80,6 +80,11 @@ export interface SortLayout extends LayoutBase {
    * hint about it shows there too), so on a phone the groups stay in reach of many cards.
    */
   pickBar?: boolean;
+  /**
+   * HE-E25: the cards are code (`print(x)`, `i += 1`), drawn in a code font exactly as written:
+   * straight quotes kept, no subscripts drawn from an underscore (`my_list`).
+   */
+  code?: boolean;
 }
 
 /**
@@ -288,6 +293,14 @@ export interface SequenceLayout extends LayoutBase {
   totalLabel?: string;
   /** The stages stack from the bottom up, in a jar (liquids by density), not left to right. */
   stack?: boolean;
+  /**
+   * HE-E25: the spans are signed changes (ATP per glycolysis step: −1, 0, +2), each shown with
+   * its sign and the total as a net change ("Net: +2 ATP"). A sequence with no spans shows
+   * none (stages in order only).
+   */
+  signed?: boolean;
+  /** HE-E25: the stages are code (a program's lines), drawn in a code font exactly as written. */
+  code?: boolean;
 }
 
 /** What an explore figure can show; a scene sets one of these. */

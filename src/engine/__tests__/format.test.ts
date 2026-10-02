@@ -1,4 +1,14 @@
-import { belowStep, formatNumber, parseNumber } from '../format';
+import {
+  belowStep,
+  engineering,
+  figuresIn,
+  formatNumber,
+  keepNumbersWhole,
+  logDecimals,
+  parseNumber,
+  renderTemplate,
+  signedText,
+} from '../format';
 
 describe('significant figures', () => {
   it.each([
@@ -92,5 +102,65 @@ describe('a power of ten alone', () => {
     expect(parseNumber('10^12')).toBe(1e12);
     expect(parseNumber('10⁻³')).toBeCloseTo(1e-3, 15);
     expect(parseNumber('10')).toBe(10);
+  });
+});
+
+describe('college range and figures (HE-E10)', () => {
+  it('shows and reads exponents far past ±30', () => {
+    expect(formatNumber(1.5e37)).toBe('1.5 × 10³⁷');
+    expect(formatNumber(1.616e-35)).toBe('1.616 × 10⁻³⁵');
+    expect(formatNumber(6.62607e-34, { scientificFigures: 4 })).toBe('6.626 × 10⁻³⁴');
+    expect(formatNumber(1.989e30, { sigFigs: 4 })).toBe('1.989 × 10³⁰');
+    expect(formatNumber(2e31, { scientific: true, worked: 3 })).toBe('2.00 × 10³¹');
+    expect(parseNumber('1.616 × 10⁻³⁵')).toBeCloseTo(1.616e-35, 45);
+    expect(parseNumber('1.5 × 10^37')).toBe(1.5e37);
+    expect(parseNumber('6.626e-34')).toBe(6.626e-34);
+  });
+
+  it('keeps a fixed count of decimals (a pH from its concentration’s figures)', () => {
+    expect(formatNumber(2.6021, { decimals: 2 })).toBe('2.60');
+    expect(formatNumber(7, { decimals: 2 })).toBe('7.00');
+    expect(formatNumber(-0.001, { decimals: 2 })).toBe('0.00');
+    expect(formatNumber(4.745, { decimals: 2 })).toBe('4.75');
+    expect(formatNumber(12345.678, { decimals: 1 })).toBe('12,345.7');
+    expect(figuresIn('0.0250')).toBe(3);
+    expect(figuresIn('2.5 × 10⁻³')).toBe(2);
+    expect(figuresIn('1,200')).toBe(2);
+    expect(figuresIn('1200.')).toBe(4);
+    expect(figuresIn('7')).toBe(1);
+    expect(figuresIn('−4.50e3')).toBe(3);
+    expect(figuresIn('pH')).toBeUndefined();
+    expect(
+      formatNumber(-Math.log10(2.5e-3), { decimals: logDecimals(figuresIn('2.5 × 10⁻³')!) }),
+    ).toBe('2.60');
+  });
+
+  it('writes a sign on a charge or signed change: +3, −1, 0', () => {
+    expect(signedText(3)).toBe('+3');
+    expect(signedText(-1)).toBe('−1');
+    expect(signedText(0)).toBe('0');
+    expect(formatNumber(2, { integer: true, signed: true })).toBe('+2');
+    expect(formatNumber(4.2e-6, { signed: true })).toBe('+4.2 × 10⁻⁶');
+    const vars = [
+      { id: 'a', symbol: 'a', name: 'a' },
+      { id: 'q', symbol: 'q', name: 'q', signed: true },
+    ];
+    expect(renderTemplate('{a} − {q}', vars, { a: 2, q: 3 })).toBe('2 − (+3)');
+    expect(renderTemplate('{q}', vars, { q: 3 })).toBe('+3');
+  });
+
+  it('engineering notation: exponents in threes', () => {
+    expect(engineering(47000)).toBe('47 × 10³');
+    expect(engineering(2.2e-9)).toBe('2.2 × 10⁻⁹');
+    expect(engineering(3.3e-8)).toBe('33 × 10⁻⁹');
+    expect(engineering(-150)).toBe('−150');
+    expect(engineering(999.96, 4)).toBe('1 × 10³');
+  });
+
+  it('keeps scientific notation on one line when drawn', () => {
+    expect(keepNumbersWhole('E = 6.626 × 10⁻³⁴ × 5 × 10¹⁴')).toBe(
+      'E = 6.626\u00A0×\u00A010⁻³⁴ × 5\u00A0×\u00A010¹⁴',
+    );
+    expect(keepNumbersWhole('3 × 4 = 12')).toBe('3 × 4 = 12');
   });
 });

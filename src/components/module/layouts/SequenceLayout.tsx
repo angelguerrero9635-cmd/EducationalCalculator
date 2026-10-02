@@ -1,4 +1,4 @@
-import { unitFor } from '@/engine/format';
+import { lowerFirst, unitFor } from '@/engine/format';
 import { useMemo, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
@@ -8,6 +8,8 @@ import type { SequenceLayout as Spec } from '@/data/modules/layouts';
 import { font, radius, space, usePalette } from '@/theme';
 
 import { CardFigureView } from './CardFigure';
+import { LabelText } from './LabelText';
+import { signedSpan, spanSum } from './sequenceMath';
 
 /** The stages in a fixed mixed-up order (never the right one), from the page id. */
 function mixed(n: number, seedText: string): number[] {
@@ -25,7 +27,8 @@ function mixed(n: number, seedText: string): number[] {
 
 /**
  * Stages to put in order: tap the one that comes first, then the next. A wrong tap says so.
- * Placed stages form a strip with each one's span, and the spans add up under it.
+ * Placed stages form a strip with each one's span, and the spans add up under it (signed
+ * spans, HE-E25, as a net change).
  */
 export function SequenceLayout({ spec }: { spec: Spec }) {
   const c = usePalette();
@@ -44,7 +47,9 @@ export function SequenceLayout({ spec }: { spec: Spec }) {
       setHint(
         placed === 0
           ? `Not yet. Which comes first?`
-          : `Not yet. What comes after ${spec.stages[placed - 1]!.label.toLowerCase()}?`,
+          : // (the label's capitals kept where they mean something: CO₂, NADH, Prophase I;
+            // code exactly as written)
+            `Not yet. What comes after ${spec.code ? spec.stages[placed - 1]!.label : lowerFirst(spec.stages[placed - 1]!.label)}?`,
       );
     }
   };
@@ -74,7 +79,9 @@ export function SequenceLayout({ spec }: { spec: Spec }) {
                     shade={c.chartHighlight}
                   />
                 ) : null}
-                <Text style={[styles.chipText, { color: c.text }]}>{spec.stages[i]!.label}</Text>
+                <LabelText code={spec.code} style={[styles.chipText, { color: c.text }]}>
+                  {spec.stages[i]!.label}
+                </LabelText>
               </Pressable>
             ))
         )}
@@ -99,12 +106,12 @@ export function SequenceLayout({ spec }: { spec: Spec }) {
             {i < placed && stage.figure ? (
               <CardFigureView figure={stage.figure} ink={c.text} shade={c.chartHighlight} />
             ) : null}
-            <Text style={[styles.slotText, { color: c.text }]}>
+            <LabelText code={spec.code && i < placed} style={[styles.slotText, { color: c.text }]}>
               {i < placed ? stage.label : '?'}
-            </Text>
+            </LabelText>
             {withSpans && i < placed && stage.span !== undefined ? (
               <Text style={[styles.span, { color: c.text }]}>
-                {`${stage.span} ${spec.unit ? unitFor(stage.span, spec.unit) : ''}`.trim()}
+                {`${spec.signed ? signedSpan(stage.span) : stage.span} ${spec.unit ? unitFor(stage.span, spec.unit) : ''}`.trim()}
               </Text>
             ) : null}
           </View>
@@ -112,12 +119,16 @@ export function SequenceLayout({ spec }: { spec: Spec }) {
       </View>
       {withSpans && placed > 0 && spec.totalLabel ? (
         <Text style={[styles.total, { color: c.text }]}>
-          {`${spec.stages
-            .slice(0, placed)
-            .map((s) => s.span)
-            .filter((x) => x !== undefined)
-            .join(' + ')} = ${total} ${spec.unit ?? ''}`.trim()}
-          {done ? `. ${spec.totalLabel}: ${total} ${spec.unit ?? ''}`.trimEnd() : ''}
+          {`${spanSum(
+            spec.stages
+              .slice(0, placed)
+              .map((s) => s.span)
+              .filter((x): x is number => x !== undefined),
+            spec.signed,
+          )} ${spec.unit ?? ''}`.trim()}
+          {done
+            ? `. ${spec.totalLabel}: ${spec.signed ? signedSpan(total) : total} ${spec.unit ?? ''}`.trimEnd()
+            : ''}
         </Text>
       ) : null}
       <View style={styles.actions}>

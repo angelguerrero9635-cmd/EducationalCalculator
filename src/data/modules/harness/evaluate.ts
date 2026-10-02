@@ -4,9 +4,10 @@
  * 6 in 743"). A new phrase in a module's step text is taught here. Test-only.
  */
 import { parseNumber, plainDigits } from '@/engine/format';
-import { SIGMA } from '@/engine/latex';
+import { INTEGRAL, SIGMA } from '@/engine/latex';
 
 import type { Walkthrough } from '../buildSteps';
+import { HE_PHRASES } from './phrasesHe';
 import { HSB_PHRASES } from './phrasesHsb';
 import { HSF_PHRASES } from './phrasesHsf';
 import { HSG_PHRASES } from './phrasesHsg';
@@ -69,6 +70,8 @@ const quartile = (xs: number[], upper: boolean) => {
 };
 
 export const PHRASES: [RegExp, (...xs: number[]) => number][] = [
+  // College pages (HE-E8): first, so a double factorial (5!!) is not read as (5!)!.
+  ...HE_PHRASES,
   // Whole-number work in high school (powers of i, coterminal angles, a quadrant): the
   // greatest common factor, a remainder, and a count of whole turns.
   [new RegExp(`gcd\\((${NUM}),\\s*(${NUM})\\)`), (a, b) => gcd(a, b)],
@@ -417,8 +420,58 @@ export function expandSums(text: string): string {
   });
 }
 
+/** Gauss–Legendre nodes and weights on [−1, 1], 5 points. */
+const GL5: [number, number][] = [
+  [0, 128 / 225],
+  [Math.sqrt(5 - 2 * Math.sqrt(10 / 7)) / 3, (322 + 13 * Math.sqrt(70)) / 900],
+  [-Math.sqrt(5 - 2 * Math.sqrt(10 / 7)) / 3, (322 + 13 * Math.sqrt(70)) / 900],
+  [Math.sqrt(5 + 2 * Math.sqrt(10 / 7)) / 3, (322 - 13 * Math.sqrt(70)) / 900],
+  [-Math.sqrt(5 + 2 * Math.sqrt(10 / 7)) / 3, (322 - 13 * Math.sqrt(70)) / 900],
+];
+
+/**
+ * Each integral with its limits ("∫ from 0 to 2 of (x² + 1) dx", "∫ from 0 to 0.5 of dX ÷
+ * (0.2 × (1 − X))": HE-E6, HE-E8) worked out by quadrature at the page's values (5-point
+ * Gauss–Legendre on 32 panels, never at the ends, so a root at 0 is fine), as its value in
+ * brackets; one whose limits or body can't be read is left as written.
+ */
+export function expandIntegrals(text: string): string {
+  return text.replace(INTEGRAL, (whole, ...args) => {
+    const { lo, hi, ib, dv, dv2, ib2 } = args[args.length - 1] as Record<string, string>;
+    // (a limit may be π or a product: ∫ from 0 to π, ∫ from 0 to 2π)
+    const [a, b] = [evaluate(lo!), evaluate(hi!)];
+    if (a === undefined || b === undefined || !Number.isFinite(a) || !Number.isFinite(b))
+      return whole;
+    const v = (dv ?? dv2)!.slice(1).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const body = ib ?? `1 ÷ ${ib2}`;
+    // The variable alone (not inside a word or a name like x₁); after a number or a bracket it
+    // multiplies (3x is 3 × x).
+    const index = new RegExp(String.raw`(?<![\p{L}\p{M}_])${v}(?![\p{L}\p{M}_₀-₉])`, 'gu');
+    const f = (x: number) =>
+      evaluate(
+        body.replace(
+          index,
+          (_m, at: number, all: string) => `${/[\d)]$/.test(all.slice(0, at)) ? ' × ' : ''}(${x})`,
+        ),
+      );
+    const panels = 32;
+    const h = (b - a) / panels;
+    let total = 0;
+    for (let k = 0; k < panels; k++) {
+      const mid = a + (k + 0.5) * h;
+      for (const [t, w] of GL5) {
+        const y = f(mid + (t * h) / 2);
+        if (y === undefined || !Number.isFinite(y)) return whole;
+        total += (w * h * y) / 2;
+      }
+    }
+    return `(${total})`;
+  });
+}
+
 export function evaluate(text: string, clampRoots = false): number | undefined {
   if (text.includes('Σ from ')) text = expandSums(text);
+  if (text.includes('∫ from ')) text = expandIntegrals(text);
   const degrees = angleUnit === 'degrees' || text.includes('°');
   let s = text
     // A repeating decimal (0.1666…) is its exact value, 1/6.
@@ -445,7 +498,8 @@ export function evaluate(text: string, clampRoots = false): number | undefined {
     .replace(/(sin|cos|tan)⁻¹\(/g, 'a$1(')
     .replace(/arc(sin|cos|tan)\(/g, 'a$1(')
     .replace(/(?<![a-z])(sin|cos|tan)\(([^()]*[\d⁰¹²³⁴⁵⁶⁷⁸⁹])°\)/g, '$1d($2)')
-    .replace(/(?<![\w.])e(?!\w)/g, `(${Math.E})`)
+    // (never a name's e with a prime or a mark: e′, ē)
+    .replace(/(?<![\w.])e(?![\w′\u0300-\u036f])/g, `(${Math.E})`)
     .replace(/⌈([^⌈⌉]+)⌉/g, 'ceil($1)')
     .replace(/⌊([^⌊⌋]+)⌋/g, 'floor($1)')
     // Any exponent written as superscript digits (10³, 10⁴).
@@ -464,13 +518,24 @@ export function evaluate(text: string, clampRoots = false): number | undefined {
     .replace(/(\d)√/g, '$1*√')
     .replace(/√\(/g, 'sqrt(')
     .replace(/√(\d+(?:\.\d+)?)/g, '(sqrt($1))')
+    // College logs (HE-E8): log alone is base 10 (20 log(K/p) dB), log₂ base 2, and a log of
+    // one number may go without its bracket (ln 2, log₂ 8, log 1000).
+    .replace(/(?<![\w₀-₉_])log\(/g, 'log₁₀(')
+    .replace(/(?<![\w₀-₉_])log (?=\d)/g, 'log₁₀ ')
+    .replace(/(?<![\w_])(ln|log₂|log₁₀) (\d+(?:\.\d+)?(?:e[-+]?\d+)?)(?![\d.]|\s*\*\*)/g, '$1($2)')
+    .replace(/log₂\(/g, 'log2(')
     // Natural logs from the exponential lessons: ln(x) and ln|x|.
     .replace(/ln\|([^|]*)\|/g, 'log(abs($1))')
     .replace(/ln\(/g, 'log(')
     // A common log of any expression: log₁₀(|−9/2|).
     .replace(/log₁₀\(/g, 'log10(')
     // Absolute value bars (Grade 6): |−4| is 4.
-    .replace(/\|([^|]+)\|/g, 'abs($1)');
+    .replace(/\|([^|]+)\|/g, 'abs($1)')
+    // A number before a function multiplies it: 20 log₁₀(5), 2 sin(30°) (HE-E8).
+    .replace(
+      /(\d|\)) (?=(?:log10|log2|log|sqrt|cbrt|abs|sin|cos|tan|sind|cosd|tand|min|max)\()/g,
+      '$1 * ',
+    );
   // Long repeated sums are shortened: "2 + 2 + … (12 times)" is 2 × 12.
   s = s.replace(/(\d+(?:\.\d+)?) \+ \1 \+ … \((\d+) times\)/g, (_, a, n) => `(${a} * ${n})`);
   for (let guard = 0; guard < 50; guard++) {
@@ -482,7 +547,7 @@ export function evaluate(text: string, clampRoots = false): number | undefined {
       prev = s;
       s = s
         .replace(
-          /(?<!sqrt|cbrt|qrt|log|log10|abs|sin|cos|tan|sind|cosd|tand|ceil|floor)\((-?\d+(?:\.\d+)?(?:e[-+]?\d+)?)\)(?!\s*\*\*)/g,
+          /(?<!sqrt|cbrt|qrt|log|log10|log2|abs|sin|cos|tan|sind|cosd|tand|ceil|floor|min|max)\((-?\d+(?:\.\d+)?(?:e[-+]?\d+)?)\)(?!\s*\*\*)/g,
           ' $1 ',
         )
         .replace(/\s+/g, ' ')
@@ -545,14 +610,23 @@ export function evaluate(text: string, clampRoots = false): number | undefined {
   // won't parse "-(a) ** b" as written).
   s = s.replace(/(^|[(*/+\-]\s*)-\s*(?=\(|\d)(?=(?:\([^()]*\)|[\d.e]+)\s*\*\*)/g, '$1-1 * ');
   const bare = s
-    .replace(/(?:sqrt|cbrt|qrt|log10|log|abs|a?sin|a?cos|a?tan|sind|cosd|tand|ceil|floor)\(/g, '(')
+    .replace(
+      /(?:sqrt|cbrt|qrt|log10|log2|log|abs|a?sin|a?cos|a?tan|sind|cosd|tand|ceil|floor|min|max)\(/g,
+      '(',
+    )
     .replace(/\*\*/g, '*');
-  if (!/^[\d\s.+\-*/()e]+$/.test(bare)) return undefined;
+  // (a comma only between the values of min( or max(: an ordered pair is not a number)
+  const listCommas = [...s.matchAll(/(?:min|max)\(([^()]*)\)/g)].reduce(
+    (n, m) => n + (m[1]!.match(/,/g)?.length ?? 0),
+    0,
+  );
+  const commas = bare.match(/,/g)?.length ?? 0;
+  if (commas !== listCommas || !/^[\d\s.+\-*/()e,]+$/.test(bare)) return undefined;
   try {
     const x = new Function(
       'clampRoots',
       'degrees',
-      `const { log, log10, abs, cbrt, ceil, floor } = Math; const sqrt = (v) => Math.sqrt(clampRoots ? Math.max(0, v) : v); const qrt = (v) => sqrt(v) ** 0.5; ` +
+      `const { log, log10, log2, abs, cbrt, ceil, floor, min, max } = Math; const sqrt = (v) => Math.sqrt(clampRoots ? Math.max(0, v) : v); const qrt = (v) => sqrt(v) ** 0.5; ` +
         `const D = Math.PI / 180; const sin = degrees ? (d) => Math.sin(d * D) : Math.sin, cos = degrees ? (d) => Math.cos(d * D) : Math.cos, tan = degrees ? (d) => Math.tan(d * D) : Math.tan; ` +
         `const sind = (d) => Math.sin(d * D), cosd = (d) => Math.cos(d * D), tand = (d) => Math.tan(d * D); ` +
         `const one = (x) => (clampRoots ? Math.max(-1, Math.min(1, x)) : x); const U = degrees ? D : 1; ` +
@@ -612,6 +686,10 @@ export function evaluateAll(text: string): number[] {
  * the numbers came from) widens the tolerance by its largest number.
  */
 export const shownClose = (a: number, b: number, text = '') => {
+  // Tiny values (below 10⁻⁴, shown in scientific notation down to 10⁻³⁵: HE-E10) compare relative to
+  // their size, to half a percent: an absolute floor would let any two of them pass.
+  const scale = Math.max(Math.abs(a), Math.abs(b));
+  if (a !== 0 && b !== 0 && a > 0 === b > 0 && scale < 1e-4) return Math.abs(a - b) <= 5e-3 * scale;
   const largest = Math.max(0, ...(text.match(/\d+(\.\d+)?/g) ?? []).map(Number));
   return Math.abs(a - b) <= 2e-3 * Math.max(Math.abs(a), Math.abs(b)) + 1e-3 + 1e-4 * largest;
 };

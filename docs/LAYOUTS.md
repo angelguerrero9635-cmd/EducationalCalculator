@@ -28,6 +28,14 @@ A skill id or problem-type id is either a calculator module or a layout page, ne
 has a group, every scene fits the figure) and reads at the grade level. A review proposal
 names the layout and gives its data; a new figure kind is engine work (log it).
 
+Text on cards and stages (HE-E25): chemistry is written as text (H₂O, Fe³⁺, e⁻, ⇌, →,
+(2R,3S)-2,3-dibromobutane; `K_a` is drawn lowered), and the reading check counts a formula as
+one word. A sort or sequence with `code: true` draws its cards or stages in a code font exactly
+as written (straight quotes, `my_list[i]` never lowered) and skips the copy-editing checks for
+them. A sequence with `signed: true` shows signed spans (ATP per glycolysis step: −1, 0, +2) and
+the total as a net change (`totalLabel: 'Net'` → "Net: +2 ATP"); every stage needs a span. A
+sequence with no spans shows the stages in order only.
+
 Explore figures: `parts` (tap a part), `position`, `clock`, `dots`, `magnets`, `flashes`,
 `lightPath` (lamp, object, eye, hand or mirror; with `wall`, a `height` and clear, cloudy or
 solid blockers it traces the shadow), `particles`, `earth`, `push` (a ball pushed from

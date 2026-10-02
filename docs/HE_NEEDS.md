@@ -131,6 +131,16 @@ fractional exponents ((k − 1)/k).
 
 - **From:** ME-E3 (rest), ACC-N14.
 - **Waiting:** ME and ACC almost every page reads better; none blocked.
+- **Status: done (2026-10-02).** Write them as text: ṁ, Q̇ and x̂ with combining marks (or
+  precomposed ṁ, ŷ), 𝐅 or F⃗ for vectors, `T_wall`, `σ_max`, `T_h,in`, `f′_c` (subscripts up to 8
+  characters, Greek too, in two parts with a comma), ∂, ∇, ħ, ⌊ ⌋, ⌈ ⌉. `subscripts.ts` draws the
+  subscripts lowered (Unicode where it has the letters: σₘₐₓ); `toLatex` keeps marks and
+  subscripts whole, italicises a marked symbol like any other, stacks ∂U ÷ ∂P, raises
+  (P₂ ÷ P₁)^((k − 1)/k) and typesets **"∫ from a to b of (body) dx"** as ∫ with its limits (the
+  `\int` node, drawn by `MathLine` like Σ; the body is a bracket, a term or sin(t); or "dX ÷
+  (…)"). The screen reader hears "the integral from …", "partial U", "del", "m dot", "x bar",
+  "floor of", "T sub wall". Indefinite ∫P dV stays text. ∫ result lines are checked (HE-E8);
+  calculus form lines are HE-E6.
 
 ### HE-E8 Harness phrases
 
@@ -143,6 +153,21 @@ state one.
 
 - **From:** ME-E10, ACC-N13, EC-E11, B-2 (phrases), EG-E3 (phrases).
 - **Waiting:** every page, as it is built.
+- **Status: done for the listed words (2026-10-02); new words join as pages are built.**
+  `harness/phrasesHe.ts` (first in PHRASES) and `evaluate.ts` read: ∫ with its limits worked out
+  by quadrature at the page's values ("∫ from 0 to 0.5 of dX ÷ (0.2 × (1 − X))"); `log(…)` and
+  `log 1000` as base 10, `log₂`, `ln 2` without brackets, `20 log₁₀(…)` (a number before a
+  function multiplies it), `min(…)`, `max(…)`; `n!!`; `10∠36.87°` (its magnitude; "the real part
+  of", "the imaginary part of"), `|8 + j6|`, "the angle of (8 − j6)"; a level in dB, dBm or dBi
+  as its number, "dB as a power ratio", "dB as a voltage ratio", "dBm in W", "mW in dBm"; the
+  sign words (tension +, compression −, sagging +, hogging −, heat in +, heat out −, work out
+  +, work in −); label words that leave a number as it is ("(found numerically)", "by trial",
+  isentropic, film temperature, quality, Colebrook, governs, case n, branch n, LMTD, Routh,
+  compass rule, integrated, ", for a first-order …"); `LMTD(a, b)`. Already read: ⌈ ⌉, ⌊ ⌋,
+  mod, Σ from …, 64^0.75, 10^(−t ÷ D). A name's e with a prime or mark (e′, ē) is never Euler's
+  number. **Left:** complex arithmetic with j (a sum or product of phasors; HE-E17); a
+  sign-convention _check_ per page (the phrases give the sign; a page that states a convention
+  still needs its own assertion in the sampling test, when the first such page is built).
 
 ### HE-E9 Constants registry and g per page
 
@@ -174,6 +199,15 @@ significant figures by page; pH decimals from the concentration's figures; signe
 - **From:** P-E7, C-E14.
 - **Waiting:** P university-3, quantum and thermal-statistical pages (about 45); C pages with
   large K or pH answers.
+- **Status: done (2026-10-02).** Display already reached 10⁻³⁹ to 10³⁹ (scientific notation
+  past 10⁷ and under 10⁻⁴; `sigFigs`, `figures`, `worked`, `scientificFigures` set 3–4
+  figures by page). New: the harness compares values under 10⁻⁴ relative to their size (half a
+  percent; the absolute floor let any two pass), the solver's zero floor for a scientific value
+  with no step is 10⁻⁴⁵, `parseNumber` reads "1.5 × 10^37" exactly; `decimals` (pH 2.60 with its
+  zeros) with `figuresIn` and `logDecimals` for the concentration's figures; `signed` (+3, −1)
+  and `signedText`; `engineering` (47 × 10³) for a plan that asks; `MathLine` never wraps
+  "6.626 × 10⁻³⁴" between its parts. °′ is plain text (ΔG°′). Values from 10⁻⁴ up keep the K–12
+  tolerance.
 
 ### HE-E11 Category answers
 
@@ -347,6 +381,15 @@ signed sequence spans (ATP per glycolysis step, net +2).
 - **From:** C-E15, C-E12, ME-E11, ACC-N11.
 - **Waiting:** C 36 layouts (the chemistry plan puts this first); ME 5 (programming sorts and
   the trace page); ACC 7 sequences; C biochemistry#2 (spans).
+- **Status: done for sorts and sequences (2026-10-02).** Chemistry is written as text on cards
+  and stages (H₂O, Fe³⁺, ⇌, (2R,3S)-…; `K_a` drawn lowered) and `layouts.test.ts` counts a
+  formula with subscripts or a charge as one word. `code: true` on a sort or sequence draws
+  its cards or stages in a code font exactly as written (`LabelText`; straight quotes, no
+  subscripts from `_`) and skips the copy-editing checks for them. `signed: true` on a
+  sequence shows signed spans and a net total ("−1 + 0 − 1 + … = +2", "Net: +2 ATP"). A
+  sequence with no spans shows stages only (N11 needed nothing new). The wrong-tap hint keeps
+  a stage's capitals (CO₂, NADH, Prophase I). **Left:** code text in explore scenes (ME-E11
+  mentions them; no plan page needs one yet).
 
 ### HE-E26 Formula unit sets
 
