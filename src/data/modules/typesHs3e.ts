@@ -6,6 +6,7 @@
  */
 import { phaseSubstanceVars, type PhaseSubstance } from './typesHe1i';
 import { chemRateHe2kVars, type ChemRateHe2kSpec } from './typesHe2k';
+import { chemCellHe3fVars, type ChemCellHe3fSpec } from './typesHe3f';
 import type { NumOrVar } from './typesGraphs';
 
 const ids = (...xs: (NumOrVar | undefined)[]) =>
@@ -79,7 +80,9 @@ export type ChemDiagramHs3eSpec =
       cathode: NumOrVar;
       anode: NumOrVar;
       voltage?: NumOrVar;
-    };
+    }
+  /** College (HC56): a cell at its concentrations, or an electrolysis (`typesHe3f.ts`). */
+  | ChemCellHe3fSpec;
 
 export function chemDiagramHs3eVars(r: ChemDiagramHs3eSpec): string[] {
   switch (r.mode) {
@@ -89,6 +92,7 @@ export function chemDiagramHs3eVars(r: ChemDiagramHs3eSpec): string[] {
       if (!('times' in r)) return chemRateHe2kVars(r);
       return ids(...r.times, ...r.concentrations, r.span, r.change, r.rate);
     case 'cell':
+      if (!('cathode' in r)) return chemCellHe3fVars(r);
       return ids(r.cathode, r.anode, r.voltage);
   }
 }

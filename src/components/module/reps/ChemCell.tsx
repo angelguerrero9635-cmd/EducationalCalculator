@@ -18,7 +18,7 @@ import { GalvanicFigure } from '../layouts/galvanicFigure';
 import { Canvas, Caption, ChartText, fitLabel, useRep } from './common';
 import { arrowHead, reader } from './graphKit';
 
-type Spec = Extract<ChemDiagramHs3eSpec, { mode: 'cell' }>;
+type Spec = Extract<ChemDiagramHs3eSpec, { mode: 'cell'; cathode: unknown }>;
 
 const METALS = Object.keys(CELL_METALS) as CellMetal[];
 
