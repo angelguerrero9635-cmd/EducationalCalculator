@@ -1611,6 +1611,7 @@ const RETIRED = new Set<string>([
   'g.icons-heat',
   'g.icons-liter',
   'g.icons-meter',
+  'g.icons-survival',
   'g.icons-weather',
   'g.icons-young',
   'g.inequality-line',
