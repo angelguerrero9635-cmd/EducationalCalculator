@@ -1517,6 +1517,93 @@ const reserves: ModuleDef = {
   representation: { kind: 'reserve', reserve: 'Q', rate: 'r', years: 'y' },
 };
 
+/** T = ln(1 + kQ ÷ r) ÷ k, with its stages written out: ln of one number, then ÷ k. */
+const lastsFor = rule(
+  'T = ln(1 + kQ ÷ r) ÷ k',
+  '{T} = ln(1 + {k} × {Q} ÷ {r}) ÷ {k}',
+  (v) => v.T! - Math.log(1 + (v.k! * v.Q!) / v.r!) / v.k!,
+  {
+    T: [
+      (v) => (v.k! > 0 && v.r! > 0 ? Math.log(1 + (v.k! * v.Q!) / v.r!) / v.k! : undefined),
+      'ln(1 + {k} × {Q} ÷ {r}) ÷ {k}',
+      'The growing use adds up to Q when eᵏᵀ = 1 + kQ ÷ r; take ln of both sides and divide by k.',
+    ],
+  },
+);
+const sig = (x: number) => fmt(Number(x.toPrecision(6)));
+const expirationTime: Rel = {
+  ...lastsFor,
+  steps: {
+    T: {
+      ...lastsFor.steps.T!,
+      work: (v) => {
+        if (v.k === undefined || v.Q === undefined || v.r === undefined || !(v.r > 0)) return [];
+        const inside = 1 + (v.k * v.Q) / v.r;
+        return [
+          `T = ln(${sig(inside)}) ÷ ${fmt(v.k)}`,
+          `T = ${sig(Math.log(inside))} ÷ ${fmt(v.k)}`,
+        ];
+      },
+    },
+  },
+};
+
+const growingUse: ModuleDef = {
+  id: 's.12.resource-management~growing-use',
+  title: 'How long a reserve lasts when use grows',
+  use: 'Use this for “600 billion barrels are used at 15 billion a year, and use grows 2% a year. How many years will they last?”',
+  unitSystems: ['metric'],
+  assumptions: [
+    'Use grows steadily (continuously) by g% a year: after t years it is r × eᵏᵗ, with k = g ÷ 100.',
+    'The yearly use adds up to Q = r × (eᵏᵀ − 1) ÷ k after T years; solving for T gives the formula.',
+    'No new reserves are found; y = Q ÷ r is how long it would last if use stayed at r.',
+  ],
+  variables: [
+    V('Q', 'Q', 'Reserve', { unit: 'billion barrels', min: 0.01, max: 100000, step: 0.01 }),
+    V('r', 'r', 'Use this year', {
+      unit: 'billion barrels a year',
+      min: 0.01,
+      max: 1000,
+      step: 0.01,
+    }),
+    V('g', 'g', 'Growth in use each year', { unit: '%', min: 0.1, max: 20, step: 0.1 }),
+    V('k', 'k', 'Growth rate as a decimal', {
+      min: 0.001,
+      max: 0.2,
+      step: 0.0001,
+      derived: true,
+    }),
+    V('T', 'T', 'Years it lasts as use grows', {
+      unit: 'years',
+      min: 0,
+      max: 10000000,
+      step: 0.01,
+      derived: true,
+    }),
+    V('y', 'y', 'Years it lasts at this year’s use', {
+      unit: 'years',
+      min: 0,
+      max: 10000000,
+      step: 0.01,
+      derived: true,
+    }),
+  ],
+  ...rels(
+    rule('k = g ÷ 100', '{k} = {g} ÷ 100', (v) => v.k! - v.g! / 100, {
+      k: [(v) => v.g! / 100, '{g} ÷ 100', 'A percent is a number of hundredths.'],
+    }),
+    expirationTime,
+    quotient('y', 'Q', 'r', 'y = Q ÷ r', [
+      'For comparison: how many years the reserve lasts if use stays at r.',
+      'The reserve: the use each year times the years.',
+      'The use each year: the reserve over the years.',
+    ]),
+  ),
+  example: { Q: 600, r: 15, g: 2, k: 0.02, T: Math.log(1.8) / 0.02, y: 40 },
+  startWith: ['Q', 'r', 'g'],
+  representation: { kind: 'reserve', reserve: 'Q', rate: 'r', years: 'y' },
+};
+
 // ── The solar system: formation, planets and small bodies ──
 
 const kepler: ModuleDef = {
@@ -2413,6 +2500,7 @@ export const SCIENCE_12_MODULES: ModuleDef[] = [
   energyBalance,
   energyMix,
   reserves,
+  growingUse,
   kepler,
   wien,
   doppler,

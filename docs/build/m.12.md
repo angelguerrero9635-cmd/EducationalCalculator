@@ -11,7 +11,8 @@ phrases in `src/data/modules/harness/phrasesM12.ts`.
   `~two-sample` (t), `~hypotheses` (sort: which Hₐ), `~errors` (sort).
 - `m.12.confidence-intervals` (5): main (mean, σ known), `~t-interval`, `~proportion`,
   `~sample-size`, `~capture`.
-- `m.12.sampling-distributions` (4): main (x̄), `~proportion` (p̂), `~counts` (binomial), `~clt`.
+- `m.12.sampling-distributions` (5): main (x̄), `~proportion` (p̂), `~counts` (binomial), `~clt`,
+  `~clt-sums` (means and totals, any σ).
 - `m.12.chi-square` (3): main (goodness of fit, 3 categories), `~five-categories` (the counts
   and shares each a group, E7), `~independence` (2 × 3 table).
 - `m.12.conics` (5): main (ellipse), `~parabola`, `~hyperbola`, `~identify` (sort), `~cone`
@@ -487,3 +488,17 @@ labels were needed.
   edge). The hyperbola's plane faces the viewer, 0.3 in front of the axis, so both branches
   open out to the rims' edges; seen at an angle, one arm of each ended on a rim's near or far
   side and looked cut off mid-cone.
+
+### Sample means and totals
+
+`m.12.sampling-distributions~clt-sums` ("Sample means and sums with any σ"), after `~clt` (which
+fixes σ = μ): μ, σ, n and a cutoff typed as a mean x̄ or a total Σx (Σx = n × x̄); worked out are
+SE = σ ÷ √n, the total's mean nμ (μ_ΣX) and spread √n × σ (σ_ΣX), one z (the same for x̄ and Σx:
+the check line shows the total's) and P(x̄ > x̄₀), the other side as 1 − P in the step's note
+(10 values). SE, μ_ΣX, σ_ΣX, z and P are worked out only: typed, they let the sampler give
+values no n could satisfy (a z past ±50 with n blank), and z's range is wide for the same reason.
+One tail and its complement rather than a sign box: `normalCurve`'s `shade` can't follow a sign
+(only `test.tail` can, with α). Picture: `normalCurve` in sampling mode, the tail past x̄ shaded,
+as on the main page; its caption says "The population is normal", which the page's n ≥ 30 case
+doesn't need (a wording for the component). Example: bags of rice, μ = 2 kg, σ = 0.12 kg,
+n = 36, x̄ = 2.03 kg → SE = 0.02, Σx = 73.08 kg, z = 1.5, P = 0.0668. No new step phrases.
