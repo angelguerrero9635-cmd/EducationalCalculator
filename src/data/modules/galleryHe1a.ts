@@ -1136,6 +1136,264 @@ const axialThermal = (() => {
   });
 })();
 
+// ─── HC1 beam, column: Euler buckling by its ends (mechanics-of-materials#5, aerospace-structures#2) ─
+
+const K_NAMES = 'K is 0.5 fixed–fixed, 0.7 fixed–pinned, 1 pinned–pinned, 2 fixed–free.';
+
+function euler(
+  id: string,
+  title: string,
+  use: string,
+  [E, I, L, K]: [number, number, number, number],
+  material: 'steel' | 'aluminum',
+) {
+  const vars: VariableDef[] = [
+    val('E', 'E', 'Modulus', 'MPa', 1e6, { min: 1 }),
+    val('I', 'I', 'Second moment of area', 'mm⁴', 1e12, { min: 1, scientific: true }),
+    val('L', 'L', 'Length', 'mm', 1e5, { min: 1 }),
+    {
+      ...val('K', 'K', 'Effective-length factor', undefined, 2, { min: 0.5 }),
+      allowed: [0.5, 0.7, 1, 2],
+    },
+    val('KL', 'KL', 'Effective length', 'mm', 2e5),
+    val('P', 'P_cr', 'Critical load', 'N', 1e12),
+  ];
+  const s = symbolsOf(vars);
+  return demo(id, title, {
+    use,
+    assumptions: ['Straight, centrally loaded and elastic up to P_cr; N, mm and MPa.', K_NAMES],
+    variables: vars,
+    relations: [
+      monomial(
+        'KL = K × L',
+        'KL',
+        [
+          ['K', 1],
+          ['L', 1],
+        ],
+        [],
+        'The effective length is the half-wave the ends let the column bend in: K times L.',
+        s,
+      ),
+      monomial(
+        'P_cr = π²EI ÷ (KL)²',
+        'P',
+        [
+          ['π²', 1],
+          ['E', 1],
+          ['I', 1],
+        ],
+        [['KL', 2]],
+        'Euler’s load for a half-wave KL long: π²EI over KL squared.',
+        s,
+      ),
+    ],
+    example: { E, I, L, K, KL: K * L, P: (Math.PI ** 2 * E * I) / (K * L) ** 2 },
+    startWith: ['E', 'I', 'L', 'K'],
+    representation: {
+      kind: 'beam',
+      mode: 'column',
+      length: 'L',
+      units: { force: 'N', length: 'mm' },
+      column: { k: 'K', pcr: 'P', effective: 'KL', material },
+    },
+  });
+}
+
+const columnPinned = euler(
+  'g.he-beam-column-euler',
+  'Euler buckling, pinned at both ends: one half-wave',
+  'Use this for “A pinned steel column 3 m long has I = 2 × 10⁶ mm⁴. At what load does it buckle?”',
+  [200000, 2e6, 3000, 1],
+  'steel',
+);
+
+const columnFixedPinned = euler(
+  'g.he-beam-column-fixed-pinned',
+  'Fixed at the bottom, pinned on top: KL = 0.7L',
+  'Use this for “The same column, now fixed at its base and pinned on top. How much more can it carry?”',
+  [200000, 2e6, 3000, 0.7],
+  'steel',
+);
+
+const columnFixedFixed = euler(
+  'g.he-beam-column-fixed-fixed',
+  'An aluminum tube fixed at both ends: KL = 0.5L',
+  'Use this for “An aluminum tube 1.2 m long, I = 8 × 10⁴ mm⁴, fixed at both ends. Find its critical load.”',
+  [70000, 80000, 1200, 0.5],
+  'aluminum',
+);
+
+const columnFixedFree = euler(
+  'g.he-beam-column-fixed-free',
+  'Fixed at the base, free on top: KL = 2L, the weakest case',
+  'Use this for “A flagpole-like aluminum tube 1.2 m tall is fixed at its base and free on top. At what load does it buckle?”',
+  [70000, 80000, 1200, 2],
+  'aluminum',
+);
+
+// ─── HC1 beam, column: concrete slenderness (concrete-design#2~slenderness) ──
+
+const columnConcrete = (() => {
+  const vars: VariableDef[] = [
+    {
+      ...val('k', 'k', 'Effective-length factor', undefined, 2, { min: 0.5 }),
+      allowed: [0.5, 0.7, 1, 2],
+    },
+    val('lu', 'ℓ_u', 'Unbraced length', 'ft', 100, { min: 1 }),
+    val('h', 'h', 'Column depth', 'in', 200, { min: 1 }),
+    val('r', 'r', 'Radius of gyration', 'in', 60),
+    val('ratio', 'kℓ_u/r', 'Slenderness', undefined, 1000),
+  ];
+  const s = symbolsOf(vars);
+  const [k, lu, h] = [1, 12, 16];
+  return demo('g.he-beam-column-concrete', 'A concrete column: is it slender?', {
+    use: 'Use this for “A 16 in square column has 12 ft between floors, k = 1. Is it slender?”',
+    assumptions: [
+      'A rectangular section: r = 0.3h; sway frames count as slender above 22.',
+      `${K_NAMES} 12 in to a foot.`,
+    ],
+    variables: vars,
+    relations: [
+      monomial(
+        'r = 0.3h',
+        'r',
+        [
+          ['0.3', 1],
+          ['h', 1],
+        ],
+        [],
+        'For a rectangle, r is about 0.3 times the depth in the direction it bends.',
+        s,
+      ),
+      monomial(
+        'kℓ_u/r = 12kℓ_u ÷ r',
+        'ratio',
+        [
+          ['12', 1],
+          ['k', 1],
+          ['lu', 1],
+        ],
+        [['r', 1]],
+        'Turn ℓ_u into inches (× 12), multiply by k, then divide by r.',
+        s,
+      ),
+    ],
+    example: { k, lu, h, r: 0.3 * h, ratio: (12 * k * lu) / (0.3 * h) },
+    startWith: ['k', 'lu', 'h'],
+    representation: {
+      kind: 'beam',
+      mode: 'column',
+      length: 'lu',
+      column: { k: 'k', slenderness: 'ratio', material: 'concrete' },
+    },
+  });
+})();
+
+// ─── HC1 beam, panel: a skin panel buckling between stringers (aerospace-structures#2~plate) ─
+
+function panelDemo(
+  id: string,
+  title: string,
+  use: string,
+  [k, E, nu, t, b]: [number, number, number, number, number],
+) {
+  const vars: VariableDef[] = [
+    {
+      ...val('k', 'k', 'Buckling coefficient', undefined, 10, { min: 1 }),
+      allowed: [4, 6.97],
+    },
+    val('E', 'E', 'Modulus', 'MPa', 1e6, { min: 1 }),
+    val('nu', 'ν', 'Poisson’s ratio', undefined, 0.49, { min: 0.01 }),
+    val('t', 't', 'Skin thickness', 'mm', 100, { min: 0.01 }),
+    val('b', 'b', 'Width between stringers', 'mm', 2000, { min: 1 }),
+    val('sig', 'σ_cr', 'Critical stress', 'MPa', 1e5),
+  ];
+  const f = (x: Values) =>
+    ((x.k! * Math.PI ** 2 * x.E!) / (12 * (1 - x.nu! ** 2))) * (x.t! / x.b!) ** 2;
+  const per = (x: Values) => (Math.PI ** 2 * x.E! * (x.t! / x.b!) ** 2) / (12 * (1 - x.nu! ** 2));
+  return demo(id, title, {
+    use,
+    assumptions: [
+      'A flat panel squeezed along its stringers, elastic; k = 4 with simply supported edges, 6.97 clamped.',
+      'N, mm and MPa.',
+    ],
+    variables: vars,
+    relations: [
+      rel(
+        'σ_cr = kπ²E ÷ (12(1 − ν²)) × (t ÷ b)²',
+        '{sig} = {k} × π² × {E} ÷ (12 × (1 − {nu}²)) × ({t} ÷ {b})²',
+        ['sig', 'k', 'E', 'nu', 't', 'b'],
+        (x) => x.sig! - f(x),
+        {
+          sig: [
+            f,
+            '{k} × π² × {E} ÷ (12 × (1 − {nu}²)) × ({t} ÷ {b})²',
+            'The plate-buckling formula: like Euler’s, with the panel’s width b in place of the length.',
+          ],
+          E: [
+            (x) => {
+              const d = x.k! * Math.PI ** 2 * (x.t! / x.b!) ** 2;
+              return d === 0 ? undefined : (x.sig! * 12 * (1 - x.nu! ** 2)) / d;
+            },
+            '{sig} × 12 × (1 − {nu}²) ÷ ({k} × π² × ({t} ÷ {b})²)',
+            'Multiply σ_cr by 12(1 − ν²), then divide by kπ²(t ÷ b)².',
+          ],
+          t: [
+            (x) => {
+              const d = x.k! * Math.PI ** 2 * x.E!;
+              return d === 0 || x.sig! < 0
+                ? undefined
+                : x.b! * Math.sqrt((x.sig! * 12 * (1 - x.nu! ** 2)) / d);
+            },
+            '{b} × √({sig} × 12 × (1 − {nu}²) ÷ ({k} × π² × {E}))',
+            'Get (t ÷ b)² alone, take the square root, then multiply by b.',
+          ],
+          b: [
+            (x) => {
+              const top = x.k! * Math.PI ** 2 * x.E!;
+              return x.sig! <= 0
+                ? undefined
+                : x.t! * Math.sqrt(top / (x.sig! * 12 * (1 - x.nu! ** 2)));
+            },
+            '{t} × √({k} × π² × {E} ÷ ({sig} × 12 × (1 − {nu}²)))',
+            'Get (b ÷ t)² alone, take the square root, then multiply by t.',
+          ],
+          nu: [
+            (x) => {
+              const q = 1 - (x.k! * per({ ...x, nu: 0 })) / x.sig!;
+              return x.sig! <= 0 || q < 0 ? undefined : Math.sqrt(q);
+            },
+            '√(1 − {k} × π² × {E} × ({t} ÷ {b})² ÷ (12 × {sig}))',
+            'Get 1 − ν² alone, take it from 1, then take the square root.',
+          ],
+        },
+      ),
+    ],
+    example: { k, E, nu, t, b, sig: f({ k, E, nu, t, b }) },
+    startWith: ['k', 'E', 'nu', 't', 'b'],
+    representation: {
+      kind: 'beam',
+      mode: 'panel',
+      panel: { width: 'b', thickness: 't', k: 'k', stress: 'sig' },
+    },
+  });
+}
+
+const panel = panelDemo(
+  'g.he-beam-panel',
+  'A skin panel buckles between stringers',
+  'Use this for “A 2 mm aluminum skin spans 100 mm between stringers, edges simply supported. At what stress does it buckle?”',
+  [4, 70000, 0.33, 2, 100],
+);
+
+const panelClamped = panelDemo(
+  'g.he-beam-panel-clamped',
+  'A wide, thin panel with clamped edges',
+  'Use this for “A 1 mm skin spans 250 mm between stringers that clamp its edges. At what stress does it buckle?”',
+  [6.97, 70000, 0.33, 1, 250],
+);
+
 export const HE1A_GALLERY_MODULES: ModuleDef[] = [
   point,
   pointEdge,
@@ -1150,6 +1408,13 @@ export const HE1A_GALLERY_MODULES: ModuleDef[] = [
   axialStepped,
   axialThree,
   axialThermal,
+  columnPinned,
+  columnFixedPinned,
+  columnFixedFixed,
+  columnFixedFree,
+  columnConcrete,
+  panel,
+  panelClamped,
 ];
 
 export const HE1A_GALLERY_LAYOUTS: LayoutDef[] = [];

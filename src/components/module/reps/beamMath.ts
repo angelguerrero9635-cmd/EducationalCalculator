@@ -349,7 +349,10 @@ export function influenceLine(
   });
 }
 
-/** A buckled column's shape, 0 at the bottom: its sideways sway at height s (0 to 1 of L). */
+/**
+ * A buckled column's shape, 0 at the bottom: its sideways sway at height s (0 to 1 of L; a
+ * fixed–free column's mirror image below its base for s < 0), the largest sway 1.
+ */
 export function bucklingShape(k: number, s: number): number {
   if (k === 2) return 1 - Math.cos((Math.PI * s) / 2); // fixed at the bottom, free on top
   if (k === 0.5) return (1 - Math.cos(2 * Math.PI * s)) / 2; // fixed–fixed
@@ -376,12 +379,12 @@ const FIXED_PINNED_PEAK = (() => {
 })();
 
 /**
- * The effective length's ends on the column (0 to 1 of L, or past 1 for a fixed–free column,
- * whose half-wave runs on through its mirror image above the free end): its inflection points,
- * or a pinned end.
+ * The effective length's ends on the column, in L from the bottom: its inflection points or
+ * pinned ends. A fixed–free column's shape and its mirror image below the fixed base make one
+ * half-wave from the free top (s = 1) to the image of the top (s = −1): 2L.
  */
 export function halfWave(k: number): [number, number] {
-  if (k === 2) return [0, 2];
+  if (k === 2) return [-1, 1];
   if (k === 0.5) return [0.25, 0.75];
   if (k === 0.7) return [inflectionFixedPinned(), 1];
   return [0, 1];
