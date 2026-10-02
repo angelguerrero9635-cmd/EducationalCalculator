@@ -496,6 +496,9 @@ export function buildCurve(
     return Number.isFinite(v) ? v : f(c + s * 1e-9);
   };
   switch (fam.family) {
+    case 'amplification': // HC148, HC179: drawn by FunctionGraphHe4e, never as a family curve
+    case 'fourier':
+      throw new Error(`functionGraph family '${fam.family}' is drawn by FunctionGraphHe4e`);
     case 'response': // HC4, HC9: drawn by FunctionGraphHe1d, never as a family curve
     case 'gradation':
       throw new Error(`functionGraph family '${fam.family}' is drawn by FunctionGraphHe1d`);

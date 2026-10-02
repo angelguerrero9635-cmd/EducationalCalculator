@@ -125,3 +125,59 @@ export interface DriftPathsSpec {
 /** The variable ids a driftPaths spec names. */
 export const driftPathsVars = (r: DriftPathsSpec): string[] =>
   ids(r.ne, r.generations, r.p0, r.h0, r.t, r.ht, r.kept);
+
+// ─── HC148, HC179: functionGraph families ──────────────────────────────────────
+
+/** One qPCR amplification curve: its gene's name, its Ct, and whether it is the treated sample. */
+export interface AmplificationCurveHe4e {
+  name: string;
+  ct: NumOrVar;
+  treated?: boolean;
+}
+
+/**
+ * HC148 (B-P12): `family: 'amplification'` with `threshold`, qPCR. Each curve is the logistic
+ * F = P ÷ (1 + 2^(m − c)) over cycle c, placed so it meets the threshold at its Ct: it doubles
+ * each cycle while far below the plateau P (= 1). Up to four curves (two genes; the first gene
+ * in the highlight, the second in the second colour; treated dashed, control solid), the
+ * threshold `level` (default 0.1 of the plateau) as a horizontal line, each curve's crossing
+ * dropped to the cycle axis with its Ct written. A "?" Ct draws nothing for that curve.
+ *
+ * HC179 (EC-P10): `family: 'fourier'` with `fourier`. The partial sum through harmonic `terms`
+ * (1 to 99) of a `wave` of amplitude A over two periods, the wave itself dashed (Gibbs
+ * overshoot at the jumps), and under it a stem chart of bₖ with harmonic `k` lit and labelled.
+ * square (±A): bₖ = 4A ÷ kπ, odd k; saw (rising −A to A): bₖ = 2A(−1)^(k+1) ÷ kπ; triangle (peak
+ * A): bₖ = 8A(−1)^((k−1)/2) ÷ (kπ)², odd k. `coefficient` is the page's bₖ, `share` its power
+ * share bₖ² ÷ 2 over the wave's power (A² square, A² ÷ 3 saw and triangle), `f0` and `fk` the
+ * fundamental and fₖ = kf₀ (all checked).
+ */
+export type FamilyHe4e =
+  | {
+      family: 'amplification';
+      threshold: { curves: AmplificationCurveHe4e[]; level?: NumOrVar };
+    }
+  | {
+      family: 'fourier';
+      fourier: {
+        wave: 'square' | 'saw' | 'triangle';
+        terms: NumOrVar;
+        k?: NumOrVar;
+        amplitude?: NumOrVar;
+        coefficient?: string;
+        share?: string;
+        f0?: NumOrVar;
+        fk?: string;
+      };
+    };
+
+/** Whether a function graph is one of HC148's or HC179's families. */
+export const isFamilyHe4e = (f: { family: string }): f is FamilyHe4e =>
+  f.family === 'amplification' || f.family === 'fourier';
+
+/** The variable ids an HC148 or HC179 family names. */
+export function familyHe4eVars(f: FamilyHe4e): string[] {
+  if (f.family === 'amplification')
+    return ids(...f.threshold.curves.map((c) => c.ct), f.threshold.level);
+  const s = f.fourier;
+  return ids(s.terms, s.k, s.amplitude, s.coefficient, s.share, s.f0, s.fk);
+}

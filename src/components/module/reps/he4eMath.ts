@@ -113,3 +113,47 @@ export function driftPaths(
   }
   return paths;
 }
+
+// ─── HC148: qPCR amplification ────────────────────────────────────────────────
+
+/** Where a logistic curve of plateau P is half-way, given the cycle it meets the threshold at. */
+export const ampMid = (ct: number, level: number, plateau = 1) =>
+  ct + Math.log2(plateau / level - 1);
+
+/** The fluorescence at cycle c: P ÷ (1 + 2^(mid − c)), doubling each cycle far below P. */
+export const ampAt = (c: number, mid: number, plateau = 1) => plateau / (1 + 2 ** (mid - c));
+
+// ─── HC179: Fourier series ───────────────────────────────────────────────────
+
+export type WaveHe4e = 'square' | 'saw' | 'triangle';
+
+/** The sine coefficient bₖ of a wave of amplitude A (0 for the even harmonics of odd waves). */
+export function fourierB(wave: WaveHe4e, k: number, A: number): number {
+  if (k < 1 || Math.abs(k - Math.round(k)) > 1e-9) return 0;
+  if (wave === 'saw') return (2 * A * (k % 2 ? 1 : -1)) / (k * Math.PI);
+  if (k % 2 === 0) return 0;
+  if (wave === 'square') return (4 * A) / (k * Math.PI);
+  const sign = ((k - 1) / 2) % 2 ? -1 : 1;
+  return (sign * 8 * A) / (k * Math.PI) ** 2;
+}
+
+/** The wave itself at x periods (one period from x = 0 to 1). */
+export function waveAt(wave: WaveHe4e, A: number, x: number): number {
+  const s = Math.sin(2 * Math.PI * x);
+  if (wave === 'square') return Math.abs(s) < 1e-12 ? 0 : Math.sign(s) * A;
+  if (wave === 'saw') return 2 * A * (((((x + 0.5) % 1) + 1) % 1) - 0.5);
+  return ((2 * A) / Math.PI) * Math.asin(Math.max(-1, Math.min(1, s)));
+}
+
+/** The partial sum through harmonic N at x periods. */
+export function fourierSum(wave: WaveHe4e, N: number, A: number, x: number): number {
+  let y = 0;
+  for (let k = 1; k <= N; k++) {
+    const b = fourierB(wave, k, A);
+    if (b) y += b * Math.sin(2 * Math.PI * k * x);
+  }
+  return y;
+}
+
+/** The wave's mean power: A² for a square wave, A² ÷ 3 for a saw or a triangle. */
+export const wavePower = (wave: WaveHe4e, A: number) => (wave === 'square' ? A * A : (A * A) / 3);

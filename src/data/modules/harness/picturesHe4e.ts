@@ -4,12 +4,15 @@
  * t is the page's to pick, and the caption says the area it holds); the half-width is t⋆s ÷ √n,
  * the ends x̄ ∓ it; the observed t is |x̄ − μ|√n ÷ s. HC152: the shaded tail's mean (an
  * independent sum over the drawn tail) is μ + S; R = h²S; the offspring's mean is μ + R. HC151
- * and HC153 below. Called from `repIssues` in `pictures.ts`.
+ * and HC153, HC148 and HC179 below. Called from `repIssues` in `pictures.ts`.
  * Test-only.
  */
 import type { VariableDef } from '@/engine/types';
 import {
+  ampAt,
+  ampMid,
   driftPaths,
+  fourierB,
   halfWidth,
   heterozygosity,
   pForH,
@@ -167,5 +170,77 @@ export function driftPathsIssues(rep: Representation, val: Val): string[] {
   const kept = get(rep.kept);
   if (kept !== undefined && h0 > 0 && !close(kept, h / h0) && !close(kept, (100 * h) / h0))
     out.push(`drift: the share kept ${kept} is not H_t ÷ H₀ = ${h / h0}`);
+  return out;
+}
+
+/**
+ * HC148 and HC179 on `functionGraph`. Amplification: the threshold lies between 0 and the
+ * plateau; each drawn curve meets it at its Ct and doubles per cycle (within 1%) four cycles
+ * before; at most four curves of two genes. Fourier: N whole, 1 to 99; bₖ from the textbook
+ * formula (written out here apart from the picture's) equals the drawn stem and the page's;
+ * fₖ = kf₀; the share is (bₖ² ÷ 2) over the wave's power.
+ */
+export function he4eGraphIssues(rep: Representation, val: Val): string[] {
+  if (rep.kind !== 'functionGraph') return [];
+  const out: string[] = [];
+  const get = (v: string | number | undefined) => (v === undefined ? undefined : val(v));
+  if (rep.family === 'amplification') {
+    const th = rep.threshold;
+    const level = get(th.level) ?? 0.1;
+    if (!(level > 0 && level < 1))
+      out.push(`amplification: threshold ${level} is not inside (0, 1)`);
+    if (th.curves.length > 4) out.push(`amplification: ${th.curves.length} curves (4 fit)`);
+    if (new Set(th.curves.map((c) => c.name)).size > 2)
+      out.push('amplification: more than 2 genes');
+    for (const cv of th.curves) {
+      const ct = get(cv.ct);
+      if (ct === undefined || !(level > 0 && level < 1)) continue;
+      if (ct < 1 || ct > 45) out.push(`amplification: Ct ${ct} is outside 1 to 45`);
+      const mid = ampMid(ct, level);
+      if (Math.abs(ampAt(ct, mid) - level) > 1e-9)
+        out.push(
+          `amplification: ${cv.name} meets the threshold at ${ampAt(ct, mid)}, not at its Ct`,
+        );
+      const ratio = ampAt(ct - 3, mid) / ampAt(ct - 4, mid);
+      if (Math.abs(ratio - 2) > 0.02)
+        out.push(`amplification: ${cv.name} grows ×${ratio} a cycle before the threshold, not ×2`);
+    }
+  }
+  if (rep.family === 'fourier') {
+    const s = rep.fourier;
+    const N = get(s.terms);
+    if (N !== undefined && (N < 1 || N > 99 || Math.abs(N - Math.round(N)) > 1e-9))
+      out.push(`fourier: ${N} terms is not a whole number from 1 to 99`);
+    const k = get(s.k);
+    const A = get(s.amplitude) ?? 1;
+    if (k === undefined) return out;
+    if (k < 1 || k > 99 || Math.abs(k - Math.round(k)) > 1e-9)
+      out.push(`fourier: harmonic ${k} is not a whole number from 1 to 99`);
+    const odd = Math.round(k) % 2 === 1;
+    const b =
+      s.wave === 'square'
+        ? odd
+          ? (4 * A) / (k * Math.PI)
+          : 0
+        : s.wave === 'saw'
+          ? (2 * A * (-1) ** (Math.round(k) + 1)) / (k * Math.PI)
+          : odd
+            ? (8 * A * (-1) ** ((Math.round(k) - 1) / 2)) / (k * k * Math.PI * Math.PI)
+            : 0;
+    if (Math.abs(fourierB(s.wave, Math.round(k), A) - b) > 1e-9 * Math.max(1, Math.abs(b)))
+      out.push(`fourier: the lit stem is ${fourierB(s.wave, Math.round(k), A)}, not b${k} = ${b}`);
+    const coef = get(s.coefficient);
+    if (coef !== undefined && !close(coef, b)) out.push(`fourier: b${k} = ${coef} is not ${b}`);
+    const [f0, fk] = [get(s.f0), get(s.fk)];
+    if (f0 !== undefined && fk !== undefined && !close(fk, k * f0))
+      out.push(`fourier: fₖ = ${fk} is not k × f₀ = ${k * f0}`);
+    const share = get(s.share);
+    const power = s.wave === 'square' ? A * A : (A * A) / 3;
+    if (share !== undefined && power > 0) {
+      const want = (b * b) / 2 / power;
+      if (!close(share, want) && !close(share, 100 * want))
+        out.push(`fourier: the power share ${share} is not (b² ÷ 2) ÷ P = ${want}`);
+    }
+  }
   return out;
 }

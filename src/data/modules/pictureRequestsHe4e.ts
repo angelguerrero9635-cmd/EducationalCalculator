@@ -100,4 +100,43 @@ export const HE4E_REQUESTS: PictureRequest[] = [
     status: 'drawn',
     gallery: ['g.he-driftPaths-decay', 'g.he-driftPaths-small'],
   },
+  {
+    ...ask(
+      'HC148',
+      'functionGraph',
+      'qPCR: amplification curves for a target and a reference gene (treated dashed), a threshold line and each curve’s crossing marked as its Ct',
+      [`${B}cell-molecular#2~fold-change`],
+      [
+        'From B-P12. New family on functionGraph (typesHe4e.ts FamilyHe4e, reps/AmplificationHe4e.tsx through reps/FunctionGraphHe4e.tsx; the curve in reps/he4eMath.ts). FunctionGraph itself never draws it.',
+        "Fields: { kind: 'functionGraph', family: 'amplification', threshold: { curves: [{ name, ct, treated? }] (up to 4, two genes), level? (default 0.1 of the plateau) }, fixed: true }.",
+        'Each curve is the logistic F = 1 ÷ (1 + 2^(m − c)) placed to meet the threshold at its Ct, so it doubles each cycle far below the plateau; the first gene in the highlight, the second in the second colour, treated dashed; the threshold dashed red; each crossing dotted and dropped to the cycle axis, the Cts written in a row per gene under it. With a treated and a control curve for each of two genes the caption works ΔCt, ΔΔCt and the fold change 2^(−ΔΔCt). A "?" Ct draws nothing for that curve.',
+        "Example: { kind: 'functionGraph', family: 'amplification', threshold: { curves: [{ name: 'target', ct: 'ctTc' }, { name: 'target', ct: 'ctTt', treated: true }, { name: 'reference', ct: 'ctRc' }, { name: 'reference', ct: 'ctRt', treated: true }], level: 0.1 }, fixed: true } (ΔCt, ΔΔCt and the fold go in pictureLabels).",
+        'Harness (harness/picturesHe4e.ts): each curve meets the threshold at its Ct; it grows ×2 (within 1%) per cycle four cycles before; the threshold is inside (0, 1); at most 4 curves of 2 genes.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: ['g.he-functionGraph-qpcr', 'g.he-functionGraph-qpcr-down'],
+  },
+  {
+    ...ask(
+      'HC179',
+      'functionGraph',
+      'A Fourier series: the partial sum over a square (or saw, triangle) wave with the Gibbs overshoot, and a stem chart of bₖ beside it with harmonic k lit',
+      ['he.engineering.signals-systems#2'],
+      [
+        'From EC-P10. New family on functionGraph (typesHe4e.ts FamilyHe4e, reps/FourierHe4e.tsx through reps/FunctionGraphHe4e.tsx; the series in reps/he4eMath.ts).',
+        "Fields: { kind: 'functionGraph', family: 'fourier', fourier: { wave: 'square' | 'saw' | 'triangle', terms (the sum runs through this harmonic, 1–99), k? (lit), amplitude? (A, default 1), coefficient? (bₖ), share? (bₖ² ÷ 2 over the wave's power, a share or a percent), f0?, fk? }, fixed: true }.",
+        'Above: two periods (T/2 … 2T) of the wave dashed and the partial sum solid, A and −A marked; the caption gives the peak and, past A, the overshoot as a share of the jump (Gibbs, about 9%). Below: stems b₁ … (at least 9, as many as the terms or k), those in the sum in the highlight, the rest muted, the lit k thick in the second colour with bₖ written. A "?" A or terms draws no sum.',
+        "Example (signals#2 main): { kind: 'functionGraph', family: 'fourier', fourier: { wave: 'square', terms: 'k', k: 'k', amplitude: 'A', coefficient: 'bk', share: 'share', f0: 'f0', fk: 'fk' }, fixed: true }.",
+        'Harness (harness/picturesHe4e.ts): bₖ from the formula (4A ÷ kπ odd k; 2A(−1)^(k+1) ÷ kπ; 8A(−1)^((k−1)/2) ÷ (kπ)², written out apart from the picture) equals the lit stem and the page’s; fₖ = kf₀; the share is (bₖ² ÷ 2) over A² (square) or A² ÷ 3; terms and k whole, 1 to 99.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-functionGraph-fourier',
+      'g.he-functionGraph-fourier-gibbs',
+      'g.he-functionGraph-fourier-saw',
+      'g.he-functionGraph-fourier-triangle',
+    ],
+  },
 ];

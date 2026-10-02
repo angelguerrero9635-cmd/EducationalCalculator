@@ -5,6 +5,8 @@
  * HC152: `normalCurve` `shift` (he.biology.evolution#0~breeders).
  * HC151: `alleleFrequencies` `after` (he.biology.evolution#0).
  * HC153: `driftPaths`, the new kind (he.biology.evolution#1).
+ * HC148: `functionGraph` `family: 'amplification'` (he.biology.cell-molecular#2~fold-change).
+ * HC179: `functionGraph` `family: 'fourier'` (he.engineering.signals-systems#2).
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 import { invT } from '@/components/module/reps/statMath';
@@ -519,7 +521,263 @@ const DRIFT_SMALL = driftPage(
   { ne: 5, h0: 0.5, t: 40 },
 );
 
+// ─── HC148: qPCR and the ΔΔCt method (cell-molecular#2~fold-change) ────────────
+
+const ddctPage = (id: string, title: string, use: string, typed: Values) =>
+  page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'Both genes double every cycle (100% efficiency), so each cycle earlier is twice the starting copies.',
+      'The reference gene is expressed the same in both samples; it corrects for how much was loaded.',
+      'A fold change above 1 is up-regulation, below 1 down-regulation.',
+    ],
+    variables: [
+      num('ctTt', 'Ct_target,treated', 'Target Ct, treated', undefined, 5, 45, { step: 0.1 }),
+      num('ctTc', 'Ct_target,control', 'Target Ct, control', undefined, 5, 45, { step: 0.1 }),
+      num('ctRt', 'Ct_ref,treated', 'Reference Ct, treated', undefined, 5, 45, { step: 0.1 }),
+      num('ctRc', 'Ct_ref,control', 'Reference Ct, control', undefined, 5, 45, { step: 0.1 }),
+      out('dT', 'ΔCt_treated', 'ΔCt, treated'),
+      out('dC', 'ΔCt_control', 'ΔCt, control'),
+      out('dd', 'ΔΔCt', 'ΔΔCt'),
+      out('fold', 'fold', 'Fold change'),
+    ],
+    rules: [
+      derive(
+        'dT',
+        'dT',
+        ['ctTt', 'ctRt'],
+        '{dT} = {ctTt} − {ctRt}',
+        (v) => v.ctTt! - v.ctRt!,
+        '{ctTt} − {ctRt}',
+        'ΔCt is the target’s Ct minus the reference’s, in the treated sample …',
+      ),
+      derive(
+        'dC',
+        'dC',
+        ['ctTc', 'ctRc'],
+        '{dC} = {ctTc} − {ctRc}',
+        (v) => v.ctTc! - v.ctRc!,
+        '{ctTc} − {ctRc}',
+        '… and in the control sample.',
+      ),
+      derive(
+        'dd',
+        'dd',
+        ['dT', 'dC'],
+        '{dd} = {dT} − {dC}',
+        (v) => v.dT! - v.dC!,
+        '{dT} − {dC}',
+        'ΔΔCt compares the two: treated minus control.',
+      ),
+      derive(
+        'fold',
+        'fold',
+        ['dd'],
+        '{fold} = 2^(−{dd})',
+        (v) => 2 ** -v.dd!,
+        '2^(−{dd})',
+        'Each cycle is a doubling, so the fold change is 2 to the power −ΔΔCt.',
+      ),
+    ],
+    example: example(
+      typed,
+      ['dT', (v) => v.ctTt! - v.ctRt!],
+      ['dC', (v) => v.ctTc! - v.ctRc!],
+      ['dd', (v) => v.dT! - v.dC!],
+      ['fold', (v) => 2 ** -v.dd!],
+    ),
+    startWith: ['ctTt', 'ctTc', 'ctRt', 'ctRc'],
+    pictureLabels: ['dT', 'dC', 'dd', 'fold'],
+    representation: {
+      kind: 'functionGraph',
+      family: 'amplification',
+      threshold: {
+        curves: [
+          { name: 'target', ct: 'ctTc' },
+          { name: 'target', ct: 'ctTt', treated: true },
+          { name: 'reference', ct: 'ctRc' },
+          { name: 'reference', ct: 'ctRt', treated: true },
+        ],
+        level: 0.1,
+      },
+      fixed: true,
+    },
+  });
+
+const QPCR = ddctPage(
+  'g.he-functionGraph-qpcr',
+  'Fold change from qPCR: the ΔΔCt method',
+  'Use this for “The target’s Ct drops from 27 to 24 while the reference stays at 18. What is the fold change?”',
+  { ctTt: 24, ctTc: 27, ctRt: 18, ctRc: 18 },
+);
+
+/** Down-regulation, with the reference shifting too. */
+const QPCR_DOWN = ddctPage(
+  'g.he-functionGraph-qpcr-down',
+  'A gene turned down: fold change below 1',
+  'Use this for “Treated: target Ct 29, reference 20. Control: target 26, reference 19. What is the fold change?”',
+  { ctTt: 29, ctTc: 26, ctRt: 20, ctRc: 19 },
+);
+
+// ─── HC179: Fourier series (signals#2) ───────────────────────────────────────
+
+const ODD = Array.from({ length: 50 }, (_, i) => 2 * i + 1);
+
+type Wave = 'square' | 'saw' | 'triangle';
+const bOf: Record<Wave, (v: Values) => number> = {
+  square: (v) => (4 * v.A!) / (v.k! * Math.PI),
+  saw: (v) => (2 * v.A! * (-1) ** (v.k! + 1)) / (v.k! * Math.PI),
+  triangle: (v) => (8 * v.A! * (-1) ** ((v.k! - 1) / 2)) / (v.k! * v.k! * Math.PI * Math.PI),
+};
+const bText: Record<Wave, [string, string]> = {
+  square: ['4 × {A} ÷ ({k} × π)', 'An odd square wave has only odd sine terms, bₖ = 4A ÷ kπ.'],
+  saw: [
+    '2 × {A} × (−1)^({k} + 1) ÷ ({k} × π)',
+    'A sawtooth has every harmonic, bₖ = 2A(−1)^(k+1) ÷ kπ, alternating in sign.',
+  ],
+  triangle: [
+    '8 × {A} × (−1)^(({k} − 1) ÷ 2) ÷ ({k}² × π²)',
+    'A triangle wave has odd terms falling as 1 ÷ k², bₖ = 8A(−1)^((k−1)/2) ÷ (kπ)².',
+  ],
+};
+const powerText: Record<Wave, [string, string, (v: Values) => number]> = {
+  square: [
+    '100 × {bk}² ÷ 2 ÷ {A}²',
+    'Parseval: the harmonics’ powers bₖ² ÷ 2 add to A², the square wave’s power.',
+    (v) => v.A! ** 2,
+  ],
+  saw: [
+    '100 × {bk}² ÷ 2 ÷ ({A}² ÷ 3)',
+    'Parseval: the harmonics’ powers bₖ² ÷ 2 add to A² ÷ 3, the sawtooth’s power.',
+    (v) => v.A! ** 2 / 3,
+  ],
+  triangle: [
+    '100 × {bk}² ÷ 2 ÷ ({A}² ÷ 3)',
+    'Parseval: the harmonics’ powers bₖ² ÷ 2 add to A² ÷ 3, the triangle’s power.',
+    (v) => v.A! ** 2 / 3,
+  ],
+};
+
+const fourierPage = (id: string, title: string, use: string, wave: Wave, typed: Values) =>
+  page({
+    id,
+    title,
+    use,
+    assumptions: [
+      wave === 'saw'
+        ? 'A sawtooth rising from −A to A each period, odd about t = 0: only sine terms.'
+        : `An odd ${wave} wave of amplitude A: only odd sine terms.`,
+      'The partial sum drawn runs through harmonic k; near each jump it overshoots by about 9% of the jump (Gibbs), however many terms.',
+      'fₖ = kf₀: the kth harmonic is k times the fundamental.',
+    ],
+    variables: [
+      num('A', 'A', 'Amplitude', 'V', 0.001, 1000, { step: 0.01 }),
+      num('f0', 'f₀', 'Fundamental', 'kHz', 0.001, 1e6, { step: 0.01 }),
+      num('k', 'k', 'Harmonic', undefined, 1, 99, {
+        integer: true,
+        step: wave === 'saw' ? 1 : 2,
+        ...(wave === 'saw' ? {} : { allowed: ODD }),
+      }),
+      out('fk', 'fₖ', 'Harmonic frequency', 'kHz'),
+      out('bk', 'bₖ', 'Coefficient', 'V'),
+      out('share', 'share', 'Share of the power', '%'),
+    ],
+    rules: [
+      derive(
+        'fk',
+        'fk',
+        ['k', 'f0'],
+        '{fk} = {k} × {f0}',
+        (v) => v.k! * v.f0!,
+        '{k} × {f0}',
+        'The kth harmonic is k times the fundamental.',
+      ),
+      derive(
+        'bk',
+        'bk',
+        ['A', 'k'],
+        `{bk} = ${bText[wave][0]}`,
+        bOf[wave],
+        bText[wave][0],
+        bText[wave][1],
+      ),
+      derive(
+        'share',
+        'share',
+        ['bk', 'A'],
+        `{share} = ${powerText[wave][0]}`,
+        (v) => (100 * v.bk! ** 2) / 2 / powerText[wave][2](v),
+        powerText[wave][0],
+        powerText[wave][1],
+      ),
+    ],
+    example: example(
+      typed,
+      ['fk', (v) => v.k! * v.f0!],
+      ['bk', bOf[wave]],
+      ['share', (v) => (100 * v.bk! ** 2) / 2 / powerText[wave][2](v)],
+    ),
+    startWith: ['A', 'f0', 'k'],
+    representation: {
+      kind: 'functionGraph',
+      family: 'fourier',
+      fourier: {
+        wave,
+        terms: 'k',
+        k: 'k',
+        amplitude: 'A',
+        coefficient: 'bk',
+        share: 'share',
+        f0: 'f0',
+        fk: 'fk',
+      },
+      fixed: true,
+    },
+  });
+
+const FOURIER = fourierPage(
+  'g.he-functionGraph-fourier',
+  'Harmonics of a square wave',
+  'Use this for “Find the amplitude of the third harmonic of a ±1 V, 1 kHz square wave.”',
+  'square',
+  { A: 1, f0: 1, k: 3 },
+);
+
+/** Many terms: the sum hugs the wave but still overshoots at each jump. */
+const FOURIER_GIBBS = fourierPage(
+  'g.he-functionGraph-fourier-gibbs',
+  'A square wave from 25 harmonics: the Gibbs overshoot',
+  'Use this for “How big is the 25th harmonic of a ±1 V, 1 kHz square wave, and what share of the power does it carry?”',
+  'square',
+  { A: 1, f0: 1, k: 25 },
+);
+
+const FOURIER_SAW = fourierPage(
+  'g.he-functionGraph-fourier-saw',
+  'Harmonics of a sawtooth',
+  'Use this for “Find b₂ for a 2 V, 500 Hz sawtooth.”',
+  'saw',
+  { A: 2, f0: 0.5, k: 2 },
+);
+
+const FOURIER_TRIANGLE = fourierPage(
+  'g.he-functionGraph-fourier-triangle',
+  'Harmonics of a triangle wave',
+  'Use this for “Find the third harmonic of a 1 V, 1 kHz triangle wave.”',
+  'triangle',
+  { A: 1, f0: 1, k: 3 },
+);
+
 export const HE4E_GALLERY_MODULES: ModuleDef[] = [
+  QPCR,
+  QPCR_DOWN,
+  FOURIER,
+  FOURIER_GIBBS,
+  FOURIER_SAW,
+  FOURIER_TRIANGLE,
+
   DRIFT,
   DRIFT_SMALL,
   SELECTION,

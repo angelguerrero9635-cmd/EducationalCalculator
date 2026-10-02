@@ -90,7 +90,12 @@ import { fieldPlotIssues, he2gGraphIssues } from './picturesHe2g';
 import { he3aGraphIssues } from './picturesHe3a';
 import { solidIssues, spaceObjectsIssues, surfacePlotIssues } from './picturesHe3b';
 import { he2cIssues } from './picturesHe2c';
-import { driftPathsIssues, he4eAlleleIssues, he4eNormalIssues } from './picturesHe4e';
+import {
+  driftPathsIssues,
+  he4eAlleleIssues,
+  he4eGraphIssues,
+  he4eNormalIssues,
+} from './picturesHe4e';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -1884,6 +1889,10 @@ export function repIssues(
     }
     case 'functionGraph': {
       const v = hs3bVal(rep, val, byId); // H106: `unitsOf` reads formula units
+      if (rep.family === 'amplification' || rep.family === 'fourier') {
+        out.push(...he4eGraphIssues(rep, v)); // HC148, HC179: drawn by FunctionGraphHe4e
+        break;
+      }
       if (rep.family === 'response' || rep.family === 'gradation') {
         out.push(...he1dIssues(rep, v, byId)); // HC4, HC9: drawn by FunctionGraphHe1d
         break;

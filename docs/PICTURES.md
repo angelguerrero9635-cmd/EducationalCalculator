@@ -313,6 +313,8 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `functionGraph`    | `riemann.side: 'trapezoid'`              | trapezoids or Simpson's panel pairs (`'simpson'`), nodes dotted (HC45)        |
 | `functionGraph`    | `family: 'lagrange'`, `through`          | the polynomial through the nodes, ringed and labelled (HC45)                  |
 | `functionGraph`    | `family: 'quantizer'`, `mode`            | an ADC or DAC staircase, the input's step lit, 1 LSB; zoom past 16 (HC92)     |
+| `functionGraph`    | `family: 'amplification'`, `threshold`   | qPCR logistic curves to a threshold, each Ct dropped; treated dashed (HC148)  |
+| `functionGraph`    | `family: 'fourier'`, `fourier`           | square, saw, triangle: partial sum (Gibbs) over it; bₖ stems, k lit (HC179)   |
 | `bars`             | `log`                                    | bars on a log scale, decade grid lines; a value ≤ 0 refused (HC9)             |
 | `termsChart`       | `type: 'power'`, `step` (p)              | aₙ = a₁ × nᵖ: the squares 1, 4, 9 …, nᵖ labels, sums of squares, cubes (H106) |
 | `normalCurve`      | `f: { df1, df2, stat, alpha, tails }`    | the F curve: P past F (or both tails), the critical value, decision (H106)    |
