@@ -3,7 +3,8 @@
  * college page that waits, built from the plan's worked example. Spread into gallery.ts.
  *
  * HC5 `controlVolume`: material and energy balances (docs/plans/he.aero-civil-chemical.md,
- * P9) and steady-flow devices (docs/plans/he.mechanical.md, P11).
+ * P9) and steady-flow devices (docs/plans/he.mechanical.md, P11). HC13 `velocityProfile`:
+ * transport phenomena (the same plan, P31) and blood flow (docs/plans/he.biology.md, P28).
  */
 import type { LayoutDef } from './layouts';
 import type { ModuleDef, Representation } from './types';
@@ -1957,6 +1958,959 @@ export const HC5_DEMOS: ModuleDef[] = [
   mixingDemo,
 ];
 
-export const HE1F_GALLERY_MODULES: ModuleDef[] = [...HC5_DEMOS];
+// ── HC13: velocity profiles (transport-phenomena, biotransport#1) ──
+
+/** Laminar flow in a tube, Hagen–Poiseuille (transport-phenomena#0), ρ fixed by the page. */
+const tubeModule = (id: string, title: string, use: string, dPv: number): ModuleDef => {
+  const [dP, L, R, mu, rho] = [dPv, 1, 0.001, 0.001, 1000];
+  const Q = (Math.PI * dP * R ** 4) / (8 * mu * L);
+  const vavg = Q / (Math.PI * R * R);
+  return demo({
+    id,
+    title,
+    use,
+    assumptions: [
+      'Steady, laminar (Re < 2100), Newtonian and fully developed flow in a straight tube.',
+      'A shell balance on a thin cylinder of fluid gives the parabola v = v_max(1 − r²/R²).',
+      'Water: ρ = 1000 kg/m³.',
+    ],
+    variables: [
+      { id: 'dP', symbol: 'ΔP', name: 'Pressure drop', unit: 'Pa', min: 1, max: 1e6 },
+      { id: 'L', symbol: 'L', name: 'Tube length', unit: 'm', min: 0.01, max: 100 },
+      { id: 'R', symbol: 'R', name: 'Tube radius', unit: 'm', min: 1e-5, max: 0.1 },
+      { id: 'mu', symbol: 'μ', name: 'Viscosity', unit: 'Pa·s', min: 1e-4, max: 10 },
+      { id: 'rho', symbol: 'ρ', name: 'Density', unit: 'kg/m³', min: 500, max: 20000 },
+      {
+        id: 'Q',
+        symbol: 'Q',
+        name: 'Flow rate',
+        unit: 'm³/s',
+        min: 1e-15,
+        max: 1,
+        scientific: true,
+      },
+      { id: 'vavg', symbol: 'v_avg', name: 'Mean speed', unit: 'm/s', min: 1e-6, max: 100 },
+      { id: 'vmax', symbol: 'v_max', name: 'Centre speed', unit: 'm/s', min: 2e-6, max: 200 },
+      { id: 'tau', symbol: 'τ_w', name: 'Wall shear stress', unit: 'Pa', min: 1e-6, max: 1e5 },
+      { id: 'Re', symbol: 'Re', name: 'Reynolds number', min: 1e-6, max: 1e7 },
+    ],
+    relations: [
+      {
+        id: 'Q = πΔPR⁴ ÷ (8μL)',
+        display: '{Q} = π × {dP} × {R}⁴ ÷ (8 × {mu} × {L})',
+        vars: ['Q', 'dP', 'R', 'mu', 'L'],
+        residual: (x) => x.Q! * 8 * x.mu! * x.L! - Math.PI * x.dP! * x.R! ** 4,
+        solve: {
+          Q: (x) => div(Math.PI * x.dP! * x.R! ** 4, 8 * x.mu! * x.L!),
+          dP: (x) => div(8 * x.mu! * x.L! * x.Q!, Math.PI * x.R! ** 4),
+          R: (x) => {
+            const r4 = div(8 * x.mu! * x.L! * x.Q!, Math.PI * x.dP!);
+            return r4 === undefined || r4 < 0 ? undefined : r4 ** 0.25;
+          },
+          mu: (x) => div(Math.PI * x.dP! * x.R! ** 4, 8 * x.Q! * x.L!),
+          L: (x) => div(Math.PI * x.dP! * x.R! ** 4, 8 * x.mu! * x.Q!),
+        },
+      },
+      {
+        id: 'v_avg = Q ÷ (πR²)',
+        display: '{vavg} = {Q} ÷ (π × {R}²)',
+        vars: ['vavg', 'Q', 'R'],
+        residual: (x) => x.vavg! * Math.PI * x.R! ** 2 - x.Q!,
+        solve: {
+          vavg: (x) => div(x.Q!, Math.PI * x.R! ** 2),
+          Q: (x) => x.vavg! * Math.PI * x.R! ** 2,
+          R: (x) => (x.vavg! > 0 && x.Q! > 0 ? Math.sqrt(x.Q! / (Math.PI * x.vavg!)) : undefined),
+        },
+      },
+      {
+        id: 'v_max = 2v_avg',
+        display: '{vmax} = 2 × {vavg}',
+        vars: ['vmax', 'vavg'],
+        residual: (x) => x.vmax! - 2 * x.vavg!,
+        solve: { vmax: (x) => 2 * x.vavg!, vavg: (x) => x.vmax! / 2 },
+      },
+      {
+        id: 'τ_w = ΔPR ÷ (2L)',
+        display: '{tau} = {dP} × {R} ÷ (2 × {L})',
+        vars: ['tau', 'dP', 'R', 'L'],
+        residual: (x) => x.tau! * 2 * x.L! - x.dP! * x.R!,
+        solve: {
+          tau: (x) => div(x.dP! * x.R!, 2 * x.L!),
+          dP: (x) => div(2 * x.L! * x.tau!, x.R!),
+          R: (x) => div(2 * x.L! * x.tau!, x.dP!),
+          L: (x) => div(x.dP! * x.R!, 2 * x.tau!),
+        },
+      },
+      {
+        id: 'Re = ρv_avg(2R) ÷ μ',
+        display: '{Re} = {rho} × {vavg} × 2 × {R} ÷ {mu}',
+        vars: ['Re', 'rho', 'vavg', 'R', 'mu'],
+        residual: (x) => x.Re! * x.mu! - 2 * x.rho! * x.vavg! * x.R!,
+        solve: {
+          Re: (x) => div(2 * x.rho! * x.vavg! * x.R!, x.mu!),
+          rho: (x) => div(x.Re! * x.mu!, 2 * x.vavg! * x.R!),
+          vavg: (x) => div(x.Re! * x.mu!, 2 * x.rho! * x.R!),
+          R: (x) => div(x.Re! * x.mu!, 2 * x.rho! * x.vavg!),
+          mu: (x) => div(2 * x.rho! * x.vavg! * x.R!, x.Re!),
+        },
+      },
+    ],
+    steps: {
+      'Q = πΔPR⁴ ÷ (8μL)': {
+        Q: {
+          expr: 'π × {dP} × {R}⁴ ÷ (8 × {mu} × {L})',
+          how: 'Hagen–Poiseuille: the parabola’s speeds added over the cross-section.',
+        },
+        dP: {
+          expr: '8 × {mu} × {L} × {Q} ÷ (π × {R}⁴)',
+          how: 'Multiply across, then divide by πR⁴.',
+        },
+        R: {
+          expr: '(8 × {mu} × {L} × {Q} ÷ (π × {dP}))^(1 ÷ 4)',
+          how: 'Solve for R⁴, then take the fourth root.',
+        },
+        mu: {
+          expr: 'π × {dP} × {R}⁴ ÷ (8 × {Q} × {L})',
+          how: 'Swap μ and Q across the equals sign.',
+        },
+        L: {
+          expr: 'π × {dP} × {R}⁴ ÷ (8 × {mu} × {Q})',
+          how: 'Swap L and Q across the equals sign.',
+        },
+      },
+      'v_avg = Q ÷ (πR²)': {
+        vavg: { expr: '{Q} ÷ (π × {R}²)', how: 'The flow spread over the cross-section.' },
+        Q: { expr: '{vavg} × π × {R}²', how: 'The mean speed times the area.' },
+        R: { expr: '√({Q} ÷ (π × {vavg}))', how: 'Solve for R², then take the root.' },
+      },
+      'v_max = 2v_avg': {
+        vmax: { expr: '2 × {vavg}', how: 'For a parabola the centre is twice the mean.' },
+        vavg: { expr: '{vmax} ÷ 2', how: 'The mean is half the centre speed.' },
+      },
+      'τ_w = ΔPR ÷ (2L)': {
+        tau: {
+          expr: '{dP} × {R} ÷ (2 × {L})',
+          how: 'A force balance: ΔP × πR² pushes, τ_w × 2πRL holds back.',
+        },
+        dP: { expr: '2 × {L} × {tau} ÷ {R}', how: 'Multiply across, then divide by R.' },
+        R: { expr: '2 × {L} × {tau} ÷ {dP}', how: 'Multiply across, then divide by ΔP.' },
+        L: { expr: '{dP} × {R} ÷ (2 × {tau})', how: 'Swap L and τ_w across the equals sign.' },
+      },
+      'Re = ρv_avg(2R) ÷ μ': {
+        Re: {
+          expr: '{rho} × {vavg} × 2 × {R} ÷ {mu}',
+          how: 'Inertia over viscosity, on the diameter 2R.',
+        },
+        rho: {
+          expr: '{Re} × {mu} ÷ (2 × {vavg} × {R})',
+          how: 'Multiply by μ, then divide by 2v_avgR.',
+        },
+        vavg: {
+          expr: '{Re} × {mu} ÷ (2 × {rho} × {R})',
+          how: 'Multiply by μ, then divide by 2ρR.',
+        },
+        R: {
+          expr: '{Re} × {mu} ÷ (2 × {rho} × {vavg})',
+          how: 'Multiply by μ, then divide by 2ρv_avg.',
+        },
+        mu: {
+          expr: '{rho} × {vavg} × 2 × {R} ÷ {Re}',
+          how: 'Swap μ and Re across the equals sign.',
+        },
+      },
+    },
+    example: {
+      dP,
+      L,
+      R,
+      mu,
+      rho,
+      Q,
+      vavg,
+      vmax: 2 * vavg,
+      tau: (dP * R) / (2 * L),
+      Re: (2 * rho * vavg * R) / mu,
+    },
+    startWith: ['dP', 'L', 'R', 'mu', 'rho'],
+    representation: {
+      kind: 'velocityProfile',
+      mode: 'tube',
+      R: 'R',
+      Q: 'Q',
+      vavg: 'vavg',
+      vmax: 'vmax',
+      tauW: 'tau',
+      dP: 'dP',
+      L: 'L',
+      mu: 'mu',
+      Re: 'Re',
+    },
+  });
+};
+
+const tubeDemo = tubeModule(
+  'g.he-velocityProfile-tube',
+  'Laminar flow in a tube: the parabola',
+  'Use this for “Water flows through a 1 mm-radius tube under 1000 Pa per metre. What are Q, v_max and τ_w?”',
+  1000,
+);
+
+/** The edge of the laminar range: Re = 2000. */
+const tubeFastDemo = tubeModule(
+  'g.he-velocityProfile-tube-fast',
+  'Laminar flow in a tube: at the edge of turbulence',
+  'Use this for “At 8000 Pa per metre, is the flow in a 1 mm-radius tube still laminar?”',
+  8000,
+);
+
+const couetteDemo = (() => {
+  const [mu, V, h, A] = [0.3, 2, 0.001, 0.5];
+  return demo({
+    id: 'g.he-velocityProfile-couette',
+    title: 'Couette flow between two plates',
+    use: 'Use this for “Oil 1 mm thick sits under a plate moving at 2 m/s. What shear stress and force?”',
+    assumptions: [
+      'Steady laminar flow of a Newtonian fluid; the gap is thin, so the profile is a straight line.',
+      'The bottom plate is still; no pressure drop along the gap.',
+    ],
+    variables: [
+      { id: 'mu', symbol: 'μ', name: 'Viscosity', unit: 'Pa·s', min: 1e-4, max: 10 },
+      { id: 'V', symbol: 'V', name: 'Plate speed', unit: 'm/s', min: 1e-3, max: 100 },
+      { id: 'h', symbol: 'h', name: 'Gap', unit: 'm', min: 1e-5, max: 0.1 },
+      { id: 'tau', symbol: 'τ', name: 'Shear stress', unit: 'Pa', min: 1e-6, max: 1e7 },
+      { id: 'A', symbol: 'A', name: 'Plate area', unit: 'm²', min: 1e-4, max: 100 },
+      { id: 'F', symbol: 'F', name: 'Force to move the plate', unit: 'N', min: 1e-10, max: 1e9 },
+    ],
+    relations: [
+      {
+        id: 'τ = μV ÷ h',
+        display: '{tau} = {mu} × {V} ÷ {h}',
+        vars: ['tau', 'mu', 'V', 'h'],
+        residual: (x) => x.tau! * x.h! - x.mu! * x.V!,
+        solve: {
+          tau: (x) => div(x.mu! * x.V!, x.h!),
+          mu: (x) => div(x.tau! * x.h!, x.V!),
+          V: (x) => div(x.tau! * x.h!, x.mu!),
+          h: (x) => div(x.mu! * x.V!, x.tau!),
+        },
+      },
+      {
+        id: 'F = τA',
+        display: '{F} = {tau} × {A}',
+        vars: ['F', 'tau', 'A'],
+        residual: (x) => x.F! - x.tau! * x.A!,
+        solve: {
+          F: (x) => x.tau! * x.A!,
+          tau: (x) => div(x.F!, x.A!),
+          A: (x) => div(x.F!, x.tau!),
+        },
+      },
+    ],
+    steps: {
+      'τ = μV ÷ h': {
+        tau: {
+          expr: '{mu} × {V} ÷ {h}',
+          how: 'Newton’s law of viscosity with a straight profile: the slope is V ÷ h.',
+        },
+        mu: { expr: '{tau} × {h} ÷ {V}', how: 'Divide the stress by the slope V ÷ h.' },
+        V: { expr: '{tau} × {h} ÷ {mu}', how: 'Multiply by h, then divide by μ.' },
+        h: { expr: '{mu} × {V} ÷ {tau}', how: 'Swap h and τ across the equals sign.' },
+      },
+      'F = τA': {
+        F: { expr: '{tau} × {A}', how: 'The stress acts over the whole plate.' },
+        tau: { expr: '{F} ÷ {A}', how: 'Force per area.' },
+        A: { expr: '{F} ÷ {tau}', how: 'Divide the force by the stress.' },
+      },
+    },
+    example: { mu, V, h, tau: (mu * V) / h, A, F: ((mu * V) / h) * A },
+    startWith: ['mu', 'V', 'h', 'A'],
+    representation: {
+      kind: 'velocityProfile',
+      mode: 'plates',
+      V: 'V',
+      h: 'h',
+      mu: 'mu',
+      tauW: 'tau',
+      more: ['A', 'F'],
+    },
+  });
+})();
+
+const filmDemo = (() => {
+  const [rho, g, delta, mu, beta] = [1000, 9.81, 0.0005, 0.001, 0];
+  const vavg = (rho * g * delta ** 2 * Math.cos((beta * Math.PI) / 180)) / (3 * mu);
+  return demo({
+    id: 'g.he-velocityProfile-film',
+    title: 'A liquid film falling down a wall',
+    use: 'Use this for “Water runs down a vertical wall in a film 0.5 mm thick. How fast on average?”',
+    assumptions: [
+      'Steady laminar flow; the film’s thickness doesn’t change; the air drags nothing at the free surface.',
+      'β is the wall’s angle from vertical; g = 9.81 m/s².',
+    ],
+    variables: [
+      { id: 'rho', symbol: 'ρ', name: 'Density', unit: 'kg/m³', min: 500, max: 20000 },
+      { id: 'g', symbol: 'g', name: 'Gravity', unit: 'm/s²', min: 1, max: 30 },
+      { id: 'delta', symbol: 'δ', name: 'Film thickness', unit: 'm', min: 1e-5, max: 0.01 },
+      { id: 'beta', symbol: 'β', name: 'Angle from vertical', unit: '°', min: 0, max: 89 },
+      { id: 'mu', symbol: 'μ', name: 'Viscosity', unit: 'Pa·s', min: 1e-4, max: 10 },
+      { id: 'vavg', symbol: 'v_avg', name: 'Mean speed', unit: 'm/s', min: 1e-6, max: 1000 },
+    ],
+    relations: [
+      {
+        id: 'v_avg = ρgδ² cos(β) ÷ (3μ)',
+        display: '{vavg} = {rho} × {g} × {delta}² × cos({beta}) ÷ (3 × {mu})',
+        vars: ['vavg', 'rho', 'g', 'delta', 'beta', 'mu'],
+        residual: (x) =>
+          3 * x.mu! * x.vavg! - x.rho! * x.g! * x.delta! ** 2 * Math.cos((x.beta! * Math.PI) / 180),
+        solve: {
+          vavg: (x) =>
+            div(x.rho! * x.g! * x.delta! ** 2 * Math.cos((x.beta! * Math.PI) / 180), 3 * x.mu!),
+          rho: (x) =>
+            div(3 * x.mu! * x.vavg!, x.g! * x.delta! ** 2 * Math.cos((x.beta! * Math.PI) / 180)),
+          g: (x) =>
+            div(3 * x.mu! * x.vavg!, x.rho! * x.delta! ** 2 * Math.cos((x.beta! * Math.PI) / 180)),
+          delta: (x) => {
+            const d2 = div(
+              3 * x.mu! * x.vavg!,
+              x.rho! * x.g! * Math.cos((x.beta! * Math.PI) / 180),
+            );
+            return d2 === undefined || d2 < 0 ? undefined : Math.sqrt(d2);
+          },
+          mu: (x) =>
+            div(x.rho! * x.g! * x.delta! ** 2 * Math.cos((x.beta! * Math.PI) / 180), 3 * x.vavg!),
+        },
+      },
+    ],
+    steps: {
+      'v_avg = ρgδ² cos(β) ÷ (3μ)': {
+        vavg: {
+          expr: '{rho} × {g} × {delta}² × cos({beta}) ÷ (3 × {mu})',
+          how: 'Gravity along the wall against viscosity: the mean of the half parabola.',
+        },
+        rho: {
+          expr: '3 × {mu} × {vavg} ÷ ({g} × {delta}² × cos({beta}))',
+          how: 'Multiply across, then divide.',
+        },
+        g: {
+          expr: '3 × {mu} × {vavg} ÷ ({rho} × {delta}² × cos({beta}))',
+          how: 'Multiply across, then divide.',
+        },
+        delta: {
+          expr: '√(3 × {mu} × {vavg} ÷ ({rho} × {g} × cos({beta})))',
+          how: 'Solve for δ², then take the root.',
+        },
+        mu: {
+          expr: '{rho} × {g} × {delta}² × cos({beta}) ÷ (3 × {vavg})',
+          how: 'Swap μ and v_avg across the equals sign.',
+        },
+      },
+    },
+    example: { rho, g, delta, beta, mu, vavg },
+    startWith: ['rho', 'g', 'delta', 'beta', 'mu'],
+    representation: {
+      kind: 'velocityProfile',
+      mode: 'film',
+      delta: 'delta',
+      angle: 'beta',
+      vavg: 'vavg',
+      mu: 'mu',
+    },
+  });
+})();
+
+const diffusionDemo = demo({
+  id: 'g.he-velocityProfile-diffusion',
+  title: 'Steady diffusion across a film',
+  use: 'Use this for “A gas diffuses across a 5 cm film from 2 to 0.5 mol/m³. What is the flux?”',
+  assumptions: [
+    'Steady; equimolar counterdiffusion, so no bulk flow; D_AB is constant.',
+    'With no reaction the flux is the same at every depth, so the profile is a straight line.',
+  ],
+  variables: [
+    {
+      id: 'D',
+      symbol: 'D_AB',
+      name: 'Diffusivity',
+      unit: 'm²/s',
+      min: 1e-12,
+      max: 1e-3,
+      scientific: true,
+    },
+    {
+      id: 'c1',
+      symbol: 'c_A1',
+      name: 'Concentration at side 1',
+      unit: 'mol/m³',
+      min: 0,
+      max: 10000,
+    },
+    {
+      id: 'c2',
+      symbol: 'c_A2',
+      name: 'Concentration at side 2',
+      unit: 'mol/m³',
+      min: 0,
+      max: 10000,
+    },
+    { id: 'L', symbol: 'L', name: 'Film thickness', unit: 'm', min: 1e-4, max: 10 },
+    {
+      id: 'N',
+      symbol: 'N_A',
+      name: 'Molar flux',
+      unit: 'mol/(m²·s)',
+      min: -1000,
+      max: 1000,
+      scientific: true,
+    },
+  ],
+  relations: [
+    {
+      id: 'N_A = D_AB(c_A1 − c_A2) ÷ L',
+      display: '{N} = {D} × ({c1} − {c2}) ÷ {L}',
+      vars: ['N', 'D', 'c1', 'c2', 'L'],
+      residual: (x) => x.N! * x.L! - x.D! * (x.c1! - x.c2!),
+      solve: {
+        N: (x) => div(x.D! * (x.c1! - x.c2!), x.L!),
+        c1: (x) => (x.D === 0 ? undefined : x.c2! + (x.N! * x.L!) / x.D!),
+        c2: (x) => (x.D === 0 ? undefined : x.c1! - (x.N! * x.L!) / x.D!),
+        L: (x) => (x.c1 === x.c2 ? undefined : div(x.D! * (x.c1! - x.c2!), x.N!)),
+        D: (x) => (x.c1 === x.c2 ? undefined : div(x.N! * x.L!, x.c1! - x.c2!)),
+      },
+    },
+  ],
+  steps: {
+    'N_A = D_AB(c_A1 − c_A2) ÷ L': {
+      N: {
+        expr: '{D} × ({c1} − {c2}) ÷ {L}',
+        how: 'Fick’s law: the flux follows the straight line’s slope.',
+      },
+      D: { expr: '{N} × {L} ÷ ({c1} − {c2})', how: 'Multiply by L, then divide by the drop.' },
+      c1: { expr: '{c2} + {N} × {L} ÷ {D}', how: 'Add the drop the flux needs.' },
+      c2: { expr: '{c1} − {N} × {L} ÷ {D}', how: 'Take the drop from c_A1.' },
+      L: { expr: '{D} × ({c1} − {c2}) ÷ {N}', how: 'Swap L and N_A across the equals sign.' },
+    },
+  },
+  example: { D: 2e-5, c1: 2, c2: 0.5, L: 0.05, N: (2e-5 * 1.5) / 0.05 },
+  startWith: ['D', 'c1', 'c2', 'L'],
+  representation: {
+    kind: 'velocityProfile',
+    mode: 'concentration',
+    cA1: 'c1',
+    cA2: 'c2',
+    D: 'D',
+    L: 'L',
+    flux: 'N',
+  },
+});
+
+const stefanDemo = (() => {
+  const [P, T, Psat, Rg, D, L, x2] = [101.325, 298.15, 3.17, 8.314, 2.6e-5, 0.1, 0];
+  const c = (1000 * P) / (Rg * T);
+  const x1 = Psat / P;
+  return demo({
+    id: 'g.he-velocityProfile-stefan',
+    title: 'A Stefan tube: evaporation through still air',
+    use: 'Use this for “Water evaporates up a 10 cm tube into dry air at 25 °C. What is the flux?”',
+    assumptions: [
+      'Steady; the air doesn’t dissolve in the water, so it stands still in the tube.',
+      'Ideal gas, c = P ÷ RT; the vapour at the surface is at its vapour pressure; dry air at the top.',
+      'R = 8.314 J/(mol·K); P in kPa, so × 1000 for pascals.',
+    ],
+    variables: [
+      { id: 'P', symbol: 'P', name: 'Total pressure', unit: 'kPa', min: 1, max: 10000 },
+      { id: 'T', symbol: 'T', name: 'Temperature', unit: 'K', min: 100, max: 1000 },
+      { id: 'Rg', symbol: 'R', name: 'Gas constant', unit: 'J/(mol·K)', min: 8, max: 9 },
+      {
+        id: 'Psat',
+        symbol: 'P_sat',
+        name: 'Vapour pressure of the liquid',
+        unit: 'kPa',
+        min: 0,
+        max: 10000,
+      },
+      { id: 'c', symbol: 'c', name: 'Total molar concentration', unit: 'mol/m³', min: 0, max: 1e6 },
+      { id: 'x1', symbol: 'x_A1', name: 'Mole fraction at the surface', min: 0, max: 0.99 },
+      { id: 'x2', symbol: 'x_A2', name: 'Mole fraction at the top', min: 0, max: 0.99 },
+      {
+        id: 'D',
+        symbol: 'D_AB',
+        name: 'Diffusivity',
+        unit: 'm²/s',
+        min: 1e-12,
+        max: 1,
+        scientific: true,
+      },
+      { id: 'L', symbol: 'L', name: 'Gas column height', unit: 'm', min: 1e-4, max: 100 },
+      {
+        id: 'N',
+        symbol: 'N_A',
+        name: 'Molar flux',
+        unit: 'mol/(m²·s)',
+        min: -1e5,
+        max: 1e5,
+        scientific: true,
+      },
+    ],
+    relations: [
+      {
+        id: 'c = 1000P ÷ (RT)',
+        display: '{c} = 1000 × {P} ÷ ({Rg} × {T})',
+        vars: ['c', 'P', 'Rg', 'T'],
+        residual: (x) => x.c! * x.Rg! * x.T! - 1000 * x.P!,
+        solve: {
+          c: (x) => div(1000 * x.P!, x.Rg! * x.T!),
+          P: (x) => (x.c! * x.Rg! * x.T!) / 1000,
+          Rg: (x) => div(1000 * x.P!, x.c! * x.T!),
+          T: (x) => div(1000 * x.P!, x.c! * x.Rg!),
+        },
+      },
+      {
+        id: 'x_A1 = P_sat ÷ P',
+        display: '{x1} = {Psat} ÷ {P}',
+        vars: ['x1', 'Psat', 'P'],
+        residual: (x) => x.x1! * x.P! - x.Psat!,
+        solve: {
+          x1: (x) => div(x.Psat!, x.P!),
+          Psat: (x) => x.x1! * x.P!,
+          P: (x) => div(x.Psat!, x.x1!),
+        },
+      },
+      {
+        id: 'N_A = (cD ÷ L) ln((1 − x_A2) ÷ (1 − x_A1))',
+        display: '{N} = {c} × {D} ÷ {L} × ln((1 − {x2}) ÷ (1 − {x1}))',
+        vars: ['N', 'c', 'D', 'L', 'x2', 'x1'],
+        residual: (x) => x.N! * x.L! - x.c! * x.D! * Math.log((1 - x.x2!) / (1 - x.x1!)),
+        solve: {
+          N: (x) => div(x.c! * x.D! * Math.log((1 - x.x2!) / (1 - x.x1!)), x.L!),
+          c: (x) => div(x.N! * x.L!, x.D! * Math.log((1 - x.x2!) / (1 - x.x1!))),
+          D: (x) => div(x.N! * x.L!, x.c! * Math.log((1 - x.x2!) / (1 - x.x1!))),
+          L: (x) => div(x.c! * x.D! * Math.log((1 - x.x2!) / (1 - x.x1!)), x.N!),
+          x1: (x) =>
+            x.c! * x.D! === 0
+              ? undefined
+              : 1 - (1 - x.x2!) * Math.exp((-x.N! * x.L!) / (x.c! * x.D!)),
+          x2: (x) =>
+            x.c! * x.D! === 0
+              ? undefined
+              : 1 - (1 - x.x1!) * Math.exp((x.N! * x.L!) / (x.c! * x.D!)),
+        },
+      },
+    ],
+    steps: {
+      'c = 1000P ÷ (RT)': {
+        c: {
+          expr: '1000 × {P} ÷ ({Rg} × {T})',
+          how: 'The ideal gas law, n ÷ V = P ÷ RT, with P in pascals.',
+        },
+        P: { expr: '{c} × {Rg} × {T} ÷ 1000', how: 'Multiply out, then divide by 1000 for kPa.' },
+        Rg: { expr: '1000 × {P} ÷ ({c} × {T})', how: 'Divide the pressure by cT.' },
+        T: { expr: '1000 × {P} ÷ ({c} × {Rg})', how: 'Divide the pressure by cR.' },
+      },
+      'x_A1 = P_sat ÷ P': {
+        x1: { expr: '{Psat} ÷ {P}', how: 'The vapour’s share of the pressure at the surface.' },
+        Psat: { expr: '{x1} × {P}', how: 'The vapour’s partial pressure.' },
+        P: { expr: '{Psat} ÷ {x1}', how: 'Divide the vapour pressure by its share.' },
+      },
+      'N_A = (cD ÷ L) ln((1 − x_A2) ÷ (1 − x_A1))': {
+        N: {
+          expr: '{c} × {D} ÷ {L} × ln((1 − {x2}) ÷ (1 − {x1}))',
+          how: 'Fick’s law with the vapour’s own flow added; the still air gives the log.',
+        },
+        c: {
+          expr: '{N} × {L} ÷ ({D} × ln((1 − {x2}) ÷ (1 − {x1})))',
+          how: 'Divide the flux by D, the log and 1 ÷ L.',
+        },
+        D: {
+          expr: '{N} × {L} ÷ ({c} × ln((1 − {x2}) ÷ (1 − {x1})))',
+          how: 'Divide the flux by c, the log and 1 ÷ L.',
+        },
+        L: {
+          expr: '{c} × {D} × ln((1 − {x2}) ÷ (1 − {x1})) ÷ {N}',
+          how: 'Swap L and N_A across the equals sign.',
+        },
+        x1: {
+          expr: '1 − (1 − {x2}) × e^(−{N} × {L} ÷ ({c} × {D}))',
+          how: 'Undo the log, then solve for x_A1.',
+        },
+        x2: {
+          expr: '1 − (1 − {x1}) × e^({N} × {L} ÷ ({c} × {D}))',
+          how: 'Undo the log, then solve for x_A2.',
+        },
+      },
+    },
+    example: { P, T, Rg, Psat, c, x1, x2, D, L, N: ((c * D) / L) * Math.log((1 - x2) / (1 - x1)) },
+    startWith: ['P', 'T', 'Rg', 'Psat', 'x2', 'D', 'L'],
+    representation: {
+      kind: 'velocityProfile',
+      mode: 'stefan',
+      x1: 'x1',
+      x2: 'x2',
+      c: 'c',
+      D: 'D',
+      L: 'L',
+      flux: 'N',
+    },
+  });
+})();
+
+/** The Chilton–Colburn analogy: Nu or Sh from the friction factor. */
+const analogyModule = (heat: boolean): ModuleDef => {
+  const Re = 50000;
+  const n = heat ? 0.7 : 0.6;
+  const f = 0.079 * Re ** -0.25;
+  const out = (f / 2) * Re * n ** (1 / 3);
+  const [nId, nSym, nName, oId, oSym, oName] = heat
+    ? ['Pr', 'Pr', 'Prandtl number', 'Nu', 'Nu', 'Nusselt number']
+    : ['Sc', 'Sc', 'Schmidt number', 'Sh', 'Sh', 'Sherwood number'];
+  const rel = `${oSym} = (f ÷ 2)Re${nSym}^(1/3)`;
+  return demo({
+    id: heat ? 'g.he-velocityProfile-analogy' : 'g.he-velocityProfile-mass-analogy',
+    title: heat
+      ? 'The heat-transfer analogy: three boundary layers'
+      : 'The mass-transfer analogy: Sh from friction',
+    use: heat
+      ? 'Use this for “From the friction factor at Re = 50,000 and Pr = 0.7, estimate Nu.”'
+      : 'Use this for “From the friction factor at Re = 50,000 and Sc = 0.6, estimate Sh.”',
+    assumptions: [
+      'Turbulent flow in a smooth tube, 4000 < Re < 10⁵: f = 0.079Re^(−0.25) (Fanning).',
+      'The analogy links skin friction only (no form drag); 0.6 < Pr, Sc < 60.',
+    ],
+    variables: [
+      { id: 'Re', symbol: 'Re', name: 'Reynolds number', min: 4000, max: 1e5 },
+      { id: nId, symbol: nSym, name: nName, min: 0.01, max: 1e4 },
+      { id: 'f', symbol: 'f', name: 'Fanning friction factor', min: 0, max: 1 },
+      { id: oId, symbol: oSym, name: oName, min: 0, max: 1e7 },
+    ],
+    relations: [
+      {
+        id: 'f = 0.079Re^(−0.25)',
+        display: '{f} = 0.079 ÷ {Re}^0.25',
+        vars: ['f', 'Re'],
+        residual: (x) => x.f! - 0.079 * x.Re! ** -0.25,
+        solve: {
+          f: (x) => 0.079 * x.Re! ** -0.25,
+          Re: (x) => (x.f! > 0 ? (0.079 / x.f!) ** 4 : undefined),
+        },
+      },
+      {
+        id: rel,
+        display: `{${oId}} = {f} ÷ 2 × {Re} × {${nId}}^(1 ÷ 3)`,
+        vars: [oId, 'f', 'Re', nId],
+        residual: (x) => x[oId]! - (x.f! / 2) * x.Re! * x[nId]! ** (1 / 3),
+        solve: {
+          [oId]: (x) => (x.f! / 2) * x.Re! * x[nId]! ** (1 / 3),
+          f: (x) => div(2 * x[oId]!, x.Re! * x[nId]! ** (1 / 3)),
+          Re: (x) => div(2 * x[oId]!, x.f! * x[nId]! ** (1 / 3)),
+          [nId]: (x) => {
+            const r = div(2 * x[oId]!, x.f! * x.Re!);
+            return r === undefined ? undefined : r ** 3;
+          },
+        },
+      },
+    ],
+    steps: {
+      'f = 0.079Re^(−0.25)': {
+        f: { expr: '0.079 ÷ {Re}^0.25', how: 'The Blasius fit for a smooth tube.' },
+        Re: { expr: '(0.079 ÷ {f})^4', how: 'Divide by 0.079, then raise to the fourth power.' },
+      },
+      [rel]: {
+        [oId]: {
+          expr: `{f} ÷ 2 × {Re} × {${nId}}^(1 ÷ 3)`,
+          how: 'Chilton–Colburn: the j-factor equals f ÷ 2, the layers set apart by the cube root.',
+        },
+        f: {
+          expr: `2 × {${oId}} ÷ ({Re} × {${nId}}^(1 ÷ 3))`,
+          how: 'Divide by Re and the cube root, then double.',
+        },
+        Re: {
+          expr: `2 × {${oId}} ÷ ({f} × {${nId}}^(1 ÷ 3))`,
+          how: 'Divide by f ÷ 2 and the cube root.',
+        },
+        [nId]: {
+          expr: `(2 × {${oId}} ÷ ({f} × {Re}))^3`,
+          how: 'Solve for the cube root, then cube it.',
+        },
+      },
+    },
+    example: { Re, [nId]: n, f, [oId]: out },
+    startWith: ['Re', nId],
+    representation: {
+      kind: 'velocityProfile',
+      mode: 'analogy',
+      Re: 'Re',
+      ...(heat ? { Pr: 'Pr', Nu: 'Nu' } : { Sc: 'Sc', Sh: 'Sh' }),
+      more: ['f', oId],
+    },
+  });
+};
+
+/** Blood flow in a vessel (biotransport#1): r in mm, L in cm, μ in mPa·s, Q in mL/min. */
+const VESSEL_SI = { R: 0.001, L: 0.01, mu: 0.001, Q: 1 / 6e7 };
+
+const vesselDemo = (() => {
+  const [dP, r, L, mu] = [100, 2, 10, 3.5];
+  const Q = (6 * Math.PI * dP * r ** 4) / (8 * mu * L);
+  return demo({
+    id: 'g.he-velocityProfile-vessel',
+    title: 'Blood flow through a vessel',
+    use: 'Use this for “How much blood flows through a 2 mm-radius artery 10 cm long under 100 Pa?”',
+    assumptions: [
+      'Steady laminar flow of a Newtonian fluid in a rigid straight tube (Poiseuille).',
+      'Blood is close to Newtonian in vessels wider than about 0.5 mm.',
+      'With r in mm, L in cm and μ in mPa·s, the 6 turns m³/s into mL/min.',
+    ],
+    variables: [
+      { id: 'dP', symbol: 'ΔP', name: 'Pressure drop', unit: 'Pa', min: 0.1, max: 20000 },
+      { id: 'r', symbol: 'r', name: 'Vessel radius', unit: 'mm', min: 0.01, max: 15 },
+      { id: 'L', symbol: 'L', name: 'Vessel length', unit: 'cm', min: 0.1, max: 100 },
+      { id: 'mu', symbol: 'μ', name: 'Blood viscosity', unit: 'mPa·s', min: 0.5, max: 10 },
+      { id: 'Q', symbol: 'Q', name: 'Blood flow', unit: 'mL/min', min: 1e-9, max: 1e12 },
+      {
+        id: 'Rv',
+        symbol: 'R_v',
+        name: 'Flow resistance',
+        unit: 'Pa·s/m³',
+        min: 0,
+        max: 1e20,
+        scientific: true,
+      },
+    ],
+    relations: [
+      {
+        id: 'Q = 6πΔPr⁴ ÷ (8μL)',
+        display: '{Q} = 6 × π × {dP} × {r}⁴ ÷ (8 × {mu} × {L})',
+        vars: ['Q', 'dP', 'r', 'mu', 'L'],
+        residual: (x) => x.Q! * 8 * x.mu! * x.L! - 6 * Math.PI * x.dP! * x.r! ** 4,
+        solve: {
+          Q: (x) => div(6 * Math.PI * x.dP! * x.r! ** 4, 8 * x.mu! * x.L!),
+          dP: (x) => div(8 * x.mu! * x.L! * x.Q!, 6 * Math.PI * x.r! ** 4),
+          r: (x) => {
+            const r4 = div(8 * x.mu! * x.L! * x.Q!, 6 * Math.PI * x.dP!);
+            return r4 === undefined || r4 < 0 ? undefined : r4 ** 0.25;
+          },
+          mu: (x) => div(6 * Math.PI * x.dP! * x.r! ** 4, 8 * x.Q! * x.L!),
+          L: (x) => div(6 * Math.PI * x.dP! * x.r! ** 4, 8 * x.mu! * x.Q!),
+        },
+      },
+      {
+        id: 'R_v = ΔP ÷ Q',
+        display: '{Rv} = {dP} ÷ ({Q} ÷ (6 × 10⁷))',
+        vars: ['Rv', 'dP', 'Q'],
+        residual: (x) => x.Rv! * x.Q! - 6e7 * x.dP!,
+        solve: {
+          Rv: (x) => div(6e7 * x.dP!, x.Q!),
+          dP: (x) => (x.Rv! * x.Q!) / 6e7,
+          Q: (x) => div(6e7 * x.dP!, x.Rv!),
+        },
+      },
+    ],
+    steps: {
+      'Q = 6πΔPr⁴ ÷ (8μL)': {
+        Q: {
+          expr: '6 × π × {dP} × {r}⁴ ÷ (8 × {mu} × {L})',
+          how: 'Poiseuille’s law; the radius counts to the fourth power.',
+        },
+        dP: {
+          expr: '8 × {mu} × {L} × {Q} ÷ (6 × π × {r}⁴)',
+          how: 'Multiply across, then divide by 6πr⁴.',
+        },
+        r: {
+          expr: '(8 × {mu} × {L} × {Q} ÷ (6 × π × {dP}))^(1 ÷ 4)',
+          how: 'Solve for r⁴, then take the fourth root.',
+        },
+        mu: {
+          expr: '6 × π × {dP} × {r}⁴ ÷ (8 × {Q} × {L})',
+          how: 'Swap μ and Q across the equals sign.',
+        },
+        L: {
+          expr: '6 × π × {dP} × {r}⁴ ÷ (8 × {mu} × {Q})',
+          how: 'Swap L and Q across the equals sign.',
+        },
+      },
+      'R_v = ΔP ÷ Q': {
+        Rv: { expr: '{dP} ÷ ({Q} ÷ (6 × 10⁷))', how: 'Pressure drop per flow, Q in m³/s.' },
+        dP: { expr: '{Rv} × {Q} ÷ (6 × 10⁷)', how: 'The resistance times the flow in m³/s.' },
+        Q: { expr: '6 × 10⁷ × {dP} ÷ {Rv}', how: 'The flow in m³/s, turned into mL/min.' },
+      },
+    },
+    example: { dP, r, L, mu, Q, Rv: (6e7 * dP) / Q },
+    startWith: ['dP', 'r', 'L', 'mu'],
+    representation: {
+      kind: 'velocityProfile',
+      mode: 'tube',
+      vessel: true,
+      R: 'r',
+      Q: 'Q',
+      dP: 'dP',
+      L: 'L',
+      mu: 'mu',
+      si: VESSEL_SI,
+    },
+  });
+})();
+
+const shearDemo = (() => {
+  const [mu, Q, r] = [3.5, 107.7, 2];
+  return demo({
+    id: 'g.he-velocityProfile-vessel-shear',
+    title: 'Wall shear stress in a vessel',
+    use: 'Use this for “What shear stress does 108 mL/min put on the wall of a 2 mm-radius artery?”',
+    assumptions: [
+      'Poiseuille flow: the parabola’s slope at the wall sets the shear on the endothelium.',
+      'With μ in mPa·s, Q in mL/min and r in mm, the 60 turns the units into pascals.',
+    ],
+    variables: [
+      { id: 'mu', symbol: 'μ', name: 'Blood viscosity', unit: 'mPa·s', min: 0.5, max: 10 },
+      { id: 'Q', symbol: 'Q', name: 'Blood flow', unit: 'mL/min', min: 1e-9, max: 1e12 },
+      { id: 'r', symbol: 'r', name: 'Vessel radius', unit: 'mm', min: 0.01, max: 15 },
+      { id: 'tau', symbol: 'τ_w', name: 'Wall shear stress', unit: 'Pa', min: 1e-9, max: 1e9 },
+    ],
+    relations: [
+      {
+        id: 'τ_w = 4μQ ÷ (60πr³)',
+        display: '{tau} = 4 × {mu} × {Q} ÷ (60 × π × {r}³)',
+        vars: ['tau', 'mu', 'Q', 'r'],
+        residual: (x) => x.tau! * 60 * Math.PI * x.r! ** 3 - 4 * x.mu! * x.Q!,
+        solve: {
+          tau: (x) => div(4 * x.mu! * x.Q!, 60 * Math.PI * x.r! ** 3),
+          mu: (x) => div(x.tau! * 60 * Math.PI * x.r! ** 3, 4 * x.Q!),
+          Q: (x) => div(x.tau! * 60 * Math.PI * x.r! ** 3, 4 * x.mu!),
+          r: (x) => {
+            const r3 = div(4 * x.mu! * x.Q!, 60 * Math.PI * x.tau!);
+            return r3 === undefined || r3 < 0 ? undefined : Math.cbrt(r3);
+          },
+        },
+      },
+    ],
+    steps: {
+      'τ_w = 4μQ ÷ (60πr³)': {
+        tau: {
+          expr: '4 × {mu} × {Q} ÷ (60 × π × {r}³)',
+          how: 'The wall shear of Poiseuille flow, 4μQ ÷ πr³.',
+        },
+        mu: {
+          expr: '{tau} × 60 × π × {r}³ ÷ (4 × {Q})',
+          how: 'Multiply across, then divide by 4Q.',
+        },
+        Q: {
+          expr: '{tau} × 60 × π × {r}³ ÷ (4 × {mu})',
+          how: 'Multiply across, then divide by 4μ.',
+        },
+        r: {
+          expr: '(4 × {mu} × {Q} ÷ (60 × π × {tau}))^(1 ÷ 3)',
+          how: 'Solve for r³, then take the cube root.',
+        },
+      },
+    },
+    example: { mu, Q, r, tau: (4 * mu * Q) / (60 * Math.PI * r ** 3) },
+    startWith: ['mu', 'Q', 'r'],
+    representation: {
+      kind: 'velocityProfile',
+      mode: 'tube',
+      vessel: true,
+      R: 'r',
+      Q: 'Q',
+      mu: 'mu',
+      tauW: 'tau',
+      si: VESSEL_SI,
+    },
+  });
+})();
+
+const vesselReDemo = (() => {
+  const [Q, r, rho, mu] = [108, 2, 1060, 3.5];
+  const v = Q / (60 * Math.PI * r ** 2);
+  return demo({
+    id: 'g.he-velocityProfile-vessel-reynolds',
+    title: 'Is the flow in a vessel laminar?',
+    use: 'Use this for “Is blood flowing at 108 mL/min through a 4 mm vessel laminar?”',
+    assumptions: [
+      'Below about 2000 the flow in a vessel is laminar.',
+      'With Q in mL/min and r in mm, v = Q ÷ (60πr²) in m/s; the mm and mPa·s cancel in Re.',
+    ],
+    variables: [
+      { id: 'Q', symbol: 'Q', name: 'Blood flow', unit: 'mL/min', min: 1e-9, max: 1e12 },
+      { id: 'r', symbol: 'r', name: 'Vessel radius', unit: 'mm', min: 0.01, max: 15 },
+      { id: 'v', symbol: 'v', name: 'Mean speed', unit: 'm/s', min: 1e-9, max: 1e6 },
+      { id: 'rho', symbol: 'ρ', name: 'Blood density', unit: 'kg/m³', min: 900, max: 1200 },
+      { id: 'mu', symbol: 'μ', name: 'Blood viscosity', unit: 'mPa·s', min: 0.5, max: 10 },
+      { id: 'Re', symbol: 'Re', name: 'Reynolds number', min: 1e-9, max: 1e12 },
+    ],
+    relations: [
+      {
+        id: 'v = Q ÷ (60πr²)',
+        display: '{v} = {Q} ÷ (60 × π × {r}²)',
+        vars: ['v', 'Q', 'r'],
+        residual: (x) => x.v! * 60 * Math.PI * x.r! ** 2 - x.Q!,
+        solve: {
+          v: (x) => div(x.Q!, 60 * Math.PI * x.r! ** 2),
+          Q: (x) => x.v! * 60 * Math.PI * x.r! ** 2,
+          r: (x) => (x.v! > 0 ? Math.sqrt(x.Q! / (60 * Math.PI * x.v!)) : undefined),
+        },
+      },
+      {
+        id: 'Re = 2ρvr ÷ μ',
+        display: '{Re} = 2 × {rho} × {v} × {r} ÷ {mu}',
+        vars: ['Re', 'rho', 'v', 'r', 'mu'],
+        residual: (x) => x.Re! * x.mu! - 2 * x.rho! * x.v! * x.r!,
+        solve: {
+          Re: (x) => div(2 * x.rho! * x.v! * x.r!, x.mu!),
+          rho: (x) => div(x.Re! * x.mu!, 2 * x.v! * x.r!),
+          v: (x) => div(x.Re! * x.mu!, 2 * x.rho! * x.r!),
+          r: (x) => div(x.Re! * x.mu!, 2 * x.rho! * x.v!),
+          mu: (x) => div(2 * x.rho! * x.v! * x.r!, x.Re!),
+        },
+      },
+    ],
+    steps: {
+      'v = Q ÷ (60πr²)': {
+        v: {
+          expr: '{Q} ÷ (60 × π × {r}²)',
+          how: 'The flow spread over the vessel’s cross-section.',
+        },
+        Q: { expr: '{v} × 60 × π × {r}²', how: 'The mean speed times the area.' },
+        r: { expr: '√({Q} ÷ (60 × π × {v}))', how: 'Solve for r², then take the root.' },
+      },
+      'Re = 2ρvr ÷ μ': {
+        Re: {
+          expr: '2 × {rho} × {v} × {r} ÷ {mu}',
+          how: 'Inertia over viscosity on the diameter 2r.',
+        },
+        rho: { expr: '{Re} × {mu} ÷ (2 × {v} × {r})', how: 'Multiply by μ, then divide by 2vr.' },
+        v: { expr: '{Re} × {mu} ÷ (2 × {rho} × {r})', how: 'Multiply by μ, then divide by 2ρr.' },
+        r: { expr: '{Re} × {mu} ÷ (2 × {rho} × {v})', how: 'Multiply by μ, then divide by 2ρv.' },
+        mu: { expr: '2 × {rho} × {v} × {r} ÷ {Re}', how: 'Swap μ and Re across the equals sign.' },
+      },
+    },
+    example: { Q, r, v, rho, mu, Re: (2 * rho * v * r) / mu },
+    startWith: ['Q', 'r', 'rho', 'mu'],
+    representation: {
+      kind: 'velocityProfile',
+      mode: 'tube',
+      vessel: true,
+      R: 'r',
+      Q: 'Q',
+      vavg: 'v',
+      Re: 'Re',
+      si: { R: 0.001, Q: 1 / 6e7 },
+    },
+  });
+})();
+
+export const HC13_DEMOS: ModuleDef[] = [
+  tubeDemo,
+  tubeFastDemo,
+  couetteDemo,
+  filmDemo,
+  diffusionDemo,
+  stefanDemo,
+  analogyModule(true),
+  analogyModule(false),
+  vesselDemo,
+  shearDemo,
+  vesselReDemo,
+];
+
+export const HE1F_GALLERY_MODULES: ModuleDef[] = [...HC5_DEMOS, ...HC13_DEMOS];
 
 export const HE1F_GALLERY_LAYOUTS: LayoutDef[] = [];

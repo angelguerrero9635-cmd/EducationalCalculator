@@ -16,9 +16,17 @@ import {
   streamTotal,
   type Getter,
 } from '@/components/module/reps/controlVolumeMath';
+import {
+  layerRatio,
+  siGetter,
+  stefanFlux,
+  TUBE_STATIONS,
+  tubeCentre,
+  tubeSpeed,
+} from '@/components/module/reps/velocityProfileMath';
 
 import type { NumOrVar } from '../typesGraphs';
-import type { ControlVolumeSpec, CvStream } from '../typesHe1f';
+import type { ControlVolumeSpec, CvStream, VelocityProfileSpec } from '../typesHe1f';
 import type { Representation } from '../types';
 
 /** Equal to 0.1% (or 10⁻⁶ near zero, below what a page shows). */
@@ -32,7 +40,106 @@ export function he1fIssues(rep: Representation, val: (id: string) => number | un
     return y === undefined || Number.isNaN(y) ? undefined : y;
   };
   if (rep.kind === 'controlVolume') return controlVolumeIssues(rep, get);
+  if (rep.kind === 'velocityProfile') return velocityProfileIssues(rep, get);
   return [];
+}
+
+function velocityProfileIssues(spec: VelocityProfileSpec, get: Getter): string[] {
+  const out: string[] = [];
+  const si = siGetter(spec, (x) => get(x));
+  const v = (f: keyof VelocityProfileSpec) => si(f);
+  if (spec.mode === 'tube') {
+    const [R, Q, vavg, vmax] = [v('R'), v('Q'), v('vavg'), v('vmax')];
+    if (R !== undefined && R <= 0) out.push(`velocityProfile: radius ${R} is not positive`);
+    // v_max = 2v_avg, and the centre speed is 2Q ÷ πR².
+    if (vavg !== undefined && vmax !== undefined && !near(vmax, 2 * vavg))
+      out.push(`velocityProfile: v_max ${vmax}, but 2v_avg = ${2 * vavg}`);
+    if (Q !== undefined && R !== undefined && R > 0) {
+      const centre = tubeCentre(Q, R);
+      if (vmax !== undefined && !near(vmax, centre))
+        out.push(`velocityProfile: v_max ${vmax}, but 2Q ÷ πR² = ${centre}`);
+      if (vavg !== undefined && !near(vavg, centre / 2))
+        out.push(`velocityProfile: v_avg ${vavg}, but Q ÷ πR² = ${centre / 2}`);
+      // The arrows: the centre one is v_max, each is v_max(1 − r²/R²), so they scale with Q.
+      const arrows = TUBE_STATIONS.map((st) => tubeSpeed(centre, st));
+      if (!near(Math.max(...arrows), centre))
+        out.push('velocityProfile: the centre arrow is not the fastest');
+    }
+    // τ_w = ΔPR ÷ 2L, and ΔP = P₁ − P₂.
+    const [dP0, P1, P2, L, tau] = [v('dP'), v('P1'), v('P2'), v('L'), v('tauW')];
+    if (dP0 !== undefined && P1 !== undefined && P2 !== undefined && !near(dP0, P1 - P2))
+      out.push(`velocityProfile: ΔP ${dP0}, but P₁ − P₂ = ${P1 - P2}`);
+    const dP = dP0 ?? (P1 !== undefined && P2 !== undefined ? P1 - P2 : undefined);
+    if (dP !== undefined && R !== undefined && L !== undefined && tau !== undefined && L > 0)
+      if (!near(tau, (dP * R) / (2 * L)))
+        out.push(`velocityProfile: τ_w ${tau}, but ΔPR ÷ 2L = ${(dP * R) / (2 * L)}`);
+    // A page with μ and no ΔP or L draws τ_w = 4μQ ÷ πR³ (the wall's shear from the flow); with
+    // ΔP and L the page's τ_w = ΔPR ÷ 2L above is the one drawn.
+    const mu = v('mu');
+    const direct = spec.dP === undefined && spec.P1 === undefined && spec.L === undefined;
+    if (
+      direct &&
+      mu !== undefined &&
+      Q !== undefined &&
+      R !== undefined &&
+      tau !== undefined &&
+      R > 0
+    )
+      if (!near(tau, (4 * mu * Q) / (Math.PI * R ** 3)))
+        out.push(
+          `velocityProfile: τ_w ${tau}, but 4μQ ÷ πR³ = ${(4 * mu * Q) / (Math.PI * R ** 3)}`,
+        );
+  }
+  if (spec.mode === 'plates') {
+    const [mu, V, h, tau] = [v('mu'), v('V'), v('h'), v('tauW')];
+    if (mu !== undefined && V !== undefined && h !== undefined && tau !== undefined && h > 0)
+      if (!near(tau, (mu * V) / h))
+        out.push(`velocityProfile: τ ${tau}, but μV ÷ h = ${(mu * V) / h}`);
+  }
+  if (spec.mode === 'film') {
+    const [vavg, vmax] = [v('vavg'), v('vmax')];
+    if (vavg !== undefined && vmax !== undefined && !near(vmax, 1.5 * vavg))
+      out.push(`velocityProfile: film v_max ${vmax}, but 1.5v_avg = ${1.5 * vavg}`);
+    const beta = v('angle');
+    if (beta !== undefined && (beta < 0 || beta >= 90))
+      out.push(`velocityProfile: a film at ${beta}° from vertical doesn't fall`);
+  }
+  if (spec.mode === 'concentration') {
+    // The line is straight: one flux, N_A = D(c_A1 − c_A2) ÷ L.
+    const [D, c1, c2, L, N] = [v('D'), v('cA1'), v('cA2'), v('L'), v('flux')];
+    if ([c1, c2].some((x) => x !== undefined && x < 0))
+      out.push('velocityProfile: a negative concentration');
+    if (
+      D !== undefined &&
+      c1 !== undefined &&
+      c2 !== undefined &&
+      L !== undefined &&
+      N !== undefined &&
+      L > 0
+    )
+      if (!near(N, (D * (c1 - c2)) / L))
+        out.push(`velocityProfile: N_A ${N}, but D(c_A1 − c_A2) ÷ L = ${(D * (c1 - c2)) / L}`);
+  }
+  if (spec.mode === 'stefan') {
+    const [x1, x2, cc, D, L, N] = [v('x1'), v('x2'), v('c'), v('D'), v('L'), v('flux')];
+    if ([x1, x2].some((x) => x !== undefined && (x < 0 || x >= 1)))
+      out.push('velocityProfile: a mole fraction outside 0 to 1');
+    if ([x1, x2, cc, D, L, N].every((x) => x !== undefined) && L! > 0 && x1! < 1 && x2! < 1)
+      if (!near(N!, stefanFlux(cc!, D!, L!, x1!, x2!)))
+        out.push(
+          `velocityProfile: N_A ${N}, but (cD ÷ L) ln((1 − x₂) ÷ (1 − x₁)) = ${stefanFlux(cc!, D!, L!, x1!, x2!)}`,
+        );
+  }
+  if (spec.mode === 'analogy') {
+    // The drawn layers: δ_T ÷ δ = Pr^(−1/3), δ_c ÷ δ = Sc^(−1/3).
+    for (const f of ['Pr', 'Sc'] as const) {
+      const n = v(f);
+      if (n !== undefined && !(n > 0)) out.push(`velocityProfile: ${f} ${n} is not positive`);
+      if (n !== undefined && n > 0 && !near(layerRatio(n) ** -3, n))
+        out.push(`velocityProfile: the ${f} layer is not δ${f}^(−1/3)`);
+    }
+  }
+  return out;
 }
 
 function controlVolumeIssues(spec: ControlVolumeSpec, get: Getter): string[] {

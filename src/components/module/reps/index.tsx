@@ -177,6 +177,7 @@ import { HslPicture } from './HslPicture';
 import { Hs2fPicture } from './Hs2fPicture';
 import { Hs3cPicture } from './Hs3cPicture';
 import { ControlVolume } from './ControlVolume';
+import { VelocityProfile } from './VelocityProfile';
 import { MotionGraphHs } from './MotionGraphHs';
 import { HskView } from './HskView';
 import { Hs2cView } from './Hs2cView';
@@ -321,6 +322,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <Hs3cPicture spec={spec} calc={calc} />;
     case 'controlVolume':
       return <ControlVolume spec={spec} calc={calc} />;
+    case 'velocityProfile':
+      return <VelocityProfile spec={spec} calc={calc} />;
     case 'linearFunction':
       return <LinearFunction spec={spec} calc={calc} />;
     case 'lineSystem':

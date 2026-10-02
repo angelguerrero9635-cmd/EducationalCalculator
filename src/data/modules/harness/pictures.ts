@@ -2224,6 +2224,7 @@ export function repIssues(
       out.push(...hs3cIssues(rep, (id) => (val(id) ?? NaN) * (byId.get(id)?.unitFactor ?? 1)));
       break;
     case 'controlVolume':
+    case 'velocityProfile':
       // In formula units, as the picture draws them.
       out.push(...he1fIssues(rep, (id) => (val(id) ?? NaN) * (byId.get(id)?.unitFactor ?? 1)));
       break;

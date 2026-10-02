@@ -573,6 +573,7 @@ function representationVars(r: Representation): string[] {
     case 'parallax':
       return hs3cSpecVars(r);
     case 'controlVolume':
+    case 'velocityProfile':
       return he1fSpecVars(r);
     case 'projectile':
     case 'induction':

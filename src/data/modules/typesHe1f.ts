@@ -195,6 +195,8 @@ export interface VelocityProfileSpec {
   Sc?: NumOrVar;
   Nu?: NumOrVar;
   Sh?: NumOrVar;
+  /** Further values labelled under the picture (a force, an area, Re, the Dittus–Boelter Nu). */
+  more?: string[];
   /** Factors to SI by field name (R, Q, L, vmax, vavg, mu, tauW, dP, P1, P2, V, h, delta, D, c). */
   si?: Partial<Record<string, number>>;
 }
