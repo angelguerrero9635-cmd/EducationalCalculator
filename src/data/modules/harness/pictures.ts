@@ -69,6 +69,7 @@ import { hs3aIssues, hs3aOptionIssues } from './picturesHs3a';
 import { sectionIssues } from './picturesHe1b';
 import { gasMixtureIssues } from './picturesHs3e';
 import { netIssues, oscillatorIssues } from './picturesHe1h';
+import { skeletalIssues } from './picturesHe1c';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -2191,6 +2192,9 @@ export function repIssues(
       break;
     case 'neuron':
       out.push(...neuronIssues(rep, (id) => val(id)));
+      break;
+    case 'skeletal':
+      out.push(...skeletalIssues(rep, val));
       break;
     case 'gel':
     case 'alleleFrequencies':

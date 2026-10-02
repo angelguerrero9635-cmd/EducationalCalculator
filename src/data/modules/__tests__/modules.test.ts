@@ -20,6 +20,7 @@ import { hsbSpecVars } from '../typesHsb';
 import { hs2aSpecVars } from '../typesHs2a';
 import { hs2eSpecVars } from '../typesHs2e';
 import { hs3dSpecVars } from '../typesHs3d';
+import { skeletalVars } from '../typesHe1c';
 import { hs2gSpecVars } from '../typesHs2g';
 import { hs3bSpecVars } from '../typesHs3b';
 import { hsdSpecVars } from '../typesHsd';
@@ -542,6 +543,8 @@ function representationVars(r: Representation): string[] {
       return hs2eSpecVars(r);
     case 'neuron':
       return hs3dSpecVars(r);
+    case 'skeletal':
+      return skeletalVars(r);
     case 'gel':
     case 'alleleFrequencies':
     case 'immuneResponse':

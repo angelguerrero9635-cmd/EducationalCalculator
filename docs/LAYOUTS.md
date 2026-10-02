@@ -248,3 +248,9 @@ marks and side lengths that mean what they say), `construction` (named points wi
 compass arcs, ticks, arcs and angle numbers, a stage's new parts `lit`) and `solidCut` (a
 cube, pyramid, cylinder, cone or sphere with its cutting plane and the section shaded). Every
 figure and card figure has a page at `/gallery`.
+
+College card figure `skeletal` (HC2, `layouts/skeletalCard.tsx`, `typesHe1c.ts`): `{ kind:
+'skeletal', smiles, group?, numbered?, center?, ranks?, rs? }`, one line-angle structure at
+112 × 76 from a SMILES-like spec (`CC(=O)OCC`, `c1cc[nH]c1`, `C[C@H](O)CC`), its group lit
+(`carboxyl`, `ester`, `amide`, `nitrile`, `aldehyde`, `ketone`, `hydroxyl`, `amine`, … or atom
+numbers), the parent chain numbered, and CIP ranks with R or S on `center`.
