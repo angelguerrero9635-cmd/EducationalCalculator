@@ -72,6 +72,7 @@ import { gasMixtureIssues } from './picturesHs3e';
 import { netIssues, oscillatorIssues } from './picturesHe1h';
 import { skeletalIssues } from './picturesHe1c';
 import { phaseEnvelopeIssues, phaseSubstanceIssues } from './picturesHe1i';
+import { chemRateHe2kIssues } from './picturesHe2k';
 import { he1fIssues } from './picturesHe1f';
 import type { ModuleDef, Representation } from '../types';
 
@@ -2226,6 +2227,12 @@ export function repIssues(
     case 'chemDiagram':
       out.push(...chemDiagramIssues(rep, (id) => val(id)));
       if (rep.mode === 'phase') out.push(...phaseSubstanceIssues(rep.substance, val));
+      if (rep.mode === 'rate' && !('times' in rep))
+        out.push(
+          ...chemRateHe2kIssues(rep, val, (x) =>
+            typeof x === 'string' ? byId.get(x)?.unit : undefined,
+          ),
+        );
       break;
     case 'phaseEnvelope':
       out.push(...phaseEnvelopeIssues(rep, val));
