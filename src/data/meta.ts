@@ -148,6 +148,7 @@ const PICTURE_NAMES: Record<string, string> = {
   fluidSystem: 'a fluid system: a tank, gauge, gate, meter, jet, pipe or plate',
   controlVolume: 'a process unit or device with its streams balanced',
   velocityProfile: 'velocity or concentration profiles across a tube, gap or film',
+  potentialWell: 'a potential well with its energy levels and wavefunctions',
   matrixGrid: 'matrices in brackets',
   membrane: 'cell membrane with particles on each side',
   dnaStrand: 'DNA ladder, mRNA and amino acids',

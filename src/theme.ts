@@ -448,6 +448,21 @@ const light = {
   atomProton: '#E0563F',
   atomNeutron: '#9AA3AF',
   atomElectron: '#3B82F6',
+  /**
+   * College HC15 `potentialWell` and HC16 `unitCell` (round 2, group B): a wavefunction, its
+   * |ψ|² fill, a perturbing bump, a photon; a cell's atoms (metal, cation, anion), a lattice
+   * plane, X-rays and the lit touching line.
+   */
+  wellPsi: '#2563EB',
+  wellPsiFill: '#93C5FD',
+  wellBump: '#E08A1C',
+  wellPhoton: '#C026D3',
+  cellMetal: '#C98A4B',
+  cellCation: '#8E6CCF',
+  cellAnion: '#4FA35A',
+  cellPlane: '#F2B134',
+  cellRay: '#D9480F',
+  cellTouch: '#DC2626',
   /** A periodic trend's shading (darker for more) and the symbols on its darkest cells. */
   trendShade: '#0F766E',
   onTrendShade: '#FFFFFF',
@@ -864,6 +879,16 @@ const dark: Palette = {
   atomProton: '#D9573F',
   atomNeutron: '#7D8693',
   atomElectron: '#5B9BF8',
+  wellPsi: '#60A5FA',
+  wellPsiFill: '#1E3A8A',
+  wellBump: '#F0A040',
+  wellPhoton: '#E879F9',
+  cellMetal: '#B9783A',
+  cellCation: '#9F82E0',
+  cellAnion: '#5DBB69',
+  cellPlane: '#C98F22',
+  cellRay: '#FB7A3C',
+  cellTouch: '#F87171',
   trendShade: '#2DD4BF',
   onTrendShade: '#0D0F14',
   dipole: '#FB923C',
