@@ -196,6 +196,12 @@ export function Histogram({ spec, calc }: { spec: HistogramSpec; calc: Calculato
           // Every 1, 2, 5, 10 or 20 labels, whichever first leaves room.
           const every = [1, 2, 5, 10, 20].find((e) => e * slotPx >= widest) ?? 40;
           const barLabels = !waiting && bars.length <= 16 && barW >= (prob ? 36 : 22);
+          // A marker's triangle sits on the axis: an x label it would cover is left out.
+          const underMarker = (x: number) =>
+            markers.some(
+              (m) =>
+                Math.abs(sx(m.x) - sx(x)) < Math.max(8, 0.6 * num(x).length * chart.label * 0.6),
+            );
           // Probability labels to the caption's decimals; 4 decimals a size smaller to fit.
           const decimals = probDecimals(bars.length);
           const labelSize = prob && decimals === 4 ? chart.label - 1 : chart.label;
@@ -305,7 +311,7 @@ export function Histogram({ spec, calc }: { spec: HistogramSpec; calc: Calculato
                   strokeWidth={chart.strokeLight}
                 />
                 {xs.map((x, i) =>
-                  i % every === 0 ? (
+                  i % every === 0 && !underMarker(x) ? (
                     <ChartText
                       key={`x${i}`}
                       {...fitLabel(sx(x), num(x), chart.label, w)}

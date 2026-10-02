@@ -102,7 +102,12 @@ export function SortLayout({ spec }: { spec: Spec }) {
               {/* H117: the groups right under the picked card, so a phone never scrolls between
                 them; a hint about this card shows here too. */}
               {spec.pickBar && picked === card.i ? (
-                <View style={styles.pickBar} testID="pick-bar">
+                <View
+                  // Up to three groups share one row at phone width (a long label wraps inside
+                  // its button); more wrap as they need.
+                  style={[styles.pickBar, spec.bins.length <= 3 ? styles.pickBarRow : null]}
+                  testID="pick-bar"
+                >
                   {spec.bins.map((bin) => (
                     <Pressable
                       key={bin.id}
@@ -290,16 +295,19 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: space.sm,
   },
+  pickBarRow: { flexWrap: 'nowrap', alignItems: 'stretch' },
   pickGroup: {
     minHeight: 44,
+    justifyContent: 'center',
     flexDirection: 'row',
     alignItems: 'center',
     gap: space.xs,
     paddingVertical: space.sm,
-    paddingHorizontal: space.md,
+    paddingHorizontal: space.sm,
     borderWidth: 1.5,
     borderRadius: radius.md,
+    flexShrink: 1,
   },
-  pickText: { fontSize: font.body, fontWeight: '600' },
+  pickText: { fontSize: font.body, fontWeight: '600', flexShrink: 1, textAlign: 'center' },
   hintRow: { width: '100%' },
 });

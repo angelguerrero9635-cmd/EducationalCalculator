@@ -5673,9 +5673,11 @@ const DATA_DISPLAYS: ModuleDef[] = [
     ],
     variables: [
       int('n', 'n', 'Number of values', 5, 12),
-      ...LIST_IDS.map((id, i) => listValue(id, i, `Value ${i + 1}`, 100)),
+      // The bins before the values: a first edit of n keeps them (`clearTo`), so the picture
+      // draws real bins while the student types the data.
       num('a', 'a', 'First bin starts at', 0, 100, { step: 1 }),
       num('w', 'w', 'Bin width', 1, 50, { step: 1 }),
+      ...LIST_IDS.map((id, i) => listValue(id, i, `Value ${i + 1}`, 100)),
       num('lo', 'min', 'Least', 0, 100, { derived: true }),
       num('hi', 'max', 'Greatest', 0, 100, { derived: true }),
       int('k', 'k', 'Number of bins', 1, 101, { derived: true }),
@@ -5702,6 +5704,25 @@ const DATA_DISPLAYS: ModuleDef[] = [
         (v) => (v.w! > 0 ? Math.floor(exact((v.hi! - v.a!) / v.w!)) + 1 : undefined),
         '⌊({hi} − {a}) ÷ {w}⌋ + 1',
         'Count the whole widths from the start to the greatest value, then one more bin to hold it.',
+        {
+          // Each bin's count and relative frequency (its height), and that the heights add to 1.
+          work: (v) => {
+            if (v.k === undefined || v.a === undefined || v.w === undefined || v.n === undefined)
+              return [];
+            const xs = firstValues(LIST_IDS, v);
+            const heights: string[] = [];
+            const lines = Array.from({ length: Math.min(v.k, 30) }, (_, i) => {
+              const lo = exact(v.a! + i * v.w!);
+              const hi = exact(lo + v.w!);
+              const count = xs.filter((x) => x >= lo && x < hi).length;
+              const h = fmt(div(count, v.n!) ?? 0);
+              heights.push(h);
+              return `[${fmt(lo)}, ${fmt(hi)}): ${count} → ${count} ÷ ${v.n} = ${h}`;
+            });
+            return [...lines, `The heights add to 1: ${heights.join(' + ')} = 1`];
+          },
+          written: false,
+        },
       ),
       constraint(
         'k ≤ 30',
@@ -5780,7 +5801,8 @@ const DATA_DISPLAYS: ModuleDef[] = [
       md: 39,
       mean: 38,
     },
-    startWith: ['n', ...LIST_IDS, 'a', 'w'],
+    startWith: ['n', 'a', 'w', ...LIST_IDS],
+    clearTo: { a: 0, w: 10 },
     representation: {
       kind: 'histogram',
       data: LIST_IDS,

@@ -501,7 +501,7 @@ const earthDay: ModuleDef = {
     'Event ages are rounded; new finds move them.',
   ],
   variables: [
-    V('A', 'A', 'How long ago', { unit: 'million years', min: 0, max: 4600, step: 0.1 }),
+    V('A', 'A', 'How long ago', { unit: 'million years', min: 0, max: 4550, step: 0.1 }),
     V('p', 'p', 'Share of Earth’s history since then', {
       unit: '%',
       min: 0,
@@ -1012,7 +1012,7 @@ const crossCutting: ModuleDef = {
   title: 'A dike cutting the layers: cross-cutting',
   use: 'Use this for “A 105-million-year-old dike cuts the sandstone but not the shale above it. How old can the shale’s fossils be?”',
   assumptions: [
-    'Cross-cutting: a dike is younger than every layer it cuts, and older than the layers it does not reach.',
+    'Cross-cutting: a dike is younger than every layer it cuts, and older than the layers laid down across its eroded top.',
     'Superposition: a layer is younger than the layers under it and older than those on top.',
     'The dike and the ash beds cooled from magma, so they can be dated; the shale cannot, so its age is bracketed.',
   ],

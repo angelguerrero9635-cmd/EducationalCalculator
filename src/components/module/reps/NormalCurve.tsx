@@ -527,6 +527,19 @@ export function NormalCurve({ spec, calc }: { spec: NormalCurveSpec; calc: Calcu
                     {Z}
                   </ChartText>
                 ) : null}
+                {/* The standard curve's ticks are z values, named past the last one. */}
+                {showZ && !showX && zTicks.length ? (
+                  <ChartText
+                    x={Math.min(w - 8, sx(zTicks[zTicks.length - 1]!.x) + 16)}
+                    y={zY}
+                    fill={c.chartMuted}
+                    fontStyle="italic"
+                    fontWeight="700"
+                    textAnchor="start"
+                  >
+                    {Z}
+                  </ChartText>
+                ) : null}
                 {spec.axis || chi ? (
                   <ChartText
                     {...fitLabel(w / 2, spec.axis ?? 'χ²', chart.label, w)}
