@@ -1064,9 +1064,9 @@ Calculus is stated once (Decisions) and the steps use the integrated forms.
   273.15 K, ΔV = −1.63 cm³/mol → −1.35 × 10⁷ Pa/K = −133 atm/K: pressure lowers ice's melting
   point.
 - **~raoult — BUILD:** `gasPiston` mixture (interim, H108; P8 `binary` later). Values mole
-  fraction of A in the liquid x_A, vapor pressures of the pure liquids P*\_A and P*_B (torr),
-  total pressure P, mole fraction of A in the vapor y_A. Relations: P = x_AP*\_A + (1 − x_A)P*_B;
-  y_A = x_AP*_A ÷ P. Example: benzene (95.1 torr) with methylbenzene (28.4 torr) at 25 °C,
+  fraction of A in the liquid x_A, vapor pressures of the pure liquids P_A° and P_B° (torr),
+  total pressure P, mole fraction of A in the vapor y_A. Relations: P = x_AP_A° + (1 − x_A)P_B°;
+  y_A = x_AP_A° ÷ P. Example: benzene (95.1 torr) with methylbenzene (28.4 torr) at 25 °C,
   x_A = 0.600 → P = 68.4 torr, y_A = 0.834 (the vapor is richer in the more volatile liquid).
 - **~phase-rule — BUILD:** `chemDiagram` mode `phase` (water, the point named). Values
   components C (1–5), phases P (1–5), degrees of freedom F. Relation: F = C − P + 2 (page limit:
