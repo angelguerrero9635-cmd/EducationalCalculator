@@ -787,6 +787,9 @@ export function solve(system: System, given: readonly Given[], previous: Values 
         ? propagated.values
         : { ...givens, [g.id]: normalizeValue(variable, g.value) };
       for (const r of system.relations) {
+        // A rule that only checks speaks only for values it has: with u unknown, "843.3 cm is
+        // not a reading to the nearest NaN cm" (a missing value fails every check).
+        if (r.constraint && !r.vars.every((id) => values[id] !== undefined)) continue;
         try {
           const text = r.message?.(values);
           if (text) return text;
