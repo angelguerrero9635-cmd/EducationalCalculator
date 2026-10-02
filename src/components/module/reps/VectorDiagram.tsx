@@ -543,8 +543,20 @@ export function VectorDiagram({ spec, calc }: { spec: VectorDiagramSpec; calc: C
                             put(v.x, nx);
                             put(v.y, ny);
                           } else if (typeof v.direction === 'string') {
-                            put(v.magnitude, Math.hypot(nx, ny));
-                            put(v.direction, heading(nx, ny));
+                            // The tip never crosses the tail: dragged back toward it, it stops
+                            // a handle's width short, so the length stays positive and the
+                            // direction turns with the finger instead of flipping by 180°
+                            // (51° → 203° on the components page) as the tip passed through
+                            // the origin.
+                            const d0 = Math.hypot(drag.current.x, drag.current.y);
+                            const [ux, uy] =
+                              d0 > 1e-9 ? [drag.current.x / d0, drag.current.y / d0] : [1, 0];
+                            const minLen = 24 / f.ux;
+                            const along = nx * ux + ny * uy;
+                            const back = along < minLen ? minLen - along : 0;
+                            const [cx, cy] = [nx + back * ux, ny + back * uy];
+                            put(v.magnitude, Math.hypot(cx, cy));
+                            put(v.direction, heading(cx, cy));
                           } else {
                             const d = num(v.direction ?? 0) * RAD;
                             put(v.magnitude, Math.max(0, nx * Math.cos(d) + ny * Math.sin(d)));
