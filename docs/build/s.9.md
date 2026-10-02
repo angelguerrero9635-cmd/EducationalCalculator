@@ -348,3 +348,9 @@ listed here once):
   whole, and a value with its own display (`figures`, `sigFigs`, `integer`, a fraction) keeps
   it; the working lines and the check keep their extra figures, as a worked answer is rounded
   only at the end.
+
+### Drawn parts placed
+
+| Page                                  | Entry | What it teaches                                                                                                            |
+| ------------------------------------- | ----- | -------------------------------------------------------------------------------------------------------------------------- |
+| `s.9.inheritance-patterns~codominant` | H35   | codominance in roan cattle: red, roan and white calves of 4 from the parents' Cᴿ counts, both colors showing (not a blend) |

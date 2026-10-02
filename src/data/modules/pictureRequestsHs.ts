@@ -569,13 +569,16 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'H35',
       'punnettSquare',
       'Dihybrid 4 × 4 square, incomplete dominance and codominance colors, sex-linked alleles on X',
-      ['s.9.inheritance-patterns'],
+      {
+        's.9.inheritance-patterns': '"punnettSquare"',
+        's.9.inheritance-patterns~codominant': '"pattern":"codominant"',
+      },
     ),
-    status: 'drawn',
-    gallery: ['g.s9-inheritance-patterns-codominant'],
+    status: 'placed',
+    gallery: [],
     notes:
       'Pedigree: sex-linked carriers (half-shaded). Drawn (group HG, reps/PunnettHs.tsx, boxes from punnettMath.ts). An optional field on punnettSquare; without it the Grade 7 square is unchanged. first/second stay the parents’ counts of dominant alleles. inheritance: { pattern: "dihybrid", firstB, secondB (the second gene’s counts), letterB: "Y", names?: [both dominant, first only, second only, neither] } draws the parents’ four gametes each way and 16 boxes colored by phenotype with a counted key (9:3:3:1); dominant = boxes of 16 with both dominant traits, recessive? = neither. { pattern: "incomplete" | "codominant", alleles?: ["R", "W"] (drawn Cᴿ, Cᵂ with letter "C"), names?: ["red", "pink", "white"], middle?: the heterozygote boxes } colors red, pink (a blend) or red patches on white (roan); dominant = first-allele homozygotes, recessive? = second-allele homozygotes. { pattern: "xLinked", carriers?: id } takes first = mother (0–2 Xᴬ), second = father (0–1): Xᴬ/Xᵃ and Y across the top, each box a daughter or son, the affected filled, carrier daughters half-shaded; dominant = boxes without the trait, recessive? = with it. The harness recounts each from the parents (product rule, sons from the mother). Example: { kind: "punnettSquare", first: "m", second: "f", dominant: "t", recessive: "r", letter: "B", inheritance: { pattern: "xLinked", carriers: "k" } }. Pedigrees needed no change: X-linked genotypes are written "XᴮXᵇ", "XᵇY" with carriers half-filled (family.carriers); the harness now checks every pedigree’s genotypes against its symbols and parents (no male carriers of X-linked alleles, a son’s X from his mother).' +
-      ' Tracker: still drawn. Dihybrid, incomplete dominance, X-linked squares and the X-linked pedigree are placed; codominance (`pattern: "codominant"`) is on no page.',
+      ' Placed (parts by page in `uses`): dihybrid, incomplete dominance, X-linked squares and the X-linked pedigree were placed; codominance (`pattern: "codominant"`, roan cattle) is on s.9.inheritance-patterns~codominant, and its demo is retired.',
   },
   {
     ...ask(

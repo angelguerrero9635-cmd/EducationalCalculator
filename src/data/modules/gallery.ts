@@ -2176,6 +2176,7 @@ const RETIRED = new Set<string>([
   'g.s9-immune-disease-booster',
   'g.s9-immune-disease-pathogens',
   'g.s9-immune-disease-stages',
+  'g.s9-inheritance-patterns-codominant',
   'g.s9-inheritance-patterns-dihybrid',
   'g.s9-inheritance-patterns-dihybrid-pure',
   'g.s9-inheritance-patterns-incomplete',
