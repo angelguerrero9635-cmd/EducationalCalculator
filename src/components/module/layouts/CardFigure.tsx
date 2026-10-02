@@ -122,9 +122,9 @@ export function CardFigureView({
             ? SKELETAL_CARD_H
             : figure.kind === 'trussJoint'
               ? TRUSS_CARD_H
-            : figure.kind === 'ir'
-              ? IR_CARD_H
-              : S);
+              : figure.kind === 'ir'
+                ? IR_CARD_H
+                : S);
   return (
     <Svg width={w} height={h}>
       <Drawing f={figure} w={w} ink={ink} shade={shade} />
