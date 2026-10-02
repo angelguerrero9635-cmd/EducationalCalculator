@@ -17,15 +17,11 @@ Where the work stands, for the next session. Everything listed as merged is on
 - College: 8 direction plans (`docs/plans/he.*.md`), combined into `docs/RENDERINGS_HE.md`
   (191 picture requests, 4 rounds, ready for the pictures chat), `docs/RESEARCH_HE.md` (research
   chat prompt), `docs/HE_NEEDS.md` (32 engine needs), `docs/HE_TAXONOMY_GAPS.md` (applied).
-- College engine needs done: HE-E1–E12, E15–E17, E19, E21, E25, E26 (see HE_NEEDS status lines).
+- College engine needs done: HE-E1–E12, E14–E19, E21, E25, E26 (E14/E18 merged: closed forms and trial lines replace "Try numbers until both sides match"; 54 K–12 pages' steps changed) (see HE_NEEDS status lines).
 
 ## In progress when this note was written (local worktrees, not yet merged)
 
-1. **HE-E14 + HE-E18** (trial/iteration steps; exp/log solves) — worktree
-   `.claude/worktrees/agent-abba5a829961a00be`, uncommitted changes in buildSteps.ts and tests.
-   Backed up (committed + uncommitted, 2026-10-02) to branch `backup/he-e14-e18-trials-logs`;
-   if the worktree is gone, check that branch out and finish from there.
-2. **Picture leftovers from the sweep** — worktree `.claude/worktrees/agent-ac5db7aa6447d4eef`,
+1. **Picture leftovers from the sweep** — worktree `.claude/worktrees/agent-ac5db7aa6447d4eef`,
    several commits (handles that stood still now move or hide, angle handles past the vertex,
    false-positive rules) plus uncommitted component edits. Backed up to branch
    `backup/picture-leftovers`; if the worktree is gone, finish from that branch (the
@@ -34,7 +30,7 @@ Where the work stands, for the next session. Everything listed as merged is on
 
 ## Next steps
 
-1. Merge the two above when they finish (quick checks, push).
+1. Merge the picture leftovers when it finishes (quick checks, push).
 2. Engine needs left: HE-E13 (named data rows), E20 (special functions), E22 (sums, series,
    recurrences), E23 (data lists), E24 (limits with reasons), E27 (water/steam), E28 (statistics
    critical values), E29 (chemistry structure models), E30 (money), E31 (integral templates),
