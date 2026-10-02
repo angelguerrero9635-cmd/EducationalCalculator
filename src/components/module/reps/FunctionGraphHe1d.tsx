@@ -41,6 +41,9 @@ export function FunctionGraphHe1d({ spec, calc }: { spec: FunctionGraphSpec; cal
   );
 }
 
+/** A coefficient as a formula writes it: none for 1. */
+const coef = (k: number) => (fig3(k) === '1' ? '' : fig3(k));
+
 interface Mark {
   t: number;
   label: string;
@@ -195,7 +198,7 @@ function TimeResponse({ spec, calc }: { spec: FunctionGraphSpec; calc: Calculato
                     fill="none"
                   />
                 ) : null}
-                <ChartText x={L + 6} y={iy1 - 3} fontSize={chart.small} fill={c.chartMuted}>
+                <ChartText x={L + 6} y={iy1 - 3} fontSize={chart.label} fill={c.chartMuted}>
                   <Ital
                     text={`Input ${inp.name ?? 'u'}${
                       inSize !== undefined
@@ -326,7 +329,7 @@ function TimeResponse({ spec, calc }: { spec: FunctionGraphSpec; calc: Calculato
                 <ChartText
                   x={L + pw - 3}
                   y={b + 12}
-                  fontSize={chart.small}
+                  fontSize={chart.label}
                   fill={c.chartMuted}
                   textAnchor="end"
                   halo
@@ -378,10 +381,15 @@ function TimeResponse({ spec, calc }: { spec: FunctionGraphSpec; calc: Calculato
                   strokeWidth={chart.strokeLight}
                   strokeDasharray={chart.dash}
                 />
+                {/* Under the line where the e_ss bracket stands over it (its label is there). */}
                 <ChartText
                   x={L + pw - 3}
-                  y={fy - 5}
-                  fontSize={chart.small}
+                  y={
+                    model.error && sy(model.error.y1) < fy - 1 && sy(model.error.y0) <= fy + 1
+                      ? fy + 14
+                      : fy - 5
+                  }
+                  fontSize={chart.label}
                   fill={c.chartInk}
                   textAnchor="end"
                   halo
@@ -409,7 +417,7 @@ function TimeResponse({ spec, calc }: { spec: FunctionGraphSpec; calc: Calculato
                       ? -7
                       : 15)
                   }
-                  fontSize={chart.small}
+                  fontSize={chart.label}
                   fill={c.fnSecond}
                   halo
                 >
@@ -460,7 +468,7 @@ function TimeResponse({ spec, calc }: { spec: FunctionGraphSpec; calc: Calculato
                 <ChartText
                   x={x - 6}
                   y={(a + b) / 2 + 4}
-                  fontSize={chart.small}
+                  fontSize={chart.label}
                   fill={c.chartInk}
                   textAnchor="end"
                   halo
@@ -481,7 +489,7 @@ function TimeResponse({ spec, calc }: { spec: FunctionGraphSpec; calc: Calculato
                 <ChartText
                   x={(x0 + x1) / 2}
                   y={y - 4}
-                  fontSize={chart.small}
+                  fontSize={chart.label}
                   fill={c.chartInk}
                   textAnchor="middle"
                   halo
@@ -500,9 +508,9 @@ function TimeResponse({ spec, calc }: { spec: FunctionGraphSpec; calc: Calculato
               const anchor = side === 'right' ? 'start' : side === 'left' ? 'end' : 'middle';
               const ly = side === 'above' ? py - 9 : side === 'below' ? py + 17 : py + 4;
               const fit = Math.min(
-                L + pw - 2 - (anchor === 'middle' ? textW(p.label ?? '', chart.small) / 2 : 0),
+                L + pw - 2 - (anchor === 'middle' ? textW(p.label ?? '', chart.label) / 2 : 0),
                 Math.max(
-                  L + 2 + (anchor === 'middle' ? textW(p.label ?? '', chart.small) / 2 : 0),
+                  L + 2 + (anchor === 'middle' ? textW(p.label ?? '', chart.label) / 2 : 0),
                   lx,
                 ),
               );
@@ -520,7 +528,7 @@ function TimeResponse({ spec, calc }: { spec: FunctionGraphSpec; calc: Calculato
                     <ChartText
                       x={fit}
                       y={ly}
-                      fontSize={chart.small}
+                      fontSize={chart.label}
                       fill={c.chartInk}
                       textAnchor={anchor}
                       halo
@@ -538,7 +546,7 @@ function TimeResponse({ spec, calc }: { spec: FunctionGraphSpec; calc: Calculato
               .filter((m) => inWin(m.t))
               .forEach((m, i) => {
                 const x = sx(m.t);
-                const half = textW(m.label, chart.small) / 2 + 2;
+                const half = textW(m.label, chart.label) / 2 + 2;
                 if (placed.some(([a, b]) => x + half > a && x - half < b)) return;
                 placed.push([x - half, x + half]);
                 nodes.push(
@@ -546,7 +554,7 @@ function TimeResponse({ spec, calc }: { spec: FunctionGraphSpec; calc: Calculato
                     key={`mk${i}`}
                     x={x}
                     y={bottom + 30}
-                    fontSize={chart.small}
+                    fontSize={chart.label}
                     fill={c.chartHighlight}
                     textAnchor="middle"
                   >
@@ -559,7 +567,29 @@ function TimeResponse({ spec, calc }: { spec: FunctionGraphSpec; calc: Calculato
           if (dot) {
             const [px, py] = [sx(dot.t), sy(dot.y)];
             const wide = textW(dot.label, chart.value);
-            const right = px + 12 + wide < L + pw;
+            // The label goes where the curve isn't: below-right of a rising curve, above-right
+            // of a falling one (else the opposite corner), inside the plot.
+            const dt = win.tEnd * 0.01;
+            const f = model.curve;
+            const slope = f
+              ? sy(f(Math.min(win.tEnd, dot.t + dt))) - sy(f(Math.max(0, dot.t - dt)))
+              : 0;
+            const corners: [boolean, boolean][] =
+              slope < -0.5
+                ? [
+                    [true, false],
+                    [false, true],
+                  ]
+                : [
+                    [true, true],
+                    [false, false],
+                  ];
+            const fits = ([r, up]: [boolean, boolean]) =>
+              (r ? px + 12 + wide < L + pw : px - 12 - wide > L) &&
+              (up ? py - 24 > top : py + 24 < bottom);
+            const pick = corners.find(fits);
+            const right = pick ? pick[0] : px + 12 + wide < L + pw;
+            const labelY = pick ? (pick[1] ? py - 10 : py + 22) : py > top + 30 ? py - 10 : py + 22;
             nodes.push(
               <G key="dot">
                 <Line
@@ -574,7 +604,7 @@ function TimeResponse({ spec, calc }: { spec: FunctionGraphSpec; calc: Calculato
                 <Circle cx={px} cy={py} r={5.5} fill={c.chartHighlight} />
                 <ChartText
                   x={right ? px + 12 : px - 12}
-                  y={py > top + 30 ? py - 10 : py + 22}
+                  y={labelY}
                   fontSize={chart.value}
                   fill={c.chartHighlight}
                   fontWeight="600"
@@ -683,10 +713,10 @@ function TimeResponse({ spec, calc }: { spec: FunctionGraphSpec; calc: Calculato
     const inner = theta > 0 ? `(${tName} ${MINUS} θ)` : tName;
     m.captions.push(
       x0 === 0
-        ? `${name}(${tName}) = ${fig3(xf / yf)}(1 ${MINUS} e^(${MINUS}${inner}/τ)), τ = ${tauText}`
+        ? `${name}(${tName}) = ${coef(xf / yf)}(1 ${MINUS} exp(${MINUS}${inner}/τ)), τ = ${tauText}`
         : xf === 0
-          ? `${name}(${tName}) = ${fig3(x0 / yf)}e^(${MINUS}${inner}/τ), τ = ${tauText}`
-          : `${name}(${tName}) = ${fig3(xf / yf)} + (${fig3(x0 / yf)} ${MINUS} ${fig3(xf / yf)})e^(${MINUS}${inner}/τ), τ = ${tauText}`,
+          ? `${name}(${tName}) = ${coef(x0 / yf)}exp(${MINUS}${inner}/τ), τ = ${tauText}`
+          : `${name}(${tName}) = ${fig3(xf / yf)} + (${fig3(x0 / yf)} ${MINUS} ${fig3(xf / yf)})exp(${MINUS}${inner}/τ), τ = ${tauText}`,
     );
     if (theta > 0)
       m.captions.push(`Dead time θ = ${say(t.deadTime, theta, true)}: nothing moves until then.`);
@@ -789,7 +819,7 @@ function TimeResponse({ spec, calc }: { spec: FunctionGraphSpec; calc: Calculato
         m.bracket = { t0: 0, t1: per, y: k, label: `period ${tText(per, s.period)}` };
       }
       m.captions.push(
-        `A free decay inside the envelope ±${fig3(k / yf)}e^(${MINUS}ζωₙ${tName}): ζ = ${zText}, ωₙ = ${wText}`,
+        `A free decay inside the envelope ±${coef(k / yf)}exp(${MINUS}ζωₙ${tName}): ζ = ${zText}, ωₙ = ${wText}`,
       );
       if (zeta > 0)
         m.captions.push(
@@ -848,7 +878,7 @@ function TimeResponse({ spec, calc }: { spec: FunctionGraphSpec; calc: Calculato
           };
         }
         m.captions.push(
-          `Peak ${fig3(((1 + os) * k) / yf)} at Tₚ = π ÷ ω_d = ${tText(tp, s.peak)}: OS = e^(${MINUS}ζπ/√(1 ${MINUS} ζ²)) = ${osText}`,
+          `Peak ${fig3(((1 + os) * k) / yf)} at Tₚ = π ÷ ω_d = ${tText(tp, s.peak)}: OS = exp(${MINUS}ζπ/√(1 ${MINUS} ζ²)) = ${osText}`,
         );
       }
       if (zeta > 0) {
