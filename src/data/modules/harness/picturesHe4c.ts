@@ -7,6 +7,7 @@ import {
   cubicAt,
   PULSE_SHARE,
   pulseForce,
+  rodPendulum,
   turnarounds,
   type Cubic,
 } from '@/components/module/reps/he4cMath';
@@ -71,6 +72,26 @@ export function he4cIssues(rep: He4cSpec, val: Val): string[] {
       if (avg !== undefined && !near(avg * dt, J))
         out.push(`impulse: F_avg·Δt ${avg * dt} ≠ J ${J}`);
       if (m !== undefined && m > 0) same(rep.change, J / m, 'Δv = J ÷ m');
+      break;
+    }
+    case 'pendulum': {
+      // HC103: d = L ÷ 2 − p; I by parallel axes (a uniform rod); T = 2π√(I ÷ (mgd)); I ÷ (md).
+      const [L, p, m, g] = [
+        read(rep.rod.length),
+        read(rep.rod.pivot ?? 0),
+        read(rep.mass),
+        read(rep.g),
+      ];
+      if (L !== undefined && L <= 0) out.push(`pendulum: rod length ${L} is not positive`);
+      if (p !== undefined && L !== undefined && (p < 0 || p > L / 2))
+        out.push(`pendulum: the pin ${p} is not on the rod's upper half (0 to ${L / 2})`);
+      if (L === undefined || p === undefined || m === undefined || g === undefined) break;
+      const I = rep.inertia ? val(rep.inertia) : undefined;
+      const r = rodPendulum(L, p, m, g, I);
+      same(rep.distance, r.d, 'd = L ÷ 2 − p:');
+      same(rep.inertia, rodPendulum(L, p, m, g).I, 'I = mL² ÷ 12 + md²:');
+      same(rep.period, r.T, 'T = 2π√(I ÷ (mgd)):');
+      same(rep.equivalent, r.Leq, 'the equivalent length I ÷ (md):');
       break;
     }
   }

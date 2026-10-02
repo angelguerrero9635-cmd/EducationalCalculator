@@ -1,6 +1,6 @@
 /**
  * College pictures, round 4, group C (docs/RENDERINGS_HE.md): HC99 `motionGraph` `polynomial`,
- * HC101 `impulse` `shape`.
+ * HC101 `impulse` `shape`, HC103 `pendulum` `rod`.
  * Kept apart from `types.ts` so the union only names them.
  *
  * Every string is a variable id; a `NumOrVar` is a fixed number or one. A value is read in its
@@ -59,10 +59,39 @@ export interface ImpulseShapeSpec {
   fixed?: boolean;
 }
 
+// ─── HC103 pendulum rod ──────────────────────────────────────────────────────
+
+/**
+ * A physical pendulum: a uniform rod of `length` L (m) on a pin `pivot` p (m) below its top end
+ * (0, the default, hangs it from the end), swinging. The center of mass is marked at
+ * d = L ÷ 2 − p below the pin, I = mL² ÷ 12 + md² (parallel axes, or the page's `inertia`), and
+ * the simple pendulum of the same period, length I ÷ (md), is drawn dashed from the same pin.
+ * T = 2π√(I ÷ (mgd)); `g` (m/s²) is the page's. Drag the center of mass for p (or the rod's end
+ * for L when the pin is fixed).
+ */
+export interface PendulumRod {
+  length: NumOrVar;
+  pivot?: NumOrVar;
+}
+
+export interface PendulumRodSpec {
+  kind: 'pendulum';
+  rod: PendulumRod;
+  /** kg and m/s². */
+  mass: NumOrVar;
+  g: NumOrVar;
+  /** I about the pin (kg·m²), d (m), T (s) and the equivalent length I ÷ (md) (m). */
+  inertia?: string;
+  distance?: string;
+  period?: string;
+  equivalent?: string;
+  fixed?: boolean;
+}
+
 // ─── The union ───────────────────────────────────────────────────────────────
 
 /** Group HE4C's options on kinds that exist (sent to He4cView before the kind's own picture). */
-export type He4cOptionSpec = MotionGraphHe4cSpec | ImpulseShapeSpec;
+export type He4cOptionSpec = MotionGraphHe4cSpec | ImpulseShapeSpec | PendulumRodSpec;
 
 /** Every picture of group HE4C. */
 export type He4cSpec = He4cOptionSpec;
@@ -71,6 +100,7 @@ export type He4cSpec = He4cOptionSpec;
 export function isHe4cOption(r: Representation): r is He4cOptionSpec {
   if (r.kind === 'motionGraph') return 'polynomial' in r;
   if (r.kind === 'impulse') return 'shape' in r;
+  if (r.kind === 'pendulum') return 'rod' in r;
   return false;
 }
 
@@ -86,5 +116,16 @@ export function he4cSpecVars(r: He4cSpec): string[] {
     }
     case 'impulse':
       return ids(r.peak, r.time, r.impulse, r.average, r.mass, r.change);
+    case 'pendulum':
+      return ids(
+        r.rod.length,
+        r.rod.pivot,
+        r.mass,
+        r.g,
+        r.inertia,
+        r.distance,
+        r.period,
+        r.equivalent,
+      );
   }
 }

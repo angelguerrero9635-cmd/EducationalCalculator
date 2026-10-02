@@ -67,4 +67,21 @@ export const HE4C_REQUESTS: PictureRequest[] = [
       'g.he-impulse-half-sine-golf',
     ],
   },
+  {
+    ...ask(
+      'HC103',
+      'pendulum',
+      'A physical pendulum: a uniform wooden rod swinging on a steel pin, its center of mass marked and d bracketed, and the simple pendulum of the same period (length I ÷ (md)) dashed from the same pin',
+      { [`${P}university-1#5~physical-pendulum`]: '"rod"' },
+      [
+        'From P-P9. New option on pendulum (typesHe4c.ts PendulumRodSpec, reps/PendulumRod.tsx, sums in reps/he4cMath.ts); the simple pendulum is unchanged.',
+        "Fields: { kind: 'pendulum', rod: { length (L, m), pivot? (p, m below the top end; 0 or left out pins it at the end) }, mass (m, kg), g (m/s², the page's: 9.8 on physics pages), inertia? (I about the pin, kg·m²), distance? (d, m), period? (T, s), equivalent? (I ÷ (md), m), fixed? }.",
+        "Example (~physical-pendulum, the plan's 1.0 m rod pinned at its end): { kind: 'pendulum', rod: { length: 'L', pivot: 0 }, mass: 'm', g: 9.8, inertia: 'I', distance: 'd', period: 'T', equivalent: 'Leq' }. A page with only m, I, d and T can pass its own I: the rod's length still sets the drawing (pass length as a fixed number).",
+        'Drawn to scale (pin, rod, d and I ÷ (md) on one scale), swung 12° for the drawing only; the caption works d, I = mL² ÷ 12 + md² (when the page’s I is the uniform rod’s), T = 2π√(I ÷ (mgd)) and the equivalent length. A pin at the center of mass (d = 0) draws the rod faded and still, with the reason. Drag the center of mass for p (or the rod’s end for L when the pin is fixed).',
+        'Harness (harness/picturesHe4c.ts): d = L ÷ 2 − p with the pin on the upper half; I = mL² ÷ 12 + md²; T = 2π√(I ÷ (mgd)); the equivalent length I ÷ (md).',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: ['g.he-pendulum-rod', 'g.he-pendulum-rod-offset', 'g.he-pendulum-rod-near-center'],
+  },
 ];

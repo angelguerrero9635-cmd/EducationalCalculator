@@ -82,3 +82,22 @@ export function pulseForce(shape: PulseShape, peak: number, dt: number, t: numbe
   if (shape === 'triangle') return peak * (1 - Math.abs(2 * t - dt) / dt);
   return peak * Math.sin((Math.PI * t) / dt);
 }
+
+// ─── HC103 a rod as a physical pendulum ──────────────────────────────────────
+
+/**
+ * A uniform rod of length L and mass m on a pin p below its top end: d = L ÷ 2 − p, I about the
+ * pin by parallel axes (or `inertia`), the period T = 2π√(I ÷ (mgd)) and the equivalent simple
+ * length I ÷ (md). T and the length are undefined when d ≤ 0 (no restoring torque).
+ */
+export function rodPendulum(L: number, p: number, m: number, g: number, inertia?: number) {
+  const d = L / 2 - p;
+  const I = inertia ?? m * ((L * L) / 12 + d * d);
+  const swings = d > 0 && m > 0 && g > 0 && I > 0;
+  return {
+    d,
+    I,
+    T: swings ? 2 * Math.PI * Math.sqrt(I / (m * g * d)) : undefined,
+    Leq: swings ? I / (m * d) : undefined,
+  };
+}

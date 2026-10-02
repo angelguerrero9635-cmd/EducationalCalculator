@@ -370,7 +370,211 @@ const impulseGolf = impulseDemo(
   [12000, 0.0005, 0.0459],
 );
 
+// ── HC103: a rod as a physical pendulum (university-1#5~physical-pendulum) ──
+
+const G_PHYS = 9.8;
+const TWO_PI = 2 * Math.PI;
+
+const rodDemo = (
+  id: string,
+  title: string,
+  use: string,
+  [m, L, p]: [number, number, number | undefined],
+) => {
+  const d = L / 2 - (p ?? 0);
+  const I = m * ((L * L) / 12 + d * d);
+  const T = TWO_PI * Math.sqrt(I / (m * G_PHYS * d));
+  const pin: Rule =
+    p === undefined
+      ? {
+          relation: {
+            id: 'd = L ÷ 2',
+            display: '{d} = {L} ÷ 2',
+            vars: ['d', 'L'],
+            residual: (v) => v.d! - v.L! / 2,
+            solve: { d: (v) => v.L! / 2, L: (v) => 2 * v.d! },
+          },
+          steps: {
+            d: st(
+              '{L} ÷ 2',
+              'A uniform rod’s center of mass is at its middle, L ÷ 2 below the end.',
+            ),
+            L: st('2 × {d}', 'The pin is at the end, so the rod is twice d long.'),
+          },
+        }
+      : {
+          relation: {
+            id: 'd = L ÷ 2 − p',
+            display: '{d} = {L} ÷ 2 − {p}',
+            vars: ['d', 'L', 'p'],
+            residual: (v) => v.d! - (v.L! / 2 - v.p!),
+            solve: {
+              d: (v) => v.L! / 2 - v.p!,
+              L: (v) => 2 * (v.d! + v.p!),
+              p: (v) => v.L! / 2 - v.d!,
+            },
+          },
+          steps: {
+            d: st(
+              '{L} ÷ 2 − {p}',
+              'The center of mass is at the middle; the pin is p below the end.',
+            ),
+            L: st('2 × ({d} + {p})', 'From the end to the middle is p + d: double it.'),
+            p: st('{L} ÷ 2 − {d}', 'Take d away from half the rod.'),
+          },
+        };
+  return demo({
+    id,
+    title,
+    use,
+    assumptions: [
+      'A uniform rod swinging through small angles about a fixed pin, no friction.',
+      'I about the pin by parallel axes: I = mL² ÷ 12 + md², with g = 9.80 m/s².',
+      'A simple pendulum of length I ÷ (md) keeps the same time.',
+    ],
+    variables: [
+      quantity('m', 'm', 'Mass of the rod', 'kg', 0.001, 1000, 0.001),
+      quantity('L', 'L', 'Length of the rod', 'm', 0.01, 100, 0.01),
+      ...(p === undefined
+        ? []
+        : [quantity('p', 'p', 'Pin below the top end', 'm', 0.001, 50, 0.01)]),
+      quantity('d', 'd', 'Pin to center of mass', 'm', 0.0001, 50, 0.0001),
+      quantity('I', 'I', 'Moment of inertia about the pin', 'kg·m²', 1e-9, 1e7, 0.0001),
+      quantity('T', 'T', 'Period', 's', 0.001, 1000, 0.001),
+      quantity('Leq', 'L_eq', 'Equivalent simple length', 'm', 0.0001, 1e5, 0.0001, {
+        derived: true,
+      }),
+    ],
+    ...rules(
+      pin,
+      {
+        relation: {
+          id: 'I = mL² ÷ 12 + md²',
+          display: '{I} = {m} × {L}² ÷ 12 + {m} × {d}²',
+          vars: ['I', 'm', 'L', 'd'],
+          residual: (v) => v.I! - v.m! * (v.L! ** 2 / 12 + v.d! ** 2),
+          solve: {
+            I: (v) => v.m! * (v.L! ** 2 / 12 + v.d! ** 2),
+            m: (v) => div(v.I!, v.L! ** 2 / 12 + v.d! ** 2),
+            L: (v) => {
+              const x = 12 * (v.I! / v.m! - v.d! ** 2);
+              return x < 0 ? undefined : Math.sqrt(x);
+            },
+            d: (v) => {
+              const x = v.I! / v.m! - v.L! ** 2 / 12;
+              return x < 0 ? undefined : Math.sqrt(x);
+            },
+          },
+        },
+        steps: {
+          I: st(
+            '{m} × {L}² ÷ 12 + {m} × {d}²',
+            'Parallel axes: I about the middle, mL² ÷ 12, plus md² for the pin d away.',
+          ),
+          m: st('{I} ÷ ({L}² ÷ 12 + {d}²)', 'Both terms have m: divide I by what multiplies it.'),
+          L: st('√(12 × ({I} ÷ {m} − {d}²))', 'Take md² away, then undo the ÷ 12 and the square.'),
+          d: st(
+            '√({I} ÷ {m} − {L}² ÷ 12)',
+            'Take mL² ÷ 12 away, divide by m, take the square root.',
+          ),
+        },
+      },
+      {
+        relation: {
+          id: 'T = 2π√(I ÷ (mgd))',
+          display: '{T} = 2π × √({I} ÷ ({m} × 9.8 × {d}))',
+          vars: ['T', 'I', 'm', 'd'],
+          residual: (v) => v.T! - TWO_PI * Math.sqrt(v.I! / (v.m! * G_PHYS * v.d!)),
+          solve: {
+            T: (v) => {
+              const x = v.I! / (v.m! * G_PHYS * v.d!);
+              return x > 0 ? TWO_PI * Math.sqrt(x) : undefined;
+            },
+            I: (v) => v.m! * G_PHYS * v.d! * (v.T! / TWO_PI) ** 2,
+            m: (v) => div(v.I!, G_PHYS * v.d! * (v.T! / TWO_PI) ** 2),
+            d: (v) => div(v.I!, v.m! * G_PHYS * (v.T! / TWO_PI) ** 2),
+          },
+        },
+        steps: {
+          T: st(
+            '2π × √({I} ÷ ({m} × 9.8 × {d}))',
+            'Gravity’s torque mgd sin θ ≈ mgdθ pulls it back, so ω² = mgd ÷ I and T = 2π ÷ ω.',
+          ),
+          I: st('{m} × 9.8 × {d} × ({T} ÷ 2π)²', 'Divide T by 2π, square it, then times mgd.'),
+          m: st(
+            '{I} ÷ (9.8 × {d} × ({T} ÷ 2π)²)',
+            'Divide T by 2π and square it, then solve for m.',
+          ),
+          d: st(
+            '{I} ÷ ({m} × 9.8 × ({T} ÷ 2π)²)',
+            'Divide T by 2π and square it, then solve for d.',
+          ),
+        },
+      },
+      {
+        relation: {
+          id: 'L_eq = I ÷ (md)',
+          display: '{Leq} = {I} ÷ ({m} × {d})',
+          vars: ['Leq', 'I', 'm', 'd'],
+          residual: (v) => v.Leq! * v.m! * v.d! - v.I!,
+          solve: {
+            Leq: (v) => div(v.I!, v.m! * v.d!),
+            I: (v) => v.Leq! * v.m! * v.d!,
+            m: (v) => div(v.I!, v.Leq! * v.d!),
+            d: (v) => div(v.I!, v.Leq! * v.m!),
+          },
+        },
+        steps: {
+          Leq: st(
+            '{I} ÷ ({m} × {d})',
+            'A simple pendulum has T = 2π√(L ÷ g): set L = I ÷ (md) to match.',
+          ),
+          I: st('{Leq} × {m} × {d}', 'Multiply the equivalent length by md.'),
+          m: st('{I} ÷ ({Leq} × {d})', 'Divide I by the equivalent length times d.'),
+          d: st('{I} ÷ ({Leq} × {m})', 'Divide I by the equivalent length times m.'),
+        },
+      },
+    ),
+    example: { m, L, ...(p === undefined ? {} : { p }), d, I, T, Leq: I / (m * d) },
+    startWith: p === undefined ? ['m', 'L'] : ['m', 'L', 'p'],
+    representation: {
+      kind: 'pendulum',
+      rod: { length: 'L', pivot: p === undefined ? 0 : 'p' },
+      mass: 'm',
+      g: G_PHYS,
+      inertia: 'I',
+      distance: 'd',
+      period: 'T',
+      equivalent: 'Leq',
+    },
+  });
+};
+
+const rodEnd = rodDemo(
+  'g.he-pendulum-rod',
+  'A rod swinging from its end: a physical pendulum',
+  'Use this for a 0.4 kg, 1 m rod pivoted at its end: its period, and the length of the simple pendulum that keeps time with it.',
+  [0.4, 1, undefined],
+);
+
+const rodOffset = rodDemo(
+  'g.he-pendulum-rod-offset',
+  'A meter stick pinned at its 20 cm mark',
+  'Use this for a 0.15 kg meter stick swinging on a nail through its 20 cm mark: the period and where the pin is from the center of mass.',
+  [0.15, 1, 0.2],
+);
+
+const rodNearCenter = rodDemo(
+  'g.he-pendulum-rod-near-center',
+  'Pinned 5 cm from the middle: a slow swing',
+  'Use this for a meter stick pinned 45 cm from its end: why the period grows as the pin nears the center of mass.',
+  [0.15, 1, 0.45],
+);
+
 export const HE4C_GALLERY_MODULES: ModuleDef[] = [
+  rodEnd,
+  rodOffset,
+  rodNearCenter,
   polynomial,
   polynomialLong,
   impulseTriangle,

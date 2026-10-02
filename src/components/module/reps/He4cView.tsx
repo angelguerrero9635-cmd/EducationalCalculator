@@ -7,6 +7,7 @@ import type { He4cOptionSpec } from '@/data/modules/typesHe4c';
 import type { Calculator } from '../useCalculator';
 import { ImpulseShape } from './ImpulseShape';
 import { MotionPolynomial } from './MotionPolynomial';
+import { PendulumRod } from './PendulumRod';
 
 export function He4cView({ spec, calc }: { spec: He4cOptionSpec; calc: Calculator }) {
   switch (spec.kind) {
@@ -14,5 +15,7 @@ export function He4cView({ spec, calc }: { spec: He4cOptionSpec; calc: Calculato
       return <MotionPolynomial spec={spec} calc={calc} />; // HC99
     case 'impulse':
       return <ImpulseShape spec={spec} calc={calc} />; // HC101
+    case 'pendulum':
+      return <PendulumRod spec={spec} calc={calc} />; // HC103
   }
 }
