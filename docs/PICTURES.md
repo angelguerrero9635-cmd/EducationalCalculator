@@ -129,6 +129,9 @@ search or the sitemap, but the module tests and the harness run over it):
 | `phaseSpace`       | oscillator ellipse, flow (ẋ, ṗ), area; pendulum θ–ω; bead on a hoop   | College classical mech. (HC69)      |
 | `instrumentTrace`  | NMR n + 1 multiplets, integrals; chromatogram R; rotor lines 2B apart | College spectroscopy (HC55)         |
 | `globe`            | sun rays, noon angle, day dial; great circle; Euler pole; dipole; air | College earth and geography (HC36)  |
+| `refraction`       | layers, shot and geophones, rays at i_c; t–x lines, x_c; hyperbola    | College geophysics (HC76)           |
+| `projection`       | a cylinder map by formula: graticule, Tissot k_E and k_N, y of φ lit  | College cartography (HC78)          |
+| `aquifer`          | wells, water table, Δh over L, flow; piezometer z + ψ; Thiem cone     | College hydrology (HC75)            |
 | `stressStrain`     | σ–ε curve: E, 0.2% offset, UTS, necking; specimen; tube; two members  | College materials, biomech. (HC28)  |
 | `stressElement`    | element, turned to θ_p; Mohr's circle; 3 circles; loci, n; soil line  | College stress, soil (HC33)         |
 | `wing`             | NACA section tilted by α, lift ⟂ wind; C_p, Γ; planform, tip vortices | College aerodynamics (HC24)         |
@@ -384,6 +387,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `markedFigure`     | `quadrilateral.across: [p, q]`           | a rhombus from its diagonals AC (level) and BD, not a side and angle (H105)   |
 | `circleTheorems`   | `theorem`: `cyclic`, `arcAngle`          | an inscribed quadrilateral; an angle from two arcs, inside or outside         |
 | `coordinatePlane`  | `fit`                                    | sized to the points: 5, 10 or 20 each way, up to `extent`                     |
+| `coordinatePlane`  | `shoelace`, `buffer`, `center` (HC77)    | polygon area by cross terms; a line's buffer 2rL + πr²; mean centre, SD ring  |
 | `factorTree`       | `root: { index, outside, inside }`       | equal pairs (or threes) ringed and brought out of the root: √72 = 6√2         |
 | `powerScale`       | `log`                                    | a log₁₀ scale under the 1–10 ruler: log₁₀ 470,000 = 5 + 0.672                 |
 | `punnettSquare`    | `inheritance` (Grade 9)                  | dihybrid 4 × 4 by phenotype; incomplete, codominant; X-linked with carriers   |

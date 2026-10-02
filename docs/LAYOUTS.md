@@ -270,3 +270,8 @@ never marks the zero-force members (statics#1~zero-force asks which they are).
 College card figure `ir` (HC55, `layouts/irCard.tsx`, `typesHe3e.ts`): `{ kind: 'ir', bands:
 [{ at, to?, strength?, shape? }] }`, an IR spectrum at 140 × 60 computed from its bands (sharp,
 broad, or a very broad range `at`–`to`), 4000 → 400 cm⁻¹.
+College card figure `projection` (HC78, `layouts/projectionCard.tsx`, `typesHe3m.ts`): `{ kind:
+'projection', projection, tissot?, land? }`, one map projection at 84 × 52 computed from its
+formulas (Mercator, Lambert conformal conic, stereographic, Albers, Mollweide, Gall–Peters,
+azimuthal equidistant, equirectangular, Winkel tripel, cylindrical equal-area): the outline, the
+graticule every 30°, hand-written land shapes shaded, and Tissot dots that show what it keeps.

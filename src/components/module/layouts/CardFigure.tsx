@@ -25,6 +25,8 @@ import { TRUSS_CARD_H, TRUSS_CARD_W } from '@/data/modules/typesHe2i';
 import { IrCardView } from './irCard';
 import { IR_CARD_H, IR_CARD_W } from '@/data/modules/typesHe3e';
 import { SKELETAL_CARD_H, SKELETAL_CARD_W } from '@/data/modules/typesHe1c';
+import { ProjectionCardView } from './projectionCard';
+import { PROJECTION_CARD_H, PROJECTION_CARD_W } from '@/data/modules/typesHe3m';
 import {
   CellPartsCard,
   DotPlotCard,
@@ -85,6 +87,8 @@ export function figureWidth(f: Spec): number {
       return TRUSS_CARD_W;
     case 'ir':
       return IR_CARD_W;
+    case 'projection':
+      return PROJECTION_CARD_W; // HC78
     case 'replication':
       return REPLICATION_W;
     case 'reflexArc':
@@ -124,7 +128,9 @@ export function CardFigureView({
               ? TRUSS_CARD_H
               : figure.kind === 'ir'
                 ? IR_CARD_H
-                : S);
+                : figure.kind === 'projection'
+                  ? PROJECTION_CARD_H
+                  : S);
   return (
     <Svg width={w} height={h}>
       <Drawing f={figure} w={w} ink={ink} shade={shade} />
@@ -378,6 +384,8 @@ function Drawing({ f, w, ink, shade }: { f: Spec; w: number; ink: string; shade:
       return <TrussJointCardView f={f} ink={ink} shade={shade} />;
     case 'ir':
       return <IrCardView f={f} ink={ink} shade={shade} />;
+    case 'projection':
+      return <ProjectionCardView f={f} ink={ink} shade={shade} />;
     case 'ray': {
       const y = S / 2;
       const x1 = 10;

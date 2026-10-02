@@ -199,6 +199,10 @@ import { UnitCell } from './UnitCell';
 import { InstrumentTrace } from './InstrumentTrace';
 import { CombustionTrain } from './CombustionTrain';
 import { Globe } from './Globe';
+import { Aquifer } from './Aquifer';
+import { Refraction } from './Refraction';
+import { Projection } from './Projection';
+import { CoordinatePlaneHe3m, isGisPlane } from './CoordinatePlaneHe3m';
 import { StressStrain } from './StressStrain';
 import { StressElement } from './StressElement';
 import { Wing } from './Wing';
@@ -400,6 +404,12 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <UnitCell spec={spec} calc={calc} />;
     case 'globe':
       return <Globe spec={spec} calc={calc} />;
+    case 'aquifer':
+      return <Aquifer spec={spec} calc={calc} />; // HC75
+    case 'refraction':
+      return <Refraction spec={spec} calc={calc} />; // HC76
+    case 'projection':
+      return <Projection spec={spec} calc={calc} />; // HC78
     case 'stressStrain':
       return <StressStrain spec={spec} calc={calc} />;
     case 'stressElement':
@@ -657,6 +667,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'doubleNumberLine':
       return <DoubleNumberLine spec={spec} calc={calc} />;
     case 'coordinatePlane':
+      if (isGisPlane(spec)) return <CoordinatePlaneHe3m spec={spec} calc={calc} />; // HC77
       return <CoordinatePlane spec={spec} calc={calc} />;
     case 'boxPlot':
       return spec.fences || spec.second ? (

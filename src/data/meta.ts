@@ -153,6 +153,10 @@ const PICTURE_NAMES: Record<string, string> = {
   phaseSpace: 'phase space: an energy curve, the state and its flow; a bead on a hoop',
   unitCell: 'a cubic unit cell, its lattice planes and Bragg reflection',
   instrumentTrace: 'an NMR spectrum, a chromatogram or a rotational spectrum from its peaks',
+  aquifer:
+    'a cross-section of an aquifer: wells, the water table, a piezometer or a cone of depression',
+  refraction: 'a seismic or radar survey: rays through layers and the travel-time graph',
+  projection: 'a world map projection: its graticule, Tissot circles and a parallel’s height',
   globe:
     'a globe: the Sun’s rays, a great-circle route, a turning plate, a dipole field or a ring of air',
   stressStrain:

@@ -39,6 +39,7 @@ import { he1fSpecVars } from '../typesHe1f';
 import { he2bSpecVars } from '../typesHe2b';
 import { globeVars } from '../typesHe2k';
 import { instrumentTraceVars } from '../typesHe3e';
+import { he3mVars, planeGisVars } from '../typesHe3m';
 import { he2jSpecVars } from '../typesHe2j';
 import { fieldPlotVars } from '../typesHe2g';
 import { solidOfRevolutionVars, spaceObjectsVars, surfacePlotVars } from '../typesHe3b';
@@ -250,6 +251,7 @@ function representationVars(r: Representation): string[] {
           ? [r.trail.across, r.trail.up].filter((v): v is string => typeof v === 'string')
           : []),
         ...planeGeometryVars(r),
+        ...planeGisVars(r),
       ];
     case 'boxPlot':
       return [
@@ -627,6 +629,10 @@ function representationVars(r: Representation): string[] {
       return globeVars(r);
     case 'instrumentTrace':
       return instrumentTraceVars(r); // HC55
+    case 'aquifer':
+    case 'refraction':
+    case 'projection':
+      return he3mVars(r);
     case 'stressStrain':
     case 'stressElement':
       return he2jSpecVars(r);

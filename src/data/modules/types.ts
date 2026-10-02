@@ -39,6 +39,7 @@ import type { He1fSpec } from './typesHe1f';
 import type { He2bSpec } from './typesHe2b';
 import type { GlobeSpec } from './typesHe2k';
 import type { InstrumentTraceSpec } from './typesHe3e';
+import type { He3mSpec, PlaneGis } from './typesHe3m';
 import type { He2jSpec } from './typesHe2j';
 import type { FieldPlotSpec } from './typesHe2g';
 import type { He3bSpec } from './typesHe3b';
@@ -1108,6 +1109,10 @@ export type Representation =
       partition?: PlaneGeometry['partition'];
       polygon?: PlaneGeometry['polygon'];
       slopes?: boolean;
+      /** College GIS (HC77, `typesHe3m.ts`): shoelace area, a buffer, the mean centre. */
+      shoelace?: PlaneGis['shoelace'];
+      buffer?: PlaneGis['buffer'];
+      center?: PlaneGis['center'];
     }
   /** Grade 8 functions, systems and transformations (specs in `typesGraphs.ts`). */
   | LinearFunctionSpec
@@ -1182,6 +1187,8 @@ export type Representation =
   | GlobeSpec
   /** College round 3, group E: HC55 `instrumentTrace` (`typesHe3e.ts`). */
   | InstrumentTraceSpec
+  /** College round 3, group M: HC75 `aquifer`, HC76, HC78 (`typesHe3m.ts`). */
+  | He3mSpec
   /** College round 2, group J: HC28 stress–strain, HC33 stress element (`typesHe2j.ts`). */
   | He2jSpec
   /** College round 2, group G (HC21): slope, vector and phase fields (`typesHe2g.ts`). */
