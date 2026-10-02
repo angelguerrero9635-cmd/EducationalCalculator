@@ -1501,7 +1501,23 @@ export const MATH_8_MODULES: ModuleDef[] = [
         { id: 'n', symbol: 'n', name: 'Months', min: 0, max: 1000, derived: true },
         { id: 'c', symbol: 'C', name: 'Same amount', min: -100000, max: 100000, derived: true },
       ],
-      relations: cross.relations,
+      // Lines that cross before month 0 never cost the same later: say so, not "months −1.38".
+      relations: cross.relations.map((r, i) =>
+        i > 0
+          ? r
+          : {
+              ...r,
+              message: (v: Values) => {
+                const same = r.message?.(v);
+                if (same) return same;
+                if ([v.a, v.f, v.b, v.g].some((x) => x === undefined) || v.a === v.b)
+                  return undefined;
+                return (v.g! - v.f!) / (v.a! - v.b!) < 0
+                  ? 'These plans never cost the same: the one that starts higher also costs more each month.'
+                  : undefined;
+              },
+            },
+      ),
       steps: cross.steps,
       example: { a: 20, f: 150, b: 35, g: 60, n: 6, c: 270 },
       startWith: ['a', 'f', 'b', 'g'],

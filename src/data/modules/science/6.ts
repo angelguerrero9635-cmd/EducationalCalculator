@@ -575,6 +575,10 @@ export const SCIENCE_6_MODULES: ModuleDef[] = [
           ...gap.relation,
           display: 'From {p} up to {t}: {d}',
           words: 'How far the air temperature is above the dew point = temperature difference',
+          message: (v: Values) =>
+            v.t !== undefined && v.p !== undefined && v.p > v.t
+              ? 'The dew point can’t be warmer than the air: the extra water vapor would turn into droplets.'
+              : undefined,
         },
         {
           id: 'h = d × 125',

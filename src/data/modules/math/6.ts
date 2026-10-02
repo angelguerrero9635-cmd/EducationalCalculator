@@ -147,6 +147,15 @@ const DENOMS = [1, 2, 3, 4, 5, 6, 8, 10, 12];
 /** The sign between two numbers as a relation box codes it: 1 <, 3 >, 5 =. */
 const sign = (a: number, b: number) => (a < b ? 1 : a > b ? 3 : 5);
 
+/** The box plot's five numbers by id, as its refusals name them. */
+const BOX_FIVE: Record<string, string> = {
+  a: 'minimum',
+  b: 'lower quartile',
+  c: 'median',
+  d: 'upper quartile',
+  e: 'maximum',
+};
+
 const modules: (ModuleDef | ModuleDef[])[] = [
   // ── Ratios and ratio tables (6.RP.1, 6.RP.3a) ──
   {
@@ -970,7 +979,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
         },
         a: {
           expr: '{d} × {b}',
-          how: 'The numerator is the decimal of the denominator.',
+          how: 'Multiply the decimal by the denominator.',
           written: false,
         },
         b: { expr: '{a} ÷ {d}', how: 'Divide the numerator by the decimal.', written: false },
@@ -2570,6 +2579,10 @@ const modules: (ModuleDef | ModuleDef[])[] = [
             display: 'From {l} across to {r}: {w}',
             words: 'From the left x-coordinate across to the right one = width',
             check: (v: Values) => apartLine(v.l!, v.r!),
+            message: (v: Values) =>
+              v.l !== undefined && v.r !== undefined && v.r <= v.l
+                ? 'The right x-coordinate must be to the right of the left one.'
+                : undefined,
             vars: ['w', 'r', 'l'],
             residual: (v: Values) => v.w! - (v.r! - v.l!),
             solve: {
@@ -2583,6 +2596,10 @@ const modules: (ModuleDef | ModuleDef[])[] = [
             display: 'From {b} up to {t}: {h}',
             words: 'From the bottom y-coordinate up to the top one = height',
             check: (v: Values) => apartLine(v.b!, v.t!),
+            message: (v: Values) =>
+              v.b !== undefined && v.t !== undefined && v.t <= v.b
+                ? 'The top y-coordinate must be above the bottom one.'
+                : undefined,
             vars: ['h', 't', 'b'],
             residual: (v: Values) => v.h! - (v.t! - v.b!),
             solve: {
@@ -4331,6 +4348,10 @@ const modules: (ModuleDef | ModuleDef[])[] = [
         vars: [big, small],
         residual: (v: Values) => (v[big]! >= v[small]! ? 0 : 1),
         solve: {},
+        message: (v: Values) =>
+          v[big] !== undefined && v[small] !== undefined && v[big] < v[small]
+            ? `The ${BOX_FIVE[small]} can’t be more than the ${BOX_FIVE[big]}: the five numbers go in order.`
+            : undefined,
       })),
       {
         id: 'R = e − a',
@@ -4338,6 +4359,10 @@ const modules: (ModuleDef | ModuleDef[])[] = [
         words: 'Maximum − minimum = range',
         vars: ['R', 'e', 'a'],
         residual: (v: Values) => v.R! - v.e! + v.a!,
+        message: (v: Values) =>
+          v.a !== undefined && v.e !== undefined && v.e < v.a
+            ? 'The minimum can’t be more than the maximum: the five numbers go in order.'
+            : undefined,
         solve: {
           R: (v: Values) => exact(v.e! - v.a!),
           e: (v: Values) => exact(v.a! + v.R!),
@@ -4350,6 +4375,10 @@ const modules: (ModuleDef | ModuleDef[])[] = [
         words: 'Upper quartile − lower quartile = interquartile range',
         vars: ['I', 'd', 'b'],
         residual: (v: Values) => v.I! - v.d! + v.b!,
+        message: (v: Values) =>
+          v.b !== undefined && v.d !== undefined && v.d < v.b
+            ? 'The lower quartile can’t be more than the upper quartile: the five numbers go in order.'
+            : undefined,
         solve: {
           I: (v: Values) => exact(v.d! - v.b!),
           d: (v: Values) => exact(v.b! + v.I!),

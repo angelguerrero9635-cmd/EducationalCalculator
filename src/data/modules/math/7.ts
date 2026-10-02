@@ -367,7 +367,7 @@ const twoStepSteps: Record<string, Record<string, StepText>> = {
   'px + q = r': {
     x: {
       expr: '({r} − {q}) ÷ {p}',
-      how: 'Take {q} from both sides, then divide both sides by {p}.',
+      how: 'Take q from both sides, then divide both sides by p.',
       work: (v: Values) => [
         `${v.q! < 0 ? `Add ${fmt(-v.q!)} to` : `Take ${fmt(v.q!)} from`} both sides: ${fmt(v.p!)}x = ${fmt(v.r! - v.q!)}`,
         `Divide both sides by ${fmt(v.p!)}: x = ${xf(v.x!)}`,
@@ -376,7 +376,7 @@ const twoStepSteps: Record<string, Record<string, StepText>> = {
     },
     r: { expr: '{p} × {x} + {q}', how: 'Multiply, then add.' },
     q: { expr: '{r} − {p} × {x}', how: 'Take the x part away from the right side.' },
-    p: { expr: '({r} − {q}) ÷ {x}', how: 'Take {q} from both sides, then divide by {x}.' },
+    p: { expr: '({r} − {q}) ÷ {x}', how: 'Take q from both sides, then divide by x.' },
   },
 };
 
@@ -1120,7 +1120,7 @@ export const MATH_7_MODULES: ModuleDef[] = [
       'p(x + q) = r': {
         x: {
           expr: '{r} ÷ {p} − {q}',
-          how: 'Divide both sides by {p}, then take {q} from both sides.',
+          how: 'Divide both sides by p, then take q from both sides.',
           work: (v: Values) => [
             `Divide both sides by ${fmt(v.p!)}: x + ${v.q! < 0 ? `(${fmt(v.q!)})` : fmt(v.q!)} = ${xf(v.r! / v.p!)}`,
             `${v.q! < 0 ? `Add ${fmt(-v.q!)} to` : `Take ${fmt(v.q!)} from`} both sides: x = ${xf(v.x!)}`,
@@ -1128,7 +1128,7 @@ export const MATH_7_MODULES: ModuleDef[] = [
           written: false,
         },
         r: { expr: '{p} × ({x} + {q})', how: 'Add inside the brackets, then multiply.' },
-        q: { expr: '{r} ÷ {p} − {x}', how: 'Divide by {p} for one group, then take away {x}.' },
+        q: { expr: '{r} ÷ {p} − {x}', how: 'Divide by p for one group, then take away x.' },
         p: { expr: '{r} ÷ ({x} + {q})', how: 'Divide the total by one group.' },
       },
     },
@@ -1202,7 +1202,7 @@ export const MATH_7_MODULES: ModuleDef[] = [
       'b = (r − q) ÷ p': {
         b: {
           expr: '({r} − {q}) ÷ {p}',
-          how: 'Take {q} from both sides, then divide both sides by {p}.',
+          how: 'Take q from both sides, then divide both sides by p.',
           work: (v: Values) => {
             // No sign tapped yet: the lines wait for it.
             if (v.s === undefined) return [];

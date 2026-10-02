@@ -1474,7 +1474,8 @@ const MATH_12_STATS: ModuleDef[] = [
         step: 0.001,
         derived: true,
       }),
-      V('T', 'Σx', 'A total of n', { unit: 'kg', min: 0.001, max: 100000000, step: 0.01 }),
+      // At least n × x̄ at their smallest (2 × 0.001): a smaller total leaves no sample.
+      V('T', 'Σx', 'A sample total', { unit: 'kg', min: 0.002, max: 100000000, step: 0.01 }),
       // Worked out only: any z the typed values give (a far cutoff is a huge z, P near 0 or 1).
       V('z', 'z', 'z-score of x̄ and of Σx', {
         min: -1e12,
@@ -1533,7 +1534,10 @@ const MATH_12_STATS: ModuleDef[] = [
       z: 1.5,
       P: 1 - Phi(1.5),
     },
-    startWith: ['m', 's', 'n', 'x'],
+    // x̄ before n: a total typed next works out x̄ = Σx ÷ n (n would come out not whole).
+    startWith: ['m', 's', 'x', 'n'],
+    // The total's center, spread and value, under the curve of the means.
+    pictureLabels: ['M', 'S', 'T'],
     unitSystems: ['metric'],
     representation: {
       kind: 'normalCurve',

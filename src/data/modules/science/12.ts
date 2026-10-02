@@ -1538,9 +1538,13 @@ const expirationTime: Rel = {
       ...lastsFor.steps.T!,
       work: (v) => {
         if (v.k === undefined || v.Q === undefined || v.r === undefined || !(v.r > 0)) return [];
-        const inside = 1 + (v.k * v.Q) / v.r;
+        const part = (v.k * v.Q) / v.r;
+        const inside = 1 + part;
         return [
-          `T = ln(${sig(inside)}) ÷ ${fmt(v.k)}`,
+          // A tiny kQ ÷ r keeps its figures: ln(1 + 1.3333 × 10⁻⁵), never ln(1) (which is 0).
+          part < 0.001
+            ? `T = ln(1 + ${sig(part)}) ÷ ${fmt(v.k)}`
+            : `T = ln(${sig(inside)}) ÷ ${fmt(v.k)}`,
           `T = ${sig(Math.log(inside))} ÷ ${fmt(v.k)}`,
         ];
       },
