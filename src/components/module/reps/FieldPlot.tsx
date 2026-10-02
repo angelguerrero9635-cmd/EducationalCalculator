@@ -34,7 +34,7 @@ import {
   trajectory,
   type Vec,
 } from './fieldPlotMath';
-import { parseExpr, writeExpr } from './exprHe1e';
+import { parseExpr, writeExpr, type ExprNode } from './exprHe1e';
 import { niceStep, tickText, ticks } from './functionGraphMath';
 import { usePaintIds, url } from './paint';
 
@@ -64,9 +64,8 @@ export function FieldPlot({ spec, calc }: { spec: FieldPlotSpec; calc: Calculato
     v === undefined || typeof v === 'number' || rep.known(v);
   const get = (v: NumOrVar | undefined, d: number) =>
     v === undefined ? d : typeof v === 'number' ? v : rep.known(v) ? rep.val(v) : d;
-  const say = (id: string | undefined, x: number) => (id && rep.known(id) ? rep.value(id) : num(x));
-  /** A name in an expression: its value as typed, or "?". */
-  const sayName = (id: string) => (rep.known(id) ? num(rep.val(id)) : '?');
+  /** A worked-out value as a label shows it: 4 figures (the boxes keep more). */
+  const say = (_id: string | undefined, x: number) => num(x);
   const allKnown = fieldPlotInputs(spec).every((id) => rep.known(id));
   const startKnown = !!spec.start && known(spec.start.x) && known(spec.start.y);
   const eulerKnown = !!spec.euler && known(spec.euler.h) && known(spec.euler.n);
@@ -163,6 +162,14 @@ export function FieldPlot({ spec, calc }: { spec: FieldPlotSpec; calc: Calculato
               [-tw / 2, 22],
               [12, 4],
               [-12 - tw, 4],
+              [8, -26],
+              [-8 - tw, -26],
+              [-tw / 2, -30],
+              [-tw / 2, -46],
+              [8, 32],
+              [-8 - tw, 32],
+              [8, -42],
+              [-8 - tw, -42],
             ];
             for (const [dx, dy] of tries) {
               const b = { l: px + dx - 2, t: py + dy - 12, r: px + dx + tw + 2, b: py + dy + 3 };
@@ -537,6 +544,8 @@ export function FieldPlot({ spec, calc }: { spec: FieldPlotSpec; calc: Calculato
                 <Circle key={`k${p[0]}-${p[1]}`} cx={sx(p[0])} cy={sy(p[1])} r={4} fill={color} />,
               );
             }
+            if (comp.coexist) dot([comp.n1, comp.n2]);
+            for (const [p, text, color] of ends) label(sx(p[0]), sy(p[1]), text, color);
             if (comp.coexist) {
               const q: Vec = [comp.n1, comp.n2];
               dot(q);
@@ -557,7 +566,6 @@ export function FieldPlot({ spec, calc }: { spec: FieldPlotSpec; calc: Calculato
                 `(${say(spec.equilibrium?.x, q[0])}, ${say(spec.equilibrium?.y, q[1])})`,
               );
             }
-            for (const [p, text, color] of ends) label(sx(p[0]), sy(p[1]), text, color);
           }
 
           const dragOk =
@@ -730,7 +738,10 @@ export function FieldPlot({ spec, calc }: { spec: FieldPlotSpec; calc: Calculato
 
   function captionOf(): string {
     const lines: string[] = [];
-    const w = (src?: string) => (src ? writeField(src, sayName) : '?');
+    const w = (src?: string) =>
+      src
+        ? writeField(src, (id) => (rep.known(id) ? Number(rep.val(id).toPrecision(6)) : undefined))
+        : '?';
     if (spec.mode === 'slope') lines.push(`Slope field of y′ = ${w(spec.dy)}`);
     if (spec.mode === 'vector') lines.push(`F = ⟨${w(spec.P)}, ${w(spec.Q)}⟩`);
     if (!allKnown) return [...lines, 'Type every value to draw the field.'].join(' · ');
@@ -757,7 +768,7 @@ export function FieldPlot({ spec, calc }: { spec: FieldPlotSpec; calc: Calculato
         lines.push(
           `Counterclockwise, side by side: ${works.map((x, i) => `C${sub(i + 1)} ${num(x)}`).join(', ')}; the total is ${num(works.reduce((s, x) => s + x, 0))}`,
         );
-      else lines.push(`Work along the path W = ∫ F · dr = ${num(works[0]!)}`);
+      else lines.push(`Work along the path W = ∫F·dr = ${num(works[0]!)}`);
     }
     if (eig) {
       lines.push(
@@ -807,17 +818,73 @@ const SUPS: Record<string, string> = {
 };
 
 /**
- * An expression in x and y written with the page's values (a "?" for one not typed), the way
- * the page writes it: "x + y", "0.5y(1 − y/10)". Coefficients of 1 and terms of 0 dropped.
+ * The tree with the page's values put in and folded: products of numbers multiplied, terms of 0
+ * and factors of 1 dropped ("0·x − 1·y" is "−y"). A value not typed stays a name ("?").
  */
-export function writeField(src: string, say: (name: string) => string): string {
-  let tree;
+function fold(n: ExprNode, value: (name: string) => number | undefined): ExprNode {
+  const num = (v: number): ExprNode => ({ t: 'num', v });
+  const nv = (m: ExprNode) => (m.t === 'num' ? m.v : undefined);
+  const isNum = (m: ExprNode, v?: number) =>
+    nv(m) !== undefined && (v === undefined || nv(m) === v);
+  switch (n.t) {
+    case 'num':
+      return n;
+    case 'name': {
+      const v = n.name === 'x' || n.name === 'y' ? undefined : value(n.name);
+      return v === undefined ? n : num(v);
+    }
+    case 'neg': {
+      const a = fold(n.a, value);
+      if (nv(a) !== undefined) return num(-nv(a)!);
+      if (a.t === 'neg') return a.a;
+      return { t: 'neg', a };
+    }
+    case 'call':
+      return { ...n, a: fold(n.a, value) };
+    case 'bin': {
+      const a = fold(n.a, value);
+      const b = fold(n.b, value);
+      const [av, bv] = [nv(a), nv(b)];
+      if (av !== undefined && bv !== undefined && n.op !== '^' && !(n.op === '/' && bv === 0)) {
+        const v =
+          n.op === '+' ? av + bv : n.op === '-' ? av - bv : n.op === '*' ? av * bv : av / bv;
+        return num(v);
+      }
+      if (n.op === '*') {
+        if (isNum(a, 0) || isNum(b, 0)) return num(0);
+        if (isNum(a, 1)) return b;
+        if (isNum(b, 1)) return a;
+        if (isNum(a, -1)) return fold({ t: 'neg', a: b }, value);
+        if (av !== undefined && av < 0)
+          return { t: 'neg', a: { t: 'bin', op: '*', a: num(-av), b } };
+      }
+      if (n.op === '+') {
+        if (isNum(a, 0)) return b;
+        if (isNum(b, 0)) return a;
+        if (b.t === 'neg') return { t: 'bin', op: '-', a, b: b.a };
+      }
+      if (n.op === '-') {
+        if (isNum(b, 0)) return a;
+        if (isNum(a, 0)) return fold({ t: 'neg', a: b }, value);
+      }
+      if (n.op === '/' && isNum(b, 1)) return a;
+      return { ...n, a, b };
+    }
+  }
+}
+
+/**
+ * An expression in x and y written with the page's values (a "?" for one not typed), the way
+ * the page writes it: "x + y", "0.5y(1 − y/10)", "2x + 3y".
+ */
+export function writeField(src: string, value: (name: string) => number | undefined): string {
+  let tree: ExprNode;
   try {
-    tree = parseExpr(src);
+    tree = fold(parseExpr(src), value);
   } catch {
     return '?';
   }
-  const text = writeExpr(tree, 'x', 'x', (n) => (n === 'y' ? 'y' : say(n)))
+  return writeExpr(tree, 'x', 'x', (n) => (n === 'y' ? 'y' : '?'))
     .map((p) =>
       p.sup
         ? [...p.t].every((ch) => ch in SUPS)
@@ -825,15 +892,6 @@ export function writeField(src: string, say: (name: string) => string): string {
           : `^(${p.t})`
         : p.t,
     )
-    .join('');
-  return (
-    text
-      // "1x" is x, "1·y" is y, "−1x" is −x.
-      .replace(/(^|[^\d.])1·?(?=[xy(])/g, '$1')
-      // A term of 0: "0x + …", "… + 0·y", "… + 0".
-      .replace(/(^|[(\s])0·?[xy](?:·[xy])?\s*\+\s*/g, '$1')
-      .replace(/\s*[+−]\s*0·?[xy](?:·[xy])?(?![\d.])/g, '')
-      .replace(/\s*[+−]\s*0(?![\d.·xy])/g, '')
-      .replace(/·(?=[xy])/g, '') || '0'
-  );
+    .join('')
+    .replace(/·(?=[xy(])/g, '');
 }
