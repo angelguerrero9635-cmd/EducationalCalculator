@@ -260,6 +260,69 @@ describe('a printed line', () => {
     expect(evaluatePrinted('98 − 50 × sin(30°)')).toBe(73);
     expect(evaluatePrinted('4 tens + 5 ones')).toBeUndefined();
   });
+  // High school checks: a logarithm, e to a power, absolute-value bars (E30).
+  it('reads ln as the pages write it', () => {
+    expect(evaluatePrinted('ln(1 + 0.02 × 600 ÷ 15) ÷ 0.02')).toBeCloseTo(29.389, 3);
+    expect(evaluatePrinted('ln(3,000 ÷ 2,000) ÷ 0.05')).toBeCloseTo(8.1093, 4);
+    expect(evaluatePrinted('ln(100/12.5)/ln(2)')).toBeCloseTo(3, 9);
+    expect(evaluatePrinted('ln|−2|')).toBeCloseTo(Math.LN2, 9);
+    expect(evaluatePrinted('ln(0)')).toBeUndefined();
+    expect(evaluatePrinted('ln(−1)')).toBeUndefined();
+  });
+  it('reads log, log₁₀, log_10 and a log to a base', () => {
+    expect(evaluatePrinted('−log₁₀(2.5 × 10⁻⁴)')).toBeCloseTo(3.602, 3);
+    expect(evaluatePrinted('log₁₀ 20')).toBeCloseTo(1.301, 3);
+    expect(evaluatePrinted('3 + log₁₀ 3')).toBeCloseTo(3.4771, 4);
+    expect(evaluatePrinted('log₁₀ 1,000 ÷ log₁₀ 100')).toBe(1.5);
+    expect(evaluatePrinted('log(1000)')).toBe(3);
+    expect(evaluatePrinted('log_10(31.6228)')).toBeCloseTo(1.5, 4);
+    expect(evaluatePrinted('log_10(1,000) ÷ 1.5')).toBe(2);
+    expect(evaluatePrinted('log₂(8)')).toBe(3);
+    expect(evaluatePrinted('log_2(1024 ÷ 32)')).toBe(5);
+    expect(evaluatePrinted('log₃ 20')).toBeCloseTo(Math.log(20) / Math.log(3), 9);
+    expect(evaluatePrinted('1 + log₁₀(|−9/2|) ÷ log₁₀(|−3|)')).toBeCloseTo(
+      1 + Math.log10(4.5) / Math.log10(3),
+      9,
+    );
+    expect(evaluatePrinted('log₁₀(0)')).toBeUndefined();
+  });
+  it('reads e to a power and 10 to a power', () => {
+    expect(evaluatePrinted('2,000 × e^(0.05 × 8.1093)')).toBeCloseTo(3000, 0);
+    expect(evaluatePrinted('e³')).toBeCloseTo(Math.exp(3), 9);
+    expect(evaluatePrinted('e^0.15')).toBeCloseTo(Math.exp(0.15), 9);
+    expect(evaluatePrinted('1,000 ÷ (1 + ((1,000 − 100) ÷ 100) × e^(−0.5 × 6))')).toBeCloseTo(
+      690.568,
+      2,
+    );
+    expect(evaluatePrinted('15 × (e^(0.02 × 29.4) − 1) ÷ 0.02')).toBeCloseTo(600.3, 1);
+    expect(evaluatePrinted('10^−3.5')).toBeCloseTo(10 ** -3.5, 9);
+    expect(evaluatePrinted('10^(1.5 × 2)')).toBe(1000);
+    expect(evaluatePrinted('2 × e')).toBeCloseTo(2 * Math.E, 9);
+    // (e in a word is not the number)
+    expect(evaluatePrinted('3 ones')).toBeUndefined();
+    expect(evaluatePrinted('ee')).toBeUndefined();
+  });
+  it('reads absolute-value bars', () => {
+    expect(evaluatePrinted('|−4| + 1')).toBe(5);
+    expect(evaluatePrinted('|3 − 7| × |2 − 5|')).toBe(12);
+    expect(evaluatePrinted('|−4')).toBeUndefined();
+  });
+});
+
+describe('simplify chain: logs, e and bars', () => {
+  it('works a log or e to a power only when it comes out exactly', () => {
+    expect(simplifyChain('ln(1 + 0.02 × 600 ÷ 15) ÷ 0.02')).toEqual([
+      'ln(1 + 12 ÷ 15) ÷ 0.02',
+      'ln(1 + 0.8) ÷ 0.02',
+      'ln(1.8) ÷ 0.02',
+    ]);
+    expect(simplifyChain('log₁₀ 1000 ÷ log₁₀ 100')).toEqual(['3 ÷ 2', '1.5']);
+    expect(simplifyChain('log₂(2 × 16)')).toEqual(['log₂(32)', '5']);
+    expect(simplifyChain('2 + log_10(10 × 100)')).toEqual(['2 + log_10(1,000)', '2 + 3', '5']);
+    expect(simplifyChain('2,000 × e^(0.05 × 8)')).toEqual(['2,000 × e^(0.4)']);
+    expect(simplifyChain('|3 − 7| × 2')).toEqual(['|−4| × 2', '4 × 2', '8']);
+    expect(simplifyChain('ln(2 × 0.5) + 1')).toEqual(['ln(1) + 1', '0 + 1', '1']);
+  });
 });
 
 describe('a root before a fraction', () => {

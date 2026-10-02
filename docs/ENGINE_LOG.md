@@ -5,6 +5,29 @@ helpers, pictures, tests, harness) could have prevented are turned into engine w
 next section is written, so each section starts from a better engine than the last. One entry
 per review; each line names the finding and what the engine now does about it.
 
+## E30: checks with ln, log or e^ printed worked-out values with their extra figures
+
+- **A check whose right side has a logarithm or e to a power kept its extra figures**
+  (s.12.resource-management~growing-use `29.3893 = ln(1 + 0.02 × 600 ÷ 15) ÷ 0.02` under the
+  step's `T = 29.4 years`; s.9.population-ecology `690.5679 = 1,000 ÷ (1 + … × e^(−0.5 × 6))`).
+  `checkLine` tries the page's figures first, but the line's two sides are compared by
+  `evaluatePrinted`, whose tokenizer read only sin, cos, tan and √: a side with ln(…) could not
+  be read, so `firstTrue` fell back to the unread line. → `simplify.ts` reads the functions as
+  the pages print them: ln(x) and ln|x|; log(x), log₁₀(x) and log_10(x) as the common log;
+  log₂(x), log_2(x) and log₃ 20 as a log to that base (a log written without brackets takes the
+  one number after it: `log₁₀ 20 ÷ log₁₀ 2`); e as a number (so e^(0.05 × 8.1093), e^0.15 and e³
+  work, and 10^−3.5 already did); absolute-value bars |−4|. A log is worked out exactly where it
+  can be (log₁₀ 1000 is 3, ln(1) is 0), and a log of 0 or a negative is no value. The checks now
+  print at the page's figures (`29.4 = ln(…) ÷ 0.02 ✓`, `691 = 1,000 ÷ (…) ✓`), a substituted
+  line with a log takes them too (s.12.radiometric-dating `n = ln(100/99.84)/ln(2)`, not
+  99.8403), and the working shows the stage inside the log when it comes out exactly
+  (m.11.exp-log-equations~continuous `r = ln(1.5) ÷ 8.1093`; s.9.biotechnology~pcr
+  `n = log_2(1,024)`; m.11.logarithms~common-log `L = −3 + 0`). The harness already read these
+  forms. Unit tests in `written.test.ts` cover each function; the pages tested by id:
+  s.12 growing-use, earth-interior~magnitude, radiometric-dating; s.11 sound-waves~sound-level;
+  s.10 acids-bases, nuclear-chemistry; s.9 biotechnology~pcr, population-ecology; m.11
+  logarithms, exp-log-equations, series; m.12 sampling-distributions~clt (invNorm untouched).
+
 ## The full run after the refusal and step-order changes: 12 regressions, three causes
 
 - **Worked examples refused as "older"** (m.6.gcf-lcm "the first number would be 0.7059, but it
