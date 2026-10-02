@@ -1,5 +1,7 @@
 # College research (higher education)
 
+Owner decisions (2026-10-02): OpenStax and the NCEES FE handbook titles/TOC only; nothing a page shows may need an attribution (pages are original, research is never shipped). See docs/HE_NEEDS.md, "Decisions".
+
 Paste everything below the line into the research chat.
 
 ---

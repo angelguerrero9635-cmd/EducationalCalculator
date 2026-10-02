@@ -390,56 +390,41 @@ Pictures run alongside: `docs/RENDERINGS_HE.md` round 1 (HC1–HC13) unblocks ab
 Each engine change is tested by the ids it is about (`MODULE_IDS=…`), never by a heavy run
 without the owner's approval.
 
-## Decisions for the owner
+## Decisions (settled 2026-10-02)
 
-The plans' open questions, collected. Each needs a yes, a no or a choice before the pages it
-names are built.
+The owner answered 1–7; the lead settled the rest (marked) following the owner's answers. Each
+can be revisited.
 
-1. **g on college pages.** Engineering, earth and the aero-civil-chemical pages use g = 9.81 m/s²
-   (the textbooks and the FE handbook); physics uses 9.80; math and biology 9.8; Grade 11 uses
-   9.8. One value for all college pages (9.81 recommended by four plans), or per course? A page
-   option for tests that round to 10 is the HS plan's need 13. (Related: Earth radius 6,371 km
-   (physics, earth) vs 6,378 km (aero, equatorial); both are right for their use; name it.)
-2. **⏳ pages with no stand-in picture.** The mechanical plan has 76 such pages (the other plans
-   name an interim for most): ship them on `none` (values, relations and walkthrough, no picture)
-   or wait for the picture?
-3. **Design-code editions.** AISC 360-22 (LRFD), ACI 318-19, ASCE 7-22, AASHTO Green Book 2018,
-   AASHTO 1993 pavements, HCM 7th edition, each named in one assumption; code data (W-shapes, bar
-   areas) as hand-entered facts, never copied tables. Confirm the editions, and that US
-   customary leads on steel, concrete, pavement and capacity pages.
-4. **OpenStax: titles only.** The research brief (`docs/RESEARCH_HE.md`) keeps OpenStax to
-   chapter and section titles, with no exercises, because of its no-LLM statement. The physics
-   plan proposed 240 OpenStax problem records, the math and chemistry plans "if the owner
-   allows". Confirm titles only. Also: the ACS-published US National Chemistry Olympiad papers
-   (chemistry plan, 30 records) are held off limits with the ACS exams unless you allow them.
-5. **The split of `college.ts`** (HE-E4): one file per field (`college/<field>.ts`, 14 fields),
-   per group of plans, or per course? Thresholds proposed: 2,000 lines (math, physics), 3,000
-   (biology, mechanical), split before building (chemistry, aero-civil-chemical).
-6. **Pilot changes the plans propose:**
-   - `he.engineering.circuits-1#0`: rename "Resistor 1" to **"Resistance 1 (R₁)"** (and R₂); the
-     voltages "Voltage across R₁ (V₁)" stay.
-   - `he.geography.human-geography#0`: 12 values is over the cap of 10. Trim the main to the
-     components of change (**9 values**, waterfall unchanged) and add **`~rates`** (CBR, CDR, RNI,
-     T₂ with P₀, B, D: 7 values); the example still works (CBR 12, CDR 8 → RNI 0.4%, T₂ = 175
-     years).
-   - `he.math.calc-1#1`: move its picture from `plot` `tangentSlope` to **`functionGraph`
-     `family: 'power'` with `tangent`** once HC37 is drawn, so every derivative page looks alike.
-   - `he.physics.university-1#0`: move its picture from `plot` to **`motionGraph` `kinematics:
-{ view: 'velocity' }`** (the area as Δx) and rename `d` to "Displacement (Δx)" to match
-     Grade 11.
-7. **The value cap.** Every plan keeps ≤ 10 values a page and splits a page rather than raising
-   it (HE-E3). Confirm for college.
-8. **Notation choices.** j for the imaginary unit on electrical pages (i on math pages); KiB for
-   memory sizes and decimal prefixes on network pages; the thermal voltage 25.85 mV at 300 K
-   (Sedra–Smith's 25 mV accepted as rounding); biology's 61.5 mV at 37 °C.
-9. **Typed property tables.** Steam, refrigerant, ISO 286 fits, Marin and Lewis factors and K_t
-   charts are typed by the student from their own table, with the page naming the entries, until
-   HE-E27 (water only). Confirm, and confirm that a built-in IAPWS-IF97 routine is wanted.
-10. **NCEES FE Reference Handbook.** Two plans used it for notation ("symbols only"); the
-    research brief allows only its table of contents. Confirm.
-11. **Question records from non-commercial sources.** The research brief records question text
-    only from public-domain, CC BY and CC BY-SA sources, and the type only from CC BY-NC, ND,
-    custom and all-rights-reserved ones (MIT OCW among them). Confirm.
-12. **Taxonomy gaps.** `docs/HE_TAXONOMY_GAPS.md` lists what the textbooks teach that the topics
-    lack, and the courses the plans propose; nothing there changes `taxonomy.ts` until you
-    decide.
+1. **g = 9.81 m/s² on every college page** (owner). Grades K–12 keep 9.8. Earth radius: name the
+   one a page uses in its assumption (6,371 km mean; 6,378 km equatorial on orbit pages).
+2. **⏳ pages with no stand-in wait for their picture** (owner). They are not shipped on `none`.
+3. **Design codes** (lead, owner delegated): AISC 360-22 (LRFD), ACI 318-19, ASCE 7-22, AASHTO
+   Green Book 2018, AASHTO 1993 pavements, HCM 7th edition, each named in one assumption. US
+   customary leads on steel, concrete, pavement and capacity pages (as the US courses teach);
+   SI everywhere else. Code data (W-shapes, bar areas) is entered as facts by hand, never copied
+   tables.
+4. **OpenStax: titles only** (owner). No exercises or text. The ACS olympiad papers and exams stay
+   off limits. Nothing a page shows may need an attribution: pages are original; research stays
+   reference-only and is never shipped.
+5. **Split `college.ts`: one file per field** (owner): `src/data/modules/college/<field>.ts` and
+   `layouts/college<Field>.ts`.
+6. **Pilot pages are redone to match their plans** (owner): circuits-1#0 labels "Resistance 1
+   (R₁)"; human-geography#0 trimmed to 9 values with `~rates`; university-1#0 on `motionGraph`
+   velocity with "Displacement (Δx)"; calc-1#1 on `functionGraph` tangent once HC37 is drawn.
+7. **Licence mismatch on Chemistry 2e and Biology 2e** (owner asked what it means): with titles
+   only, nothing. Only chapter and section titles are recorded from any OpenStax book, and
+   titles carry no licence terms. The mismatch would matter only if their text or exercises
+   were stored, which the rule above forbids. The research chat records the licence each book
+   states today in `research/textbooks/sources/`, for the record.
+8. **Value cap ≤ 10 a page on college pages** (lead): split a page rather than raise it.
+9. **Notation** (lead): j on electrical pages, i on math pages; KiB for memory, decimal prefixes
+   for networks; thermal voltage 25.85 mV at 300 K; 61.5 mV at 37 °C on biology pages.
+10. **Property tables** (lead): steam, refrigerant, fits and factors are typed by the student from
+    their own table until HE-E27; HE-E27 builds water and steam from the published IAPWS-IF97
+    equations (the equations, not a copied table).
+11. **NCEES FE Reference Handbook** (lead): table of contents only, like OpenStax.
+12. **Question records** (lead): question text only from public-domain, CC BY and CC BY-SA
+    sources; the question type only from all others (MIT OCW included). Records stay in
+    `research/` and are never shipped, so no page needs an attribution.
+13. **Taxonomy gaps** (owner authorized taxonomy updates): the needed ones in
+    `docs/HE_TAXONOMY_GAPS.md` are added to `taxonomy.ts` and logged in `TAXONOMY_ISSUES.md`.

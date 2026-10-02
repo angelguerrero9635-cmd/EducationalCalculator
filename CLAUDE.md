@@ -77,7 +77,9 @@ not a dependency. Chromium is at `/opt/pw-browsers/chromium`.
   unless the owner approves that run (ask first, saying why), engine changes included: test the
   ids a change is about by `MODULE_IDS`.
 - Don't add dependencies without asking.
-- Never edit `taxonomy.ts` casually; it is kept byte-for-byte and Prettier ignores it.
+- `taxonomy.ts`: the owner authorized the taxonomy updates the plans need (2026-10-02). Edit it
+  only for those, keep its existing ids and topic order (append new topics), log every change in
+  `TAXONOMY_ISSUES.md`; it is kept byte-for-byte and Prettier ignores it.
 - Licensed material is never used; lesson text is original. Any licensed or restricted material
   (everything in `research/`, and online images) is for reference only and never used directly:
   no copied problems, text, numbers, figures or screenshots in lessons, pictures or tests.
