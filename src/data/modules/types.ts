@@ -32,6 +32,7 @@ import type { Hs2cSpec } from './typesHs2c';
 import type { Hs3aSpec } from './typesHs3a';
 import type { He1bSpec } from './typesHe1b';
 import type { He1fSpec } from './typesHe1f';
+import type { He2jSpec } from './typesHe2j';
 import type { CardIcon } from './layouts/types';
 import type { TreeChances, TwoWaySpec, VennChances } from './typesHse';
 import type { IntegerLineHs2a } from './typesHs2a';
@@ -1151,6 +1152,8 @@ export type Representation =
   | He1bSpec
   /** College round 1, group F: HC5 control volume, HC13 velocity profile (`typesHe1f.ts`). */
   | He1fSpec
+  /** College round 2, group J: HC28 stress–strain, HC33 stress element (`typesHe2j.ts`). */
+  | He2jSpec
   /** Grades 9–12 round 2 biology, group H2E (specs in `typesHs2e.ts`). */
   | Hs2eSpec
   | Hs3dSpec
