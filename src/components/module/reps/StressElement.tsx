@@ -280,9 +280,9 @@ function Transformation({ spec, calc }: { spec: StressElementSpec; calc: Calcula
     );
     if (thp !== undefined)
       parts.push(
-        `tan 2θ_p = 2τₓ_y ÷ (σₓ − σ_y), so θ_p = ${fmt(thp)}°: the turned element carries ${xIs1 ? 'σ₁' : 'σ₂'} on the faces turned θ_p and no shear.`,
+        `tan 2θₚ = 2τₓᵧ ÷ (σₓ − σ_y), so θ_p = ${fmt(thp)}°: the turned element carries ${xIs1 ? 'σ₁' : 'σ₂'} on the faces turned θ_p and no shear.`,
       );
-    parts.push('τ is plotted positive down, so X turns to σ₁ by 2θ_p the way the element turns.');
+    parts.push('τ is plotted positive down, so X turns to σ₁ by 2θₚ the way the element turns.');
   } else parts.push('The element and the circle wait for σₓ, σ_y and τₓ_y.');
 
   const s1Label = s1 !== undefined ? lab(spec.s1, 'σ₁', s1 / k0, u) : undefined;
@@ -769,7 +769,7 @@ function Envelope({ spec, calc }: { spec: StressElementSpec; calc: Calculator })
       txy !== undefined &&
       kinds.includes('vonMises')
     )
-      parts.push(`σ′ = √(σₓ² − σₓσ_y + σ_y² + 3τₓ_y²) = ${fmt(vonMises2(m.s1, m.s2) / k0)} ${u}.`);
+      parts.push(`σ′ = √(σₓ² − σₓσ_y + σ_y² + 3τₓᵧ²) = ${fmt(vonMises2(m.s1, m.s2) / k0)} ${u}.`);
     parts.push(
       'Grow the load along its ray by n and it reaches each locus (the open marks); n > 1 means the load is inside.',
     );

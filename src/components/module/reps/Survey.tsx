@@ -527,6 +527,24 @@ export function Survey({ spec, calc }: { spec: SurveySpec; calc: Calculator }) {
           fill="none"
         />,
       );
+      // Elevations under the ground at each rod, first: the readings and HIs find room round them.
+      const elev: [string, NumOrVar | undefined, number, number][] = [
+        ['BM', spec.BM, BM, 0],
+        ['TP1', spec.TP, run.TP, 2],
+        ['B', spec.B, run.B, 4],
+      ];
+      for (const [name, id, e, k] of elev) {
+        const t = typeof id === 'string' ? valueLabel(id) : `${name} = ${fmt(e)} m`;
+        L.place(
+          `el${name}`,
+          [
+            [xs[k]!, Y(e) + 18],
+            [xs[k]!, Y(e) + 36],
+          ],
+          t,
+          c.chartInk,
+        );
+      }
       // Rods, levels and lines of sight.
       const HIs = [run.HI1, run.HI2];
       for (const [k, r] of [
@@ -565,16 +583,6 @@ export function Survey({ spec, calc }: { spec: SurveySpec; calc: Calculator }) {
           <Circle key={`bs${j}`} cx={xa} cy={y} r={3} fill={c.chartHighlight} />,
           <Circle key={`fs${j}`} cx={xb} cy={y} r={3} fill={c.chartHighlight} />,
         );
-        const hiText = lab(j ? spec.HI2 : spec.HI1, j ? 'HI₂' : 'HI₁', HIs[j], 'm');
-        L.place(
-          `hi${j}`,
-          [
-            [x, y - 14],
-            [x, y - 30],
-          ],
-          hiText,
-          c.chartHighlight,
-        );
       });
       // The readings beside the rods, inside the setup they belong to.
       const read = (
@@ -591,6 +599,8 @@ export function Survey({ spec, calc }: { spec: SurveySpec; calc: Calculator }) {
           [
             [x + (right ? 1 : -1) * (w / 2 + 8), y + 16],
             [x + (right ? 1 : -1) * (w / 2 + 8), y + 36],
+            [x + (right ? 1 : -1) * (w / 2 + 8), y - 8],
+            [x + (right ? 1 : -1) * (w / 2 + 8), y - 26],
           ],
           text,
         );
@@ -599,16 +609,21 @@ export function Survey({ spec, calc }: { spec: SurveySpec; calc: Calculator }) {
       read('fs1', xs[2]!, Y(run.HI1), lab(spec.FS1, 'FS₁', FS1, 'm'), false);
       read('bs2', xs[2]!, Y(run.HI2), lab(spec.BS2, 'BS₂', BS2, 'm'), true);
       read('fs2', xs[4]!, Y(run.HI2), lab(spec.FS2, 'FS₂', FS2, 'm'), false);
-      // Elevations under the ground at each rod.
-      const elev: [string, NumOrVar | undefined, number, number][] = [
-        ['BM', spec.BM, BM, 0],
-        ['TP1', spec.TP, run.TP, 2],
-        ['B', spec.B, run.B, 4],
-      ];
-      for (const [name, id, e, k] of elev) {
-        const t = typeof id === 'string' ? valueLabel(id) : `${name} = ${fmt(e)} m`;
-        L.place(`el${name}`, [[xs[k]!, Y(e) + 18]], t, c.chartInk);
-      }
+      // Each HI over its level, above the readings.
+      [0, 1].forEach((j) => {
+        const [x, y] = [xs[1 + 2 * j]!, Y(HIs[j]!)];
+        const hiText = lab(j ? spec.HI2 : spec.HI1, j ? 'HI₂' : 'HI₁', HIs[j], 'm');
+        L.place(
+          `hi${j}`,
+          [
+            [x, y - 14],
+            [x, y - 30],
+            [x, y - 46],
+          ],
+          hiText,
+          c.chartHighlight,
+        );
+      });
       BH = bottom + 4;
       caption.push(
         `HI = elevation + BS; elevation = HI − FS: TP1 = ${fmt(run.HI1)} − ${fmt(FS1)} = ${fmt(run.TP)} m, B = ${fmt(run.HI2)} − ${fmt(FS2)} = ${fmt(run.B)} m.`,

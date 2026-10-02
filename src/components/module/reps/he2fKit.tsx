@@ -6,6 +6,7 @@
 import { G, Rect, TSpan } from 'react-native-svg';
 
 import { formatNumber } from '@/engine/format';
+import { subscriptRuns } from '@/engine/subscripts';
 import { chart, usePalette } from '@/theme';
 
 import { ChartText, type useRep } from './common';
@@ -106,7 +107,19 @@ export function Tag({
             </TSpan>
           );
         })}
-        {rest ? <TSpan dy={isSub(parts.length - 1) ? -drop : 0}>{rest}</TSpan> : null}
+        {/* The rest's own subscripts ("a = (r_p + r_a) ÷ 2") lowered too, never a raw "_". */}
+        {subscriptRuns(rest).map((r, i, all) => {
+          const before = i === 0 ? isSub(parts.length - 1) : !!all[i - 1]!.sub;
+          return (
+            <TSpan
+              key={`r${i}`}
+              dy={(r.sub ? drop : 0) - (before ? drop : 0)}
+              fontSize={r.sub ? size * 0.75 : size}
+            >
+              {r.s}
+            </TSpan>
+          );
+        })}
       </ChartText>
     </G>
   );

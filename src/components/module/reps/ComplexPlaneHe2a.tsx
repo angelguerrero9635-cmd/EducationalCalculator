@@ -279,21 +279,32 @@ function ImpedancePlane({ spec, calc }: { spec: ComplexPlaneSpec; calc: Calculat
           const [nx, ny] = [(ty - oy) / len, -(tx - ox) / len];
           const magText = ` = ${nf(mag)}${unit}`;
           const flip = ny > 0 ? -1 : 1;
+          // The real axis's numbers keep their room from |Z| (a shallow arrow leaves little
+          // between it and the axis): then |Z| goes on the arrow's other side.
+          const band: Box = { l: 0, t: oy + 2, r: w, b: oy + 18 };
+          taken.push(band);
           const magTag =
             ok && len > 70
               ? place(
-                  [0.5, 0.62, 0.38].map((k) => ({
-                    x: ox + (tx - ox) * k + nx * flip * 16,
-                    y: oy + (ty - oy) * k + ny * flip * 16 + 4,
-                    anchor: (nx * flip > 0.3 ? 'start' : nx * flip < -0.3 ? 'end' : 'middle') as
-                      'start' | 'end' | 'middle',
-                  })),
+                  [
+                    [flip, 16],
+                    [-flip, 16],
+                    [-flip, 36],
+                  ].flatMap(([fl, off]) =>
+                    [0.5, 0.62, 0.38].map((k) => ({
+                      x: ox + (tx - ox) * k + nx * fl! * off!,
+                      y: oy + (ty - oy) * k + ny * fl! * off! + 4 + (ny * fl! > 0.3 ? 6 : 0),
+                      anchor: (nx * fl! > 0.3 ? 'start' : nx * fl! < -0.3 ? 'end' : 'middle') as
+                        'start' | 'end' | 'middle',
+                    })),
+                  ),
                   tagWidth(magName, magText),
                   taken,
                   w,
                   h,
                 )
               : undefined;
+          taken.splice(taken.indexOf(band), 1);
           // θ by its arc.
           const arcR = Math.min(30, len * 0.45);
           const mid = (ang / 2) * RAD;

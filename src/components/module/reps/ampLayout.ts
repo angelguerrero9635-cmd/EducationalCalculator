@@ -299,17 +299,19 @@ export function layoutAmp(
       wire(P(fx, 86), P(fx, a3.out.y));
       sym('R', P(cx, a2.out.y), P(jx, a2.out.y));
       wire(P(jx, a2.out.y), P(jx, a3.plus.y), a3.plus);
-      const gx = Math.min(w - 40, jx + 60);
-      sym('R', P(jx, 222), P(gx, 222));
+      const gx = Math.min(w - 40, jx + 66);
+      // The fourth R₂ to ground: a lead past the resistor and down, then the ground.
+      sym('R', P(jx, 222), P(gx - 10, 222));
+      wire(P(gx - 10, 222), P(gx, 222), P(gx, 232));
       s.dots.push(P(jx, 222));
-      s.grounds.push(P(gx, 222));
+      s.grounds.push(P(gx, 232));
       wire(a3.out, P(w - 10, a3.out.y));
       s.terminals.push(P(w - 10, a3.out.y));
       s.dots.push(P(fx, a3.out.y));
       lab('r2', (cx + jx) / 2, a1.out.y - 14);
       lab('r2', (jx + fx) / 2, 72);
       lab('r2', (cx + jx) / 2, a2.out.y + 24);
-      lab('r2', (jx + gx) / 2, 246);
+      lab('r2', (jx + gx - 10) / 2, 246);
       // The electrodes: V_d between the inputs, V_cm from ground to the lower one.
       const ex = X(40);
       wire(P(ex, a1.plus.y), a1.plus);
@@ -368,7 +370,7 @@ export function layoutAmp(
   /** The Schmitt loop: v_out against vᵢₙ, the switching edges at ±V_TH with their arrows. */
   function loopPlot(top: number) {
     const box = { x: X(64), y: top, w: w - X(64) - 24, h: 120 };
-    s.height = box.y + box.h + 44;
+    s.height = box.y + box.h + 22;
     const { rail, threshold: th, vin } = n;
     const R = rail ?? 1;
     const span = Math.max(2 * (th ?? R / 4), vin === undefined ? 0 : Math.abs(vin) * 1.2, 1e-9);
@@ -380,7 +382,7 @@ export function layoutAmp(
     );
     s.arrows.push({ p: P(box.x + box.w + 6, f.Y(0)), dx: 1, dy: 0, tone: 'muted' });
     s.arrows.push({ p: P(yAxis, box.y - 6), dx: 0, dy: -1, tone: 'muted' });
-    lab('xName', box.x + box.w + 6, f.Y(0) - 10, 'end', 'muted', true);
+    lab('xName', box.x + box.w + 6, f.Y(0) + 16, 'end', 'muted', true);
     lab('yName', yAxis + 8, box.y + 4, 'start', 'muted', true);
     if (rail === undefined || th === undefined) return;
     // Ticks at the rails on the axis, their values to the left.
@@ -401,9 +403,10 @@ export function layoutAmp(
       { p: f.P(span / 2 - span / 8, -R), dx: -1, dy: 0, tone: 'hi' },
       { p: P(f.X(-th), f.Y(0) - 22), dx: 0, dy: -1, tone: 'hi' },
     );
-    lab('thPlus', f.X(th) + 6, f.Y(0) + 16, 'start');
-    lab('thMinus', f.X(-th) - 6, f.Y(0) - 6, 'end');
-    lab('width', box.x + box.w / 2, box.y + box.h + 30);
+    // Each threshold on the far side of the axis from its edge's arrow; the width under the loop.
+    lab('thPlus', f.X(th) + 6, f.Y(0) - 6, 'start');
+    lab('thMinus', f.X(-th) - 6, f.Y(0) + 16, 'end');
+    lab('width', f.X(0), f.Y(-R) + 18);
     if (vin !== undefined) {
       const out = vin > th ? -R : R;
       s.points.push({ p: f.P(Math.max(-span, Math.min(span, vin)), out), tone: 'hi' });

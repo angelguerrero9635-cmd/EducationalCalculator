@@ -33,6 +33,19 @@ export const NAMES: Record<AmpCircuit, { vin: string[]; rin: string[]; rf: strin
   instrumentation: { vin: ['V_d', 'V_cm'], rin: [], rf: 'R', rg: 'R_g' },
 };
 
+/**
+ * Symbols side by side as a product (R₁R₂, AᵥVᵢₙ), with a "·" where a subscript written with
+ * "_" would otherwise run into its neighbour (A_d·V_d, 2·V_TH, 2π·R_f·C) and show a raw "_".
+ */
+export const mul = (...xs: string[]) =>
+  xs.reduce((a, b) => {
+    if (!a) return b;
+    const runOn =
+      /[\p{L}\d]$/u.test(a) &&
+      (/_[\p{L}\d]*$/u.test(a) || /^\p{L}[′']?(?:\p{L}[′']?){0,2}_/u.test(b));
+    return a + (runOn ? '·' : '') + b;
+  }, '');
+
 /** A fixed SI value with its prefix: 10000 Ω → "10 kΩ", 1e-6 F → "1 μF". */
 export function withPrefix(x: number, base: string): string {
   const steps: [number, string][] = [

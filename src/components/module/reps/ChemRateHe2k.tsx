@@ -696,11 +696,27 @@ function Consecutive({ spec, calc }: { spec: ChemRateHe2kSpec; calc: Calculator 
     // B's label over its peak names the time of the peak too.
     const labelB = `${n.of(sb!)} peaks, tₘₐₓ = ${fig3(tm)} ${tUnit}`;
     const half = textW(labelB, chart.label) / 2 + 4;
-    let px = F.X(tm);
-    // Off the dashed t line: beside it, on the peak's side.
-    if (hasT && Math.abs(F.X(t) - px) < half)
-      px = F.X(t) < px ? F.X(t) + 4 + half : F.X(t) - 4 - half;
-    const peakLabel = { x: Math.min(right - half, Math.max(left + half, px)) };
+    const fits = (x: number) => x >= left + half && x <= right - half;
+    let px = Math.min(right - half, Math.max(left + half, F.X(tm)));
+    // Off the dashed t line: beside it, on the peak's side when that side has room, else the other.
+    if (hasT && Math.abs(F.X(t) - px) < half) {
+      const [after, before] = [F.X(t) + 4 + half, F.X(t) - 4 - half];
+      const near = F.X(t) < F.X(tm) ? after : before;
+      const far = near === after ? before : after;
+      px = fits(near) || !fits(far) ? near : far;
+    }
+    const peakX = Math.min(right - half, Math.max(left + half, px));
+    // Over the peak; moved beside the t line it rises until A's and C's curves leave it clear.
+    let peakY = F.Y(Bm) - 10;
+    const xInv = (x: number) => p.xLo + ((x - p.left) / (p.right - p.left)) * (p.xHi - p.xLo);
+    const crosses = (y: number) =>
+      [peakX - half, peakX, peakX + half].some((x) => {
+        const v = at(Math.max(0, xInv(x)));
+        return [v.A, v.C].some((cv) => Math.abs(F.Y(cv) - (y - 4)) < 10);
+      });
+    if (ready && peakX !== F.X(tm))
+      for (let k = 0; k < 30 && crosses(peakY) && peakY > p.top + 16; k++) peakY -= 4;
+    const peakLabel = { x: peakX, y: peakY };
     const tLabel = hasT ? `t = ${tR!.text} ${tUnit}` : '';
     const tAt = fitLabel(F.X(t), tLabel, chart.label, w, 'middle');
     return (
@@ -791,7 +807,7 @@ function Consecutive({ spec, calc }: { spec: ChemRateHe2kSpec; calc: Calculator 
             </ChartText>
             <ChartText
               x={peakLabel.x}
-              y={F.Y(Bm) - 10}
+              y={peakLabel.y}
               textAnchor="middle"
               fontSize={chart.label}
               fontWeight="700"

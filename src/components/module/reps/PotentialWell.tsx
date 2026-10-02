@@ -271,7 +271,7 @@ export function PotentialWell({ spec, calc }: { spec: PotentialWellSpec; calc: C
       .sort((a, b) => Number(lit.includes(b)) - Number(lit.includes(a)) || b - a)
       .forEach((n) => {
         const y = yLevel(n) + 4;
-        if (leftLabels.every((l) => Math.abs(l.y - y) >= 13)) leftLabels.push({ n, y });
+        if (leftLabels.every((l) => Math.abs(l.y - y) >= 15)) leftLabels.push({ n, y });
       });
 
     // Right labels: each lit level's energy, and the bump's estimate.

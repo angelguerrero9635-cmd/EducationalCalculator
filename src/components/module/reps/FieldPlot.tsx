@@ -687,10 +687,22 @@ export function FieldPlot({ spec, calc }: { spec: FieldPlotSpec; calc: Calculato
                   {layers}
                   {over}
                 </G>
+                {/* Each name on a light chip: the field's arrows run under it. */}
                 {labels.map((l, i) => (
-                  <ChartText key={`lab${i}`} x={l.x} y={l.y} fill={l.color} fontWeight="700" halo>
-                    {l.text}
-                  </ChartText>
+                  <G key={`lab${i}`}>
+                    <Rect
+                      x={l.x - 3}
+                      y={l.y - chart.label}
+                      width={textW(l.text, chart.label) + 6}
+                      height={chart.label + 5}
+                      rx={3}
+                      fill={c.card}
+                      opacity={0.85}
+                    />
+                    <ChartText x={l.x} y={l.y} fill={l.color} fontWeight="700" halo>
+                      {l.text}
+                    </ChartText>
+                  </G>
                 ))}
                 {eig ? (
                   <ChartText x={L + 6} y={top + 16} fontWeight="700" halo>

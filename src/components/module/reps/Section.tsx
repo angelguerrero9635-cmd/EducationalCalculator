@@ -1212,7 +1212,7 @@ export function Section({ spec, calc }: { spec: SectionSpec; calc: Calculator })
               note(sx0w + 9, (Y(H) + Y(H - cv)) / 2 + 4, 'c', 'start');
             }
             // Stress: the 0.85f′_c block of depth a, C at a ÷ 2 and T at the bars.
-            const bx1 = dx1 - 4;
+            const bx1 = dx1 - 12;
             const bw = Math.min(34, (bx1 - sx1w) * 0.45);
             const bx = bx1 - bw - 22;
             items.push(
@@ -1261,7 +1261,7 @@ export function Section({ spec, calc }: { spec: SectionSpec; calc: Calculator })
                 // Under the arrow's tail: over it, C met the "a" of the block's depth.
                 <Letter
                   key="Cl"
-                  x={bx + bw + 12}
+                  x={bx + bw + 6}
                   y={Y(H - av / 2) + 21}
                   text="C"
                   color={c.sectionCompression}
@@ -1275,7 +1275,8 @@ export function Section({ spec, calc }: { spec: SectionSpec; calc: Calculator })
                   color={c.sectionCompression}
                 />,
               );
-              note(bx1 - 5, (Y(H) + Y(H - av)) / 2 + 4, 'a', 'end');
+              // Right of its dimension: on the left it would sit on C's arrow.
+              note(bx1 + 5, (Y(H) + Y(H - av)) / 2 + 4, 'a', 'start');
             }
             if (layout && layout.bars.length)
               items.push(

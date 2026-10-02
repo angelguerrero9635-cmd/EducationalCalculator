@@ -160,8 +160,14 @@ export function UnitCell({ spec, calc }: { spec: UnitCellSpec; calc: Calculator 
   const rows: { t: string; bold?: boolean }[] = [];
   let y = 8;
 
+  // Atoms are drawn at a third of their radius, smaller still when that would crowd the title,
+  // the count column or the rows (the faint circles on the front face keep the true size).
+  const rTop = Math.max(ratio[0], ratio[1]);
+  const kR = rTop > 0 ? Math.min(0.34, 16 / (rTop * S)) : 0.34;
+  const rMax = lattice ? Math.max(4, kR * rTop * S) : 0;
+
   if (showCell) {
-    const top = y + 18;
+    const top = y + 12 + Math.max(6, rMax);
     const Y0 = top + DY + S;
     const P = (p: readonly number[]): [number, number] => [
       X0 + S * p[0]! + DX * p[2]!,
@@ -285,7 +291,7 @@ export function UnitCell({ spec, calc }: { spec: UnitCellSpec; calc: Calculator 
         </G>
         {order.map((a) => {
           const [x, yy] = P(a.p);
-          const r = Math.max(4, 0.34 * ratio[a.species] * S);
+          const r = Math.max(4, kR * ratio[a.species] * S);
           return (
             <Circle
               key={a.p.join()}
@@ -414,7 +420,7 @@ export function UnitCell({ spec, calc }: { spec: UnitCellSpec; calc: Calculator 
     if (lattice && !dim) {
       const col: ReactNode[] = [];
       let cy = top + 6;
-      const cx = X0 + S + DX + 18;
+      const cx = X0 + S + DX + Math.max(18, rMax + 4);
       ([0, 1] as const).forEach((sp) => {
         const mine = atoms.filter((a) => a.species === sp);
         if (!mine.length) return;
@@ -461,7 +467,7 @@ export function UnitCell({ spec, calc }: { spec: UnitCellSpec; calc: Calculator 
       });
       parts.push(<G key="count">{col}</G>);
     }
-    y = Y0 + (hklOk ? 22 : 8);
+    y = Y0 + Math.max(0, rMax - 8) + (hklOk ? 22 : 8);
 
     if (lattice) {
       const z = cellZ(lattice);

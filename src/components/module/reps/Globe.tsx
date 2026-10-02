@@ -243,6 +243,12 @@ function SunGlobe({ spec, calc }: { spec: Spec<'sun'>; calc: Calculator }) {
     // The rays' name by the ray farther from the place's own.
     const raysLabelY =
       P && Math.abs(P[1] - rays[0]!) < Math.abs(P[1] - rays[1]!) ? rays[1]! + 18 : rays[0]! - 8;
+    /** A label's middle height moved clear of the Sun's two rays (and the noon ray at the place). */
+    const clearOfRays = (y: number) => {
+      for (const ry of [...rays, ...(P ? [P[1]] : [])])
+        if (Math.abs(y - ry) < 9) return y < ry ? ry - 10 : ry + 10;
+      return y;
+    };
     // North of the subsolar point the noon angle opens below the ray: the name goes above.
     const arcBelow = place && lat! > d;
     const dialR = 26;
@@ -361,7 +367,8 @@ function SunGlobe({ spec, calc }: { spec: Spec<'sun'>; calc: Calculator }) {
               const mid = (sweepStart + sweepEnd) / 2;
               const text = deg(noon);
               const lx = P[0] + 44 * Math.cos(mid);
-              const ly = P[1] - 44 * Math.sin(mid);
+              // Off the Sun's rays: a name whose middle sits on a ray moves beside it.
+              const ly = clearOfRays(P[1] - 44 * Math.sin(mid));
               return (
                 <G>
                   <Line
@@ -398,8 +405,8 @@ function SunGlobe({ spec, calc }: { spec: Spec<'sun'>; calc: Calculator }) {
           <G>
             <Circle cx={P[0]} cy={P[1]} r={4.5} fill={hi} stroke={c.paper} strokeWidth={1.2} />
             <ChartText
-              x={P[0] - 8}
-              y={arcBelow ? P[1] - 10 : P[1] + 18}
+              x={P[0] - 10}
+              y={clearOfRays((arcBelow ? P[1] - 14 : P[1] + 22) - 4) + 4}
               textAnchor="end"
               fontSize={chart.label}
               fontWeight="700"
@@ -1052,6 +1059,15 @@ function MomentumGlobe({ spec, calc }: { spec: Spec<'momentum'>; calc: Calculato
       return d.join(' ');
     };
     const uText = u === undefined ? '' : `u = ${fig3(u)} m/s`;
+    // u's name over its arrow, or past the dashed meridian when the meridian runs through it.
+    const uAt = (x: number, y: number) => {
+      const half = textW(uText, chart.label) / 2 + 3;
+      const t = Math.asin(Math.max(-1, Math.min(1, (cy - y + 4) / (R * Math.cos(tilt)))));
+      const mx = cx + R * Math.cos(t) + 10;
+      const fit = fitLabel(x, uText, chart.label, w, 'middle');
+      if (Math.abs(fit.x - mx) > half + 4) return fit;
+      return fitLabel(mx + 8, uText, chart.label, w, 'start', 0);
+    };
     return (
       <Svg width={w} height={H_}>
         <Circle cx={cx} cy={cy} r={R} fill={c.globeSea} stroke={c.chartInk} strokeWidth={1.4} />
@@ -1112,7 +1128,8 @@ function MomentumGlobe({ spec, calc }: { spec: Spec<'momentum'>; calc: Calculato
           color={c.chartMuted}
           width={2.4}
         />
-        <ChartText x={eq[0] + k * rim + 6} y={eq[1] + 4} fontSize={chart.label} fill={c.chartMuted}>
+        {/* Under its arrow, inside the globe: clear of the rim and the meridian. */}
+        <ChartText x={eq[0] + 4} y={eq[1] + 17} fontSize={chart.label} fill={c.chartMuted} halo>
           {`ΩR = ${fig3(rim)} m/s`}
         </ChartText>
         {F && u !== undefined ? (
@@ -1134,9 +1151,8 @@ function MomentumGlobe({ spec, calc }: { spec: Spec<'momentum'>; calc: Calculato
               width={3.2}
             />
             <ChartText
-              x={fitLabel(F[0] + k * (ground + u / 2), uText, chart.label, w, 'middle').x}
+              {...uAt(F[0] + k * (ground + u / 2), F[1] - 10)}
               y={F[1] - 10}
-              textAnchor="middle"
               fontSize={chart.label}
               fontWeight="700"
               fill={hi}

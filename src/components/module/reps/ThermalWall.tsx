@@ -429,6 +429,13 @@ function Wall({ spec, calc }: { spec: Spec; calc: Calculator }) {
           fill="none"
         />,
       );
+      // The temperatures keep off the profile itself, not only its dots.
+      pts.slice(1).forEach(([x1, y1], i) => {
+        const [x0, y0] = pts[i]!;
+        const n = Math.max(1, Math.ceil(Math.hypot(x1 - x0, y1 - y0) / 6));
+        for (let j = 0; j <= n; j++)
+          place.dot(x0 + ((x1 - x0) * j) / n, y0 + ((y1 - y0) * j) / n, 2);
+      });
       // Dots at the surfaces and joints, each with its temperature.
       const surf = edges.map((x, i) => [x, nodes[k + i]!] as const);
       surf.forEach(([x, T]) => {
@@ -736,7 +743,9 @@ function Cylinder({ spec, calc }: { spec: Spec; calc: Calculator }) {
       const rMax = r2! * (spec.h !== undefined ? 1.35 : 1.1);
       const sx = (x: number) => l + (x / rMax) * (r - l);
       const [lo, hi] = [Math.min(T1, Tend), Math.max(T1, Tend)];
-      const sy = (T: number) => t + ((hi - T) / (hi - lo || 1)) * (b - t);
+      // With a film the outside temperature is named under the curve's end: room for it.
+      const pad = spec.h !== undefined ? 22 : 0;
+      const sy = (T: number) => t + ((hi - T) / (hi - lo || 1)) * (b - pad - t);
       const pts: Pt[] = [];
       for (let i = 0; i <= 30; i++) {
         const rr = r1! + ((r2! - r1!) * i) / 30;
@@ -821,8 +830,8 @@ function Cylinder({ spec, calc }: { spec: Spec; calc: Calculator }) {
           chart.label,
           i === 2
             ? [
+                [0, 16, 'end'],
                 [0, -8, 'end'],
-                [0, 18, 'end'],
               ]
             : [
                 [6, -6, 'start'],

@@ -7,7 +7,7 @@
  */
 import { useMemo, type ReactNode } from 'react';
 import { View } from 'react-native';
-import Svg, { Circle, Defs, Ellipse, G, Line, Path, Rect } from 'react-native-svg';
+import Svg, { Circle, ClipPath, Defs, Ellipse, G, Line, Path, Rect } from 'react-native-svg';
 
 import type { InductionField, InductionRails } from '@/data/modules/typesHe2e';
 import { chart, usePalette } from '@/theme';
@@ -127,7 +127,7 @@ function WireEnd({
 function WireView({ spec, calc }: { spec: Field<'wire'>; calc: Calculator }) {
   const c = usePalette();
   const R = useHe2e(calc);
-  const paint = usePaintIds('wire', 'wire2');
+  const paint = usePaintIds('wire', 'wire2', 'rings');
   const mu0 = spec.mu0 ?? MU0;
   const I = R.v(spec.current, 1);
   const r = Math.max(1e-12, R.v(spec.r, 0.02));
@@ -203,52 +203,60 @@ function WireView({ spec, calc }: { spec: Field<'wire'>; calc: Calculator }) {
           const Bref = Math.max(1e-30, Bat(rp));
           const vecLen = (px: number) => Math.min(64, (38 * Bat(px)) / Bref);
           const dragAt = drag(rp);
+          const rW = labW('r', R.say(spec.r, r, 'm'));
+          const rUnder = thick && rW / 2 + 26 > rp / 2;
           return (
             <View>
               <Svg width={w} height={h} opacity={wrongSide ? 0.45 : 1}>
                 <Defs>
                   <Metal id={paint.wire} light={c.copper} dark={c.copperDark} />
                   <Metal id={paint.wire2} light={c.copper} dark={c.copperDark} />
+                  {/* With the B(r) graph under it, the rings stop above the graph. */}
+                  <ClipPath id={paint.rings}>
+                    <Rect x={0} y={0} width={w} height={thick ? topH : h} />
+                  </ClipPath>
                 </Defs>
                 {/* B lines: circles round the wire, ccw for current out of the page. */}
-                {okI
-                  ? rings.map((rad, i) => (
-                      <G key={i}>
-                        <Circle
-                          cx={O.x}
-                          cy={O.y}
-                          r={rad}
-                          stroke={c.he2eField}
-                          strokeWidth={1.3}
-                          fill="none"
-                          opacity={0.75}
-                        />
-                        {[0.75, 1.75].map((t) => (
-                          <CircleHead
-                            key={t}
+                <G clipPath={url(paint.rings)}>
+                  {okI
+                    ? rings.map((rad, i) => (
+                        <G key={i}>
+                          <Circle
                             cx={O.x}
                             cy={O.y}
                             r={rad}
-                            a={t * Math.PI + i * 0.25}
-                            ccw={out}
-                            color={c.he2eField}
+                            stroke={c.he2eField}
+                            strokeWidth={1.3}
+                            fill="none"
+                            opacity={0.75}
                           />
-                        ))}
-                        {/* B here, to the same scale as at r: it falls off away from the wire. */}
-                        {I !== 0 && Math.abs(rad - rp) > 6 && O.x - rad > 4 ? (
-                          <Vec
-                            x1={O.x - rad}
-                            y1={O.y}
-                            x2={O.x - rad}
-                            y2={O.y + (out ? 1 : -1) * vecLen(rad)}
-                            color={c.he2eField}
-                            width={2}
-                            head={7}
-                          />
-                        ) : null}
-                      </G>
-                    ))
-                  : null}
+                          {[0.75, 1.75].map((t) => (
+                            <CircleHead
+                              key={t}
+                              cx={O.x}
+                              cy={O.y}
+                              r={rad}
+                              a={t * Math.PI + i * 0.25}
+                              ccw={out}
+                              color={c.he2eField}
+                            />
+                          ))}
+                          {/* B here, to the same scale as at r: it falls off away from the wire. */}
+                          {I !== 0 && Math.abs(rad - rp) > 6 && O.x - rad > 4 ? (
+                            <Vec
+                              x1={O.x - rad}
+                              y1={O.y}
+                              x2={O.x - rad}
+                              y2={O.y + (out ? 1 : -1) * vecLen(rad)}
+                              color={c.he2eField}
+                              width={2}
+                              head={7}
+                            />
+                          ) : null}
+                        </G>
+                      ))
+                    : null}
+                </G>
                 {thick ? (
                   <G>
                     <Circle
@@ -355,12 +363,14 @@ function WireView({ spec, calc }: { spec: Field<'wire'>; calc: Calculator }) {
                   />
                 ) : null}
                 {okR ? (
+                  // Under the radius line, or under the handle when r is too short to hold it.
                   <Lab
-                    x={(O.x + P.x) / 2 + (thick ? 10 : 0)}
-                    y={O.y + (second ? 34 : 15)}
+                    x={rUnder ? inside(P.x - rW / 2, rW, w) : (O.x + P.x) / 2 + (thick ? 10 : 0)}
+                    y={rUnder ? P.y + 32 : O.y + (second ? 34 : 15)}
                     sym="r"
                     value={R.say(spec.r, r, 'm')}
-                    anchor="middle"
+                    anchor={rUnder ? 'start' : 'middle'}
+                    chip={rUnder}
                   />
                 ) : null}
                 {okR ? (
@@ -375,11 +385,11 @@ function WireView({ spec, calc }: { spec: Field<'wire'>; calc: Calculator }) {
                 ) : null}
                 {second && okR ? (
                   <Lab
-                    x={P.x}
+                    x={P.x + 10}
                     y={P.y + 36}
                     sym="I₂"
                     value={R.say(spec.second, I2, 'A')}
-                    anchor="middle"
+                    anchor="start"
                   />
                 ) : null}
                 {thick ? (
@@ -617,8 +627,13 @@ function LoopView({ spec, calc }: { spec: Field<'loop'>; calc: Calculator }) {
                         width={2.6}
                       />
                     ) : null}
+                    {/* Over the point, but never back over the loop's front half. */}
                     <Lab
-                      x={inside(P.x - labW('B', Bsay) / 2, labW('B', Bsay), w)}
+                      x={inside(
+                        Math.max(P.x - labW('B', Bsay) / 2, C.x + Rpx * 0.2 + 10),
+                        labW('B', Bsay),
+                        w,
+                      )}
                       y={P.y - 12}
                       sym="B"
                       value={Bsay}
@@ -892,6 +907,7 @@ function SolenoidView({ spec, calc }: { spec: Field<'solenoid'>; calc: Calculato
                     value={Bsay}
                     anchor="middle"
                     bold
+                    chip
                     color={c.he2eField}
                   />
                   <Line
@@ -932,7 +948,7 @@ function SolenoidView({ spec, calc }: { spec: Field<'solenoid'>; calc: Calculato
                     <ChartText
                       x={C.x}
                       y={h - 8}
-                      fontSize={chart.tiny}
+                      fontSize={chart.label}
                       textAnchor="middle"
                       fill={c.chartMuted}
                     >
@@ -1552,12 +1568,13 @@ function RailsView({
                       color={c.chartInk}
                       width={3}
                     />
+                    {/* Over the arrow: its tip is the speed's handle. */}
                     <Lab
-                      x={xRod + (vLen + 14) * vDir}
-                      y={y1 + (y2 - y1) * 0.3 + 4}
+                      x={xRod + (vLen / 2 + 8) * vDir}
+                      y={y1 + (y2 - y1) * 0.3 - 14}
                       sym="v"
                       value={R.say(x.v, v, 'm/s')}
-                      anchor={vDir > 0 ? 'start' : 'end'}
+                      anchor="middle"
                     />
                   </G>
                 ) : null}
@@ -1593,7 +1610,7 @@ function RailsView({
                       width={3}
                     />
                     <Lab
-                      x={xRod - 30 * vDir}
+                      x={xRod - 38 * vDir}
                       y={y1 + (y2 - y1) * 0.72 - 9}
                       sym="F"
                       value={Fsay}

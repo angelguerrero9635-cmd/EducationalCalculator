@@ -405,7 +405,15 @@ export function Duct({ spec, calc }: { spec: DuctSpec; calc: Calculator }) {
           rx={chamber ? 10 : 2}
           fill={chamber ? url(paint.hot) : c.aeroGas}
         />
-        <ChartText x={(10 + x0) / 2} y={cy + 4} fontSize={chart.label} textAnchor="middle" halo>
+        {/* The reservoir's name inside it; the chamber's under it (its rounded hot box is
+            narrower than the word). */}
+        <ChartText
+          x={(10 + x0) / 2}
+          y={chamber ? cy + maxHalf + WALL + 15 : cy + 4}
+          fontSize={chart.label}
+          textAnchor="middle"
+          halo
+        >
           {chamber ? 'chamber' : 'at rest'}
         </ChartText>
         {/* The gas and the steel walls. */}
