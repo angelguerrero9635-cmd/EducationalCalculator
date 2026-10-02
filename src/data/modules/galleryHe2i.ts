@@ -1,7 +1,8 @@
 /**
  * College gallery demos, round 2, group I (docs/RENDERINGS_HE.md): HC27 `truss` and its card
- * figure. Each stands in for the college page that waits, built from the plan's worked example
- * (docs/plans/he.mechanical.md, he.aero-civil-chemical.md). Spread into gallery.ts.
+ * figure, HC26 `soilProfile`. Each stands in for the college page that waits, built from the
+ * plan's worked example (docs/plans/he.mechanical.md, he.aero-civil-chemical.md). Spread into
+ * gallery.ts.
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
@@ -725,6 +726,702 @@ const zeroForce: LayoutDef = {
   ],
 };
 
+// ─── HC26 soilProfile ────────────────────────────────────────────────────────
+
+/** A limit, not a formula: `a` is at most `b`. */
+const atMost = (a: string, b: string, display: string, why: string) => ({
+  relation: {
+    id: `${a} ≤ ${b}`,
+    constraint: true,
+    display,
+    vars: [a, b],
+    residual: (x: Values) => (x[a]! <= x[b]! * (1 + 1e-9) ? 0 : 1),
+    solve: {},
+    message: () => why,
+  } as Relation,
+  steps: {} as Steps,
+});
+
+const log10 = Math.log10;
+const GW = 9.81;
+
+/** σ, u and σ′ under a dry sand over a saturated clay (soil-mechanics#2~effective-stress). */
+const effectiveStress = demo(
+  'g.he-soil-effective-stress',
+  'Effective stress below the water table',
+  {
+    use: 'Use this for “Sand 3 m thick at 18 kN/m³ lies on clay at 19 kN/m³ saturated, the water table at 3 m. Find σ, u and σ′ at 5 m.”',
+    assumptions: [
+      'The water table is at the top of the clay; the sand above it is dry (γ), the clay below saturated (γ_sat).',
+      'γ_w = 9.81 kN/m³; pore water is still, so u = γ_w × the depth below the water table.',
+    ],
+    variables: [
+      v('zw', 'z_w', 'Depth to the water table', 'm', 0.1, 50),
+      v('gamma', 'γ', 'Unit weight of the sand', 'kN/m³', 10, 25),
+      v('gsat', 'γ_sat', 'Saturated unit weight of the clay', 'kN/m³', 10, 25),
+      v('z', 'z', 'Depth', 'm', 0.1, 100),
+      v('sigma', 'σ', 'Total stress', 'kPa', 0, 1e4),
+      v('u', 'u', 'Pore water pressure', 'kPa', 0, 1e4),
+      v('se', 'σ′', 'Effective stress', 'kPa', 0, 1e4),
+    ],
+    relations: [
+      atMost('zw', 'z', '{zw} ≤ {z}', 'Pick a depth at or below the water table.'),
+      rel(
+        'σ = γz_w + γ_sat(z − z_w)',
+        '{sigma} = {gamma} × {zw} + {gsat} × ({z} − {zw})',
+        ['sigma', 'gamma', 'zw', 'gsat', 'z'],
+        (x) => x.sigma! - (x.gamma! * x.zw! + x.gsat! * (x.z! - x.zw!)),
+        {
+          sigma: [
+            (x) => x.gamma! * x.zw! + x.gsat! * (x.z! - x.zw!),
+            '{gamma} × {zw} + {gsat} × ({z} − {zw})',
+            'Add the weight of each layer above the point: unit weight × thickness.',
+          ],
+          z: [
+            (x) => fin(x.zw! + (x.sigma! - x.gamma! * x.zw!) / x.gsat!),
+            '{zw} + ({sigma} − {gamma} × {zw}) ÷ {gsat}',
+            'Take the sand’s weight off σ; the rest is clay at γ_sat.',
+          ],
+        },
+      ),
+      rel(
+        'u = γ_w(z − z_w)',
+        '{u} = 9.81 × ({z} − {zw})',
+        ['u', 'z', 'zw'],
+        (x) => x.u! - GW * (x.z! - x.zw!),
+        {
+          u: [
+            (x) => GW * (x.z! - x.zw!),
+            '9.81 × ({z} − {zw})',
+            'Water pressure grows with depth below the water table.',
+          ],
+          z: [(x) => x.zw! + x.u! / GW, '{zw} + {u} ÷ 9.81', 'The depth of water that makes u.'],
+        },
+      ),
+      rel(
+        'σ′ = σ − u',
+        '{se} = {sigma} − {u}',
+        ['se', 'sigma', 'u'],
+        (x) => x.se! - (x.sigma! - x.u!),
+        {
+          se: [
+            (x) => x.sigma! - x.u!,
+            '{sigma} − {u}',
+            'The grains carry what the water does not.',
+          ],
+          sigma: [(x) => x.se! + x.u!, '{se} + {u}', 'Add the water’s share back.'],
+          u: [(x) => x.sigma! - x.se!, '{sigma} − {se}', 'The water carries the difference.'],
+        },
+      ),
+    ],
+    example: { zw: 3, gamma: 18, gsat: 19, z: 5, sigma: 92, u: 2 * GW, se: 92 - 2 * GW },
+    startWith: ['zw', 'gamma', 'gsat', 'z'],
+    representation: {
+      kind: 'soilProfile',
+      mode: 'stress',
+      layers: [
+        { soil: 'sand', name: 'Sand', thickness: 'zw', gamma: 'gamma' },
+        { soil: 'clay', name: 'Clay', thickness: 6, gammaSat: 'gsat' },
+      ],
+      zw: 'zw',
+      z: 'z',
+      gammaW: GW,
+      sigma: 'sigma',
+      u: 'u',
+      sigmaEff: 'se',
+    },
+  },
+);
+
+/** Three layers with the water table inside the sand, read deep in the gravel. */
+const stressLayers = demo(
+  'g.he-soil-stress-layers',
+  'Stresses through three layers, the water table in the sand',
+  {
+    use: 'Use this for “The water table is 1.5 m down in a 4 m sand over 5 m of clay on gravel. Find σ′ at 12 m.”',
+    assumptions: [
+      'Sand 4 m (γ above the water table, γ_sat below it), clay 5 m, then gravel; all saturated below the table.',
+      'γ_w = 9.81 kN/m³ and still water.',
+    ],
+    variables: [
+      v('zw', 'z_w', 'Depth to the water table', 'm', 0.1, 4),
+      v('g1', 'γ₁', 'Sand above the water table', 'kN/m³', 10, 25),
+      v('g1s', 'γ₁,sat', 'Sand below the water table', 'kN/m³', 10, 25),
+      v('g2', 'γ₂,sat', 'Clay', 'kN/m³', 10, 25),
+      v('g3', 'γ₃,sat', 'Gravel', 'kN/m³', 10, 25),
+      v('z', 'z', 'Depth (in the gravel)', 'm', 9, 60),
+      v('sigma', 'σ', 'Total stress', 'kPa', 0, 1e4),
+      v('u', 'u', 'Pore water pressure', 'kPa', 0, 1e4),
+      v('se', 'σ′', 'Effective stress', 'kPa', 0, 1e4),
+    ],
+    relations: [
+      rel(
+        'σ = Σγh',
+        '{sigma} = {g1} × {zw} + {g1s} × (4 − {zw}) + {g2} × 5 + {g3} × ({z} − 9)',
+        ['sigma', 'g1', 'zw', 'g1s', 'g2', 'g3', 'z'],
+        (x) => x.sigma! - (x.g1! * x.zw! + x.g1s! * (4 - x.zw!) + x.g2! * 5 + x.g3! * (x.z! - 9)),
+        {
+          sigma: [
+            (x) => x.g1! * x.zw! + x.g1s! * (4 - x.zw!) + x.g2! * 5 + x.g3! * (x.z! - 9),
+            '{g1} × {zw} + {g1s} × (4 − {zw}) + {g2} × 5 + {g3} × ({z} − 9)',
+            'Each layer’s unit weight times its thickness above the point, added.',
+          ],
+        },
+      ),
+      rel(
+        'u = γ_w(z − z_w)',
+        '{u} = 9.81 × ({z} − {zw})',
+        ['u', 'z', 'zw'],
+        (x) => x.u! - GW * (x.z! - x.zw!),
+        {
+          u: [
+            (x) => GW * (x.z! - x.zw!),
+            '9.81 × ({z} − {zw})',
+            'Water pressure grows with depth below the water table.',
+          ],
+        },
+      ),
+      rel(
+        'σ′ = σ − u',
+        '{se} = {sigma} − {u}',
+        ['se', 'sigma', 'u'],
+        (x) => x.se! - (x.sigma! - x.u!),
+        {
+          se: [
+            (x) => x.sigma! - x.u!,
+            '{sigma} − {u}',
+            'The grains carry what the water does not.',
+          ],
+        },
+      ),
+    ],
+    example: (() => {
+      const [zw, g1, g1s, g2, g3, z] = [1.5, 17, 20, 18, 21, 12];
+      const sigma = g1 * zw + g1s * (4 - zw) + g2 * 5 + g3 * (z - 9);
+      const u = GW * (z - zw);
+      return { zw, g1, g1s, g2, g3, z, sigma, u, se: sigma - u };
+    })(),
+    startWith: ['zw', 'g1', 'g1s', 'g2', 'g3', 'z'],
+    representation: {
+      kind: 'soilProfile',
+      mode: 'stress',
+      layers: [
+        { soil: 'sand', name: 'Sand', thickness: 4, gamma: 'g1', gammaSat: 'g1s' },
+        { soil: 'clay', name: 'Clay', thickness: 5, gammaSat: 'g2' },
+        { soil: 'gravel', name: 'Gravel', thickness: 4, gammaSat: 'g3' },
+      ],
+      zw: 'zw',
+      z: 'z',
+      gammaW: GW,
+      sigma: 'sigma',
+      u: 'u',
+      sigmaEff: 'se',
+    },
+  },
+);
+
+const clayVars = (): VariableDef[] => [
+  v('H', 'H', 'Clay layer thickness', 'm', 0.1, 50),
+  v('Cc', 'C_c', 'Compression index', undefined, 0.01, 3),
+  v('e0', 'e₀', 'Initial void ratio', undefined, 0.1, 5),
+  v('s0', 'σ′₀', 'Effective stress at mid-depth now', 'kPa', 1, 5000),
+  v('ds', 'Δσ', 'Added stress at mid-depth', 'kPa', 0.1, 5000),
+  v('S', 'S', 'Settlement', 'm', 0, 50),
+];
+
+/** A normally consolidated clay (soil-mechanics#2). */
+const consolidation = demo(
+  'g.he-soil-consolidation',
+  'Settlement of a normally consolidated clay',
+  {
+    use: 'Use this for “A 4 m clay (C_c = 0.3, e₀ = 0.9) at σ′₀ = 80 kPa takes 60 kPa more. How far does it settle?”',
+    assumptions: [
+      'Normally consolidated: σ′₀ is the most the clay has carried.',
+      'σ′₀ and Δσ are taken at the layer’s middle; one-dimensional, so the clay only shortens.',
+    ],
+    variables: clayVars(),
+    relations: [
+      rel(
+        'S = C_cH ÷ (1 + e₀) × log((σ′₀ + Δσ) ÷ σ′₀)',
+        '{S} = {Cc} × {H} ÷ (1 + {e0}) × log₁₀(({s0} + {ds}) ÷ {s0})',
+        ['S', 'Cc', 'H', 'e0', 's0', 'ds'],
+        (x) => x.S! - ((x.Cc! * x.H!) / (1 + x.e0!)) * log10((x.s0! + x.ds!) / x.s0!),
+        {
+          S: [
+            (x) => fin(((x.Cc! * x.H!) / (1 + x.e0!)) * log10((x.s0! + x.ds!) / x.s0!)),
+            '{Cc} × {H} ÷ (1 + {e0}) × log₁₀(({s0} + {ds}) ÷ {s0})',
+            'The void ratio drops by C_c per tenfold rise in σ′; the layer shortens in proportion.',
+          ],
+          H: [
+            (x) => fin((x.S! * (1 + x.e0!)) / (x.Cc! * log10((x.s0! + x.ds!) / x.s0!))),
+            '{S} × (1 + {e0}) ÷ ({Cc} × log₁₀(({s0} + {ds}) ÷ {s0}))',
+            'Divide the settlement by the strain per metre.',
+          ],
+          Cc: [
+            (x) => fin((x.S! * (1 + x.e0!)) / (x.H! * log10((x.s0! + x.ds!) / x.s0!))),
+            '{S} × (1 + {e0}) ÷ ({H} × log₁₀(({s0} + {ds}) ÷ {s0}))',
+            'Undo the formula for C_c.',
+          ],
+          ds: [
+            (x) => fin(x.s0! * (10 ** ((x.S! * (1 + x.e0!)) / (x.Cc! * x.H!)) - 1)),
+            '{s0} × (10^({S} × (1 + {e0}) ÷ ({Cc} × {H})) − 1)',
+            'Undo the log: raise 10 to the power, then take σ′₀ away.',
+          ],
+        },
+      ),
+    ],
+    example: { H: 4, Cc: 0.3, e0: 0.9, s0: 80, ds: 60, S: ((0.3 * 4) / 1.9) * log10(140 / 80) },
+    startWith: ['H', 'Cc', 'e0', 's0', 'ds'],
+    representation: {
+      kind: 'soilProfile',
+      mode: 'consolidation',
+      H: 'H',
+      Cc: 'Cc',
+      e0: 'e0',
+      s0: 's0',
+      ds: 'ds',
+      S: 'S',
+    },
+  },
+);
+
+/** An overconsolidated clay loaded past σ′_p (soil-mechanics#2~overconsolidated). */
+const ocS = (x: Values) =>
+  (x.H! / (1 + x.e0!)) * (x.Cs! * log10(x.sp! / x.s0!) + x.Cc! * log10((x.s0! + x.ds!) / x.sp!));
+const overconsolidated = demo(
+  'g.he-soil-overconsolidated',
+  'Settlement of an overconsolidated clay',
+  {
+    use: 'Use this for “The same clay has been loaded to 120 kPa before (C_s = 0.05). How far does it settle now?”',
+    assumptions: [
+      'Up to σ′_p the clay recompresses along C_s; past it, it compresses along C_c.',
+      'σ′₀ ≤ σ′_p ≤ σ′₀ + Δσ: the new load takes the clay past what it has carried.',
+    ],
+    variables: [
+      ...clayVars(),
+      v('Cs', 'C_s', 'Swell index', undefined, 0.001, 1),
+      v('sp', 'σ′_p', 'Preconsolidation stress', 'kPa', 1, 5000),
+    ],
+    relations: [
+      atMost('s0', 'sp', '{s0} ≤ {sp}', 'σ′_p is at least today’s σ′₀.'),
+      {
+        relation: {
+          id: 'σ′_p ≤ σ′₀ + Δσ',
+          constraint: true,
+          display: '{sp} ≤ {s0} + {ds}',
+          vars: ['sp', 's0', 'ds'],
+          residual: (x: Values) => (x.sp! <= (x.s0! + x.ds!) * (1 + 1e-9) ? 0 : 1),
+          solve: {},
+          message: () => 'This page is for a load that takes the clay past σ′_p.',
+        } as Relation,
+        steps: {} as Steps,
+      },
+      rel(
+        'S = H ÷ (1 + e₀) × (C_s log(σ′_p ÷ σ′₀) + C_c log((σ′₀ + Δσ) ÷ σ′_p))',
+        '{S} = {H} ÷ (1 + {e0}) × ({Cs} × log₁₀({sp} ÷ {s0}) + {Cc} × log₁₀(({s0} + {ds}) ÷ {sp}))',
+        ['S', 'H', 'e0', 'Cs', 'sp', 's0', 'Cc', 'ds'],
+        (x) => x.S! - ocS(x),
+        {
+          S: [
+            (x) => fin(ocS(x)),
+            '{H} ÷ (1 + {e0}) × ({Cs} × log₁₀({sp} ÷ {s0}) + {Cc} × log₁₀(({s0} + {ds}) ÷ {sp}))',
+            'Recompression up to σ′_p along C_s, then fresh compression along C_c.',
+          ],
+        },
+      ),
+    ],
+    example: (() => {
+      const x = { H: 4, Cc: 0.3, e0: 0.9, s0: 80, ds: 60, Cs: 0.05, sp: 120 };
+      return { ...x, S: ocS(x) };
+    })(),
+    startWith: ['H', 'Cc', 'e0', 's0', 'ds', 'Cs', 'sp'],
+    representation: {
+      kind: 'soilProfile',
+      mode: 'consolidation',
+      H: 'H',
+      Cc: 'Cc',
+      e0: 'e0',
+      s0: 's0',
+      ds: 'ds',
+      Cs: 'Cs',
+      sp: 'sp',
+      S: 'S',
+    },
+  },
+);
+
+/** The drainage path and the time to consolidate (soil-mechanics#2~time-rate). */
+const timeRate = demo('g.he-soil-time-rate', 'How long a clay takes to consolidate', {
+  use: 'Use this for “A 4 m clay drained top and bottom has c_v = 2 m²/yr. When is it half consolidated?”',
+  assumptions: [
+    'Drained at the top and the bottom, so water travels at most H_dr = H ÷ 2.',
+    'T_v = (π ÷ 4)U² holds for U up to 60%.',
+  ],
+  variables: [
+    v('H', 'H', 'Clay layer thickness', 'm', 0.1, 50),
+    v('Hdr', 'H_dr', 'Drainage path', 'm', 0.05, 25),
+    v('cv', 'c_v', 'Coefficient of consolidation', 'm²/yr', 0.01, 100),
+    v('U', 'U', 'Degree of consolidation', '%', 1, 60),
+    v('Tv', 'T_v', 'Time factor', undefined, 0, 1),
+    v('t', 't', 'Time', 'yr', 0, 1e4),
+  ],
+  relations: [
+    rel('H_dr = H ÷ 2', '{Hdr} = {H} ÷ 2', ['Hdr', 'H'], (x) => x.Hdr! - x.H! / 2, {
+      Hdr: [
+        (x) => x.H! / 2,
+        '{H} ÷ 2',
+        'Water leaves by the nearer face, at most half the layer away.',
+      ],
+      H: [(x) => 2 * x.Hdr!, '2 × {Hdr}', 'Twice the drainage path.'],
+    }),
+    rel(
+      'T_v = (π ÷ 4)U²',
+      '{Tv} = π ÷ 4 × ({U} ÷ 100)²',
+      ['Tv', 'U'],
+      (x) => x.Tv! - (Math.PI / 4) * (x.U! / 100) ** 2,
+      {
+        Tv: [
+          (x) => (Math.PI / 4) * (x.U! / 100) ** 2,
+          'π ÷ 4 × ({U} ÷ 100)²',
+          'The early-time curve: T_v grows as U².',
+        ],
+        U: [
+          (x) => 100 * Math.sqrt((4 * x.Tv!) / Math.PI),
+          '100 × √(4 × {Tv} ÷ π)',
+          'Undo the square.',
+        ],
+      },
+    ),
+    rel(
+      't = T_vH_dr² ÷ c_v',
+      '{t} = {Tv} × {Hdr}² ÷ {cv}',
+      ['t', 'Tv', 'Hdr', 'cv'],
+      (x) => x.t! - (x.Tv! * x.Hdr! ** 2) / x.cv!,
+      {
+        t: [
+          (x) => fin((x.Tv! * x.Hdr! ** 2) / x.cv!),
+          '{Tv} × {Hdr}² ÷ {cv}',
+          'Time grows with the square of the drainage path.',
+        ],
+        cv: [(x) => fin((x.Tv! * x.Hdr! ** 2) / x.t!), '{Tv} × {Hdr}² ÷ {t}', 'Swap c_v and t.'],
+      },
+    ),
+  ],
+  example: { H: 4, Hdr: 2, cv: 2, U: 50, Tv: Math.PI / 16, t: ((Math.PI / 16) * 4) / 2 },
+  startWith: ['H', 'cv', 'U'],
+  representation: {
+    kind: 'soilProfile',
+    mode: 'consolidation',
+    H: 'H',
+    Hdr: 'Hdr',
+    drainage: 'double',
+  },
+});
+
+/** Bearing capacity of a strip or square footing (soil-mechanics#4, ~square). */
+function footing(id: string, title: string, use: string, square: boolean, ex: Values): ModuleDef {
+  const [k1, k3] = square ? [1.3, 0.4] : [1, 0.5];
+  const Nq = (phi: number) => Math.exp(Math.PI * tanD(phi)) * tanD(45 + phi / 2) ** 2;
+  const qu = (x: Values) => k1 * x.c! * x.Nc! + x.g! * x.Df! * x.Nq! + k3 * x.g! * x.B! * x.Ng!;
+  const nq = Nq(ex.phi!);
+  const full = { ...ex, Nq: nq, Nc: (nq - 1) / tanD(ex.phi!), Ng: 2 * (nq + 1) * tanD(ex.phi!) };
+  const q = qu(full);
+  return demo(id, title, {
+    use,
+    assumptions: [
+      'General shear failure: a wedge under the footing pushes the soil beside it out and up.',
+      'N_q and N_c are Reissner–Prandtl’s, N_γ Vesic’s (Terzaghi’s own table differs a little); no water table near the base.',
+      square
+        ? 'A square footing: shape factors 1.3 on c′N_c and 0.4 on γBN_γ; allowable = q_u ÷ 3.'
+        : 'A long strip footing; allowable = q_u ÷ 3 (a factor of safety of 3).',
+    ],
+    variables: [
+      v('phi', 'φ′', 'Friction angle', '°', 1, 45),
+      v('c', 'c′', 'Cohesion', 'kPa', 0, 500),
+      v('g', 'γ', 'Unit weight', 'kN/m³', 10, 25),
+      v('B', 'B', 'Footing width', 'm', 0.2, 20),
+      v('Df', 'D_f', 'Depth of the base', 'm', 0.1, 10),
+      v('Nq', 'N_q', 'Bearing factor N_q', undefined, 1, 1000),
+      v('Nc', 'N_c', 'Bearing factor N_c', undefined, 1, 1000),
+      v('Ng', 'N_γ', 'Bearing factor N_γ', undefined, 0, 1000),
+      v('qu', 'q_u', 'Ultimate bearing capacity', 'kPa', 0, 1e5),
+      v('qa', 'q_all', 'Allowable bearing pressure', 'kPa', 0, 1e5),
+    ],
+    relations: [
+      rel(
+        'N_q = e^(π tan φ′) tan²(45° + φ′ ÷ 2)',
+        '{Nq} = e^(π × tan({phi})) × (1 + sin({phi})) ÷ (1 − sin({phi}))',
+        ['Nq', 'phi'],
+        (x) => x.Nq! - Nq(x.phi!),
+        {
+          Nq: [
+            (x) => Nq(x.phi!),
+            'e^(π × tan({phi})) × (1 + sin({phi})) ÷ (1 − sin({phi}))',
+            'The surcharge beside the footing, carried round the log-spiral zone; tan²(45° + φ′ ÷ 2) = (1 + sin φ′) ÷ (1 − sin φ′).',
+          ],
+        },
+      ),
+      rel(
+        'N_c = (N_q − 1) cot φ′',
+        '{Nc} = ({Nq} − 1) ÷ tan({phi})',
+        ['Nc', 'Nq', 'phi'],
+        (x) => x.Nc! - (x.Nq! - 1) / tanD(x.phi!),
+        {
+          Nc: [
+            (x) => fin((x.Nq! - 1) / tanD(x.phi!)),
+            '({Nq} − 1) ÷ tan({phi})',
+            'The cohesion factor follows from N_q.',
+          ],
+        },
+      ),
+      rel(
+        'N_γ = 2(N_q + 1) tan φ′',
+        '{Ng} = 2 × ({Nq} + 1) × tan({phi})',
+        ['Ng', 'Nq', 'phi'],
+        (x) => x.Ng! - 2 * (x.Nq! + 1) * tanD(x.phi!),
+        {
+          Ng: [
+            (x) => 2 * (x.Nq! + 1) * tanD(x.phi!),
+            '2 × ({Nq} + 1) × tan({phi})',
+            'The soil’s own weight in the wedges.',
+          ],
+        },
+      ),
+      rel(
+        square ? 'q_u = 1.3c′N_c + γD_fN_q + 0.4γBN_γ' : 'q_u = c′N_c + γD_fN_q + ½γBN_γ',
+        `{qu} = ${k1} × {c} × {Nc} + {g} × {Df} × {Nq} + ${k3} × {g} × {B} × {Ng}`,
+        ['qu', 'c', 'Nc', 'g', 'Df', 'Nq', 'B', 'Ng'],
+        (x) => x.qu! - qu(x),
+        {
+          qu: [
+            qu,
+            `${k1} × {c} × {Nc} + {g} × {Df} × {Nq} + ${k3} × {g} × {B} × {Ng}`,
+            'Cohesion, the soil above the base, and the soil’s weight under it, added.',
+          ],
+          B: [
+            (x) => fin((x.qu! - k1 * x.c! * x.Nc! - x.g! * x.Df! * x.Nq!) / (k3 * x.g! * x.Ng!)),
+            `({qu} − ${k1} × {c} × {Nc} − {g} × {Df} × {Nq}) ÷ (${k3} × {g} × {Ng})`,
+            'Take the first two terms off q_u; the rest grows with B.',
+          ],
+        },
+      ),
+      rel('q_all = q_u ÷ 3', '{qa} = {qu} ÷ 3', ['qa', 'qu'], (x) => x.qa! - x.qu! / 3, {
+        qa: [(x) => x.qu! / 3, '{qu} ÷ 3', 'A factor of safety of 3.'],
+        qu: [(x) => 3 * x.qa!, '3 × {qa}', 'Undo the factor of safety.'],
+      }),
+    ],
+    example: { ...full, qu: q, qa: q / 3 },
+    startWith: ['phi', 'c', 'g', 'B', 'Df'],
+    representation: {
+      kind: 'soilProfile',
+      mode: 'footing',
+      B: 'B',
+      Df: 'Df',
+      phi: 'phi',
+      q: 'qu',
+      c: 'c',
+      gamma: 'g',
+      ...(square ? { shape: 'square' as const } : {}),
+    },
+  });
+}
+
+const stripFooting = footing(
+  'g.he-soil-footing',
+  'Bearing capacity of a strip footing',
+  'Use this for “A 2 m strip footing sits 1.5 m down in sand, φ′ = 30°, c′ = 5 kPa, γ = 18 kN/m³. Find q_u and q_all.”',
+  false,
+  { phi: 30, c: 5, g: 18, B: 2, Df: 1.5 },
+);
+
+const squareFooting = footing(
+  'g.he-soil-footing-square',
+  'A square footing on a clayey sand',
+  'Use this for “A 1.5 m square footing 1 m down: φ′ = 25°, c′ = 10 kPa, γ = 17 kN/m³. What is q_u?”',
+  true,
+  { phi: 25, c: 10, g: 17, B: 1.5, Df: 1 },
+);
+
+/** The punching shear perimeter of a square footing (concrete-design#3). */
+const punching = demo('g.he-soil-punching', 'Two-way shear around a column on a square footing', {
+  use: 'Use this for “A 16 in column on a 7.25 ft square footing, d = 15 in, P_u = 272 kips. Check punching shear.”',
+  assumptions: [
+    'A square column centred on the footing; the interior column’s 4√f′_c term governs, f′_c = 4000 psi.',
+    'The soil pushes up evenly under the factored load; the critical perimeter is d ÷ 2 out from each face.',
+  ],
+  variables: [
+    v('P', 'P', 'Service load', 'kips', 1, 1e4),
+    v('q', 'q', 'Net allowable soil pressure', 'ksf', 0.5, 50),
+    v('A', 'A_req', 'Area needed', 'ft²', 0.1, 1e4),
+    v('B', 'B', 'Footing side', 'ft', 1, 50),
+    v('Pu', 'P_u', 'Factored load', 'kips', 1, 2e4),
+    v('c', 'c', 'Column side', 'in', 4, 60),
+    v('d', 'd', 'Effective depth', 'in', 4, 60),
+    v('b0', 'b₀', 'Critical perimeter', 'in', 1, 1000),
+    v('Vu', 'V_u', 'Punching shear', 'kips', 0, 2e4),
+    v('phiVc', 'φV_c', 'Punching strength', 'kips', 0, 2e4),
+  ],
+  relations: [
+    rel('A_req = P ÷ q', '{A} = {P} ÷ {q}', ['A', 'P', 'q'], (x) => x.A! - x.P! / x.q!, {
+      A: [(x) => fin(x.P! / x.q!), '{P} ÷ {q}', 'The area that keeps the soil pressure at q.'],
+      P: [(x) => x.A! * x.q!, '{A} × {q}', 'Area times pressure.'],
+    }),
+    atMost('A', 'B', '{A} ≤ {B}²', 'The footing must be at least as big as the area needed.'),
+    {
+      relation: {
+        id: 'c + d < 12B',
+        constraint: true,
+        display: '{c} + {d} < 12 × {B}',
+        vars: ['c', 'd', 'B'],
+        residual: (x: Values) => (x.c! + x.d! < 12 * x.B! ? 0 : 1),
+        solve: {},
+        message: () => 'The column and d must fit well inside the footing.',
+      } as Relation,
+      steps: {} as Steps,
+    },
+    rel(
+      'b₀ = 4(c + d)',
+      '{b0} = 4 × ({c} + {d})',
+      ['b0', 'c', 'd'],
+      (x) => x.b0! - 4 * (x.c! + x.d!),
+      {
+        b0: [
+          (x) => 4 * (x.c! + x.d!),
+          '4 × ({c} + {d})',
+          'Four sides, each the column plus d ÷ 2 on both faces.',
+        ],
+        d: [(x) => x.b0! / 4 - x.c!, '{b0} ÷ 4 − {c}', 'One side less the column.'],
+      },
+    ),
+    rel(
+      'V_u = (P_u ÷ B²)(B² − (c + d)²)',
+      '{Vu} = {Pu} ÷ {B}² × ({B}² − (({c} + {d}) ÷ 12)²)',
+      ['Vu', 'Pu', 'B', 'c', 'd'],
+      (x) => x.Vu! - (x.Pu! / x.B! ** 2) * (x.B! ** 2 - ((x.c! + x.d!) / 12) ** 2),
+      {
+        Vu: [
+          (x) => fin((x.Pu! / x.B! ** 2) * (x.B! ** 2 - ((x.c! + x.d!) / 12) ** 2)),
+          '{Pu} ÷ {B}² × ({B}² − (({c} + {d}) ÷ 12)²)',
+          'The soil pressure on the footing outside the perimeter (inches ÷ 12 for feet).',
+        ],
+      },
+    ),
+    rel(
+      'φV_c = 0.75 × 4√f′_c b₀d',
+      '{phiVc} = 0.75 × 4 × √4000 × {b0} × {d} ÷ 1000',
+      ['phiVc', 'b0', 'd'],
+      (x) => x.phiVc! - (0.75 * 4 * Math.sqrt(4000) * x.b0! * x.d!) / 1000,
+      {
+        phiVc: [
+          (x) => (0.75 * 4 * Math.sqrt(4000) * x.b0! * x.d!) / 1000,
+          '0.75 × 4 × √4000 × {b0} × {d} ÷ 1000',
+          'Concrete’s shear strength over the perimeter’s area b₀d, in pounds ÷ 1000 for kips.',
+        ],
+      },
+    ),
+  ],
+  example: (() => {
+    const [P, q, B, Pu, c, d] = [200, 4, 7.25, 272, 16, 15];
+    const b0 = 4 * (c + d);
+    return {
+      P,
+      q,
+      A: P / q,
+      B,
+      Pu,
+      c,
+      d,
+      b0,
+      Vu: (Pu / B ** 2) * (B ** 2 - ((c + d) / 12) ** 2),
+      phiVc: (0.75 * 4 * Math.sqrt(4000) * b0 * d) / 1000,
+    };
+  })(),
+  startWith: ['P', 'q', 'B', 'Pu', 'c', 'd'],
+  representation: { kind: 'soilProfile', mode: 'plan', B: 'B', c: 'c', d: 'd', b0: 'b0', perB: 12 },
+});
+// The area limit compares A with B², not B: give it its own residual.
+punching.relations = punching.relations.map((r) =>
+  r.id === 'A ≤ B'
+    ? { ...r, residual: (x: Values) => (x.A! <= x.B! ** 2 * (1 + 1e-9) ? 0 : 1) }
+    : r,
+);
+
+/** The structural number of a flexible pavement (transportation#2). */
+function pavement(id: string, title: string, use: string, ex: Values, load?: number): ModuleDef {
+  const SN = (x: Values) => x.a1! * x.D1! + x.a2! * x.D2! * x.m2! + x.a3! * x.D3! * x.m3!;
+  return demo(id, title, {
+    use,
+    assumptions: [
+      'AASHTO 1993: thicknesses in inches; a is a layer’s strength, m its drainage (1 for the surface).',
+      'The SN needed comes from the design chart for the traffic and the subgrade, not from this page.',
+    ],
+    variables: [
+      v('a1', 'a₁', 'Surface layer coefficient', undefined, 0.01, 1),
+      v('D1', 'D₁', 'Surface thickness', 'in', 0.5, 20),
+      v('a2', 'a₂', 'Base layer coefficient', undefined, 0.01, 1),
+      v('D2', 'D₂', 'Base thickness', 'in', 0.5, 40),
+      v('m2', 'm₂', 'Base drainage coefficient', undefined, 0.2, 1.5),
+      v('a3', 'a₃', 'Subbase layer coefficient', undefined, 0.01, 1),
+      v('D3', 'D₃', 'Subbase thickness', 'in', 0.5, 60),
+      v('m3', 'm₃', 'Subbase drainage coefficient', undefined, 0.2, 1.5),
+      v('SN', 'SN', 'Structural number', undefined, 0, 30),
+    ],
+    relations: [
+      rel(
+        'SN = a₁D₁ + a₂D₂m₂ + a₃D₃m₃',
+        '{SN} = {a1} × {D1} + {a2} × {D2} × {m2} + {a3} × {D3} × {m3}',
+        ['SN', 'a1', 'D1', 'a2', 'D2', 'm2', 'a3', 'D3', 'm3'],
+        (x) => x.SN! - SN(x),
+        {
+          SN: [
+            SN,
+            '{a1} × {D1} + {a2} × {D2} × {m2} + {a3} × {D3} × {m3}',
+            'Each layer adds its strength × thickness × drainage.',
+          ],
+          D3: [
+            (x) => fin((x.SN! - x.a1! * x.D1! - x.a2! * x.D2! * x.m2!) / (x.a3! * x.m3!)),
+            '({SN} − {a1} × {D1} − {a2} × {D2} × {m2}) ÷ ({a3} × {m3})',
+            'What the surface and base leave of SN, the subbase must carry.',
+          ],
+          D1: [
+            (x) => fin((x.SN! - x.a2! * x.D2! * x.m2! - x.a3! * x.D3! * x.m3!) / x.a1!),
+            '({SN} − {a2} × {D2} × {m2} − {a3} × {D3} × {m3}) ÷ {a1}',
+            'What the base and subbase leave of SN, the surface must carry.',
+          ],
+        },
+      ),
+    ],
+    example: { ...ex, SN: SN(ex) },
+    startWith: ['a1', 'D1', 'a2', 'D2', 'm2', 'a3', 'D3', 'm3'],
+    representation: {
+      kind: 'soilProfile',
+      mode: 'pavement',
+      layers: [
+        { a: 'a1', D: 'D1' },
+        { a: 'a2', D: 'D2', m: 'm2' },
+        { a: 'a3', D: 'D3', m: 'm3' },
+      ],
+      SN: 'SN',
+      ...(load ? { load } : {}),
+    },
+  });
+}
+
+const pave = pavement(
+  'g.he-soil-pavement',
+  'A flexible pavement’s structural number',
+  'Use this for “4 in of asphalt (0.44), 8 in of base (0.14, m = 1) and 10 in of subbase (0.11, m = 0.9): find SN.”',
+  { a1: 0.44, D1: 4, a2: 0.14, D2: 8, m2: 1, a3: 0.11, D3: 10, m3: 0.9 },
+);
+
+const paveThin = pavement(
+  'g.he-soil-pavement-thick-subbase',
+  'A thin surface on a deep, poorly drained subbase',
+  'Use this for “2 in of asphalt over 6 in of base and 24 in of subbase that drains poorly (m = 0.6): what SN does it give?”',
+  { a1: 0.44, D1: 2, a2: 0.14, D2: 6, m2: 0.8, a3: 0.11, D3: 24, m3: 0.6 },
+  80,
+);
+
 export const HE2I_GALLERY_MODULES: ModuleDef[] = [
   triangle,
   sections,
@@ -735,6 +1432,16 @@ export const HE2I_GALLERY_MODULES: ModuleDef[] = [
   deflection,
   bar,
   barSteep,
+  effectiveStress,
+  stressLayers,
+  consolidation,
+  overconsolidated,
+  timeRate,
+  stripFooting,
+  squareFooting,
+  punching,
+  pave,
+  paveThin,
 ];
 
 export const HE2I_GALLERY_LAYOUTS: LayoutDef[] = [zeroForce];

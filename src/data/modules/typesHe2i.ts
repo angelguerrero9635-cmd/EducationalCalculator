@@ -1,8 +1,8 @@
 /**
- * Picture specs for college pictures, round 2, group I (docs/RENDERINGS_HE.md): HC27 `truss`
- * and its card figure `trussJoint`. Kept apart from `types.ts` so its union only names them. A
- * `NumOrVar` field is a fixed number or a variable id, in the page's own units (the spec names
- * them).
+ * Picture specs for college pictures, round 2, group I (docs/RENDERINGS_HE.md): HC27 `truss`,
+ * its card figure `trussJoint` and HC26 `soilProfile`. Kept apart from `types.ts` so its union
+ * only names them. A `NumOrVar` field is a fixed number or a variable id, in the page's own
+ * units (the spec names them).
  */
 import type { NumOrVar } from './typesGraphs';
 
@@ -114,3 +114,108 @@ export interface TrussJointCard {
 
 export const TRUSS_CARD_W = 96;
 export const TRUSS_CARD_H = 72;
+
+/** A soil layer, top down: its kind (how it is painted), thickness (m) and unit weights. */
+export interface SoilLayer {
+  soil: 'sand' | 'clay' | 'silt' | 'gravel';
+  name?: string;
+  thickness: NumOrVar;
+  /** Unit weight above the water table, and saturated below it (kN/m³). */
+  gamma?: NumOrVar;
+  gammaSat?: NumOrVar;
+}
+
+/**
+ * Soil to scale (HC26; ACC-P17), painted in its materials (sand, silt, clay, gravel, concrete,
+ * asphalt); the stress lines and plans stay flat. Lengths in m and stresses in kPa unless a mode
+ * says otherwise.
+ *
+ * - `stress`: layers with the water table at `zw`; σ, u and σ′ against depth beside the column,
+ *   read at depth `z` (σ = Σγh, u = γ_w(z − z_w) below the table and 0 above, σ′ = σ − u).
+ *   `gammaW` is the page's unit weight of water (default 9.81). The last layer runs on down.
+ * - `consolidation`: a clay layer `H` thick under a new load `ds` (Δσ), its mid-depth point
+ *   with `s0` (σ′₀), drainage arrows out of the top (and the bottom when `drainage: 'double'`),
+ *   the drainage path `Hdr`, and the settled surface `S` dashed to scale. `Cs` and `sp` (σ′_p)
+ *   make it overconsolidated.
+ * - `footing`: a strip (or `shape: 'square'`) footing `B` wide with its base at `Df`, to scale,
+ *   q_u pushing up on its base, and the general shear failure wedges from `phi` (the active
+ *   wedge, the log-spiral zone and the passive wedge on each side).
+ * - `plan`: a square footing seen from above, `B` on a side, the column `c` square at its
+ *   middle, the punching perimeter d ÷ 2 out from the column's faces (b₀ = 4(c + d)), the area
+ *   outside it shaded. `perB` is how many units of c and d make one unit of B (12: in and ft).
+ * - `pavement`: surface, base and subbase to scale by `D` (in) on the subgrade, each with its
+ *   a and m, a wheel and its axle load on top; SN = Σ a·D·m.
+ */
+export type SoilProfileSpec =
+  | {
+      kind: 'soilProfile';
+      mode: 'stress';
+      layers: SoilLayer[];
+      zw: NumOrVar;
+      z: NumOrVar;
+      gammaW?: NumOrVar;
+      sigma?: NumOrVar;
+      u?: NumOrVar;
+      sigmaEff?: NumOrVar;
+    }
+  | {
+      kind: 'soilProfile';
+      mode: 'consolidation';
+      H: NumOrVar;
+      s0?: NumOrVar;
+      ds?: NumOrVar;
+      Cc?: NumOrVar;
+      e0?: NumOrVar;
+      Cs?: NumOrVar;
+      sp?: NumOrVar;
+      S?: NumOrVar;
+      drainage?: 'double' | 'single';
+      Hdr?: NumOrVar;
+    }
+  | {
+      kind: 'soilProfile';
+      mode: 'footing';
+      B: NumOrVar;
+      Df: NumOrVar;
+      phi: NumOrVar;
+      /** q_u, checked against the bearing equation when `c` and `gamma` are given. */
+      q?: NumOrVar;
+      c?: NumOrVar;
+      gamma?: NumOrVar;
+      shape?: 'strip' | 'square';
+    }
+  | {
+      kind: 'soilProfile';
+      mode: 'plan';
+      B: NumOrVar;
+      c: NumOrVar;
+      d: NumOrVar;
+      b0?: NumOrVar;
+      perB?: number;
+      units?: { B?: string; c?: string };
+    }
+  | {
+      kind: 'soilProfile';
+      mode: 'pavement';
+      layers: { a: NumOrVar; D: NumOrVar; m?: NumOrVar }[];
+      SN?: NumOrVar;
+      load?: NumOrVar;
+    };
+
+export function soilProfileVars(r: SoilProfileSpec): string[] {
+  switch (r.mode) {
+    case 'stress':
+      return [
+        ...r.layers.flatMap((l) => ids(l.thickness, l.gamma, l.gammaSat)),
+        ...ids(r.zw, r.z, r.gammaW, r.sigma, r.u, r.sigmaEff),
+      ];
+    case 'consolidation':
+      return ids(r.H, r.s0, r.ds, r.Cc, r.e0, r.Cs, r.sp, r.S, r.Hdr);
+    case 'footing':
+      return ids(r.B, r.Df, r.phi, r.q, r.c, r.gamma);
+    case 'plan':
+      return ids(r.B, r.c, r.d, r.b0);
+    case 'pavement':
+      return [...r.layers.flatMap((l) => ids(l.a, l.D, l.m)), ...ids(r.SN, r.load)];
+  }
+}

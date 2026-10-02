@@ -12,10 +12,17 @@ import {
   solveTruss,
   unitLoadDeflection,
 } from '@/components/module/reps/trussMath';
+import {
+  bearingFactors,
+  settlement,
+  stackLayers,
+  stressAt,
+  structuralNumber,
+} from '@/components/module/reps/soilMath';
 
 import type { LayoutDef } from '../layouts';
 import type { NumOrVar } from '../typesGraphs';
-import type { TrussJointCard, TrussSpec } from '../typesHe2i';
+import type { SoilProfileSpec, TrussJointCard, TrussSpec } from '../typesHe2i';
 
 type Val = (id: string) => number | undefined;
 
@@ -192,4 +199,119 @@ export function trussJointCardIssues(l: LayoutDef): string[] {
       out.push(`card "${label}": a member runs into the support`);
   }
   return out;
+}
+
+/** HC26 `soilProfile`. */
+export function soilProfileIssues(rep: SoilProfileSpec, val: Val): string[] {
+  const out: string[] = [];
+  const get = reader(val);
+  const same = (x: NumOrVar | undefined, want: number | undefined, what: string) => {
+    const v = get(x);
+    if (v === undefined || want === undefined || !Number.isFinite(want)) return;
+    if (!near(v, want)) out.push(`soilProfile: ${what} is ${v}, the picture draws ${want}`);
+  };
+  switch (rep.mode) {
+    case 'stress': {
+      const ls = rep.layers.map((l) => ({
+        thickness: get(l.thickness),
+        gamma: get(l.gamma),
+        gammaSat: get(l.gammaSat),
+      }));
+      const [zw, z] = [get(rep.zw), get(rep.z)];
+      const gw = get(rep.gammaW) ?? 9.81;
+      if (
+        zw === undefined ||
+        z === undefined ||
+        ls.some((l, i) => i < ls.length - 1 && l.thickness === undefined) ||
+        rep.layers.some(
+          (l, i) =>
+            (l.gamma !== undefined && ls[i]!.gamma === undefined) ||
+            (l.gammaSat !== undefined && ls[i]!.gammaSat === undefined),
+        )
+      )
+        return out;
+      const layers = stackLayers(ls.map((l) => ({ ...l, thickness: l.thickness ?? 0 })));
+      const at = stressAt(layers, zw, z, gw);
+      same(rep.sigma, at.sigma, 'σ at z');
+      same(rep.u, at.u, 'u at z');
+      same(rep.sigmaEff, at.eff, 'σ′ at z');
+      // σ′ = σ − u at the marked depth; u = 0 above the water table.
+      const [s, u, e] = [get(rep.sigma), get(rep.u), get(rep.sigmaEff)];
+      if (s !== undefined && u !== undefined && e !== undefined && !near(e, s - u))
+        out.push(`soilProfile: σ′ = ${e} is not σ − u = ${s - u}`);
+      if (u !== undefined && z <= zw && Math.abs(u) > 1e-9)
+        out.push(`soilProfile: u = ${u} above the water table`);
+      return out;
+    }
+    case 'consolidation': {
+      const [H, s0, ds, Cc, e0, Cs, sp] = [
+        rep.H,
+        rep.s0,
+        rep.ds,
+        rep.Cc,
+        rep.e0,
+        rep.Cs,
+        rep.sp,
+      ].map(get);
+      if (rep.Cs !== undefined && (Cs === undefined || sp === undefined)) return out;
+      // The overconsolidated formula holds for σ′₀ ≤ σ′_p ≤ σ′₀ + Δσ (the page's limits).
+      if (rep.Cs !== undefined && sp !== undefined && s0 !== undefined && ds !== undefined)
+        if (sp < s0 || sp > s0 + ds) return out;
+      if (
+        H !== undefined &&
+        s0 !== undefined &&
+        ds !== undefined &&
+        Cc !== undefined &&
+        e0 !== undefined
+      )
+        same(rep.S, settlement(H, Cc, e0, s0, ds, Cs, sp), 'S');
+      if (H !== undefined && rep.Hdr !== undefined)
+        same(rep.Hdr, (rep.drainage ?? 'double') === 'double' ? H / 2 : H, 'H_dr');
+      return out;
+    }
+    case 'footing': {
+      const [B, Df, phi, c, g] = [rep.B, rep.Df, rep.phi, rep.c, rep.gamma].map(get);
+      if (phi !== undefined && (phi < 0 || phi > 50))
+        out.push(`soilProfile: φ′ = ${phi} is outside 0–50°`);
+      if (B !== undefined && !(B > 0)) out.push(`soilProfile: B = ${B}`);
+      if (
+        B === undefined ||
+        Df === undefined ||
+        phi === undefined ||
+        c === undefined ||
+        g === undefined
+      )
+        return out;
+      const f = bearingFactors(phi);
+      const sq = rep.shape === 'square';
+      same(
+        rep.q,
+        (sq ? 1.3 : 1) * c * f.Nc + g * Df * f.Nq + (sq ? 0.4 : 0.5) * g * B * f.Ng,
+        'q_u',
+      );
+      return out;
+    }
+    case 'plan': {
+      const [B, cc, d] = [rep.B, rep.c, rep.d].map(get);
+      if (cc === undefined || d === undefined) return out;
+      same(rep.b0, 4 * (cc + d), 'b₀ = 4(c + d)');
+      if (B !== undefined && cc + d >= B * (rep.perB ?? 1))
+        out.push('soilProfile: the punching perimeter runs past the footing');
+      return out;
+    }
+    case 'pavement': {
+      const ls = rep.layers.map((l) => ({
+        a: get(l.a),
+        D: get(l.D),
+        m: l.m === undefined ? 1 : get(l.m),
+      }));
+      if (ls.some((l) => l.a === undefined || l.D === undefined || l.m === undefined)) return out;
+      same(
+        rep.SN,
+        structuralNumber(ls.map((l) => ({ a: l.a!, D: l.D!, m: l.m! }))),
+        'SN = Σ a·D·m',
+      );
+      return out;
+    }
+  }
 }
