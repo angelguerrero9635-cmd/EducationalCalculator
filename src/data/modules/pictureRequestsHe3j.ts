@@ -29,6 +29,35 @@ const E = 'he.engineering.';
 export const HE3J_REQUESTS: PictureRequest[] = [
   {
     ...ask(
+      'HC61',
+      'connection',
+      'Steel connections, painted: a plate with a row of bolt holes and the net section lit through them (the edge view gives t); a lap splice with n bolts in rows of two, in plan and in edge view with its one shear plane; a plate lapped on a gusset with two fillet welds and the throat in an enlarged section; a plate end with a line of holes and the block that tears out along the shear and tension planes',
+      [
+        `${E}steel-design#1~tension`,
+        `${E}steel-design#3`,
+        `${E}steel-design#3~weld`,
+        `${E}steel-design#3~block-shear`,
+      ],
+      [
+        'From ACC-P24. A new kind (typesHe3j.ts ConnectionSpec, reps/Connection.tsx). US units (in, ksi, kips); the demos offer US units only.',
+        "Fields: { kind: 'connection', mode: 'tension' | 'bolts' | 'weld' | 'blockShear', plateWidth?, t?, holes?, holeSize?, Ag?, An?, Ae?, U?, Fy?, Fu?, strength?, d?, n?, Ab?, Fnv?, perBolt?, weldLeg?, weldLength?, welds? (2), Fexx?, throat?, perInch?, Agv?, Anv?, Ant?, Ubs? }. A field is a variable id or a number.",
+        "Example (~tension): { kind: 'connection', mode: 'tension', plateWidth: 'w', t: 't', holes: 'nh', holeSize: 'dh', Ag: 'Ag', An: 'An', U: 'U', Ae: 'Ae', Fy: 'Fy', Fu: 'Fu', strength: 'Pn' }. Main (#3): { mode: 'bolts', d: 'd', n: 'n', Ab: 'Ab', Fnv: 'Fnv', perBolt: 'rn', strength: 'Rn' }. ~weld: { mode: 'weld', weldLeg: 'w', weldLength: 'L', welds: 2, Fexx: 'Fexx', throat: 'th', perInch: 'qw', strength: 'R' }. ~block-shear: { mode: 'blockShear', Agv: 'Agv', Anv: 'Anv', Ant: 'Ant', Fy: 'Fy', Fu: 'Fu', Ubs: 'Ubs', strength: 'Rn', holes: 3 }.",
+        'The harness (harness/picturesHe3j.ts) checks the holes drawn are a whole count and leave plate (net width = w − holes × size > 0), A_g = wt, A_n = (w − holes × size)t, A_e = UA_n, φP_n = min(0.90F_yA_g, 0.75F_uA_e); A_b = πd² ÷ 4, φr_n = 0.75F_nvA_b, φR_n = nφr_n; throat 0.707w, 0.75 × 0.6F_EXX × throat per inch and the welds’ total; A_nv ≤ A_gv and φR_n = 0.75 × min(0.6F_uA_nv + U_bsF_uA_nt, 0.6F_yA_gv + U_bsF_uA_nt). The block-shear page gives areas, not a layout: the picture draws one thickness throughout, the shear plane’s length, the holes on it and the tension leg in the areas’ ratio, and says so. Bolt spacing is drawn at 3d with 1.5d edges.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-connection-tension',
+      'g.he-connection-tension-wide',
+      'g.he-connection-bolts',
+      'g.he-connection-bolts-seven',
+      'g.he-connection-weld',
+      'g.he-connection-blockShear',
+      'g.he-connection-blockShear-rupture',
+    ],
+  },
+  {
+    ...ask(
       'HC60',
       'roadCurve',
       'Road geometry: the road from above with a car, the reaction strip and the braking strip to a box on the road, to one scale; a circular curve between tangents (PC, PI, PT, R, Δ, T, L, E) to scale, with the banked road in section for e and f; a crest vertical curve and the sight line of length S at its worst place, clearing or just touching the crest',

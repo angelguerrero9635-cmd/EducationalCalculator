@@ -192,6 +192,7 @@ import { ComplexPlaneHe2a } from './ComplexPlaneHe2a';
 import { Bode } from './Bode';
 import { StreamChannelHe } from './StreamChannelHe';
 import { RoadCurve } from './RoadCurve';
+import { Connection } from './Connection';
 import { PotentialWell } from './PotentialWell';
 import { UnitCell } from './UnitCell';
 import { Globe } from './Globe';
@@ -368,6 +369,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <Bode spec={spec} calc={calc} />; // HC22
     case 'roadCurve':
       return <RoadCurve spec={spec} calc={calc} />; // HC60
+    case 'connection':
+      return <Connection spec={spec} calc={calc} />; // HC61
     case 'velocityProfile':
       return <VelocityProfile spec={spec} calc={calc} />;
     case 'potentialWell':

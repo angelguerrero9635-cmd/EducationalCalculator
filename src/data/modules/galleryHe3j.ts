@@ -7,13 +7,16 @@
  *
  * HC60: `roadCurve` (ACC-P22): stopping sight distance, the least radius with superelevation,
  * curve elements, a crest vertical curve (transportation#1).
+ *
+ * HC61: `connection` (ACC-P24): a plate in tension and its net section, a bolt group in a lap
+ * splice, fillet welds, block shear (steel-design#1~tension, #3).
  */
 import { formatNumber } from '@/engine/format';
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
 import type { LayoutDef } from './layouts';
 import type { ModuleDef, StepText } from './types';
-import type { RoadCurveSpec, StreamChannelHeSpec } from './typesHe3j';
+import type { ConnectionSpec, RoadCurveSpec, StreamChannelHeSpec } from './typesHe3j';
 
 // ─── Building blocks ─────────────────────────────────────────────────────────
 
@@ -807,6 +810,388 @@ const roadCrestShort = crestModule(
   200,
 );
 
+// ─── HC61: a tension member's net section (steel-design#1~tension) ───────────
+
+/** c = k × a × b, solved for c (the strength formulas). */
+const scaled = (id: string, c: string, k: number, a: string, b: string, how: string) =>
+  rule(id, `{${c}} = ${k} × {${a}} × {${b}}`, [c, a, b], (v) => v[c]! - k * v[a]! * v[b]!, {
+    [c]: [(v) => k * v[a]! * v[b]!, `${k} × {${a}} × {${b}}`, how],
+    [a]: [(v) => div(v[c]!, k * v[b]!), `{${c}} ÷ (${k} × {${b}})`, `Solve for ${a}.`],
+  });
+
+/** c = min(a, b): the smaller strength governs. */
+const least = (c: string, a: string, b: string, how: string) =>
+  rule(
+    `${c} = min(${a}, ${b})`,
+    `{${c}} = min({${a}}, {${b}})`,
+    [c, a, b],
+    (v) => v[c]! - Math.min(v[a]!, v[b]!),
+    { [c]: [(v) => Math.min(v[a]!, v[b]!), `min({${a}}, {${b}})`, how] },
+  );
+
+const TENSION = rules(
+  product('Ag', 'w', 't', 'The gross area: the whole width times the thickness.'),
+  rule(
+    'A_n = (w − holes × size)t',
+    '{An} = ({w} − {nh} × {dh}) × {t}',
+    ['An', 'w', 'nh', 'dh', 't'],
+    (v) => v.An! - (v.w! - v.nh! * v.dh!) * v.t!,
+    {
+      An: [
+        (v) => pos((v.w! - v.nh! * v.dh!) * v.t!),
+        '({w} − {nh} × {dh}) × {t}',
+        'The net area: the steel left on a line through the holes.',
+      ],
+      w: [(v) => v.An! / v.t! + v.nh! * v.dh!, '{An} ÷ {t} + {nh} × {dh}', 'Solve for the width.'],
+      t: [(v) => div(v.An!, v.w! - v.nh! * v.dh!), '{An} ÷ ({w} − {nh} × {dh})', 'Solve for t.'],
+    },
+  ),
+  product('Ae', 'U', 'An', 'The effective net area: shear lag U times A_n.'),
+  scaled('φP_n yielding', 'Py', 0.9, 'Fy', 'Ag', 'Yielding of the whole plate, with φ = 0.90.'),
+  scaled('φP_n rupture', 'Pr', 0.75, 'Fu', 'Ae', 'Rupture through the holes, with φ = 0.75.'),
+  least('Pn', 'Py', 'Pr', 'The member is as strong as its weaker limit state.'),
+);
+
+const tensionVars = (): VariableDef[] => [
+  q('w', 'w', 'Plate width', 'in', 0.5, 48, 0.125),
+  q('t', 't', 'Plate thickness', 'in', 0.125, 4, 0.0625),
+  q('nh', 'n_h', 'Holes across the section', undefined, 0, 12, 1, { integer: true }),
+  q('dh', 'd_h', 'Hole size', 'in', 0.25, 2, 0.0625),
+  q('Ag', 'A_g', 'Gross area', 'in²', 0.01, 200, 0.001),
+  q('An', 'A_n', 'Net area', 'in²', 0.01, 200, 0.001),
+  q('U', 'U', 'Shear lag factor', undefined, 0.4, 1, 0.01),
+  q('Ae', 'A_e', 'Effective net area', 'in²', 0.01, 200, 0.001),
+  q('Fy', 'F_y', 'Yield strength', 'ksi', 30, 100, 1),
+  q('Fu', 'F_u', 'Tensile strength', 'ksi', 50, 120, 1),
+  q('Py', 'φP_n,y', 'Design strength, yielding', 'kips', 0.01, 100000, 0.01),
+  q('Pr', 'φP_n,r', 'Design strength, rupture', 'kips', 0.01, 100000, 0.01),
+  q('Pn', 'φP_n', 'Design strength', 'kips', 0.01, 100000, 0.01),
+];
+
+function tensionExample(w: number, t: number, nh: number, dh: number, Fy: number, Fu: number) {
+  const Ag = w * t;
+  const An = (w - nh * dh) * t;
+  const U = 1;
+  const Ae = U * An;
+  const Py = 0.9 * Fy * Ag;
+  const Pr = 0.75 * Fu * Ae;
+  return { w, t, nh, dh, Ag, An, U, Ae, Fy, Fu, Py, Pr, Pn: Math.min(Py, Pr) };
+}
+
+const TENSION_SPEC: ConnectionSpec = {
+  kind: 'connection',
+  mode: 'tension',
+  plateWidth: 'w',
+  t: 't',
+  holes: 'nh',
+  holeSize: 'dh',
+  Ag: 'Ag',
+  An: 'An',
+  U: 'U',
+  Ae: 'Ae',
+  Fy: 'Fy',
+  Fu: 'Fu',
+  strength: 'Pn',
+};
+
+const TENSION_ASSUMPTIONS = [
+  'AISC 360-22 LRFD; US units (in, ksi, kips).',
+  'One straight row of holes across the plate; no staggered paths.',
+  'U = 1 for a plate connected across its whole width.',
+];
+
+const connTension: ModuleDef = {
+  id: 'g.he-connection-tension',
+  title: 'A plate in tension: yielding against rupture at the holes',
+  use: 'Use this for the design strength of a plate in tension with a row of bolt holes.',
+  assumptions: TENSION_ASSUMPTIONS,
+  unitSystems: ['us'],
+  variables: tensionVars(),
+  ...TENSION,
+  pictureLabels: ['Py', 'Pr'],
+  example: tensionExample(6, 0.5, 2, 1, 36, 58),
+  startWith: ['w', 't', 'nh', 'dh', 'U', 'Fy', 'Fu'],
+  representation: { ...TENSION_SPEC },
+};
+
+const connTensionWide: ModuleDef = {
+  id: 'g.he-connection-tension-wide',
+  title: 'A wide plate with four holes across',
+  use: 'Use this for a wide plate where many holes cut the net section.',
+  assumptions: TENSION_ASSUMPTIONS,
+  unitSystems: ['us'],
+  variables: tensionVars(),
+  ...TENSION,
+  pictureLabels: ['Py', 'Pr'],
+  example: tensionExample(10, 0.75, 4, 1, 50, 65),
+  startWith: ['w', 't', 'nh', 'dh', 'U', 'Fy', 'Fu'],
+  representation: { ...TENSION_SPEC },
+};
+
+// ─── HC61: a bolt group in single shear (steel-design#3) ─────────────────────
+
+const BOLTS = rules(
+  rule(
+    'A_b = πd² ÷ 4',
+    '{Ab} = π × {d}² ÷ 4',
+    ['Ab', 'd'],
+    (v) => v.Ab! - (Math.PI * v.d! * v.d!) / 4,
+    {
+      Ab: [
+        (v) => (Math.PI * v.d! * v.d!) / 4,
+        'π × {d}² ÷ 4',
+        'The bolt’s area from its diameter.',
+      ],
+      d: [(v) => pos(Math.sqrt((4 * v.Ab!) / Math.PI)), '√(4 × {Ab} ÷ π)', 'Solve for d.'],
+    },
+  ),
+  scaled('φr_n = 0.75F_nvA_b', 'rn', 0.75, 'Fnv', 'Ab', 'One bolt cut once, with φ = 0.75.'),
+  product('Rn', 'n', 'rn', 'Every bolt carries an equal share.'),
+);
+
+const boltVars = (): VariableDef[] => [
+  q('d', 'd', 'Bolt diameter', 'in', 0.625, 1, 0.125, { allowed: [0.625, 0.75, 0.875, 1] }),
+  q('Fnv', 'F_nv', 'Nominal shear stress', 'ksi', 54, 68, 1, { allowed: [54, 68] }),
+  q('n', 'n', 'Number of bolts', undefined, 1, 24, 1, { integer: true }),
+  q('Ab', 'A_b', 'Bolt area', 'in²', 0.01, 5, 0.001),
+  q('rn', 'φr_n', 'Strength of one bolt', 'kips', 0.01, 1000, 0.01),
+  q('Rn', 'φR_n', 'Strength of the group', 'kips', 0.01, 100000, 0.01),
+];
+
+const boltExample = (d: number, Fnv: number, n: number): Values => {
+  const Ab = (Math.PI * d * d) / 4;
+  const rn = 0.75 * Fnv * Ab;
+  return { d, Fnv, n, Ab, rn, Rn: n * rn };
+};
+
+const BOLT_SPEC: ConnectionSpec = {
+  kind: 'connection',
+  mode: 'bolts',
+  d: 'd',
+  n: 'n',
+  Ab: 'Ab',
+  Fnv: 'Fnv',
+  perBolt: 'rn',
+  strength: 'Rn',
+};
+
+const BOLT_ASSUMPTIONS = [
+  'One shear plane; standard holes; bearing at the holes checked on its own.',
+  'Group A bolts: F_nv = 54 ksi with threads in the shear plane, 68 ksi without.',
+];
+
+const connBolts: ModuleDef = {
+  id: 'g.he-connection-bolts',
+  title: 'A lap splice: four bolts in single shear',
+  use: 'Use this for the shear strength of a bolt group in a lap splice.',
+  assumptions: BOLT_ASSUMPTIONS,
+  unitSystems: ['us'],
+  variables: boltVars(),
+  ...BOLTS,
+  example: boltExample(0.75, 54, 4),
+  startWith: ['d', 'Fnv', 'n'],
+  representation: { ...BOLT_SPEC },
+};
+
+const connBoltsSeven: ModuleDef = {
+  id: 'g.he-connection-bolts-seven',
+  title: 'Seven 1 in bolts, threads clear of the shear plane',
+  use: 'Use this for a larger bolt group with the threads excluded from the shear plane.',
+  assumptions: BOLT_ASSUMPTIONS,
+  unitSystems: ['us'],
+  variables: boltVars(),
+  ...BOLTS,
+  example: boltExample(1, 68, 7),
+  startWith: ['d', 'Fnv', 'n'],
+  representation: { ...BOLT_SPEC },
+};
+
+// ─── HC61: fillet welds (steel-design#3~weld) ────────────────────────────────
+
+const WELD = rules(
+  rule('throat = 0.707w', '{th} = 0.707 × {w}', ['th', 'w'], (v) => v.th! - 0.707 * v.w!, {
+    th: [(v) => 0.707 * v.w!, '0.707 × {w}', 'The throat of an equal-leg fillet, at 45°.'],
+    w: [(v) => v.th! / 0.707, '{th} ÷ 0.707', 'Solve for the leg.'],
+  }),
+  scaled('φR_n per inch', 'qw', 0.45, 'Fexx', 'th', 'Per inch: 0.75 × 0.6F_EXX on the throat.'),
+  rule('φR_n = 2Lq', '{R} = 2 × {L} × {qw}', ['R', 'L', 'qw'], (v) => v.R! - 2 * v.L! * v.qw!, {
+    R: [(v) => 2 * v.L! * v.qw!, '2 × {L} × {qw}', 'Two welds, each L long.'],
+    L: [(v) => div(v.R!, 2 * v.qw!), '{R} ÷ (2 × {qw})', 'Solve for the length of each weld.'],
+  }),
+);
+
+const weldVars = (): VariableDef[] => [
+  q('w', 'w', 'Fillet leg', 'in', 0.125, 1, 0.0625),
+  q('Fexx', 'F_EXX', 'Electrode strength', 'ksi', 60, 110, 10),
+  q('L', 'L', 'Length of each weld', 'in', 0.5, 100, 0.25),
+  q('th', 'throat', 'Throat', 'in', 0.01, 1, 0.0001),
+  q('qw', 'φR_n/in', 'Strength per inch', 'kip/in', 0.01, 100, 0.01),
+  q('R', 'φR_n', 'Strength of both welds', 'kips', 0.01, 10000, 0.01),
+];
+
+const weldExample = (w: number, Fexx: number, L: number): Values => {
+  const th = 0.707 * w;
+  const qw = 0.45 * Fexx * th;
+  return { w, Fexx, L, th, qw, R: 2 * L * qw };
+};
+
+const connWeld: ModuleDef = {
+  id: 'g.he-connection-weld',
+  title: 'Two fillet welds: the throat and the strength per inch',
+  use: 'Use this for the design strength of fillet welds from the leg, the electrode and the length.',
+  assumptions: [
+    'Equal-leg fillets loaded in shear along their length; E70 electrode unless typed.',
+    'φ = 0.75 on 0.6F_EXX over the throat 0.707w.',
+  ],
+  unitSystems: ['us'],
+  variables: weldVars(),
+  ...WELD,
+  example: weldExample(0.25, 70, 10),
+  startWith: ['w', 'Fexx', 'L'],
+  representation: {
+    kind: 'connection',
+    mode: 'weld',
+    weldLeg: 'w',
+    weldLength: 'L',
+    welds: 2,
+    Fexx: 'Fexx',
+    throat: 'th',
+    perInch: 'qw',
+    strength: 'R',
+  },
+};
+
+// ─── HC61: block shear (steel-design#3~block-shear) ──────────────────────────
+
+const BLOCK = rules(
+  scaled(
+    'shear rupture 0.6F_uA_nv',
+    'Vr',
+    0.6,
+    'Fu',
+    'Anv',
+    'Shear rupture on the net shear plane.',
+  ),
+  scaled(
+    'shear yielding 0.6F_yA_gv',
+    'Vy',
+    0.6,
+    'Fy',
+    'Agv',
+    'Shear yielding on the gross shear plane: the cap.',
+  ),
+  rule(
+    'tension rupture U_bsF_uA_nt',
+    '{Tn} = {Ubs} × {Fu} × {Ant}',
+    ['Tn', 'Ubs', 'Fu', 'Ant'],
+    (v) => v.Tn! - v.Ubs! * v.Fu! * v.Ant!,
+    {
+      Tn: [
+        (v) => v.Ubs! * v.Fu! * v.Ant!,
+        '{Ubs} × {Fu} × {Ant}',
+        'Tension rupture on the net tension plane.',
+      ],
+      Ubs: [(v) => div(v.Tn!, v.Fu! * v.Ant!), '{Tn} ÷ ({Fu} × {Ant})', 'Solve for U_bs.'],
+      Ant: [(v) => div(v.Tn!, v.Ubs! * v.Fu!), '{Tn} ÷ ({Ubs} × {Fu})', 'Solve for A_nt.'],
+    },
+  ),
+  rule(
+    'φR_n = 0.75(min(shear) + tension)',
+    '{Rn} = 0.75 × (min({Vr}, {Vy}) + {Tn})',
+    ['Rn', 'Vr', 'Vy', 'Tn'],
+    (v) => v.Rn! - 0.75 * (Math.min(v.Vr!, v.Vy!) + v.Tn!),
+    {
+      Rn: [
+        (v) => 0.75 * (Math.min(v.Vr!, v.Vy!) + v.Tn!),
+        '0.75 × (min({Vr}, {Vy}) + {Tn})',
+        'The weaker shear plane plus the tension plane, with φ = 0.75.',
+      ],
+      Tn: [
+        (v) => v.Rn! / 0.75 - Math.min(v.Vr!, v.Vy!),
+        '{Rn} ÷ 0.75 − min({Vr}, {Vy})',
+        'Take the weaker shear plane from R_n ÷ 0.75.',
+      ],
+    },
+  ),
+  {
+    relation: {
+      id: 'A_nv ≤ A_gv',
+      constraint: true,
+      display: '{Anv} is at most {Agv}',
+      vars: ['Anv', 'Agv'],
+      residual: (v: Values) => (v.Anv! <= v.Agv! ? 0 : 1),
+      solve: {},
+    } satisfies Relation,
+    steps: {},
+  },
+);
+
+const blockVars = (): VariableDef[] => [
+  q('Agv', 'A_gv', 'Gross shear area', 'in²', 0.01, 100, 0.01),
+  q('Anv', 'A_nv', 'Net shear area', 'in²', 0.01, 100, 0.01),
+  q('Ant', 'A_nt', 'Net tension area', 'in²', 0.01, 100, 0.01),
+  q('Fy', 'F_y', 'Yield strength', 'ksi', 30, 100, 1),
+  q('Fu', 'F_u', 'Tensile strength', 'ksi', 50, 120, 1),
+  q('Ubs', 'U_bs', 'Tension stress factor', undefined, 0.5, 1, 0.5),
+  q('Vr', 'R_vr', 'Shear rupture', 'kips', 0.01, 100000, 0.01, { derived: true }),
+  q('Vy', 'R_vy', 'Shear yielding', 'kips', 0.01, 100000, 0.01, { derived: true }),
+  q('Tn', 'R_t', 'Tension rupture', 'kips', 0.01, 100000, 0.01, { derived: true }),
+  q('Rn', 'φR_n', 'Block shear strength', 'kips', 0.01, 100000, 0.01, { derived: true }),
+];
+
+const blockExample = (Agv: number, Anv: number, Ant: number, Fy: number, Fu: number) => {
+  const Vr = 0.6 * Fu * Anv;
+  const Vy = 0.6 * Fy * Agv;
+  const Tn = Fu * Ant;
+  return { Agv, Anv, Ant, Fy, Fu, Ubs: 1, Vr, Vy, Tn, Rn: 0.75 * (Math.min(Vr, Vy) + Tn) };
+};
+
+const BLOCK_SPEC: ConnectionSpec = {
+  kind: 'connection',
+  mode: 'blockShear',
+  Agv: 'Agv',
+  Anv: 'Anv',
+  Ant: 'Ant',
+  Fy: 'Fy',
+  Fu: 'Fu',
+  Ubs: 'Ubs',
+  strength: 'Rn',
+  holes: 3,
+};
+
+const BLOCK_ASSUMPTIONS = [
+  'AISC 360-22 J4.3, LRFD with φ = 0.75; one line of three bolts.',
+  'U_bs = 1 where the tension stress is uniform.',
+];
+
+const connBlock: ModuleDef = {
+  id: 'g.he-connection-blockShear',
+  title: 'Block shear: the end of a plate tearing out',
+  use: 'Use this for the block shear strength of a bolted end from its shear and tension areas.',
+  assumptions: BLOCK_ASSUMPTIONS,
+  unitSystems: ['us'],
+  variables: blockVars(),
+  ...BLOCK,
+  pictureLabels: ['Vr', 'Vy', 'Tn'],
+  example: blockExample(3, 2.25, 0.75, 36, 58),
+  startWith: ['Agv', 'Anv', 'Ant', 'Fy', 'Fu', 'Ubs'],
+  representation: { ...BLOCK_SPEC },
+};
+
+const connBlockRupture: ModuleDef = {
+  id: 'g.he-connection-blockShear-rupture',
+  title: 'Block shear with large holes: rupture governs',
+  use: 'Use this for block shear where the holes take so much of the shear plane that rupture governs.',
+  assumptions: BLOCK_ASSUMPTIONS,
+  unitSystems: ['us'],
+  variables: blockVars(),
+  ...BLOCK,
+  pictureLabels: ['Vr', 'Vy', 'Tn'],
+  example: blockExample(3, 1.5, 0.75, 36, 58),
+  startWith: ['Agv', 'Anv', 'Ant', 'Fy', 'Fu', 'Ubs'],
+  representation: { ...BLOCK_SPEC },
+};
+
 export const HE3J_GALLERY_MODULES: ModuleDef[] = [
   streamManning,
   streamManningSteep,
@@ -821,6 +1206,13 @@ export const HE3J_GALLERY_MODULES: ModuleDef[] = [
   roadElementsSharp,
   roadCrest,
   roadCrestShort,
+  connTension,
+  connTensionWide,
+  connBolts,
+  connBoltsSeven,
+  connWeld,
+  connBlock,
+  connBlockRupture,
 ];
 
 export const HE3J_GALLERY_LAYOUTS: LayoutDef[] = [];
