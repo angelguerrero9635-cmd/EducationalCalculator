@@ -46,6 +46,23 @@ export const HE4B_REQUESTS: PictureRequest[] = [
     ].join(' '),
   },
   {
+    id: 'HC108',
+    kind: 'vectorDiagram',
+    what: 'The vector model of L: every allowed cone about z faint on the sphere |L| = √(ℓ(ℓ + 1))ħ, the page’s cone lit with L on it, its z-part mħ along the axis and θ from z marked',
+    pages: [`${P}quantum#2`],
+    status: 'drawn',
+    gallery: [
+      'g.he-vector-diagram-cone',
+      'g.he-vector-diagram-cone-down',
+      'g.he-vector-diagram-cone-top',
+    ],
+    notes: [
+      'From P-P26 (HE-physics-P26). Option `cone` on `vectorDiagram` (ConeOf in typesHe4b.ts, drawn by VectorCone.tsx through VectorHe4b.tsx in its own x, y, z view, no `space` needed; checked by he4bIssues in harness/picturesHe4b.ts: cos θ = m ÷ √(ℓ(ℓ + 1)), ℓ whole, |m| ≤ ℓ, and the named values). Off unless a page sets it.',
+      "Fields: cone: { l, m, size? (|L| in ħ), lz? (L_z in ħ), angle? (θ, °), states? (2ℓ + 1) }; vectors: [{ name: 'L' }] names the vector. Drag L's tip up or down to step m (whole numbers, −ℓ to ℓ). The demo adds a check-only rule |m| ≤ ℓ (constraint) so typed m stays on a cone.",
+      "Example (quantum#2): { kind: 'vectorDiagram', vectors: [{ name: 'L' }], cone: { l: 'l', m: 'm', size: 'L', lz: 'Lz', angle: 'theta', states: 'n' } }.",
+    ].join(' '),
+  },
+  {
     id: 'HC171',
     kind: 'vectorDiagram',
     what: 'Up to four forces from one point, each angle from the horizontal marked, and under them the force polygon tip to tail: closed in equilibrium, else the resultant R from the first tail to the last tip',

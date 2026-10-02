@@ -289,6 +289,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `vectorDiagram`    | `project: { proj?, perp?, k? }`          | u onto v: projᵥ u along v, u − projᵥ u dashed, right angle; in space (HC96)   |
 | `vectorDiagram`    | `masses`, `centerOfMass`                 | balls sized by mass on a rod, a fulcrum at x_cm; ⊕ on a plane (HC100)         |
 | `vectorDiagram`    | `forces: { list, equilibrium? }`         | 2–4 forces at a point, angles to level; tip to tail: closes, or R (HC171)     |
+| `vectorDiagram`    | `cone: { l, m, size?, angle? }`          | L on its cone about z at mħ, all 2ℓ + 1 cones faint, θ from z (HC108)         |
 | `polarGrid`        | `curve.shape: 'conic'`, `k, m, n, fn`    | r = k ÷ (m − n cos θ): focus at the pole, directrix, PF ÷ PD = e at P (H106)  |
 | `conicGraph`       | `conic: 'turned'`, `A, B, C, F`; `angle` | Ax² + Bxy + Cy² = 1 with x′, y′ at θ, A′x′² + C′y′² = 1, its shape (H106)     |
 | `functionGraph`    | `riemann: { n, to, from?, side?, sum? }` | n rectangles of equal width under the curve, right, left or middle; S (H106)  |

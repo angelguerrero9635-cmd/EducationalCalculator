@@ -3,6 +3,7 @@
  * college page that waits, built from the plan's worked example. Spread into gallery.ts.
  * HC96: `vectorDiagram` `project` (linear-algebra#4 ~projection, ~gram-schmidt).
  * HC171: `vectorDiagram` `forces` (statics#0, ~components).
+ * HC108: `vectorDiagram` `cone` (quantum#2).
  * HC100: `vectorDiagram` `masses`, `centerOfMass` (university-1#3~center-of-mass).
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
@@ -690,6 +691,108 @@ const forcesFour = resultant(
   ],
 );
 
+// ── HC108: the vector model of L (quantum#2) ──
+
+/** A rule that only checks (never solved), e.g. |m| ≤ ℓ. */
+const limit = (r: Rule): Rule => ({ ...r, relation: { ...r.relation, constraint: true } });
+
+/** quantum#2 main: |L| = √(ℓ(ℓ + 1))ħ, L_z = mħ, cos θ = m ÷ √(ℓ(ℓ + 1)). */
+function lCone(id: string, title: string, use: string, l: number, m: number): ModuleDef {
+  const size = Math.sqrt(l * (l + 1));
+  return page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'Only |L| and one component, L_z, can be known together: L_x and L_y spread round a cone.',
+      'm runs over the whole numbers from −ℓ to ℓ: 2ℓ + 1 cones.',
+      '|m| < √(ℓ(ℓ + 1)), so L never points straight along z. Sizes are in units of ħ.',
+    ],
+    variables: [
+      num('l', 'ℓ', 'Orbital quantum number', undefined, 1, 10, { integer: true }),
+      num('m', 'm', 'Magnetic quantum number', undefined, -10, 10, { integer: true }),
+      got('L', '|L|', 'Size of L', 'ħ', 0, 11),
+      got('Lz', 'L_z', 'z-part of L', 'ħ', -10, 10),
+      got('theta', 'θ', 'Angle from the z-axis', '°', 0, 180),
+      got('n', 'states', 'Number of states', undefined, 3, 21, { integer: true }),
+    ],
+    rules: [
+      limit(
+        rule(
+          '|m| ≤ ℓ',
+          '{m} is from −{l} to {l}',
+          ['m', 'l'],
+          (v) => (Math.abs(v.m!) <= v.l! ? 0 : 1),
+          {},
+        ),
+      ),
+      rule(
+        '|L| = √(ℓ(ℓ + 1))',
+        '{L} = √({l} × ({l} + 1))',
+        ['L', 'l'],
+        (v) => v.L! ** 2 - v.l! * (v.l! + 1),
+        {
+          L: [
+            (v) => Math.sqrt(v.l! * (v.l! + 1)),
+            '√({l} × ({l} + 1))',
+            'The size of L in ħ: the square root of ℓ(ℓ + 1), never quite ℓ.',
+          ],
+        },
+      ),
+      rule('L_z = mħ', '{Lz} = {m}', ['Lz', 'm'], (v) => v.Lz! - v.m!, {
+        Lz: [(v) => v.m!, '{m}', 'The z-part of L is m units of ħ.'],
+      }),
+      rule(
+        'cos θ = m ÷ |L|',
+        '{theta} = cos⁻¹({m} ÷ {L})',
+        ['theta', 'm', 'L'],
+        (v) => Math.cos(v.theta! * DEG) * v.L! - v.m!,
+        {
+          theta: [
+            (v) => fin(Math.acos(Math.max(-1, Math.min(1, v.m! / v.L!))) / DEG),
+            'cos⁻¹({m} ÷ {L})',
+            'The z-part over the size is the cosine of the angle from z.',
+          ],
+        },
+      ),
+      rule('states = 2ℓ + 1', '{n} = 2 × {l} + 1', ['n', 'l'], (v) => v.n! - 2 * v.l! - 1, {
+        n: [(v) => 2 * v.l! + 1, '2 × {l} + 1', 'Count m from −ℓ to ℓ: 2ℓ + 1 values.'],
+      }),
+    ],
+    example: { l, m, L: size, Lz: m, theta: Math.acos(m / size) / DEG, n: 2 * l + 1 },
+    startWith: ['l', 'm'],
+    representation: {
+      kind: 'vectorDiagram',
+      vectors: [{ name: 'L' }],
+      cone: { l: 'l', m: 'm', size: 'L', lz: 'Lz', angle: 'theta', states: 'n' },
+    },
+  });
+}
+
+const coneMain = lCone(
+  'g.he-vector-diagram-cone',
+  'The vector model of L: ℓ = 2, m = 1',
+  'Use this for “For ℓ = 2 and m = 1, find |L|, its z-part and the angle L makes with the z-axis.”',
+  2,
+  1,
+);
+
+const coneDown = lCone(
+  'g.he-vector-diagram-cone-down',
+  'A cone below the plane: ℓ = 3, m = −2',
+  'Use this for “An f electron has ℓ = 3 and m = −2. At what angle to z does L point?”',
+  3,
+  -2,
+);
+
+const coneTop = lCone(
+  'g.he-vector-diagram-cone-top',
+  'The top cone still misses the z-axis: ℓ = 4, m = 4',
+  'Use this for “For ℓ = 4, how close to the z-axis can L ever point?”',
+  4,
+  4,
+);
+
 export const HE4B_GALLERY_MODULES: ModuleDef[] = [
   projectMain,
   projectObtuse,
@@ -702,6 +805,9 @@ export const HE4B_GALLERY_MODULES: ModuleDef[] = [
   forcesShallow,
   forcesThree,
   forcesFour,
+  coneMain,
+  coneDown,
+  coneTop,
 ];
 
 export const HE4B_GALLERY_LAYOUTS: LayoutDef[] = [];
