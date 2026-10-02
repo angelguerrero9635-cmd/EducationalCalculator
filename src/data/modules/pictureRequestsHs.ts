@@ -1092,17 +1092,17 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'H74',
       'rockLayers',
       'Absolute ages on layers, an igneous intrusion cutting across, index fossils',
-      ['s.12.radiometric-dating'],
+      {
+        's.12.radiometric-dating~bracket': '"bracket":2',
+        's.12.radiometric-dating~potassium': '"sample"',
+        's.12.radiometric-dating~cross-cutting': '"intrusion"',
+      },
     ),
-    status: 'drawn',
-    gallery: [
-      'g.s12-radiometric-dating-half-life',
-      'g.s12-radiometric-dating-young',
-      'g.s12-radiometric-dating-bracket',
-    ],
+    status: 'placed',
+    gallery: ['g.s12-radiometric-dating-young'],
     notes:
       'Drawn (group HL) as an optional `dating` field on rockLayers (the Grade 3 fossils page is unchanged; a spec with `dating` draws the dated cliff instead): { kind: "rockLayers", dating: { layers: [{ rock: "sandstone" | "shale" | "limestone" | "siltstone" | "conglomerate" | "ash" | "lava", age?: id or number (million years), fossil?: "trilobite" | "ammonite" | "fern" }] (top to bottom, 3 to 8), intrusion?: { through: index of the highest layer the dike cuts, age? }, bracket?: index of the layer whose age is bracketed by the nearest ages above and below (a dike that cuts it makes it older than the dike; one that stops below makes it younger), sample?: { parent: percent id, layer: index (−1 for the dike), parentName, daughterName, halfLives?: id } } }; the sample is 100 atoms, parent and daughter counted from the rounded percent. Example: layers [{ rock: "sandstone", fossil: "ammonite" }, { rock: "shale" }, { rock: "ash", age: "t" }, { rock: "limestone", fossil: "trilobite" }, { rock: "siltstone" }], sample { parent: "P", layer: 2, parentName: "potassium-40", daughterName: "argon-40", halfLives: "n" } with P = 100 × (1/2)^n and t = n × T. The harness checks superposition (dated ages rise downward), cross-cutting (the dike is younger than what it cuts and older than what it doesn’t reach), a non-empty bracket and P against the half-lives; pages keep the ages in order with constraint rules.' +
-      ' Tracker: still drawn. Absolute ages, the bracketed layer and index fossils are placed (~bracket, ~potassium); an igneous intrusion cutting across (`intrusion`) is on no page.',
+      ' Placed (parts by page in `uses`): absolute ages, the bracketed layer and index fossils on ~bracket and ~potassium; the igneous intrusion cutting across (`intrusion`) on s.12.radiometric-dating~cross-cutting, where the dike narrows the shale’s bracket. The half-life and bracket demos are retired; the young-ash demo stays (its conglomerate is on no page).',
   },
   {
     ...ask(

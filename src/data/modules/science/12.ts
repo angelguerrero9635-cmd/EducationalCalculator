@@ -1004,6 +1004,77 @@ const potassium: ModuleDef = {
   },
 };
 
+const crossAge = (id: string, symbol: string, name: string, extra: Partial<VariableDef> = {}) =>
+  V(id, symbol, name, { unit: 'million years', min: 0, max: 4600, step: 0.1, ...extra });
+
+const crossCutting: ModuleDef = {
+  id: 's.12.radiometric-dating~cross-cutting',
+  title: 'A dike cutting the layers: cross-cutting',
+  use: 'Use this for “A 105-million-year-old dike cuts the sandstone but not the shale above it. How old can the shale’s fossils be?”',
+  assumptions: [
+    'Cross-cutting: a dike is younger than every layer it cuts, and older than the layers it does not reach.',
+    'Superposition: a layer is younger than the layers under it and older than those on top.',
+    'The dike and the ash beds cooled from magma, so they can be dated; the shale cannot, so its age is bracketed.',
+  ],
+  variables: [
+    crossAge('a', 'a', 'Age of the upper ash bed'),
+    crossAge('i', 'i', 'Age of the dike'),
+    crossAge('b', 'b', 'Age of the lower ash bed'),
+    crossAge('w', 'w', 'Width of the shale’s bracket', { derived: true }),
+    crossAge('d', 'd', 'Narrowed by the dike', { derived: true }),
+  ],
+  ...rels(
+    below(
+      'a',
+      'i',
+      'a < i',
+      'the upper ash {a} is younger than the dike {i}',
+      'The dike stops below the upper ash bed, so the ash bed formed after it: a must be less than i.',
+    ),
+    below(
+      'i',
+      'b',
+      'i < b',
+      'the dike {i} is younger than the lower ash bed {b}',
+      'The dike cuts the lower ash bed, so it is younger: i must be less than b.',
+    ),
+    below(
+      'a',
+      'b',
+      'a < b',
+      'the upper ash {a} is younger than the lower ash {b}',
+      'The upper ash bed lies on top, so it must be younger than the lower one.',
+    ),
+    difference('w', 'i', 'a', 'w = i − a', [
+      'The shale lies above the dike’s top, so it is younger than the dike and older than the upper ash: from a to i.',
+      'The dike is the bracket’s width older than the upper ash bed.',
+      'The upper ash bed is the bracket’s width younger than the dike.',
+    ]),
+    difference('d', 'b', 'i', 'd = b − i', [
+      'Without the dike the shale could be as old as the lower ash bed; the dike takes b − i off the bracket.',
+      'The lower ash bed is d older than the dike.',
+      'The dike is d younger than the lower ash bed.',
+    ]),
+  ),
+  example: { a: 92, i: 105, b: 120, w: 13, d: 15 },
+  startWith: ['a', 'i', 'b'],
+  representation: {
+    kind: 'rockLayers',
+    dating: {
+      layers: [
+        { rock: 'limestone' },
+        { rock: 'ash', age: 'a' },
+        { rock: 'shale', fossil: 'ammonite' },
+        { rock: 'sandstone' },
+        { rock: 'ash', age: 'b' },
+        { rock: 'siltstone' },
+      ],
+      intrusion: { through: 3, age: 'i' },
+      bracket: 2,
+    },
+  },
+};
+
 // ── The ocean: seafloor, currents and ocean–atmosphere interaction ──
 
 const sonar: ModuleDef = {
@@ -2491,6 +2562,7 @@ export const SCIENCE_12_MODULES: ModuleDef[] = [
   bracket,
   halfLife,
   potassium,
+  crossCutting,
   sonar,
   tides,
   lapse,
