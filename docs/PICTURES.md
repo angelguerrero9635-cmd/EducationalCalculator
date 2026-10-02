@@ -126,6 +126,9 @@ search or the sitemap, but the module tests and the harness run over it):
 | `globe`            | sun rays, noon angle, day dial; great circle; Euler pole; dipole; air | College earth and geography (HC36)  |
 | `stressStrain`     | σ–ε curve: E, 0.2% offset, UTS, necking; specimen; tube; two members  | College materials, biomech. (HC28)  |
 | `stressElement`    | element, turned to θ_p; Mohr's circle; 3 circles; loci, n; soil line  | College stress, soil (HC33)         |
+| `wing`             | NACA section tilted by α, lift ⟂ wind; C_p, Γ; planform, tip vortices | College aerodynamics (HC24)         |
+| `duct`             | nozzle to scale by A ÷ A∗: throat M = 1, stations, shock, p, M; a jet | College compressible flow (HC30)    |
+| `supersonicFlow`   | normal shock and ratio bars, pitot; wedge θ, β; fan; plate; Mach cone | College shocks, supersonic (HC31)   |
 | `projectile`       | a launch to scale: path, vₓ and v_y at three points, H and R; drag θ  | Physics 2D motion, parametric (H59) |
 | `freeBody`         | a block on a floor, ramp or rope; forces to scale, W sin θ; the net   | Physics forces, inclines (H60)      |
 | `circularMotion`   | v tangent, v²/r to the center; Gm₁m₂/r² pulls; Kepler ellipse, areas  | Physics circles, gravity (H61)      |

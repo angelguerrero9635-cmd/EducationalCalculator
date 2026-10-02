@@ -81,6 +81,7 @@ import { he1fIssues } from './picturesHe1f';
 import { he2bIssues } from './picturesHe2b';
 import { he2jIssues } from './picturesHe2j';
 import { he2eIssues, isHe2e } from './picturesHe2e';
+import { he2hIssues } from './picturesHe2h';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -2300,6 +2301,10 @@ export function repIssues(
     case 'stressStrain':
     case 'stressElement':
       out.push(...he2jIssues(rep, siOf(val, byId), byId)); // HC28, HC33
+    case 'wing':
+    case 'duct':
+    case 'supersonicFlow':
+      out.push(...he2hIssues(rep, (id) => (val(id) ?? NaN) * (byId.get(id)?.unitFactor ?? 1)));
       break;
     case 'projectile':
     case 'induction':

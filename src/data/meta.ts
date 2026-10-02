@@ -156,6 +156,9 @@ const PICTURE_NAMES: Record<string, string> = {
   stressStrain:
     'a stress–strain curve, a test piece, a tube in bending or two members sharing a load',
   stressElement: 'a stress element and Mohr’s circle, failure loci or a soil’s strength line',
+  wing: 'an airfoil section against the wind, or a wing’s planform',
+  duct: 'a nozzle or stream tube drawn to scale by A ÷ A∗, or a turbojet',
+  supersonicFlow: 'shocks, expansion fans and Mach cones in supersonic flow',
   matrixGrid: 'matrices in brackets',
   membrane: 'cell membrane with particles on each side',
   dnaStrand: 'DNA ladder, mRNA and amino acids',

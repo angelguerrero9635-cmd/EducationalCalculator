@@ -195,6 +195,9 @@ import { UnitCell } from './UnitCell';
 import { Globe } from './Globe';
 import { StressStrain } from './StressStrain';
 import { StressElement } from './StressElement';
+import { Wing } from './Wing';
+import { Duct } from './Duct';
+import { SupersonicFlow } from './SupersonicFlow';
 import { MotionGraphHs } from './MotionGraphHs';
 import { HskView } from './HskView';
 import { He2fView } from './He2fView';
@@ -369,6 +372,12 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <StressStrain spec={spec} calc={calc} />;
     case 'stressElement':
       return <StressElement spec={spec} calc={calc} />;
+    case 'wing':
+      return <Wing spec={spec} calc={calc} />;
+    case 'duct':
+      return <Duct spec={spec} calc={calc} />;
+    case 'supersonicFlow':
+      return <SupersonicFlow spec={spec} calc={calc} />;
     case 'linearFunction':
       return <LinearFunction spec={spec} calc={calc} />;
     case 'lineSystem':

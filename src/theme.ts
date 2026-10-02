@@ -450,6 +450,18 @@ const light = {
   cvSolvent: '#F3E3A0',
   profileWall: '#E9A8A0',
   profileBlood: '#C9393F',
+  /**
+   * College HC24, HC30, HC31 (round 2, group H): the relative wind, lift and drag, tip vortices;
+   * the gas in a duct, a hot chamber or exhaust; a shock and an expansion fan's Mach lines.
+   */
+  aeroWind: '#4C7FAF',
+  aeroLift: '#2563EB',
+  aeroDrag: '#C2410C',
+  aeroVortex: '#7C3AED',
+  aeroGas: '#DCEBF7',
+  aeroHot: '#F08A24',
+  aeroShock: '#DC2626',
+  aeroFan: '#0E7490',
   /** Chemistry (HS group I): a unit struck through when it cancels in a chain. */
   unitCancel: '#D9480F',
   /** Bohr models: protons, neutrons and electrons. */
@@ -925,6 +937,14 @@ const dark: Palette = {
   cvSolvent: '#8C7C3A',
   profileWall: '#9E5A55',
   profileBlood: '#B83238',
+  aeroWind: '#7FB0DA',
+  aeroLift: '#6EA3FF',
+  aeroDrag: '#FB8A4C',
+  aeroVortex: '#B794F6',
+  aeroGas: '#22384D',
+  aeroHot: '#F59A3C',
+  aeroShock: '#F87171',
+  aeroFan: '#38BDF8',
   unitCancel: '#F08A4B',
   atomProton: '#D9573F',
   atomNeutron: '#7D8693',
