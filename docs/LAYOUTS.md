@@ -230,6 +230,10 @@ stripe down the bin's side and a swatch before its name (the germ layers as the 
 them: ectoderm `bioAmino`, mesoderm `organDeep`, endoderm `bioSugar`). Every bin or none, each its
 own color.
 
+H117: a sort can set `pickBar: true` for many cards on a phone: while a card is picked, its
+groups show as a row of buttons right under it (a hint about that card shows there too), so the
+student never scrolls between the card and its group. The groups below still collect the cards.
+
 Card figures (sort cards and sequence stages): `lines`, `letter`, `polygon` (with a `curved`
 side, or `marks` for square corners and equal sides), `circle`, `heart`, `solid`, `cut`
 (equal or unequal parts, some shaded), `bar` (a ribbon with cubes laid right or wrong),

@@ -75,6 +75,11 @@ export interface SortLayout extends LayoutBase {
   header?: SortHeader;
   /** H104: a sentence above the cards (what the groups have in common, or what to look for). */
   intro?: string;
+  /**
+   * H117: while a card is picked, its groups show as a row of buttons right under it (and a
+   * hint about it shows there too), so on a phone the groups stay in reach of many cards.
+   */
+  pickBar?: boolean;
 }
 
 /**

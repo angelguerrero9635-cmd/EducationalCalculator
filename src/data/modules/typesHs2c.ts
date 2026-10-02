@@ -70,6 +70,11 @@ export interface PhotoelectricSpec {
   kinetic?: string;
   threshold?: string;
   fixed?: boolean;
+  /**
+   * A value shown as "?" draws nothing (H116): λ unknown leaves grey rays and no E; φ unknown
+   * leaves no φ split, electrons or λ₀. Without it the picture fades with the example's values.
+   */
+  blank?: boolean;
 }
 
 // ─── H102.12 lightClock ──────────────────────────────────────────────────────

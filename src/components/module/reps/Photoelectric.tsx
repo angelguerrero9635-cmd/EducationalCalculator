@@ -48,6 +48,11 @@ export function Photoelectric({ spec, calc }: { spec: PhotoelectricSpec; calc: C
   const freed = K > 1e-9;
   const lam0 = phi > 0 ? HC_EV_NM / phi : Infinity;
   const all = known(spec.wavelength) && known(spec.workFunction);
+  // With `blank`, a value shown as "?" draws nothing (H116): no example λ, φ, Kₘₐₓ or λ₀
+  // behind it. Without it the whole picture fades, as before.
+  const L = !spec.blank || known(spec.wavelength);
+  const P = !spec.blank || known(spec.workFunction);
+  const both = L && P;
   const color = lightColor(c, lam);
   const band = lam < 380 ? 'ultraviolet' : lam > 750 ? 'infrared' : undefined;
 
@@ -58,7 +63,7 @@ export function Photoelectric({ spec, calc }: { spec: PhotoelectricSpec; calc: C
           const plateY = h * 0.46;
           const [px0, px1] = [w * 0.34, w - 14];
           // Wavy rays from the top left onto the plate, the wiggle as long as the wavelength.
-          const period = Math.min(22, Math.max(5, lam / 30));
+          const period = L ? Math.min(22, Math.max(5, lam / 30)) : 12;
           const ray = (x1: number) => {
             const [xa, ya, xb, yb] = [x1 - 110, 10, x1, plateY - 4];
             const L = Math.hypot(xb - xa, yb - ya);
@@ -77,7 +82,7 @@ export function Photoelectric({ spec, calc }: { spec: PhotoelectricSpec; calc: C
           const speed = freed ? 18 + 56 * Math.sqrt(K / E) : 0;
           // The energy bar, in eV.
           const bar = { x: 16, y: plateY + 52, w: w - 32, h: 20 };
-          const top = Math.max(E, phi) * 1.08 || 1;
+          const top = (P ? Math.max(E, phi) : E) * 1.08 || 1;
           const bx = (v: number) => bar.x + (v / top) * bar.w;
           const phiEnd = Math.max(
             Math.min(bx(phi), bar.x + bar.w) - 4,
@@ -105,14 +110,14 @@ export function Photoelectric({ spec, calc }: { spec: PhotoelectricSpec; calc: C
                   <Metal id={ids.plate} light={c.metal} dark={c.metalDark} />
                   <Ball id={ids.electron} color={c.physMinus} />
                 </Defs>
-                <G opacity={all ? 1 : 0.45}>
+                <G opacity={all || spec.blank ? 1 : 0.45}>
                   {rays.map((r, i) => (
                     <G key={i}>
                       <Path
                         d={r.d}
-                        stroke={color ?? c.chartMuted}
+                        stroke={(L && color) || c.chartMuted}
                         strokeWidth={2}
-                        strokeDasharray={color ? undefined : chart.dashFine}
+                        strokeDasharray={L && color ? undefined : chart.dashFine}
                         fill="none"
                       />
                     </G>
@@ -120,12 +125,18 @@ export function Photoelectric({ spec, calc }: { spec: PhotoelectricSpec; calc: C
                   <SubLabel
                     x={8}
                     y={20}
-                    text={`λ = ${sig(lam)} nm${band ? ` (${band})` : ''}`}
+                    text={L ? `λ = ${sig(lam)} nm${band ? ` (${band})` : ''}` : 'λ = ?'}
                     anchor="start"
-                    color={color ?? c.chartInk}
+                    color={(L && color) || c.chartInk}
                     w={w}
                   />
-                  <SubLabel x={8} y={38} text={`E = 1240/λ = ${sig(E)} eV`} anchor="start" w={w} />
+                  <SubLabel
+                    x={8}
+                    y={38}
+                    text={L ? `E = 1240/λ = ${sig(E)} eV` : 'E = ?'}
+                    anchor="start"
+                    w={w}
+                  />
                   {/* The plate. */}
                   <Rect
                     x={px0}
@@ -139,10 +150,10 @@ export function Photoelectric({ spec, calc }: { spec: PhotoelectricSpec; calc: C
                   <SubLabel
                     x={(px0 + px1) / 2}
                     y={plateY + 32}
-                    text={`metal, φ = ${sig(phi)} eV`}
+                    text={P ? `metal, φ = ${sig(phi)} eV` : 'metal, φ = ?'}
                     w={w}
                   />
-                  {freed ? (
+                  {!both ? null : freed ? (
                     rays.map((r, i) => {
                       const ex = r.tip.x + 10;
                       const ey = r.tip.y - 10;
@@ -171,7 +182,7 @@ export function Photoelectric({ spec, calc }: { spec: PhotoelectricSpec; calc: C
                       w={w}
                     />
                   )}
-                  {freed ? (
+                  {freed && both ? (
                     <SubLabel
                       x={w - 8}
                       y={plateY - 72}
@@ -184,15 +195,27 @@ export function Photoelectric({ spec, calc }: { spec: PhotoelectricSpec; calc: C
                   {/* The photon's energy: φ, then what is left as K_max. */}
                   {/* φ's value ends at its line, but never starts left of the bar (it was cut
                       off when a short wavelength made φ a sliver). */}
-                  <Rect
-                    x={bar.x}
-                    y={bar.y}
-                    width={bx(Math.min(E, phi)) - bar.x}
-                    height={bar.h}
-                    fill={c.chartMuted}
-                    opacity={0.55}
-                  />
-                  {freed ? (
+                  {L && !P ? (
+                    <Rect
+                      x={bar.x}
+                      y={bar.y}
+                      width={bx(E) - bar.x}
+                      height={bar.h}
+                      fill="none"
+                      stroke={c.chartMuted}
+                    />
+                  ) : null}
+                  {both ? (
+                    <Rect
+                      x={bar.x}
+                      y={bar.y}
+                      width={bx(Math.min(E, phi)) - bar.x}
+                      height={bar.h}
+                      fill={c.chartMuted}
+                      opacity={0.55}
+                    />
+                  ) : null}
+                  {freed && both ? (
                     <Rect
                       x={bx(phi)}
                       y={bar.y}
@@ -202,27 +225,33 @@ export function Photoelectric({ spec, calc }: { spec: PhotoelectricSpec; calc: C
                       opacity={0.75}
                     />
                   ) : null}
-                  <Line
-                    x1={bx(phi)}
-                    y1={bar.y - 6}
-                    x2={bx(phi)}
-                    y2={bar.y + bar.h + 6}
-                    stroke={c.chartInk}
-                    strokeWidth={1.5}
-                    strokeDasharray={freed ? undefined : chart.dashFine}
-                  />
-                  <ChartText x={bar.x} y={bar.y - 8} fontSize={chart.label} fill={c.chartMuted}>
-                    {`photon energy ${sig(E)} eV`}
-                  </ChartText>
-                  <ChartText
-                    x={phiEnd}
-                    y={bar.y + bar.h + 16}
-                    textAnchor="end"
-                    fontSize={chart.label}
-                  >
-                    {`φ ${sig(phi)}`}
-                  </ChartText>
-                  {freed ? (
+                  {both ? (
+                    <Line
+                      x1={bx(phi)}
+                      y1={bar.y - 6}
+                      x2={bx(phi)}
+                      y2={bar.y + bar.h + 6}
+                      stroke={c.chartInk}
+                      strokeWidth={1.5}
+                      strokeDasharray={freed ? undefined : chart.dashFine}
+                    />
+                  ) : null}
+                  {L ? (
+                    <ChartText x={bar.x} y={bar.y - 8} fontSize={chart.label} fill={c.chartMuted}>
+                      {`photon energy ${sig(E)} eV`}
+                    </ChartText>
+                  ) : null}
+                  {both ? (
+                    <ChartText
+                      x={phiEnd}
+                      y={bar.y + bar.h + 16}
+                      textAnchor="end"
+                      fontSize={chart.label}
+                    >
+                      {`φ ${sig(phi)}`}
+                    </ChartText>
+                  ) : null}
+                  {freed && both ? (
                     <ChartText
                       x={Math.max(bx(phi) + 4, phiEnd + 8)}
                       y={bar.y + bar.h + 16}
@@ -253,7 +282,7 @@ export function Photoelectric({ spec, calc }: { spec: PhotoelectricSpec; calc: C
                       strokeWidth={8}
                     />
                   ))}
-                  {Number.isFinite(lam0) && lam0 > LO ? (
+                  {P && Number.isFinite(lam0) && lam0 > LO ? (
                     <G>
                       <Rect
                         x={strip.x}
@@ -285,14 +314,23 @@ export function Photoelectric({ spec, calc }: { spec: PhotoelectricSpec; calc: C
                       {nm === HI ? '1000 nm' : String(nm)}
                     </ChartText>
                   ))}
-                  <ChartText x={strip.x} y={strip.y - 20} fontSize={chart.label} fill={c.physMinus}>
-                    {Number.isFinite(lam0)
-                      ? `electrons freed below λ₀ = ${sig(lam0)} nm`
-                      : 'no work function'}
-                  </ChartText>
-                  <Path d={`M ${sx(lam)} ${strip.y + 5} l -6 9 l 12 0 Z`} fill={c.chartInk} />
+                  {P ? (
+                    <ChartText
+                      x={strip.x}
+                      y={strip.y - 20}
+                      fontSize={chart.label}
+                      fill={c.physMinus}
+                    >
+                      {Number.isFinite(lam0)
+                        ? `electrons freed below λ₀ = ${sig(lam0)} nm`
+                        : 'no work function'}
+                    </ChartText>
+                  ) : null}
+                  {L ? (
+                    <Path d={`M ${sx(lam)} ${strip.y + 5} l -6 9 l 12 0 Z`} fill={c.chartInk} />
+                  ) : null}
                   {/* Off the strip's 100–1000 nm: the marker waits at its end, saying where λ is. */}
-                  {lam < LO || lam > HI ? (
+                  {L && (lam < LO || lam > HI) ? (
                     <ChartText
                       x={lam < LO ? strip.x : strip.x + strip.w}
                       y={strip.y + 38}
@@ -339,6 +377,14 @@ export function Photoelectric({ spec, calc }: { spec: PhotoelectricSpec; calc: C
   );
 
   function captionLines(): string[] {
+    if (!both) {
+      const out: string[] = [];
+      if (L) out.push(`Photon energy: E = 1240/λ = 1240/${sig(lam)} = ${sig(E)} eV`);
+      else out.push('Type the wavelength to draw the light and its photon energy');
+      if (P) out.push(`Threshold: λ₀ = 1240/φ = 1240/${sig(phi)} = ${sig(lam0)} nm`);
+      else out.push('Type the work function to split the energy and mark λ₀');
+      return out;
+    }
     const out = [`Photon energy: E = 1240/λ = 1240/${sig(lam)} = ${sig(E)} eV`];
     if (freed)
       out.push(

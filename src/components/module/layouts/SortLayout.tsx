@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { Fragment, useMemo, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { Button } from '@/components/Button';
@@ -38,6 +38,8 @@ export function SortLayout({ spec }: { spec: Spec }) {
   const [placed, setPlaced] = useState<Record<number, string>>({});
   const [picked, setPicked] = useState<number | undefined>(undefined);
   const [hint, setHint] = useState('');
+  // With `pickBar`, the card the hint is about (it shows under that card).
+  const [hintAt, setHintAt] = useState<number | undefined>(undefined);
   const left = cards.filter((card) => placed[card.i] === undefined);
   const inBin = (binId: string) => cards.filter((card) => placed[card.i] === binId);
   const done = left.length === 0;
@@ -48,6 +50,7 @@ export function SortLayout({ spec }: { spec: Spec }) {
       return;
     }
     const card = cards.find((x) => x.i === picked)!;
+    setHintAt(card.i);
     if (card.bin === binId) {
       setPlaced({ ...placed, [picked]: binId });
       setHint('');
@@ -74,32 +77,67 @@ export function SortLayout({ spec }: { spec: Spec }) {
           <Text style={[styles.done, { color: c.text }]}>All sorted!</Text>
         ) : (
           left.map((card) => (
-            <Pressable
-              key={card.i}
-              testID={`card-${card.i}`}
-              accessibilityRole="button"
-              accessibilityState={{ selected: picked === card.i }}
-              onPress={() => {
-                setPicked(picked === card.i ? undefined : card.i);
-                setHint('');
-              }}
-              style={[
-                styles.card,
-                {
-                  borderColor: picked === card.i ? c.accent : c.border,
-                  backgroundColor: picked === card.i ? c.accentSoft : c.card,
-                },
-              ]}
-            >
-              {card.figure ? (
-                <CardFigureView figure={card.figure} ink={c.text} shade={c.chartHighlight} />
+            <Fragment key={card.i}>
+              <Pressable
+                testID={`card-${card.i}`}
+                accessibilityRole="button"
+                accessibilityState={{ selected: picked === card.i }}
+                onPress={() => {
+                  setPicked(picked === card.i ? undefined : card.i);
+                  setHint('');
+                }}
+                style={[
+                  styles.card,
+                  {
+                    borderColor: picked === card.i ? c.accent : c.border,
+                    backgroundColor: picked === card.i ? c.accentSoft : c.card,
+                  },
+                ]}
+              >
+                {card.figure ? (
+                  <CardFigureView figure={card.figure} ink={c.text} shade={c.chartHighlight} />
+                ) : null}
+                <Text style={[styles.cardText, { color: c.text }]}>{card.label}</Text>
+              </Pressable>
+              {/* H117: the groups right under the picked card, so a phone never scrolls between
+                them; a hint about this card shows here too. */}
+              {spec.pickBar && picked === card.i ? (
+                <View style={styles.pickBar} testID="pick-bar">
+                  {spec.bins.map((bin) => (
+                    <Pressable
+                      key={bin.id}
+                      testID={`pick-${bin.id}`}
+                      accessibilityRole="button"
+                      accessibilityLabel={`Put it in ${bin.label}`}
+                      onPress={() => drop(bin.id)}
+                      style={[
+                        styles.pickGroup,
+                        { borderColor: c.accent, backgroundColor: c.surface },
+                      ]}
+                    >
+                      {bin.color ? (
+                        <View
+                          style={[
+                            styles.binSwatch,
+                            { backgroundColor: c[bin.color], borderColor: c.text },
+                          ]}
+                        />
+                      ) : null}
+                      <Text style={[styles.pickText, { color: c.text }]}>{bin.label}</Text>
+                    </Pressable>
+                  ))}
+                </View>
               ) : null}
-              <Text style={[styles.cardText, { color: c.text }]}>{card.label}</Text>
-            </Pressable>
+              {spec.pickBar && hint && hintAt === card.i ? (
+                <Text style={[styles.hint, styles.hintRow, { color: c.textMuted }]}>{hint}</Text>
+              ) : null}
+            </Fragment>
           ))
         )}
       </View>
-      {hint ? <Text style={[styles.hint, { color: c.textMuted }]}>{hint}</Text> : null}
+      {hint && !(spec.pickBar && left.some((card) => card.i === hintAt)) ? (
+        <Text style={[styles.hint, { color: c.textMuted }]}>{hint}</Text>
+      ) : null}
       {/* The groups. */}
       <View style={styles.bins}>
         {spec.bins.map((bin) => {
@@ -172,6 +210,7 @@ export function SortLayout({ spec }: { spec: Spec }) {
             setPlaced({});
             setPicked(undefined);
             setHint('');
+            setHintAt(undefined);
           }}
         />
       </View>
@@ -243,4 +282,24 @@ const styles = StyleSheet.create({
   inBin: { fontSize: font.body - 1 },
   why: { fontSize: font.caption + 1, marginTop: space.xs },
   actions: { alignItems: 'center' },
+  // H117: the picked card's groups, a full-width row under it.
+  pickBar: {
+    width: '100%',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    gap: space.sm,
+  },
+  pickGroup: {
+    minHeight: 44,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.xs,
+    paddingVertical: space.sm,
+    paddingHorizontal: space.md,
+    borderWidth: 1.5,
+    borderRadius: radius.md,
+  },
+  pickText: { fontSize: font.body, fontWeight: '600' },
+  hintRow: { width: '100%' },
 });

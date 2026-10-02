@@ -68,6 +68,9 @@ export function hs2cIssues(rep: Hs2cSpec, val: Val): string[] {
     case 'photoelectric': {
       // In nm and eV, as the picture reads them (hc = 1240 eV·nm).
       const [lam, phi] = [read(val, rep.wavelength), read(val, rep.workFunction)];
+      // `blank` hides a "?" value; a typed number is never "?", so it would hide nothing.
+      if (rep.blank && typeof rep.wavelength === 'number' && typeof rep.workFunction === 'number')
+        out.push('photoelectric: blank with no variable to leave unknown');
       if (lam !== undefined && lam <= 0)
         out.push(`photoelectric: wavelength ${lam} is not positive`);
       if (phi !== undefined && phi < 0) out.push(`photoelectric: work function ${phi} is negative`);

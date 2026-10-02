@@ -360,6 +360,8 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `rotor`            | `hollow: true`                           | the hollow ball (c = ⅔, a shell cut open) in the compare row (H111)           |
 | `normalCurve`      | `f.tailsFrom: id`                        | one tail or two as the Hₐ value says (1, 3, 4 right; 0, 6 both) (H112)        |
 | `pascalTriangle`   | `fraction.b`, `fraction.r`               | exactly k of r: C(a, k) × C(b, r − k) ÷ C(a + b, r), to 60 (H113)             |
+| `reserve`          | `growth: id`, `lasts: id`                | use growing g% a year: slices grow, empty at T, beside steady Q ÷ r (H115)    |
+| `photoelectric`    | `blank: true`                            | a "?" value draws nothing (no example φ, Kₘₐₓ or λ₀ faded behind it) (H116)   |
 
 If no existing representation fits, add a new kind in `src/components/module/reps/` rather than
 forcing an existing one. A new kind gets: its spec in `types.ts`, a case in `reps/index.tsx`,
