@@ -5,7 +5,32 @@
  * (Grade 4 on). `autoWritten` picks the layout for a plain arithmetic line by grade; a module
  * can set `written` on a step to choose (or with `false`, refuse) one.
  */
+import {
+  angleText,
+  bracketed,
+  complex,
+  complexText,
+  fromPolar,
+  polarText,
+  type Complex,
+  type ComplexStyle,
+} from '@/engine/complex';
 import { decimalDigits, formatNumber, repeatingDecimal } from '@/engine/format';
+import {
+  det,
+  det2Arithmetic,
+  detLines,
+  detText,
+  exactShow,
+  factor,
+  withColumn,
+  type Matrix,
+  type Show,
+  type Vector,
+} from '@/engine/linalg';
+import type { Relation, Values, VariableDef } from '@/engine/types';
+
+import type { StepText } from './types';
 
 /** Numbers in the line above the grid read as elsewhere: "1,000 − 178" (the grid's digits stay plain). */
 const fn = (x: number) => formatNumber(x);
@@ -698,4 +723,367 @@ export function autoWritten(grade: string | undefined, expr: string): Written | 
     return (g === 4 ? partialQuotients(n, d) : undefined) ?? longDivision(n, d);
   }
   return undefined;
+}
+
+// ── Linear algebra and complex values on a page (HE-E16, HE-E17) ──
+//
+// The solver works with numbers, so a matrix, a vector or a complex value is a group of
+// numbers (`group`: counted once toward a page's values). These helpers declare the group,
+// read it back, and give the relations whose steps print the worked lines of
+// `engine/linalg.ts` and `engine/complex.ts`.
+
+/** The relations and their step text, as a page spreads them into its module. */
+export interface RulesOf {
+  relations: Relation[];
+  steps: Record<string, Record<string, StepText>>;
+}
+
+/** Joins rule sets: `{ ...joinRules(a, b), … }` in a module. */
+export const joinRules = (...rs: RulesOf[]): RulesOf => ({
+  relations: rs.flatMap((r) => r.relations),
+  steps: Object.assign({}, ...rs.map((r) => r.steps)) as RulesOf['steps'],
+});
+
+const SUBS = '₀₁₂₃₄₅₆₇₈₉';
+const subOf = (n: number) => [...String(n)].map((d) => SUBS[Number(d)]).join('');
+
+/**
+ * A matrix's entries as one group: ids `<id><row><column>` (A11, A12, …), symbols with
+ * subscripts (a₁₁), names "<name>, row 1, column 2".
+ */
+export function matrixVariables(
+  id: string,
+  letter: string,
+  name: string,
+  rows: number,
+  cols: number,
+  extra: Partial<VariableDef> = {},
+): VariableDef[] {
+  return Array.from({ length: rows * cols }, (_, k) => {
+    const [i, j] = [Math.floor(k / cols) + 1, (k % cols) + 1];
+    return {
+      id: `${id}${i}${j}`,
+      symbol: `${letter}${subOf(i)}${subOf(j)}`,
+      name: `${name}, row ${i}, column ${j}`,
+      min: -1000,
+      max: 1000,
+      step: 0.01,
+      group: id,
+      ...extra,
+    };
+  });
+}
+
+/** A vector's components as one group: ids `<id>1`…, symbols u₁…, names "<name>, component 1". */
+export function vectorVariables(
+  id: string,
+  letter: string,
+  name: string,
+  n: number,
+  extra: Partial<VariableDef> = {},
+): VariableDef[] {
+  return Array.from({ length: n }, (_, k) => ({
+    id: `${id}${k + 1}`,
+    symbol: `${letter}${subOf(k + 1)}`,
+    name: `${name}, component ${k + 1}`,
+    min: -1000,
+    max: 1000,
+    step: 0.01,
+    group: id,
+    ...extra,
+  }));
+}
+
+const matrixIds = (id: string, rows: number, cols: number) =>
+  Array.from({ length: rows }, (_, i) =>
+    Array.from({ length: cols }, (_, j) => `${id}${i + 1}${j + 1}`),
+  );
+const vectorIds = (id: string, n: number) => Array.from({ length: n }, (_, k) => `${id}${k + 1}`);
+
+/** The matrix a group holds, or undefined while an entry is unknown. */
+export function matrixOf(v: Values, id: string, rows: number, cols: number): Matrix | undefined {
+  const m = matrixIds(id, rows, cols).map((r) => r.map((x) => v[x]));
+  return m.every((r) => r.every((x) => x !== undefined)) ? (m as Matrix) : undefined;
+}
+
+/** The vector a group holds, or undefined while a component is unknown. */
+export function vectorOf(v: Values, id: string, n: number): Vector | undefined {
+  const x = vectorIds(id, n).map((k) => v[k]);
+  return x.every((y) => y !== undefined) ? (x as Vector) : undefined;
+}
+
+/** Solvers that find `x` only (no value is worked back from it). */
+const solveOnly = (vars: string[], x: string, f: (v: Values) => number | undefined) => ({
+  ...Object.fromEntries(vars.map((y) => [y, () => undefined])),
+  [x]: (v: Values) => {
+    const y = f(v);
+    return y === undefined || !Number.isFinite(y) ? undefined : Number(y.toPrecision(12));
+  },
+});
+
+/** A matrix of value ids as a display template: "[[{A11}, {A12}], [{A21}, {A22}]]". */
+const idMatrix = (ids: string[][]) =>
+  `[${ids.map((r) => `[${r.map((y) => `{${y}}`).join(', ')}]`).join(', ')}]`;
+
+/**
+ * A square system A x = b solved by Cramer's rule (2 × 2 or 3 × 3; K u = F, node and mesh
+ * equations): D = det A with its worked lines (2 × 2 arithmetic or 3 × 3 cofactors), then each
+ * unknown xⱼ = Dⱼ ÷ D with Dⱼ worked. `a` is the matrix group's id, `b` the right side's and
+ * `x` the unknowns' ids; `D` the determinant's. The unknowns are found from A and b only
+ * (typing a solution doesn't find A).
+ */
+export function cramerRules(opts: {
+  a: string;
+  b: string;
+  x: string[];
+  D: string;
+  show?: Show;
+}): RulesOf {
+  const { a, b, x, D, show = exactShow } = opts;
+  const n = x.length;
+  const A = matrixIds(a, n, n);
+  const B = vectorIds(b, n);
+  const flatA = A.flat();
+  const mat = (v: Values) => matrixOf(v, a, n, n);
+  const dVars = [D, ...flatA];
+  const dRule: Relation = {
+    id: 'D = det A',
+    display: `{${D}} = det ${idMatrix(A)}`,
+    vars: dVars,
+    residual: (v) => v[D]! - det(mat(v)!),
+    solve: solveOnly(dVars, D, (v) => {
+      const m = mat(v);
+      return m && det(m);
+    }),
+    check: (v) => `${show(v[D]!)} = ${detText(mat(v)!, show)}`,
+  };
+  const rules: RulesOf = {
+    relations: [dRule],
+    steps: {
+      [dRule.id]: {
+        [D]: {
+          expr: (v) => detText(mat(v)!, show),
+          how:
+            n === 2
+              ? 'Down the main diagonal, take away the other diagonal.'
+              : 'Along the first row: each entry times its 2 × 2 minor, with signs +, −, +.',
+          work: (v) => detLines(mat(v)!, show),
+        },
+      },
+    },
+  };
+  x.forEach((xj, j) => {
+    const name = `D${subOf(j + 1)}`;
+    const vars = [xj, D, ...flatA, ...B];
+    const withB = (v: Values) => {
+      const m = mat(v);
+      const r = vectorOf(v, b, n);
+      return m && r && withColumn(m, j, r);
+    };
+    const rel: Relation = {
+      id: `${xj} = ${name} ÷ D`,
+      display: `{${xj}} = det ${idMatrix(A.map((r, i) => r.map((y, c) => (c === j ? B[i]! : y))))} ÷ {${D}}`,
+      vars,
+      residual: (v) => v[xj]! * v[D]! - det(withB(v)!),
+      solve: solveOnly(vars, xj, (v) => {
+        const m = withB(v);
+        return m && v[D] ? det(m) / v[D]! : undefined;
+      }),
+      check: (v) => `${show(v[xj]!)} = ${show(det(withB(v)!))} ÷ ${factor(v[D]!, show)}`,
+    };
+    rules.relations.push(rel);
+    rules.steps[rel.id] = {
+      [xj]: {
+        expr: (v) => `${show(det(withB(v)!))} ÷ ${factor(v[D]!, show)}`,
+        how: `${name} is D with the right sides in column ${j + 1}; divide it by D.`,
+        work: (v) => {
+          const m = withB(v)!;
+          const worked = n === 2 ? `${det2Arithmetic(m, show)} = ` : '';
+          return [`${name} = ${detText(m, show)} = ${worked}${show(det(m))}`];
+        },
+      },
+    };
+  });
+  return rules;
+}
+
+/** How a page writes its complex values: i (math) or j (electrical), and a unit after them. */
+export interface ComplexOptions extends ComplexStyle {
+  /** The unit written after the value in the one-value line ("40 − j30 Ω"). */
+  unitText?: string;
+  /** Also say the value in polar form ("= 50∠−36.87° Ω"). */
+  polar?: boolean;
+}
+
+/**
+ * A complex value as one group of two numbers: ids `<id>r` and `<id>i`, symbols "Re Z" and
+ * "Im Z" (or `parts`), names "<name>, real part" and "<name>, imaginary part".
+ */
+export function complexVariables(
+  id: string,
+  symbol: string,
+  name: string,
+  extra: Partial<VariableDef> & { parts?: [string, string] } = {},
+): VariableDef[] {
+  const { parts = [`Re ${symbol}`, `Im ${symbol}`], ...more } = extra;
+  const part = (k: 'r' | 'i', s: string, what: string): VariableDef => ({
+    id: `${id}${k}`,
+    symbol: s,
+    name: `${name}, ${what} part`,
+    min: -1e9,
+    max: 1e9,
+    group: id,
+    ...more,
+  });
+  return [part('r', parts[0], 'real'), part('i', parts[1], 'imaginary')];
+}
+
+/**
+ * A complex value typed in polar form as one group: its magnitude (`<id>m`, symbol "|V|") and
+ * its angle in degrees (`<id>a`, "θ_V", −180° to 180°), as a phasor is given: 10∠30° V.
+ */
+export function polarVariables(
+  id: string,
+  symbol: string,
+  name: string,
+  extra: Partial<VariableDef> & { parts?: [string, string] } = {},
+): VariableDef[] {
+  const { parts = [`|${symbol}|`, `θ_${symbol}`], ...more } = extra;
+  return [
+    {
+      id: `${id}m`,
+      symbol: parts[0],
+      name: `${name}, magnitude`,
+      min: 0,
+      max: 1e9,
+      group: id,
+      ...more,
+    },
+    {
+      id: `${id}a`,
+      symbol: parts[1],
+      name: `${name}, angle`,
+      min: -180,
+      max: 180,
+      step: 0.01,
+      group: id,
+      ...more,
+      unit: '°',
+    },
+  ];
+}
+
+/**
+ * The complex value a group holds (its real and imaginary parts, or with `polar` its magnitude
+ * and angle), or undefined while a part is unknown.
+ */
+export function complexOf(v: Values, id: string, polar = false): Complex | undefined {
+  const [x, y] = polar ? [v[`${id}m`], v[`${id}a`]] : [v[`${id}r`], v[`${id}i`]];
+  if (x === undefined || y === undefined) return undefined;
+  return polar ? fromPolar(x, y) : complex(x, y);
+}
+
+/**
+ * A complex value worked out from others, as one value: two relations (the real and the
+ * imaginary part). `formula` is the rule with `{Z}` for each complex input and `{x}` for each
+ * real one ("{ZA} ÷ {ZB}"); `f` works it out; `lines` are the worked lines (from
+ * `engine/complex.ts`), shown under the real part; the imaginary part's step ends with the one
+ * value ("→ Z = −10 + j20 Ω", and its polar form when asked). Found forward only.
+ */
+export function complexRule(opts: {
+  target: string;
+  symbol: string;
+  complexInputs: string[];
+  /** The complex inputs typed in polar form (`polarVariables`). */
+  polarInputs?: string[];
+  realInputs?: string[];
+  formula: string;
+  f: (z: Record<string, Complex>, v: Values) => Complex | undefined;
+  lines?: (z: Record<string, Complex>, v: Values) => string[];
+  how: string;
+  style?: ComplexOptions;
+}): RulesOf {
+  const { target, symbol, complexInputs, polarInputs = [], realInputs = [], formula } = opts;
+  const { f, lines, how } = opts;
+  const style = opts.style ?? {};
+  const unit = style.unit ?? 'i';
+  const show = style.show ?? ((x: number) => formatNumber(x));
+  const isPolar = (z: string) => polarInputs.includes(z);
+  const partsOf = (z: string) => (isPolar(z) ? [`${z}m`, `${z}a`] : [`${z}r`, `${z}i`]);
+  const vars = [...complexInputs.flatMap(partsOf), ...realInputs];
+  const inputs = (v: Values) => {
+    const zs: Record<string, Complex> = {};
+    for (const z of complexInputs) {
+      const c = complexOf(v, z, isPolar(z));
+      if (!c) return undefined;
+      zs[z] = c;
+    }
+    return realInputs.every((x) => v[x] !== undefined) ? zs : undefined;
+  };
+  const value = (v: Values) => {
+    const zs = inputs(v);
+    return zs && f(zs, v);
+  };
+  // The rule with symbols (({ZAr} + j{ZAi})) and with numbers ((30 + j40)).
+  const symbolic = formula.replace(/\{(\w+)\}/g, (_, z: string) =>
+    !complexInputs.includes(z)
+      ? `{${z}}`
+      : isPolar(z)
+        ? `({${z}m}∠{${z}a})`
+        : unit === 'j'
+          ? `({${z}r} + j{${z}i})`
+          : `({${z}r} + {${z}i}i)`,
+  );
+  // (a polar input as typed, 10∠30°; a rectangular one in brackets, (30 + j40))
+  const numeric = (v: Values) =>
+    formula.replace(/\{(\w+)\}/g, (_, z: string) =>
+      !complexInputs.includes(z)
+        ? factor(v[z]!, show)
+        : isPolar(z)
+          ? `(${show(v[`${z}m`]!)}∠${angleText(v[`${z}a`]!, style.angleDecimals)})`
+          : bracketed(complexOf(v, z)!, style),
+    );
+  const one = (v: Values) => {
+    const z = value(v);
+    if (!z) return '';
+    const u = style.unitText ? ` ${style.unitText}` : '';
+    const polar = style.polar ? ` = ${polarText(z, style)}${u}` : '';
+    return `→ ${symbol} = ${complexText(z, style)}${u}${polar}`;
+  };
+  const part = (k: 'r' | 'i'): Relation => {
+    const x = `${target}${k}`;
+    const fn = k === 'r' ? 'Re' : 'Im';
+    const of = (v: Values) => {
+      const z = value(v);
+      return z && (k === 'r' ? z.re : z.im);
+    };
+    return {
+      id: `${fn} ${symbol} = ${fn}(${formula.replace(/[{}]/g, '')})`,
+      display: `{${x}} = ${fn}(${symbolic})`,
+      vars: [x, ...vars],
+      residual: (v) => v[x]! - (of(v) ?? NaN),
+      solve: solveOnly([x, ...vars], x, of),
+      check: (v) => `${show(v[x]!)} = ${fn}(${numeric(v)})`,
+    };
+  };
+  const [re, im] = [part('r'), part('i')];
+  return {
+    relations: [re, im],
+    steps: {
+      [re.id]: {
+        [`${target}r`]: {
+          expr: (v) => `Re(${numeric(v)})`,
+          how,
+          ...(lines ? { work: (v: Values) => lines(inputs(v)!, v) } : {}),
+        },
+      },
+      [im.id]: {
+        [`${target}i`]: {
+          expr: (v) => `Im(${numeric(v)})`,
+          how: `The imaginary part of the same ${symbol}.`,
+          note: one,
+        },
+      },
+    },
+  };
 }

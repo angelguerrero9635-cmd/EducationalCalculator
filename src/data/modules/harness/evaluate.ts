@@ -7,6 +7,7 @@ import { parseNumber, plainDigits } from '@/engine/format';
 import { INTEGRAL, SIGMA } from '@/engine/latex';
 
 import type { Walkthrough } from '../buildSteps';
+import { complexPrepass } from './algebraLines';
 import { HE_PHRASES } from './phrasesHe';
 import { HSB_PHRASES } from './phrasesHsb';
 import { HSF_PHRASES } from './phrasesHsf';
@@ -472,6 +473,8 @@ export function expandIntegrals(text: string): string {
 export function evaluate(text: string, clampRoots = false): number | undefined {
   if (text.includes('Σ from ')) text = expandSums(text);
   if (text.includes('∫ from ')) text = expandIntegrals(text);
+  // A complex value's part or a determinant (HE-E16, E17): Re(…), Im(…), |8 + j6|, det [[…]].
+  if (/\b(?:Re|Im|arg)\(|\|[^|]*[ij∠]|\bdet ?\[\[/.test(text)) text = complexPrepass(text);
   const degrees = angleUnit === 'degrees' || text.includes('°');
   let s = text
     // A repeating decimal (0.1666…) is its exact value, 1/6.
