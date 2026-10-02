@@ -245,6 +245,12 @@ governs, underdamped, Θ(n log n), stable. Until then the class goes in the pict
   linear-algebra#0); EG about 10; ACC about 7 (soil-mechanics#0, transportation#3,
   steel-design#0, concrete-design#0, #2, process-control#3, process-design#3); EC 4
   (circuits-1#4~rlc-damping, control#1~step-error, data-structures#3~master, networks#2).
+- **Status: done (2026-10-02).** `categoryVariable` and `classify` (`src/engine/cases.ts`): the
+  word in its box, steps and check; bands by thresholds, first match wins; the step's case line
+  says why ("3400 ≥ 2300: turbulent"); the harness checks the word and the comparison
+  (`harness/cases.ts`). One way only. A class from a lookup rather than thresholds (Köppen,
+  USCS, Θ(n log n)) is the same `classify` with tests that read the inputs; a word from a list
+  of named rows waits on HE-E13. s.9's silent/missense/nonsense keeps its own phrases.
 
 ### HE-E12 Piecewise and choice-switched relations
 
@@ -257,6 +263,11 @@ valued, backward; the step names the case and why; the harness samples each choi
 - **Waiting:** C gen-chem-2#0, biochemistry#0, #1~inhibition, inorganic#3; EG
   historical-geology#2, mineralogy#2, cartography#2; ACC aerospace-structures#2,
   steel-design#1–3, soil-mechanics#2, transportation#1, concrete-design#0, #2.
+- **Status: done (2026-10-02).** `Relation.branches` and `piecewise` (`src/engine/cases.ts`):
+  each case inverted on its own (exactly, or numerically in `solve.ts`, or by trying a choice
+  box's codes) and kept only where it applies; the step shows the case's rule and its case line
+  ("1500 < 2300: laminar"), the check the case's own. min, max and floor stay plain relations
+  (the harness reads min( and max( already); an empty result is a rule's `message`.
 
 ### HE-E13 Named choices and data rows
 
@@ -296,6 +307,13 @@ negative-concentration root rejected in one line and the small-x check.
 - **Waiting:** ACC compressible-flow#0–2, hydraulics-hydrology#0, chemical-thermodynamics#0,
   concrete-design#0; ME ASM#0, ~invariants, vibrations#3; C gen-chem-2#1, #2, ~weak-base,
   ~common-ion.
+- **Status: done (2026-10-02).** `realRoots`, `rootRule` and `orderedRoots`
+  (`src/engine/cases.ts`): the quadratic formula's line with the sign kept and the rejected root
+  in one line ("Rejected: 0.139, since …"); a cubic's roots in order ("greatest of −1, 2, 5");
+  σ₁ ≥ σ₂ ≥ σ₃ with a double root filling two; a picked branch (subsonic or supersonic, vapor or
+  liquid) is a `piecewise` case on a picked category. **Left:** the small-x check line ("x is
+  2.6% of 0.100, under 5%") is the page's own work line; eigenvalues of a matrix reach this
+  through their characteristic polynomial (HE-E16 writes the A − λI lines).
 
 ### HE-E16 Linear algebra in steps
 

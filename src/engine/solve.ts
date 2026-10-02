@@ -1,3 +1,4 @@
+import { branchOf } from './cases';
 import { dollars, formatNumber, lowerFirst, parseNumber, unitFor } from './format';
 import type { Relation, Values, VariableDef } from './types';
 
@@ -41,6 +42,8 @@ export interface TraceStep {
    * the values before it: its step says so ("Only 2 fits every rule").
    */
   pinned?: boolean;
+  /** The case of a relation that switches (HE-E12) the value was found in: "laminar". */
+  branch?: string;
 }
 
 export interface System {
@@ -574,6 +577,50 @@ export function findRoots(
   return roots;
 }
 
+/**
+ * A value of a relation that switches (HE-E12), found case by case: each case's own
+ * rearrangement, else every value a short list allows (a choice box's codes), else the roots of
+ * the case's formula across the value's range; each kept only where its case applies (the
+ * laminar formula's Re only below 2,300). Undefined values in a case's rearrangement, or one
+ * that throws, give nothing.
+ */
+function branchCandidates(relation: Relation, variable: VariableDef, values: Values): number[] {
+  const id = variable.id;
+  const listed = wholeValues(variable);
+  const short = listed && listed.length <= 200 ? listed : undefined;
+  const out: number[] = [];
+  for (const b of relation.branches ?? []) {
+    let xs: number[];
+    try {
+      const fn = b.solve?.[id];
+      if (fn) {
+        const r = fn(values);
+        xs = r === undefined ? [] : Array.isArray(r) ? r : [r];
+      } else if (short) {
+        xs = short;
+      } else {
+        const residual = (x: number) => {
+          try {
+            return b.residual({ ...values, [id]: x });
+          } catch {
+            return NaN;
+          }
+        };
+        xs = findRoots(residual, variable.min ?? -1e6, variable.max ?? 1e6);
+      }
+    } catch {
+      xs = [];
+    }
+    for (const x of xs) {
+      if (!Number.isFinite(x)) continue;
+      const at = { ...values, [id]: x };
+      // (only where this case is the one that applies: the first that does)
+      if (branchOf(relation, at) === b) out.push(x);
+    }
+  }
+  return out;
+}
+
 /** Valid values for `variable` from one relation, nearest the previous value first. */
 function candidatesFor(
   relation: Relation,
@@ -587,6 +634,8 @@ function candidatesFor(
   if (explicit) {
     const r = explicit(values);
     candidates = r === undefined ? [] : Array.isArray(r) ? r : [r];
+  } else if (relation.branches) {
+    candidates = branchCandidates(relation, variable, values);
   } else {
     const lo = variable.min ?? -1e6;
     const hi = variable.max ?? 1e6;
@@ -678,7 +727,12 @@ function propagate(
           }
           continue;
         }
-        const step = { id, relation: relation.id, exact: !!relation.solve?.[id] };
+        const step: TraceStep = { id, relation: relation.id, exact: !!relation.solve?.[id] };
+        // (a relation that switches names the case each value was found in)
+        const named = (x: number): TraceStep => {
+          const b = relation.branches && branchOf(relation, { ...values, [id]: x });
+          return b ? { ...step, branch: b.name } : step;
+        };
         if (xs.length > 1 && budget.left > 0) {
           // Branch: keep the first candidate that leads to no conflict, and (`vet`) leaves the
           // values still open some whole numbers that fit: with n₁ = 2 from "1 more than 1",
@@ -690,7 +744,7 @@ function propagate(
               system,
               { ...values, [id]: x },
               previous,
-              [...steps, step],
+              [...steps, named(x)],
               budget,
               vet,
             );
@@ -701,7 +755,7 @@ function propagate(
           return open ?? first!;
         }
         values[id] = xs[0]!;
-        steps.push(step);
+        steps.push(named(xs[0]!));
         changed = true;
       }
     }
@@ -1357,6 +1411,12 @@ export function solve(system: System, given: readonly Given[], previous: Values 
     order.push({ id, relation: rel.id, exact: false, pinned: true });
     explained.add(id);
     pending = pending.slice(1);
+  }
+  // (a value the search filled names its case too)
+  for (const t of order) {
+    const rel = system.relations.find((r) => r.id === t.relation);
+    const b = rel?.branches && branchOf(rel, known);
+    if (b) t.branch = b.name;
   }
   trace = [...trace, ...order];
   const givenIds = new Set(kept.map((g) => g.id));

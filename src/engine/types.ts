@@ -135,6 +135,32 @@ export interface VariableDef {
 }
 
 /**
+ * One case of a relation that switches (HE-E12): a formula valid on one side of a limit
+ * (laminar below Re = 2,300), or the one a choice box picks (first order), or one band of a
+ * category answer (HE-E11). Build them with `piecewise` or `classify` (`cases.ts`).
+ */
+export interface Branch {
+  /** The case's name as the step says it: "laminar", "first order", "underdamped". */
+  name: string;
+  /**
+   * Why the case applies, as a template the step fills ("{Re} < 2,300", "{n} chosen"): the
+   * step's case line reads "1,500 < 2,300: laminar". Comparisons in it are checked by the
+   * harness, so a limit is written as a number.
+   */
+  when: string;
+  /** True when the case applies to these values (formula units; a value missing is false). */
+  applies: (v: Values) => boolean;
+  /** Zero when this case's formula holds (left side − right side). */
+  residual: (v: Values) => number;
+  /** This case's exact rearrangements; any other value is found numerically, case by case. */
+  solve?: Partial<Record<string, (v: Values) => number | number[] | undefined>>;
+  /** The rule in this case, shown in place of the relation's `display` in its steps. */
+  display?: string;
+  /** The check line in this case (a template), when it is not `display`. */
+  check?: string;
+}
+
+/**
  * One equation linking some variables. `residual` is zero when the equation holds
  * (write it as left side − right side).
  */
@@ -164,6 +190,12 @@ export interface Relation {
   words?: string;
   vars: string[];
   residual: (v: Values) => number;
+  /**
+   * The cases of a relation that switches (HE-E12, HE-E11): `residual` is the case that
+   * applies, and a value with no exact rearrangement is found in each case on its own and kept
+   * only where that case applies. The step names the case ("1,500 < 2,300: laminar").
+   */
+  branches?: Branch[];
   /**
    * Exact rearrangements, one per variable where possible. May return several candidates
    * (e.g. ± square roots); the solver picks the valid one closest to the previous value.

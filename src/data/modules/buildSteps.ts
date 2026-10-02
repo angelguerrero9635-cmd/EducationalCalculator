@@ -1,3 +1,4 @@
+import { branchOf, comparisonHolds } from '@/engine/cases';
 import { CHOICE_BOX, choiceOf, choiceSign, codeLabel } from '@/engine/choices';
 import {
   dollarsOf,
@@ -429,11 +430,32 @@ export function buildSteps(
         );
   // Figure-only values are found for the picture, never written as a step.
   const trace = result.trace.filter((t) => !byId.get(t.id)?.hidden);
+  /** The values found, in formula units (a case of a relation that switches reads these). */
+  const found = result.values;
   const steps = trace.map((t): Step => {
     const knownHere = { ...known };
     known[t.id] = working[t.id]!;
     const v = byId.get(t.id)!;
     const relation = relations.get(t.relation)!;
+    // A relation that switches (HE-E11, HE-E12) shows the case its value was found in: that
+    // case's rule, and a line saying which case and why ("1,500 < 2,300: laminar"), both from
+    // the final values (a case reads formula units).
+    const branch = relation.branches ? branchOf(relation, found) : undefined;
+    const display = branch?.display ?? relation.display;
+    // (to more figures when the shown ones would read wrong: 2,299.6 is not "2,300 < 2,300")
+    const caseLine = branch
+      ? agree(
+          `${firstTrue(
+            (vs) => renderTemplate(branch.when, vs, working),
+            [...lineSets, unread],
+            (line) => {
+              const ok = comparisonHolds(line, evaluatePrinted);
+              return ok === undefined ? undefined : !ok;
+            },
+            unread,
+          )}: ${branch.name}`,
+        )
+      : undefined;
     const text = module.steps[t.relation]?.[t.id];
     const base = {
       id: t.id,
@@ -442,11 +464,11 @@ export function buildSteps(
       title: v.name.endsWith(')')
         ? `Find ${lowerFirst(v.name)}: ${v.symbol}`
         : `Find ${lowerFirst(v.name)} (${v.symbol})`,
-      formula: renderTemplate(relation.display, vars),
+      formula: renderTemplate(display, vars),
       sentence: agree(
         relation.sentence
           ? relation.sentence(knownHere)
-          : renderTemplate(relation.display, lineVars, knownHere),
+          : renderTemplate(display, lineVars, knownHere),
       ),
       // A p-value under 0.0001 is written "P < 0.0001", never "P = 0"; a coded value reads as
       // what it means ("e = nonsense"), never its code.
@@ -462,19 +484,18 @@ export function buildSteps(
       band === 'early'
         ? { sentence: base.sentence }
         : band === 'elementary'
-          ? { sentence: base.sentence, formula: wordRule(relation.display, vars, relation.words) }
+          ? { sentence: base.sentence, formula: wordRule(display, vars, relation.words) }
           : band === 'middle'
             ? // Grade 6 letters: the formula with what its letters mean.
               {
-                formula: `${base.formula} (${lowerFirst(wordRule(relation.display, vars, relation.words))})`,
+                formula: `${base.formula} (${lowerFirst(wordRule(display, vars, relation.words))})`,
               }
             : { formula: base.formula };
     const heading =
       band === 'standard' || band === 'middle' ? base.title : `Find ${lowerFirst(v.name)}`;
     // Grade 6 letters: the numbers put in with the unknown kept as its letter ("40 = b × 5"),
     // unless the formula already has the unknown alone on one side.
-    const isolated =
-      relation.display.startsWith(`{${t.id}} =`) || relation.display.endsWith(`= {${t.id}}`);
+    const isolated = display.startsWith(`{${t.id}} =`) || display.endsWith(`= {${t.id}}`);
     const letterSentence = base.sentence.replaceAll('?', v.symbol);
     const answer = plain(base.result, t.id, true);
     // A value only the search pins says so: no formula found it from the values before it.
@@ -493,7 +514,7 @@ export function buildSteps(
         how: t.pinned ? pinnedHow : 'Try numbers until both sides match.',
         heading,
         lead,
-        lines: [],
+        lines: caseLine ? [caseLine] : [],
         writtenAfter: 0,
         answer,
       };
@@ -535,7 +556,7 @@ export function buildSteps(
       piValue !== undefined
         ? `${noted} (≈ ${formatNumber(Math.round(piValue * 100) / 100)}${workUnit(t.id) ? ` ${workUnit(t.id)}` : ''})`
         : noted;
-    const workLines = work?.length
+    const workLines0 = work?.length
       ? byGrade(
           work.map((line) =>
             agree(firstTrue((vs) => renderTemplate(line, vs, working), lineSets, lineOff, unread)),
@@ -543,6 +564,8 @@ export function buildSteps(
           grade,
         )
       : undefined;
+    // (the case first: which formula, then its arithmetic)
+    const workLines = caseLine ? [caseLine, ...(workLines0 ?? [])] : workLines0;
     // "35 + 20" before "35 + 20 = 55" says nothing: the work line carries it.
     const bare = substituted.slice(v.symbol.length + 3);
     // A compare page's first work line ("Tens: 4 < 5, so 45 < 54") is the lesson; the bare
@@ -686,6 +709,11 @@ export function buildSteps(
       s.work = s.work.filter((line) => !repeated(line));
     for (const line of s.lines) seen.add(line);
   }
+  // A relation that switches is checked in the case its values are in (HE-E12).
+  const caseCheck = (r: (typeof module.relations)[number]) => {
+    const b = r.branches ? branchOf(r, result.values) : undefined;
+    return b?.check ?? b?.display;
+  };
   return {
     band,
     given: givenIds.map(quantity),
@@ -709,7 +737,7 @@ export function buildSteps(
         formula: agree(
           r.check && direct
             ? r.check(working)
-            : checkLine(r.display, lineSets, unread, working, figures),
+            : checkLine(caseCheck(r) ?? r.display, lineSets, unread, working, figures),
         ),
         ok: holds(r, result.values, module.variables),
       })),
