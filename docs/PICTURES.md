@@ -122,6 +122,7 @@ search or the sitemap, but the module tests and the harness run over it):
 | `velocityProfile`  | tube, vessel, plates or film: v arrows, v_max = 2v_avg, τ_w; c lines  | College transport, blood (HC13)     |
 | `wing`             | NACA section tilted by α, lift ⟂ wind; C_p, Γ; planform, tip vortices | College aerodynamics (HC24)         |
 | `duct`             | nozzle to scale by A ÷ A∗: throat M = 1, stations, shock, p, M; a jet | College compressible flow (HC30)    |
+| `supersonicFlow`   | normal shock and ratio bars, pitot; wedge θ, β; fan; plate; Mach cone | College shocks, supersonic (HC31)   |
 | `projectile`       | a launch to scale: path, vₓ and v_y at three points, H and R; drag θ  | Physics 2D motion, parametric (H59) |
 | `freeBody`         | a block on a floor, ramp or rope; forces to scale, W sin θ; the net   | Physics forces, inclines (H60)      |
 | `circularMotion`   | v tangent, v²/r to the center; Gm₁m₂/r² pulls; Kepler ellipse, areas  | Physics circles, gravity (H61)      |

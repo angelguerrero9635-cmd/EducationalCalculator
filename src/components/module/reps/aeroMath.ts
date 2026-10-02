@@ -356,3 +356,70 @@ export const throatHalf = (shape: DuctShape, maxHalf = 50) =>
 /** Turbojet thrust and propulsive efficiency. */
 export const jetThrust = (mdot: number, V0: number, Ve: number) => mdot * (Ve - V0);
 export const propulsiveEfficiency = (V0: number, Ve: number) => 2 / (1 + Ve / V0);
+
+// ─── HC31: wave geometry (shared with the harness); angles in radians, math axes (y up) ──
+
+/** One Mach line of a fan: the flow's direction and Mach number there, and the line's angle. */
+export interface FanRay {
+  M: number;
+  dir: number;
+  angle: number;
+}
+
+/**
+ * A centred expansion fan: flow at Mach M in direction d0 turning clockwise (down) by θ, as n + 1
+ * Mach lines, the first at d0 + μ₁, the last at d0 − θ + μ₂ (ν rises by exactly θ across it).
+ * Undefined when M < 1 or the turn passes the largest ν.
+ */
+export function expansionFan(
+  M: number,
+  d0: number,
+  theta: number,
+  g: number,
+  n = 6,
+): FanRay[] | undefined {
+  if (!(M >= 1) || theta < 0) return undefined;
+  const nu1 = prandtlMeyer(M, g);
+  const rays: FanRay[] = [];
+  for (let k = 0; k <= n; k++) {
+    const turn = (theta * k) / n;
+    const Mk = machFromNu(nu1 + turn, g);
+    if (Mk === undefined) return undefined;
+    const dir = d0 - turn;
+    rays.push({ M: Mk, dir, angle: dir + Math.asin(1 / Mk) });
+  }
+  return rays;
+}
+
+/**
+ * An attached oblique shock: flow at M in direction d0 turned anticlockwise (up) by θ. The shock
+ * line's angle is d0 + β (weak branch); undefined past the largest deflection.
+ */
+export function obliqueLine(M: number, d0: number, theta: number, g: number) {
+  if (!(M > 1)) return undefined;
+  const beta = theta === 0 ? Math.asin(1 / M) : shockAngle(M, theta, g);
+  if (beta === undefined) return undefined;
+  const o = obliqueShock(M, beta, g);
+  return { beta, angle: d0 + beta, M2: theta === 0 ? M : o.M2, p: theta === 0 ? 1 : o.p };
+}
+
+/**
+ * The waves of a flat plate at α in a stream at M (shock-expansion theory): above, a fan at the
+ * leading edge and a shock at the trailing edge; below, a shock then a fan (mirror the angles).
+ * `upper` and `lower` are the Mach numbers along each surface.
+ */
+export function plateWaves(M: number, alpha: number, g: number) {
+  const leFan = expansionFan(M, 0, alpha, g);
+  const leShock = obliqueLine(M, 0, alpha, g);
+  if (!leFan || !leShock) return undefined;
+  const upper = leFan[leFan.length - 1]!.M;
+  const lower = leShock.M2;
+  // Above at the trailing edge: flow along −α turns up by α. Below: mirrored, it turns away.
+  const teShock = obliqueLine(upper, -alpha, alpha, g);
+  const teFan = expansionFan(lower, alpha, alpha, g);
+  if (!teShock || !teFan) return undefined;
+  return { leFan, leShock, teShock, teFan, upper, lower };
+}
+
+/** The Mach cone's half-angle (radians) of a point moving at M; none below M = 1. */
+export const machCone = (M: number) => (M > 1 ? Math.asin(1 / M) : undefined);

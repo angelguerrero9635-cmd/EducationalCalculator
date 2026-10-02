@@ -617,6 +617,7 @@ function representationVars(r: Representation): string[] {
       return he1aSpecVars(r);
     case 'wing':
     case 'duct':
+    case 'supersonicFlow':
       return he2hSpecVars(r);
   }
 }

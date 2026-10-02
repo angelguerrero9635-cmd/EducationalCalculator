@@ -1,5 +1,6 @@
 /**
- * Picture checks for the college round 2 group H kinds (`typesHe2h.ts`): HC24 `wing`, HC30 `duct`. What each
+ * Picture checks for the college round 2 group H kinds (`typesHe2h.ts`): HC24 `wing`, HC30 `duct`,
+ * HC31 `supersonicFlow`. What each
  * draws must agree with the values and the relations it shows. Called from `repIssues` in
  * `pictures.ts`. Test-only.
  */
@@ -18,6 +19,17 @@ import {
   throatHalf,
   tRatio,
   type DuctShape,
+  ackeretDrag,
+  ackeretLift,
+  deflection,
+  expansionFan,
+  machAngle,
+  machCone,
+  machFromNu,
+  obliqueShock,
+  plateWaves,
+  prandtlMeyer,
+  toRad,
   inducedAngle,
   inducedDrag,
   nacaOf,
@@ -27,7 +39,7 @@ import {
 } from '@/components/module/reps/aeroMath';
 
 import type { NumOrVar } from '../typesGraphs';
-import type { DuctSpec, WingSpec } from '../typesHe2h';
+import type { DuctSpec, SupersonicFlowSpec, WingSpec } from '../typesHe2h';
 import type { Representation } from '../types';
 
 type Getter = (x: NumOrVar | undefined) => number | undefined;
@@ -44,6 +56,7 @@ export function he2hIssues(rep: Representation, val: (id: string) => number | un
   };
   if (rep.kind === 'wing') return wingIssues(rep, get);
   if (rep.kind === 'duct') return ductIssues(rep, get);
+  if (rep.kind === 'supersonicFlow') return supersonicIssues(rep, get);
   return [];
 }
 
@@ -271,5 +284,95 @@ function ductIssues(spec: DuctSpec, get: Getter): string[] {
         out.push(`duct: p_e ÷ p₀ ${pe / p0}, not ${1 / pRatio(Mx, g)}`);
     }
   }
+  return out;
+}
+
+function supersonicIssues(spec: SupersonicFlowSpec, get: Getter): string[] {
+  const out: string[] = [];
+  const g = get(spec.gamma) ?? 1.4;
+  if (!(g > 1)) return out;
+  const M1 = get(spec.M1);
+  const M2 = get(spec.M2);
+  if (spec.mode === 'normal') {
+    if (M1 === undefined || M1 <= 1) return out;
+    const ns = normalShock(M1, g);
+    if (!(ns.M2 < 1)) out.push(`supersonicFlow: M₂ ${ns.M2} is not subsonic`);
+    if (M2 !== undefined && !near(M2, ns.M2)) out.push(`supersonicFlow: M₂ ${M2}, not ${ns.M2}`);
+    const r = spec.ratios ?? {};
+    const pairs: [NumOrVar | undefined, number, string][] = [
+      [r.p, ns.p, 'p₂/p₁'],
+      [r.rho, ns.rho, 'ρ₂/ρ₁'],
+      [r.T, ns.T, 'T₂/T₁'],
+      [r.p0, ns.p0, 'p₀₂/p₀₁'],
+    ];
+    for (const [x, want, name] of pairs) {
+      const v = get(x);
+      if (v !== undefined && !near(v, want)) out.push(`supersonicFlow: ${name} ${v}, not ${want}`);
+    }
+    return out;
+  }
+  if (spec.mode === 'wedge') {
+    const [beta, theta] = [get(spec.beta), get(spec.theta)];
+    if (M1 === undefined || beta === undefined || M1 <= 1) return out;
+    const mu = machAngle(M1)!;
+    // β ≥ μ₁ and β > θ; θ is the θ–β–M relation's.
+    if (toRad(beta) < mu - 1e-9) out.push(`supersonicFlow: β ${beta}° below μ₁ ${toDeg(mu)}°`);
+    const th = toDeg(deflection(M1, toRad(beta), g));
+    if (theta !== undefined) {
+      if (!(beta > theta)) out.push(`supersonicFlow: β ${beta}° is not more than θ ${theta}°`);
+      if (!near(theta, th, 2e-3)) out.push(`supersonicFlow: θ ${theta}°, but θ–β–M gives ${th}°`);
+    }
+    if (M2 !== undefined && th > 0) {
+      const o = obliqueShock(M1, toRad(beta), g);
+      if (!near(M2, o.M2)) out.push(`supersonicFlow: M₂ ${M2}, not ${o.M2}`);
+    }
+    return out;
+  }
+  if (spec.mode === 'corner') {
+    const theta = get(spec.theta);
+    if (M1 === undefined || theta === undefined || M1 < 1) return out;
+    const rays = expansionFan(M1, 0, toRad(theta), g);
+    if (!rays) return out;
+    // The fan turns the flow by exactly θ, and ν rises by θ across it.
+    const last = rays[rays.length - 1]!;
+    if (!near(-toDeg(last.dir), theta))
+      out.push(`supersonicFlow: the fan turns by ${-toDeg(last.dir)}°, not ${theta}°`);
+    const dnu = toDeg(prandtlMeyer(last.M, g) - prandtlMeyer(M1, g));
+    if (!near(dnu, theta)) out.push(`supersonicFlow: ν rises by ${dnu}°, not θ ${theta}°`);
+    if (!near(rays[0]!.angle, machAngle(M1)!))
+      out.push('supersonicFlow: the fan does not start at μ₁');
+    const nu2 = get(spec.nu2);
+    if (M2 !== undefined && nu2 !== undefined) {
+      const m = machFromNu(toRad(nu2), g);
+      if (m !== undefined && !near(m, M2)) out.push(`supersonicFlow: M₂ ${M2}, but ν₂ gives ${m}`);
+    }
+    if (M2 !== undefined && !near(M2, last.M))
+      out.push(`supersonicFlow: M₂ ${M2}, fan ends at ${last.M}`);
+    return out;
+  }
+  if (spec.mode === 'flatPlate') {
+    const alpha = get(spec.alpha);
+    if (M1 === undefined || alpha === undefined || M1 <= 1 || alpha <= 0) return out;
+    const w = plateWaves(M1, toRad(alpha), g);
+    if (w) {
+      if (!(w.upper > M1 && w.lower < M1))
+        out.push('supersonicFlow: the plate’s upper flow is not the faster');
+      if (!(w.leShock.beta > toRad(alpha)))
+        out.push('supersonicFlow: the shock is not steeper than α');
+    }
+    const [cl, cd] = [get(spec.cl), get(spec.cd)];
+    if (cl !== undefined && !near(cl, ackeretLift(M1, toRad(alpha))))
+      out.push(`supersonicFlow: c_l ${cl}, but 4α ÷ √(M² − 1) = ${ackeretLift(M1, toRad(alpha))}`);
+    if (cd !== undefined && !near(cd, ackeretDrag(M1, toRad(alpha))))
+      out.push(`supersonicFlow: c_d ${cd}, but 4α² ÷ √(M² − 1) = ${ackeretDrag(M1, toRad(alpha))}`);
+    return out;
+  }
+  // mach: no cone at M < 1; the cone at μ = sin⁻¹(1 ÷ M).
+  if (M1 === undefined) return out;
+  const cone = machCone(M1);
+  if (M1 <= 1 && cone !== undefined) out.push(`supersonicFlow: a cone drawn at M ${M1}`);
+  const mu = get(spec.mu);
+  if (cone !== undefined && mu !== undefined && !near(mu, toDeg(cone)))
+    out.push(`supersonicFlow: μ ${mu}°, but sin⁻¹(1 ÷ M) = ${toDeg(cone)}°`);
   return out;
 }

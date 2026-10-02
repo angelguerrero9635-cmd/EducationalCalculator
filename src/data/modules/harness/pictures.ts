@@ -2260,6 +2260,7 @@ export function repIssues(
       break;
     case 'wing':
     case 'duct':
+    case 'supersonicFlow':
       out.push(...he2hIssues(rep, (id) => (val(id) ?? NaN) * (byId.get(id)?.unitFactor ?? 1)));
       break;
     case 'projectile':

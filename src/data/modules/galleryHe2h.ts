@@ -3,14 +3,23 @@
  * college page that waits, built from the plan's worked example. Spread into gallery.ts.
  *
  * HC24 `wing`: aerodynamics#0–#2 (docs/plans/he.aero-civil-chemical.md, P1). HC30 `duct`:
- * compressible-flow#0, #2 and propulsion#0~turbojet, #2 (P2). Constants as the
+ * compressible-flow#0, #2 and propulsion#0~turbojet, #2 (P2). HC31 `supersonicFlow`:
+ * aerodynamics#3 and compressible-flow#1, #3 (P3). Constants as the
  * plan has them (air γ = 1.4, R = 287 J/(kg·K)); each picture takes them from the page.
  */
 import {
+  ackeretDrag,
+  ackeretLift,
   areaRatio,
+  bisect,
+  deflection,
   exhaustSpeed,
   machFromArea,
+  machFromNu,
   normalShock,
+  obliqueShock,
+  pitotRatio,
+  prandtlMeyer,
 } from '@/components/module/reps/aeroMath';
 
 import { atLeast } from './helpers';
@@ -1500,6 +1509,548 @@ const ductExhaust = (() => {
   );
 })();
 
+// ── HC31: shocks, fans and Mach waves (aerodynamics#3; compressible-flow#1, #3) ──
+
+const ASSUME_SHOCK = [
+  'The shock is thin and adiabatic, so T₀ is the same both sides; entropy rises, so p₀ falls.',
+  'Calorically perfect air, γ = 1.4.',
+];
+
+const normalDemo = (id: string, title: string, use: string, M1: number) => {
+  const ns = normalShock(M1, 1.4);
+  return demo(id, title, use, {
+    assumptions: ASSUME_SHOCK,
+    variables: [
+      q('M1', 'M₁', 'Mach number before', undefined, 1, 10, 0.001),
+      q('M2', 'M₂', 'Mach number after', undefined, 0.3, 1, 0.0001),
+      q('p21', 'p₂/p₁', 'Pressure ratio', undefined, 1, 200, 0.0001),
+      q('r21', 'ρ₂/ρ₁', 'Density ratio', undefined, 1, 6, 0.0001),
+      q('T21', 'T₂/T₁', 'Temperature ratio', undefined, 1, 50, 0.0001),
+      q('p0r', 'p₀₂/p₀₁', 'Stagnation pressure ratio', undefined, 0.0001, 1, 0.0001),
+    ],
+    ...rules(
+      rule(
+        'M₂² = (1 + 0.2M₁²) ÷ (1.4M₁² − 0.2)',
+        '{M2} = √((1 + 0.2 × {M1}²) ÷ (1.4 × {M1}² − 0.2))',
+        (v) => v.M2! ** 2 * (1.4 * v.M1! ** 2 - 0.2) - (1 + 0.2 * v.M1! ** 2),
+        {
+          M2: [
+            (v) => root((1 + 0.2 * v.M1! ** 2) / (1.4 * v.M1! ** 2 - 0.2)),
+            '√((1 + 0.2 × {M1}²) ÷ (1.4 × {M1}² − 0.2))',
+            'With γ = 1.4: (γ − 1) ÷ 2 = 0.2, and γM₁² − 0.2 below.',
+          ],
+          M1: [
+            (v) => root((1 + 0.2 * v.M2! ** 2) / (1.4 * v.M2! ** 2 - 0.2)),
+            '√((1 + 0.2 × {M2}²) ÷ (1.4 × {M2}² − 0.2))',
+            'The relation reads the same either way round.',
+          ],
+        },
+      ),
+      rule(
+        'p₂ ÷ p₁ = 1 + (2γ ÷ (γ + 1))(M₁² − 1)',
+        '{p21} = 1 + 2.8 ÷ 2.4 × ({M1}² − 1)',
+        (v) => v.p21! - (1 + (2.8 / 2.4) * (v.M1! ** 2 - 1)),
+        {
+          p21: [
+            (v) => 1 + (2.8 / 2.4) * (v.M1! ** 2 - 1),
+            '1 + 2.8 ÷ 2.4 × ({M1}² − 1)',
+            '2γ ÷ (γ + 1) = 2.8 ÷ 2.4 for air.',
+          ],
+          M1: [
+            (v) => root(1 + ((v.p21! - 1) * 2.4) / 2.8),
+            '√(1 + ({p21} − 1) × 2.4 ÷ 2.8)',
+            'Undo the steps: take 1, times 2.4 ÷ 2.8, add 1, then the root.',
+          ],
+        },
+      ),
+      rule(
+        'ρ₂ ÷ ρ₁ = (γ + 1)M₁² ÷ ((γ − 1)M₁² + 2)',
+        '{r21} = 2.4 × {M1}² ÷ (0.4 × {M1}² + 2)',
+        (v) => v.r21! * (0.4 * v.M1! ** 2 + 2) - 2.4 * v.M1! ** 2,
+        {
+          r21: [
+            (v) => (2.4 * v.M1! ** 2) / (0.4 * v.M1! ** 2 + 2),
+            '2.4 × {M1}² ÷ (0.4 × {M1}² + 2)',
+            'The density ratio; it can never pass (γ + 1) ÷ (γ − 1) = 6.',
+          ],
+          M1: [
+            (v) => (v.r21! >= 6 ? undefined : root((2 * v.r21!) / (2.4 - 0.4 * v.r21!))),
+            '√(2 × {r21} ÷ (2.4 − 0.4 × {r21}))',
+            'Solve for M₁²: 2ρ ÷ (2.4 − 0.4ρ), then the root.',
+          ],
+        },
+      ),
+      rule(
+        'T₂ ÷ T₁ = (p₂ ÷ p₁) ÷ (ρ₂ ÷ ρ₁)',
+        '{T21} = {p21} ÷ {r21}',
+        (v) => v.T21! * v.r21! - v.p21!,
+        {
+          T21: [(v) => div(v.p21!, v.r21!), '{p21} ÷ {r21}', 'The ideal gas law: T ∝ p ÷ ρ.'],
+          p21: [(v) => v.T21! * v.r21!, '{T21} × {r21}', 'Multiply the two ratios.'],
+          r21: [
+            (v) => div(v.p21!, v.T21!),
+            '{p21} ÷ {T21}',
+            'Divide the pressure ratio by the temperature ratio.',
+          ],
+        },
+      ),
+      rule(
+        'p₀₂ ÷ p₀₁ from M₁',
+        '{p0r} = (2.4 × {M1}² ÷ (0.4 × {M1}² + 2))^3.5 × (2.4 ÷ (2.8 × {M1}² − 0.4))^2.5',
+        (v) => v.p0r! - shockRatio(v.M1!),
+        {
+          p0r: [
+            (v) => shockRatio(v.M1!),
+            '(2.4 × {M1}² ÷ (0.4 × {M1}² + 2))^3.5 × (2.4 ÷ (2.8 × {M1}² − 0.4))^2.5',
+            'The density ratio to γ ÷ (γ − 1), times a second factor to 1 ÷ (γ − 1).',
+          ],
+          M1: null,
+        },
+      ),
+    ),
+    example: { M1, M2: ns.M2, p21: ns.p, r21: ns.rho, T21: ns.T, p0r: ns.p0 },
+    startWith: ['M1'],
+    representation: {
+      kind: 'supersonicFlow',
+      mode: 'normal',
+      gamma: 1.4,
+      M1: 'M1',
+      M2: 'M2',
+      ratios: { p: 'p21', rho: 'r21', T: 'T21', p0: 'p0r' },
+    },
+  });
+};
+
+const ssNormal = normalDemo(
+  'g.he-supersonicFlow-normal',
+  'Across a normal shock: M₂ and the ratios',
+  'Use this for “Air at M₁ = 2 meets a normal shock. Find M₂, p₂/p₁, ρ₂/ρ₁, T₂/T₁ and p₀₂/p₀₁.”',
+  2,
+);
+
+const ssStrong = normalDemo(
+  'g.he-supersonicFlow-strong',
+  'A strong normal shock at M₁ = 10',
+  'Use this for “A blunt reentry body meets air at M = 10. Across the normal part of its shock, find M₂ and the ratios.”',
+  10,
+);
+
+// ── HC31: a pitot probe in supersonic flow (compressible-flow#1~pitot) ──
+
+const pitotOf = (M: number) => pitotRatio(M, 1.4);
+const ssPitot = (() => {
+  const [M1, p1] = [2, 20];
+  const Rp = pitotOf(M1);
+  return demo(
+    'g.he-supersonicFlow-pitot',
+    'A pitot tube in supersonic flow (Rayleigh)',
+    'Use this for “A pitot probe flies at M = 2 where p = 20 kPa. What does it read? And what M does a reading give?”',
+    {
+      assumptions: [
+        'A bow shock stands in front of the probe; on the axis it is a normal shock.',
+        'Behind it the flow stops isentropically at the tip, which reads p₀₂; air γ = 1.4.',
+      ],
+      variables: [
+        q('M1', 'M₁', 'Mach number', undefined, 1, 10, 0.001),
+        kPaVar('p1', 'p₁', 'Static pressure'),
+        kPaVar('p02', 'p₀₂', 'Probe reading', 1e9),
+        q('Rp', 'p₀₂/p₁', 'Reading over static pressure', undefined, 1.893, 1e4, 0.0001),
+      ],
+      ...rules(
+        rule(
+          'p₀₂ ÷ p₁ (Rayleigh pitot formula)',
+          '{Rp} = (5.76 × {M1}² ÷ (5.6 × {M1}² − 0.8))^3.5 × (2.8 × {M1}² − 0.4) ÷ 2.4',
+          (v) => v.Rp! - pitotOf(v.M1!),
+          {
+            Rp: [
+              (v) => pitotOf(v.M1!),
+              '(5.76 × {M1}² ÷ (5.6 × {M1}² − 0.8))^3.5 × (2.8 × {M1}² − 0.4) ÷ 2.4',
+              'The normal shock’s pressure rise, then the isentropic stop behind it, for γ = 1.4.',
+            ],
+            M1: [
+              (v) => bisect((M) => pitotOf(M) - v.Rp!, 1, 50),
+              (v: Values) =>
+                `√(({Rp} × 2.4 ÷ (5.76 × ${fig8(v.M1!)}² ÷ (5.6 × ${fig8(v.M1!)}² − 0.8))^3.5 + 0.4) ÷ 2.8)`,
+              'M is on both sides: guess M, put it in on the right, and repeat until it stops changing. The last round is shown.',
+            ],
+          },
+        ),
+        rule('p₀₂ = (p₀₂ ÷ p₁)p₁', '{p02} = {Rp} × {p1}', (v) => v.p02! - v.Rp! * v.p1!, {
+          p02: [(v) => v.Rp! * v.p1!, '{Rp} × {p1}', 'Multiply the ratio by the static pressure.'],
+          Rp: [
+            (v) => div(v.p02!, v.p1!),
+            '{p02} ÷ {p1}',
+            'Divide the reading by the static pressure.',
+          ],
+          p1: [(v) => div(v.p02!, v.Rp!), '{p02} ÷ {Rp}', 'Divide the reading by the ratio.'],
+        }),
+      ),
+      example: { M1, p1, p02: Rp * p1, Rp },
+      startWith: ['M1', 'p1'],
+      representation: {
+        kind: 'supersonicFlow',
+        mode: 'normal',
+        gamma: 1.4,
+        M1: 'M1',
+        probe: { p02: 'p02' },
+        more: ['p1', 'Rp'],
+      },
+    },
+  );
+})();
+
+// ── HC31: an oblique shock off a wedge (compressible-flow#1~oblique) ──
+
+const ssWedge = (() => {
+  const [M1, beta] = [2, 40];
+  const o = obliqueShock(M1, beta * RAD, 1.4);
+  return demo(
+    'g.he-supersonicFlow-wedge',
+    'An oblique shock: θ and M₂ from M₁ and β',
+    'Use this for “Air at M = 2 meets a wedge; the shock stands at β = 40°. Find θ, p₂/p₁ and M₂.”',
+    {
+      assumptions: [
+        'An attached, weak oblique shock; only the normal part M₁ sin β is shocked.',
+        'Air γ = 1.4. Typing θ first leaves two shock angles (weak or strong), so type β here.',
+      ],
+      variables: [
+        q('M1', 'M₁', 'Mach number before', undefined, 1.01, 10, 0.001),
+        q('beta', 'β', 'Shock angle', '°', 5.8, 90, 0.01),
+        q('theta', 'θ', 'Wedge angle', '°', 0, 45.6, 0.01),
+        q('Mn1', 'M_n1', 'Normal Mach number', undefined, 1, 10, 0.0001),
+        q('M2', 'M₂', 'Mach number after', undefined, 0.1, 10, 0.0001),
+        q('p21', 'p₂/p₁', 'Pressure ratio', undefined, 1, 200, 0.0001),
+      ],
+      ...rules(
+        rule(
+          'M_n1 = M₁ sin β',
+          '{Mn1} = {M1} × sin({beta})',
+          (v) => v.Mn1! - v.M1! * Math.sin(v.beta! * RAD),
+          {
+            Mn1: [
+              (v) => v.M1! * Math.sin(v.beta! * RAD),
+              '{M1} × sin({beta})',
+              'The part of the flow normal to the shock.',
+            ],
+            M1: [
+              (v) => div(v.Mn1!, Math.sin(v.beta! * RAD)),
+              '{Mn1} ÷ sin({beta})',
+              'Divide the normal part by sin β.',
+            ],
+            beta: [
+              (v) => (v.Mn1! > v.M1! ? undefined : Math.asin(v.Mn1! / v.M1!) / RAD),
+              'sin⁻¹({Mn1} ÷ {M1})',
+              'The angle whose sine is M_n1 ÷ M₁.',
+            ],
+          },
+        ),
+        rule(
+          'tan θ = 2 cot β (M₁² sin²β − 1) ÷ (M₁²(γ + cos 2β) + 2)',
+          '{theta} = tan⁻¹(2 ÷ tan({beta}) × ({M1}² × sin({beta})² − 1) ÷ ({M1}² × (1.4 + cos(2 × {beta})) + 2))',
+          (v) => v.theta! - deflection(v.M1!, v.beta! * RAD, 1.4) / RAD,
+          {
+            theta: [
+              (v) => {
+                const t = deflection(v.M1!, v.beta! * RAD, 1.4) / RAD;
+                return t > 0 ? t : undefined;
+              },
+              'tan⁻¹(2 ÷ tan({beta}) × ({M1}² × sin({beta})² − 1) ÷ ({M1}² × (1.4 + cos(2 × {beta})) + 2))',
+              'The θ–β–M relation: cot β is 1 ÷ tan β; take tan⁻¹ of the right side.',
+            ],
+            beta: null,
+            M1: null,
+          },
+        ),
+        rule(
+          'p₂ ÷ p₁ = 1 + (2γ ÷ (γ + 1))(M_n1² − 1)',
+          '{p21} = 1 + 2.8 ÷ 2.4 × ({Mn1}² − 1)',
+          (v) => v.p21! - (1 + (2.8 / 2.4) * (v.Mn1! ** 2 - 1)),
+          {
+            p21: [
+              (v) => 1 + (2.8 / 2.4) * (v.Mn1! ** 2 - 1),
+              '1 + 2.8 ÷ 2.4 × ({Mn1}² − 1)',
+              'The normal-shock pressure ratio, on the normal Mach number.',
+            ],
+            Mn1: [
+              (v) => root(1 + ((v.p21! - 1) * 2.4) / 2.8),
+              '√(1 + ({p21} − 1) × 2.4 ÷ 2.8)',
+              'Undo the steps for M_n1.',
+            ],
+          },
+        ),
+        rule(
+          'M₂ = M_n2 ÷ sin(β − θ)',
+          '{M2} = √((1 + 0.2 × {Mn1}²) ÷ (1.4 × {Mn1}² − 0.2)) ÷ sin({beta} − {theta})',
+          (v) =>
+            v.M2! * Math.sin((v.beta! - v.theta!) * RAD) -
+            Math.sqrt((1 + 0.2 * v.Mn1! ** 2) / (1.4 * v.Mn1! ** 2 - 0.2)),
+          {
+            M2: [
+              (v) =>
+                div(
+                  Math.sqrt((1 + 0.2 * v.Mn1! ** 2) / (1.4 * v.Mn1! ** 2 - 0.2)),
+                  Math.sin((v.beta! - v.theta!) * RAD),
+                ),
+              '√((1 + 0.2 × {Mn1}²) ÷ (1.4 × {Mn1}² − 0.2)) ÷ sin({beta} − {theta})',
+              'The normal part leaves at M_n2 (the normal-shock relation); the flow behind runs at β − θ to the shock.',
+            ],
+            Mn1: null,
+            beta: null,
+            theta: null,
+          },
+        ),
+      ),
+      example: { M1, beta, theta: o.theta / RAD, Mn1: o.Mn1, M2: o.M2, p21: o.p },
+      startWith: ['M1', 'beta'],
+      representation: {
+        kind: 'supersonicFlow',
+        mode: 'wedge',
+        gamma: 1.4,
+        M1: 'M1',
+        M2: 'M2',
+        beta: 'beta',
+        theta: 'theta',
+        Mn1: 'Mn1',
+        more: ['Mn1', 'p21'],
+      },
+    },
+  );
+})();
+
+// ── HC31: Prandtl–Meyer expansion round a corner (compressible-flow#3~expansion-fan) ──
+
+const nuOf = (M: number) => prandtlMeyer(M, 1.4) / RAD;
+const NU_TEXT = (M: string) => `√6 × tan⁻¹(√((${M}² − 1) ÷ 6)) − tan⁻¹(√(${M}² − 1))`;
+const nuRule = (M: string, nu: string, name: string): Rule =>
+  rule(`ν(${name})`, `{${nu}} = ${NU_TEXT(`{${M}}`)}`, (v) => v[nu]! - nuOf(v[M]!), {
+    [nu]: [
+      (v) => nuOf(v[M]!),
+      NU_TEXT(`{${M}}`),
+      'The Prandtl–Meyer function: √((γ + 1) ÷ (γ − 1)) = √6 for air.',
+    ],
+    [M]: [
+      (v) => machFromNu(v[nu]! * RAD, 1.4),
+      (v: Values) => `√(1 + tan(√6 × tan⁻¹(√((${fig8(v[M]!)}² − 1) ÷ 6)) − {${nu}})²)`,
+      'M is on both sides: guess M, put it in on the right, and repeat until it stops changing. The last round is shown.',
+    ],
+  });
+
+const ssCorner = (() => {
+  const [M1, theta] = [2, 10];
+  const nu1 = nuOf(M1);
+  const M2 = machFromNu((nu1 + theta) * RAD, 1.4)!;
+  return demo(
+    'g.he-supersonicFlow-corner',
+    'Expansion round a corner (Prandtl–Meyer)',
+    'Use this for “Air at M = 2 turns round a 10° convex corner. Find ν₁, ν₂ and M₂.”',
+    {
+      assumptions: [
+        'Isentropic expansion through a centred fan of Mach waves; air γ = 1.4.',
+        'The flow turns by the corner’s θ, and ν rises by exactly θ.',
+      ],
+      variables: [
+        q('M1', 'M₁', 'Mach number before', undefined, 1, 10, 0.001),
+        q('nu1', 'ν₁', 'Prandtl–Meyer angle before', '°', 0, 130.45, 0.001),
+        q('theta', 'θ', 'Turning angle', '°', 0, 120, 0.01),
+        q('nu2', 'ν₂', 'Prandtl–Meyer angle after', '°', 0, 130.45, 0.001),
+        q('M2', 'M₂', 'Mach number after', undefined, 1, 50, 0.001),
+      ],
+      ...rules(
+        nuRule('M1', 'nu1', 'M₁'),
+        rule('ν₂ = ν₁ + θ', '{nu2} = {nu1} + {theta}', (v) => v.nu2! - v.nu1! - v.theta!, {
+          nu2: [
+            (v) => v.nu1! + v.theta!,
+            '{nu1} + {theta}',
+            'Turning the flow by θ raises ν by θ.',
+          ],
+          nu1: [(v) => v.nu2! - v.theta!, '{nu2} − {theta}', 'Take the turn from ν₂.'],
+          theta: [(v) => v.nu2! - v.nu1!, '{nu2} − {nu1}', 'The turn is the rise in ν.'],
+        }),
+        nuRule('M2', 'nu2', 'M₂'),
+      ),
+      example: { M1, nu1, theta, nu2: nu1 + theta, M2 },
+      startWith: ['M1', 'theta'],
+      representation: {
+        kind: 'supersonicFlow',
+        mode: 'corner',
+        gamma: 1.4,
+        M1: 'M1',
+        M2: 'M2',
+        theta: 'theta',
+        nu1: 'nu1',
+        nu2: 'nu2',
+        more: ['nu1', 'nu2'],
+      },
+    },
+  );
+})();
+
+// ── HC31: a flat plate (Ackeret) (compressible-flow#3 main) ──
+
+const ssFlatPlate = (() => {
+  const [M, alpha] = [2, 3];
+  const cl = ackeretLift(M, alpha * RAD);
+  const cd = ackeretDrag(M, alpha * RAD);
+  return demo(
+    'g.he-supersonicFlow-flat-plate',
+    'Lift and wave drag of a thin plate (Ackeret)',
+    'Use this for “A thin flat plate at 3° flies at M = 2. Find c_l, the wave drag c_d and L/D.”',
+    {
+      assumptions: [
+        'Thin airfoil, small α, linearized flow, no friction: c_l = 4α ÷ √(M² − 1).',
+        'The picture draws the exact shocks and fans; the numbers use the linear theory.',
+      ],
+      variables: [
+        q('M', 'M∞', 'Free-stream Mach number', undefined, 1.2, 5, 0.001),
+        q('alpha', 'α', 'Angle of attack', '°', 0.01, 10, 0.01),
+        q('cl', 'c_l', 'Lift coefficient', undefined, 0.00001, 2, 0.00001),
+        q('cd', 'c_d', 'Wave-drag coefficient', undefined, 1e-9, 1, 1e-9),
+        q('LD', 'L/D', 'Lift-to-drag ratio', undefined, 1, 10000, 0.01),
+      ],
+      ...rules(
+        rule(
+          'c_l = 4α ÷ √(M∞² − 1)',
+          '{cl} = 4 × {alpha} × π ÷ 180 ÷ √({M}² − 1)',
+          (v) => v.cl! - ackeretLift(v.M!, v.alpha! * RAD),
+          {
+            cl: [
+              (v) => ackeretLift(v.M!, v.alpha! * RAD),
+              '4 × {alpha} × π ÷ 180 ÷ √({M}² − 1)',
+              'α in radians (× π ÷ 180), times 4, over √(M² − 1).',
+            ],
+            alpha: [
+              (v) => (v.cl! * Math.sqrt(v.M! ** 2 - 1)) / 4 / RAD,
+              '{cl} × √({M}² − 1) ÷ 4 × 180 ÷ π',
+              'Undo the steps, then turn radians into degrees.',
+            ],
+            M: [
+              (v) => (v.cl! > 0 ? Math.sqrt(1 + ((4 * v.alpha! * RAD) / v.cl!) ** 2) : undefined),
+              '√(1 + (4 × {alpha} × π ÷ 180 ÷ {cl})²)',
+              'Solve for √(M² − 1), square it, add 1, then the root.',
+            ],
+          },
+        ),
+        rule(
+          'c_d = 4α² ÷ √(M∞² − 1)',
+          '{cd} = 4 × ({alpha} × π ÷ 180)² ÷ √({M}² − 1)',
+          (v) => v.cd! - ackeretDrag(v.M!, v.alpha! * RAD),
+          {
+            cd: [
+              (v) => ackeretDrag(v.M!, v.alpha! * RAD),
+              '4 × ({alpha} × π ÷ 180)² ÷ √({M}² − 1)',
+              'Wave drag: the lift tilted back by α, so c_d = c_lα.',
+            ],
+            alpha: [
+              (v) => root((v.cd! * Math.sqrt(v.M! ** 2 - 1)) / 4)! / RAD,
+              '√({cd} × √({M}² − 1) ÷ 4) × 180 ÷ π',
+              'Undo the steps, take the root, then turn radians into degrees.',
+            ],
+            M: null,
+          },
+        ),
+        rule('L/D = c_l ÷ c_d', '{LD} = {cl} ÷ {cd}', (v) => v.LD! * v.cd! - v.cl!, {
+          LD: [(v) => div(v.cl!, v.cd!), '{cl} ÷ {cd}', 'Lift over wave drag: 1 ÷ α in radians.'],
+          cl: [(v) => v.LD! * v.cd!, '{LD} × {cd}', 'Multiply L/D by c_d.'],
+          cd: [(v) => div(v.cl!, v.LD!), '{cl} ÷ {LD}', 'Divide c_l by L/D.'],
+        }),
+      ),
+      example: { M, alpha, cl, cd, LD: cl / cd },
+      startWith: ['M', 'alpha'],
+      representation: {
+        kind: 'supersonicFlow',
+        mode: 'flatPlate',
+        gamma: 1.4,
+        M1: 'M',
+        alpha: 'alpha',
+        cl: 'cl',
+        cd: 'cd',
+        more: ['LD'],
+      },
+    },
+  );
+})();
+
+// ── HC31: the Mach angle (compressible-flow#3~mach-angle) ──
+
+const ssMach = (() => {
+  const M = 2;
+  return demo(
+    'g.he-supersonicFlow-mach',
+    'The Mach angle of a supersonic point',
+    'Use this for “A jet flies at M = 2. What is the half-angle of its Mach cone?”',
+    {
+      assumptions: [
+        'Sound spreads at a in every direction from where it was made; the source moves at Ma.',
+        'The fronts touch a cone only when M > 1.',
+      ],
+      variables: [
+        q('M', 'M', 'Mach number', undefined, 1, 20, 0.001),
+        q('mu', 'μ', 'Mach angle', '°', 2.87, 90, 0.01),
+      ],
+      ...rules(
+        rule(
+          'μ = sin⁻¹(1 ÷ M)',
+          '{mu} = sin⁻¹(1 ÷ {M})',
+          (v) => v.mu! - Math.asin(1 / v.M!) / RAD,
+          {
+            mu: [
+              (v) => (v.M! < 1 ? undefined : Math.asin(1 / v.M!) / RAD),
+              'sin⁻¹(1 ÷ {M})',
+              'In time t the source goes Mat while the sound goes at: sin μ = 1 ÷ M.',
+            ],
+            M: [(v) => div(1, Math.sin(v.mu! * RAD)), '1 ÷ sin({mu})', 'Divide 1 by sin μ.'],
+          },
+        ),
+      ),
+      example: { M, mu: Math.asin(1 / M) / RAD },
+      startWith: ['M'],
+      representation: { kind: 'supersonicFlow', mode: 'mach', M1: 'M', mu: 'mu' },
+    },
+  );
+})();
+
+// ── HC31: a subsonic airliner, no cone (aerodynamics#3 main; the edge below M = 1) ──
+
+const ssSubsonic = (() => {
+  const [T, V] = [216.65, 230];
+  const a = Math.sqrt(1.4 * 287 * T);
+  return demo(
+    'g.he-supersonicFlow-subsonic',
+    'Mach number at an altitude’s temperature',
+    'Use this for “At 11 km the air is 216.65 K. An airliner flies at 230 m/s. What is its Mach number?”',
+    {
+      assumptions: [
+        'Air is a perfect gas, γ = 1.4 and R = 287 J/(kg·K).',
+        'The speed of sound depends on temperature only, not on pressure.',
+      ],
+      variables: [
+        kelvin('T', 'T', 'Temperature'),
+        q('a', 'a', 'Speed of sound', 'm/s', 1, 2000, 0.01, { units: ['m/s'] }),
+        q('V', 'V', 'Speed', 'm/s', 0, 10000, 0.1, { units: ['m/s'] }),
+        q('M', 'M', 'Mach number', undefined, 0, 30, 0.001),
+      ],
+      ...rules(
+        rule('a = √(γRT)', '{a} = √(1.4 × 287 × {T})', (v) => v.a! ** 2 - 1.4 * 287 * v.T!, {
+          a: [
+            (v) => Math.sqrt(1.4 * 287 * v.T!),
+            '√(1.4 × 287 × {T})',
+            'γ times R times the temperature, then the root.',
+          ],
+          T: [(v) => v.a! ** 2 / (1.4 * 287), '{a}² ÷ (1.4 × 287)', 'Square a, then divide by γR.'],
+        }),
+        rule('M = V ÷ a', '{M} = {V} ÷ {a}', (v) => v.M! * v.a! - v.V!, {
+          M: [(v) => div(v.V!, v.a!), '{V} ÷ {a}', 'The speed in units of the speed of sound.'],
+          V: [(v) => v.M! * v.a!, '{M} × {a}', 'Multiply M by a.'],
+          a: [(v) => div(v.V!, v.M!), '{V} ÷ {M}', 'Divide the speed by M.'],
+        }),
+      ),
+      example: { T, a, V, M: V / a },
+      startWith: ['T', 'V'],
+      representation: { kind: 'supersonicFlow', mode: 'mach', M1: 'M', more: ['T', 'a', 'V'] },
+    },
+  );
+})();
+
 export const HE2H_GALLERY_MODULES: ModuleDef[] = [
   wingSection,
   wingSymmetric,
@@ -1521,6 +2072,14 @@ export const HE2H_GALLERY_MODULES: ModuleDef[] = [
   ductTurbojet,
   ductChamber,
   ductExhaust,
+  ssNormal,
+  ssStrong,
+  ssPitot,
+  ssWedge,
+  ssCorner,
+  ssFlatPlate,
+  ssMach,
+  ssSubsonic,
 ];
 
 export const HE2H_GALLERY_LAYOUTS: LayoutDef[] = [];

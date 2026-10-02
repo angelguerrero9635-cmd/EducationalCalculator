@@ -100,4 +100,38 @@ export const HE2H_REQUESTS: PictureRequest[] = [
       'g.he-duct-exhaust',
     ],
   },
+  {
+    ...ask(
+      'HC31',
+      'supersonicFlow',
+      'Supersonic flow: a normal shock with ratio bars or a pitot probe, an oblique shock off a wedge, an expansion fan, a flat plate’s waves, a moving point’s Mach cone',
+      [
+        `${E}aerodynamics#3`,
+        `${E}compressible-flow#1`,
+        `${E}compressible-flow#1~oblique`,
+        `${E}compressible-flow#1~pitot`,
+        `${E}compressible-flow#3`,
+        `${E}compressible-flow#3~mach-angle`,
+        `${E}compressible-flow#3~expansion-fan`,
+      ],
+      [
+        'From ACC-P3. A new kind (typesHe2h.ts, reps/SupersonicFlow.tsx, the sums in reps/aeroMath.ts: normal and oblique shocks, θ–β–M with its weak branch by bisection, Prandtl–Meyer and its inverse, the Rayleigh pitot formula, the centred fan and the plate’s shock-expansion waves). No chart is used: every angle is computed.',
+        "Fields: { kind: 'supersonicFlow', mode: 'normal' | 'wedge' | 'corner' | 'flatPlate' | 'mach', gamma? (default 1.4), M1? (M∞ on the plate, M of the point in mach), M2?, beta?, theta?, alpha?, mu? (all °), Mn1?, nu1?, nu2?, ratios?: { p?, rho?, T?, p0? }, probe?: { p02 }, cl?, cd?, more? }.",
+        "Example (compressible-flow#1): { kind: 'supersonicFlow', mode: 'normal', gamma: 1.4, M1: 'M1', M2: 'M2', ratios: { p: 'p21', rho: 'r21', T: 'T21', p0: 'p0r' } }. Example (~oblique): { kind: 'supersonicFlow', mode: 'wedge', gamma: 1.4, M1: 'M1', M2: 'M2', beta: 'beta', theta: 'theta', more: ['Mn1', 'p21'] }. Example (~expansion-fan): { kind: 'supersonicFlow', mode: 'corner', gamma: 1.4, M1: 'M1', M2: 'M2', theta: 'theta', more: ['nu1', 'nu2'] }. Example (aerodynamics#3): { kind: 'supersonicFlow', mode: 'mach', M1: 'M', more: ['T', 'a', 'V'] }.",
+        'normal: arrows behind the shock shortened by ρ₁ ÷ ρ₂, ratio bars on one scale with 1 dashed; with probe, the bow shock and the tube reading p₀₂. wedge: the shock from the corner at β, μ₁ dashed, streamlines turning by θ. corner: the fan between its first and last Mach lines, streamlines bending at each. flatPlate: exact shocks and fans at both edges (the numbers stay Ackeret’s), lift ⟂ the stream, drag to scale. mach: five fronts from the point; the cone at μ only when M > 1. A "?" draws no label; a β below μ₁ or under θ, M₁ ≤ 1 for a shock, or a turn past ν_max draws faded with the reason.',
+        'The harness (harness/picturesHe2h.ts) checks M₂ < 1 and the ratios behind a normal shock, β ≥ μ₁ and β > θ with θ from θ–β–M and M₂, the fan turning the flow by exactly θ (ν rises by θ) and starting at μ₁, M₂ from ν₂, the plate’s faster upper flow and c_l, c_d from Ackeret, and no cone at M ≤ 1 with μ = sin⁻¹(1 ÷ M). Demos: the 7 pages plus M₁ = 10 (the edge above) and M = 0.78 with no cone (the edge below, aerodynamics#3 main).',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-supersonicFlow-normal',
+      'g.he-supersonicFlow-strong',
+      'g.he-supersonicFlow-pitot',
+      'g.he-supersonicFlow-wedge',
+      'g.he-supersonicFlow-corner',
+      'g.he-supersonicFlow-flat-plate',
+      'g.he-supersonicFlow-mach',
+      'g.he-supersonicFlow-subsonic',
+    ],
+  },
 ];

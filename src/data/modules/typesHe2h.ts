@@ -1,7 +1,7 @@
 /**
- * College picture kinds of round 2, group H (docs/RENDERINGS_HE.md): HC24 `wing`, HC30 `duct`.
- * Kept apart from `types.ts` so its union only names them. A `NumOrVar` is a fixed number or a variable id;
- * values are read in the variable's own unit, angles in degrees.
+ * College picture kinds of round 2, group H (docs/RENDERINGS_HE.md): HC24 `wing`, HC30 `duct`,
+ * HC31 `supersonicFlow`. Kept apart from `types.ts` so its union only names them. A `NumOrVar` is
+ * a fixed number or a variable id; values are read in the variable's own unit, angles in degrees.
  */
 import type { NumOrVar } from './typesGraphs';
 
@@ -125,7 +125,52 @@ export interface DuctSpec {
   more?: string[];
 }
 
-export type He2hSpec = WingSpec | DuctSpec;
+// ─── HC31: shocks, expansion fans and Mach waves ─────────────────────────────
+
+/**
+ * HC31 (ACC-P3). Supersonic flow from the left, streamlines flat, angles in degrees, every wave
+ * angle computed from the relations (θ–β–M, Prandtl–Meyer, sin⁻¹(1 ÷ M)) with the page's γ.
+ *
+ * - `normal`: a vertical shock, M₁ > 1 in and M₂ < 1 out, the arrows shortened by ρ₁ ÷ ρ₂, and
+ *   bars for the `ratios`; with `probe`, a pitot tube behind its detached bow shock reading p₀₂.
+ * - `wedge`: a wedge of half-angle θ, the oblique shock at β from its corner, streamlines turning
+ *   by θ through it, the Mach angle μ₁ dashed (β ≥ μ₁).
+ * - `corner`: a wall turning away by θ, the expansion fan between the Mach lines at μ₁ (to the
+ *   flow before) and μ₂ (to the flow after), streamlines bending through it.
+ * - `flatPlate`: a plate at α, a shock and a fan at each edge (from the relations, not Ackeret's
+ *   linear waves), lift ⟂ the stream and wave drag along it.
+ * - `mach`: sound fronts from a moving point; the Mach cone at μ when M > 1, none below.
+ */
+export interface SupersonicFlowSpec {
+  kind: 'supersonicFlow';
+  mode: 'normal' | 'wedge' | 'corner' | 'flatPlate' | 'mach';
+  /** Ratio of specific heats γ (default 1.4). */
+  gamma?: NumOrVar;
+  /** Mach numbers before and after (M∞ on the plate, M of the point in `mach`). */
+  M1?: NumOrVar;
+  M2?: NumOrVar;
+  /** Shock angle β, the wedge's or the corner's turn θ, the plate's α, the Mach angle μ (°). */
+  beta?: NumOrVar;
+  theta?: NumOrVar;
+  alpha?: NumOrVar;
+  mu?: NumOrVar;
+  /** `wedge`: the normal Mach number M₁ sin β. */
+  Mn1?: NumOrVar;
+  /** `corner`: the Prandtl–Meyer angles ν₁ and ν₂ (°). */
+  nu1?: NumOrVar;
+  nu2?: NumOrVar;
+  /** `normal` (and `wedge`, p only): ratios across the shock, drawn as bars. */
+  ratios?: { p?: NumOrVar; rho?: NumOrVar; T?: NumOrVar; p0?: NumOrVar };
+  /** `normal`: a pitot probe reading p₀₂ behind its bow shock. */
+  probe?: { p02: NumOrVar };
+  /** `flatPlate`: lift and wave-drag coefficients. */
+  cl?: NumOrVar;
+  cd?: NumOrVar;
+  /** Further values labelled under the picture. */
+  more?: string[];
+}
+
+export type He2hSpec = WingSpec | DuctSpec | SupersonicFlowSpec;
 
 /** Fields holding a word, not a value. */
 const WORDS = new Set(['kind', 'mode', 'surface', 'branch']);
