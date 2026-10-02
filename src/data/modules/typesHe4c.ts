@@ -1,5 +1,6 @@
 /**
- * College pictures, round 4, group C (docs/RENDERINGS_HE.md): HC99 `motionGraph` `polynomial`.
+ * College pictures, round 4, group C (docs/RENDERINGS_HE.md): HC99 `motionGraph` `polynomial`,
+ * HC101 `impulse` `shape`.
  * Kept apart from `types.ts` so the union only names them.
  *
  * Every string is a variable id; a `NumOrVar` is a fixed number or one. A value is read in its
@@ -35,10 +36,33 @@ export interface MotionGraphHe4cSpec {
   fixed?: boolean;
 }
 
+// ─── HC101 impulse shapes ────────────────────────────────────────────────────
+
+/**
+ * A force pulse on the F–t graph: a `rectangle` (a steady push), a `triangle` (up to the peak
+ * half-way, then down) or a `halfSine` (F = Fₘₐₓ sin(πt ÷ Δt)) of `peak` Fₘₐₓ (N) lasting `time`
+ * Δt (s). Its area is the impulse J = ∫F dt (Fₘₐₓ·Δt, ½Fₘₐₓ·Δt or (2 ÷ π)Fₘₐₓ·Δt), shaded and
+ * written; the rectangle of the same area at the average force J ÷ Δt is dashed. With `mass`
+ * (kg) a ball leaves at Δv = J ÷ m. Drag the peak for Fₘₐₓ and the pulse's end for Δt.
+ */
+export interface ImpulseShapeSpec {
+  kind: 'impulse';
+  shape: 'rectangle' | 'triangle' | 'halfSine';
+  peak: NumOrVar;
+  time: NumOrVar;
+  /** J (N·s), the average force (N). */
+  impulse?: string;
+  average?: string;
+  /** The mass (kg) the pulse acts on, and its change in speed Δv (m/s). */
+  mass?: NumOrVar;
+  change?: string;
+  fixed?: boolean;
+}
+
 // ─── The union ───────────────────────────────────────────────────────────────
 
 /** Group HE4C's options on kinds that exist (sent to He4cView before the kind's own picture). */
-export type He4cOptionSpec = MotionGraphHe4cSpec;
+export type He4cOptionSpec = MotionGraphHe4cSpec | ImpulseShapeSpec;
 
 /** Every picture of group HE4C. */
 export type He4cSpec = He4cOptionSpec;
@@ -46,6 +70,7 @@ export type He4cSpec = He4cOptionSpec;
 /** Whether a picture is one of group HE4C's options on an existing kind. */
 export function isHe4cOption(r: Representation): r is He4cOptionSpec {
   if (r.kind === 'motionGraph') return 'polynomial' in r;
+  if (r.kind === 'impulse') return 'shape' in r;
   return false;
 }
 
@@ -59,5 +84,7 @@ export function he4cSpecVars(r: He4cSpec): string[] {
       const p = r.polynomial;
       return ids(p.c0, p.c1, p.c2, p.c3, p.at, p.position, p.velocity, p.acceleration);
     }
+    case 'impulse':
+      return ids(r.peak, r.time, r.impulse, r.average, r.mass, r.change);
   }
 }

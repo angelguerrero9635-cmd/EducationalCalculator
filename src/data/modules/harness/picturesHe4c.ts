@@ -3,7 +3,13 @@
  * draws must agree with the values. Called from `repIssues` in `pictures.ts`. Test-only. `val`
  * reads formula units (see `siOf`).
  */
-import { cubicAt, turnarounds, type Cubic } from '@/components/module/reps/he4cMath';
+import {
+  cubicAt,
+  PULSE_SHARE,
+  pulseForce,
+  turnarounds,
+  type Cubic,
+} from '@/components/module/reps/he4cMath';
 
 import type { He4cSpec } from '../typesHe4c';
 import type { NumOrVar } from '../typesGraphs';
@@ -44,6 +50,27 @@ export function he4cIssues(rep: He4cSpec, val: Val): string[] {
       same(p.position, s.x, 'x = c₀ + c₁t + c₂t² + c₃t³:');
       same(p.velocity, s.v, 'v = c₁ + 2c₂t + 3c₃t²:');
       same(p.acceleration, s.a, 'a = 2c₂ + 6c₃t:');
+      break;
+    }
+    case 'impulse': {
+      // HC101: the drawn pulse's area (by quadrature) = J; F_avg·Δt = J; Δv = J ÷ m.
+      const [F, dt, m] = [read(rep.peak), read(rep.time), read(rep.mass)];
+      if (F !== undefined && F <= 0) out.push(`impulse: peak force ${F} is not positive`);
+      if (dt !== undefined && dt <= 0) out.push(`impulse: contact time ${dt} is not positive`);
+      if (m !== undefined && m <= 0) out.push(`impulse: mass ${m} is not positive`);
+      if (F === undefined || dt === undefined || F <= 0 || dt <= 0) break;
+      const n = 2000;
+      let area = 0;
+      for (let i = 0; i < n; i++)
+        area += pulseForce(rep.shape, F, dt, ((i + 0.5) * dt) / n) * (dt / n);
+      const J = PULSE_SHARE[rep.shape] * F * dt;
+      if (!near(area, J, 1e-3)) out.push(`impulse: the pulse's area ${area} is not J = ${J}`);
+      same(rep.impulse, J, 'J (the area)');
+      same(rep.average, J / dt, 'the average force J ÷ Δt');
+      const avg = rep.average ? val(rep.average) : undefined;
+      if (avg !== undefined && !near(avg * dt, J))
+        out.push(`impulse: F_avg·Δt ${avg * dt} ≠ J ${J}`);
+      if (m !== undefined && m > 0) same(rep.change, J / m, 'Δv = J ÷ m');
       break;
     }
   }

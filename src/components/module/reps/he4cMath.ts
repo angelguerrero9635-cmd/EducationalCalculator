@@ -63,3 +63,22 @@ export function cubicSpan(c: Cubic, at: number | undefined) {
   const last = Math.max(t ?? 0, ...near);
   return last > 0 ? last * 1.2 : 1;
 }
+
+// ─── HC101 force pulses ──────────────────────────────────────────────────────
+
+export type PulseShape = 'rectangle' | 'triangle' | 'halfSine';
+
+/** J ÷ (Fₘₐₓ·Δt) for each shape: 1, ½ and 2 ÷ π. */
+export const PULSE_SHARE: Record<PulseShape, number> = {
+  rectangle: 1,
+  triangle: 0.5,
+  halfSine: 2 / Math.PI,
+};
+
+/** The force at time t of a pulse of `peak` lasting `dt` (0 outside it). */
+export function pulseForce(shape: PulseShape, peak: number, dt: number, t: number) {
+  if (t < 0 || t > dt || dt <= 0) return 0;
+  if (shape === 'rectangle') return peak;
+  if (shape === 'triangle') return peak * (1 - Math.abs(2 * t - dt) / dt);
+  return peak * Math.sin((Math.PI * t) / dt);
+}
