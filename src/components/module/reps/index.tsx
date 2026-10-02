@@ -3,6 +3,7 @@ import { drawnByHe1d } from '@/data/modules/typesHe1d';
 import { isHe2fSpec } from '@/data/modules/typesHe2f';
 import { isHe3lSpec } from '@/data/modules/typesHe3l';
 import { isVectorHe4b } from '@/data/modules/typesHe4b'; // HC96–HC171, group B
+import { isHe4cOption } from '@/data/modules/typesHe4c';
 
 import type { Calculator } from '../useCalculator';
 import { Balance } from './Balance';
@@ -252,6 +253,8 @@ import { PropertyDiagram } from './PropertyDiagram';
 import { MotionGraphHs } from './MotionGraphHs';
 import { HskView } from './HskView';
 import { He2fView } from './He2fView';
+import { He4cView } from './He4cView';
+import { Spacetime } from './Spacetime';
 import { RayHe3l } from './RayHe3l';
 import { PhaseSpace } from './PhaseSpace';
 import { WaveHe3l } from './WaveHe3l';
@@ -296,6 +299,7 @@ export const representationTitle = (r: Representation) =>
 
 export function RepresentationView({ spec, calc }: { spec: Representation; calc: Calculator }) {
   if (isHe2fSpec(spec)) return <He2fView spec={spec} calc={calc} />; // HC20, HC25, HC35
+  if (isHe4cOption(spec)) return <He4cView spec={spec} calc={calc} />; // HC99, HC101, HC103, HC105, HC118
   switch (spec.kind) {
     case 'none':
       return null; // H105: an equation-only page (ModuleSections leaves out the section)
@@ -444,6 +448,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <PotentialWell spec={spec} calc={calc} />;
     case 'phaseSpace':
       return <PhaseSpace spec={spec} calc={calc} />; // HC69
+    case 'spacetime':
+      return <Spacetime spec={spec} calc={calc} />; // HC104
     case 'unitCell':
       return <UnitCell spec={spec} calc={calc} />;
     case 'binaryPhase':

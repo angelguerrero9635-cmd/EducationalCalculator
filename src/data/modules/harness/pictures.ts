@@ -120,6 +120,8 @@ import {
   scatterClassesIssues,
   scatterPointsHe4a,
 } from './picturesHe4a';
+import { he4cIssues } from './picturesHe4c';
+import { isHe4cOption } from '../typesHe4c';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -157,6 +159,7 @@ export function repIssues(
     if (k < 1 || xs.some((x) => x === undefined)) return undefined;
     return (xs as number[]).sort((a, b) => a - b);
   };
+  if (isHe4cOption(rep)) return [...out, ...he4cIssues(rep, siOf(val, byId))]; // HC99, HC101, HC103, HC105, HC118
   switch (rep.kind) {
     case 'tenFrame': {
       const cap = 10 * (rep.frames ?? 1);
@@ -2533,6 +2536,9 @@ export function repIssues(
     case 'hydrograph':
     case 'blockDiagram':
       out.push(...he3jIssues(rep, siOf(val, byId))); // HC60, HC61, HC89, HC90
+      break;
+    case 'spacetime':
+      out.push(...he4cIssues(rep, siOf(val, byId))); // HC104
       break;
     case 'fieldPlot':
       out.push(...fieldPlotIssues(rep, val)); // HC21

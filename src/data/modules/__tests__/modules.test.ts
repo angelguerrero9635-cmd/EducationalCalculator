@@ -52,6 +52,7 @@ import { dilutionSeriesVars } from '../typesHe3g';
 import { hskOptionVars, hskSpecVars } from '../typesHsk';
 import { he2fSpecVars, isHe2fSpec } from '../typesHe2f';
 import { he3lSpecVars, isHe3lSpec } from '../typesHe3l';
+import { he4cSpecVars, isHe4cOption } from '../typesHe4c';
 import { he1hSpecVars } from '../typesHe1h';
 import { he2dSpecVars } from '../typesHe2d';
 import { hs2cSpecVars } from '../typesHs2c';
@@ -78,6 +79,7 @@ import { treeChanceVars, twoWayVars, vennChanceVars } from '../harness/picturesH
 /** Every variable id a representation refers to. */
 function representationVars(r: Representation): string[] {
   if (isHe2fSpec(r)) return he2fSpecVars(r); // HC20, HC25, HC35
+  if (isHe4cOption(r)) return he4cSpecVars(r); // HC99, HC101, HC103, HC105, HC118
   switch (r.kind) {
     case 'none':
       return [];
@@ -666,6 +668,8 @@ function representationVars(r: Representation): string[] {
     case 'machining':
     case 'linkage':
       return he3iSpecVars(r);
+    case 'spacetime':
+      return he4cSpecVars(r); // HC104
     case 'globe':
       return globeVars(r);
     case 'instrumentTrace':
