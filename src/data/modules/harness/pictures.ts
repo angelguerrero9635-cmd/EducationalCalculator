@@ -87,6 +87,7 @@ import { he2hIssues } from './picturesHe2h';
 import { fieldPlotIssues, he2gGraphIssues } from './picturesHe2g';
 import { he2cIssues } from './picturesHe2c';
 import {
+  chainTreeIssues,
   matrixGridHe4aIssues,
   matrixMoveIssues,
   scatterClassesIssues,
@@ -1501,6 +1502,10 @@ export function repIssues(
       break;
     }
     case 'treeDiagram': {
+      if ('chain' in rep) {
+        out.push(...chainTreeIssues(rep.chain, val)); // HC98
+        break;
+      }
       if ('chances' in rep) {
         out.push(...treeChanceIssues(rep.chances, val), ...hs2gIssues(rep, val));
         break;

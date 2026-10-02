@@ -21,7 +21,7 @@ import type { VariableDef } from '@/engine/types';
 
 import type { Representation } from '../types';
 import type { TransformationSpec } from '../typesGraphs';
-import type { ScatterClassesSpec } from '../typesHe4a';
+import type { ChainTreeHe4a, ScatterClassesSpec } from '../typesHe4a';
 import type { MatrixGridSpec } from '../typesHsd';
 
 type Val = (id: string | number) => number | undefined;
@@ -225,5 +225,21 @@ export function scatterClassesIssues(rep: ScatterClassesSpec, val: Val): string[
     if (!near(got, want, 1e-3))
       out.push(`distance to ${rep.classes[i]!.name} is ${got}, not ${want}`);
   });
+  return out;
+}
+
+/** HC98: one partial and one rate per middle letter (2 or 3); dz/dt is the sum of the products. */
+export function chainTreeIssues(rep: ChainTreeHe4a, val: Val): string[] {
+  const out: string[] = [];
+  const n = rep.middle?.length ?? 2;
+  if (n < 2 || n > 3) out.push(`${n} middle variables (2 or 3)`);
+  if (rep.partials.length !== n) out.push(`${rep.partials.length} partials for ${n} branches`);
+  if (rep.rates.length !== n) out.push(`${rep.rates.length} rates for ${n} branches`);
+  const p = rep.partials.map((x) => val(x));
+  const r = rep.rates.map((x) => val(x));
+  const total = rep.total ? val(rep.total) : undefined;
+  if (total === undefined || [...p, ...r].some((x) => x === undefined)) return out;
+  const want = p.reduce<number>((s, x, i) => s + x! * r[i]!, 0);
+  if (!near(total, want)) out.push(`dz/dt = ${total}, the paths add to ${want}`);
   return out;
 }

@@ -125,6 +125,32 @@ export interface ScatterClassesSpec {
 export const scatterClassesVars = (r: ScatterClassesSpec): string[] =>
   ids(...r.classes.flatMap((k) => [k.x, k.y]), r.pixel.x, r.pixel.y, ...(r.distances ?? []));
 
+// ─── HC98: treeDiagram chain (the multivariable chain rule) ──────────────────
+
+/**
+ * HC98 (M-P19): `treeDiagram` `chain` (drawn by ChainTreeHe4a.tsx): z at the top, the middle
+ * variables (x, y; 2 or 3) under it, t under each; each upper branch labelled with its partial
+ * (∂z/∂x = 4), each lower one with its rate (dx/dt = 2), each path's product under its leaf
+ * (4 × 2 = 8) and their sum under the tree (dz/dt = 8 + (−9) = −1). A "?" value leaves its label
+ * bare and its path's product out.
+ * - `top`, `middle`, `bottom`: the letters (default 'z', ['x', 'y'], 't').
+ * - `partials`: ∂z/∂x, ∂z/∂y, … (values or numbers), one per middle letter.
+ * - `rates`: dx/dt, dy/dt, …, one per middle letter.
+ * - `total`: dz/dt (checked: the sum of the products).
+ */
+export interface ChainTreeHe4a {
+  top?: string;
+  middle?: string[];
+  bottom?: string;
+  partials: NumOrVar[];
+  rates: NumOrVar[];
+  total?: string;
+}
+
+/** Every variable id a chain tree names. */
+export const chainTreeVars = (r: ChainTreeHe4a): string[] =>
+  ids(...r.partials, ...r.rates, r.total);
+
 /** Every variable id the matrixGrid options above name (for the module tests). */
 export function matrixGridHe4aVars(r: object): string[] {
   const m = r as Partial<RowReduceHe4a & MatrixRouthHe4a> & { mode?: string };

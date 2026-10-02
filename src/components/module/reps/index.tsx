@@ -162,6 +162,7 @@ import { MatrixRouthHe4a } from './MatrixRouthHe4a'; // HC190
 import { TransformationMatrixHe4a } from './TransformationMatrixHe4a'; // HC95
 import { ScatterPointsHe4a } from './ScatterPointsHe4a'; // HC97
 import { ScatterClassesHe4a } from './ScatterClassesHe4a'; // HC139
+import { ChainTreeHe4a } from './ChainTreeHe4a'; // HC98
 import { MatrixGrid } from './MatrixGrid';
 import { HsjView } from './hsjView';
 import { BeakerSolution } from './BeakerSolution';
@@ -709,6 +710,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'diceGrid':
       return <DiceGrid spec={spec} calc={calc} />;
     case 'treeDiagram':
+      if ('chain' in spec) return <ChainTreeHe4a spec={spec.chain} calc={calc} />; // HC98
       return 'chances' in spec ? (
         spec.chances.third ? (
           <ChanceTree3 spec={spec.chances} calc={calc} />

@@ -50,7 +50,7 @@ import { hs3aSpecVars } from '../typesHs3a';
 import { he1bSpecVars } from '../typesHe1b';
 import { he1aSpecVars } from '../typesHe1a';
 import { bodeVars, complexPlaneHe2aVars } from '../typesHe2a';
-import { matrixGridHe4aVars, scatterClassesVars } from '../typesHe4a'; // HC94, HC190, HC139
+import { chainTreeVars, matrixGridHe4aVars, scatterClassesVars } from '../typesHe4a'; // group A, round 4
 import { he2hSpecVars } from '../typesHe2h';
 import { isStandIn, pages } from '../harness/scope';
 import { treeChanceVars, twoWayVars, vennChanceVars } from '../harness/picturesHse';
@@ -371,6 +371,7 @@ function representationVars(r: Representation): string[] {
         ...[r.width, r.at, r.area, r.volume].filter((x): x is string => !!x),
       ];
     case 'treeDiagram':
+      if ('chain' in r) return chainTreeVars(r.chain); // HC98
       if ('chances' in r) return [...treeChanceVars(r.chances), ...hs2gSpecVars(r)];
       return [r.first, r.second, ...[r.third, r.total, r.chance].filter((x): x is string => !!x)];
     case 'diceGrid':

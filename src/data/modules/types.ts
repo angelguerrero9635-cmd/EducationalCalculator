@@ -38,7 +38,7 @@ import type { He2bSpec } from './typesHe2b';
 import type { GlobeSpec } from './typesHe2k';
 import type { He2jSpec } from './typesHe2j';
 import type { FieldPlotSpec } from './typesHe2g';
-import type { ScatterClassesSpec } from './typesHe4a'; // HC139
+import type { ChainTreeHe4a, ScatterClassesSpec } from './typesHe4a'; // HC139, HC98
 import type { CardIcon } from './layouts/types';
 import type { TreeChances, TwoWaySpec, VennChances } from './typesHse';
 import type { IntegerLineHs2a } from './typesHs2a';
@@ -1583,6 +1583,8 @@ export type Representation =
     }
   /** Grades 9–12 (H21): a probability tree, a chance on every branch (spec in `typesHse.ts`). */
   | { kind: 'treeDiagram'; chances: TreeChances }
+  /** HC98: the multivariable chain rule as a tree (spec in `typesHe4a.ts`). */
+  | { kind: 'treeDiagram'; chain: ChainTreeHe4a }
   /**
    * A clear bag of marbles: `parts` are how many of each color (40 in all at most), in
    * `colors` and named by `names` (the color names by default). The event is color `pick`

@@ -95,4 +95,17 @@ export const HE4A_REQUESTS: PictureRequest[] = [
       'Example (remote-sensing#2~min-distance): { kind: "scatter", x: { label: "Red reflectance", min: 0, max: 0.5, step: 0.1 }, y: { label: "Near-infrared reflectance", min: 0, max: 0.5, step: 0.1 }, classes: [{ name: "Water", x: 0.05, y: 0.03 }, { name: "Vegetation", x: 0.06, y: 0.45 }, { name: "Soil", x: 0.2, y: 0.28 }], pixel: { x: "R", y: "N" }, distances: ["dW", "dV", "dS"] } ((0.10, 0.40) → 0.373, 0.064, 0.156: vegetation).',
     ].join(' '),
   },
+  {
+    id: 'HC98',
+    kind: 'treeDiagram',
+    what: 'The multivariable chain rule as a tree: z, then x and y, then t under each; partials and rates on the branches, each path’s product and their sum',
+    pages: [`${M}calc-3#1~chain`],
+    status: 'drawn',
+    gallery: ['g.he-tree-diagram-chain', 'g.he-tree-diagram-chain-three'],
+    notes: [
+      'From M-P19 (HE-math-P19). A new `treeDiagram` form (typesHe4a.ts ChainTreeHe4a, its own member of the union beside `chances`; drawn by ChainTreeHe4a.tsx; the other trees unchanged).',
+      'Fields: { kind: "treeDiagram", chain: { top? ("z"), middle? (["x", "y"], 2 or 3 letters), bottom? ("t"), partials: NumOrVar[] (∂z/∂x, ∂z/∂y, …), rates: NumOrVar[] (dx/dt, dy/dt, …), total?: string (dz/dt, checked: the sum of the products) } }. Drawn: z lit at the top, the middle letters, t under each; "∂z/∂x = 4" beside each upper branch, "dx/dt = 2" beside each lower one, "4 × 2 = 8" under each leaf and "dz/dt = 8 + (−9) = −1" under the tree. A "?" leaves its label bare (∂z/∂x) and its path’s product out; the sum line then reads the rule in letters.',
+      'Example (calc-3#1~chain): { kind: "treeDiagram", chain: { partials: ["fx", "fy"], rates: ["xp", "yp"], total: "dz" } } (f_x = 4, f_y = 9, x′ = 2, y′ = −1 → 8 − 9 = −1). Three middle letters: chain: { middle: ["x", "y", "w"], partials: […3], rates: […3], total }.',
+    ].join(' '),
+  },
 ];

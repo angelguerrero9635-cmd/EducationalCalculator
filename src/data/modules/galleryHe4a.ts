@@ -6,6 +6,7 @@
  * HC95: `transformation` `move: 'matrix'` with `eigen`.
  * HC97: `scatter` `pointsFrom` (least squares from typed points).
  * HC139: `scatter` `classes` (minimum distance in feature space).
+ * HC98: `treeDiagram` `chain` (the multivariable chain rule).
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
@@ -948,6 +949,101 @@ const minDistanceClose = minDistanceDemo(
   0.1,
 );
 
+// ── HC98: the chain rule as a tree (calc-3#1~chain) ──
+
+/** calc-3#1~chain: dz/dt = Σ ∂z/∂xᵢ × dxᵢ/dt over the middle variables. */
+function chainDemo(
+  id: string,
+  title: string,
+  use: string,
+  middle: string[],
+  partials: number[],
+  rates: number[],
+) {
+  const pIds = middle.map((m) => `f${m}`);
+  const rIds = middle.map((m) => `${m}p`);
+  const terms = middle.map((_, i) => `{${pIds[i]}} × {${rIds[i]}}`).join(' + ');
+  const sum = (v: Values, skip = -1) =>
+    middle.reduce((s, _, i) => (i === skip ? s : s + v[pIds[i]!]! * v[rIds[i]!]!), 0);
+  const others = (i: number) =>
+    middle
+      .map((_, j) => j)
+      .filter((j) => j !== i)
+      .map((j) => ` − {${pIds[j]}} × {${rIds[j]}}`)
+      .join('');
+  const ex: Values = { dz: 0 };
+  middle.forEach((_, i) => {
+    ex[pIds[i]!] = partials[i]!;
+    ex[rIds[i]!] = rates[i]!;
+  });
+  ex.dz = sum(ex);
+  const rel = rule(
+    'dz/dt = Σ ∂z/∂x · dx/dt',
+    `{dz} = ${terms}`,
+    ['dz', ...pIds, ...rIds],
+    (v) => v.dz! - sum(v),
+    {
+      dz: [(v) => sum(v), terms, 'Multiply along each path from z down to t, then add the paths.'],
+      ...Object.fromEntries(
+        middle.map((m, i) => [
+          rIds[i]!,
+          [
+            (v: Values) => div(v.dz! - sum(v, i), v[pIds[i]!]!),
+            `({dz}${others(i)}) ÷ {${pIds[i]}}`,
+            `Take the other paths from dz/dt, then divide by ∂z/∂${m}.`,
+          ],
+        ]),
+      ),
+    },
+  );
+  return page({
+    id,
+    title,
+    use,
+    assumptions: [
+      `z depends on ${middle.join(middle.length === 2 ? ' and ' : ', ')}, and each of them on t.`,
+      'Along each path, multiply the rates: how fast z changes with the middle variable times how fast it changes with t.',
+      'Each path is one way t moves z, so dz/dt adds the paths.',
+    ],
+    variables: [
+      ...middle.flatMap((m, i) => [
+        num(pIds[i]!, `∂z/∂${m}`, `Partial of z with respect to ${m}`, undefined, -1e6, 1e6, {
+          step: 0.01,
+        }),
+        num(rIds[i]!, `d${m}/dt`, `Rate of ${m} with respect to t`, undefined, -1e6, 1e6, {
+          step: 0.01,
+        }),
+      ]),
+      num('dz', 'dz/dt', 'Rate of z with respect to t', undefined, -1e12, 1e12, { derived: true }),
+    ],
+    rules: [rel],
+    example: ex,
+    startWith: [...pIds, ...rIds],
+    representation: {
+      kind: 'treeDiagram',
+      chain: { middle, partials: pIds, rates: rIds, total: 'dz' },
+    },
+  });
+}
+
+const chainTwo = chainDemo(
+  'g.he-tree-diagram-chain',
+  'The chain rule as a tree',
+  'Use this for “At a point, ∂z/∂x = 4 and ∂z/∂y = 9, while dx/dt = 2 and dy/dt = −1. Find dz/dt.”',
+  ['x', 'y'],
+  [4, 9],
+  [2, -1],
+);
+
+const chainThree = chainDemo(
+  'g.he-tree-diagram-chain-three',
+  'The chain rule with three middle variables',
+  'Use this for “z = f(x, y, w) with ∂z/∂x = 2, ∂z/∂y = −3, ∂z/∂w = 1.5 and dx/dt = 4, dy/dt = 1, dw/dt = −2. Find dz/dt.”',
+  ['x', 'y', 'w'],
+  [2, -3, 1.5],
+  [4, 1, -2],
+);
+
 export const HE4A_GALLERY_MODULES: ModuleDef[] = [
   inverse3,
   inverse4,
@@ -965,6 +1061,8 @@ export const HE4A_GALLERY_MODULES: ModuleDef[] = [
   leastSquares8,
   minDistance,
   minDistanceClose,
+  chainTwo,
+  chainThree,
 ];
 
 export const HE4A_GALLERY_LAYOUTS: LayoutDef[] = [];
