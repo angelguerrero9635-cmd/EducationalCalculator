@@ -105,6 +105,7 @@ search or the sitemap, but the module tests and the harness run over it):
 | `phScale`          | pH 0–14 in indicator colors, [H⁺] as 10ⁿ; a titration curve           | Grade 10 acids and bases (H55)      |
 | `decayChart`       | 100 atoms decaying, the half-life curve; nuclear equations balanced   | Grades 10, 12 nuclear, dating (H57) |
 | `chemDiagram`      | effusion trails ∝ 1/√M; 100 isotope atoms, a beam; ox. numbers; Δm    | Grade 10 gases, atoms, redox (H101) |
+| `phaseEnvelope`    | binary Pxy, Txy, x–y: bubble/dew, tie line; McCabe–Thiele stairs      | College VLE, distillation (HC8)     |
 | `earthLayers`      | Earth cut open: P, S paths, shadow zones; seismogram; epicenter       | Earth science interior (H72)        |
 | `oceanProfile`     | the seafloor, shelf to trench, with a sonar ship; spring, neap tides  | Earth science ocean (H75)           |
 | `atmosphereLayers` | temperature by altitude through four layers; a pressure map, winds    | Earth science atmosphere (H76)      |

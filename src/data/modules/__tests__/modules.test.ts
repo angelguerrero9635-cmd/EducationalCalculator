@@ -28,6 +28,7 @@ import { hshSpecVars } from '../typesHsh';
 import { hsiSpecVars } from '../typesHsi';
 import { hsjSpecVars, solutionVars } from '../typesHsj';
 import { chemDiagramVars } from '../typesHs2d';
+import { phaseEnvelopeVars } from '../typesHe1i';
 import { hslSpecVars } from '../typesHsl';
 import { hs2fSpecVars } from '../typesHs2f';
 import { hs3cSpecVars } from '../typesHs3c';
@@ -556,6 +557,8 @@ function representationVars(r: Representation): string[] {
       return hsjSpecVars(r);
     case 'chemDiagram':
       return chemDiagramVars(r);
+    case 'phaseEnvelope':
+      return phaseEnvelopeVars(r);
     case 'earthLayers':
     case 'oceanProfile':
     case 'atmosphereLayers':

@@ -4,6 +4,7 @@
  * the earlier round files so their unions only name them. A `NumOrVar` field is a fixed number
  * or a variable id.
  */
+import { phaseSubstanceVars, type PhaseSubstance } from './typesHe1i';
 import type { NumOrVar } from './typesGraphs';
 
 const ids = (...xs: (NumOrVar | undefined)[]) =>
@@ -56,6 +57,8 @@ export type ChemDiagramHs3eSpec =
       boiling?: NumOrVar;
       drop?: NumOrVar;
       rise?: NumOrVar;
+      /** College (HC8): any one-component substance, drawn from its values (`typesHe1i.ts`). */
+      substance?: PhaseSubstance;
     }
   | {
       kind: 'chemDiagram';
@@ -78,7 +81,7 @@ export type ChemDiagramHs3eSpec =
 export function chemDiagramHs3eVars(r: ChemDiagramHs3eSpec): string[] {
   switch (r.mode) {
     case 'phase':
-      return ids(r.freezing, r.boiling, r.drop, r.rise);
+      return [...ids(r.freezing, r.boiling, r.drop, r.rise), ...phaseSubstanceVars(r.substance)];
     case 'rate':
       return ids(...r.times, ...r.concentrations, r.span, r.change, r.rate);
     case 'cell':
