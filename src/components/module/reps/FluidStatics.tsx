@@ -187,13 +187,13 @@ export function FluidTank({ spec, calc }: { spec: FluidTankSpec; calc: Calculato
                   strokeWidth={2}
                 />
                 <HaloText
-                  x={cx + 36}
+                  x={cx + 24}
                   y={top + (yP - top) / 2 + 5}
                   text={r.label(spec.depth, 'h', 'm') ?? ''}
                   c={c}
                   size={chart.value}
                   bold
-                  anchor="start"
+                  anchor="end"
                 />
               </G>
             ) : null}
@@ -529,6 +529,16 @@ export function FluidGate({ spec, calc }: { spec: FluidGateSpec; calc: Calculato
   const topId = typeof spec.top === 'string' ? spec.top : undefined;
   const canDrag = !spec.fixed && !!topId && !!geo;
   const F = r.si(spec.force) ?? (geo && pos(rho) && pos(b) ? geo.F : undefined);
+  // The labels right of the wall (H, h_c, y_cp), pushed apart where a small, deep gate crowds
+  // them: H goes above the gate when its dimension is short.
+  const rightYs = (() => {
+    if (!geo) return [0, 0, 0];
+    const ys = [H! * s < 40 ? y(d!) - 6 : y(d!) + 16, y(geo.hc) + 4, y(geo.ycp) + 18];
+    for (let i = 1; i < 3; i++) ys[i] = Math.max(ys[i]!, ys[i - 1]! + 15);
+    ys[2] = Math.min(ys[2]!, floor + 12);
+    for (let i = 1; i >= 0; i--) ys[i] = Math.min(ys[i]!, ys[i + 1]! - 15);
+    return ys;
+  })();
   return (
     <View>
       <Board
@@ -640,7 +650,7 @@ export function FluidGate({ spec, calc }: { spec: FluidGateSpec; calc: Calculato
                 />
                 <HaloText
                   x={wall + 58}
-                  y={y(d!) + 16}
+                  y={rightYs[0]!}
                   text={r.label(spec.height, 'H', 'm') ?? ''}
                   c={c}
                   size={chart.label}
@@ -648,7 +658,7 @@ export function FluidGate({ spec, calc }: { spec: FluidGateSpec; calc: Calculato
                 />
                 <HaloText
                   x={wall + 46}
-                  y={y(geo.hc) + 4}
+                  y={rightYs[1]!}
                   text={r.label(spec.centroid, 'h_c', 'm') ?? 'h_c'}
                   c={c}
                   size={chart.label}
@@ -656,7 +666,7 @@ export function FluidGate({ spec, calc }: { spec: FluidGateSpec; calc: Calculato
                 />
                 <HaloText
                   x={wall + 46}
-                  y={y(geo.ycp) + 18}
+                  y={rightYs[2]!}
                   text={r.label(spec.center, 'y_cp', 'm') ?? 'y_cp'}
                   c={c}
                   size={chart.label}
@@ -701,7 +711,7 @@ export function FluidGate({ spec, calc }: { spec: FluidGateSpec; calc: Calculato
       />
       <Caption>
         {geo && pos(rho) && pos(b) && F !== undefined
-          ? `h_c = d + H ÷ 2 = ${num(d!)} + ${num(H!)} ÷ 2 = ${num(geo.hc)} m. F = ρgh_cbH = ${num(rho)} × ${num(r.g)} × ${num(geo.hc)} × ${num(b)} × ${num(H!)} = ${num(F)} N. y_cp = h_c + H² ÷ (12h_c) = ${num(geo.ycp)} m, below the centroid.`
+          ? `h_c = d + H ÷ 2 = ${num(d!)} + ${num(H!)} ÷ 2 = ${num(geo.hc)} m. F = ρg·h_c·bH = ${num(rho)} × ${num(r.g)} × ${num(geo.hc)} × ${num(b)} × ${num(H!)} = ${num(F)} N. y_cp = h_c + H² ÷ (12 h_c) = ${num(geo.ycp)} m, below the centroid.`
           : 'Type the gate’s size, its depth and the density to find the force.'}
       </Caption>
     </View>
@@ -866,21 +876,15 @@ export function FluidBuoyancy({ spec, calc }: { spec: FluidBuoyancySpec; calc: C
                 />
               </G>
             ) : null}
+            {/* One line under the tank, so the two halos never cover each other's text. */}
             <HaloText
-              x={x0 + 8}
+              x={(x0 + x1) / 2}
               y={floor + 22}
-              text={r.label(spec.volume, 'V', 'm³') ?? ''}
+              text={[r.label(spec.volume, 'V', 'm³'), r.label(spec.bodyDensity, 'ρ_body', 'kg/m³')]
+                .filter(Boolean)
+                .join('  ·  ')}
               c={c}
               size={chart.label}
-              anchor="start"
-            />
-            <HaloText
-              x={x1 - 8}
-              y={floor + 22}
-              text={r.label(spec.bodyDensity, 'ρ_body', 'kg/m³') ?? ''}
-              c={c}
-              size={chart.label}
-              anchor="end"
             />
           </G>
         )}
