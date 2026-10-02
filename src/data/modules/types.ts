@@ -38,6 +38,7 @@ import type { He1bSpec } from './typesHe1b';
 import type { He1fSpec } from './typesHe1f';
 import type { He2bSpec } from './typesHe2b';
 import type { GlobeSpec } from './typesHe2k';
+import type { InstrumentTraceSpec } from './typesHe3e';
 import type { He2jSpec } from './typesHe2j';
 import type { FieldPlotSpec } from './typesHe2g';
 import type { He3bSpec } from './typesHe3b';
@@ -1179,6 +1180,8 @@ export type Representation =
   | He2bSpec
   /** College round 2, group K: HC36 `globe` (`typesHe2k.ts`). */
   | GlobeSpec
+  /** College round 3, group E: HC55 `instrumentTrace` (`typesHe3e.ts`). */
+  | InstrumentTraceSpec
   /** College round 2, group J: HC28 stress–strain, HC33 stress element (`typesHe2j.ts`). */
   | He2jSpec
   /** College round 2, group G (HC21): slope, vector and phase fields (`typesHe2g.ts`). */

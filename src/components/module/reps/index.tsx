@@ -196,6 +196,8 @@ import { ComplexPlaneHe2a } from './ComplexPlaneHe2a';
 import { Bode } from './Bode';
 import { PotentialWell } from './PotentialWell';
 import { UnitCell } from './UnitCell';
+import { InstrumentTrace } from './InstrumentTrace';
+import { CombustionTrain } from './CombustionTrain';
 import { Globe } from './Globe';
 import { StressStrain } from './StressStrain';
 import { StressElement } from './StressElement';
@@ -299,6 +301,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <SoilProfile spec={spec} calc={calc} />;
     case 'survey':
       return <Survey spec={spec} calc={calc} />;
+    case 'instrumentTrace':
+      return <InstrumentTrace spec={spec} calc={calc} />; // HC55
     case 'gasPiston':
     case 'energyProfile':
     case 'equilibriumChart':
@@ -530,6 +534,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'molecules':
       return <Molecules spec={spec} calc={calc} />;
     case 'reaction':
+      if (spec.combustion) return <CombustionTrain spec={spec.combustion} calc={calc} />; // HC74
       return spec.many && !spec.limiting ? (
         <ReactionMany spec={spec} calc={calc} />
       ) : spec.limiting ? (

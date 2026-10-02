@@ -22,6 +22,8 @@ import { CondensedCardView, condensedWidth } from './condensedCard';
 import { SkeletalCardView } from './skeletalCard';
 import { TrussJointCardView } from './trussJointCard';
 import { TRUSS_CARD_H, TRUSS_CARD_W } from '@/data/modules/typesHe2i';
+import { IrCardView } from './irCard';
+import { IR_CARD_H, IR_CARD_W } from '@/data/modules/typesHe3e';
 import { SKELETAL_CARD_H, SKELETAL_CARD_W } from '@/data/modules/typesHe1c';
 import {
   CellPartsCard,
@@ -81,6 +83,8 @@ export function figureWidth(f: Spec): number {
       return SKELETAL_CARD_W;
     case 'trussJoint':
       return TRUSS_CARD_W;
+    case 'ir':
+      return IR_CARD_W;
     case 'replication':
       return REPLICATION_W;
     case 'reflexArc':
@@ -118,6 +122,8 @@ export function CardFigureView({
             ? SKELETAL_CARD_H
             : figure.kind === 'trussJoint'
               ? TRUSS_CARD_H
+            : figure.kind === 'ir'
+              ? IR_CARD_H
               : S);
   return (
     <Svg width={w} height={h}>
@@ -370,6 +376,8 @@ function Drawing({ f, w, ink, shade }: { f: Spec; w: number; ink: string; shade:
       return <SkeletalCardView f={f} ink={ink} shade={shade} />;
     case 'trussJoint':
       return <TrussJointCardView f={f} ink={ink} shade={shade} />;
+    case 'ir':
+      return <IrCardView f={f} ink={ink} shade={shade} />;
     case 'ray': {
       const y = S / 2;
       const x1 = 10;

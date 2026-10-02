@@ -7,6 +7,14 @@
 import type { NumOrVar } from './typesGraphs';
 import { ionicChargeVars, type IonicCharges } from './typesHs3e';
 import { moleMapHs2dVars, type MoleMapLimiting } from './typesHs2d';
+import {
+  moleMapHe3eVars,
+  orbitalMoVars,
+  vseprHe3eVars,
+  type MoleMapHe3e,
+  type OrbitalMoSpec,
+  type VseprHe3eSpec,
+} from './typesHe3e';
 
 /** One conversion factor in a chain: `top` `topUnit` over `bottom` `bottomUnit` (1000 m / 1 km). */
 export interface ChainFactor {
@@ -115,7 +123,9 @@ export type OrbitalDiagramSpec =
       energy?: string;
       wavelength?: string;
       levels?: number;
-    };
+    }
+  /** College HC70: molecular orbitals (`typesHe3e.ts`). */
+  | OrbitalMoSpec;
 
 /**
  * `limiting` on `reaction` (H49): the particles each reactant starts with (`amounts`, in the
@@ -214,7 +224,9 @@ export type VseprSpec =
       angle?: string;
       polar?: boolean;
     }
-  | { kind: 'vsepr'; mode: 'hbonds'; molecules: NumOrVar; bonds?: string };
+  | { kind: 'vsepr'; mode: 'hbonds'; molecules: NumOrVar; bonds?: string }
+  /** College HC72: 5–6 domains and complexes (`typesHe3e.ts`). */
+  | VseprHe3eSpec;
 
 /**
  * The mole map (H50): the `moles` of a substance in the middle, joined to its `mass` (× the
@@ -224,7 +236,8 @@ export type VseprSpec =
  * `second` adds a second substance of a balanced reaction: its moles by the mole ratio
  * (`ratio`: [coefficient of the first, of the second]) and its mass. Every value is checked.
  */
-export interface MoleMapSpec {
+/** College HC74: `solution` and `gas` boxes (`typesHe3e.ts`). */
+export interface MoleMapSpec extends MoleMapHe3e {
   kind: 'moleMap';
   moles: NumOrVar;
   mass?: NumOrVar;
@@ -259,6 +272,7 @@ export function hsiSpecVars(r: HsiSpec): string[] {
     case 'atomModel':
       return ids(r.protons, r.neutrons, r.electrons, r.mass, r.charge, r.valence);
     case 'orbitalDiagram':
+      if (r.mode === 'mo') return orbitalMoVars(r); // HC70
       return r.mode === 'boxes'
         ? ids(r.element, r.electrons, r.unpaired)
         : ids(r.upper, r.lower, r.energy, r.wavelength);
@@ -271,8 +285,10 @@ export function hsiSpecVars(r: HsiSpec): string[] {
         r.volume,
         ...(r.second ? [...r.second.ratio, r.second.moles, r.second.mass, r.second.molarMass] : []),
         ...moleMapHs2dVars(r),
+        ...moleMapHe3eVars(r),
       );
     case 'vsepr':
+      if (r.mode === 'expanded' || r.mode === 'complex') return vseprHe3eVars(r); // HC72
       return r.mode === 'hbonds' ? ids(r.molecules, r.bonds) : ids(r.bonded, r.lone, r.angle);
     case 'lewisStructure':
       switch (r.mode) {

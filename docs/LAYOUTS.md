@@ -267,3 +267,6 @@ College card figure `trussJoint` (HC27, `layouts/trussJointCard.tsx`, `typesHe2i
 'trussJoint', members, load?, support? }`, one truss joint at 96 × 72: its members (directions in
 degrees, 0 right, 90 up), a load pushing in along its direction, a pin or roller under it. It
 never marks the zero-force members (statics#1~zero-force asks which they are).
+College card figure `ir` (HC55, `layouts/irCard.tsx`, `typesHe3e.ts`): `{ kind: 'ir', bands:
+[{ at, to?, strength?, shape? }] }`, an IR spectrum at 140 × 60 computed from its bands (sharp,
+broad, or a very broad range `at`–`to`), 4000 → 400 cm⁻¹.

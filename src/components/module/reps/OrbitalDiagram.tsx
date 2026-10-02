@@ -39,9 +39,11 @@ import {
 import { reader } from './graphKit';
 import { MathChip } from './hsdText';
 import { url, usePaintIds } from './paint';
+import { OrbitalMo } from './OrbitalMo';
 
 export function OrbitalDiagram({ spec, calc }: { spec: OrbitalDiagramSpec; calc: Calculator }) {
   if (spec.mode === 'ladder') return <Ladder spec={spec} calc={calc} />;
+  if (spec.mode === 'mo') return <OrbitalMo spec={spec} calc={calc} />; // HC70
   return <Boxes spec={spec} calc={calc} />;
 }
 

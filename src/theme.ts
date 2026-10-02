@@ -538,6 +538,24 @@ const light = {
   atomNeutron: '#9AA3AF',
   atomElectron: '#3B82F6',
   /**
+   * College round 3, group E: HC55 `instrumentTrace` (a spectrum's line, its integral trace, two
+   * peaks' fills, a lit line), HC70 MO levels (bonding, antibonding, nonbonding), HC72 a
+   * complex's lit ligand pair, HC74 the combustion train (furnace, flame, the two absorbers).
+   */
+  traceSignal: '#1F4E8C',
+  traceIntegral: '#C2410C',
+  traceFillA: '#BFD7F2',
+  traceFillB: '#F6D2B0',
+  traceLit: '#DC2626',
+  moBonding: '#2563EB',
+  moAntibonding: '#DC2626',
+  moNonbonding: '#6B7280',
+  complexLit: '#F59E0B',
+  trainFurnace: '#B45309',
+  trainFlame: '#F59E0B',
+  trainWaterTrap: '#7FA7D9',
+  trainCarbonTrap: '#E4DDC8',
+  /**
    * College HC15 `potentialWell` and HC16 `unitCell` (round 2, group B): a wavefunction, its
    * |ψ|² fill, a perturbing bump, a photon; a cell's atoms (metal, cation, anion), a lattice
    * plane, X-rays and the lit touching line.
@@ -1074,6 +1092,19 @@ const dark: Palette = {
   atomProton: '#D9573F',
   atomNeutron: '#7D8693',
   atomElectron: '#5B9BF8',
+  traceSignal: '#7DB3F5',
+  traceIntegral: '#FB923C',
+  traceFillA: '#1E3A5F',
+  traceFillB: '#5C3416',
+  traceLit: '#F87171',
+  moBonding: '#60A5FA',
+  moAntibonding: '#F87171',
+  moNonbonding: '#9AA1B2',
+  complexLit: '#FBBF24',
+  trainFurnace: '#D97706',
+  trainFlame: '#FBBF24',
+  trainWaterTrap: '#3B5A85',
+  trainCarbonTrap: '#5A5442',
   wellPsi: '#60A5FA',
   wellPsiFill: '#1E3A8A',
   wellBump: '#F0A040',

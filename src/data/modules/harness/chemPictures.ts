@@ -49,6 +49,7 @@ export function chemIssues(
       break;
     }
     case 'reaction': {
+      if (rep.combustion) break; // HC74: picturesHe3e.ts
       const terms = [...rep.reactants, ...rep.products];
       if (rep.reactants.length < 1 || rep.reactants.length > 3)
         out.push(`${rep.reactants.length} reactants (1 to 3 fit)`);

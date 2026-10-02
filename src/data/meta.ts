@@ -152,6 +152,7 @@ const PICTURE_NAMES: Record<string, string> = {
   potentialWell: 'a potential well with its energy levels and wavefunctions',
   phaseSpace: 'phase space: an energy curve, the state and its flow; a bead on a hoop',
   unitCell: 'a cubic unit cell, its lattice planes and Bragg reflection',
+  instrumentTrace: 'an NMR spectrum, a chromatogram or a rotational spectrum from its peaks',
   globe:
     'a globe: the Sun’s rays, a great-circle route, a turning plate, a dipole field or a ring of air',
   stressStrain:

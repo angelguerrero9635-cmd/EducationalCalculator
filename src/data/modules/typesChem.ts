@@ -7,6 +7,7 @@
 import type { NumOrVar } from './typesGraphs';
 import type { PeriodicTrend, ReactionLimiting } from './typesHsi';
 import { reactionHs2dVars, type ReactionHs2d, type ReactionTermHs2d } from './typesHs2d';
+import { reactionHe3eVars, type ReactionHe3e } from './typesHe3e';
 
 /**
  * Ball-and-stick molecules of one substance (atoms in the classroom colors: hydrogen white,
@@ -36,7 +37,7 @@ export interface ReactionTerm extends ReactionTermHs2d {
  * drawn, then a row per element with its atoms counted on each side as counters, = when they
  * match (the atoms are rearranged, none lost), ≠ when not. Coefficients up to 8 each.
  */
-export interface ReactionSpec extends ReactionHs2d {
+export interface ReactionSpec extends ReactionHs2d, ReactionHe3e {
   kind: 'reaction';
   /** One to three substances on each side. */
   reactants: ReactionTerm[];
@@ -115,6 +116,7 @@ export function chemSpecVars(r: ChemSpec): string[] {
             ]
           : []),
         ...reactionHs2dVars(r),
+        ...reactionHe3eVars(r),
       );
     case 'heatingCurve':
       return ids(r.start, r.melt, r.boil, r.end, ...r.spans, r.at, r.temp);

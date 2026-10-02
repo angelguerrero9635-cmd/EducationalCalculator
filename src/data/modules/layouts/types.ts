@@ -16,6 +16,7 @@ import type { GalvanicScene } from '../typesHsj';
 import type { CondensedCard, HydrationScene } from '../typesHs2d';
 import type { SkeletalCard } from '../typesHe1c';
 import type { TrussJointCard } from '../typesHe2i';
+import type { IrCard } from '../typesHe3e';
 import type {
   CurrentsScene,
   GreenhouseScene,
@@ -207,6 +208,8 @@ export type CardFigure =
   | SkeletalCard
   /** College HC27 (`typesHe2i.ts`): one truss joint, its members, a load or a pin; 96 × 72. */
   | TrussJointCard
+  /** College HC55 (`typesHe3e.ts`): an IR spectrum from its bands, 140 × 60. */
+  | IrCard
   /** One stage of DNA replication, old strands dark and new ones lit (H100, `typesHs2e.ts`). */
   | ReplicationCard
   /** Biology round 3 (H109, `typesHs3d.ts`): a reflex arc, one part lit. */

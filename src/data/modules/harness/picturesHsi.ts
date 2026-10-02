@@ -130,6 +130,7 @@ export function hsiIssues(rep: HsiSpec, val: (id: string) => number | undefined)
       break;
     }
     case 'orbitalDiagram': {
+      if (rep.mode === 'mo') break; // HC70: picturesHe3e.ts
       if (rep.mode === 'boxes') {
         if (rep.element === undefined && rep.electrons === undefined)
           out.push('boxes need an element or a number of electrons');
@@ -195,6 +196,7 @@ export function hsiIssues(rep: HsiSpec, val: (id: string) => number | undefined)
       break;
     }
     case 'vsepr': {
+      if (rep.mode === 'expanded' || rep.mode === 'complex') break; // HC72: picturesHe3e.ts
       if (rep.mode === 'hbonds') {
         const n = num(rep.molecules);
         if (n !== undefined && (n !== Math.round(n) || n < 2 || n > 5))
