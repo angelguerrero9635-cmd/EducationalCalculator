@@ -746,8 +746,13 @@ export function Transformation({ spec, calc }: { spec: TransformationSpec; calc:
                     const id = ('x' in mirror ? mirror.x : mirror.y) as string;
                     const next =
                       'x' in mirror ? start.current.a + dx / f.ux : start.current.a - dy / f.uy;
+                    // A mirror worked out from the figure (x = m, the middle of the base) moves
+                    // the typed value behind it: holding the figure kept it where it was.
                     calc.set(
-                      { ...pinned([id]), [id]: rep.snapTo(id, next * rep.factor(id)) },
+                      {
+                        ...(rep.typed(id) ? pinned([id]) : {}),
+                        [id]: rep.snapTo(id, next * rep.factor(id)),
+                      },
                       rep.slide(id),
                     );
                   }}
