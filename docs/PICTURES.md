@@ -370,6 +370,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `seriesCircuit`    | `net: { topology, elements, … }`         | a schematic in textbook symbols; node V, mesh and branch I; KCL, KVL (HC7)    |
 | `circuit`          | `net` (the same renderer)                | capacitor networks (Q, V at each), two batteries, internal r (HC7)            |
 | `seriesCircuit`    | `amp: 'inverting' …`, `vin`, `rin`, `rf` | op-amp circuits: rails, virtual short, ramp, Schmitt loop, in-amp (HC18)      |
+| `seriesCircuit`    | `device: 'diodeR' …`, `parts`, `values`  | diode, zener, bridge and its ripple, BJT bias, MOSFET CS, hybrid-π (HC39)     |
 | `oscillator`       | `damping`, `phase`                       | dashpot; decaying trace in its envelope, log-dec crests; x₀, v₀, φ (HC11)     |
 | `oscillator`       | `forcing`, `transmit`                    | F₀ sin ωt; X ÷ δ_st or TR against r, the point, √2 marked (HC11)              |
 | `oscillator`       | `coupled`, `springs`                     | two blocks, mode arrows, beat traces; springs in series or parallel (HC11)    |

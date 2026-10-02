@@ -70,7 +70,7 @@ import { sectionIssues } from './picturesHe1b';
 import { he1aIssues } from './picturesHe1a';
 import { gasMixtureIssues } from './picturesHs3e';
 import { netIssues, oscillatorIssues } from './picturesHe1h';
-import { ampIssues } from './picturesHe2d';
+import { ampIssues, deviceIssues } from './picturesHe2d';
 import { skeletalIssues } from './picturesHe1c';
 import { phaseEnvelopeIssues, phaseSubstanceIssues } from './picturesHe1i';
 import { he1fIssues } from './picturesHe1f';
@@ -2148,6 +2148,7 @@ export function repIssues(
     case 'seriesCircuit':
       if ('net' in rep) out.push(...netIssues(rep, siOf(val, byId), byId)); // HC7
       if ('amp' in rep) out.push(...ampIssues(rep, siOf(val, byId), byId)); // HC18
+      if ('device' in rep) out.push(...deviceIssues(rep, siOf(val, byId), byId)); // HC39
       break;
     case 'spectrum':
     case 'circuit':

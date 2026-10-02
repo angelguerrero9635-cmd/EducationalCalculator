@@ -495,7 +495,7 @@ function representationVars(r: Representation): string[] {
       return [r.force, r.mass, r.acceleration];
     case 'seriesCircuit':
       if ('net' in r) return he1hSpecVars(r); // HC7
-      if ('amp' in r) return he2dSpecVars(r); // HC18
+      if ('amp' in r || 'device' in r) return he2dSpecVars(r); // HC18, HC39
       return [r.source, r.current, ...r.resistors.flatMap((x) => [x.r, x.v])];
     case 'linearFunction':
     case 'lineSystem':

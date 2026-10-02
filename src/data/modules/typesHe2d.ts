@@ -85,7 +85,7 @@ export interface AmpSpec {
  *   `values` { peak V_p, ripple V_r, dc V_dc, frequency f_r }, `drop` each diode's drop.
  * - `bjtDivider`: V_CC, R₁ and R₂ to the base, R_C, R_E and an npn; `parts` [V_CC, R₁, R₂, R_C,
  *   R_E], `values` { base V_B, current I_C, vce V_CE }. Drawn active only when V_CE > 0.2 V.
- * - `mosfetCS`: a common-source stage, V_DD, R_D, an n-channel MOSFET; `parts` [R_D],
+ * - `mosfetCS`: a common-source stage, V_DD, R_D, an n-channel MOSFET; `parts` [R_D, V_DD?],
  *   `values` { current I_D, overdrive V_OV, gm g_m, gain A_v }.
  * - `hybridPi`: the hybrid-π small-signal model of a common-emitter stage, r_π, g_m v_π and
  *   R_C ∥ R_L; `parts` [R_C, R_L], `values` { current I_C, beta β, gm g_m, rpi r_π, rp R_p,
@@ -122,9 +122,11 @@ export interface DeviceSpec {
   values?: DeviceValues;
   /** `bridge`: one diode's drop (two conduct at a time), default 0.7 V. */
   drop?: NumOrVar;
+  /** `hybridPi`: the thermal voltage V_T, default 25.85 mV. */
+  vt?: NumOrVar;
 }
 
-export type He2dSeriesSpec = AmpSpec;
+export type He2dSeriesSpec = AmpSpec | DeviceSpec;
 
 const ids = (...xs: (NumOrVar | undefined)[]) =>
   xs.filter((x): x is string => typeof x === 'string');
@@ -145,6 +147,7 @@ export function deviceVars(d: DeviceSpec): string[] {
   return ids(
     ...d.parts,
     d.drop,
+    d.vt,
     ...[v.current, v.vr, v.power, v.zener, v.peak, v.ripple, v.dc, v.frequency, v.base, v.vce],
     ...[v.overdrive, v.gm, v.rpi, v.rp, v.beta, v.gain],
   );

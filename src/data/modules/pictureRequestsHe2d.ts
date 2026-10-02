@@ -28,6 +28,7 @@ const EC = 'he.engineering.circuits-1';
 const EL = 'he.engineering.electronics';
 const BIO = 'he.engineering.bioinstrumentation';
 const amp = (t: string) => `"amp":"${t}"`;
+const dev = (t: string) => `"device":"${t}"`;
 
 export const HE2D_REQUESTS: PictureRequest[] = [
   {
@@ -66,6 +67,38 @@ export const HE2D_REQUESTS: PictureRequest[] = [
       'g.he-series-circuit-amp-instrumentation',
       'g.he-series-circuit-amp-cmrr',
       'g.he-series-circuit-amp-at-rail',
+    ],
+  },
+  {
+    ...ask(
+      'HC39',
+      'seriesCircuit',
+      'Semiconductor circuits as schematics (`device`): diode and R, zener regulator, bridge rectifier with its ripple, divider-biased BJT, common-source MOSFET, hybrid-π model',
+      {
+        [`${EL}#0`]: dev('diodeR'),
+        [`${EL}#0~zener`]: dev('zener'),
+        [`${EL}#0~rectifier`]: dev('bridge'),
+        [`${EL}#1`]: dev('bjtDivider'),
+        [`${EL}#2`]: dev('hybridPi'),
+        [`${EL}#2~cs-mosfet`]: dev('mosfetCS'),
+      },
+      [
+        'From EC-P3. Drawn by reps/DeviceSchematic.tsx on the same drawing list and kit as HC18 (he2dSch.ts, he2dKit.tsx: round 1’s R, C and source symbols, with the diode, zener, npn, n-channel MOSFET and g_m v_π diamond added); layouts in deviceLayout.ts, the models in deviceMath.ts (shared with the harness). electronics#0 main uses `diodeR` as its stand-in until the I–V curve (P8) lands.',
+        'Fields (typesHe2d.ts `DeviceSpec`): `device`, `parts` in each circuit’s order (diodeR [Vₛ, V_D, R]; zener [Vₛ, V_Z, R]; bridge [V_sec, R, C]; bjtDivider [V_CC, R₁, R₂, R_C, R_E]; mosfetCS [R_D, V_DD?]; hybridPi [R_C, R_L]), `values?: { current, vr, power, zener, peak, ripple, dc, frequency, base, vce, overdrive, gm, rpi, rp, beta, gain }` (the ones the circuit draws), `drop?` (bridge, default 0.7 V), `vt?` (hybrid-π, default 25.85 mV). Each a variable id or a fixed SI number; a part left out is drawn by name.',
+        'The bridge draws the wave without C dashed and C’s voltage solid with its ripple, to scale, and V_dc dashed. The BJT is drawn faded once V_CE ≤ 0.2 V; pages add the constraint “Past this the transistor saturates; the active-mode formulas no longer hold.” (see the demos’ `active`), and diodeR the constraint Vₛ > V_D.',
+        'Harness (picturesHe2d.ts `deviceIssues`): V_R = Vₛ − V_D, I = V_R ÷ R, P_D = V_D I; I_Z = (Vₛ − V_Z) ÷ R − I_L ≥ 0 and P_Z; V_p = V_sec − 2V_D, V_r = V_p ÷ (f_r RC), V_dc = V_p − V_r ÷ 2; V_B, I_C = (V_B − 0.7) ÷ R_E, V_CE and V_CE > 0.2 V; g_m = 2I_D ÷ V_OV, A_v = −g_m R_D; g_m = I_C ÷ V_T, r_π = β ÷ g_m, R_p, A_v = −g_m R_p; each to 0.1% in SI.',
+        'Example (electronics#1 main): { kind: "seriesCircuit", device: "bjtDivider", parts: ["VCC", "R1", "R2", "RC", "RE"], values: { base: "VB", current: "IC", vce: "VCE" } }. Each gallery demo is a full page to copy.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-series-circuit-device-diode-r',
+      'g.he-series-circuit-device-zener',
+      'g.he-series-circuit-device-rectifier',
+      'g.he-series-circuit-device-bjt-divider',
+      'g.he-series-circuit-device-mosfet-cs',
+      'g.he-series-circuit-device-hybrid-pi',
+      'g.he-series-circuit-device-bjt-edge',
     ],
   },
 ];

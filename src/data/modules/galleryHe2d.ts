@@ -4,12 +4,15 @@
  *
  * HC18: op-amp circuits (`amp` on `seriesCircuit`), one demo per circuit from the circuits,
  * electronics and bioinstrumentation plans, and one at the edge (the output at the rail).
+ *
+ * HC39: semiconductor circuits (`device` on `seriesCircuit`), one demo per circuit from the
+ * electronics plan, and one at the edge (a BJT just short of saturation).
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
 import type { LayoutDef } from './layouts';
 import type { ModuleDef } from './types';
-import type { AmpSpec } from './typesHe2d';
+import type { AmpSpec, DeviceSpec } from './typesHe2d';
 
 type Fn = (x: Values) => number | number[] | undefined;
 
@@ -742,6 +745,467 @@ const cmrr = demo({
   }),
 });
 
+// ─── HC39: semiconductor circuits ─────────────────────────────────────────────
+
+const device = (spec: Omit<DeviceSpec, 'kind'>): DeviceSpec => ({ kind: 'seriesCircuit', ...spec });
+const ma = (id: string, symbol: string, name: string, min = 0) =>
+  vr(id, symbol, name, 'mA', min, 1e4, { step: 0.1 });
+
+/** A rule that only checks, with the page's message when it breaks. */
+const limit = (
+  id: string,
+  display: string,
+  vars: string[],
+  holds: (x: Values) => boolean,
+  message: string,
+): Relation => ({
+  id,
+  constraint: true,
+  display,
+  vars,
+  residual: (x) => (holds(x) ? 0 : 1),
+  solve: {},
+  message: (x) => (holds(x) ? undefined : message),
+});
+
+// electronics#0: a diode and a resistor (the main's stand-in until the I–V curve lands).
+
+const diodeLoop = demo({
+  id: 'g.he-series-circuit-device-diode-r',
+  title: 'Schematic: a diode and resistor in series',
+  use: 'Use this for “A silicon diode and a 1 kΩ resistor are in series with 5 V. Find the current.”',
+  assumptions: [
+    'Constant-drop model: the diode takes V_D whenever it conducts.',
+    'The diode points with the current. R in kΩ, so the current is in mA.',
+  ],
+  variables: [
+    vr('Vs', 'Vₛ', 'Source voltage', 'V', 0.01, 1000, { step: 0.5 }),
+    vr('VD', 'V_D', 'Diode drop', 'V', 0.2, 3.5, { step: 0.1 }),
+    kohm('R', 'R', 'Resistance'),
+    vr('VR', 'V_R', 'Resistor voltage', 'V', 0, 1000),
+    ma('I', 'I', 'Current'),
+    vr('PD', 'P_D', 'Diode power', 'mW', 0, 1e7),
+  ],
+  rules: [
+    rule('V_R = Vₛ − V_D', '{VR} = {Vs} − {VD}', ['VR', 'Vs', 'VD'], (x) => x.VR! - x.Vs! + x.VD!, {
+      VR: [(x) => x.Vs! - x.VD!, '{Vs} − {VD}', 'The diode takes its drop; R takes the rest.'],
+      Vs: [(x) => x.VR! + x.VD!, '{VR} + {VD}', 'The two drops add to the source.'],
+      VD: [(x) => x.Vs! - x.VR!, '{Vs} − {VR}', 'What the resistor leaves.'],
+    }),
+    rule('I = V_R ÷ R', '{I} = {VR} ÷ {R}', ['I', 'VR', 'R'], (x) => x.I! * x.R! - x.VR!, {
+      I: [(x) => div(x.VR!, x.R!), '{VR} ÷ {R}', 'Ohm’s law for R: V ÷ kΩ gives mA.'],
+      VR: [(x) => x.I! * x.R!, '{I} × {R}', 'Ohm’s law for R.'],
+      R: [(x) => div(x.VR!, x.I!), '{VR} ÷ {I}', 'The resistor that sets this current.'],
+    }),
+    rule('P_D = V_D I', '{PD} = {VD} × {I}', ['PD', 'VD', 'I'], (x) => x.PD! - x.VD! * x.I!, {
+      PD: [(x) => x.VD! * x.I!, '{VD} × {I}', 'The diode’s drop times its current: V × mA is mW.'],
+      I: [(x) => div(x.PD!, x.VD!), '{PD} ÷ {VD}', 'Power over the drop.'],
+    }),
+  ],
+  limits: [
+    limit(
+      'the diode conducts',
+      '{Vs} is above {VD}',
+      ['Vs', 'VD'],
+      (x) => x.Vs! > x.VD!,
+      'Below its drop the diode is off; no current flows.',
+    ),
+  ],
+  example: { Vs: 5, VD: 0.7, R: 1, VR: 4.3, I: 4.3, PD: 3.01 },
+  startWith: ['Vs', 'VD', 'R'],
+  representation: device({
+    device: 'diodeR',
+    parts: ['Vs', 'VD', 'R'],
+    values: { current: 'I', vr: 'VR', power: 'PD' },
+  }),
+});
+
+// electronics#0~zener
+
+const zenerReg = demo({
+  id: 'g.he-series-circuit-device-zener',
+  title: 'Schematic: a zener regulator',
+  use: 'Use this for “A 5.1 V zener regulates 12 V for a 20 mA load with 5 mA left for the zener. Find R.”',
+  assumptions: [
+    'The zener holds V_Z across the load while its current stays above I_Z.',
+    'Currents in mA, R in Ω: 1000 turns mA into A. P_Z is with the load removed.',
+  ],
+  variables: [
+    vr('Vs', 'Vₛ', 'Source voltage', 'V', 0.01, 1000, { step: 0.5 }),
+    vr('VZ', 'V_Z', 'Zener voltage', 'V', 0.5, 500, { step: 0.1 }),
+    ma('IL', 'I_L', 'Load current'),
+    ma('IZ', 'I_Z', 'Least zener current', 0.001),
+    vr('R', 'R', 'Series resistance', 'Ω', 0.1, 1e7, { step: 1 }),
+    vr('PZ', 'P_Z', 'Zener power with no load', 'mW', 0, 1e8),
+  ],
+  rules: [
+    rule(
+      'R = (Vₛ − V_Z) ÷ (I_L + I_Z)',
+      '{R} = 1000 × ({Vs} − {VZ}) ÷ ({IL} + {IZ})',
+      ['R', 'Vs', 'VZ', 'IL', 'IZ'],
+      (x) => x.R! * (x.IL! + x.IZ!) - 1000 * (x.Vs! - x.VZ!),
+      {
+        R: [
+          (x) => div(1000 * (x.Vs! - x.VZ!), x.IL! + x.IZ!),
+          '1000 × ({Vs} − {VZ}) ÷ ({IL} + {IZ})',
+          'R drops what the zener doesn’t, carrying both currents.',
+        ],
+        IZ: [
+          (x) => div(1000 * (x.Vs! - x.VZ!), x.R!)! - x.IL!,
+          '1000 × ({Vs} − {VZ}) ÷ {R} − {IL}',
+          'What R carries, less the load’s share.',
+        ],
+        IL: [
+          (x) => div(1000 * (x.Vs! - x.VZ!), x.R!)! - x.IZ!,
+          '1000 × ({Vs} − {VZ}) ÷ {R} − {IZ}',
+          'What R carries, less the zener’s share.',
+        ],
+      },
+    ),
+    rule(
+      'P_Z = V_Z(Vₛ − V_Z) ÷ R',
+      '{PZ} = 1000 × {VZ} × ({Vs} − {VZ}) ÷ {R}',
+      ['PZ', 'VZ', 'Vs', 'R'],
+      (x) => x.PZ! * x.R! - 1000 * x.VZ! * (x.Vs! - x.VZ!),
+      {
+        PZ: [
+          (x) => div(1000 * x.VZ! * (x.Vs! - x.VZ!), x.R!),
+          '1000 × {VZ} × ({Vs} − {VZ}) ÷ {R}',
+          'With no load the zener takes all of R’s current: W into mW.',
+        ],
+      },
+    ),
+  ],
+  example: { Vs: 12, VZ: 5.1, IL: 20, IZ: 5, R: 276, PZ: 127.5 },
+  startWith: ['Vs', 'VZ', 'IL', 'IZ'],
+  representation: device({
+    device: 'zener',
+    parts: ['Vs', 'VZ', 'R'],
+    values: { current: 'IL', zener: 'IZ', power: 'PZ' },
+  }),
+});
+
+// electronics#0~rectifier
+
+const vr0 = (1000 * 10.6) / (120 * 1 * 470);
+const rectifier = demo({
+  id: 'g.he-series-circuit-device-rectifier',
+  title: 'Schematic: a bridge rectifier with its ripple',
+  use: 'Use this for “A bridge rectifier on a 12 V peak secondary feeds 470 μF and 1 kΩ. Find the ripple and the dc output.”',
+  assumptions: [
+    'Two silicon diodes conduct each half cycle: 2 × 0.7 V is lost.',
+    'C discharges in a near-straight line between peaks (ripple well under V_p).',
+    'R in kΩ and C in μF: RC is in ms, so 1000 turns f_r RC into a ratio.',
+  ],
+  variables: [
+    vr('Vsec', 'V_sec', 'Secondary peak voltage', 'V', 1.5, 1000, { step: 0.5 }),
+    vr('Vp', 'V_p', 'Output peak', 'V', 0.1, 1000),
+    vr('fr', 'f_r', 'Ripple frequency', 'Hz', 1, 1e6, { step: 10 }),
+    kohm('R', 'R', 'Load resistance'),
+    vr('C', 'C', 'Capacitance', 'μF', 0.001, 1e6, { step: 10 }),
+    vr('Vr', 'V_r', 'Ripple', 'V', 0, 1000),
+    vr('Vdc', 'V_dc', 'Dc output', 'V', -1000, 1000),
+  ],
+  rules: [
+    rule(
+      'V_p = V_sec − 2 × 0.7 V',
+      '{Vp} = {Vsec} − 2 × 0.7',
+      ['Vp', 'Vsec'],
+      (x) => x.Vp! - x.Vsec! + 1.4,
+      {
+        Vp: [(x) => x.Vsec! - 1.4, '{Vsec} − 2 × 0.7', 'Two diode drops come off the peak.'],
+        Vsec: [(x) => x.Vp! + 1.4, '{Vp} + 2 × 0.7', 'Add the two drops back.'],
+      },
+    ),
+    rule(
+      'V_r = V_p ÷ (f_r RC)',
+      '{Vr} = 1000 × {Vp} ÷ ({fr} × {R} × {C})',
+      ['Vr', 'Vp', 'fr', 'R', 'C'],
+      (x) => x.Vr! * x.fr! * x.R! * x.C! - 1000 * x.Vp!,
+      {
+        Vr: [
+          (x) => div(1000 * x.Vp!, x.fr! * x.R! * x.C!),
+          '1000 × {Vp} ÷ ({fr} × {R} × {C})',
+          'C loses V_p ÷ (RC) a second for one ripple period.',
+        ],
+        C: [
+          (x) => div(1000 * x.Vp!, x.fr! * x.R! * x.Vr!),
+          '1000 × {Vp} ÷ ({fr} × {R} × {Vr})',
+          'The capacitor that holds the ripple to this.',
+        ],
+      },
+    ),
+    rule(
+      'V_dc = V_p − V_r ÷ 2',
+      '{Vdc} = {Vp} − {Vr} ÷ 2',
+      ['Vdc', 'Vp', 'Vr'],
+      (x) => x.Vdc! - x.Vp! + x.Vr! / 2,
+      {
+        Vdc: [
+          (x) => x.Vp! - x.Vr! / 2,
+          '{Vp} − {Vr} ÷ 2',
+          'The average sits halfway down the ripple.',
+        ],
+        Vr: [(x) => 2 * (x.Vp! - x.Vdc!), '2 × ({Vp} − {Vdc})', 'Twice the sag from the peak.'],
+      },
+    ),
+  ],
+  example: { Vsec: 12, Vp: 10.6, fr: 120, R: 1, C: 470, Vr: vr0, Vdc: 10.6 - vr0 / 2 },
+  startWith: ['Vsec', 'fr', 'R', 'C'],
+  representation: device({
+    device: 'bridge',
+    parts: ['Vsec', 'R', 'C'],
+    values: { peak: 'Vp', ripple: 'Vr', dc: 'Vdc', frequency: 'fr' },
+  }),
+});
+
+// electronics#1: voltage-divider bias
+
+const bjtVars = () => [
+  vr('VCC', 'V_CC', 'Supply voltage', 'V', 0.01, 100, { step: 0.5 }),
+  kohm('R1', 'R₁', 'Upper divider resistor'),
+  kohm('R2', 'R₂', 'Lower divider resistor'),
+  kohm('RC', 'R_C', 'Collector resistor'),
+  kohm('RE', 'R_E', 'Emitter resistor'),
+  vr('VB', 'V_B', 'Base voltage', 'V', 0, 100),
+  ma('IC', 'I_C', 'Collector current'),
+  vr('VCE', 'V_CE', 'Collector–emitter voltage', 'V', -1000, 100),
+];
+const bjtRules = (): Rule[] => [
+  rule(
+    'V_B = V_CC R₂ ÷ (R₁ + R₂)',
+    '{VB} = {VCC} × {R2} ÷ ({R1} + {R2})',
+    ['VB', 'VCC', 'R1', 'R2'],
+    (x) => x.VB! * (x.R1! + x.R2!) - x.VCC! * x.R2!,
+    {
+      VB: [
+        (x) => div(x.VCC! * x.R2!, x.R1! + x.R2!),
+        '{VCC} × {R2} ÷ ({R1} + {R2})',
+        'The divider’s share of the supply.',
+      ],
+      VCC: [
+        (x) => div(x.VB! * (x.R1! + x.R2!), x.R2!),
+        '{VB} × ({R1} + {R2}) ÷ {R2}',
+        'Scale the base voltage back up.',
+      ],
+    },
+  ),
+  rule(
+    'I_C = (V_B − 0.7) ÷ R_E',
+    '{IC} = ({VB} − 0.7) ÷ {RE}',
+    ['IC', 'VB', 'RE'],
+    (x) => x.IC! * x.RE! - x.VB! + 0.7,
+    {
+      IC: [
+        (x) => div(x.VB! - 0.7, x.RE!),
+        '({VB} − 0.7) ÷ {RE}',
+        'The emitter sits 0.7 V under the base; I_E ≈ I_C.',
+      ],
+      VB: [(x) => x.IC! * x.RE! + 0.7, '{IC} × {RE} + 0.7', 'The emitter voltage plus V_BE.'],
+      RE: [
+        (x) => div(x.VB! - 0.7, x.IC!),
+        '({VB} − 0.7) ÷ {IC}',
+        'The emitter resistor that sets this current.',
+      ],
+    },
+  ),
+  rule(
+    'V_CE = V_CC − I_C(R_C + R_E)',
+    '{VCE} = {VCC} − {IC} × ({RC} + {RE})',
+    ['VCE', 'VCC', 'IC', 'RC', 'RE'],
+    (x) => x.VCE! - x.VCC! + x.IC! * (x.RC! + x.RE!),
+    {
+      VCE: [
+        (x) => x.VCC! - x.IC! * (x.RC! + x.RE!),
+        '{VCC} − {IC} × ({RC} + {RE})',
+        'What R_C and R_E leave of the supply: mA × kΩ is V.',
+      ],
+      RC: [
+        (x) => div(x.VCC! - x.VCE!, x.IC!)! - x.RE!,
+        '({VCC} − {VCE}) ÷ {IC} − {RE}',
+        'The collector resistor for this V_CE.',
+      ],
+    },
+  ),
+];
+const active = limit(
+  'the transistor is active',
+  '{VCE} is above 0.2 V',
+  ['VCE'],
+  (x) => x.VCE! > 0.2,
+  'Past this the transistor saturates; the active-mode formulas no longer hold.',
+);
+const bjtRep = device({
+  device: 'bjtDivider',
+  parts: ['VCC', 'R1', 'R2', 'RC', 'RE'],
+  values: { base: 'VB', current: 'IC', vce: 'VCE' },
+});
+
+const bjt = demo({
+  id: 'g.he-series-circuit-device-bjt-divider',
+  title: 'Schematic: voltage-divider bias',
+  use: 'Use this for “Find I_C and V_CE for the voltage-divider bias circuit.”',
+  assumptions: [
+    'Stiff divider: the base current is too small to load it (β large).',
+    'V_BE = 0.7 V and I_E ≈ I_C. Resistors in kΩ, so currents are in mA.',
+  ],
+  variables: bjtVars(),
+  rules: bjtRules(),
+  limits: [active],
+  example: { VCC: 12, R1: 40, R2: 10, RC: 3, RE: 1, VB: 2.4, IC: 1.7, VCE: 5.2 },
+  startWith: ['VCC', 'R1', 'R2', 'RC', 'RE'],
+  representation: bjtRep,
+});
+
+// The edge: a larger R_C leaves V_CE just above saturation.
+const bjtEdge = demo({
+  id: 'g.he-series-circuit-device-bjt-edge',
+  title: 'Schematic: a BJT at the edge of saturation',
+  use: 'Use this for “How large can R_C be before the voltage-divider BJT saturates?”',
+  assumptions: [
+    'Stiff divider, V_BE = 0.7 V, I_E ≈ I_C.',
+    'Active only while V_CE stays above 0.2 V.',
+  ],
+  variables: bjtVars(),
+  rules: bjtRules(),
+  limits: [active],
+  example: { VCC: 12, R1: 40, R2: 10, RC: 5.9, RE: 1, VB: 2.4, IC: 1.7, VCE: 12 - 1.7 * 6.9 },
+  startWith: ['VCC', 'R1', 'R2', 'RC', 'RE'],
+  representation: bjtRep,
+});
+
+// electronics#2~cs-mosfet
+
+const mosfet = demo({
+  id: 'g.he-series-circuit-device-mosfet-cs',
+  title: 'Schematic: a common-source MOSFET amplifier',
+  use: 'Use this for “A MOSFET biased at 0.5 mA with 0.25 V of overdrive drives 10 kΩ. Find g_m and the gain.”',
+  assumptions: [
+    'The MOSFET is in saturation, with small signals at the gate.',
+    'The source is grounded (bypassed); r_o is ignored. mA ÷ V is mS, and mS × kΩ is a ratio.',
+  ],
+  variables: [
+    ma('ID', 'I_D', 'Drain current', 0.001),
+    vr('VOV', 'V_OV', 'Overdrive voltage', 'V', 0.001, 10, { step: 0.05 }),
+    vr('gm', 'g_m', 'Transconductance', 'mS', 0.001, 1e5),
+    kohm('RD', 'R_D', 'Drain resistor'),
+    vr('Av', 'Aᵥ', 'Voltage gain', undefined, -1e6, 0),
+  ],
+  rules: [
+    rule(
+      'g_m = 2I_D ÷ V_OV',
+      '{gm} = 2 × {ID} ÷ {VOV}',
+      ['gm', 'ID', 'VOV'],
+      (x) => x.gm! * x.VOV! - 2 * x.ID!,
+      {
+        gm: [
+          (x) => div(2 * x.ID!, x.VOV!),
+          '2 × {ID} ÷ {VOV}',
+          'The slope of the square law at the bias point.',
+        ],
+        ID: [(x) => (x.gm! * x.VOV!) / 2, '{gm} × {VOV} ÷ 2', 'The bias current for this g_m.'],
+        VOV: [(x) => div(2 * x.ID!, x.gm!), '2 × {ID} ÷ {gm}', 'The overdrive for this g_m.'],
+      },
+    ),
+    rule(
+      'A_v = −g_m R_D',
+      '{Av} = −{gm} × {RD}',
+      ['Av', 'gm', 'RD'],
+      (x) => x.Av! + x.gm! * x.RD!,
+      {
+        Av: [
+          (x) => -x.gm! * x.RD!,
+          '−{gm} × {RD}',
+          'The current swing g_m v_gs through R_D, inverted.',
+        ],
+        RD: [(x) => div(-x.Av!, x.gm!), '−{Av} ÷ {gm}', 'The drain resistor for this gain.'],
+        gm: [(x) => div(-x.Av!, x.RD!), '−{Av} ÷ {RD}', 'The g_m this gain needs.'],
+      },
+    ),
+  ],
+  example: { ID: 0.5, VOV: 0.25, gm: 4, RD: 10, Av: -40 },
+  startWith: ['ID', 'VOV', 'RD'],
+  representation: device({
+    device: 'mosfetCS',
+    parts: ['RD'],
+    values: { current: 'ID', overdrive: 'VOV', gm: 'gm', gain: 'Av' },
+  }),
+});
+
+// electronics#2: the hybrid-π model
+
+const gm0 = 1 / 0.02585;
+const hybrid = demo({
+  id: 'g.he-series-circuit-device-hybrid-pi',
+  title: 'Schematic: the hybrid-π model',
+  use: 'Use this for “A CE amplifier biased at I_C = 1 mA has R_C = R_L = 4 kΩ. Find the voltage gain.”',
+  assumptions: [
+    'V_T = 25.85 mV; small signals of a few mV at the base.',
+    'The emitter is bypassed and r_o is ignored. mA ÷ V is mS; kΩ × mS is a ratio.',
+  ],
+  variables: [
+    ma('IC', 'I_C', 'Collector current', 0.001),
+    vr('beta', 'β', 'Current gain', undefined, 1, 10000, { step: 10 }),
+    vr('gm', 'g_m', 'Transconductance', 'mS', 0.001, 1e6),
+    vr('rpi', 'r_π', 'Input resistance', 'kΩ', 1e-6, 1e6),
+    kohm('RC', 'R_C', 'Collector resistor'),
+    kohm('RL', 'R_L', 'Load resistor'),
+    vr('Rp', 'R_p', 'R_C ∥ R_L', 'kΩ', 1e-6, 1e6),
+    vr('Av', 'Aᵥ', 'Voltage gain', undefined, -1e7, 0),
+  ],
+  rules: [
+    rule('g_m = I_C ÷ V_T', '{gm} = {IC} ÷ 0.02585', ['gm', 'IC'], (x) => x.gm! * 0.02585 - x.IC!, {
+      gm: [(x) => x.IC! / 0.02585, '{IC} ÷ 0.02585', 'Collector current over V_T: mA ÷ V is mS.'],
+      IC: [(x) => x.gm! * 0.02585, '{gm} × 0.02585', 'The bias current for this g_m.'],
+    }),
+    rule(
+      'r_π = β ÷ g_m',
+      '{rpi} = {beta} ÷ {gm}',
+      ['rpi', 'beta', 'gm'],
+      (x) => x.rpi! * x.gm! - x.beta!,
+      {
+        rpi: [(x) => div(x.beta!, x.gm!), '{beta} ÷ {gm}', 'What the base sees: ÷ mS gives kΩ.'],
+        beta: [(x) => x.rpi! * x.gm!, '{rpi} × {gm}', 'r_π times g_m.'],
+      },
+    ),
+    rule(
+      'R_p = R_C R_L ÷ (R_C + R_L)',
+      '{Rp} = {RC} × {RL} ÷ ({RC} + {RL})',
+      ['Rp', 'RC', 'RL'],
+      (x) => x.Rp! * (x.RC! + x.RL!) - x.RC! * x.RL!,
+      {
+        Rp: [
+          (x) => div(x.RC! * x.RL!, x.RC! + x.RL!),
+          '{RC} × {RL} ÷ ({RC} + {RL})',
+          'R_C and the load in parallel.',
+        ],
+        RL: [
+          (x) => div(x.Rp! * x.RC!, x.RC! - x.Rp!),
+          '{Rp} × {RC} ÷ ({RC} − {Rp})',
+          'The load that gives this R_p.',
+        ],
+      },
+    ),
+    rule(
+      'A_v = −g_m R_p',
+      '{Av} = −{gm} × {Rp}',
+      ['Av', 'gm', 'Rp'],
+      (x) => x.Av! + x.gm! * x.Rp!,
+      {
+        Av: [(x) => -x.gm! * x.Rp!, '−{gm} × {Rp}', 'g_m v_π flows into R_p, inverted.'],
+        Rp: [(x) => div(-x.Av!, x.gm!), '−{Av} ÷ {gm}', 'The load resistance this gain needs.'],
+      },
+    ),
+  ],
+  example: { IC: 1, beta: 100, gm: gm0, rpi: 100 / gm0, RC: 4, RL: 4, Rp: 2, Av: -2 * gm0 },
+  startWith: ['IC', 'beta', 'RC', 'RL'],
+  representation: device({
+    device: 'hybridPi',
+    parts: ['RC', 'RL'],
+    values: { current: 'IC', beta: 'beta', gm: 'gm', rpi: 'rpi', rp: 'Rp', gain: 'Av' },
+  }),
+});
+
 export const HE2D_GALLERY_MODULES: ModuleDef[] = [
   inverting,
   nonInverting,
@@ -753,6 +1217,13 @@ export const HE2D_GALLERY_MODULES: ModuleDef[] = [
   inamp,
   cmrr,
   atRail,
+  diodeLoop,
+  zenerReg,
+  rectifier,
+  bjt,
+  mosfet,
+  hybrid,
+  bjtEdge,
 ];
 
 export const HE2D_GALLERY_LAYOUTS: LayoutDef[] = [];

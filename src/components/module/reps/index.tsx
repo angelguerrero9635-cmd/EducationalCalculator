@@ -80,6 +80,7 @@ import { PictureGraph } from './PictureGraph';
 import { SeriesCircuit } from './SeriesCircuit';
 import { NetSchematic } from './NetSchematic';
 import { OpAmpSchematic } from './OpAmpSchematic';
+import { DeviceSchematic } from './DeviceSchematic';
 import { TenFrame } from './TenFrame';
 import { ValueTable } from './ValueTable';
 import { Waterfall } from './Waterfall';
@@ -567,6 +568,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'seriesCircuit':
       if ('net' in spec) return <NetSchematic spec={spec} calc={calc} />; // HC7
       if ('amp' in spec) return <OpAmpSchematic spec={spec} calc={calc} />; // HC18
+      if ('device' in spec) return <DeviceSchematic spec={spec} calc={calc} />; // HC39
       return <SeriesCircuit spec={spec} calc={calc} />;
     case 'doubleNumberLine':
       return <DoubleNumberLine spec={spec} calc={calc} />;
