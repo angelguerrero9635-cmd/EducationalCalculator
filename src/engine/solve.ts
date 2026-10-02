@@ -1,4 +1,5 @@
 import { branchOf } from './cases';
+import { closedValues } from './isolate';
 import { dollars, formatNumber, lowerFirst, parseNumber, unitFor } from './format';
 import type { Relation, Values, VariableDef } from './types';
 
@@ -637,9 +638,16 @@ function candidatesFor(
   } else if (relation.branches) {
     candidates = branchCandidates(relation, variable, values);
   } else {
+    // A closed form read from the display (HE-E18: t = ln(A ÷ P) ÷ r), kept where the relation
+    // holds; else the root finder across the value's range.
+    const closed = closedValues(relation.display, variable.id, values)?.filter((x) =>
+      holds(relation, { ...values, [variable.id]: x }, variables),
+    );
     const lo = variable.min ?? -1e6;
     const hi = variable.max ?? 1e6;
-    candidates = findRoots((x) => relation.residual({ ...values, [variable.id]: x }), lo, hi);
+    candidates = closed?.length
+      ? closed
+      : findRoots((x) => relation.residual({ ...values, [variable.id]: x }), lo, hi);
   }
   const valid = candidates
     .filter((x) => checkValue(variable, x) === undefined)

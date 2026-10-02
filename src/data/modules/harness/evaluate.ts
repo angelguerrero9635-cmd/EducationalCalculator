@@ -604,6 +604,13 @@ export function evaluate(text: string, clampRoots = false): number | undefined {
   const degrees =
     text.includes('°') || (angleUnit === 'degrees' && !/(?:\d|\)|π) ?m?rad\b(?!\/)/.test(text));
   let s = text
+    // A log of a number in scientific notation is the log of that one number (HE-E18):
+    // log₁₀ 6.1394 × 10⁸ is log₁₀(6.1394 × 10⁸), as the steps write and work it.
+    .replace(
+      // (never a lone ² or ³: log₁₀ 2 × 10³ is log₁₀ 2, times 1,000, as the steps read it)
+      /(?<![\w_])(ln|log₂|log₁₀|log) (\d+(?:\.\d+)? × 10(?:⁻[⁰¹²³⁴⁵⁶⁷⁸⁹]+|[⁰¹⁴⁵⁶⁷⁸⁹]|[⁰¹²³⁴⁵⁶⁷⁸⁹]{2,}))/g,
+      '$1($2)',
+    )
     // A repeating decimal (0.1666…) is its exact value, 1/6.
     .replace(/\d+\.\d+…/g, (m) => `(${parseNumber(m)})`)
     // A mixed number (2 3/8) is its whole plus its fraction.

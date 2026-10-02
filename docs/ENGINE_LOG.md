@@ -73,6 +73,41 @@ per review; each line names the finding and what the engine now does about it.
   `engine/__tests__/angles.test.ts`, `harness/__tests__/angles.test.ts` (every form on 300 random
   points, each wrong variant caught), `__tests__/angles.test.ts` (test-only plan pages).
 
+## HE-E14, HE-E18: trial steps, closed forms read from a rule, logs and powers in the chain
+
+- **A value with no rearrangement read "Try numbers until both sides match." and showed no
+  work** (240 pages and demos had such a step when a value was typed in place of an opening
+  one; the growth rate that empties a reserve, k in T = ln(1 + kQ ÷ r) ÷ k, on
+  s.12.resource-management~growing-use). →
+  `trialWork` (`src/data/modules/trials.ts`) writes the tries, each line worked as printed and
+  each next guess from the printed numbers: two round guesses, then the secant method ("Try
+  k = 0.03: ln(1 + 0.03 × 600 ÷ 15) ÷ 0.03 = 26.28 (want 25)"), until the guess stops changing
+  at one figure past the answer's. A relation can name `bisection`, `fixed-point` (Kepler's
+  E = M + e sin E: "E₁ = 1 + 0.5 × sin(1) = 1.4207") or `newton` (f and its slope) per value in
+  `trials`. K–5 keep their words; a try that can't be worked as printed keeps the old line.
+- **The harness never read such a step** ("solved numerically (not evaluated)", a minor). →
+  `harness/trials.ts` works each try out again, checks each iteration starts from the value
+  before it, that the tries close in on the target and that the last is the answer; the
+  sampling test runs it on every trial step (a step with no tries is an error).
+- **Many of those values had a closed form nobody wrote** (a × x + b = c × x + d for a; t in
+  A = P × gᵗ; n in a geometric sum). → `isolate` (`src/engine/isolate.ts`) reads the display
+  as arithmetic and undoes each operation round a value that appears once (ln or log₁₀ for an
+  exponent, a root for a base, ± for even powers and |x|; never sin, cos or tan). The solver
+  uses it before the root finder, kept only where the relation holds; a step with no text of
+  its own shows its rearrangement and how in words ("Divide both sides by P, then take log₁₀
+  of both sides and divide by log₁₀ g."). A whole product or sum goes in one move ("divide both
+  sides by (½ × v²)", never "… by v², then by ½"); logs undo a power only from Algebra 2
+  (Grade 11) or where the rule already has one, and Grades 6–8 only arithmetic, squares and
+  cubes: a Grade 8 or 9 exponent is found by trial ("Try t = 4: …"), as those grades do it.
+- **The simplifying chain stopped at the first log or power of e** ("t = ln(1.5) ÷ 0.05" and
+  no more). → `simplifyChain` writes ln, log, e^, a power that isn't whole, ∛ and ∜ to 4
+  figures (more when the last line would be over 2 parts in 10⁴ off) and goes on, rounding the
+  arithmetic inside them too: "t = log₁₀(1.1255) ÷ log₁₀(1.03)", "t = 0.051345 ÷ 0.012837".
+  √98 and sin 40° still end the working.
+- **The harness read "log₁₀ 6.1394 × 10⁸" as log₁₀ 6.1394, times 10⁸** (m.11.logarithms
+  sampled large x). → `evaluate` takes a number in scientific notation after a log as one
+  number, as the steps work it (a lone ² or ³ stays a power).
+
 ## HE-E6: calculus lines and notation in steps
 
 - **The solver is numeric, so a calculus page states closed forms, and nothing read them**: a

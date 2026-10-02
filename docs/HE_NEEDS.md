@@ -295,6 +295,22 @@ finding with a bracket for transcendental equations (finite well, Kepler's equat
   physical-geography#0~declination; ME 5 (numerical-methods#0, ~bisection, #1~gauss-seidel, #4,
   ~rk4); EC 4 (embedded#3~response-time, OS#1~round-robin, OS#2~replacement, power#0~load-flow);
   P none now (proposed quantum#1~finite-well and a Kepler-time page).
+- **Status: done for one-value roots (2026-10-02); tables of several values left.** A value
+  the root finder found (no rearrangement, no closed form) is worked by trial in its step
+  (`trialWork`, `src/data/modules/trials.ts`), each line true as printed and each next try from
+  the numbers printed before it: by default two round guesses (0.0294 → 0.02 and 0.03), then the
+  secant method ("Try k = 0.03: ln(1 + 0.03 × 600 ÷ 15) ÷ 0.03 = 26.28 (want 25)"), until the
+  guess stops changing at one figure more than the answer shows. A relation names its method per
+  value (`trials` on `Relation`): `bisection`, `fixed-point` with the rule to repeat (Kepler:
+  "E₁ = 1 + 0.5 × sin(1) = 1.4207" … "E₅ = … = 1.4987"), `newton` with f and its slope ("x₁ =
+  2 − (2³ − 2 − 3) ÷ (3 × 2² − 1) = 1.7273"), or `secant` from its own `start`; a long run
+  shows its first two tries, "…" and the last three. Grades 6–12 and college only; K–5 keep
+  their wording (never trial). The harness (`harness/trials.ts`, run by `sampling.test.ts`)
+  works each try out again, checks each iteration starts from the value before, and that the
+  tries close in on the target and end at the answer. **Left:** a table of several values at
+  once (Gauss–Seidel, round robin, page replacement, RK4, load flow: rows of a system, not one
+  root); the stopping rule as an error column (εₐ); LMTD and Colebrook pages name `fixed-point`
+  or `newton` when they are built.
 
 ### HE-E15 Branches and ordered roots
 
@@ -396,6 +412,24 @@ line; solver inverses (θ → [L] for Hill, t from H_t, p from the Jukes–Canto
 - **Waiting:** P 6 (university-1#1~drag, #3~rocket, university-2#2~rc-charging,
   #3~rl-circuit, university-3#0~intensity-db, #4~decay-law); EG meteorology#0–2,
   historical-geology#1, hydrology#1, climatology, physical-geography#3; B evolution#2~tree-count.
+- **Status: done (2026-10-02) but for named inverses on pages.** The solver reads a closed
+  form from a relation's display when the value to find is in it once (`isolate`,
+  `src/engine/isolate.ts`): each operation round it undone in turn, last done first, with ln or
+  log₁₀ for a value in an exponent (t = ln(A ÷ P) ÷ r, k from N = N₀e^(−kt), n from aⁿ = b as
+  log₁₀(b) ÷ log₁₀(a)), a root for a value in a base (√, ∛, ∜, ^(1 ÷ p); ± for even powers and
+  |x|), a power for a log or root; sin, cos and tan are never undone (the root finder lists every
+  angle). Its value is used where the relation holds, before the root finder. A step with no
+  text of its own (or one found by root finding) then shows that rearrangement and how in
+  words ("Divide both sides by P, take ln of both sides, then divide both sides by r."; a whole
+  product or sum in one move; logs only from Grade 11 or where the rule has one, Grades 6–8
+  only arithmetic, squares and cubes, else the step shows its tries). The
+  simplifying chain works ln, log₁₀, log₂, e^, eˣ, a power that isn't whole and ∛, ∜ one stage
+  a line, writing a value with no exact form to 4 figures (5–7 when 4 would leave the last line
+  more than 2 parts in 10⁴ off), arithmetic inside a log or power rounded with it ("t =
+  log₁₀(1.1255) ÷ log₁₀(1.03)", "t = 0.051345 ÷ 0.012837"); √98 and sin 40° still end the
+  working. **Left:** inverses a display can't show (Hill θ → [L], Jukes–Cantor p from d) are the
+  page's own `solve` and step text, as today; a value twice in a rule (ln(1 + kQ ÷ r) ÷ k for k)
+  is found by trial (HE-E14).
 
 ### HE-E19 Angles: units, atan2, bearings, DMS
 

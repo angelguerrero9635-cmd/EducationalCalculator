@@ -42,6 +42,7 @@ import { TESTED_MODULES } from '..';
 import { checkAlgebraLines } from '../harness/algebraLines';
 import { checkIntegerLines, formValueAt } from '../harness/integerLines';
 import { checkAngleLines } from '../harness/angles';
+import { checkTrialLines, isTrialLine } from '../harness/trials';
 import {
   BAD_TEXT,
   PLURAL,
@@ -463,6 +464,19 @@ function checkSteps(c: Ctx, res: SolveResult, where: string) {
     // only, e.g. "t = 6 − 3 − 2") or the result ("s = 4"): evaluate the rearranged line then.
     const line = s.substituted ?? s.rearranged;
     if (!line) {
+      // Found by trial (HE-E14): each try worked out again, and the tries reach the answer.
+      if (s.lines.some(isTrialLine) || /^No rearrangement puts /.test(s.how)) {
+        const t = checkTrialLines(s.lines, value);
+        for (const p of t.problems) c.f.add('error', `${c.label}${p}`, where);
+        for (const u of t.unread)
+          c.f.add(
+            'harness',
+            `${c.label}can't read trial line "${u.replace(/[\d.]+/g, 'N')}"`,
+            where,
+          );
+        if (!t.read) c.f.add('error', `${c.label}trial step for ${s.id} shows no tries`, where);
+        continue;
+      }
       c.f.add('minor', `${c.label}step for ${s.id} solved numerically (not evaluated)`, where);
       continue;
     }

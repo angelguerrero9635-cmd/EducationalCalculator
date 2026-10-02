@@ -62,6 +62,12 @@ describe('college phrases (HE-E8)', () => {
     expect(evaluate('10 × log₁₀(2)')).toBeCloseTo(3.0103, 4);
     expect(evaluate('log₂(256)')).toBeCloseTo(8, 12);
     expect(evaluate('log₂ 16 + 1')).toBeCloseTo(5, 12);
+    // A log of a number in scientific notation takes the whole number (HE-E18).
+    expect(evaluate('log₁₀ 6.1394 × 10⁸ ÷ log₁₀ 2.5')).toBeCloseTo(
+      Math.log10(6.1394e8) / Math.log10(2.5),
+      9,
+    );
+    expect(evaluate('ln 2 × 10³')).toBeCloseTo(Math.log(2) * 1000, 9);
     expect(evaluate('ln 2 ÷ 0.05')).toBeCloseTo(13.8629, 4);
     expect(evaluate('log 1000')).toBeCloseTo(3, 12);
     expect(evaluate('2 sin(30°)')).toBeCloseTo(1, 12);

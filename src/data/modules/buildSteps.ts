@@ -11,7 +11,8 @@ import {
   superscript,
   unitFor,
 } from '@/engine/format';
-import { holds, outOfCount, type SolveResult } from '@/engine/solve';
+import { evalExpr, isolate, movesSentence } from '@/engine/isolate';
+import { closeTo, holds, outOfCount, type SolveResult } from '@/engine/solve';
 import type { Values, VariableDef } from '@/engine/types';
 import { makeUnitContext, type UnitContext } from '@/engine/unitContext';
 import { conversionRule } from '@/engine/units';
@@ -26,7 +27,8 @@ import {
   type GradeBand,
 } from './grade';
 import { evaluatePrinted, operationCount, simplifyChain } from './simplify';
-import type { ModuleDef } from './types';
+import { trialWork } from './trials';
+import type { ModuleDef, StepText } from './types';
 import { factWork } from './work';
 import { autoWritten, type Written } from './written';
 
@@ -287,6 +289,44 @@ export const agree = (text: string) =>
 
 const givenIdsOf = (result: SolveResult) => result.given.map((g) => g.id);
 
+/**
+ * A step's text from a closed form read from its rule (HE-E18): the rearranged side ("ln(A ÷ P)
+ * ÷ r") and how it was undone ("Divide both sides by P, take ln of both sides, then divide both
+ * sides by r."), from the way out that gives the value found. Undefined when there is none.
+ */
+function closedStep(
+  display: string,
+  id: string,
+  vars: readonly VariableDef[],
+  values: Values,
+  grade: string | undefined,
+): StepText | undefined {
+  const x = values[id];
+  if (x === undefined) return undefined;
+  // Logs undo a power from Algebra 2 (Grade 11) on, or where the rule already has one; Grades
+  // 6–8 undo with arithmetic, squares and cubes only. (Otherwise the step shows its tries.)
+  const g = grade === undefined ? 99 : grade === 'K' ? 0 : Number(grade);
+  const logs = g >= 11 || /\bln\b|log|e\^|\be(?=[⁰¹²³⁴⁵⁶⁷⁸⁹])/.test(display);
+  const allowed = (move: string) =>
+    !(!logs && /\b(?:ln|log)/.test(move)) &&
+    !(g <= 8 && /fourth|power|\bln\b|log|raise/.test(move));
+  const way = isolate(display, id)?.find((w) => {
+    if (!w.moves.every(allowed)) return false;
+    const y = evalExpr(w.tree, values);
+    return Number.isFinite(y) && closeTo(y, x, 1e-9 * Math.max(1, Math.abs(x)));
+  });
+  if (!way) return undefined;
+  // (a long list of moves reads as one instruction: Grades 6–8 read sentences of 30 words)
+  const listed = renderTemplate(movesSentence(way.moves), vars);
+  const symbol = vars.find((v) => v.id === id)?.symbol ?? id;
+  const how = !way.moves.length
+    ? 'Work out the other side of the rule.'
+    : listed.split(/\s+/).length > 26
+      ? `Undo each operation round ${symbol} in turn, the last one done first.`
+      : listed;
+  return { expr: way.expr, how };
+}
+
 export function buildSteps(
   module: ModuleDef,
   result: SolveResult,
@@ -460,7 +500,15 @@ export function buildSteps(
           )}: ${branch.name}`,
         )
       : undefined;
-    const text = module.steps[t.relation]?.[t.id];
+    const authored = module.steps[t.relation]?.[t.id];
+    // Grade 6 letters on: a value with no step text, or one the root finder found, is worked
+    // from a closed form read from the rule (HE-E18: t = ln(A ÷ P) ÷ r) when it has one.
+    const lettered = band === 'standard' || band === 'middle';
+    const closed =
+      lettered && !t.pinned && (!authored || !t.exact)
+        ? closedStep(display, t.id, vars, working, grade)
+        : undefined;
+    const text = closed ?? authored;
     const base = {
       id: t.id,
       // Lowercase only the first letter, so names like “Pencil A” keep their capital.
@@ -506,7 +554,30 @@ export function buildSteps(
     const pinnedValue = base.result.startsWith(`${v.symbol} = `)
       ? base.result.slice(v.symbol.length + 3)
       : undefined;
-    if (!text || !t.exact) {
+    if (!text || (!t.exact && !closed)) {
+      // No closed form (HE-E14): the tries that find it, each line true as printed.
+      const tries =
+        lettered && !t.pinned
+          ? trialWork({
+              display,
+              id: t.id,
+              symbol: v.symbol,
+              vars: lineVars,
+              values: working,
+              figures,
+              trial: relation.trials?.[t.id],
+            })
+          : undefined;
+      if (tries)
+        return {
+          ...base,
+          how: tries.how,
+          heading,
+          lead,
+          lines: [...(caseLine ? [caseLine] : []), ...tries.lines],
+          writtenAfter: 0,
+          answer,
+        };
       // K–5 hears it as a child does ("12 is the only number that works here."); Grade 6 on
       // reads the rules ("Only 12 fits every rule here: no other number works.").
       const pinnedHow =
