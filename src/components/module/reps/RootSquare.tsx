@@ -69,9 +69,12 @@ export function RootSquare({ spec, calc }: { spec: Spec; calc: Calculator }) {
               ends[row] = lx(m.at) + half;
               return { ...m, row };
             });
-          const rootLabel = exact
-            ? `${rootText} = ${formatNumber(side)}`
-            : `${rootText} ≈ ${formatNumber(Math.round(side * 100) / 100)}`;
+          // No area or side typed: the label reads "?" (never the example's numbers behind a "?").
+          const rootLabel = !known
+            ? '√? = ?'
+            : exact
+              ? `${rootText} = ${formatNumber(side)}`
+              : `${rootText} ≈ ${formatNumber(Math.round(side * 100) / 100)}`;
           const cellLines = Array.from({ length: n + 1 }, (_, i) => i);
           return (
             <>

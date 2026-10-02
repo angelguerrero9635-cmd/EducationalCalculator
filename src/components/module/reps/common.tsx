@@ -1,4 +1,4 @@
-import { useState, useRef, type ReactNode } from 'react';
+import { createContext, useContext, useState, useRef, type ReactNode } from 'react';
 import {
   Platform,
   View,
@@ -26,6 +26,9 @@ const WEB_DRAG_STYLE =
 /** Width a picture is drawn at in pre-rendered web HTML (a phone screen minus margins). */
 const WEB_START_WIDTH = 358;
 
+/** The size of the Canvas being drawn, for the handles inside it (a handle stays on the picture). */
+const CanvasSize = createContext<{ w: number; h: number } | null>(null);
+
 export function Canvas({
   aspect,
   children,
@@ -43,18 +46,24 @@ export function Canvas({
       style={{ width: '100%', alignItems: 'center' }}
       onLayout={(e) => setW(Math.min(Math.floor(e.nativeEvent.layout.width), chart.maxWidth))}
     >
-      {w > 0 ? <View style={{ width: w, height: h }}>{children({ w, h })}</View> : null}
+      {w > 0 ? (
+        <CanvasSize.Provider value={{ w, h }}>
+          <View style={{ width: w, height: h }}>{children({ w, h })}</View>
+        </CanvasSize.Provider>
+      ) : null}
     </View>
   );
 }
 
 /**
  * A touch target (chart.handleTouch square) centered on (x, y) inside a Canvas. Reports drag offsets from where
- * the drag started, so callers convert them with the scale captured in `onStart`.
+ * the drag started, so callers convert them with the scale captured in `onStart`. A handle whose
+ * value has left the picture's window (the window is frozen while it is dragged) is drawn at the
+ * picture's edge, never off the picture: the drag goes on from the pointer, not from the knob.
  */
 export function DragHandle({
-  x,
-  y,
+  x: x0,
+  y: y0,
   label,
   onStart,
   onMove,
@@ -70,6 +79,10 @@ export function DragHandle({
   testID?: string;
 }) {
   const c = usePalette();
+  const size = useContext(CanvasSize);
+  const edge = chart.handle / 2;
+  const x = size ? Math.min(size.w - edge, Math.max(edge, x0)) : x0;
+  const y = size ? Math.min(size.h - edge, Math.max(edge, y0)) : y0;
   // Page coordinates where the drag started; offsets are measured from here.
   const origin = useRef({ x: 0, y: 0 });
   // Web: pointer events with capture (see pointerDrag.ts).
@@ -161,6 +174,8 @@ export function useFrozen<T>(live: T) {
   const [frozen, setFrozen] = useState<{ value: T } | null>(null);
   return {
     value: frozen ? frozen.value : live,
+    /** Whether a drag is on (the value is held): a handle must then stay mounted. */
+    frozen: frozen !== null,
     freeze: () => setFrozen({ value: live }),
     /** Freeze at a value worked out while drawing (a chart window that needs the width). */
     freezeAt: (value: T) => setFrozen({ value }),

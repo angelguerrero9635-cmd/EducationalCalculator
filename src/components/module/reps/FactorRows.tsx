@@ -305,7 +305,8 @@ export function FactorRows({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 return (
                   <DragHandle
                     key={`h${row.key}`}
-                    testID={`drag-${row.key}`}
+                    // Named after the value it drives (a row key "b" would read as the base box b).
+                    testID={`drag-${id}`}
                     x={x}
                     y={end.y + tile / 2}
                     label={rep.variable(id).name}

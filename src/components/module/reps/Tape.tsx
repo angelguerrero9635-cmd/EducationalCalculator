@@ -129,25 +129,20 @@ export function Tape({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   fit.freeze();
                 }}
                 onEnd={fit.release}
-                onMove={(dx) =>
-                  calc.set(
-                    {
-                      // Moving the line between two parts: the next part gives way and the total
-                      // stays (price up, money left down). The last part grows the total.
-                      ...rep.pin(
-                        ids
-                          .filter((v) => v !== id && v !== ids[i + 1])
-                          .concat(
-                            ids[i + 1] && !compare && typeof spec.total === 'string'
-                              ? [spec.total]
-                              : [],
-                          ),
-                      ),
-                      [id]: rep.snapTo(id, (start.current + dx / scale) * rep.factor(id)),
-                    },
-                    rep.slide(id),
-                  )
-                }
+                onMove={(dx) => {
+                  const value = rep.snapTo(id, (start.current + dx / scale) * rep.factor(id));
+                  // Moving the line between two parts: the next part gives way and the total
+                  // stays (price up, money left down). The last part grows the total. When the
+                  // page's rules leave that no room (a part fixed by a rule, a total that is a
+                  // start value), the total follows, then only the dragged part is held: the
+                  // handle always moves something.
+                  const others = ids.filter((v) => v !== id && v !== ids[i + 1]);
+                  const total =
+                    ids[i + 1] && !compare && typeof spec.total === 'string' ? [spec.total] : [];
+                  const tries = [[...others, ...total], others, []];
+                  const updates = tries.map((pins) => ({ ...rep.pin(pins), [id]: value }));
+                  calc.set(updates.find((u) => calc.fits(u)) ?? updates[0]!, rep.slide(id));
+                }}
               />
             );
 

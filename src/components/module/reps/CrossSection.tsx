@@ -8,6 +8,7 @@ import { chart, usePalette } from '@/theme';
 import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, ChartText, DragHandle, fitLabel, useRep } from './common';
 import { quotientText } from './exact';
+import { worked } from './hskKit';
 import { TopLight, url, usePaintIds } from './paint';
 import {
   areaOf,
@@ -114,10 +115,13 @@ function CrossSectionFlat({ spec, calc }: { spec: FlatSpec; calc: Calculator }) 
   const sides = sidesOf(section);
   const rect = name === 'rectangle' || name === 'square';
   const areaLabel = spec.area ? `${sym(spec.area)} = ` : '';
+  // A "?" dimension: the cut is named, never worked with the example's numbers behind the "?".
   const cutLine =
     section.length === 0
       ? 'The plane only touches the solid here.'
-      : `The cut is a ${name}: ${areaLabel}${rect ? `${n(sides[0]!)} × ${n(sides[1]!)} = ` : ''}${n(area, 2)}${sq}.`;
+      : !known
+        ? `The cut is a ${name}${areaLabel ? `: ${areaLabel}?` : ''}.`
+        : `The cut is a ${name}: ${areaLabel}${rect ? `${n(sides[0]!)} × ${n(sides[1]!)} = ` : ''}${n(area, 2)}${sq}.`;
   const prism = spec.solid !== 'pyramid';
   const note =
     cut === 'base'
@@ -126,9 +130,12 @@ function CrossSectionFlat({ spec, calc }: { spec: FlatSpec; calc: Calculator }) 
         : 'Cuts parallel to the base shrink toward the top.'
       : undefined;
   const volumeLine = spec.volume
-    ? prism && cut === 'base' && spec.area
-      ? `${sym(spec.volume)} = ${sym(spec.area)} × ${sym(spec.height)} = ${n(area, 2)} × ${n(h)} = ${rep.value(spec.volume)}`
-      : `${sym(spec.volume)} = ${spec.solid === 'box' ? '' : spec.solid === 'pyramid' ? '1/3 × ' : '1/2 × '}${n(l)} × ${n(w)} × ${n(h)} = ${rep.value(spec.volume)}`
+    ? worked(
+        known,
+        prism && cut === 'base' && spec.area
+          ? `${sym(spec.volume)} = ${sym(spec.area)} × ${sym(spec.height)} = ${n(area, 2)} × ${n(h)} = ${rep.value(spec.volume)}`
+          : `${sym(spec.volume)} = ${spec.solid === 'box' ? '' : spec.solid === 'pyramid' ? '1/3 × ' : '1/2 × '}${n(l)} × ${n(w)} × ${n(h)} = ${rep.value(spec.volume)}`,
+      )[0]
     : undefined;
 
   return (
