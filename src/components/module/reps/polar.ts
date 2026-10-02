@@ -59,6 +59,8 @@ export function pathAt(p: ParametricPath, v: Numbers, t: number): { x: number; y
         x: v.v! * Math.cos(v.angle! * RAD) * t,
         y: v.y0! + v.v! * Math.sin(v.angle! * RAD) * t - 0.5 * G * t * t,
       };
+    case 'cycloid': // HC53 (t in radians)
+      return { x: v.r! * (t - Math.sin(t)), y: v.r! * (1 - Math.cos(t)) };
   }
 }
 
@@ -67,6 +69,7 @@ export const PATH_FIELDS: Record<ParametricPath['family'], string[]> = {
   line: ['x0', 'y0', 'a', 'b'],
   ellipse: ['h', 'k', 'a', 'b'],
   projectile: ['v', 'angle', 'y0'],
+  cycloid: ['r'], // HC53
 };
 
 /** The number fields each curve shape takes. */

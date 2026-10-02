@@ -284,6 +284,8 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `rectangle`        | `bounds: { error, least?, greatest? }`   | (l ± e) by (w ± e) dashed, the band between shaded, a corner close-up (H106)  |
 | `vectorDiagram`    | `space`, `z`; `cross`, `w`, `points`     | x, y, z axes, turnable: u × v, θ, areas, the box of u, v, w; PQ, M (H106)     |
 | `polarGrid`        | `curve.shape: 'conic'`, `k, m, n, fn`    | r = k ÷ (m − n cos θ): focus at the pole, directrix, PF ÷ PD = e at P (H106)  |
+| `polarGrid`        | `area`, `region`, `tangent`              | ½∫ r² dθ swept from the pole; r₁ ≤ r ≤ r₂ sector; tangent at P, dy/dx (HC53)  |
+| `polarGrid`        | `family: 'cycloid'`, `radians`, `length` | the rolling circle at t; t as 3π/2; the traced length L summed (HC53)         |
 | `conicGraph`       | `conic: 'turned'`, `A, B, C, F`; `angle` | Ax² + Bxy + Cy² = 1 with x′, y′ at θ, A′x′² + C′y′² = 1, its shape (H106)     |
 | `functionGraph`    | `riemann: { n, to, from?, side?, sum? }` | n rectangles of equal width under the curve, right, left or middle; S (H106)  |
 | `functionGraph`    | `family: 'rational'`, `top`, `poles`     | the top by coefficients over (x − p)… (x² + jx + k)…: a number on top (H106)  |

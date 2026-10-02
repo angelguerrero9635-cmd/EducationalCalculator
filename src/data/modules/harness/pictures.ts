@@ -84,6 +84,7 @@ import { he2eIssues, isHe2e } from './picturesHe2e';
 import { he2hIssues } from './picturesHe2h';
 import { fieldPlotIssues, he2gGraphIssues } from './picturesHe2g';
 import { he2cIssues } from './picturesHe2c';
+import { he3cIssues } from './picturesHe3c';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -2199,6 +2200,7 @@ export function repIssues(
       out.push(...hsdIssues(rep, (id) => val(id)), ...hs2gIssues(rep, val));
       if (rep.kind === 'complexPlane') out.push(...complexPlaneHe2aIssues(rep, siOf(val, byId))); // HC14
       out.push(...hs3bIssues(rep, val, byId)); // H106: space, polar conics, turned conics
+      if (rep.kind === 'polarGrid') out.push(...he3cIssues(rep, val)); // HC53
       break;
     case 'membrane':
     case 'dnaStrand':
