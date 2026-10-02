@@ -8,7 +8,7 @@ import { chart, usePalette } from '@/theme';
 import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, niceCeil, useRep } from './common';
 import { mixedOf } from './hskMath';
-import { sig, SubLabel } from './hskKit';
+import { formulaOnly, sig, SubLabel } from './hskKit';
 import { Battery, Meter } from './physicsArt';
 import { Metal, Sheen, TopLight, url, usePaintIds } from './paint';
 
@@ -32,12 +32,19 @@ export function CircuitMixed({ spec, m, calc }: { spec: Spec; m: MixedCircuit; c
   const all = [...m.resistors, spec.voltage].every(known);
   const sp = m.layout === 'seriesParallel';
   const par23 = (Rs[1] * Rs[2]) / (Rs[1] + Rs[2]);
-  const lines = [
+  // A "?" box reads "?" on the picture too, not the example's number drawn faded behind it.
+  const rOk = m.resistors.every(known);
+  const say = (ok: boolean, x: number) => (ok ? sig(x) : '?');
+  const worked = [
     sp
       ? `R_eq = R₁ + R₂R₃/(R₂ + R₃) = ${sig(Rs[0])} + ${sig(Rs[1])} × ${sig(Rs[2])}/${sig(Rs[1] + Rs[2])} = ${sig(Rs[0])} + ${sig(par23)} = ${sig(ci.Req)} Ω`
       : `R_eq = (R₁ + R₂)R₃/(R₁ + R₂ + R₃) = ${sig(Rs[0] + Rs[1])} × ${sig(Rs[2])}/${sig(Rs[0] + Rs[1] + Rs[2])} = ${sig(ci.Req)} Ω`,
     `I = V/R_eq = ${sig(V)}/${sig(ci.Req)} = ${sig(ci.I)} A`,
     `P = VI = ${sig(V)} × ${sig(ci.I)} = ${sig(V * ci.I)} W, the three resistors’ powers added.`,
+  ];
+  const lines = [
+    ...(rOk ? worked.slice(0, 1) : formulaOnly(worked.slice(0, 1))),
+    ...(all ? worked.slice(1) : formulaOnly(worked.slice(1))),
   ];
 
   return (
@@ -96,14 +103,14 @@ export function CircuitMixed({ spec, m, calc }: { spec: Spec; m: MixedCircuit; c
               <SubLabel
                 x={x}
                 y={y - 14}
-                text={`R_${i + 1} ${sig(Rs[i]!)} Ω`}
+                text={`R_${i + 1} ${say(known(m.resistors[i]), Rs[i]!)} Ω`}
                 anchor={anchor}
                 w={w}
               />
               <SubLabel
                 x={x}
                 y={y + 4}
-                text={`${sig(ci.V[i]!)} V, ${sig(ci.I3[i]!)} A`}
+                text={`${say(all, ci.V[i]!)} V, ${say(all, ci.I3[i]!)} A`}
                 anchor={anchor}
                 size={chart.label}
                 bold={false}
@@ -113,7 +120,7 @@ export function CircuitMixed({ spec, m, calc }: { spec: Spec; m: MixedCircuit; c
               <SubLabel
                 x={x}
                 y={y + 21}
-                text={`${sig(ci.P[i]!)} W`}
+                text={`${say(all, ci.P[i]!)} W`}
                 anchor={anchor}
                 size={chart.label}
                 bold={false}
@@ -149,7 +156,13 @@ export function CircuitMixed({ spec, m, calc }: { spec: Spec; m: MixedCircuit; c
                   <Circle key={`${x}${y}`} cx={x} cy={y} r={4.5} fill={c.copperDark} />
                 ))}
                 <Battery x={L} top={yMid - 30} height={60} sheen={ids.cell} />
-                <SubLabel x={L + 18} y={yMid + 4} text={`${sig(V)} V`} anchor="start" w={w} />
+                <SubLabel
+                  x={L + 18}
+                  y={yMid + 4}
+                  text={`${say(known(spec.voltage), V)} V`}
+                  anchor="start"
+                  w={w}
+                />
                 <Meter
                   x={meterX}
                   y={T}
@@ -161,7 +174,7 @@ export function CircuitMixed({ spec, m, calc }: { spec: Spec; m: MixedCircuit; c
                 <SubLabel
                   x={meterX}
                   y={T + 38}
-                  text={`I = ${sig(ci.I)} A`}
+                  text={`I = ${say(all, ci.I)} A`}
                   color={c.chartHighlight}
                   w={w}
                 />
@@ -188,7 +201,7 @@ export function CircuitMixed({ spec, m, calc }: { spec: Spec; m: MixedCircuit; c
               <SubLabel
                 x={w - 8}
                 y={h - 6}
-                text={`R_total = ${sig(ci.Req)} Ω`}
+                text={`R_total = ${say(rOk, ci.Req)} Ω`}
                 anchor="end"
                 size={chart.label}
                 bold={false}

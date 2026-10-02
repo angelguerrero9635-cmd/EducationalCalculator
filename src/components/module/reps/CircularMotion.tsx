@@ -9,7 +9,7 @@ import { chart, usePalette } from '@/theme';
 import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, DragHandle, nowrap, useFrozen, useRep } from './common';
 import { G_EARTH, G_NEWTON, keplerPoint } from './hskMath';
-import { RAD, sig, SubLabel, Vec, withUnit } from './hskKit';
+import { RAD, sig, SubLabel, unknownOr, Vec, withUnit, worked, formulaOnly } from './hskKit';
 import { Ball, url, usePaintIds } from './paint';
 
 /**
@@ -47,7 +47,14 @@ export function CircularMotion({ spec, calc }: { spec: CircularMotionSpec; calc:
       : spec.mode === 'kepler'
         ? [spec.semiMajor, spec.eccentricity, spec.starMass].every(known)
         : [spec.radius, spec.speed].every(known);
-  const lines = captionLines();
+  // A "?" box reads "?" on the picture too, not the example's number drawn faded behind it.
+  const rOk = known(spec.radius);
+  const vOk = known(spec.speed);
+  const mOk = known(spec.mass);
+  const [m1Ok, m2Ok] = (spec.masses ?? [1, 1]).map(known);
+  const dOk = known(spec.distance);
+  const q = unknownOr;
+  const lines = spec.mode === 'kepler' && !all ? formulaOnly(captionLines()) : captionLines();
 
   return (
     <View>
@@ -139,7 +146,7 @@ export function CircularMotion({ spec, calc }: { spec: CircularMotionSpec; calc:
         <SubLabel
           x={O.x - 6}
           y={O.y + 22}
-          text={`r = ${withUnit(sig(r), unit(spec.radius, 'm'))}`}
+          text={`r = ${withUnit(q(rOk, sig(r)), unit(spec.radius, 'm'))}`}
           w={w}
         />
         {car ? (
@@ -174,7 +181,7 @@ export function CircularMotion({ spec, calc }: { spec: CircularMotionSpec; calc:
         <SubLabel
           x={P.x + t.x * Lv - 8}
           y={P.y + t.y * Lv - 8}
-          text={`v = ${withUnit(sig(v), unit(spec.speed, 'm/s'))}`}
+          text={`v = ${withUnit(q(vOk, sig(v)), unit(spec.speed, 'm/s'))}`}
           anchor="end"
           color={c.chartHighlight}
           w={w}
@@ -183,7 +190,7 @@ export function CircularMotion({ spec, calc }: { spec: CircularMotionSpec; calc:
           x={P.x + 8}
           y={P.y + 34}
           anchor="start"
-          text={car ? `f = ${sig(m * ac)} N` : `a_c = ${sig(ac)} m/s²`}
+          text={car ? `f = ${q(all && mOk, sig(m * ac))} N` : `a_c = ${q(all, sig(ac))} m/s²`}
           color={car ? c.forceFriction : c.forceNet}
           w={w}
         />
@@ -209,19 +216,19 @@ export function CircularMotion({ spec, calc }: { spec: CircularMotionSpec; calc:
         <SubLabel
           x={w / 2}
           y={y - 34}
-          text={`F = ${sig(Fg)} N on each, toward the other`}
+          text={`F = ${q(all, sig(Fg))} N on each, toward the other`}
           color={c.forceNet}
           w={w}
         />
-        <SubLabel x={x1} y={y + r1 + 20} text={`m_1 = ${sig(m1!)} kg`} w={w} />
-        <SubLabel x={x2} y={y + r2 + 20} text={`m_2 = ${sig(m2!)} kg`} w={w} />
+        <SubLabel x={x1} y={y + r1 + 20} text={`m_1 = ${q(m1Ok!, sig(m1!))} kg`} w={w} />
+        <SubLabel x={x2} y={y + r2 + 20} text={`m_2 = ${q(m2Ok!, sig(m2!))} kg`} w={w} />
         <Line x1={x1} y1={h - 26} x2={x2} y2={h - 26} stroke={c.chartMuted} />
         <Line x1={x1} y1={h - 32} x2={x1} y2={h - 20} stroke={c.chartMuted} />
         <Line x1={x2} y1={h - 32} x2={x2} y2={h - 20} stroke={c.chartMuted} />
         <SubLabel
           x={w / 2}
           y={h - 30}
-          text={`r = ${withUnit(sig(d), unit(spec.distance, 'm'))} (not to scale)`}
+          text={`r = ${withUnit(q(dOk, sig(d)), unit(spec.distance, 'm'))} (not to scale)`}
           w={w}
         />
       </G>
@@ -314,7 +321,7 @@ export function CircularMotion({ spec, calc }: { spec: CircularMotionSpec; calc:
             <SubLabel
               x={O.x + 6}
               y={(O.y + Y(b)) / 2 + 4}
-              text={`a = ${sig(a)} AU`}
+              text={`a = ${q(all, sig(a))} AU`}
               anchor="start"
               w={w}
             />
@@ -324,14 +331,14 @@ export function CircularMotion({ spec, calc }: { spec: CircularMotionSpec; calc:
             <SubLabel
               x={X(a) - 2}
               y={Y(-b) + 22}
-              text={`${star ? 'closest' : 'perihelion'} ${sig(a * (1 - e))} AU`}
+              text={`${star ? 'closest' : 'perihelion'} ${q(all, sig(a * (1 - e)))} AU`}
               anchor="end"
               w={w}
             />
             <SubLabel
               x={X(-a) + 2}
               y={Y(b) - 10}
-              text={`${star ? 'farthest' : 'aphelion'} ${sig(a * (1 + e))} AU`}
+              text={`${star ? 'farthest' : 'aphelion'} ${q(all, sig(a * (1 + e)))} AU`}
               anchor="start"
               w={w}
             />
@@ -410,7 +417,10 @@ export function CircularMotion({ spec, calc }: { spec: CircularMotionSpec; calc:
   function captionLines(): string[] {
     if (spec.mode === 'gravity')
       return [
-        `F = Gm₁m₂/r² = ${sig(G_NEWTON)} × ${sig(m1!)} × ${sig(m2!)}/${sig(d)}² = ${sig(Fg)} N`,
+        ...worked(
+          all,
+          `F = Gm₁m₂/r² = ${sig(G_NEWTON)} × ${sig(m1!)} × ${sig(m2!)}/${sig(d)}² = ${sig(Fg)} N`,
+        ),
         'Each mass pulls the other just as hard (Newton’s third law). Twice the distance, a quarter of the pull.',
       ];
     if (spec.mode === 'kepler' && star) {
@@ -439,15 +449,23 @@ export function CircularMotion({ spec, calc }: { spec: CircularMotionSpec; calc:
     }
     const vT = sig(v);
     const out = [
-      `Centripetal acceleration: v²/r = ${vT}²/${sig(r)} = ${sig(ac)} m/s²`,
-      `Centripetal force: mv²/r = ${sig(m)} × ${sig(ac)} = ${sig(m * ac)} N`,
+      ...worked(all, `Centripetal acceleration: v²/r = ${vT}²/${sig(r)} = ${sig(ac)} m/s²`),
+      ...worked(all && mOk, `Centripetal force: mv²/r = ${sig(m)} × ${sig(ac)} = ${sig(m * ac)} N`),
     ];
     if (spec.period)
-      out.push(`T = 2πr/v = 2π × ${sig(r)}/${vT} = ${v ? sig((2 * Math.PI * r) / v) : '?'} s`);
+      out.push(
+        ...worked(
+          all,
+          `T = 2πr/v = 2π × ${sig(r)}/${vT} = ${v ? sig((2 * Math.PI * r) / v) : '?'} s`,
+        ),
+      );
     out.push(
-      spec.mode === 'car'
-        ? `Friction toward the center supplies it: the tires need μ ≥ v²/(rg) = ${sig(ac / G_EARTH)}.`
-        : 'The string’s pull toward the center supplies it; let go and the ball flies off along the tangent.',
+      ...worked(
+        all,
+        spec.mode === 'car'
+          ? `Friction toward the center supplies it: the tires need μ ≥ v²/(rg) = ${sig(ac / G_EARTH)}.`
+          : 'The string’s pull toward the center supplies it; let go and the ball flies off along the tangent.',
+      ),
     );
     return out;
   }

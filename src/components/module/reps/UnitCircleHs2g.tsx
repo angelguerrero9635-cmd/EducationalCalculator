@@ -143,6 +143,8 @@ function Through({ spec, calc }: { spec: UnitCircleSpec; calc: Calculator }) {
   const t = spec.through!;
   const num = (v: number | string) => (typeof v === 'number' ? v : rep.val(v));
   const known = [t.x, t.y].every((v) => typeof v === 'number' || rep.known(v));
+  // A "?" box reads "?" on the picture too, not the example's number drawn faded behind it.
+  const [xOk, yOk] = [t.x, t.y].map((v) => typeof v === 'number' || rep.known(v));
   const [x, y] = [num(t.x), num(t.y)];
   const r2 = x * x + y * y;
   const r = Math.sqrt(r2);
@@ -184,7 +186,7 @@ function Through({ spec, calc }: { spec: UnitCircleSpec; calc: Calculator }) {
           const R1 = s; // the unit circle
           const P = { x: cx + x * s, y: cy - y * s };
           const U = { x: cx + (r ? x / r : 0) * R1, y: cy - (r ? y / r : 0) * R1 };
-          const pText = `(${formatNumber(x).replace('-', MINUS)}, ${formatNumber(y).replace('-', MINUS)})`;
+          const pText = `(${xOk ? formatNumber(x).replace('-', MINUS) : '?'}, ${yOk ? formatNumber(y).replace('-', MINUS) : '?'})`;
           const out = (d: number, k: number) => ({
             x: cx + k * Math.cos(d),
             y: cy - k * Math.sin(d),
@@ -247,7 +249,7 @@ function Through({ spec, calc }: { spec: UnitCircleSpec; calc: Calculator }) {
               <MathChip
                 x={(cx + P.x) / 2}
                 y={cy + (y >= 0 ? 18 : -8)}
-                text={`x = ${formatNumber(x).replace('-', MINUS)}`}
+                text={`x = ${xOk ? formatNumber(x).replace('-', MINUS) : '?'}`}
                 w={w}
                 h={h}
                 color={c.unitCircleCosine}
@@ -256,7 +258,7 @@ function Through({ spec, calc }: { spec: UnitCircleSpec; calc: Calculator }) {
                 x={P.x + (x >= 0 ? 8 : -8)}
                 y={(cy + P.y) / 2 + 4}
                 anchor={x >= 0 ? 'start' : 'end'}
-                text={`y = ${formatNumber(y).replace('-', MINUS)}`}
+                text={`y = ${yOk ? formatNumber(y).replace('-', MINUS) : '?'}`}
                 w={w}
                 h={h}
                 color={c.unitCircleSine}
@@ -264,7 +266,7 @@ function Through({ spec, calc }: { spec: UnitCircleSpec; calc: Calculator }) {
               <MathChip
                 x={rAt.x}
                 y={rAt.y}
-                text={`r = ${rText}`}
+                text={`r = ${known ? rText : '?'}`}
                 w={w}
                 h={h}
                 color={c.chartHighlight}

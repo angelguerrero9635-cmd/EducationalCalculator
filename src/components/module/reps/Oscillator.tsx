@@ -9,7 +9,7 @@ import { Canvas, Caption, ChartText } from './common';
 import { num } from './CircularSatellite';
 import { springPath, useReader } from './hs3aKit';
 import { springOf } from './hs3aMath';
-import { SubLabel, Vec, zeroWindow } from './hskKit';
+import { SubLabel, Vec, worked, zeroWindow } from './hskKit';
 import { Crate, TopLight, usePaintIds } from './paint';
 
 type Swing = Extract<OscillatorSpec, { mode?: 'swing' }>;
@@ -239,7 +239,7 @@ function Sliding({ spec, calc }: { spec: Swing; calc: Calculator }) {
                 <SubLabel
                   x={bar.x}
                   y={bar.y + bar.h + 18}
-                  text={`½kx² = ${num(s.U)} ${uE}`}
+                  text={`½kx² = ${all(spec.spring, spec.position) ? num(s.U) : '?'} ${uE}`}
                   anchor="start"
                   color={c.chartHighlight}
                   w={w}
@@ -247,7 +247,7 @@ function Sliding({ spec, calc }: { spec: Swing; calc: Calculator }) {
                 <SubLabel
                   x={bar.x + bar.w}
                   y={bar.y + bar.h + 18}
-                  text={`½mv² = ${num(s.K)} ${uE}`}
+                  text={`½mv² = ${all(spec.spring, spec.amplitude, spec.position) ? num(s.K) : '?'} ${uE}`}
                   anchor="end"
                   color={c.chartInk}
                   w={w}
@@ -258,7 +258,7 @@ function Sliding({ spec, calc }: { spec: Swing; calc: Calculator }) {
                   fontSize={chart.label}
                   fill={c.chartMuted}
                 >
-                  {`at x = ${num(x)} ${uX} (the dot on the trace)`}
+                  {`at x = ${all(spec.position) ? num(x) : '?'} ${uX} (the dot on the trace)`}
                 </ChartText>
               </G>
             </Svg>
@@ -267,8 +267,15 @@ function Sliding({ spec, calc }: { spec: Swing; calc: Calculator }) {
       </Canvas>
       <Caption>
         {[
-          `T = 2π√(m/k) = 2π × √(${num(m)}/${num(k)}) = ${num(s.T)} s`,
-          `v_max = Aω = ${num(A)} × ${num(s.w)} = ${num(s.top)} m/s`,
+          // A "?" box is not worked with the example's numbers: the formula only.
+          ...worked(
+            all(spec.mass, spec.spring),
+            `T = 2π√(m/k) = 2π × √(${num(m)}/${num(k)}) = ${num(s.T)} s`,
+          ),
+          ...worked(
+            all(spec.mass, spec.spring, spec.amplitude),
+            `v_max = Aω = ${num(A)} × ${num(s.w)} = ${num(s.top)} m/s`,
+          ),
           'It stops at ±A and moves fastest through x = 0; a bigger A leaves T the same.',
         ].join(' · ')}
       </Caption>
@@ -391,7 +398,7 @@ function Hanging({ spec, calc }: { spec: Hang; calc: Calculator }) {
                 <SubLabel
                   x={GX(x) - 6}
                   y={GY(F) - 10}
-                  text={`(${num(x)}, ${num(F)})`}
+                  text={`(${all(spec.stretch) ? num(x) : '?'}, ${all(spec.mass) ? num(F) : '?'})`}
                   anchor="end"
                   size={chart.label}
                   w={w}
@@ -431,9 +438,12 @@ function Hanging({ spec, calc }: { spec: Hang; calc: Calculator }) {
       </Canvas>
       <Caption>
         {[
-          `F = mg = ${num(m)} × ${num(g)} = ${num(F)} N`,
-          `k = F/x = ${num(F)}/${num(x)} = ${num(k)} N/m`,
-          `U = ½kx² = ½ × ${num(k)} × ${num(x)}² = ${num(U)} J, the triangle under the line`,
+          ...worked(all(spec.mass), `F = mg = ${num(m)} × ${num(g)} = ${num(F)} N`),
+          ...worked(all(spec.mass, spec.stretch), `k = F/x = ${num(F)}/${num(x)} = ${num(k)} N/m`),
+          ...worked(
+            all(spec.mass, spec.stretch),
+            `U = ½kx² = ½ × ${num(k)} × ${num(x)}² = ${num(U)} J, the triangle under the line`,
+          ),
         ].join(' · ')}
       </Caption>
     </View>

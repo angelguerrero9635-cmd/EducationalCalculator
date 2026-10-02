@@ -336,7 +336,7 @@ export function VectorDiagram({ spec, calc }: { spec: VectorDiagramSpec; calc: C
                             <MathChip
                               x={(p0.x + p1.x) / 2}
                               y={p0.y + (v.y >= 0 ? -8 : 17)}
-                              text={short(v.x)}
+                              text={v.known ? short(v.x) : '?'}
                               w={w}
                               h={h}
                               color={colors[i]}
@@ -347,7 +347,7 @@ export function VectorDiagram({ spec, calc }: { spec: VectorDiagramSpec; calc: C
                             <MathChip
                               x={p1.x + (v.x >= 0 ? 6 : -6)}
                               y={(p1.y + p2.y) / 2 + 4}
-                              text={short(v.y)}
+                              text={v.known ? short(v.y) : '?'}
                               anchor={v.x >= 0 ? 'start' : 'end'}
                               w={w}
                               h={h}

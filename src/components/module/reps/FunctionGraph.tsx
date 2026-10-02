@@ -983,7 +983,9 @@ export function FunctionGraph({
               color: c.chartMuted,
               dash: chart.dashFine,
             });
-            const t = `midline y = ${numText(main.midline)}`;
+            // The midline is k: "?" while k is (not the example's k drawn faded).
+            const kUnknown = 'k' in spec && say(spec.k as NumOrVar | undefined, 0) === '?';
+            const t = `midline y = ${kUnknown ? '?' : numText(main.midline)}`;
             labels.push({
               box: place(L + 4 + width(t, chart.label) / 2, sy(main.midline), t),
               text: t,

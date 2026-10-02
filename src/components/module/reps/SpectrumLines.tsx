@@ -9,7 +9,7 @@ import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, ChartText, useRep } from './common';
 import { photonOf, SPECTRAL_LINES } from './hskMath';
 import { labLineIndex } from './hs2h';
-import { sci, sig, SubLabel } from './hskKit';
+import { formulaOnly, sci, sig, SubLabel } from './hskKit';
 import { url, usePaintIds } from './paint';
 
 type Spec = Extract<Representation, { kind: 'spectrum' }>;
@@ -280,6 +280,12 @@ export function PhotonView({ p, calc }: { spec: Spec; p: PhotonEnergy; calc: Cal
           : ph.nm > HI
             ? 'infrared'
             : 'visible';
+  // A "?" frequency is not worked with the example's numbers: the formulas only.
+  const worked = [
+    `λ = c/f = 3 × 10⁸/(${sci(f)}) = ${sig(ph.nm)} nm`,
+    `E = hf = 6.626 × 10⁻³⁴ × ${sci(f)} = ${sci(ph.J)} J`,
+    `In electronvolts: ${sci(ph.J)}/(1.602 × 10⁻¹⁹) = ${sig(ph.eV)} eV`,
+  ];
   return (
     <View>
       <Canvas aspect={0.5}>
@@ -317,7 +323,7 @@ export function PhotonView({ p, calc }: { spec: Spec; p: PhotonEnergy; calc: Cal
                   fontWeight="700"
                   halo
                 >
-                  {`${sig(ph.nm)} nm (${band})`}
+                  {known ? `${sig(ph.nm)} nm (${band})` : '? nm'}
                 </ChartText>
                 {[400, 500, 600, 700].map((nm) => (
                   <ChartText
@@ -338,9 +344,7 @@ export function PhotonView({ p, calc }: { spec: Spec; p: PhotonEnergy; calc: Cal
       </Canvas>
       <Caption>
         {[
-          `λ = c/f = 3 × 10⁸/(${sci(f)}) = ${sig(ph.nm)} nm`,
-          `E = hf = 6.626 × 10⁻³⁴ × ${sci(f)} = ${sci(ph.J)} J`,
-          `In electronvolts: ${sci(ph.J)}/(1.602 × 10⁻¹⁹) = ${sig(ph.eV)} eV`,
+          ...(known ? worked : formulaOnly(worked)),
           'Higher frequency, shorter wavelength, more energy per photon: blue photons carry more than red.',
         ].join(' · ')}
       </Caption>

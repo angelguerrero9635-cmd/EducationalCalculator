@@ -8,7 +8,7 @@ import { chart, usePalette } from '@/theme';
 import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, ChartText, DragHandle, useFrozen, useRep } from './common';
 import { collisionOf } from './hskMath';
-import { sig, SubLabel, Vec } from './hskKit';
+import { formulaOnly, sig, SubLabel, Vec } from './hskKit';
 import { Sheen, TopLight, url, usePaintIds } from './paint';
 
 const [CW, CH] = [58, 24];
@@ -52,7 +52,16 @@ export function Collision({ spec, calc }: { spec: CollisionSpec; calc: Calculato
   const scale = useFrozen(big);
   const vUnit =
     typeof spec.before[0] === 'string' ? (rep.variable(spec.before[0]).unit ?? 'm/s') : 'm/s';
-  const lines = captionLines();
+  // A "?" box reads "?" on the picture too, not the example's number drawn faded behind it.
+  const mOk = (n: 1 | 2) => known(spec.masses[n - 1]);
+  const vOk = (n: 1 | 2, after: boolean) =>
+    !after
+      ? known(spec.before[spec.type === 'explode' ? 0 : n - 1])
+      : given && n === 1
+        ? known(spec.after?.[0])
+        : all;
+  const say = (ok: boolean, x: number) => (ok ? sig(x) : '?');
+  const lines = all ? captionLines() : formulaOnly(captionLines());
 
   return (
     <View>
@@ -151,7 +160,7 @@ export function Collision({ spec, calc }: { spec: CollisionSpec; calc: Calculato
                       <SubLabel
                         x={Math.max(x0, x0 + sum * k) + 8}
                         y={tY + 5}
-                        text={`total ${sig(sum)} kg·m/s`}
+                        text={`total ${say(row.title === 'After' ? all : [1, 2].every((n) => mOk(n as 1 | 2) && vOk(n as 1 | 2, false)), sum)} kg·m/s`}
                         anchor="start"
                         color={c.forceNet}
                         w={w}
@@ -196,7 +205,7 @@ export function Collision({ spec, calc }: { spec: CollisionSpec; calc: Calculato
                             fontWeight="700"
                             fill={c.onAccent}
                           >
-                            {`${sig(q.m)} kg`}
+                            {`${say(mOk(q.n), q.m)} kg`}
                           </ChartText>
                           {row.joined ? null : (
                             <Vec
@@ -212,7 +221,7 @@ export function Collision({ spec, calc }: { spec: CollisionSpec; calc: Calculato
                             <SubLabel
                               x={q.x}
                               y={arrowY - 10}
-                              text={`p_${q.n} ${sig(q.p)}`}
+                              text={`p_${q.n} ${say(mOk(q.n) && vOk(q.n, row.title === 'After'), q.p)}`}
                               color={q.color}
                               w={w}
                             />
@@ -221,7 +230,7 @@ export function Collision({ spec, calc }: { spec: CollisionSpec; calc: Calculato
                             <SubLabel
                               x={q.x}
                               y={railY + 42}
-                              text={`KE_${q.n}${row.title === 'After' ? '′' : ''} ${sig(0.5 * q.m * q.v * q.v)} J`}
+                              text={`KE_${q.n}${row.title === 'After' ? '′' : ''} ${say(mOk(q.n) && vOk(q.n, row.title === 'After'), 0.5 * q.m * q.v * q.v)} J`}
                               bold={false}
                               chip={false}
                               w={w}
@@ -233,8 +242,8 @@ export function Collision({ spec, calc }: { spec: CollisionSpec; calc: Calculato
                               y={railY + 24}
                               text={
                                 row.joined
-                                  ? `${row.title === 'After' ? 'v′' : 'v'} ${sig(q.v)} ${vUnit}`
-                                  : `v_${q.n}${row.title === 'After' ? '′' : ''} ${sig(q.v)} ${vUnit}`
+                                  ? `${row.title === 'After' ? 'v′' : 'v'} ${say(vOk(q.n, row.title === 'After'), q.v)} ${vUnit}`
+                                  : `v_${q.n}${row.title === 'After' ? '′' : ''} ${say(vOk(q.n, row.title === 'After'), q.v)} ${vUnit}`
                               }
                               bold={false}
                               w={w}

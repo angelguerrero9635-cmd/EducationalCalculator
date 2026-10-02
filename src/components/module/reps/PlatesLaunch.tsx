@@ -9,7 +9,7 @@ import { Canvas, Caption, ChartText } from './common';
 import { num } from './CircularSatellite';
 import { useReader } from './hs3aKit';
 import { C_LIGHT, E_CHARGE, launchOf, M_ELECTRON, M_PROTON } from './hs3aMath';
-import { sci, SubLabel, Vec } from './hskKit';
+import { sci, SubLabel, Vec, worked } from './hskKit';
 import { Ball, Sheen, url, usePaintIds } from './paint';
 
 /** Places drawn at equal times, from rest. */
@@ -37,6 +37,9 @@ export function PlatesLaunch({ spec, calc }: { spec: ChargePlatesSpec; calc: Cal
   // An electron is negative: it starts at the − plate and runs to the +; a + ion the other way.
   const leftSign = electron ? '−' : '+';
   const cap = C_LIGHT / 10;
+  // A "?" box reads "?" on the picture too, not the example's number drawn faded behind it.
+  const kOk = all(o.charge, spec.voltage);
+  const vOk = kOk && all(o.mass);
 
   return (
     <View>
@@ -176,7 +179,7 @@ export function PlatesLaunch({ spec, calc }: { spec: ChargePlatesSpec; calc: Cal
                 <SubLabel
                   x={w / 2}
                   y={bottom + 30}
-                  text={`K = qΔV = ${text(o.energy, K, 'eV')} = ${sci(K * E_CHARGE)} J`}
+                  text={`K = qΔV = ${text(o.energy, K, 'eV')} = ${kOk ? sci(K * E_CHARGE) : '?'} J`}
                   color={c.physWork}
                   w={w}
                 />
@@ -229,8 +232,8 @@ export function PlatesLaunch({ spec, calc }: { spec: ChargePlatesSpec; calc: Cal
       </Canvas>
       <Caption>
         {[
-          `K = qΔV = ${num(n)} × ${num(V)} = ${num(K)} eV = ${sci(K * E_CHARGE)} J`,
-          `v = √(2K/m) = √(2 × ${sci(K * E_CHARGE)}/${sci(m)}) = ${sci(speed)} m/s`,
+          ...worked(kOk, `K = qΔV = ${num(n)} × ${num(V)} = ${num(K)} eV = ${sci(K * E_CHARGE)} J`),
+          ...worked(vOk, `v = √(2K/m) = √(2 × ${sci(K * E_CHARGE)}/${sci(m)}) = ${sci(speed)} m/s`),
           electron
             ? 'The electron is pulled from the − plate toward the +, speeding up all the way.'
             : 'The + charge is pushed from the + plate toward the −, speeding up all the way.',

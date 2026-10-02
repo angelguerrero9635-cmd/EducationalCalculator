@@ -9,7 +9,7 @@ import { Canvas, Caption, ChartText } from './common';
 import { num } from './CircularSatellite';
 import { useReader } from './hs3aKit';
 import { capacitorOf, plateCapacitance } from './hs3aMath';
-import { SubLabel, zeroWindow } from './hskKit';
+import { SubLabel, worked, zeroWindow } from './hskKit';
 import { Glass, Sheen, url, usePaintIds } from './paint';
 
 const SIGNS = 7;
@@ -38,6 +38,10 @@ export function Capacitor({ spec, calc }: { spec: CapacitorSpec; calc: Calculato
   const { Q, U } = capacitorOf(C, V, farads);
   const [uC, uQ] = [unit(spec.capacitance, 'F'), unit(spec.charge, 'C')];
   const uU = unit(spec.energy, 'J');
+  // A "?" box reads "?" on the picture too, not the example's number drawn faded behind it.
+  const plOk = all(spec.dielectric, spec.area, spec.gap);
+  const cOk = spec.capacitance !== undefined ? all(spec.capacitance) : plOk;
+  const vOk = all(spec.voltage);
 
   return (
     <View>
@@ -273,7 +277,7 @@ export function Capacitor({ spec, calc }: { spec: CapacitorSpec; calc: Calculato
                   fontSize={chart.value}
                   fill={c.chartMuted}
                 >
-                  {num(Q)}
+                  {cOk && vOk ? num(Q) : '?'}
                 </ChartText>
                 <Line
                   x1={g.x0}
@@ -290,7 +294,7 @@ export function Capacitor({ spec, calc }: { spec: CapacitorSpec; calc: Calculato
                   fontSize={chart.value}
                   fill={c.chartMuted}
                 >
-                  {num(V)}
+                  {vOk ? num(V) : '?'}
                 </ChartText>
                 <SubLabel
                   x={GX(V * 0.62)}
@@ -321,10 +325,15 @@ export function Capacitor({ spec, calc }: { spec: CapacitorSpec; calc: Calculato
     const out: string[] = [];
     if (fromPlates !== undefined)
       out.push(
-        `C = κε₀A/d = ${num(kappa)} × 8.85 × 10⁻¹² × ${num(A!)}/${num(d! * (spec.meters ?? 1))} = ${num(fromPlates)} ${uC}`,
+        ...worked(
+          plOk,
+          `C = κε₀A/d = ${num(kappa)} × 8.85 × 10⁻¹² × ${num(A!)}/${num(d! * (spec.meters ?? 1))} = ${num(fromPlates)} ${uC}`,
+        ),
       );
-    out.push(`Q = CV = ${num(C)} × ${num(V)} = ${num(Q)} ${uQ}`);
-    out.push(`U = ½CV² = ½ × ${num(C * farads)} F × ${num(V)}² = ${num(U)} J`);
+    out.push(...worked(cOk && vOk, `Q = CV = ${num(C)} × ${num(V)} = ${num(Q)} ${uQ}`));
+    out.push(
+      ...worked(cOk && vOk, `U = ½CV² = ½ × ${num(C * farads)} F × ${num(V)}² = ${num(U)} J`),
+    );
     out.push(
       kappa > 1 + 1e-9
         ? 'The slab’s faces take charge the other way: κ times the charge at the same V.'

@@ -11,7 +11,7 @@ import { num } from './CircularSatellite';
 import { arrowHead } from './graphKit';
 import { onCircle, par, useReader } from './hs3aKit';
 import { potentialOf } from './hs3aMath';
-import { SubLabel } from './hskKit';
+import { SubLabel, worked } from './hskKit';
 import { Ball, url, usePaintIds } from './paint';
 
 const R = 16;
@@ -35,6 +35,8 @@ export function ChargesPotential({ spec, calc }: { spec: ChargesSpec; calc: Calc
   const q0 = o.test === undefined ? undefined : v(o.test);
   const U = q0 === undefined ? undefined : q0 * 1e-6 * V;
   const distId = typeof spec.distance === 'string' ? spec.distance : undefined;
+  // A "?" box reads "?" on the picture too, not the example's number drawn faded behind it.
+  const vOk = all(spec.charges[0], spec.distance);
 
   return (
     <View>
@@ -98,7 +100,7 @@ export function ChargesPotential({ spec, calc }: { spec: ChargesSpec; calc: Calc
                     const label =
                       k === 1
                         ? `V = ${text(o.potential, V, 'V')}`
-                        : `${k === 2 ? 'V/2' : '2V'} = ${num(V / k)} V`;
+                        : `${k === 2 ? 'V/2' : '2V'} = ${vOk ? num(V / k) : '?'} V`;
                     return (
                       <SubLabel
                         key={k}
@@ -216,9 +218,12 @@ export function ChargesPotential({ spec, calc }: { spec: ChargesSpec; calc: Calc
       </Canvas>
       <Caption>
         {[
-          `V = kq/r = 8.99 × 10⁹ × ${par(num(q))} × 10⁻⁶/${num(r)} = ${num(V)} V`,
+          ...worked(vOk, `V = kq/r = 8.99 × 10⁹ × ${par(num(q))} × 10⁻⁶/${num(r)} = ${num(V)} V`),
           ...(q0 !== undefined && U !== undefined
-            ? [`U = q₀V = ${par(num(q0))} × 10⁻⁶ × ${par(num(V))} = ${num(U)} J`]
+            ? worked(
+                vOk && known(o.test),
+                `U = q₀V = ${par(num(q0))} × 10⁻⁶ × ${par(num(V))} = ${num(U)} J`,
+              )
             : []),
           'Half as far, twice the potential: V falls off as 1/r, not 1/r².',
           'Moving a charge along a dashed circle takes no work: V is the same all the way round.',

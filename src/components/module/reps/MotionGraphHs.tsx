@@ -165,7 +165,7 @@ export function MotionGraphHs({
     return (
       <G opacity={all ? 1 : 0.4}>
         <ChartText x={sl} y={14} fontSize={chart.label} fill={c.chartMuted}>
-          {`Every ${withUnit(sig(dt), tU)}: where it is, and its velocity`}
+          {`Every ${withUnit(all ? sig(dt) : '?', tU)}: where it is, and its velocity`}
         </ChartText>
         <Line x1={sl} y1={trackY} x2={sr} y2={trackY} stroke={c.chartGrid} strokeWidth={2} />
         {marks.map((m, i) => (
@@ -178,7 +178,7 @@ export function MotionGraphHs({
               fill={c.chartMuted}
               textAnchor={i === 0 ? 'start' : i === 1 ? 'end' : 'middle'}
             >
-              {withUnit(sig(m), xU)}
+              {withUnit(all || Math.abs(m) < 1e-9 ? sig(m) : '?', xU)}
             </ChartText>
           </G>
         ))}
@@ -234,7 +234,7 @@ export function MotionGraphHs({
           Every
         </ChartText>
         <ChartText x={4} y={29} fontSize={chart.label} fill={c.chartMuted}>
-          {withUnit(sig(dt), tU)}
+          {withUnit(all ? sig(dt) : '?', tU)}
         </ChartText>
         <Line x1={trackX} y1={st} x2={trackX} y2={sb} stroke={c.chartGrid} strokeWidth={2} />
         {marks.map((m, i) => (
@@ -247,7 +247,7 @@ export function MotionGraphHs({
                 fontSize={chart.label}
                 fill={c.chartMuted}
               >
-                {withUnit(sig(m), xU)}
+                {withUnit(all || Math.abs(m) < 1e-9 ? sig(m) : '?', xU)}
               </ChartText>
             ) : null}
           </G>
@@ -301,7 +301,7 @@ export function MotionGraphHs({
           const sign = (va + vb) / 2 >= 0;
           const d = `M ${f.sx(ta)} ${y0} L ${f.sx(ta)} ${f.sy(va)} L ${f.sx(tb)} ${f.sy(vb)} L ${f.sx(tb)} ${y0} Z`;
           const area = areas[i]!;
-          const text = `${area >= 0 ? '+' : ''}${withUnit(sig(area), xU)}`;
+          const text = all ? `${area >= 0 ? '+' : ''}${withUnit(sig(area), xU)}` : '?';
           // The label in the middle of the part, when it has room.
           const cx = f.sx((ta + tb) / 2);
           const hPx = Math.abs(f.sy((va + vb) / 2) - y0);
@@ -531,13 +531,15 @@ export function MotionGraphHs({
     }
     const dName = spec.distance ? sym(spec.distance) : 'Δx';
     lines.push(
-      `${dName} = (${v0s} + ${vs})/2 × ${ts} = (${v0t} + ${bare(spec.speed, v)})/2 × ${bare(spec.time, t)} = ${spec.distance ? rep.value(spec.distance) : withUnit(sig(dx), xU)}`,
+      `${dName} = (${v0s} + ${vs})/2 × ${ts} = (${v0t} + ${bare(spec.speed, v)})/2 × ${bare(spec.time, t)} = ${spec.distance ? rep.value(spec.distance) : withUnit(all ? sig(dx) : '?', xU)}`,
     );
-    if (turns)
+    // While a box is "?", no turning point or areas worked with the example's numbers.
+    if (turns && all)
       lines.push(
         `It turns round at ${withUnit(sig(tc), tU)}, where the velocity is 0.`,
         `Area above the axis ${withUnit(sig(areas[0]!), xU)}, below ${withUnit(sig(areas[1]!), xU)}: displacement ${withUnit(sig(dx), xU)}, distance travelled ${withUnit(sig(travelled), xU)}.`,
       );
+    else if (turns) lines.push('The areas above and below the axis are the distances each way.');
     else
       lines.push(
         dx >= 0

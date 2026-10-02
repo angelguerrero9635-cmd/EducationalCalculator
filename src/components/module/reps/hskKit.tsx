@@ -28,6 +28,38 @@ export const sci = (x: number, digits = 3): string =>
 export const withUnit = (text: string, unit?: string) =>
   !unit ? text : unit === '°' ? `${text}°` : `${text} ${unit}`;
 
+/** Digits a formula may hold that are no value: 2π, 1/…, 1 − β², 4πε₀. */
+const FORMULA_DIGITS = /2π|4π|\b1\/|\(1 [−+]|\b1 [−+] /g;
+const hasValue = (t: string) => /[0-9]/.test(t.replace(FORMULA_DIGITS, ''));
+
+/**
+ * A caption's worked lines cut to their formulas while a box they use is "?", so the picture
+ * never works the example's numbers behind a "?": "F_g = m × g = 2 × 9.8 = 19.6 N" reads
+ * "F_g = m × g", "Spring: ½kx² = ½ × 400 × 0.15² = 4.5 J" reads "Spring: ½kx²". A line with
+ * a number and no formula ("The pull, 12 N, is less than …") is left out.
+ */
+export function formulaOnly(lines: string[]): string[] {
+  return lines.flatMap((line) => {
+    if (!hasValue(line)) return [line];
+    const parts = line.split(' = ');
+    const kept: string[] = [];
+    for (const part of parts) {
+      if (hasValue(part)) break;
+      kept.push(part);
+    }
+    if (kept.length >= 2) return [kept.join(' = ')];
+    // "Name: formula" alone still says what is worked out.
+    if (kept.length === 1 && kept[0]!.includes(': ')) return [kept[0]!];
+    return [];
+  });
+}
+
+/** One worked line as it is when `ok` (every box it uses known), else cut to its formula. */
+export const worked = (ok: boolean, line: string): string[] => (ok ? [line] : formulaOnly([line]));
+
+/** A value's text, or "?" when a box it comes from is "?". */
+export const unknownOr = (ok: boolean, text: string) => (ok ? text : '?');
+
 /** A fixed number or a variable (its shown value), with whether it is known and its text. */
 export function numOrVar(rep: Rep, x: number | string | undefined, fallback = 0) {
   if (x === undefined)

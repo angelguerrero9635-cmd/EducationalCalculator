@@ -9,7 +9,7 @@ import { Canvas, Caption, ChartText, niceCeil } from './common';
 import { num } from './CircularSatellite';
 import { CurvedArrow, onCircle, useReader } from './hs3aKit';
 import { inertiaOf, spinUpOf, steadyOf } from './hs3aMath';
-import { spanWindow, SubLabel, Vec } from './hskKit';
+import { formulaOnly, spanWindow, SubLabel, Vec } from './hskKit';
 import { Ball, Metal, url, usePaintIds } from './paint';
 
 /** The three shapes the pages name, by their factor c in I = cmr². */
@@ -191,7 +191,7 @@ export function Rotor({ spec, calc }: { spec: RotorSpec; calc: Calculator }) {
           );
         }}
       </Canvas>
-      <Caption>{captionLines().join(' · ')}</Caption>
+      <Caption>{(ready ? captionLines() : formulaOnly(captionLines())).join(' · ')}</Caption>
     </View>
   );
 
@@ -201,7 +201,9 @@ export function Rotor({ spec, calc }: { spec: RotorSpec; calc: Calculator }) {
     if (cf !== undefined)
       // ½ as the compare cards write it (the box may show 1/2).
       out.push([
-        `c = ${nameOf(cf) ? cText(cf) : text(spec.shape, cf)}${nameOf(cf) ? ` (${nameOf(cf)})` : ''}`,
+        !all(spec.shape)
+          ? 'c = ?'
+          : `c = ${nameOf(cf) ? cText(cf) : text(spec.shape, cf)}${nameOf(cf) ? ` (${nameOf(cf)})` : ''}`,
         c.chartInk,
       ]);
     if (has(spec.mass)) out.push([`m = ${text(spec.mass, m, 'kg')}`, c.chartInk]);
@@ -387,7 +389,7 @@ export function Rotor({ spec, calc }: { spec: RotorSpec; calc: Calculator }) {
                 </ChartText>
               ) : null}
               <ChartText x={x} y={y0 + (four ? 96 : 90)} textAnchor="middle" fontSize={chart.label}>
-                {`I = ${num(Ii)} ${uI}`}
+                {`I = ${all(spec.mass, spec.radius) ? num(Ii) : '?'} ${uI}`}
               </ChartText>
               <ChartText
                 x={x}
@@ -396,7 +398,7 @@ export function Rotor({ spec, calc }: { spec: RotorSpec; calc: Calculator }) {
                 fontSize={chart.label}
                 fill={c.forceApplied}
               >
-                {`α = ${num((tau ?? 0) / Ii)} ${uA}`}
+                {`α = ${all(spec.mass, spec.radius, spec.torque) ? num((tau ?? 0) / Ii) : '?'} ${uA}`}
               </ChartText>
             </G>
           );

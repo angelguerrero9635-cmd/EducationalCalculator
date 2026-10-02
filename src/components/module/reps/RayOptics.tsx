@@ -8,7 +8,7 @@ import { chart, usePalette, type Palette } from '@/theme';
 import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, DragHandle, useRep } from './common';
 import { fringeOf, snellOf } from './hskMath';
-import { RAD, sig, SubLabel, Vec } from './hskKit';
+import { RAD, sig, SubLabel, Vec, worked } from './hskKit';
 import { Glass, Metal, url, usePaintIds } from './paint';
 
 type Refraction = Extract<RayDiagramSpec, { mode: 'refraction' }>;
@@ -35,16 +35,25 @@ export function RayRefraction({ spec, calc }: { spec: Refraction; calc: Calculat
   const sn = snellOf(n1, n2, th1);
   const all = [spec.n1, spec.n2, spec.angle].every((x) => knownOf(rep, x));
   const [top, bottom] = spec.media ?? ['air', 'water'];
-  const lines: string[] = [`Snell’s law: ${sig(n1)} × sin ${sig(th1)}° = ${sig(n2)} × sin θ₂`];
-  if (sn.refracted !== undefined)
+  // A "?" box reads "?" on the picture too, not the example's number drawn faded behind it.
+  const [n1Ok, n2Ok, thOk] = [spec.n1, spec.n2, spec.angle].map((x) => knownOf(rep, x));
+  const say = (ok: boolean | undefined, x: number) => (ok ? sig(x) : '?');
+  const lines: string[] = [
+    all
+      ? `Snell’s law: ${sig(n1)} × sin ${sig(th1)}° = ${sig(n2)} × sin θ₂`
+      : 'Snell’s law: n₁ sin θ₁ = n₂ sin θ₂',
+  ];
+  if (sn.refracted !== undefined && all)
     lines.push(
       `θ₂ = ${sig(sn.refracted)}°: ${n2 > n1 ? 'bent toward the normal (into a slower medium)' : n2 < n1 ? 'bent away from the normal (into a faster medium)' : 'not bent'}.`,
     );
   if (sn.critical !== undefined)
     lines.push(
-      `Critical angle: sin θc = n₂/n₁ = ${sig(n2)}/${sig(n1)}, θc = ${sig(sn.critical)}°.`,
+      n1Ok && n2Ok
+        ? `Critical angle: sin θc = n₂/n₁ = ${sig(n2)}/${sig(n1)}, θc = ${sig(sn.critical)}°.`
+        : 'Critical angle: sin θc = n₂/n₁.',
     );
-  if (sn.total)
+  if (sn.total && all)
     lines.push('Past the critical angle: total internal reflection, no light gets out.');
 
   return (
@@ -80,11 +89,17 @@ export function RayRefraction({ spec, calc }: { spec: Refraction; calc: Calculat
                   stroke={c.chartMuted}
                   strokeDasharray={chart.dash}
                 />
-                <SubLabel x={8} y={20} text={`${top}, n₁ = ${sig(n1)}`} anchor="start" w={w} />
+                <SubLabel
+                  x={8}
+                  y={20}
+                  text={`${top}, n₁ = ${say(n1Ok, n1)}`}
+                  anchor="start"
+                  w={w}
+                />
                 <SubLabel
                   x={8}
                   y={h - 10}
-                  text={`${bottom}, n₂ = ${sig(n2)}`}
+                  text={`${bottom}, n₂ = ${say(n2Ok, n2)}`}
                   anchor="start"
                   w={w}
                 />
@@ -131,7 +146,7 @@ export function RayRefraction({ spec, calc }: { spec: Refraction; calc: Calculat
                       <SubLabel
                         x={O.x - 50 * Math.sin(a1 / 2) - 4}
                         y={O.y - 50 * Math.cos(a1 / 2)}
-                        text={`θ₁ ${sig(th1)}°`}
+                        text={`θ₁ ${say(thOk, th1)}°`}
                         anchor="end"
                         size={chart.label}
                         w={w}
@@ -148,7 +163,7 @@ export function RayRefraction({ spec, calc }: { spec: Refraction; calc: Calculat
                       <SubLabel
                         x={O.x + 50 * Math.sin(a2 / 2) + 4}
                         y={O.y + 50 * Math.cos(a2 / 2) + 10}
-                        text={`θ₂ ${sig(sn.refracted)}°`}
+                        text={`θ₂ ${say(all, sn.refracted)}°`}
                         anchor="start"
                         size={chart.label}
                         w={w}
@@ -312,23 +327,29 @@ export function RaySlits({ spec, calc }: { spec: Slits; calc: Calculator }) {
                 <SubLabel
                   x={sx - 18}
                   y={mid - step / 2 + 4}
-                  text={`Δy ${sig(dy)} mm`}
+                  text={`Δy ${all ? sig(dy) : '?'} mm`}
                   anchor="end"
                   w={w}
                 />
               </G>
-              <SubLabel x={bx} y={h - 2} text={`d ${sig(d)} mm`} size={chart.label} w={w} />
+              <SubLabel
+                x={bx}
+                y={h - 2}
+                text={`d ${knownOf(rep, spec.spacing) ? sig(d) : '?'} mm`}
+                size={chart.label}
+                w={w}
+              />
               <SubLabel
                 x={(bx + sx) / 2}
                 y={16}
-                text={`L ${sig(L)} m (not to scale)`}
+                text={`L ${knownOf(rep, spec.screen) ? sig(L) : '?'} m (not to scale)`}
                 size={chart.label}
                 w={w}
               />
               <SubLabel
                 x={10}
                 y={mid - 30}
-                text={`λ ${sig(nm)} nm`}
+                text={`λ ${knownOf(rep, spec.wavelength) ? sig(nm) : '?'} nm`}
                 anchor="start"
                 size={chart.label}
                 w={w}
@@ -339,9 +360,14 @@ export function RaySlits({ spec, calc }: { spec: Slits; calc: Calculator }) {
       </Canvas>
       <Caption>
         {[
-          `Δy = λL/d = ${sig(nm)} × 10⁻⁹ m × ${sig(L)} m/(${sig(d)} × 10⁻³ m) = ${sig(dy)} mm`,
+          ...worked(
+            all,
+            `Δy = λL/d = ${sig(nm)} × 10⁻⁹ m × ${sig(L)} m/(${sig(d)} × 10⁻³ m) = ${sig(dy)} mm`,
+          ),
           'Bright where the paths from the two slits differ by a whole number of wavelengths (mλ), dark halfway between.',
-          nm < 380 || nm > 750 ? 'This wavelength is not visible light.' : '',
+          knownOf(rep, spec.wavelength) && (nm < 380 || nm > 750)
+            ? 'This wavelength is not visible light.'
+            : '',
         ]
           .filter(Boolean)
           .join(' · ')}
@@ -447,7 +473,7 @@ export function RayTelescope({ spec, calc }: { spec: Telescope; calc: Calculator
                 <SubLabel
                   x={xo}
                   y={mid + 66}
-                  text={`objective f_o ${sig(fo)} ${unit}`}
+                  text={`objective f_o ${knownOf(rep, spec.objective) ? sig(fo) : '?'} ${unit}`}
                   anchor="start"
                   size={chart.label}
                   w={w}
@@ -455,7 +481,7 @@ export function RayTelescope({ spec, calc }: { spec: Telescope; calc: Calculator
                 <SubLabel
                   x={xe}
                   y={mid - 54}
-                  text={`eyepiece f_e ${sig(fe)} ${unit}`}
+                  text={`eyepiece f_e ${knownOf(rep, spec.eyepiece) ? sig(fe) : '?'} ${unit}`}
                   anchor="end"
                   size={chart.label}
                   w={w}
@@ -531,7 +557,7 @@ export function RayTelescope({ spec, calc }: { spec: Telescope; calc: Calculator
               <SubLabel
                 x={xp}
                 y={mid + 58}
-                text={`mirror f_o ${sig(fo)} ${unit}`}
+                text={`mirror f_o ${knownOf(rep, spec.objective) ? sig(fo) : '?'} ${unit}`}
                 anchor="end"
                 size={chart.label}
                 w={w}
@@ -539,7 +565,7 @@ export function RayTelescope({ spec, calc }: { spec: Telescope; calc: Calculator
               <SubLabel
                 x={xd + 16}
                 y={tubeTop - 12}
-                text={`eyepiece f_e ${sig(fe)} ${unit}`}
+                text={`eyepiece f_e ${knownOf(rep, spec.eyepiece) ? sig(fe) : '?'} ${unit}`}
                 anchor="start"
                 size={chart.label}
                 w={w}
@@ -559,9 +585,9 @@ export function RayTelescope({ spec, calc }: { spec: Telescope; calc: Calculator
       </Canvas>
       <Caption>
         {[
-          `M = fₒ/fₑ = ${sig(fo)}/${sig(fe)} = ${sig(M)}`,
+          ...worked(all, `M = fₒ/fₑ = ${sig(fo)}/${sig(fe)} = ${sig(M)}`),
           refracting
-            ? `The lenses are fₒ + fₑ = ${sig(fo + fe)} ${unit} apart; the objective’s focus is the eyepiece’s.`
+            ? `The lenses are fₒ + fₑ = ${all ? sig(fo + fe) : '?'} ${unit} apart; the objective’s focus is the eyepiece’s.`
             : 'The curved mirror gathers the light; a flat mirror at 45° turns it up to the eyepiece.',
           'A bigger objective gathers more light; its focal length over the eyepiece’s sets the magnification.',
         ].join(' · ')}

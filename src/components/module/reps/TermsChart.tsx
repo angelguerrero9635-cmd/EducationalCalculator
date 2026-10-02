@@ -7,6 +7,7 @@ import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, ChartText, fitLabel, useRep } from './common';
+import { formulaOnly } from './hskKit';
 import { niceStep } from './Plot';
 import { powerLines, powerName } from './termsPowerHs3b';
 import { termsModel } from './termsModel';
@@ -99,6 +100,11 @@ export function TermsChart({ spec, calc }: { spec: TermsChartSpec; calc: Calcula
       );
   }
 
+  // A "?" box reads "?" on the picture too: no terms or sums worked from the example's numbers.
+  const val = (x: number) => (allKnown ? num(x) : '?');
+  const cut = formulaOnly(lines);
+  const shownLines = allKnown ? lines : cut.length ? cut : ['Type the numbers you know.'];
+
   return (
     <View>
       <Canvas aspect={0.8}>
@@ -143,8 +149,8 @@ export function TermsChart({ spec, calc }: { spec: TermsChartSpec; calc: Calcula
             )
             .join('');
           const last = n - 1;
-          const lastText = `${termName(last)} = ${num(terms[last] ?? 0)}`;
-          const secondText = lit2 >= 0 ? `${termName(lit2)} = ${num(terms[lit2]!)}` : '';
+          const lastText = `${termName(last)} = ${val(terms[last] ?? 0)}`;
+          const secondText = lit2 >= 0 ? `${termName(lit2)} = ${val(terms[lit2]!)}` : '';
           // A recursive rule's arrows, each term to the next (H93), arching over both tops.
           const arcs = recursive && !gap && drawn.length > 1 && drawn.length <= 12;
           const top = (i: number) => (bars ? Math.min(sy(terms[i]!), sy(0)) : sy(terms[i]!));
@@ -318,7 +324,7 @@ export function TermsChart({ spec, calc }: { spec: TermsChartSpec; calc: Calcula
                   <ChartText
                     {...fitLabel(
                       L + last * slot - 4,
-                      `S${sub(n)} = ${num(sums[last]!)}`,
+                      `S${sub(n)} = ${val(sums[last]!)}`,
                       chart.label,
                       w,
                       'end',
@@ -328,7 +334,7 @@ export function TermsChart({ spec, calc }: { spec: TermsChartSpec; calc: Calcula
                     fontWeight="700"
                     fill={c.chartInk}
                   >
-                    {`S${sub(n)} = ${num(sums[last]!)}`}
+                    {`S${sub(n)} = ${val(sums[last]!)}`}
                   </ChartText>
                 ) : null}
                 {n ? (
@@ -388,7 +394,7 @@ export function TermsChart({ spec, calc }: { spec: TermsChartSpec; calc: Calcula
           );
         }}
       </Canvas>
-      <Caption>{lines.join(' · ')}</Caption>
+      <Caption>{shownLines.join(' · ')}</Caption>
     </View>
   );
 }

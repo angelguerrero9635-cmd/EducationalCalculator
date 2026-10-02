@@ -10,7 +10,7 @@ import { num } from './CircularSatellite';
 import { arrowHead } from './graphKit';
 import { onCircle, par, useReader } from './hs3aKit';
 import { magneticOf } from './hs3aMath';
-import { RAD, sci, SubLabel, Vec } from './hskKit';
+import { RAD, sci, SubLabel, Vec, worked } from './hskKit';
 import { Ball, url, usePaintIds } from './paint';
 
 type Spec = MovingChargeSpec & { kind: 'induction'; fixed?: boolean };
@@ -287,21 +287,28 @@ export function MovingCharge({ spec, calc }: { spec: Spec; calc: Calculator }) {
 
   function captionLines(): string[] {
     const qC = per === 1 ? num(Math.abs(q)) : sci(Math.abs(q));
-    const out = [
+    // A "?" box is not worked with the example's numbers: the line keeps its formula only.
+    const fOk = all(spec.charge, spec.speed, spec.field, spec.angle);
+    const out = worked(
+      fOk,
       inPlane
         ? `F = |q|vB sin θ = ${qC} × ${num(speed)} × ${num(B)} × sin ${num(th)}° = ${num(F)} N`
         : `F = |q|vB = ${qC} × ${num(speed)} × ${num(B)} = ${num(F)} N`,
-    ];
+    );
     if (circle && mass !== undefined)
       out.push(
-        `r = mv/(|q|B) = ${sci(mass)} × ${num(speed)}/(${qC} × ${num(B)}) = ${num(r)} m`,
+        ...worked(
+          fOk && all(spec.mass),
+          `r = mv/(|q|B) = ${sci(mass)} × ${num(speed)}/(${qC} × ${num(B)}) = ${num(r)} m`,
+        ),
         'The force is always square to v, so it turns the charge without speeding it up: a circle.',
       );
     else
       out.push(
         `Right-hand rule for a + charge: fingers along v, curl them toward B; the thumb is F${plus ? '' : ', and a − charge is pushed the other way'}.`,
       );
-    if (!plus) out.push(`The charge is negative, ${par(num(qShown))}: F turns round.`);
+    if (!plus && all(spec.charge))
+      out.push(`The charge is negative, ${par(num(qShown))}: F turns round.`);
     return out;
   }
 }
