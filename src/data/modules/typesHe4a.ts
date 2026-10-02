@@ -47,7 +47,7 @@ export interface RowReduceHe4a {
 export interface MatrixRouthHe4a {
   mode: 'routh';
   coefficients: NumOrVar[];
-  column?: string[];
+  column?: NumOrVar[];
   changes?: string;
   limit?: { kMax?: string; omega?: string };
 }

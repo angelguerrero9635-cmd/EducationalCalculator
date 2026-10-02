@@ -2,6 +2,7 @@
  * College gallery demos, round 4, group A (docs/RENDERINGS_HE.md). Each stands in for the
  * college page that waits, built from the plan's worked example. Spread into gallery.ts.
  * HC94: `matrixGrid` `rowReduce` with `inverse` ([A | I]) and `tally` (det by row reduction).
+ * HC190: `matrixGrid` `mode: 'routh'`.
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
@@ -276,6 +277,197 @@ const tally4 = tallyDemo(
   ],
 );
 
-export const HE4A_GALLERY_MODULES: ModuleDef[] = [inverse3, inverse4, tally3, tally4];
+// ── HC190: the Routh array (control-systems#2, ~routh-count) ──
+
+/** b = (p × q − r) ÷ p, a first-column entry from the two rows above (lead 1). */
+const crossRule = (b: string, p: string, q: string, r: string, how: string) =>
+  rule(
+    `${b} = (${p}${q} − ${r}) ÷ ${p}`,
+    `{${b}} = ({${p}} × {${q}} − {${r}}) ÷ {${p}}`,
+    [b, p, q, r],
+    (v) => v[b]! * v[p]! - (v[p]! * v[q]! - v[r]!),
+    {
+      [b]: [(v) => div(v[p]! * v[q]! - v[r]!, v[p]!), `({${p}} × {${q}} − {${r}}) ÷ {${p}}`, how],
+      [r]: [
+        (v) => v[p]! * v[q]! - v[b]! * v[p]!,
+        `{${p}} × {${q}} − {${b}} × {${p}}`,
+        'Undo the cross product: multiply back by the row’s lead and take it from the product.',
+      ],
+    },
+  );
+
+/** control-systems#2 main: the stable range of K for s³ + a₂s² + a₁s + K. */
+function routhGain(id: string, title: string, use: string, a2: number, a1: number, K: number) {
+  return page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'The Routh first column is 1, a₂, (a₂a₁ − K) ÷ a₂, K; the system is stable when all four are positive.',
+      'At K_max the s¹ row is 0, and the auxiliary a₂s² + K = 0 gives the crossing frequency ω_c.',
+      'K > 0 is the controller gain; a₂ and a₁ come from the plant.',
+    ],
+    variables: [
+      num('a2', 'a₂', 'Coefficient of s²', undefined, 0.01, 10000, { step: 0.01 }),
+      num('a1', 'a₁', 'Coefficient of s', undefined, 0.01, 10000, { step: 0.01 }),
+      num('K', 'K', 'Gain', undefined, 0.001, 1e8, { step: 0.01 }),
+      num('b1', 'b₁', 'First-column entry of the s¹ row', undefined, -1e8, 1e8, { derived: true }),
+      num('Km', 'K_max', 'Largest stable gain', undefined, 0, 1e8, { derived: true }),
+      num('wc', 'ω_c', 'Crossing frequency', 'rad/s', 0.01, 1000, { derived: true }),
+    ],
+    rules: [
+      crossRule(
+        'b1',
+        'a2',
+        'a1',
+        'K',
+        'The s¹ entry is the 2 × 2 cross product of the two rows above, over the s² row’s lead.',
+      ),
+      rule('K_max = a₂a₁', '{Km} = {a2} × {a1}', ['Km', 'a2', 'a1'], (v) => v.Km! - v.a2! * v.a1!, {
+        Km: [
+          (v) => v.a2! * v.a1!,
+          '{a2} × {a1}',
+          'The s¹ entry (a₂a₁ − K) ÷ a₂ stays positive while K is under a₂a₁.',
+        ],
+        a1: [(v) => div(v.Km!, v.a2!), '{Km} ÷ {a2}', 'Divide K_max by a₂.'],
+        a2: [(v) => div(v.Km!, v.a1!), '{Km} ÷ {a1}', 'Divide K_max by a₁.'],
+      }),
+      rule('ω_c = √a₁', '{wc} = √{a1}', ['wc', 'a1'], (v) => v.wc! ** 2 - v.a1!, {
+        wc: [
+          (v) => Math.sqrt(v.a1!),
+          '√{a1}',
+          'At K_max, a₂s² + a₂a₁ = 0 gives s = ±j√a₁: the poles cross the jω axis there.',
+        ],
+        a1: [(v) => v.wc! ** 2, '{wc}²', 'Square the crossing frequency.'],
+      }),
+    ],
+    example: { a2, a1, K, b1: (a2 * a1 - K) / a2, Km: a2 * a1, wc: Math.sqrt(a1) },
+    startWith: ['a2', 'a1', 'K'],
+    equation: 's³ + {a2}s² + {a1}s + {K} = 0',
+    representation: {
+      kind: 'matrixGrid',
+      mode: 'routh',
+      coefficients: [1, 'a2', 'a1', 'K'],
+      column: [1, 'a2', 'b1', 'K'],
+      limit: { kMax: 'Km', omega: 'wc' },
+    },
+  });
+}
+
+const routhMain = routhGain(
+  'g.he-matrix-grid-routh',
+  'Routh array: the range of K for stability',
+  'Use this for “For what K is s³ + 6s² + 8s + K = 0 stable?”',
+  6,
+  8,
+  20,
+);
+
+const routhLimit = routhGain(
+  'g.he-matrix-grid-routh-limit',
+  'Routh array at K_max: a row of zeros',
+  'Use this for “At what K does s³ + 6s² + 8s + K = 0 oscillate, and at what frequency?”',
+  6,
+  8,
+  48,
+);
+
+/** control-systems#2~routh-count: right-half-plane poles from the first column's sign changes. */
+const routhCount = page({
+  id: 'g.he-matrix-grid-routh-count',
+  title: 'Routh array: counting right-half-plane poles',
+  use: 'Use this for “How many roots of s³ + s² + 2s + 8 = 0 lie in the right half-plane?”',
+  assumptions: [
+    'Each sign change down the first column is one pole in the right half-plane.',
+    'The s¹ entry is (a₂a₁ − a₀) ÷ a₂ for s³ + a₂s² + a₁s + a₀.',
+    'A first column with no sign changes and no zeros means every pole is in the left half-plane.',
+  ],
+  variables: [
+    num('a2', 'a₂', 'Coefficient of s²', undefined, -10000, 10000, { step: 0.01 }),
+    num('a1', 'a₁', 'Coefficient of s', undefined, -10000, 10000, { step: 0.01 }),
+    num('a0', 'a₀', 'Constant term', undefined, -10000, 10000, { step: 0.01 }),
+    num('b1', 'b₁', 'First-column entry of the s¹ row', undefined, -1e8, 1e8, { derived: true }),
+  ],
+  rules: [
+    crossRule(
+      'b1',
+      'a2',
+      'a1',
+      'a0',
+      'The s¹ entry is the 2 × 2 cross product of the two rows above, over the s² row’s lead.',
+    ),
+  ],
+  example: { a2: 1, a1: 2, a0: 8, b1: -6 },
+  startWith: ['a2', 'a1', 'a0'],
+  equation: 's³ + {a2}s² + {a1}s + {a0} = 0',
+  representation: {
+    kind: 'matrixGrid',
+    mode: 'routh',
+    coefficients: [1, 'a2', 'a1', 'a0'],
+    column: [1, 'a2', 'b1', 'a0'],
+  },
+});
+
+/** A quartic: the array's width 3, two worked-out rows (the edge of the plan's cubics). */
+const routhQuartic = page({
+  id: 'g.he-matrix-grid-routh-quartic',
+  title: 'Routh array of a quartic',
+  use: 'Use this for “Is s⁴ + 3s³ + 5s² + 4s + 2 = 0 stable?”',
+  assumptions: [
+    'Rows s⁴ and s³ hold the coefficients by turns; each row below is cross products of the two above.',
+    'For s⁴ + a₃s³ + a₂s² + a₁s + a₀: b₁ = (a₃a₂ − a₁) ÷ a₃, b₂ = a₀ and c₁ = (b₁a₁ − a₃a₀) ÷ b₁.',
+    'Stable when the whole first column is positive.',
+  ],
+  variables: [
+    num('a3', 'a₃', 'Coefficient of s³', undefined, -10000, 10000, { step: 0.01 }),
+    num('a2', 'a₂', 'Coefficient of s²', undefined, -10000, 10000, { step: 0.01 }),
+    num('a1', 'a₁', 'Coefficient of s', undefined, -10000, 10000, { step: 0.01 }),
+    num('a0', 'a₀', 'Constant term', undefined, -10000, 10000, { step: 0.01 }),
+    num('b1', 'b₁', 'First-column entry of the s² row', undefined, -1e8, 1e8, { derived: true }),
+    num('c1', 'c₁', 'First-column entry of the s¹ row', undefined, -1e8, 1e8, { derived: true }),
+  ],
+  rules: [
+    crossRule(
+      'b1',
+      'a3',
+      'a2',
+      'a1',
+      'The s² entry: the cross product of rows s⁴ and s³ over the s³ row’s lead.',
+    ),
+    rule(
+      'c₁ = (b₁a₁ − a₃a₀) ÷ b₁',
+      '{c1} = ({b1} × {a1} − {a3} × {a0}) ÷ {b1}',
+      ['c1', 'b1', 'a1', 'a3', 'a0'],
+      (v) => v.c1! * v.b1! - (v.b1! * v.a1! - v.a3! * v.a0!),
+      {
+        c1: [
+          (v) => div(v.b1! * v.a1! - v.a3! * v.a0!, v.b1!),
+          '({b1} × {a1} − {a3} × {a0}) ÷ {b1}',
+          'The s¹ entry: the cross product of rows s³ and s² over the s² row’s lead.',
+        ],
+      },
+    ),
+  ],
+  example: { a3: 3, a2: 5, a1: 4, a0: 2, b1: 11 / 3, c1: 26 / 11 },
+  startWith: ['a3', 'a2', 'a1', 'a0'],
+  equation: 's⁴ + {a3}s³ + {a2}s² + {a1}s + {a0} = 0',
+  representation: {
+    kind: 'matrixGrid',
+    mode: 'routh',
+    coefficients: [1, 'a3', 'a2', 'a1', 'a0'],
+    column: [1, 'a3', 'b1', 'c1', 'a0'],
+  },
+});
+
+export const HE4A_GALLERY_MODULES: ModuleDef[] = [
+  inverse3,
+  inverse4,
+  tally3,
+  tally4,
+  routhMain,
+  routhLimit,
+  routhCount,
+  routhQuartic,
+];
 
 export const HE4A_GALLERY_LAYOUTS: LayoutDef[] = [];

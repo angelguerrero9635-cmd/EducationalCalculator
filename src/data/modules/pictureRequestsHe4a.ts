@@ -5,6 +5,7 @@
 import type { PictureRequest } from './pictureRequests';
 
 const M = 'he.math.';
+const EC = 'he.engineering.';
 
 export const HE4A_REQUESTS: PictureRequest[] = [
   {
@@ -26,6 +27,26 @@ export const HE4A_REQUESTS: PictureRequest[] = [
       'Columns are as wide as their widest entry so a 4 × 8 fits 358 px; more than three stages fold to the first and last behind "Show the n row operations", as rowReduce does. Any "?" entry shows "?" and nothing is reduced.',
       'Example (linear-algebra#0~inverse): { kind: "matrixGrid", mode: "rowReduce", system: [["a11", "a12", "a13"], ["a21", "a22", "a23"], ["a31", "a32", "a33"]], steps: "reduced", inverse: { values: [["b11", "b12", "b13"], ["b21", "b22", "b23"], ["b31", "b32", "b33"]] } } (A = [[2, 1, 0], [1, 1, 0], [0, 0, 3]] → [[1, −1, 0], [−1, 2, 0], [0, 0, 1/3]]).',
       'Example (linear-algebra#2): { kind: "matrixGrid", mode: "rowReduce", system: [["a11", "a12", "a13"], …], steps: "echelon", tally: { value: "D" } } ([[0, 2, 1], [1, 1, 1], [2, 0, 3]]: R₁ ↔ R₂, R₃ − 2R₁, R₃ + R₂, pivots 1, 2, 2, det = −4). A 4 × 4 works the same (the plan’s "P11 on 4 × 4 later").',
+    ].join(' '),
+  },
+  {
+    id: 'HC190',
+    kind: 'matrixGrid',
+    what: 'The Routh array of a characteristic polynomial: the first column lit, its sign changes counted, a cell’s 2 × 2 cross product on tap',
+    pages: [`${EC}control-systems#2`, `${EC}control-systems#2~routh-count`],
+    status: 'drawn',
+    gallery: [
+      'g.he-matrix-grid-routh',
+      'g.he-matrix-grid-routh-limit',
+      'g.he-matrix-grid-routh-count',
+      'g.he-matrix-grid-routh-quartic',
+    ],
+    notes: [
+      'From EC-P29 (HE-electrical-computer-P29). A new `matrixGrid` mode (typesHe4a.ts MatrixRouthHe4a, drawn by MatrixRouthHe4a.tsx; the other modes unchanged).',
+      'Fields: mode: "routh"; coefficients: NumOrVar[] (highest power first, degree 2 to 6); column?: NumOrVar[] (the page’s first column from sⁿ down, checked; a replaced row may be given as its cross product, 0); changes?: string (the count of sign changes, checked); limit?: { kMax?, omega? } (a cubic a₃s³ + a₂s² + a₁s + K: K_max = a₂a₁ ÷ a₃ and ω_c = √(a₁ ÷ a₃), checked; the caption works the stable range and the crossing frequency).',
+      'Drawn: the polynomial over the array, rows s³ … s⁰ labelled, the first column lit and bold, a + or − beside each row with a bracket and "change" at each sign change, and the verdict ("2 sign changes: 2 poles in the right half-plane"). Tap a worked-out cell: its four source cells outlined and "s¹: (6 × 8 − 1 × 20) ÷ 6 = 4.667" under the array. A row of zeros becomes the derivative of the auxiliary polynomial above it (teal, "d/ds of 6s² + 48 gives 12"); a lone 0 in the first column becomes ε. A "?" coefficient shows "?" and no row is worked out.',
+      'Example (control-systems#2): { kind: "matrixGrid", mode: "routh", coefficients: [1, "a2", "a1", "K"], column: [1, "a2", "b1", "K"], limit: { kMax: "Km", omega: "wc" } } with b₁ = (a₂a₁ − K) ÷ a₂ (a₂ = 6, a₁ = 8 → K_max = 48, ω_c = 2.83 rad/s).',
+      'Example (~routh-count): { kind: "matrixGrid", mode: "routh", coefficients: [1, "a2", "a1", "a0"], column: [1, "a2", "b1", "a0"] } (s³ + s² + 2s + 8 → 1, 1, −6, 8: 2 changes).',
     ].join(' '),
   },
 ];

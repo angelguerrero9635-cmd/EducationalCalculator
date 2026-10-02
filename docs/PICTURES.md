@@ -344,6 +344,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `matrixGrid`       | `steps: 'echelon' \| 'reduced'`          | row operations worked out from typed entries, a 0 row read out (H105)         |
 | `matrixGrid`       | `inverse: { values? }` (rowReduce)       | [A \| I] to [I \| A⁻¹], 3 × 6 or 4 × 8, A⁻¹ lit; columns fit (HC94)           |
 | `matrixGrid`       | `tally: { value? }` (rowReduce)          | det A = k × det of each stage; the diagonal product and det A under (HC94)    |
+| `matrixGrid`       | `mode: 'routh'`, `limit`                 | Routh array: first column lit, sign changes counted, tap a cell (HC190)       |
 | `histogram`        | `range: { from?, to?, total? }`          | bars k = from to to lit and added: P(X ≥ 4) = P(4) + P(5) (H99)               |
 | `histogram`        | `clt: { mean, n, samples, se? }`         | CLT: a skewed population, the means of m samples, the normal σ/√n (H99)       |
 | `histogram`        | `count` (with `data`)                    | a typed list's length: only its first n values are binned (H03)               |

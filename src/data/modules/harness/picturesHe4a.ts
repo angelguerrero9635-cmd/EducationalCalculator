@@ -42,7 +42,9 @@ export function matrixGridHe4aIssues(rep: MatrixGridSpec, val: Val): string[] {
     rep.column?.forEach((id, i) => {
       const got = val(id);
       const want = rows[i]?.cells[0];
-      if (got !== undefined && want !== undefined && !rows[i]!.epsilon && !near(got, want))
+      // A replaced row (ε, or the auxiliary's derivative) may be given as its cross product, 0.
+      const zeroOk = (rows[i]?.epsilon || rows[i]?.how === 'aux') && near(got ?? 1, 0);
+      if (got !== undefined && want !== undefined && !zeroOk && !near(got, want))
         out.push(`first column, row s${n - i}: ${got}, the array gives ${want}`);
     });
     const ch = rep.changes ? val(rep.changes) : undefined;

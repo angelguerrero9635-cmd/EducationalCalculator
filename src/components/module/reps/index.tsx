@@ -158,6 +158,7 @@ import { UnitCircle } from './UnitCircle';
 import { UnitCircleHs2g } from './UnitCircleHs2g';
 import { MatrixDeterminant } from './MatrixDeterminant';
 import { MatrixReduceHe4a } from './MatrixReduceHe4a'; // HC94
+import { MatrixRouthHe4a } from './MatrixRouthHe4a'; // HC190
 import { MatrixGrid } from './MatrixGrid';
 import { HsjView } from './hsjView';
 import { BeakerSolution } from './BeakerSolution';
@@ -266,6 +267,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
         <UnitCircle spec={spec} calc={calc} />
       );
     case 'matrixGrid':
+      if (spec.mode === 'routh') return <MatrixRouthHe4a spec={spec} calc={calc} />; // HC190
       if (spec.mode === 'rowReduce' && (spec.inverse || spec.tally))
         return <MatrixReduceHe4a spec={spec} calc={calc} />; // HC94
       return spec.mode === 'determinant' ? (
