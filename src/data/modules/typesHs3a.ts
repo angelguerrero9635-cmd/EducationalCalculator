@@ -11,6 +11,7 @@
  */
 import type { NumOrVar } from './typesGraphs';
 import type * as He1h from './typesHe1h';
+import type { RotorHe4b } from './typesHe4b'; // HC102, HC106, HC107
 
 const ids = (...xs: (NumOrVar | undefined)[]) =>
   xs.filter((x): x is string => typeof x === 'string');
@@ -53,7 +54,7 @@ export interface TorqueSpec {
  * - turning steadily: `rpm` N (turns a minute), `speed` ω = 2πN/60, `period` T = 2π/ω (s) and
  *   the `rim` speed v = rω (m/s) along the tangent.
  */
-export interface RotorSpec {
+export interface RotorSpec extends RotorHe4b {
   kind: 'rotor';
   shape?: NumOrVar;
   mass?: NumOrVar;

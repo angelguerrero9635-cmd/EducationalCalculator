@@ -72,6 +72,7 @@ import {
   membraneHe3gIssues,
 } from './picturesHe3g';
 import { hs3aIssues, hs3aOptionIssues } from './picturesHs3a';
+import { he4bIssues } from './picturesHe4b'; // HC96–HC171, group B
 import { sectionIssues } from './picturesHe1b';
 import { he1aIssues } from './picturesHe1a';
 import { bodeIssues, complexPlaneHe2aIssues } from './picturesHe2a';
@@ -2247,6 +2248,7 @@ export function repIssues(
       if (rep.kind === 'vectorDiagram') out.push(...spaceObjectsIssues(rep, val)); // HC47
       if (rep.kind === 'polarGrid' || rep.kind === 'conicGraph')
         out.push(...he3cIssues(rep, val, byId)); // HC53, HC67
+      out.push(...he4bIssues(rep, val, byId)); // HC96, HC100, HC108, HC171
       break;
     case 'membrane':
     case 'dnaStrand':
@@ -2479,6 +2481,7 @@ export function repIssues(
     case 'capacitor':
       out.push(...hs3aIssues(rep, siOf(val, byId)));
       if (rep.kind === 'oscillator') out.push(...oscillatorIssues(rep, siOf(val, byId), byId)); // HC11
+      out.push(...he4bIssues(rep, val, byId)); // HC102, HC106, HC107
       break;
     case 'section':
       out.push(...sectionIssues(rep, siOf(val, byId), byId));

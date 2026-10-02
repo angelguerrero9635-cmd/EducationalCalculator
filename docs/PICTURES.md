@@ -458,6 +458,10 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `transformation`   | `about: 'center'`                        | turns about the figure's own center; point symmetry pairs through it (H106)   |
 | `rectangle`        | `bounds: { error, least?, greatest? }`   | (l ± e) by (w ± e) dashed, the band between shaded, a corner close-up (H106)  |
 | `vectorDiagram`    | `space`, `z`; `cross`, `w`, `points`     | x, y, z axes, turnable: u × v, θ, areas, the box of u, v, w; PQ, M (H106)     |
+| `vectorDiagram`    | `project: { proj?, perp?, k? }`          | u onto v: projᵥ u along v, u − projᵥ u dashed, right angle; in space (HC96)   |
+| `vectorDiagram`    | `masses`, `centerOfMass`                 | balls sized by mass on a rod, a fulcrum at x_cm; ⊕ on a plane (HC100)         |
+| `vectorDiagram`    | `forces: { list, equilibrium? }`         | 2–4 forces at a point, angles to level; tip to tail: closes, or R (HC171)     |
+| `vectorDiagram`    | `cone: { l, m, size?, angle? }`          | L on its cone about z at mħ, all 2ℓ + 1 cones faint, θ from z (HC108)         |
 | `polarGrid`        | `curve.shape: 'conic'`, `k, m, n, fn`    | r = k ÷ (m − n cos θ): focus at the pole, directrix, PF ÷ PD = e at P (H106)  |
 | `polarGrid`        | `area`, `region`, `tangent`              | ½∫ r² dθ swept from the pole; r₁ ≤ r ≤ r₂ sector; tangent at P, dy/dx (HC53)  |
 | `polarGrid`        | `family: 'cycloid'`, `radians`, `length` | the rolling circle at t; t as 3π/2; the traced length L summed (HC53)         |
@@ -637,6 +641,10 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `circularMotion`   | `mode: 'pair'`, `t1`, `t2`               | two planets lined up at t = 0 and again after S, each angle and laps (HC35)   |
 | `circularMotion`   | `mode: 'tangential'`, `rho`, `at`, …     | n–t: v, a_t, a_n = v²/ρ to the center of curvature, a = their sum (HC35)      |
 | `rotor`            | `hollow: true`                           | the hollow ball (c = ⅔, a shell cut open) in the compare row (H111)           |
+| `rotor`            | `rolling: { height, shapes? }`           | a ramp of drop h, v and ω at the bottom, K_t + K_r = mgh bars; a race (HC102) |
+| `rotor`            | `rod: { length, d? }`                    | a rod, center axis dashed, the axis d away lit; I = I_cm + Md² bar (HC102)    |
+| `rotor`            | `precession: { r, omega }`               | a gyroscope on a pivot: L along the axle, mg, τ = mgr, the Ω circle (HC106)   |
+| `rotor`            | `plate: { a, b }`                        | a thin plate, its principal axes with I₁, I₂, I₃; the middle tumbles (HC107)  |
 | `normalCurve`      | `f.tailsFrom: id`                        | one tail or two as the Hₐ value says (1, 3, 4 right; 0, 6 both) (H112)        |
 | `pascalTriangle`   | `fraction.b`, `fraction.r`               | exactly k of r: C(a, k) × C(b, r − k) ÷ C(a + b, r), to 60 (H113)             |
 | `reserve`          | `growth: id`, `lasts: id`                | use growing g% a year: slices grow, empty at T, beside steady Q ÷ r (H115)    |
