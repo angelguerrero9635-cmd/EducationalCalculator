@@ -9,7 +9,9 @@ import { Canvas, Caption, ChartText, niceCeil, useFrozen, useRep } from './commo
 import { arrowAt, pathOf, traceLine, type Pole } from './fieldLines';
 import { arrowHead } from './graphKit';
 import { RAD, sig, SubLabel, Vec, worked } from './hskKit';
+import { InductionHe2e } from './InductionHe2e';
 import { MovingCharge } from './MovingCharge';
+import { isHe2eInduction } from '@/data/modules/typesHe2e';
 import { Sheen, TopLight, url, usePaintIds } from './paint';
 
 const MAX_LOOPS = 20;
@@ -20,6 +22,7 @@ const MAX_LOOPS = 20;
  * rule), or a transformer on an iron core (Vₛ/Vₚ = Nₛ/Nₚ).
  */
 export function Induction({ spec, calc }: { spec: InductionSpec; calc: Calculator }) {
+  if (isHe2eInduction(spec)) return <InductionHe2e spec={spec} calc={calc} />; // HC19
   switch (spec.mode) {
     case 'coil':
       return <CoilView spec={spec} calc={calc} />;

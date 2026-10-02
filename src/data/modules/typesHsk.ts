@@ -15,6 +15,7 @@ import {
   type PlateLaunch,
   type SeesawOption,
 } from './typesHs3a';
+import { he2eInductionVars, isHe2eInduction, type InductionField, type InductionRails } from './typesHe2e';
 
 const ids = (...xs: (NumOrVar | undefined)[]) =>
   xs.filter((x): x is string => typeof x === 'string');
@@ -501,6 +502,8 @@ export type InductionSpec = { kind: 'induction'; fixed?: boolean } & (
     }
   /** H107: a moving charge in the field (`typesHs3a.ts`). */
   | MovingCharge
+  | InductionField // HC19 (typesHe2e.ts)
+  | InductionRails
 );
 
 // ─── H70 spectrum options: spectral lines, redshift, photons ────────────────
@@ -628,6 +631,7 @@ export function hskSpecVars(r: HskSpec): string[] {
             ...equipotentialVars(r.equipotentials),
           ];
     case 'induction':
+      if (isHe2eInduction(r)) return he2eInductionVars(r); // HC19
       switch (r.mode) {
         case 'coil':
           return ids(r.turns, r.flux, r.time, r.emf);
