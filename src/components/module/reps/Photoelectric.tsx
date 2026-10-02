@@ -291,6 +291,18 @@ export function Photoelectric({ spec, calc }: { spec: PhotoelectricSpec; calc: C
                       : 'no work function'}
                   </ChartText>
                   <Path d={`M ${sx(lam)} ${strip.y + 5} l -6 9 l 12 0 Z`} fill={c.chartInk} />
+                  {/* Off the strip's 100–1000 nm: the marker waits at its end, saying where λ is. */}
+                  {lam < LO || lam > HI ? (
+                    <ChartText
+                      x={lam < LO ? strip.x : strip.x + strip.w}
+                      y={strip.y + 38}
+                      textAnchor={lam < LO ? 'start' : 'end'}
+                      fontSize={chart.label}
+                      fontWeight="700"
+                    >
+                      {lam < LO ? `← λ = ${sig(lam)} nm` : `λ = ${sig(lam)} nm →`}
+                    </ChartText>
+                  ) : null}
                 </G>
               </Svg>
               {!spec.fixed && typeof spec.wavelength === 'string' && rep.known(spec.wavelength) ? (

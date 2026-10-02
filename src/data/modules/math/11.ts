@@ -3469,7 +3469,7 @@ export const MATH_11_MODULES: ModuleDef[] = [
     ],
     example: { a: 1, p: 2, q: 3, x: 8, y: 4 },
     startWith: ['x', 'a', 'p', 'q'],
-    equation: 'y = {a}·x^({p}/{q})',
+    equation: 'y = {a}·x^{{p}/{q}}',
     representation: {
       kind: 'functionGraph',
       family: 'power',
@@ -3477,7 +3477,8 @@ export const MATH_11_MODULES: ModuleDef[] = [
       p: 'p',
       q: 'q',
       at: { x: 'x', y: 'y' },
-      marks: ['vertex', 'asymptotes', 'domain'],
+      // No key point: (0, 0) of x^(2/3) is neither a start nor a center.
+      marks: ['asymptotes', 'domain'],
     },
   }),
 

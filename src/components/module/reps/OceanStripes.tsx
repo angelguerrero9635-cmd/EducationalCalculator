@@ -28,6 +28,10 @@ const tickStep = (span: number, most: number) => {
 
 const round = (x: number, places = 2) => Number(x.toFixed(places));
 
+/** A tick number at the map's edge reads inward ("4,000" was cut off by the card). */
+const edgeAnchor = (x: number) =>
+  x < CX - HALF + 16 ? 'start' : x > CX + HALF - 16 ? 'end' : 'middle';
+
 /** A mid-ocean ridge from above with its magnetic stripes (see `StripesSpec`). */
 export function OceanStripes({ spec, calc }: { spec: StripesSpec; calc: Calculator }) {
   const c = usePalette();
@@ -172,7 +176,7 @@ export function OceanStripes({ spec, calc }: { spec: StripesSpec; calc: Calculat
                           x={A(a, side)}
                           y={TOP - 9}
                           fontSize={chart.label}
-                          textAnchor="middle"
+                          textAnchor={edgeAnchor(A(a, side))}
                           fill={c.chartMuted}
                         >
                           {formatNumber(a)}
@@ -193,7 +197,7 @@ export function OceanStripes({ spec, calc }: { spec: StripesSpec; calc: Calculat
                             x={x}
                             y={BOTTOM + 18}
                             fontSize={chart.label}
-                            textAnchor="middle"
+                            textAnchor={edgeAnchor(x)}
                             fill={c.chartMuted}
                           >
                             {formatNumber(d)}

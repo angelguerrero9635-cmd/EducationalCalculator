@@ -23,18 +23,26 @@ export const STROBE_H = 48;
 /** How far the track rises across the card when it is a ramp (px). */
 const RISE = 16;
 
+/** The least distance between two dots' centers (px), so 1 m beside 7 m never overlaps. */
+export const STROBE_MIN_GAP = 10;
+
 /**
- * Each dot's center in a STROBE_W × STROBE_H card: to scale along the track from the start
- * (left, or right when moving left), the track tilted up the way it moves on a ramp.
+ * Each dot's center in a STROBE_W × STROBE_H card along the track from the start (left, or
+ * right when moving left), the track tilted up the way it moves on a ramp. Each gap is
+ * STROBE_MIN_GAP plus its share of the rest of the track: longer gaps are longer by their
+ * difference in meters, and the shortest still leaves room between its dots.
  */
 export function strobeDots(f: StrobeCard): { x: number; y: number }[] {
   const total = f.gaps.reduce((s, g) => s + Math.max(0, g), 0) || 1;
   const [x0, x1] = [10, STROBE_W - 10];
+  const moving = f.gaps.filter((g) => g > 0).length;
+  const min = Math.min(STROBE_MIN_GAP, (x1 - x0) / Math.max(1, moving));
+  const rest = x1 - x0 - min * moving;
   const left = f.dir === 'left';
   let at = 0;
   return [0, ...f.gaps].map((g, i) => {
-    if (i > 0) at += Math.max(0, g);
-    const u = at / total;
+    if (i > 0 && g > 0) at += min + (g / total) * rest;
+    const u = at / (x1 - x0);
     const x = left ? x1 - u * (x1 - x0) : x0 + u * (x1 - x0);
     const y = 32 - (f.ramp ? u * RISE : 0);
     return { x, y };
@@ -48,7 +56,12 @@ export function strobeCardProblems(f: StrobeCard): string[] {
   if (f.gaps.some((g) => !Number.isFinite(g) || g < 0)) out.push('strobe gap not a distance');
   const total = f.gaps.reduce((s, g) => s + g, 0);
   // Dots closer than their own size can't be told apart.
-  if (f.gaps.some((g) => g > 0 && (g / total) * (STROBE_W - 20) < 6))
+  const dots = strobeDots(f);
+  if (
+    f.gaps.some(
+      (g, i) => g > 0 && Math.hypot(dots[i + 1]!.x - dots[i]!.x, dots[i + 1]!.y - dots[i]!.y) < 8,
+    )
+  )
     out.push('strobe gap too small to see beside the others');
   if (total <= 0) out.push('strobe with no motion');
   return out;

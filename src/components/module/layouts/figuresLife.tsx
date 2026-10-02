@@ -615,10 +615,10 @@ const CARBON: {
  */
 const VOLCANO: (typeof CARBON)[number] = {
   process: 'volcano',
-  a: [350, 172],
-  b: [347, 43],
+  a: [340, 172],
+  b: [337, 43],
   label: 'volcanoes',
-  at: [341, 70],
+  at: [331, 70],
   anchor: 'end',
 };
 
@@ -631,24 +631,25 @@ function Volcano({ c }: { c: Palette }) {
   const floor = 274;
   return (
     <G>
-      <Ellipse cx={338} cy={312} rx={20} ry={9} fill={c.landMagma} opacity={0.9} />
-      {/* The island rises from the seafloor; the water covers its lower slopes. */}
+      <Ellipse cx={328} cy={312} rx={20} ry={9} fill={c.landMagma} opacity={0.9} />
+      {/* The island rises from the seafloor, its whole cone inside the board (its right
+          slope was cut by the edge); the water covers its lower slopes. */}
       <Path
-        d={`M 332 ${floor} L 344 176 L 352 176 L ${BOARD} 188 L ${BOARD} ${floor} Z`}
+        d={`M 322 ${floor} L 334 176 L 342 176 L 354 ${floor} Z`}
         fill={c.landBasalt}
         stroke={c.soilDark}
         strokeWidth={0.8}
       />
-      <Path d="M 338 304 L 342 260 L 348 178" stroke={c.landMagma} strokeWidth={3} fill="none" />
+      <Path d="M 328 304 L 332 260 L 338 178" stroke={c.landMagma} strokeWidth={3} fill="none" />
       <Rect
-        x={332}
+        x={322}
         y={sea}
-        width={BOARD - 332}
+        width={BOARD - 322}
         height={floor - sea}
         fill={c.waterDeep}
         opacity={0.45}
       />
-      <Path d="M 344 176 Q 348 182 352 176" stroke={c.landLava} strokeWidth={3} fill="none" />
+      <Path d="M 334 176 Q 338 182 342 176" stroke={c.landLava} strokeWidth={3} fill="none" />
     </G>
   );
 }
@@ -744,7 +745,13 @@ export function CarbonCycleFigure({
           strokeWidth={chart.stroke}
           fill="none"
         />
-        <ChartText x={316} y={ground + 26} fontSize={chart.small} textAnchor="middle" fill={c.snow}>
+        <ChartText
+          x={volcano ? 297 : 316}
+          y={ground + 26}
+          fontSize={chart.small}
+          textAnchor="middle"
+          fill={c.snow}
+        >
           ocean
         </ChartText>
         <Line x1={0} y1={ground} x2={272} y2={ground} stroke={c.lifeDeep} strokeWidth={3} />

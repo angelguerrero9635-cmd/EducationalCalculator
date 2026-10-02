@@ -72,6 +72,18 @@ export function CircularSatellite({ spec, calc }: { spec: CircularMotionSpec; ca
             const p = { x: O.x + Rpx * Math.cos(a), y: O.y - Rpx * Math.sin(a) };
             return arrowHead(p.x, p.y, -Math.sin(a), -Math.cos(a), 8);
           };
+          // r's label below the radius's middle, unless it would touch GM/r²'s (right-aligned
+          // under the satellite): then on the line's other side, ending at it.
+          const rText = `r = ${num(r)} m`;
+          const gText = `GM/r² = ${num(g)} m/s²`;
+          const mid = { x: (O.x + P.x) / 2, y: (O.y + P.y) / 2 };
+          const charW = chart.label * 0.6;
+          const rBelow = { x: mid.x + 12, y: mid.y + 16 };
+          const gY = P.y + 32;
+          const touch =
+            Math.abs(rBelow.y - gY) < 28 &&
+            rBelow.x + rText.length * charW + 6 > w - 4 - gText.length * charW;
+          const rAt = touch ? { x: mid.x - 10, y: mid.y - 8 } : rBelow;
           return (
             <>
               <Svg width={w} height={h}>
@@ -109,10 +121,10 @@ export function CircularSatellite({ spec, calc }: { spec: CircularMotionSpec; ca
                     strokeDasharray={chart.dashFine}
                   />
                   <SubLabel
-                    x={O.x + (P.x - O.x) * 0.5 + 12}
-                    y={O.y + (P.y - O.y) * 0.5 + 16}
-                    text={`r = ${num(r)} m`}
-                    anchor="start"
+                    x={rAt.x}
+                    y={rAt.y}
+                    text={rText}
+                    anchor={touch ? 'end' : 'start'}
                     w={w}
                   />
                   <Vec
@@ -141,9 +153,9 @@ export function CircularSatellite({ spec, calc }: { spec: CircularMotionSpec; ca
                     // Right-aligned below the satellite: placed after it, the label ran past the
                     // edge and slid back under the solar panel.
                     x={w - 4}
-                    y={P.y + 32}
+                    y={gY}
                     anchor="end"
-                    text={`GM/r² = ${num(g)} m/s²`}
+                    text={gText}
                     color={c.forceWeight}
                     w={w}
                   />
