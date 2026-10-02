@@ -123,6 +123,7 @@ search or the sitemap, but the module tests and the harness run over it):
 | `bode`             | gain (dB) over phase on log frequency; asymptotes, corners, PM, GM    | College filters, control (HC22)     |
 | `potentialWell`    | box, oscillator, step, barrier, bump: levels to scale, ψ, nodes, λ    | College quantum, chemistry (HC15)   |
 | `unitCell`         | cubic cell: atoms counted to Z, touching line; (hkl) and d; Bragg     | College solids, minerals (HC16)     |
+| `phaseSpace`       | oscillator ellipse, flow (ẋ, ṗ), area; pendulum θ–ω; bead on a hoop   | College classical mech. (HC69)      |
 | `globe`            | sun rays, noon angle, day dial; great circle; Euler pole; dipole; air | College earth and geography (HC36)  |
 | `stressStrain`     | σ–ε curve: E, 0.2% offset, UTS, necking; specimen; tube; two members  | College materials, biomech. (HC28)  |
 | `stressElement`    | element, turned to θ_p; Mohr's circle; 3 circles; loci, n; soil line  | College stress, soil (HC33)         |
@@ -387,6 +388,8 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `motionGraph`      | `kinematics: { view, at?, slope? }`      | signed v–t, + and − areas as Δx; x–t with a tangent at t₁; strobe (H58)       |
 | `energyTrack`      | `spring: { k, compression, … }`          | spring launcher, rough patch (heat fd), ramp; start and now bars (H63)        |
 | `wave`             | `standing`, `doppler`                    | string or pipe harmonic n, nodes and antinodes; Doppler fronts, cone (H65)    |
+| `wave`             | `em: { amplitude, … }`, `line`           | E and B (or H) in step, E₀, B₀, λ, S; a line's envelope and VSWR (HC93)       |
+| `rayDiagram`       | `singleSlit`, `grating`, `thinFilm`      | sinc² band, w; orders at true angles, m_max; film rays, 2nt, flips (HC68)     |
 | `circuit`          | `mixed: { layout, resistors }`           | R₁ + R₂ ∥ R₃ or (R₁ + R₂) ∥ R₃; V, I, P at each resistor (H68)                |
 | `seriesCircuit`    | `net: { topology, elements, … }`         | a schematic in textbook symbols; node V, mesh and branch I; KCL, KVL (HC7)    |
 | `circuit`          | `net` (the same renderer)                | capacitor networks (Q, V at each), two batteries, internal r (HC7)            |
