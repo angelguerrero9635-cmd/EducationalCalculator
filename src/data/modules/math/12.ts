@@ -1382,7 +1382,7 @@ const MATH_12_STATS: ModuleDef[] = [
     title: 'The central limit theorem, simulated',
     use: 'Use this for “Wait times are skewed right with mean 4 minutes. How are the means of samples of 30 spread?”',
     assumptions: [
-      'The population of waits is skewed right: most are short and a few are long. Here σ = μ.',
+      'The waits are exponential, so σ = μ: skewed right, most short and a few long.',
       'The sample means center on μ and spread by σ ÷ √n, whatever the population’s shape.',
       'For n of about 30 or more the sample means are close to normal, though the waits are not.',
     ],
@@ -2896,7 +2896,9 @@ const sinAngles = (s: number | undefined) => {
   if (s === undefined) return '';
   if (Math.abs(s) > 1 + 1e-12) return '→ past −1 or 1: no angle';
   const first = (Math.asin(Math.max(-1, Math.min(1, s))) / RAD + 360) % 360;
-  const xs = [...new Set([first, (540 - first) % 360].sort((p, q) => p - q).map((x) => fmt(x)))];
+  // To the nearest 0.1°, as a calculator answer is given.
+  const both = [first, (540 - first) % 360].sort((p, q) => p - q);
+  const xs = [...new Set(both.map((x) => formatNumber(Number(x.toFixed(1)))))];
   return `→ x = ${xs.map((x) => `${x}°`).join(' or ')}`;
 };
 
@@ -3831,6 +3833,20 @@ const polarPart = (out: string, r: string, t: string, fn: 'cos' | 'sin', how: st
   );
 
 /** r² = x² + y²: the distance from the pole, either sign (the positive one first). */
+/** How the roots page shows |z| and ρ (exact: 4√2, ∛(4√2) stays a decimal). */
+const ROOT_MOD = { exact: true } as const;
+const ROOT_RHO = { exact: true } as const;
+/**
+ * The nth root of r as a step writes it: √, ∛ or ∜ for n = 2, 3, 4 (bracketed when r is shown
+ * as a root itself, ∛(4√2)), else r^(1/n). `rt` and `nt` are r's and n's text or templates.
+ */
+const nthRoot = (n: number, r: number, rt: string, nt: string) => {
+  const sign = n === 2 ? '√' : n === 3 ? '∛' : n === 4 ? '∜' : undefined;
+  const bare = Math.abs(r * 1000 - Math.round(r * 1000)) < 1e-6;
+  if (sign) return bare ? `${sign}${rt}` : `${sign}(${rt})`;
+  return bare ? `${rt}^(1/${nt})` : `(${rt})^(1/${nt})`;
+};
+
 /** After θ₀: the other roots' arguments, 360° ÷ n apart (up to six named). */
 const otherRoots = (v: Values) => {
   if (v.t === undefined || v.n === undefined) return '';
@@ -4052,15 +4068,29 @@ const MATH_12_POLAR: ModuleDef[] = [
       real('a', 'a', 'Real part of z', -100, 100),
       real('b', 'b', 'Imaginary part of z', -100, 100),
       V('n', 'n', 'Which root (n)', { integer: true, min: 2, max: 12 }),
+      V('r', '|z|', 'Modulus of z', { min: 0, max: 150, derived: true, exact: true }),
       deg('A', 'arg z', 'Argument of z', 0, 360, { derived: true }),
-      V('m', 'ρ', 'Modulus of each root', { min: 0, max: 20, step: 0.0001, derived: true }),
+      V('m', 'ρ', 'Modulus of each root', {
+        min: 0,
+        max: 20,
+        step: 0.0001,
+        derived: true,
+        exact: true,
+      }),
       deg('t', 'θ₀', 'Argument of the first root', 0, 180, { derived: true }),
-      V('p', 'p', 'Real part of the first root', { min: -20, max: 20, step: 0.01, derived: true }),
+      V('p', 'p', 'Real part of the first root', {
+        min: -20,
+        max: 20,
+        step: 0.01,
+        derived: true,
+        exact: true,
+      }),
       V('q', 'q', 'Imaginary part of the first root', {
         min: -20,
         max: 20,
         step: 0.01,
         derived: true,
+        exact: true,
       }),
     ],
     ...rels(
@@ -4073,13 +4103,26 @@ const MATH_12_POLAR: ModuleDef[] = [
       ),
       direction('A', 'a', 'b', 'point'),
       derive(
-        'ρ = |z|^(1/n)',
-        '{m} = √({a}² + {b}²)^(1 ÷ {n})',
-        'm',
-        ['a', 'b', 'n'],
-        (v) => Math.hypot(v.a!, v.b!) ** (1 / v.n!),
-        '√({a}² + {b}²)^(1 ÷ {n})',
-        'The modulus of z, then its nth root: ρⁿ must equal |z|.',
+        '|z| = √(a² + b²)',
+        '{r} = √({a}² + {b}²)',
+        'r',
+        ['a', 'b'],
+        (v) => Math.hypot(v.a!, v.b!),
+        '√({a}² + {b}²)',
+        'The modulus of z: its distance from 0, by the Pythagorean theorem.',
+      ),
+      withCheck(
+        derive(
+          'ρ = ⁿ√|z|',
+          '{m} = {r}^(1/{n})',
+          'm',
+          ['r', 'n'],
+          (v) => v.r! ** (1 / v.n!),
+          (v) => nthRoot(v.n!, v.r!, '{r}', '{n}'),
+          'ρⁿ must equal |z|, so ρ is the nth root of |z|.',
+        ),
+        (v) =>
+          `${formatNumber(v.m!, ROOT_RHO)} = ${nthRoot(v.n!, v.r!, formatNumber(v.r!, ROOT_MOD), fmt(v.n!))}`,
       ),
       withStep(
         derive(
@@ -4103,7 +4146,7 @@ const MATH_12_POLAR: ModuleDef[] = [
       ),
       polarPart('q', 'm', 't', 'sin', 'And its imaginary part is ρ sin θ₀.'),
     ),
-    example: { a: 0, b: 8, n: 3, A: 90, m: 2, t: 30, p: Math.sqrt(3), q: 1 },
+    example: { a: 0, b: 8, n: 3, r: 8, A: 90, m: 2, t: 30, p: Math.sqrt(3), q: 1 },
     startWith: ['a', 'b', 'n'],
     representation: {
       kind: 'complexPlane',
