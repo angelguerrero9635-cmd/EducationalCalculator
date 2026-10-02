@@ -428,6 +428,42 @@ quads; exact integers past 2⁵³ (n!, C(n, r), 2⁶⁴); C(n, k) past row 12 wi
 - **From:** EC-E3, EC-E4, EC-E9, P-E9, ME-E7 (floor and ceiling).
 - **Waiting:** EC 25 (integer functions) + 6 (bases) + discrete#2 at large n; P 2
   (thermal-statistical#1~einstein-solid, ~two-state).
+- **Status: done but for 64-bit values in a box and a signed box (2026-10-02).**
+  `src/engine/integers.ts`: the functions (`floorDiv`, `ceilDiv`, `mod` from 0 to n − 1,
+  `roundHalfAway`, `roundTo`, `log2Exact`, `floorLog2`, `ceilLog2`, `gcd`/`lcm` of any count,
+  `sortedOf`), exact on whole numbers past 2⁵³; their lines (`floorLine` "⌊77 ÷ 64⌋ = ⌊1.2031⌋ =
+  1", `ceilLine`, `modLine` "77 mod 64 = 77 − 64 × ⌊77 ÷ 64⌋ = 77 − 64 × 1 = 13", `roundLine`,
+  `log2Line`, `ceilLog2Line` "⌈log₂ 5⌉ = 3, since 2² = 4 < 5 ≤ 8 = 2³", `floorLog2Line`,
+  `gcdLines` (Euclid a line), `lcmLine`, `minLine`, `maxLine`, `sortLine`); bases (`baseText`
+  101101₂, 0010 1101₂, 2D₁₆, 0x2D, 55₈; `parseBased`; `divisionLines` (repeated division with
+  remainders, "13 is D"), `placeValueLine`, `groupLines` (bits in fours or threes), `bcdLines`);
+  two's complement (`twosComplement` as the unsigned pattern 2ⁿ − N, `twosLines` invert-then-add-1,
+  `signedLine` with −2ⁿ⁻¹ on the top bit, `rangeLines`, `wrapLines` for overflow); bit fields
+  (`bitField`, `bitFieldLine` "Bits 11–7: ⌊0x00A30513 ÷ 2⁷⌋ mod 2⁵ = 83,466 mod 32 = 10"); IPv4
+  (`ipv4Text`, `parseIPv4`, `prefixMask`, `dottedBinary`, `networkOf`, `broadcastOf`, `hostsOf`,
+  `subnetLines`); exact counts (`bigFactorial`, `bigPerm`, `bigChoose`, `bigPow`, `groupDigits`,
+  `factorialLine`, `permLine`, `chooseLine` "C(60, 30) = 60! ÷ (30! × 30!) =
+  118,264,581,564,861,424", `powLine`, `stirlingLn`/`stirlingLine` for ln Ω). A value shows and
+  is typed in a form with `VariableDef.base`: a `radix` of 2, 8 or 16 with `bits` (a count or a
+  width's id), `prefix` and `group`; `'ipv4'`; or `'prefix'` (/26; its bare number in a rule).
+  `parseNumber` also reads 101101₂, 0x2D and a quad, which it refused before. A count past 2⁵³
+  shows its exact digits with `exact: exactInteger(id, (v) => bigChoose(v.n, v.r))`. Pages:
+  `src/data/modules/integerRules.ts`: `integerRule` (floor, ceil, mod, round, log2, pow2,
+  ceilLog2, floorLog2, gcd, lcm, min, max; forward, and backward only for log2 ↔ pow2, with a
+  message for a number that isn't a power of 2), `baseRule` (a number ↔ its digits: division
+  forward, place value back, or hex and octal grouped from n bits), `twosRule` (P = 2ⁿ − N both
+  ways, N from 1 to 2ⁿ⁻¹, said when it doesn't fit). The harness (`harness/integerLines.ts`, run
+  by `sampling.test.ts` on every step's lines from the first with a whole-number mark) reads all
+  of it with BigInt fractions, so the last digit of 2⁶⁴ is checked; a decimal side within
+  display rounding (a lone decimal against an unrounded side to its last place); "a ÷ b = q
+  remainder r" as a true division; "Invert every bit:" against the line before; a "Signed" line
+  in two's complement at its written width; =, ≈, <, ≤, >, ≥ chains; an octet past 255 or a digit
+  a base lacks is an error. `evaluate` reads based numbers, quads, AND/OR/XOR, shifts, lcm,
+  round and gcd of three in a substituted line. **Left:** the solver holds floats, so a box
+  value past 2⁵³ (a 64-bit pattern, 2⁶⁴ − 1) is exact only in its lines and its shown digits
+  (`exactInteger`), not as a typed value; a box showing a signed pattern (−45 as 11010011₂)
+  needs the unsigned-pattern value and `twosRule` today; the picture kinds (P17
+  `placeValueChart` base, P18 `bitFields`) are separate requests.
 
 ### HE-E22 Sums, series and recurrences
 

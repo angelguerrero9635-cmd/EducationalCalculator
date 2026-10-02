@@ -13,7 +13,7 @@ import {
 } from '@/data/modules';
 import type { ModuleDef } from '@/data/modules/types';
 import { choiceCode, choiceIndex, codeLabel, nextCode } from '@/engine/choices';
-import { belowStep, formatNumber, parseCents, parseNumber } from '@/engine/format';
+import { belowStep, formatNumber, parseCents, parseValue } from '@/engine/format';
 import { outOfCount } from '@/engine/solve';
 import type { VariableDef } from '@/engine/types';
 import { linkedUnits, unitChoices, type UnitChoice } from '@/engine/unitContext';
@@ -212,7 +212,7 @@ function useVariableBox(variable: VariableDef, calc: Calculator) {
   const onChangeText = (text: string) => {
     setDraft(text);
     // Money boxes in cents also take dollars: "$1.25" or "1.25" is 125¢.
-    const parsed = unit === '¢' ? parseCents(text) : parseNumber(text);
+    const parsed = unit === '¢' ? parseCents(text) : parseValue(text, variable);
     setTypo(parsed === 'invalid');
     if (parsed !== 'invalid') calc.setShown(variable.id, parsed);
   };

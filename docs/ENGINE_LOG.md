@@ -5,6 +5,48 @@ helpers, pictures, tests, harness) could have prevented are turned into engine w
 next section is written, so each section starts from a better engine than the last. One entry
 per review; each line names the finding and what the engine now does about it.
 
+## HE-E21: integer functions, bases and big integers
+
+- **About 30 computer-engineering pages work in whole numbers (⌈log₂ M⌉ flip-flops, ⌊a ÷ block⌋
+  × block, a mod N queue slot, 101101₂ and 0x2D, −45 in 8 bits, 192.168.10.77/26), and
+  discrete-math#2 counts past 2⁵³; the steps had no lines for them and the harness read them
+  as floats or not at all** (an exact 2⁶⁴ with its last digit wrong would pass; "0x2D" and
+  "192.168.10.77" were unreadable). → `engine/integers.ts` has the functions (exact on BigInt),
+  the lines a student writes for each (floor, ceiling, mod by its definition, ⌈log₂ n⌉ with its
+  bracketing powers, Euclid a line, repeated division with remainders, place value, bits
+  grouped into hex, invert-then-add-1, the signed reading, bit fields by shift and mask, a
+  subnet from its mask, C(n, r) and n! exactly, Stirling), and `harness/integerLines.ts` reads
+  them back with BigInt fractions: each chain of =, ≈, <, ≤, > and ≥ must hold (exactly where
+  every number is exact), a division with its remainder must be one, a flipped pattern must flip
+  the line before, a "Signed" line reads its patterns in two's complement, and an octet past
+  255 or a digit 8 in base 8 is an error. `sampling.test.ts` runs it on every step's lines from
+  the first with a whole-number mark (one added loop) and reads a result written 101101₂, 0x2D,
+  a quad or /26; `evaluate` reads those forms in a substituted line (one pre-pass line).
+- **A whole number shown in a base is still one value** → `VariableDef.base` (radix, width in
+  bits or the width's id, 0x prefix, groups of four; or `'ipv4'`, `'prefix'`): `formatNumber`
+  shows it, the box parses the base's digits (`parseValue`), `parseNumber` also reads an
+  explicit 101101₂, 0x2D or quad (refused before, so no K–12 input changes). A pattern of −N is
+  its unsigned value 2ⁿ − N (`twosRule`), so the solver stays in whole numbers from 0.
+- **A count past 2⁵³ printed in full was rounded** (`full` shows 12 figures of a float) →
+  `exactInteger(id, f)` as a variable's `exact` prints the BigInt digits when they are the
+  solver's value.
+- **A floor or a gcd has many inputs for one output** → `integerRule` solves forward only
+  (`() => undefined` for the inputs), and both ways only where one value answers (log₂ ↔ 2ⁿ,
+  a number ↔ its digits, N ↔ its pattern); a block that isn't a power of 2 says so.
+- **Grades 4–5 write "17 ÷ 5 = 3, remainder 2"**: the reader joins the remainder to its
+  division, so those lines read as true divisions, not 17 ÷ 5 = 3.
+- Left: box values past 2⁵³ (the solver's floats), a signed-pattern box, the P17 and P18
+  pictures (docs/HE_NEEDS.md).
+- Tests: `engine/__tests__/integers.test.ts` (each function and line, the plans' examples: 45 →
+  101101₂ = 2D₁₆, 8-bit −45 = 11010011₂ = D3₁₆, 192.168.10.77/26, C(60, 30), 2⁶⁴; boxes and
+  `parseNumber` unchanged on what they read before), `__tests__/integerLines.test.ts` (every
+  writer over 150 seeded inputs reads true; over 90% of single-digit changes are caught, the
+  rest still true lines; K–12 lines with mod, gcd, remainders and chemistry subscripts read as
+  before; test-only subnet, binary and counting pages pass the sampling checks). Pages tested by
+  id: m.11.complex-numbers~powers-of-i, m.6.gcf-lcm, m.4.place-value-million, m.5.powers-of-ten,
+  m.4.factors-multiples~multiples, m.4.fraction-times-whole, m.4.unit-conversion~two-units,
+  m.5.convert-units~multi-step and every `he.` page; no K–12 text changed.
+
 ## HE-E6: calculus lines and notation in steps
 
 - **The solver is numeric, so a calculus page states closed forms, and nothing read them**: a

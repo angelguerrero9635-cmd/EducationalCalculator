@@ -8,6 +8,7 @@ import { INTEGRAL, SIGMA } from '@/engine/latex';
 
 import type { Walkthrough } from '../buildSteps';
 import { complexPrepass } from './algebraLines';
+import { INTEGER_PREPASS, integerPrepass } from './integerLines';
 import { HE_PHRASES } from './phrasesHe';
 import { HSB_PHRASES } from './phrasesHsb';
 import { HSF_PHRASES } from './phrasesHsf';
@@ -589,6 +590,8 @@ export function evaluate(text: string, clampRoots = false): number | undefined {
   if (text.includes('∫ from ')) text = expandIntegrals(text);
   // A complex value's part or a determinant (HE-E16, E17): Re(…), Im(…), |8 + j6|, det [[…]].
   if (/\b(?:Re|Im|arg)\(|\|[^|]*[ij∠]|\bdet ?\[\[/.test(text)) text = complexPrepass(text);
+  // Whole-number forms (HE-E21): 101101₂, 0x2D, 192.168.10.77, AND, lcm(…), round(…).
+  if (INTEGER_PREPASS.test(text)) text = integerPrepass(text);
   // HE-E6: an antiderivative at its limits, and a limit worked out near its point.
   if (text.includes('] from ')) text = expandBrackets(text);
   if (text.includes('lim')) text = expandLimits(text);
