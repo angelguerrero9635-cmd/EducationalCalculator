@@ -109,6 +109,7 @@ import {
 import { he3cIssues } from './picturesHe3c';
 import { he3dIssues } from './picturesHe3d';
 import { he3jIssues } from './picturesHe3j';
+import { he3kIssues, waterfallDecibelsIssues } from './picturesHe3k';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -2424,6 +2425,23 @@ export function repIssues(
       break;
     case 'dilutionSeries':
       out.push(...dilutionIssues(rep, siOf(val, byId))); // HC80
+      break;
+    case 'waterfall':
+      out.push(...waterfallDecibelsIssues(rep, val)); // HC91, decibels only
+      break;
+    case 'lamina':
+    case 'rocket':
+    case 'deviceCurves':
+    case 'stemPlot':
+      // In formula units, as the picture draws them (HC86, HC87, HC62, HC63).
+      out.push(
+        ...he3kIssues(rep, (x) =>
+          ((v) =>
+            v === undefined || typeof x === 'number' ? v : v * (byId.get(x)?.unitFactor ?? 1))(
+            val(x),
+          ),
+        ),
+      );
       break;
     case 'projectile':
     case 'induction':

@@ -234,6 +234,11 @@ import { Shaft } from './Shaft';
 import { FatigueDiagram } from './FatigueDiagram';
 import { ElementChain } from './ElementChain';
 import { DilutionSeries } from './DilutionSeries';
+import { WaterfallDecibels } from './WaterfallDecibels';
+import { Lamina } from './Lamina';
+import { Rocket } from './Rocket';
+import { DeviceCurves } from './DeviceCurves';
+import { StemPlot } from './StemPlot';
 import { PropertyDiagram } from './PropertyDiagram';
 import { MotionGraphHs } from './MotionGraphHs';
 import { HskView } from './HskView';
@@ -478,6 +483,14 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <BitFields spec={spec} calc={calc} />;
     case 'dilutionSeries':
       return <DilutionSeries spec={spec} calc={calc} />; // HC80
+    case 'lamina':
+      return <Lamina spec={spec} calc={calc} />; // HC86
+    case 'rocket':
+      return <Rocket spec={spec} calc={calc} />; // HC87
+    case 'deviceCurves':
+      return <DeviceCurves spec={spec} calc={calc} />; // HC62
+    case 'stemPlot':
+      return <StemPlot spec={spec} calc={calc} />; // HC63
     case 'propertyDiagram':
       return <PropertyDiagram spec={spec} calc={calc} />;
     case 'linearFunction':
@@ -671,6 +684,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'pictureGraph':
       return <PictureGraph spec={spec} calc={calc} />;
     case 'waterfall':
+      if (spec.decibels) return <WaterfallDecibels spec={spec} calc={calc} />; // HC91
       return <Waterfall spec={spec} calc={calc} />;
     case 'hundredChart':
       return <HundredChart spec={spec} calc={calc} />;

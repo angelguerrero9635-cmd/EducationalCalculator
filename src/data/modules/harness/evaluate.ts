@@ -25,6 +25,7 @@ import { HE2C_PHRASES } from './phrasesHe2c';
 import { HE3E_PHRASES } from './phrasesHe3e';
 import { HE3C_PHRASES } from './phrasesHe3c';
 import { HE3D_PHRASES } from './phrasesHe3d';
+import { HE3K_PHRASES } from './phrasesHe3k';
 import { M9_PHRASES } from './phrasesM9';
 import { M10_PHRASES } from './phrasesM10';
 import { M11_PHRASES } from './phrasesM11';
@@ -101,6 +102,7 @@ export const PHRASES: [RegExp, (...xs: number[]) => number][] = [
   ...HE3E_PHRASES,
   ...HE3C_PHRASES, // college round 3, group C (n!)
   ...HE3D_PHRASES, // college round 3, group D (min of sums)
+  ...HE3K_PHRASES,
   ...HSF_PHRASES,
   ...HSG_PHRASES,
   ...HSI_PHRASES,

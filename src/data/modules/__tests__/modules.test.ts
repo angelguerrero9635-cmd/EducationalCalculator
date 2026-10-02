@@ -59,6 +59,7 @@ import { he1bSpecVars } from '../typesHe1b';
 import { he1aSpecVars } from '../typesHe1a';
 import { bodeVars, complexPlaneHe2aVars } from '../typesHe2a';
 import { he3jSpecVars } from '../typesHe3j';
+import { he3kSpecVars, waterfallDecibelsVars } from '../typesHe3k';
 import { he2hSpecVars } from '../typesHe2h';
 import {
   conicGraphHe3cVars,
@@ -438,7 +439,12 @@ function representationVars(r: Representation): string[] {
         ...(r.key ? [r.key] : []),
       ];
     case 'waterfall':
-      return [...r.items.map((b) => b.var), r.total, ...(r.caption ?? [])];
+      return [
+        ...r.items.map((b) => b.var),
+        r.total,
+        ...(r.caption ?? []),
+        ...waterfallDecibelsVars(r.decibels), // HC91
+      ];
     case 'rectangle':
       return [
         ...[r.length, r.width, r.inside, r.around],
@@ -717,6 +723,11 @@ function representationVars(r: Representation): string[] {
     case 'hydrograph':
     case 'blockDiagram':
       return he3jSpecVars(r); // HC60, HC61, HC89, HC90
+    case 'lamina':
+    case 'rocket':
+    case 'deviceCurves':
+    case 'stemPlot':
+      return he3kSpecVars(r); // HC86, HC87, HC62, HC63
     case 'wing':
     case 'duct':
     case 'supersonicFlow':

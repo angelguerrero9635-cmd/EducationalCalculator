@@ -62,6 +62,7 @@ import type { He3jSpec } from './typesHe3j';
 import type { BeamSpec } from './typesHe1a';
 import type { BodeSpec } from './typesHe2a';
 import type { He2hSpec } from './typesHe2h';
+import type { He3kSpec, WaterfallDecibels } from './typesHe3k';
 
 /**
  * Plot axis: which variable it shows and the visible range, as numbers in the shown unit.
@@ -552,6 +553,8 @@ export type Representation =
       total: string;
       /** Subtotals listed under the chart (e.g. natural increase, net migration). */
       caption?: string[];
+      /** College budgets in dB on a level axis (HC91, `typesHe3k.ts`). */
+      decibels?: true | WaterfallDecibels;
     }
   /**
    * Rectangle with side lengths and a value written inside. Drag the corner. `extent` is the
@@ -1224,6 +1227,8 @@ export type Representation =
   | BodeSpec
   /** College round 3, group J: HC60, HC61, HC88, HC89, HC90 (`typesHe3j.ts`). */
   | He3jSpec
+  /** College round 3, group K: HC86 lamina, HC87 rocket, HC62, HC63 (`typesHe3k.ts`). */
+  | He3kSpec
   /** College round 2, group H: HC24 wing, HC30 duct, HC31 supersonicFlow (`typesHe2h.ts`). */
   | He2hSpec
   /** Box plot: the five-number summary on a number line, each mark draggable. */
