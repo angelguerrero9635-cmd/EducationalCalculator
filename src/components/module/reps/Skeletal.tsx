@@ -200,7 +200,7 @@ function StructureView({ spec, calc }: { spec: SkeletalSpec; calc: Calculator })
     }
     if (tally && pick.counts && !pick.why) {
       const text = spec.ihd?.hydrogen
-        ? `${plural(u!.pi, 'π bond')} take ${plural(u!.pi, 'H₂', 'H₂')}; ${plural(u!.rings, 'ring')} stay${u!.rings === 1 ? 's' : ''}`
+        ? `${plural(u!.pi, 'π bond')} take${u!.pi === 1 ? 's' : ''} ${plural(u!.pi, 'H₂', 'H₂')}; ${plural(u!.rings, 'ring')} stay${u!.rings === 1 ? 's' : ''}`
         : `${plural(u!.rings, 'ring')} + ${plural(u!.pi, 'π bond')} = IHD ${u!.ihd}`;
       views.push(
         <ChartText

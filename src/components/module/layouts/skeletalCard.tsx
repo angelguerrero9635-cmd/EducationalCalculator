@@ -30,7 +30,10 @@ export function SkeletalCardView({
   const mol = parseSmiles(f.smiles);
   if (mol.error) return <G />;
   const lay = layoutMol(mol, { aspect: SKELETAL_CARD_W / SKELETAL_CARD_H, center: f.center });
-  const fit = fitLayout(lay, SKELETAL_CARD_W, SKELETAL_CARD_H, 24, 5, chart.label);
+  const numbers = chainNumbers(mol, f.numbered);
+  // Chain numbers and charge rings sit outside the end corners: room for them at the edges.
+  const outside = numbers.size > 0 || /[+-]/.test(f.smiles);
+  const fit = fitLayout(lay, SKELETAL_CARD_W, SKELETAL_CARD_H, 24, outside ? 15 : 5, chart.label);
   const ranks = f.center !== undefined && f.ranks !== false ? cipRanks(mol, f.center) : undefined;
   const rs = f.center !== undefined && f.rs ? configurationOf(mol, f.center) : undefined;
   return (
@@ -45,7 +48,7 @@ export function SkeletalCardView({
       halo={false}
       marks={{
         lit: litAtoms(mol, f.group),
-        numbers: chainNumbers(mol, f.numbered),
+        numbers,
         ...(f.center !== undefined ? { center: f.center } : {}),
         ...(ranks ? { ranks } : {}),
         ...(rs ? { rs } : {}),

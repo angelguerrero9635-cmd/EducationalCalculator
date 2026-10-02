@@ -488,21 +488,55 @@ export function SkeletalView({
     const a0 = marks.center;
     const p0 = pts[a0]!;
     const hDrawn = lay.hs.find((x) => x.atom === a0);
+    // What a rank badge must keep clear of: the atoms (written ones as a letter-sized disc),
+    // the drawn H's, every bond, and the badges already placed.
+    const r = font * 0.62;
+    const hPts = lay.hs.map((x) => ({ p: px(x.at), from: pts[x.atom]! }));
+    const discs: { p: P; rad: number }[] = [
+      ...pts.map((p, a) => ({ p, rad: labelled(lay, a) ? font * 0.85 : 1 })),
+      ...hPts.map((x) => ({ p: x.p, rad: font * 0.6 })),
+    ];
+    const segs: [P, P][] = [
+      ...m.bonds.map((b): [P, P] => [pts[b.a]!, pts[b.b]!]),
+      ...hPts.map((x): [P, P] => [x.from, x.p]),
+    ];
+    const toSeg = (q: P, [a, z]: [P, P]) => {
+      const [dx, dy] = [z[0] - a[0], z[1] - a[1]];
+      const l2 = dx * dx + dy * dy || 1;
+      const t = Math.max(0, Math.min(1, ((q[0] - a[0]) * dx + (q[1] - a[1]) * dy) / l2));
+      return Math.hypot(q[0] - a[0] - t * dx, q[1] - a[1] - t * dy);
+    };
+    const placed: P[] = [];
+    const clearance = (q: P) =>
+      Math.min(
+        ...discs.map((d) => Math.hypot(d.p[0] - q[0], d.p[1] - q[1]) - d.rad),
+        ...segs.map((sg) => toSeg(q, sg)),
+        ...placed.map((b) => Math.hypot(b[0] - q[0], b[1] - q[1]) - r),
+      ) - r;
     marks.ranks?.forEach((rank, o) => {
       const target = o === -1 ? (hDrawn ? px(hDrawn.at) : undefined) : pts[o];
       if (!target) return;
       const u = unit(p0, target);
       const len = Math.hypot(target[0] - p0[0], target[1] - p0[1]);
-      // Beside the bond, past its middle, on the side with more room.
-      const t = 0.62;
-      const base: P = [p0[0] + u[0] * len * t, p0[1] + u[1] * len * t];
-      const r = font * 0.62;
-      const options: P[] = [1, -1].map((s) => [
-        base[0] - u[1] * s * (r + 4),
-        base[1] + u[0] * s * (r + 4),
-      ]);
-      const room = (q: P) => Math.min(...pts.map((pp) => Math.hypot(pp[0] - q[0], pp[1] - q[1])));
-      const at = room(options[0]!) >= room(options[1]!) ? options[0]! : options[1]!;
+      // Beside the bond, past its middle, on the side with more room; where a small drawing
+      // leaves no room there, further along the bond or further out, whichever is clearest.
+      const options: P[] = [];
+      for (const t of [0.62, 0.5, 0.78])
+        for (const off of [r + 4, r + 8])
+          for (const sd of [1, -1])
+            options.push([
+              p0[0] + u[0] * len * t - u[1] * sd * off,
+              p0[1] + u[1] * len * t + u[0] * sd * off,
+            ]);
+      let at = options[0]!;
+      let best = -Infinity;
+      options.forEach((q, i) => {
+        // Clear first; then the roomier side; then the first (nearest the bond's middle).
+        const cl = clearance(q);
+        const score = Math.min(cl, 3) + Math.min(cl, 12) * 0.02 - i * 0.01;
+        if (score > best) [best, at] = [score, q];
+      });
+      placed.push(at);
       parts.push(
         <G key={`rank${o}`}>
           <Circle cx={at[0]} cy={at[1]} r={r} fill={c.chartHighlight} />
