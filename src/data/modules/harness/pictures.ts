@@ -73,6 +73,7 @@ import { netIssues, oscillatorIssues } from './picturesHe1h';
 import { skeletalIssues } from './picturesHe1c';
 import { phaseEnvelopeIssues, phaseSubstanceIssues } from './picturesHe1i';
 import { he1fIssues } from './picturesHe1f';
+import { fieldPlotIssues } from './picturesHe2g';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -2288,6 +2289,9 @@ export function repIssues(
       break;
     case 'beam':
       out.push(...he1aIssues(rep, siOf(val, byId)));
+      break;
+    case 'fieldPlot':
+      out.push(...fieldPlotIssues(rep, val)); // HC21
       break;
     case 'bars':
       out.push(...barFlowIssues(rep, val));

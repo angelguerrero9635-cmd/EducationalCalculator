@@ -61,6 +61,11 @@ const light = {
   /** College function graph regions (HC12): the part above the axis (+) and below it (−). */
   regionPlus: '#0F7A55',
   regionMinus: '#B42318',
+  /** College fields and graph marks (HC21, HC37, HC38): glyphs, Euler, tangent, ε–δ band. */
+  fieldArrow: '#8C93A8',
+  fieldEuler: '#B45309',
+  tangentLine: '#0E7490',
+  bandFill: '#0EA5E9',
   /** An upright boundary x = k on a line system (H92), beside its two lines. */
   lineUpright: '#BE185D',
   /** The sunlit half of a globe or moon (lighter than the night half in both themes). */
@@ -570,6 +575,10 @@ const dark: Palette = {
   lineSum: '#2DD4BF',
   regionPlus: '#34D399',
   regionMinus: '#F87171',
+  fieldArrow: '#6B7287',
+  fieldEuler: '#F59E0B',
+  tangentLine: '#22D3EE',
+  bandFill: '#38BDF8',
   lineUpright: '#F472B6',
   chartDay: '#4A5068',
   chartNight: '#0B0C10',
