@@ -467,7 +467,9 @@ const complement = (P: number | undefined, what: string) => {
   const shown = formatNumber(P);
   const places = /^0\.\d+$/.test(shown) ? shown.length - 2 : undefined;
   const rest =
-    places === undefined ? fmt(1 - P) : formatNumber(Number((1 - Number(shown)).toFixed(places)));
+    places === undefined
+      ? fmt(1 - P)
+      : formatNumber(Number((1 - Number(shown)).toFixed(places)), { figures: places });
   return `→ ${what}: 1 − ${shown} = ${rest}`;
 };
 

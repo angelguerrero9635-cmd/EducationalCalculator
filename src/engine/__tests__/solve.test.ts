@@ -643,6 +643,36 @@ describe('refusals a student reads', () => {
     );
   });
 
+  it('works an older input out again when the inputs older still fix it', () => {
+    // Σx = n × x̄: with n typed before x̄, a total typed last works x̄ out again (70 ÷ 36),
+    // never refusing the total because 70 ÷ 2.03 isn't a whole sample size.
+    const sys: System = {
+      id: 'm.12.x',
+      variables: [
+        { id: 'n', symbol: 'n', name: 'Sample size', integer: true, min: 2, max: 10000 },
+        { id: 'x', symbol: 'x̄', name: 'Mean', min: 0.001, max: 1000, step: 0.001 },
+        { id: 'T', symbol: 'Σx', name: 'Total', min: 0.002, max: 1e7, step: 0.01 },
+      ],
+      relations: [
+        {
+          id: 'T = n × x',
+          display: '',
+          vars: ['T', 'n', 'x'],
+          residual: (v) => v.T! - v.n! * v.x!,
+          solve: { T: (v) => v.n! * v.x!, x: (v) => v.T! / v.n!, n: (v) => v.T! / v.x! },
+        },
+      ],
+    };
+    const r = solve(sys, [
+      { id: 'n', value: 36 },
+      { id: 'x', value: 2.03 },
+      { id: 'T', value: 70 },
+    ]);
+    expect(r.rejected).toBeUndefined();
+    expect(r.values.x).toBeCloseTo(70 / 36, 12);
+    expect(r.dropped).toContain('x');
+  });
+
   it('reads a value in its own format and unit', () => {
     const sys: System = {
       id: 's.6.x',

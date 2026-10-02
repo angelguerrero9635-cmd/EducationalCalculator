@@ -5,6 +5,61 @@ helpers, pictures, tests, harness) could have prevented are turned into engine w
 next section is written, so each section starts from a better engine than the last. One entry
 per review; each line names the finding and what the engine now does about it.
 
+## Lesson reviews of today's engine changes: refusals a student reads, steps in order
+
+- **K–2 children saw raw engine sentences** ("These numbers can’t all be true together", "The
+  other numbers can’t reach this…", "Left would have to be −178, but it can be at least 0" on
+  m.2.add-sub-1000~subtract at a = 0, b = 178). → `kidMessage` catches every engine sentence
+  and keeps its direction: "That doesn’t fit. Try a smaller (larger) number." when the
+  sentence says which way.
+- **Value names that aren't nouns** ("the in all", "the how many more (or fewer)", "the not
+  shaded", "for the today"). → `VariableDef.inSentence` names a value inside a sentence; the
+  K–5 `whole` helper sets it for the common labels (In all → the total, In each group → the
+  number in each group, Left → what is left, How many more → the difference, …), and the
+  weather pages say "today’s temperature". Without it a label that starts with a preposition,
+  wh-word or adverb, is a lone participle, or ends in a number is quoted (“Side 4”).
+- **Grade 3 refusals showed decimals and negatives** ("the groups 0.1667", "width 16.6667 cm",
+  "books left −247"). → On a K–5 page (`System.id`, set by the unit context) a value that isn't
+  whole is not named ("That wouldn’t make the groups a whole number.") and one below 0 is "less
+  than 0".
+- **`outOfReach` was not the range sentence** (no period, "X would have to be …"). → It is
+  built from `rangeSentence`; with several values open, every typed value is tried together
+  before the generic "The other numbers can’t reach this: they would go past their limits."
+  (now with its period): m.3.perimeter~missing-side at P = 4 names side 4, and
+  s.6.density~displacement at a = 1000 after c = 62 names the volume. It bounds products too
+  (any rule straight in each value: the least and greatest at the corners of the ranges).
+- **Numbers in refusals** were rounded to 6 figures (19,996.5 for 19,996.468; months
+  −1.3846), printed decimals on fraction pages (0.25, "0, 0.5, 1, …."), lost the space in
+  "−57 °C" and said "at least 1 cubes". → A refused value reads as its box shows it (the
+  fraction 1/4, "0, 1/2, 1, …" with no period after "…"), a range refusal to the step's decimals
+  and one more at a time while the rounded number would still pass; "°C" keeps its space; 1
+  takes the singular unit.
+- **Regression: "0.1 × 10²" read as scientific notation** (s.8.kinetic-potential~kinetic lost
+  "KE = 1/2 × 0.1 × 100"). → `SCI_WORK` gives decimals the same powers as whole numbers (not ²
+  or ³ alone); written.test checks the chain.
+- **A branch the whole-number search then rejected was kept** (m.3.scaled-graphs~picture-more:
+  d = 1, n₂ = 1, p₁ = 0 cleared d, where n₁ = 0 works). → `propagate` vets each branch for the
+  values it leaves open (`outOfReach`, `wholeSolutions`) and keeps the first that can still be
+  filled in.
+- **A non-whole older input refused the newest** (clt-sums: Σx typed after x̄ and n gave "sample
+  size 35.96"). → The older input is worked out again when the inputs older still fix it
+  (x̄ = Σx ÷ n), as a value newer input determines is.
+- **Steps used values before the step that finds them** (add-fractions-unlike~subtract at
+  a = 12: "? and 3 both go into ?" → "Common denominator = 12"; "?/12 − ?/12" printing 8 + 4;
+  convert-units~multi-step "Left over = 0" from "? − ? × 8 = ?"). → Filled values are ordered so
+  each step uses only values found before it; a value only the search pins is its own step,
+  marked `pinned`, that says "Only 12 fits every rule here: no other number works."
+- **Grades 9–12 printed the rule twice** ("SE = σ ÷ √n" as the formula and the first work line).
+  → The rearranged line is left out when it reads the same as the formula.
+- **Data.** m.7 percent-change finds the original from the new amount and the percent (b = a ÷
+  (1 + p ÷ 100), 7.RP.3). Ranges every edge reaches: plate distance from 0.1 km, displacement
+  levels (before to 999.9 mL, after from 5.1 mL, and a rule that the level rises), dividend to
+  989.01 (999 × 0.99), a fraction of a whole from 1/12, mixed-number common denominators to 132. Grass-slope's soil is more, not its tray. The m.12 complement reads P as its box shows
+  it (1 − 0.06681 = 0.93319).
+- **Reviewer gap**: most K–5 edge walkthroughs in the dump were a refusal only. → The dump
+  types an edge with only the opening values that fit it (the others listed as left out), so
+  the edge itself is walked through.
+
 ## Lesson review of the new Grades 11–12 pages: tiny values, lines as shown; today's regressions
 
 - **Checks on tiny values always passed.** `closeTo` was |x − t| ≤ 10⁻⁶ × (1 + |t|), so any
