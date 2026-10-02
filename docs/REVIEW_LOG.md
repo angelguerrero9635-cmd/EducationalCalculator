@@ -35,6 +35,17 @@ script. One entry per review, with the token cost, so the next review is cheaper
   `startWith` values (the momentum masses had none and nobody saw it); `drags.md` makes one
   40 px drag, where a drag to each end would have caught the runaway values; and no screenshot
   shows a page with one box "?", where a picture drawing the example's numbers would show.
+- Evidence added (`review-interact.mjs`): `drags.md` drags each handle toward each end too (7
+  growing steps to 240 px) and flags a runaway (the value per px over 8 times its earlier
+  rate), a handle that unmounts or leaves the picture, a value out of its box's range (boxes
+  carry `data-min`/`data-max`), a page error, an "impossible" sentence after release, and a
+  picture that changes when the dragged value is typed back; `unknowns.md` makes each first
+  edit and flags the example's value of a "?" box in the picture's text, on every page with a
+  picture. On a build from before the fixes it caught the graph runaway, the vanishing
+  vertex, the satellite inside Earth and the first-law labels; at the fixes it still flags the
+  photoelectric "?" case (open), the orbit and relativity captions, `(x − 3)/?` on the
+  restricted inverse, and a FunctionGraph handle hidden mid-drag when it nears another (the
+  34 px rule).
 
 ## Grades 9–12 pages: two page reviews, placements, and the testing change
 

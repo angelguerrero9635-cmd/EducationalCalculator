@@ -32,8 +32,15 @@ import {
 import { Fenced, Radical } from './EquationMarks';
 import type { Calculator } from './useCalculator';
 
-/** Web: the box's status as data-status (given, example, derived, unknown), for the review scripts. */
-const statusData = (status: string) => ({ dataSet: { status } }) as object;
+/**
+ * Web: the box's status as data-status (given, example, derived, unknown) and its range as
+ * data-min and data-max (in the shown unit), for the review scripts.
+ */
+const statusData = (status: string, v?: VariableDef) => {
+  const shown = (bound?: number) =>
+    bound === undefined ? undefined : bound / (v?.unitFactor ?? 1);
+  return { dataSet: { status, min: shown(v?.min), max: shown(v?.max) } } as object;
+};
 
 /**
  * The keyboard for a value. iOS's numbers-and-punctuation pad has the point and the minus sign;
@@ -264,7 +271,7 @@ function VariableInput({ variable, calc }: { variable: VariableDef; calc: Calcul
       ) : (
         <TextInput
           testID={`input-${variable.id}`}
-          {...statusData(status)}
+          {...statusData(status, variable)}
           accessibilityLabel={`${variable.name}${unit ? ` in ${unit}` : ''}`}
           value={shown}
           placeholder="?"
@@ -352,7 +359,7 @@ function EquationBox({
     <TextInput
       ref={ref}
       testID={`input-${variable.id}`}
-      {...statusData(status)}
+      {...statusData(status, variable)}
       accessibilityLabel={blank ? `${variable.name}: 1` : variable.name}
       value={blank ? '' : shown}
       placeholder={blank ? '' : '?'}
