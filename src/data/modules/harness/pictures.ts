@@ -76,6 +76,7 @@ import { he2fIssues } from './picturesHe2f';
 import { isHe2fSpec } from '../typesHe2f';
 import { skeletalIssues } from './picturesHe1c';
 import { phaseEnvelopeIssues, phaseSubstanceIssues } from './picturesHe1i';
+import { chemRateHe2kIssues, globeIssues } from './picturesHe2k';
 import { he1fIssues } from './picturesHe1f';
 import { he2bIssues } from './picturesHe2b';
 import type { ModuleDef, Representation } from '../types';
@@ -2234,6 +2235,12 @@ export function repIssues(
     case 'chemDiagram':
       out.push(...chemDiagramIssues(rep, (id) => val(id)));
       if (rep.mode === 'phase') out.push(...phaseSubstanceIssues(rep.substance, val));
+      if (rep.mode === 'rate' && !('times' in rep))
+        out.push(
+          ...chemRateHe2kIssues(rep, val, (x) =>
+            typeof x === 'string' ? byId.get(x)?.unit : undefined,
+          ),
+        );
       break;
     case 'phaseEnvelope':
       out.push(...phaseEnvelopeIssues(rep, val));
@@ -2273,6 +2280,14 @@ export function repIssues(
           rep,
           (id) => (val(id) ?? NaN) * (byId.get(id)?.unitFactor ?? 1),
           (id) => byId.get(id)?.unit,
+    case 'globe':
+      // In formula units (a distance in km, a speed in m/s), as the picture draws them.
+      out.push(
+        ...globeIssues(rep, (x) =>
+          ((v) =>
+            v === undefined || typeof x === 'number' ? v : v * (byId.get(x)?.unitFactor ?? 1))(
+            val(x),
+          ),
         ),
       );
       break;

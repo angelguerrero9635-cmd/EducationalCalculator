@@ -151,6 +151,8 @@ const PICTURE_NAMES: Record<string, string> = {
   bode: 'a Bode plot: gain in dB and phase over log frequency, corners, margins',
   potentialWell: 'a potential well with its energy levels and wavefunctions',
   unitCell: 'a cubic unit cell, its lattice planes and Bragg reflection',
+  globe:
+    'a globe: the Sun’s rays, a great-circle route, a turning plate, a dipole field or a ring of air',
   matrixGrid: 'matrices in brackets',
   membrane: 'cell membrane with particles on each side',
   dnaStrand: 'DNA ladder, mRNA and amino acids',

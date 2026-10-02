@@ -5,6 +5,7 @@
  * or a variable id.
  */
 import { phaseSubstanceVars, type PhaseSubstance } from './typesHe1i';
+import { chemRateHe2kVars, type ChemRateHe2kSpec } from './typesHe2k';
 import type { NumOrVar } from './typesGraphs';
 
 const ids = (...xs: (NumOrVar | undefined)[]) =>
@@ -70,6 +71,8 @@ export type ChemDiagramHs3eSpec =
       rate?: NumOrVar;
       species?: string;
     }
+  /** College (HC34): integrated rate laws, Arrhenius, consecutive reactions (`typesHe2k.ts`). */
+  | ChemRateHe2kSpec
   | {
       kind: 'chemDiagram';
       mode: 'cell';
@@ -83,6 +86,7 @@ export function chemDiagramHs3eVars(r: ChemDiagramHs3eSpec): string[] {
     case 'phase':
       return [...ids(r.freezing, r.boiling, r.drop, r.rise), ...phaseSubstanceVars(r.substance)];
     case 'rate':
+      if (!('times' in r)) return chemRateHe2kVars(r);
       return ids(...r.times, ...r.concentrations, r.span, r.change, r.rate);
     case 'cell':
       return ids(r.cathode, r.anode, r.voltage);

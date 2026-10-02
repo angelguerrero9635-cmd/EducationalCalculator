@@ -192,6 +192,7 @@ import { ComplexPlaneHe2a } from './ComplexPlaneHe2a';
 import { Bode } from './Bode';
 import { PotentialWell } from './PotentialWell';
 import { UnitCell } from './UnitCell';
+import { Globe } from './Globe';
 import { MotionGraphHs } from './MotionGraphHs';
 import { HskView } from './HskView';
 import { He2fView } from './He2fView';
@@ -360,6 +361,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <PotentialWell spec={spec} calc={calc} />;
     case 'unitCell':
       return <UnitCell spec={spec} calc={calc} />;
+    case 'globe':
+      return <Globe spec={spec} calc={calc} />;
     case 'linearFunction':
       return <LinearFunction spec={spec} calc={calc} />;
     case 'lineSystem':

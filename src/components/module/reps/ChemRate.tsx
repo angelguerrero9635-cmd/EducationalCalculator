@@ -17,7 +17,7 @@ import { reader } from './graphKit';
 import { niceStep } from './hsdGrid';
 import { url, usePaintIds } from './paint';
 
-type Spec = Extract<ChemDiagramHs3eSpec, { mode: 'rate' }>;
+type Spec = Extract<ChemDiagramHs3eSpec, { mode: 'rate'; times: unknown }>;
 
 /** A value as printed: 4 significant figures, a true minus. */
 const sig = (x: number) => formatNumber(Number(x.toPrecision(4)));

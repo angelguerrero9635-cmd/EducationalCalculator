@@ -9,6 +9,7 @@ import { ChemCell } from './ChemCell';
 import { ChemPhase } from './ChemPhase';
 import { ChemPhaseSubstance } from './ChemPhaseSubstance';
 import { ChemRate } from './ChemRate';
+import { ChemRateHe2k } from './ChemRateHe2k';
 
 export function ChemDiagramHs3e({ spec, calc }: { spec: ChemDiagramHs3eSpec; calc: Calculator }) {
   switch (spec.mode) {
@@ -16,6 +17,7 @@ export function ChemDiagramHs3e({ spec, calc }: { spec: ChemDiagramHs3eSpec; cal
       if (spec.substance) return <ChemPhaseSubstance spec={spec} calc={calc} />;
       return <ChemPhase spec={spec} calc={calc} />;
     case 'rate':
+      if (!('times' in spec)) return <ChemRateHe2k spec={spec} calc={calc} />;
       return <ChemRate spec={spec} calc={calc} />;
     case 'cell':
       return <ChemCell spec={spec} calc={calc} />;
