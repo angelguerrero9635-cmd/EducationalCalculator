@@ -13,6 +13,12 @@ import {
   rationalByTopVars,
   type RationalByTop,
 } from './typesHs3b';
+import {
+  familyHe1dVars,
+  functionGraphHe1dVars,
+  type FamilyHe1d,
+  type FunctionGraphHe1d,
+} from './typesHe1d';
 
 /** A number fixed by the picture, or the id of a variable that holds it. */
 export type NumOrVar = number | string;
@@ -33,6 +39,7 @@ export type NumOrVar = number | string;
  * - arcsin, arccos, arctan: a · sin⁻¹(x) + k on the restricted domain
  */
 export type FunctionFamily =
+  | FamilyHe1d // HC4, HC9: a time response, a grain-size curve (typesHe1d.ts)
   | { family: 'linear'; m: NumOrVar; b: NumOrVar }
   | { family: 'absolute'; a?: NumOrVar; h?: NumOrVar; k?: NumOrVar }
   | { family: 'quadratic'; form: 'standard'; a: NumOrVar; b: NumOrVar; c: NumOrVar }
@@ -131,7 +138,8 @@ export type FunctionGraphSpec = FunctionFamily & {
   fixed?: boolean;
 } & FunctionGraphHs2a &
   FunctionGraphHs2g &
-  FunctionGraphHs3b;
+  FunctionGraphHs3b &
+  FunctionGraphHe1d;
 
 const ids = (...xs: (NumOrVar | undefined)[]) =>
   xs.filter((x): x is string => typeof x === 'string');
@@ -139,6 +147,9 @@ const ids = (...xs: (NumOrVar | undefined)[]) =>
 /** The variable ids a family names. */
 export function familyVars(f: FunctionFamily): string[] {
   switch (f.family) {
+    case 'response':
+    case 'gradation':
+      return familyHe1dVars(f); // HC4, HC9
     case 'linear':
       return ids(f.m, f.b);
     case 'quadratic':
@@ -187,5 +198,6 @@ export function functionGraphVars(r: FunctionGraphSpec): string[] {
     ...ids(s?.vertex?.x, s?.vertex?.y, ...(s?.zeros ?? []), s?.intercept, s?.va, s?.ha),
     ...ids(s?.period, s?.amplitude),
     ...functionGraphHs3bVars(r),
+    ...functionGraphHe1dVars(r),
   ];
 }
