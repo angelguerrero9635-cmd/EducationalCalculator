@@ -2166,6 +2166,8 @@ const RETIRED = new Set<string>([
   'g.s9-dna-protein-synthesis-chargaff',
   'g.s9-dna-protein-synthesis-codons',
   'g.s9-ecosystem-dynamics-nitrogen',
+  'g.s9-ecosystem-dynamics-numbers',
+  'g.s9-ecosystem-dynamics-ocean',
   'g.s9-ecosystem-dynamics-succession',
   'g.s9-evolution-evidence-allele-counts',
   'g.s9-evolution-evidence-cladogram',

@@ -645,17 +645,19 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'H40',
       'energyPyramid',
       'Pyramids of energy, biomass and numbers; succession stages; the nitrogen cycle as an explore figure',
-      ['s.9.ecosystem-dynamics'],
+      {
+        's.9.ecosystem-dynamics': '"measure":"energy"',
+        's.9.ecosystem-dynamics~numbers': '"measure":"numbers"',
+        's.9.ecosystem-dynamics~biomass': '"measure":"biomass"',
+        's.9.ecosystem-dynamics~succession': '"bare rock"',
+        's.9.ecosystem-dynamics~nitrogen': '"nitrogenCycle"',
+      },
     ),
-    status: 'drawn',
-    gallery: [
-      'g.s9-ecosystem-dynamics-biomass',
-      'g.s9-ecosystem-dynamics-numbers',
-      'g.s9-ecosystem-dynamics-ocean',
-    ],
+    status: 'placed',
+    gallery: ['g.s9-ecosystem-dynamics-biomass'],
     notes:
       'Drawn (group HH). energyPyramid takes an optional measure: "energy" (default, unchanged) | "biomass" | "numbers". Biomass and numbers draw no share passed up unless percent is set (the harness then skips the 10% check), so a pyramid of numbers or an ocean biomass pyramid can stand upside down, to scale. Example: { kind: "energyPyramid", measure: "numbers", levels: ["N1", "N2", "N3"], names: ["oak tree", "caterpillars", "songbirds"] }; { kind: "energyPyramid", measure: "biomass", levels: ["B1", "B2", "B3"], percent: "p", names: [...] }. Succession: sequence stages with card icons { kind: "icon", icon: "bare rock" } ("lichens on rock", "mosses and thin soil", "grasses and flowers", "shrubs", "young trees", "mature forest"). Nitrogen cycle: explore figure { kind: "nitrogenCycle" }, each scene nitrogen: { process?: "fixation" | "lightning" | "nitrification" | "assimilation" | "eating" | "ammonification" | "denitrification" } (none: the whole cycle, unnamed arrows); example scene { label: "Fixation", lines: [...], nitrogen: { process: "fixation" } }.' +
-      ' Tracker: still drawn. The energy pyramid, the succession stages (~succession) and the nitrogen cycle (~nitrogen) are placed; pyramids of biomass and numbers (`measure`) are on no page.',
+      ' Placed (parts by page in `uses`): the energy pyramid, the succession stages (~succession) and the nitrogen cycle (~nitrogen) were placed; the pyramid of numbers (oak trees, upside down) is on s.9.ecosystem-dynamics~numbers and the upside-down ocean pyramid of biomass on ~biomass (the numbers and ocean demos retired). The meadow biomass demo stays: biomass with `percent` passed up is on no page.',
   },
   {
     ...ask(
