@@ -5,9 +5,12 @@
  * other (T_c, F_N) is drawn by the text component as a small lowered run.
  */
 
-/** A symbol (one to three letters) then "_" then its subscript (letters or digits). */
+/**
+ * A symbol (one to three letters) then "_" then its subscript (letters or digits, Greek too:
+ * μ_ΣX, σ_ΣX are drawn lowered, never raw).
+ */
 export const SUBSCRIPT =
-  /(?<![\p{L}\d_.])(\p{L}[′']?(?:\p{L}[′']?){0,2})_([A-Za-z0-9]{1,6})(?![A-Za-z0-9_])/gu;
+  /(?<![\p{L}\d_.])(\p{L}[′']?(?:\p{L}[′']?){0,2})_([\p{L}\d]{1,6})(?![\p{L}\d_])/gu;
 
 const SUBS: Record<string, string> = {
   '0': '₀',

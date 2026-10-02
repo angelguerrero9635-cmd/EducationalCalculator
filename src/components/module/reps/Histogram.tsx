@@ -83,9 +83,14 @@ export function Histogram({ spec, calc }: { spec: HistogramSpec; calc: Calculato
   } else {
     const k = model.bars.length;
     const first = model.bars[0];
+    // While a data value or bin setting is "?", the bins read "?" too, not the example's.
+    const nText = known(spec.count) && (spec.counts || allKnown) ? num(model.n!) : '?';
+    const binsKnown = allKnown || (!!spec.counts && [spec.width, spec.start].every(known));
     if (first)
       lines.push(
-        `${spec.counts ? `n = ${num(model.n!)}` : `${num(model.n!)} values`} in ${k} bins of width ${num(first.hi - first.lo)}, from ${num(first.lo)} to ${num(model.bars[k - 1]!.hi)}.`,
+        binsKnown
+          ? `${spec.counts ? `n = ${nText}` : `${nText} values`} in ${k} bins of width ${num(first.hi - first.lo)}, from ${num(first.lo)} to ${num(model.bars[k - 1]!.hi)}.`
+          : `${spec.counts ? `n = ${nText}` : `${nText} values`} in bins of width ${known(spec.width) ? num(first.hi - first.lo) : '?'}, from ${known(spec.start) ? num(first.lo) : '?'}.`,
       );
     if (model.outside)
       lines.push(
@@ -103,13 +108,18 @@ export function Histogram({ spec, calc }: { spec: HistogramSpec; calc: Calculato
   const medianValue = spec.median === true ? model.median : get(spec.median);
   const showMean = !model.problem && !waiting && (!!spec.mean || prob) && meanValue !== undefined;
   const showMedian = !model.problem && !!spec.median && medianValue !== undefined && !prob;
+  // A mean or median worked from a "?" box reads "?", in the caption and at its marker.
+  const meanKnown = allKnown && known(spec.mean);
+  const medianKnown = allKnown && known(spec.median);
   if (!prob && showMean)
     lines.push(
-      model.estimated
-        ? `Mean x̄ ≈ ${num(meanValue!)}, from the bin midpoints.`
-        : `Mean x̄ = ${num(meanValue!)}.`,
+      !meanKnown
+        ? 'Mean x̄ = ?.'
+        : model.estimated
+          ? `Mean x̄ ≈ ${num(meanValue!)}, from the bin midpoints.`
+          : `Mean x̄ = ${num(meanValue!)}.`,
     );
-  if (showMedian) lines.push(`Median = ${num(medianValue!)}.`);
+  if (showMedian) lines.push(`Median = ${medianKnown ? num(medianValue!) : '?'}.`);
   if (range && !model.problem) lines.push(range.caption);
   if (spec.shape && !model.problem)
     lines.push(`Shape: ${spec.shape === true ? model.shape : spec.shape}.`);
@@ -122,7 +132,7 @@ export function Histogram({ spec, calc }: { spec: HistogramSpec; calc: Calculato
       ? [
           {
             x: meanValue!,
-            text: `${meanSym} = ${allKnown ? num(meanValue!) : '?'}`,
+            text: `${meanSym} = ${meanKnown || prob ? num(meanValue!) : '?'}`,
             color: c.chartHighlight,
             dash: undefined,
           },
@@ -132,7 +142,7 @@ export function Histogram({ spec, calc }: { spec: HistogramSpec; calc: Calculato
       ? [
           {
             x: medianValue!,
-            text: `median = ${num(medianValue!)}`,
+            text: `median = ${medianKnown ? num(medianValue!) : '?'}`,
             color: c.hopBack,
             dash: chart.dash,
           },

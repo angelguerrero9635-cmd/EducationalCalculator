@@ -44,8 +44,13 @@ export function NormalCurve({ spec, calc }: { spec: NormalCurveSpec; calc: Calcu
   const standard = !chi && spec.mean === undefined && spec.sd === undefined;
   const mu = model.pop?.m ?? model.m;
   const sigma = model.pop?.s ?? model.s;
+  // A sampling curve also waits for n: a "?" n draws no area from the smallest n.
   const curveKnown =
-    !model.problem && known(spec.mean) && known(spec.sd) && known(spec.chiSquare?.df);
+    !model.problem &&
+    known(spec.mean) &&
+    known(spec.sd) &&
+    known(spec.chiSquare?.df) &&
+    known(spec.sample?.n);
   const sym = (v: number | string | undefined, fallback: string) =>
     typeof v === 'string' ? rep.variable(v).symbol : fallback;
   const X = spec.sample ? 'X̄' : chi ? 'χ²' : 'X';
@@ -68,8 +73,12 @@ export function NormalCurve({ spec, calc }: { spec: NormalCurveSpec; calc: Calcu
   }
   if (spec.sample && model.pop) {
     const n = get(spec.sample.n)!;
+    const nSym = sym(spec.sample.n, 'n');
+    // A "?" n or σ leaves the formula alone, not the example's numbers worked behind it.
     lines.push(
-      `Means of samples of ${sym(spec.sample.n, 'n')} = ${num(n)}: σ/√n = ${num(sigma)}/√${num(n)} = ${num(model.s)}.`,
+      known(spec.sample.n) && known(spec.sd)
+        ? `Means of samples of ${nSym} = ${num(n)}: σ/√n = ${num(sigma)}/√${num(n)} = ${num(model.s)}.`
+        : `Means of samples of ${nSym}: σ/√${nSym}.`,
     );
   }
   const areaText = (regions: Span[]) =>

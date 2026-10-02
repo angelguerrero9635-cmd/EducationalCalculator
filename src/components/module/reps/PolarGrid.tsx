@@ -17,20 +17,28 @@ import { polarConicText } from './polarConic';
 
 const RAD = Math.PI / 180;
 
-/** The curve's equation as a lesson writes it: "r = 3 cos(2θ)", "r = 2 + 2 cos θ". */
-function curveText(spec: NonNullable<PolarGridSpec['curve']>, v: Record<string, number>) {
+/**
+ * The curve's equation as a lesson writes it: "r = 3 cos(2θ)", "r = 2 + 2 cos θ". A parameter
+ * whose box is "?" reads as its letter ("r = aθ"), never the example's number.
+ */
+function curveText(
+  spec: NonNullable<PolarGridSpec['curve']>,
+  v: Record<string, number>,
+  label: (key: string) => string = (key) => short(v[key]!),
+) {
   const fn = spec.shape !== 'spiral' ? (spec.fn ?? 'cos') : 'cos';
   switch (spec.shape) {
     case 'circle':
-      return spec.fn ? `r = ${short(v.a!)} ${fn} θ` : `r = ${short(v.a!)}`;
+      return spec.fn ? `r = ${label('a')} ${fn} θ` : `r = ${label('a')}`;
     case 'rose':
-      return `r = ${short(v.a!)} ${fn}(${short(v.n!)}θ)`;
+      return `r = ${label('a')} ${fn}(${label('n')}θ)`;
     case 'cardioid': {
       const b = v.b ?? v.a!;
-      return `r = ${short(v.a!)} ${b < 0 ? '−' : '+'} ${short(Math.abs(b))} ${fn} θ`;
+      const bText = v.b === undefined ? label('a') : label('b');
+      return `r = ${label('a')} ${b < 0 ? '−' : '+'} ${bText.replace(/^−/, '')} ${fn} θ`;
     }
     case 'spiral':
-      return `r = ${short(v.a!)}θ`;
+      return `r = ${label('a')}θ`;
     case 'conic': // H106 (drawn by PolarConic)
       return polarConicText({ k: v.k!, m: v.m ?? 1, n: v.n!, fn: spec.fn ?? 'cos' });
   }
@@ -72,6 +80,14 @@ export function PolarGrid({ spec, calc }: { spec: PolarGridSpec; calc: Calculato
 
   // ── Polar: rings and rays. ──
   const cv = spec.curve ? read(spec.curve, CURVE_FIELDS[spec.curve.shape]) : {};
+  // A curve parameter whose box is "?" reads as its letter in the equation.
+  const cvLabel = (key: string) => {
+    const raw = (spec.curve as unknown as Record<string, number | string>)[key];
+    return typeof raw === 'string' && !rep.known(raw) ? rep.variable(raw).symbol : short(cv[key]!);
+  };
+  const cvKnown = Object.keys(cv).every((key) =>
+    isKnown((spec.curve as unknown as Record<string, number | string>)[key]),
+  );
   const span: [number, number] = spec.curve ? polarSpan(spec.curve, cv) : [0, 0];
   const curvePts = spec.curve
     ? Array.from({ length: 361 }, (_, i) => {
@@ -85,6 +101,9 @@ export function PolarGrid({ spec, calc }: { spec: PolarGridSpec; calc: Calculato
         r: num(spec.point.r),
         th: num(spec.point.theta),
         known: isKnown(spec.point.r) && isKnown(spec.point.theta),
+        // Each coordinate reads "?" while its box is "?": "(?, 60°)".
+        rText: isKnown(spec.point.r) ? short(num(spec.point.r)) : '?',
+        thText: isKnown(spec.point.theta) ? angleText(num(spec.point.theta), show) : '?',
       }
     : undefined;
   const maxR = Math.max(
@@ -123,7 +142,7 @@ export function PolarGrid({ spec, calc }: { spec: PolarGridSpec; calc: Calculato
   // Caption.
   const lines: string[] = [];
   if (spec.curve) {
-    const text = curveText(spec.curve, cv);
+    const text = curveText(spec.curve, cv, cvLabel);
     const extra =
       spec.curve.shape === 'rose' && Number.isInteger(cv.n)
         ? `: ${petals(cv.n!)} petals`
@@ -134,14 +153,14 @@ export function PolarGrid({ spec, calc }: { spec: PolarGridSpec; calc: Calculato
               ? ': a limaçon with an inner loop'
               : ': a limaçon'
           : spec.curve.shape === 'circle' && spec.curve.fn
-            ? `: a circle of diameter ${short(Math.abs(cv.a!))} through the pole`
+            ? `: a circle of diameter ${cvKnown ? short(Math.abs(cv.a!)) : '?'} through the pole`
             : '';
     lines.push(
       `${text}${extra}, θ from ${angleText(span[0]!, show)} to ${angleText(span[1]!, show)}.`,
     );
   }
   if (pt) {
-    if (!pt.known) lines.push('(r, θ) = ?');
+    if (!pt.known) lines.push(`(r, θ) = (${pt.rText}, ${pt.thText})`);
     else {
       const x = pt.r * Math.cos(pt.th * RAD);
       const y = pt.r * Math.sin(pt.th * RAD);
@@ -354,20 +373,14 @@ export function PolarGrid({ spec, calc }: { spec: PolarGridSpec; calc: Calculato
                     stroke={c.chartHighlight}
                     strokeWidth={chart.strokeHeavy}
                     fill="none"
-                    opacity={
-                      Object.keys(cv).every((key) =>
-                        isKnown((spec.curve as unknown as Record<string, number | string>)[key]),
-                      )
-                        ? 1
-                        : 0.35
-                    }
+                    opacity={cvKnown ? 1 : 0.35}
                   />
                 ) : null}
                 {spec.curve ? (
                   <MathChip
                     x={8}
                     y={20}
-                    text={curveText(spec.curve, cv)}
+                    text={curveText(spec.curve, cv, cvLabel)}
                     anchor="start"
                     w={w}
                     h={h}
@@ -432,7 +445,7 @@ export function PolarGrid({ spec, calc }: { spec: PolarGridSpec; calc: Calculato
                         <MathChip
                           x={p.x + (right ? 12 : -12)}
                           y={p.y + (up ? -12 : 22)}
-                          text={`(${short(pt.r)}, ${angleText(pt.th, show)})`}
+                          text={`(${pt.rText}, ${pt.thText})`}
                           anchor={right ? 'start' : 'end'}
                           w={w}
                           h={h}
