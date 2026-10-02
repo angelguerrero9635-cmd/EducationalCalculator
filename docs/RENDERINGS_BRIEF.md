@@ -544,3 +544,12 @@ HC11 `oscillator` options, HC12 regions and HC13 `velocityProfile` are drawn. Th
 `pictureRequestsHe.ts` (one file per group, `pictureRequestsHe1<x>.ts`); each entry's notes give
 the fields a page passes and an example, and its demos (`g.he-…`) are in `galleryHe1<x>.ts`.
 Still requested: HC3's `interaction` (P–M curve).
+
+2026-10-02, college round 2: HC14 `complexPlane` options, HC15 `potentialWell`, HC16
+`unitCell`, HC17 `propertyDiagram`, HC18 schematics `amp`, HC19 `induction` field sources and
+rails, HC20 and HC25 `freeBody` options and aircraft, HC21 `fieldPlot`, HC22 `bode`, HC23
+`thermalWall`, HC24 `wing`, HC26 `soilProfile`, HC27 `truss` (and its joint card), HC28
+`stressStrain`, HC29 `charges` options, HC30 `duct`, HC31 `supersonicFlow`, HC32 `survey`, HC33
+`stressElement`, HC34 `chemDiagram` rate, HC35 `circularMotion` orbits, HC36 `globe`, HC37 and
+HC38 `functionGraph` `tangent`, `band` and `series`, and HC39 schematics `device` are drawn.
+Tracker entries are in `pictureRequestsHe2<x>.ts`, demos in `galleryHe2<x>.ts`.
