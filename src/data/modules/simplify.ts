@@ -10,7 +10,7 @@
  * the work is shown in class. Lines are text; the last one is the value itself, which the
  * answer line shows, so callers usually drop it.
  */
-import { asFraction, formatNumber, plainDigits, superscript } from '@/engine/format';
+import { asFraction, formatNumber, plainDigits, scientific, superscript } from '@/engine/format';
 
 type Node =
   /** `pi`: the value is a multiple of π, printed "30π" (π stays a factor, never 3.1416). */
@@ -41,7 +41,14 @@ const SUPER = /^⁻?[⁰¹²³⁴⁵⁶⁷⁸⁹]+/;
 const superValue = (raised: string) =>
   Number([...raised].map((c) => (c === '⁻' ? '-' : '⁰¹²³⁴⁵⁶⁷⁸⁹'.indexOf(c))).join(''));
 
-function tokenize(text: string): Token[] | undefined {
+/**
+ * Whether a line is worked in scientific notation: it has a number that can only be one (a
+ * decimal in front, 6.674 × 10⁻¹¹, or a power other than ² or ³, 7 × 10⁶). Its 4 × 10³ is then
+ * one number too, never 4 × 1,000, and its large results are written the same way.
+ */
+const SCI_WORK = /\d\.\d+ × 10[⁻⁰¹²³⁴⁵⁶⁷⁸⁹]|\d × 10(?:⁻|[⁰¹⁴⁵⁶⁷⁸⁹]|[²³][⁰¹²³⁴⁵⁶⁷⁸⁹])/;
+
+function tokenize(text: string, sciWork = SCI_WORK.test(text)): Token[] | undefined {
   const s = plainDigits(text).replace(/\s+/g, ' ').trim();
   const out: Token[] = [];
   let i = 0;
@@ -54,7 +61,7 @@ function tokenize(text: string): Token[] | undefined {
     // Scientific notation is one number (6.022 × 10²³), never a power to work out; a lone
     // ² or ³ stays a power (expanded form, 3 × 10² = 300).
     const sci = SCI.exec(s.slice(i));
-    if (sci && !/^[²³]$/.test(sci[2]!)) {
+    if (sci && (sciWork || !/^[²³]$/.test(sci[2]!))) {
       out.push({ t: 'num', value: Number(sci[1]) * 10 ** superValue(sci[2]!), text: sci[0] });
       i += sci[0].length;
       continue;
@@ -365,6 +372,8 @@ const INEXACT = '≈';
 
 /** Whether the expression being worked writes fractions (3/4), so its results may too. */
 let fractionsAllowed = false;
+/** Whether the expression being worked is in scientific notation, so its results are too. */
+let scientificWork = false;
 
 const reduce = (n: Node, stage: Stage, depth = 0): Node => {
   if (n.kind === 'num') return n;
@@ -450,7 +459,13 @@ const reduceGroups = (n: Node, target: number, depth = 0): Node => {
   }
 };
 
-const fmt = (x: number) => formatNumber(x).replace('-', '−');
+// In scientific work a large or tiny whole number is written in it too: 3.9844 × 10¹⁴, never
+// 398,437,800,000,000.
+const fmt = (x: number) =>
+  (scientificWork && x !== 0 && (Math.abs(x) >= 1e7 || Math.abs(x) < 1e-4)
+    ? scientific(x)
+    : formatNumber(x)
+  ).replace('-', '−');
 
 /** Prints a node with only the brackets the order of operations needs. */
 function print(n: Node, parentRank = 0, rightSide = false, afterSign = false): string {
@@ -480,7 +495,8 @@ function print(n: Node, parentRank = 0, rightSide = false, afterSign = false): s
     case 'sqrt': {
       // √25 and √(9 + 16): brackets only around an expression.
       const inner = print(n.arg, 0);
-      return isNum(n.arg) && n.arg.value >= 0 ? `√${inner}` : `√(${inner})`;
+      // √(5.692 × 10⁷), √(3/4): a number with a space or bar in it is bracketed too.
+      return isNum(n.arg) && n.arg.value >= 0 && !/[ /]/.test(inner) ? `√${inner}` : `√(${inner})`;
     }
     case 'fn':
       return `${n.name}(${print(n.arg, 0)})`;
@@ -500,7 +516,13 @@ function print(n: Node, parentRank = 0, rightSide = false, afterSign = false): s
           : base.startsWith('−')
             ? `(${base})`
             : base;
-      const printedRight = print(n.right, r, true, true);
+      const printedRaw = print(n.right, r, true, true);
+      // An exponent that is not a plain whole number keeps its brackets: 27^(2/3), never
+      // 27²/3 (which reads as 27² ÷ 3 = 243).
+      const printedRight =
+        n.op === '^' && !/^−?\d+$/.test(printedRaw) && !printedRaw.startsWith('(')
+          ? `(${printedRaw})`
+          : printedRaw;
       // Divided by a multiple of π: ÷ (4π), which would read as ÷ 4, then × π.
       const right =
         (n.op === '÷' || n.op === '/') &&
@@ -535,8 +557,8 @@ export function evaluatePrinted(text: string): number | undefined {
 }
 
 /** How many operations the expression has, or undefined when it isn't plain arithmetic. */
-export function operationCount(text: string): number | undefined {
-  const tokens = tokenize(text);
+export function operationCount(text: string, sciWork?: boolean): number | undefined {
+  const tokens = tokenize(text, sciWork);
   const tree = tokens && parse(tokens);
   if (!tree) return undefined;
   const count = (n: Node): number => {
@@ -569,10 +591,11 @@ const loose = (line: string) =>
  * value. Empty when the text isn't plain arithmetic, has fewer than two operations, or a stage
  * doesn't come out to a number (a root of a negative, a division by zero).
  */
-export function simplifyChain(text: string): string[] {
-  const tokens = tokenize(text);
+export function simplifyChain(text: string, options: { scientific?: boolean } = {}): string[] {
+  scientificWork = !!options.scientific || SCI_WORK.test(text);
+  const tokens = tokenize(text, scientificWork);
   const parsed = tokens && parse(tokens);
-  if (!parsed || (operationCount(text) ?? 0) < 2) return [];
+  if (!parsed || (operationCount(text, scientificWork) ?? 0) < 2) return [];
   let tree = signed(parsed);
   fractionsAllowed = !!tokens?.some((t) => t.t === 'num' && t.text?.includes('/'));
   const lines: string[] = [];

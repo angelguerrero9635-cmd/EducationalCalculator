@@ -76,7 +76,13 @@ describe('scientific notation to the page’s figures', () => {
     expect(formatNumber(3.0302e-19, { scientificFigures: 3 })).toBe('3.03 × 10⁻¹⁹');
     expect(formatNumber(0.14384, { scientificFigures: 3 })).toBe('0.1438');
     // `worked` (a box's figures) wins.
-    expect(formatNumber(3.0302e-19, { worked: 2, scientificFigures: 3 })).toBe('3 × 10⁻¹⁹');
+    expect(formatNumber(3.0302e-19, { worked: 2, scientificFigures: 3 })).toBe('3.0 × 10⁻¹⁹');
+    // The figures keep their zeros (1.9978 × 10⁵ to 3 is 2.00 × 10⁵); × 10⁰ is left out.
+    expect(formatNumber(1.9978e5, { scientific: true, worked: 3 })).toBe('2.00 × 10⁵');
+    expect(formatNumber(1.1e6, { scientific: true, worked: 3 })).toBe('1.10 × 10⁶');
+    expect(formatNumber(1.2, { scientific: true })).toBe('1.2');
+    expect(formatNumber(1.2, { scientific: true, worked: 3 })).toBe('1.20');
+    expect(formatNumber(4.5e7 + 0.5)).toBe('4.5 × 10⁷');
   });
 });
 

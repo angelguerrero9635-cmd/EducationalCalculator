@@ -4,6 +4,7 @@ import {
   formatNumber,
   lowerFirst,
   renderTemplate,
+  significant,
   superscript,
   unitFor,
 } from '@/engine/format';
@@ -101,37 +102,58 @@ export interface Walkthrough {
  * Grades 9–12 add a list at once: "(10 + 75 + 200) ÷ 25" goes straight to "285 ÷ 25", not
  * through "85 + 200". A stage that only adds two numbers is dropped when the next one does too.
  */
+type LineVars = readonly (VariableDef & { scientificFigures?: number })[];
+
 /**
- * A check line as printed. When its two sides nearly cancel at the usual figures
- * (tan(2 × 45.0005°) = 634.06 ÷ (999.99 − 1000)), its numbers are printed with 8, so the sides
- * agree as written.
+ * Two printed numbers that agree: within 10⁻³ of each other, or the same to the page's figures
+ * (161.25 and 161.1222 both read 161), as the answer line shows them.
  */
+const agreeAt = (a: number, b: number, figures: number | undefined) =>
+  Math.abs(a - b) <= 1e-3 * Math.max(Math.abs(a), Math.abs(b)) + 1e-9 ||
+  (figures !== undefined && significant(a, figures) === significant(b, figures));
+
+/** Whether a printed line's sides (each part between " = " that is plain arithmetic) disagree. */
+const lineOff = (text: string, figures: number | undefined) => {
+  const parts = text.split(' = ').map(evaluatePrinted);
+  for (let i = 0; i + 1 < parts.length; i++) {
+    const [a, b] = [parts[i], parts[i + 1]];
+    if (a !== undefined && b !== undefined && !agreeAt(a, b, figures)) return true;
+  }
+  return false;
+};
+
+/**
+ * A line as printed from the first set of line values that makes it true as printed (`off`
+ * says when it is not): the values as their boxes show them, then with more figures. A line
+ * that nearly cancels (tan(2 × 45.0005°) = 634.06 ÷ (999.99 − 1000)) needs the most; one that
+ * no set makes true is printed with the first.
+ */
+const firstTrue = (
+  render: (vars: LineVars) => string,
+  sets: readonly LineVars[],
+  off: (line: string) => boolean,
+) => {
+  const first = render(sets[0]!);
+  if (!off(first)) return first;
+  for (const vs of sets.slice(1)) {
+    const line = render(vs);
+    if (!off(line)) return line;
+  }
+  return first;
+};
+
+/** A check line as printed, from the first set of line values that makes it true. */
 const checkLine = (
   display: string,
-  vars: readonly (VariableDef & { scientificFigures?: number })[],
+  sets: readonly LineVars[],
   values: Values,
-) => {
-  const line = renderTemplate(display, vars, values);
-  const sides = (text: string) => {
-    const parts = text.split(' = ');
-    return parts.length === 2 ? parts.map(evaluatePrinted) : [];
-  };
-  const off = (text: string) => {
-    const [a, b] = sides(text);
-    return (
-      a !== undefined &&
-      b !== undefined &&
-      Math.abs(a - b) > 1e-3 * Math.max(Math.abs(a), Math.abs(b)) + 1e-9
-    );
-  };
-  if (!off(line)) return line;
-  const fine = renderTemplate(
-    display,
-    vars.map((v) => ({ ...v, figures: 8, scientificFigures: undefined })),
-    values,
+  figures: number | undefined,
+) =>
+  firstTrue(
+    (vs) => renderTemplate(display, vs, values),
+    sets,
+    (line) => line.split(' = ').length === 2 && lineOff(line, figures),
   );
-  return off(fine) ? line : fine;
-};
 
 const sumsAtOnce = (lines: string[], start: string, grade: string) => {
   if (!['9', '10', '11', '12'].includes(grade)) return lines;
@@ -347,19 +369,23 @@ export function buildSteps(
   /** The values the student typed (exact as shown). */
   const typed = new Set(givenIdsOf(result));
   /**
-   * The lines' values: a worked-out one in scientific notation reads to the page's figures
-   * (5.93 × 10⁶, as its box and answer show it), a typed one as typed; decimals keep their
-   * extra figures, so the lines still add up. (A value with a display of its own keeps it,
-   * as `withWorkedFigures` leaves it.)
+   * The lines' values: a worked-out one reads to the page's figures (5.93 × 10⁶, 7,540, as its
+   * box and answer show it), a typed one as typed; a line whose printed numbers don't then come
+   * out as printed takes more figures (`lineSets`, from the page's up to 8). (A value with a
+   * display of its own keeps it, as `withWorkedFigures` leaves it.)
    */
-  const lineVars =
+  const shownAt = (n: number) =>
+    workVars.map((w) =>
+      typed.has(w.id) || withWorkedFigures(w, figures).worked === undefined
+        ? w
+        : { ...w, worked: n, scientificFigures: undefined },
+    );
+  const fine = workVars.map((w) => ({ ...w, figures: 8, scientificFigures: undefined }));
+  const lineSets: LineVars[] =
     figures === undefined
-      ? workVars
-      : workVars.map((w) =>
-          typed.has(w.id) || withWorkedFigures(w, figures).worked === undefined
-            ? w
-            : { ...w, scientificFigures: figures },
-        );
+      ? [workVars, fine]
+      : [...Array.from({ length: Math.max(1, 9 - figures) }, (_, i) => shownAt(figures + i)), fine];
+  const lineVars = lineSets[0]!;
   // Figure-only values are found for the picture, never written as a step.
   const trace = result.trace.filter((t) => !byId.get(t.id)?.hidden);
   const steps = trace.map((t): Step => {
@@ -423,19 +449,15 @@ export function buildSteps(
     const expr = typeof text.expr === 'function' ? text.expr(working) : text.expr;
     const work = typeof text.work === 'function' ? text.work(working) : text.work;
     const rearranged = `${v.symbol} = ${renderTemplate(expr, vars)}`;
-    // A line whose printed numbers nearly cancel (1/(1/1 + 1/(−0.994))) can miss the answer
-    // at the usual figures: its numbers are then printed with 8, so the line adds up.
-    const printed = (vs: typeof lineVars) => renderTemplate(expr, vs, working);
+    // A line whose printed numbers nearly cancel (1/(1/1 + 1/(−0.994))), or whose shown values
+    // are rounded, can miss the answer as printed: it then takes more figures.
     const misses = (line: string) => {
       const x = evaluatePrinted(line);
       const want = working[t.id];
-      return (
-        x !== undefined && want !== undefined && Math.abs(x - want) > 1e-3 * Math.abs(want) + 1e-9
-      );
+      return x !== undefined && want !== undefined && !agreeAt(x, want, figures);
     };
-    const fine = lineVars.map((w) => ({ ...w, figures: 8, scientificFigures: undefined }));
     const substituted = agree(
-      `${v.symbol} = ${misses(printed(lineVars)) && !misses(printed(fine)) ? printed(fine) : printed(lineVars)}`,
+      `${v.symbol} = ${firstTrue((vs) => renderTemplate(expr, vs, working), lineSets, misses)}`,
     );
     // Lines that only repeat the one before ("c = 4", then "c = 4") are left out.
     const same = (x: string, y: string) => x === y.split(' (')[0];
@@ -449,7 +471,15 @@ export function buildSteps(
         : noted;
     const workLines = work?.length
       ? byGrade(
-          work.map((line) => agree(renderTemplate(line, lineVars, working))),
+          work.map((line) =>
+            agree(
+              firstTrue(
+                (vs) => renderTemplate(line, vs, working),
+                lineSets,
+                (l) => lineOff(l, figures),
+              ),
+            ),
+          ),
           grade,
         )
       : undefined;
@@ -519,7 +549,7 @@ export function buildSteps(
     const chain =
       shownWork?.length || written || !showSubstituted
         ? []
-        : sumsAtOnce(simplifyChain(bare), bare, grade ?? '')
+        : sumsAtOnce(simplifyChain(bare, { scientific: figures !== undefined }), bare, grade ?? '')
             // The value itself is the answer line; a chain that stops before a value that
             // needs rounding (√98) keeps its last line.
             .filter((line, i, all) => i < all.length - 1 || (operationCount(line) ?? 0) > 0)
@@ -614,9 +644,9 @@ export function buildSteps(
       )
       .map((r) => ({
         formula: agree(
-          r.check && direct ? r.check(working) : checkLine(r.display, lineVars, working),
+          r.check && direct ? r.check(working) : checkLine(r.display, lineSets, working, figures),
         ),
-        ok: holds(r, result.values),
+        ok: holds(r, result.values, module.variables),
       })),
     missing,
     convertIn: givenIds

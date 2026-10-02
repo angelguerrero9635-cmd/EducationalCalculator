@@ -65,8 +65,10 @@ export function formatNumber(
     const p = (variable.pi === 'fraction' ? asPiFraction(x) : undefined) ?? asPiMultiple(x);
     if (p) return p;
   }
+  // A page's figures (worked out, or in a line as its box shows it) keep their trailing zeros.
+  const keep = (variable?.worked ?? variable?.scientificFigures) !== undefined;
   if (variable?.scientific && x !== 0)
-    return scientific(x, variable.worked ?? variable.scientificFigures);
+    return scientific(x, variable.worked ?? variable.scientificFigures, keep);
   if (variable?.fraction && !Number.isInteger(x)) {
     const f = asFraction(x, variable.fraction, variable.improper);
     if (f) return f;
@@ -84,7 +86,7 @@ export function formatNumber(
   // Very big or very small: scientific notation as it is written in class (3 × 10¹⁶), never
   // the calculator's 3e16.
   if (abs >= 1e7 || abs < 1e-4)
-    return scientific(x, variable?.worked ?? variable?.scientificFigures);
+    return scientific(x, variable?.worked ?? variable?.scientificFigures, keep);
   if (variable?.worked)
     return minus(withSeparators(String(Number((x * (1 + 1e-12)).toPrecision(variable.worked)))));
   // Below 1, keep 4 significant figures (0.003183, not 0.0032); otherwise 4 decimals, or the
@@ -233,7 +235,7 @@ export function significant(x: number, sig: number): string {
   return minus(`${x < 0 ? '-' : ''}${withSeparators(text)}`);
 }
 
-export function scientific(x: number, figures = 5): string {
+export function scientific(x: number, figures = 5, zeros = false): string {
   if (x === 0) return '0';
   let n = Math.floor(Math.log10(Math.abs(x)));
   let m = Number((x / 10 ** n).toPrecision(figures));
@@ -242,7 +244,10 @@ export function scientific(x: number, figures = 5): string {
     m /= 10;
     n += 1;
   }
-  return minus(`${m} × 10${raised(n)}`);
+  // A page's significant figures keep their zeros (2.00 × 10⁵, not 2 × 10⁵, from 1.9978 × 10⁵).
+  const mantissa = zeros ? m.toFixed(Math.max(0, figures - 1)) : String(m);
+  // × 10⁰ says nothing: 1.2 N, not 1.2 × 10⁰ N.
+  return minus(n === 0 ? mantissa : `${mantissa} × 10${raised(n)}`);
 }
 
 /**
@@ -470,8 +475,11 @@ export function renderTemplate(
 
 /** Whole-number exponents after a caret written as superscript digits: "10^3" → "10³". */
 export function superscript(text: string): string {
-  return text.replace(/\^([-−]?)(\d+)(?![\d.])/g, (_, sign: string, d: string) =>
-    raised(Number(`${sign ? '-' : ''}${d}`)),
+  // A bracketed whole exponent too: 10^(−6) reads 10⁻⁶, as beside it elsewhere.
+  return text.replace(
+    /\^(?:\(([-−]?)(\d+)\)|([-−]?)(\d+)(?![\d.]))/g,
+    (_, s1: string | undefined, d1: string | undefined, s2: string, d2: string) =>
+      raised(Number(`${(s1 ?? s2) ? '-' : ''}${d1 ?? d2}`)),
   );
 }
 
