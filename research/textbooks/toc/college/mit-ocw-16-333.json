@@ -1,0 +1,95 @@
+{
+  "id": "mit-ocw-16-333",
+  "curriculum": "MIT OpenCourseWare 16.333 Aircraft Stability and Control",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Fall 2004",
+  "subject": "aerospace",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Jonathan How. 16.333 Aircraft Stability and Control. Fall 2004. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu/courses/16-333-aircraft-stability-and-control-fall-2004/. License: CC BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Lecture block"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/16-333-aircraft-stability-and-control-fall-2004/",
+  "retrieved": "2026-10-02",
+  "sources": [
+    "https://ocw.mit.edu/courses/16-333-aircraft-stability-and-control-fall-2004/pages/syllabus/",
+    "https://ocw.mit.edu/courses/16-333-aircraft-stability-and-control-fall-2004/pages/calendar/"
+  ],
+  "notes": "Lecture topics from the calendar; four homework sets read. Texts named in the sets: Etkin and Reid; Nelson.",
+  "books": [
+    {
+      "course": null,
+      "title": "16.333 Aircraft Stability and Control (Fall 2004)",
+      "url": "https://ocw.mit.edu/courses/16-333-aircraft-stability-and-control-fall-2004/",
+      "units": [
+        {
+          "n": "1",
+          "title": "Equilibrium states; aircraft performance",
+          "url": "https://ocw.mit.edu/courses/16-333-aircraft-stability-and-control-fall-2004/pages/calendar/",
+          "topics": [
+            "he.engineering.flight-mechanics#0"
+          ],
+          "examples": [
+            "glide range and minimum sink"
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Static stability; wing and tail contributions",
+          "topics": [
+            "he.engineering.flight-mechanics#1"
+          ],
+          "examples": [
+            "tail incidence and CG limits from C_m0 > 0, C_mα < 0",
+            "trim α and δe"
+          ],
+          "notation": "h CG position as a fraction of c̄; h_n neutral point; V_H tail volume; dε/dα downwash gradient"
+        },
+        {
+          "n": "3–5",
+          "title": "Coordinate systems, Euler angles, quaternions; aircraft dynamics",
+          "topics": [
+            "he.engineering.flight-mechanics#2"
+          ],
+          "examples": [
+            "Euler angle histories in maneuvers"
+          ]
+        },
+        {
+          "n": "6–8",
+          "title": "Longitudinal and lateral dynamics; approximate mode models",
+          "topics": [
+            "he.engineering.flight-mechanics#2"
+          ],
+          "examples": [
+            "short-period and phugoid roots from derivatives",
+            "Dutch roll, spiral, roll modes"
+          ],
+          "ranges": "U₀ 600–1450 ft/s; altitude 15,000–45,000 ft"
+        },
+        {
+          "n": "9–13",
+          "title": "Longitudinal control; state-space control; autopilots",
+          "topics": [
+            "he.engineering.flight-mechanics#3"
+          ],
+          "examples": [
+            "pitch-attitude autopilot to place short-period roots",
+            "altitude hold"
+          ]
+        },
+        {
+          "n": "14–17",
+          "title": "Gusts; inertial sensors and filtering; system identification",
+          "topics": [],
+          "notes": "No taxonomy topic (estimation)."
+        }
+      ]
+    }
+  ]
+}

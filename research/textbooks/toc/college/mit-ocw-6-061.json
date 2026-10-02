@@ -1,0 +1,78 @@
+{
+  "id": "mit-ocw-6-061",
+  "curriculum": "MIT OpenCourseWare 6.061 Introduction to Electric Power Systems",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Spring 2011",
+  "subject": "electrical",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "James Kirtley. 6.061 Introduction to Electric Power Systems. Spring 2011. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu/courses/6-061-introduction-to-electric-power-systems-spring-2011/. License: CC BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Lecture block"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/6-061-introduction-to-electric-power-systems-spring-2011/",
+  "retrieved": "2026-10-02",
+  "sources": [
+    "https://ocw.mit.edu/courses/6-061-introduction-to-electric-power-systems-spring-2011/pages/calendar/"
+  ],
+  "notes": "Lecture list from the calendar (first 14 shown on the page); two quizzes read.",
+  "books": [
+    {
+      "course": "he.engineering.power-systems",
+      "title": "6.061 Introduction to Electric Power Systems (Spring 2011)",
+      "url": "https://ocw.mit.edu/courses/6-061-introduction-to-electric-power-systems-spring-2011/",
+      "units": [
+        {
+          "n": "1–5",
+          "title": "Power; first-order transients and converters; sinusoidal steady state, complex power",
+          "topics": [
+            "he.engineering.circuits-2#1",
+            "he.engineering.power-systems#0"
+          ]
+        },
+        {
+          "n": "6–8",
+          "title": "Transmission lines; polyphase circuits",
+          "topics": [
+            "he.engineering.power-systems#0",
+            "he.engineering.circuits-2#4"
+          ],
+          "examples": [
+            "power over a line from δ"
+          ]
+        },
+        {
+          "n": "9–11",
+          "title": "Transformers and per-unit; symmetrical components; faults and protection",
+          "topics": [
+            "he.engineering.power-systems#1",
+            "he.engineering.power-systems#2"
+          ]
+        },
+        {
+          "n": "12–13",
+          "title": "HVDC; protection; load flow",
+          "topics": [
+            "he.engineering.power-systems#0"
+          ]
+        },
+        {
+          "n": "14–",
+          "title": "Electromechanics: forces, magnetic circuits, DC, synchronous and induction machines; power electronics",
+          "topics": [
+            "he.engineering.power-systems#1"
+          ],
+          "examples": [
+            "PM DC machine",
+            "lift magnet",
+            "induction-motor equivalent circuit"
+          ]
+        }
+      ]
+    }
+  ]
+}

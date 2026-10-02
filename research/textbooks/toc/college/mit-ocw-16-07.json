@@ -1,0 +1,71 @@
+{
+  "id": "mit-ocw-16-07",
+  "curriculum": "MIT OpenCourseWare 16.07 Dynamics",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Fall 2009",
+  "subject": "aerospace",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Sheila Widnall, John Deyst, Edward Greitzer. 16.07 Dynamics. Fall 2009. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu/courses/16-07-dynamics-fall-2009/. License: CC BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Lecture block"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/16-07-dynamics-fall-2009/",
+  "retrieved": "2026-10-02",
+  "sources": [
+    "https://ocw.mit.edu/courses/16-07-dynamics-fall-2009/pages/syllabus/",
+    "https://ocw.mit.edu/courses/16-07-dynamics-fall-2009/pages/calendar/"
+  ],
+  "notes": "Calendar order; 12 homework sets (orbit sets read) and three finals.",
+  "books": [
+    {
+      "course": null,
+      "title": "16.07 Dynamics (Fall 2009)",
+      "url": "https://ocw.mit.edu/courses/16-07-dynamics-fall-2009/",
+      "units": [
+        {
+          "n": "L2–L13",
+          "title": "Particle kinematics and kinetics, impulse, work and energy",
+          "url": "https://ocw.mit.edu/courses/16-07-dynamics-fall-2009/pages/calendar/",
+          "topics": [],
+          "notes": "Dynamics prerequisite (he.engineering.dynamics, owned by the mechanical plan)."
+        },
+        {
+          "n": "L14",
+          "title": "Variable mass systems: the rocket equation",
+          "topics": [
+            "he.engineering.propulsion#1"
+          ],
+          "examples": [
+            "two-stage optimum split"
+          ]
+        },
+        {
+          "n": "L15–L18",
+          "title": "Central-force motion, Kepler’s laws, orbits, transfers, restricted three-body problem",
+          "topics": [
+            "he.engineering.orbital-mechanics#0",
+            "he.engineering.orbital-mechanics#1",
+            "he.engineering.orbital-mechanics#2",
+            "he.engineering.orbital-mechanics#3"
+          ],
+          "examples": [
+            "ellipse in Earth radii: period, time to an anomaly",
+            "Hubble-to-station transfer with plane change"
+          ],
+          "ranges": "perigee 5 R_E, apogee 20 R_E; inclinations 28.5–51.6°"
+        },
+        {
+          "n": "L19–L31",
+          "title": "Vibration; Lagrange; 2-D and 3-D rigid bodies; gyroscopes; inertial navigation",
+          "topics": [],
+          "notes": "Mechanical-plan topics."
+        }
+      ]
+    }
+  ]
+}

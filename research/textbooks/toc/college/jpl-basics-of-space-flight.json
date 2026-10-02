@@ -1,0 +1,159 @@
+{
+  "id": "jpl-basics-of-space-flight",
+  "curriculum": "Basics of Space Flight (JPL)",
+  "publisher": "NASA Jet Propulsion Laboratory / NASA Science",
+  "edition": "web edition on science.nasa.gov, read 2026-10-02",
+  "subject": "aerospace",
+  "level": "college",
+  "content": "titles",
+  "license": null,
+  "terms": {
+    "unit": "Chapter"
+  },
+  "sourceUrl": "https://science.nasa.gov/learn/basics-of-space-flight/",
+  "retrieved": "2026-10-02",
+  "notes": "Chapter titles from the index page only. No reuse statement was found on the pages read; JPL is a contractor-run center, so the licence stays \"to confirm\" and nothing beyond titles is recorded. Also on the site: \"A Gravity Assist Primer\", a glossary and a units page. No worked problems were found, so no question records.",
+  "books": [
+    {
+      "course": "he.engineering.orbital-mechanics",
+      "title": "Basics of Space Flight",
+      "url": "https://science.nasa.gov/learn/basics-of-space-flight/",
+      "units": [
+        {
+          "n": "1",
+          "title": "The Solar System",
+          "url": "https://science.nasa.gov/learn/basics-of-space-flight/chapter1-1/",
+          "topics": [
+            "he.engineering.orbital-mechanics#3"
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Reference Systems",
+          "url": "https://science.nasa.gov/learn/basics-of-space-flight/chapter2-1/",
+          "topics": [
+            "he.engineering.orbital-mechanics#1"
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Gravity & Mechanics",
+          "url": "https://science.nasa.gov/learn/basics-of-space-flight/chapter3-1/",
+          "topics": [
+            "he.engineering.orbital-mechanics#0"
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Trajectories",
+          "url": "https://science.nasa.gov/learn/basics-of-space-flight/chapter4-1/",
+          "topics": [
+            "he.engineering.orbital-mechanics#2",
+            "he.engineering.orbital-mechanics#3"
+          ]
+        },
+        {
+          "n": "5",
+          "title": "Planetary Orbits",
+          "url": "https://science.nasa.gov/learn/basics-of-space-flight/chapter5-1/",
+          "topics": [
+            "he.engineering.orbital-mechanics#1"
+          ]
+        },
+        {
+          "n": "6",
+          "title": "Electromagnetics",
+          "url": "https://science.nasa.gov/learn/basics-of-space-flight/chapter6-1/",
+          "topics": [],
+          "notes": "Spacecraft systems and operations; no taxonomy topic."
+        },
+        {
+          "n": "7",
+          "title": "Mission Inception",
+          "url": "https://science.nasa.gov/learn/basics-of-space-flight/chapter7-1/",
+          "topics": [],
+          "notes": "Spacecraft systems and operations; no taxonomy topic."
+        },
+        {
+          "n": "8",
+          "title": "Experiments",
+          "url": "https://science.nasa.gov/learn/basics-of-space-flight/chapter8-1/",
+          "topics": [],
+          "notes": "Spacecraft systems and operations; no taxonomy topic."
+        },
+        {
+          "n": "9",
+          "title": "Spacecraft Classification",
+          "url": "https://science.nasa.gov/learn/basics-of-space-flight/chapter9-1/",
+          "topics": [],
+          "notes": "Spacecraft systems and operations; no taxonomy topic."
+        },
+        {
+          "n": "10",
+          "title": "Telecom",
+          "url": "https://science.nasa.gov/learn/basics-of-space-flight/chapter10-1/",
+          "topics": [],
+          "notes": "Spacecraft systems and operations; no taxonomy topic."
+        },
+        {
+          "n": "11",
+          "title": "Onboard Systems",
+          "url": "https://science.nasa.gov/learn/basics-of-space-flight/chapter11-1/",
+          "topics": [],
+          "notes": "Spacecraft systems and operations; no taxonomy topic."
+        },
+        {
+          "n": "12",
+          "title": "Science Instruments",
+          "url": "https://science.nasa.gov/learn/basics-of-space-flight/chapter12-1/",
+          "topics": [],
+          "notes": "Spacecraft systems and operations; no taxonomy topic."
+        },
+        {
+          "n": "13",
+          "title": "Navigation",
+          "url": "https://science.nasa.gov/learn/basics-of-space-flight/chapter13-1/",
+          "topics": [],
+          "notes": "Spacecraft systems and operations; no taxonomy topic."
+        },
+        {
+          "n": "14",
+          "title": "Launch",
+          "url": "https://science.nasa.gov/learn/basics-of-space-flight/chapter14-1/",
+          "topics": [
+            "he.engineering.propulsion#1"
+          ]
+        },
+        {
+          "n": "15",
+          "title": "Cruise",
+          "url": "https://science.nasa.gov/learn/basics-of-space-flight/chapter15-1/",
+          "topics": [],
+          "notes": "Spacecraft systems and operations; no taxonomy topic."
+        },
+        {
+          "n": "16",
+          "title": "Encounter",
+          "url": "https://science.nasa.gov/learn/basics-of-space-flight/chapter16-1/",
+          "topics": [
+            "he.engineering.orbital-mechanics#3"
+          ]
+        },
+        {
+          "n": "17",
+          "title": "Extended Ops",
+          "url": "https://science.nasa.gov/learn/basics-of-space-flight/chapter17-1/",
+          "topics": [],
+          "notes": "Spacecraft systems and operations; no taxonomy topic."
+        },
+        {
+          "n": "18",
+          "title": "Deep Space Network",
+          "url": "https://science.nasa.gov/learn/basics-of-space-flight/chapter18-1/",
+          "topics": [],
+          "notes": "Spacecraft systems and operations; no taxonomy topic."
+        }
+      ]
+    }
+  ]
+}

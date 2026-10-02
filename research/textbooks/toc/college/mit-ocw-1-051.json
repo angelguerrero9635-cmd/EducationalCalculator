@@ -1,0 +1,79 @@
+{
+  "id": "mit-ocw-1-051",
+  "curriculum": "MIT OpenCourseWare 1.051 Structural Engineering Design",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Fall 2003",
+  "subject": "civil",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Oral Buyukozturk. 1.051 Structural Engineering Design. Fall 2003. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu/courses/1-051-structural-engineering-design-fall-2003/. License: CC BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Lecture block"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/1-051-structural-engineering-design-fall-2003/",
+  "retrieved": "2026-10-02",
+  "sources": [
+    "https://ocw.mit.edu/courses/1-051-structural-engineering-design-fall-2003/pages/calendar/",
+    "https://ocw.mit.edu/courses/1-051-structural-engineering-design-fall-2003/pages/assignments/"
+  ],
+  "notes": "Lecture list from the calendar; six problem sets (textbook-numbered problems skipped) and two quizzes read.",
+  "books": [
+    {
+      "course": "he.engineering.concrete-design",
+      "title": "1.051 Structural Engineering Design (Fall 2003)",
+      "url": "https://ocw.mit.edu/courses/1-051-structural-engineering-design-fall-2003/",
+      "units": [
+        {
+          "n": "L1–L5",
+          "title": "Design process; materials, loads and safety; wind and earthquake loads",
+          "topics": [
+            "he.engineering.steel-design#0"
+          ],
+          "examples": [
+            "code wind pressure profile",
+            "seismic base shear"
+          ]
+        },
+        {
+          "n": "L6–L13",
+          "title": "Reinforced-concrete beams for flexure and shear; bond, anchorage, serviceability",
+          "topics": [
+            "he.engineering.concrete-design#0",
+            "he.engineering.concrete-design#1"
+          ],
+          "examples": [
+            "parking-structure beam",
+            "cantilever beam flexure and stirrups"
+          ],
+          "notation": "ACI 318 of the time; f′c in psi; #3 stirrups"
+        },
+        {
+          "n": "L14–L20",
+          "title": "Reinforced-concrete columns; prestressing; slabs",
+          "topics": [
+            "he.engineering.concrete-design#2",
+            "he.engineering.concrete-design#3"
+          ]
+        },
+        {
+          "n": "L21–end",
+          "title": "Bridges; steel tension members, beams and columns (Galambos et al.)",
+          "topics": [
+            "he.engineering.steel-design#1",
+            "he.engineering.steel-design#2",
+            "he.engineering.steel-design#3"
+          ],
+          "examples": [
+            "net area of a bolted channel",
+            "block shear of an angle",
+            "column design strength"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "id": "mit-ocw-10-302",
+  "curriculum": "MIT OpenCourseWare 10.302 Transport Processes",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Fall 2004",
+  "subject": "chemical",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Clark K. Colton, William Deen and others. 10.302 Transport Processes. Fall 2004. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu/courses/10-302-transport-processes-fall-2004/. License: CC BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Lecture block"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/10-302-transport-processes-fall-2004/",
+  "retrieved": "2026-10-02",
+  "sources": [
+    "https://ocw.mit.edu/courses/10-302-transport-processes-fall-2004/pages/calendar/",
+    "https://ocw.mit.edu/courses/10-302-transport-processes-fall-2004/pages/assignments/"
+  ],
+  "notes": "Calendar; homework is Incropera and DeWitt problems (skipped); three exams and the final read.",
+  "books": [
+    {
+      "course": "he.engineering.transport-phenomena",
+      "title": "10.302 Transport Processes (Fall 2004)",
+      "url": "https://ocw.mit.edu/courses/10-302-transport-processes-fall-2004/",
+      "units": [
+        {
+          "n": "1–13",
+          "title": "Conduction: plane and radial walls, generation, fins, 2-D, transient, semi-infinite",
+          "topics": [
+            "he.engineering.transport-phenomena#1"
+          ],
+          "examples": [
+            "composite cylinder with generation",
+            "lab fin data"
+          ]
+        },
+        {
+          "n": "14–19",
+          "title": "Radiation: blackbody exchange, gray surfaces",
+          "topics": [],
+          "notes": "Radiation: he.engineering.heat-transfer#2."
+        },
+        {
+          "n": "20–",
+          "title": "Convection: boundary layers, external and internal flow; heat exchangers; mass transfer and analogies",
+          "topics": [
+            "he.engineering.transport-phenomena#1",
+            "he.engineering.transport-phenomena#2",
+            "he.engineering.transport-phenomena#3"
+          ],
+          "examples": [
+            "bottoms cooler area",
+            "vaporizer–superheater",
+            "helium through glass",
+            "evaporating droplet"
+          ]
+        }
+      ]
+    }
+  ]
+}

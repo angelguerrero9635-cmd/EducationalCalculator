@@ -1,0 +1,114 @@
+{
+  "id": "fhwa-hec-22",
+  "curriculum": "Urban Drainage Design Manual, HEC-22 (FHWA)",
+  "publisher": "Federal Highway Administration",
+  "edition": "3rd ed., 2009 (FHWA-NHI-10-009; archived)",
+  "subject": "civil",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "Public domain (U.S. federal government work)",
+    "url": null,
+    "attribution": "U.S. Department of Transportation, Federal Highway Administration, HEC-22 Urban Drainage Design Manual, 3rd ed., 2009 (public domain U.S. government work)."
+  },
+  "terms": {
+    "unit": "Chapter"
+  },
+  "sourceUrl": "https://www.fhwa.dot.gov/engineering/hydraulics/pubs/10009/10009.pdf",
+  "retrieved": "2026-10-02",
+  "notes": "Chapter list and worked-example kinds from the PDF (478 pages; 38 worked examples, each \"Given … Find … Solution\" in SI and US units).",
+  "books": [
+    {
+      "course": "he.engineering.hydraulics-hydrology",
+      "title": "HEC-22",
+      "url": "https://www.fhwa.dot.gov/engineering/hydraulics/pubs/10009/10009.pdf",
+      "units": [
+        {
+          "n": "3",
+          "title": "Urban Hydrology",
+          "topics": [
+            "he.engineering.hydraulics-hydrology#2"
+          ],
+          "examples": [
+            "weighted C",
+            "t_c by flow segments",
+            "rational peak with an IDF curve",
+            "SCS peak and unit hydrograph"
+          ],
+          "notation": "Q = CiA ÷ K_u (K_u = 360 SI, 1.0 US); CN; t_c"
+        },
+        {
+          "n": "4",
+          "title": "Pavement Drainage",
+          "topics": [
+            "he.engineering.hydraulics-hydrology#3"
+          ],
+          "examples": [
+            "gutter spread",
+            "inlet interception",
+            "sag inlets",
+            "median ditch inlets"
+          ],
+          "notes": "Gutter and inlet design: not a plan row."
+        },
+        {
+          "n": "5",
+          "title": "Roadside and Median Channels",
+          "topics": [
+            "he.engineering.hydraulics-hydrology#0"
+          ],
+          "examples": [
+            "lined trapezoidal channel capacity"
+          ]
+        },
+        {
+          "n": "6",
+          "title": "Structures (inlets, access holes, junctions)",
+          "topics": [
+            "he.engineering.hydraulics-hydrology#3"
+          ]
+        },
+        {
+          "n": "7",
+          "title": "Storm Drains",
+          "topics": [
+            "he.engineering.hydraulics-hydrology#3"
+          ],
+          "examples": [
+            "pipe size for a flow",
+            "full-flow capacity",
+            "HGL and EGL computation"
+          ],
+          "notation": "Q = (K_Q ÷ n)D^2.67 S^0.5"
+        },
+        {
+          "n": "8",
+          "title": "Detention and Retention Facilities",
+          "topics": [
+            "he.engineering.hydraulics-hydrology#3"
+          ],
+          "examples": [
+            "storage by three methods",
+            "stage–storage",
+            "orifice and weir ratings",
+            "reservoir routing",
+            "retention water budget"
+          ]
+        },
+        {
+          "n": "9",
+          "title": "Pump Stations",
+          "topics": [],
+          "notes": "Pumps: taxonomy gap the plan names."
+        },
+        {
+          "n": "10",
+          "title": "Urban Water Quality Practices",
+          "topics": [
+            "he.engineering.environmental#1"
+          ]
+        }
+      ]
+    }
+  ]
+}

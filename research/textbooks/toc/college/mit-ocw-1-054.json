@@ -1,0 +1,86 @@
+{
+  "id": "mit-ocw-1-054",
+  "curriculum": "MIT OpenCourseWare 1.054 Mechanics and Design of Concrete Structures",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Spring 2004",
+  "subject": "civil",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Oral Buyukozturk. 1.054 Mechanics and Design of Concrete Structures. Spring 2004. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu/courses/1-054-mechanics-and-design-of-concrete-structures-spring-2004/. License: CC BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Lecture block"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/1-054-mechanics-and-design-of-concrete-structures-spring-2004/",
+  "retrieved": "2026-10-02",
+  "sources": [
+    "https://ocw.mit.edu/courses/1-054-mechanics-and-design-of-concrete-structures-spring-2004/pages/calendar/",
+    "https://ocw.mit.edu/courses/1-054-mechanics-and-design-of-concrete-structures-spring-2004/pages/assignments/"
+  ],
+  "notes": "Graduate-level course (1.054/1.541); lecture list from the calendar; five homework sets and two exams read.",
+  "books": [
+    {
+      "course": "he.engineering.concrete-design",
+      "title": "1.054 Mechanics and Design of Concrete Structures (Spring 2004)",
+      "url": "https://ocw.mit.edu/courses/1-054-mechanics-and-design-of-concrete-structures-spring-2004/",
+      "units": [
+        {
+          "n": "1–7",
+          "title": "Design criteria; multiaxial behavior and failure; plasticity; fracture; creep and shrinkage; ductility",
+          "topics": [
+            "he.engineering.concrete-design#2"
+          ],
+          "examples": [
+            "gravity platform failure criteria",
+            "column creep under staged loads"
+          ]
+        },
+        {
+          "n": "8–9",
+          "title": "Shear failures and shear transfer",
+          "topics": [
+            "he.engineering.concrete-design#1"
+          ]
+        },
+        {
+          "n": "10–11",
+          "title": "Biaxial bending; beam–column joints",
+          "topics": [
+            "he.engineering.concrete-design#2"
+          ],
+          "examples": [
+            "biaxial column check"
+          ]
+        },
+        {
+          "n": "13–15",
+          "title": "Torsion with shear and flexure",
+          "topics": [
+            "he.engineering.concrete-design#1"
+          ],
+          "notes": "Torsion design is not a plan row."
+        },
+        {
+          "n": "16–18",
+          "title": "Yield-line theory for slabs; thin shells",
+          "topics": [
+            "he.engineering.concrete-design#3"
+          ],
+          "examples": [
+            "three-edge-supported slab",
+            "one-way slab collapse"
+          ]
+        },
+        {
+          "n": "19–22",
+          "title": "Bridges and tall buildings; deterioration and NDE; seismic design and retrofit",
+          "topics": [],
+          "notes": "No taxonomy topic."
+        }
+      ]
+    }
+  ]
+}
