@@ -289,7 +289,7 @@ export function hs3bIssues(
       for (const f of [rep, ...(rep.other ? [rep.other] : [])]) {
         const g = (v: string | number | undefined, d: number) =>
           v === undefined ? d : (val(v) ?? d);
-        if (f.family === 'power') {
+        if (f.family === 'power' && 'p' in f) {
           const [p, q] = [g(f.p, 1), g(f.q, 1)];
           if (!Number.isInteger(p) || p === 0) out.push(`power p = ${p} (a whole number, not 0)`);
           if (!Number.isInteger(q) || q < 1 || q > 12) out.push(`power q = ${q} (1 to 12)`);

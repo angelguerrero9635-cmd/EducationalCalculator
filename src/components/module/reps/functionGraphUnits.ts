@@ -186,6 +186,7 @@ function convert(fam: FunctionFamily, num: Num, fx: number, fy: number, put: Put
     case 'arctan':
       return { ...fam, a: put('a', fam.a, 1, Y), k: put('k', fam.k, 0, Y) };
     case 'power': {
+      if (!('p' in fam)) return fam; // HC10: a real exponent (its pages pin their units)
       // a·(fₓX − h)^(p/q) = a·fₓ^(p/q)·(X − h/fₓ)^(p/q).
       const e = num(fam.p, 1) / num(fam.q, 1);
       return {
@@ -235,7 +236,12 @@ export function toShownUnits(
     ? { x: withUnit(spec.axes.x, units.x), y: withUnit(spec.axes.y, units.y) }
     : undefined;
   return {
-    spec: { ...spec, ...main, ...(other ? { other } : {}), ...(axes ? { axes } : {}) },
+    spec: {
+      ...spec,
+      ...main,
+      ...(other ? { other } : {}),
+      ...(axes ? { axes } : {}),
+    } as FunctionGraphSpec,
     value,
     source,
     scale,

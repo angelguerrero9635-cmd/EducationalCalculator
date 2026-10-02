@@ -237,6 +237,12 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `functionGraph`    | `transform: { a, h, k, from?, image? }`  | g(x) = a·f(x − h) + k beside f; an arrow from f's point to its image (H106)   |
 | `functionGraph`    | `family: 'power'`, `a, p, q, h, k`       | a·(x − h)^(p/q) + k: odd roots of negatives, asymptotes when p < 0 (H106)     |
 | `functionGraph`    | `family: 'logSum'`, `b, c`; `reject`     | log_b(x) + log_b(x + c) from max(0, −c); a candidate crossed out on x (H106)  |
+| `functionGraph`    | `family: 'expr'`, `expr, of?, from?`     | an expression of the values: + − × ÷ ^, exp, ln, trig, √, abs, u (HC10)       |
+| `functionGraph`    | `family: 'hill'`, `K, n?, top?`          | θ = top·Lⁿ ÷ (Kⁿ + Lⁿ), K ringed at half; n = 1 saturates (HC10)              |
+| `functionGraph`    | `family: 'bateman'`; `feature`           | an oral dose's curve, t_max and C_max marked (HC10)                           |
+| `functionGraph`    | `repeat: { every, count, avg? }`         | one-dose family summed into a sawtooth, C_ss,avg dashed (HC10)                |
+| `functionGraph`    | `family: 'power'`, `exponent`            | a·(x − h)^z + k with a real exponent from a value (HC10)                      |
+| `functionGraph`    | `family: 'erfc'`, `Cs, C0, width`        | C_s − (C_s − C₀)·erf(x ÷ w): a diffusion profile, C₀ dashed (HC10)            |
 | `lineSystem`       | `lines[i].square`, `solutions`           | y = ax² + mx + b: a parabola and a line, 0–2 crossings ringed, shading (H106) |
 | `polygon`          | `apothem`, `angle`, `area`               | the n triangles, the apothem square to a side, θ = 180° ÷ n, K = ½aP (H106)   |
 | `venn`             | `chances.one`                            | one event: circle A in the rectangle, P(not A) = 1 − P(A) outside (H106)      |

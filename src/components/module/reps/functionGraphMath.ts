@@ -10,10 +10,12 @@ import type {
   NumOrVar,
   Piece,
 } from '@/data/modules/typesFunctionGraph';
+import { isFamilyHe1e } from '@/data/modules/typesHe1e';
 import { formatNumber } from '@/engine/format';
 
 import { toFraction } from './exact';
 import { buildHs3b } from './functionGraphFamiliesHs3b';
+import { buildHe1e, repeatCurve } from './functionGraphHe1e';
 import { rationalByTopCurve } from './functionGraphRationalHs3b';
 import { ratioCurve, reshape } from './functionGraphHs2g';
 
@@ -456,6 +458,7 @@ export function buildCurve(
   say: (v: NumOrVar | undefined, fallback: number, pi?: boolean) => string,
   x = 'x',
 ): Curve {
+  if (isFamilyHe1e(fam)) return buildHe1e(fam, get, say, x); // HC10, HC12
   const base = {
     family: fam.family,
     has: [] as number[],
@@ -1600,6 +1603,13 @@ export function curveOf(
   const say = (v: NumOrVar | undefined, d: number) => numText(get(v, d));
   // H94: |f(x)|, a horizontal factor and a kept domain, as the picture draws them.
   return 'kind' in spec
-    ? reshape(spec, get, say, 'x', (f, x) => buildCurve(f, get, say, x)).curve
+    ? repeatCurve(
+        spec,
+        reshape(spec, get, say, 'x', (f, x) => buildCurve(f, get, say, x)).curve,
+        get,
+        say,
+        'x',
+        (f, x) => buildCurve(f, get, say, x),
+      ) // HC10: a repeated dose
     : buildCurve(spec, get, say);
 }
