@@ -1,0 +1,398 @@
+# College research (higher education)
+
+Paste everything below the line into the research chat.
+
+---
+
+You are working in the EducationalCalculator repository on your research branch (the one that
+built `research/questions/` and `research/textbooks/` for K–12). First merge
+`claude/ios-education-wireframe-313z7z` into it.
+
+## Context
+
+The lesson chat has written eight college direction plans (`docs/plans/he.math.md`,
+`he.physics.md`, `he.chemistry.md`, `he.earth-geography.md`, `he.biology.md`,
+`he.mechanical.md`, `he.aero-civil-chemical.md`, `he.electrical-computer.md`): 98 courses, 1,460
+planned pages for the topics of `src/data/taxonomy.ts` (`COURSES`). `research/` has no college
+material yet, so every plan lists the question types "exams and textbooks ask" from memory and
+marks each Solves, Partly or No. Your job is to replace memory with sources: the tables of
+contents and worked-example kinds of the open textbooks, and a set of real question records per
+course, then re-mark the plans against them.
+
+Each plan has a "Research to do" part with its own source lists. This brief merges them: one
+row per source, duplicates removed, licences as the plans stated them. Read the plan's part for
+a group before you start it; where a plan and this brief differ, this brief's rules win.
+
+Read first: `CLAUDE.md`, `research/README.md`, `research/textbooks/README.md`,
+`research/questions/SOURCES.md` (how the K–12 collection was fetched, quoted and filed) and the
+"Not in the taxonomy" part of each plan (gaps to watch for; `docs/HE_TAXONOMY_GAPS.md` collects
+them).
+
+## Rules
+
+- **Reference only.** Nothing you record goes into a lesson, a picture or a test: no problem,
+  text, numbers, figure or screenshot, whatever its licence (CC BY and public domain included).
+  Lessons stay original.
+- **OpenStax: titles only, no ingestion.** Every OpenStax book states that it "may not be used in
+  the training of large language models or otherwise be ingested into large language models or
+  generative AI offerings without OpenStax's prior written permission", and openstax.org's
+  robots.txt disallows `/books/` for AI crawlers (`SOURCES.md`, "Off limits"). Record chapter and
+  section titles only, from the book's details page or an existing `toc/` file; fetch nothing
+  under `/books/`, record no exercise, example or number. This overrides the physics plan, which
+  proposed 240 OpenStax end-of-chapter records (meet its targets from the other sources), and the
+  math and chemistry plans' "if the owner allows".
+- **Off limits beyond titles or tables of contents:** ACS exams (the standardized ACS exams, which
+  are secure, and, unless the owner allows them, the ACS-published US National Chemistry
+  Olympiad papers); NCEES FE practice exams, sample items and the FE Reference Handbook (record at
+  most the handbook's table of contents; the free FE exam *specifications* may be used as topic
+  lists and weights); GRE subject-test items (Mathematics, Physics; Chemistry, Biology and
+  Computer Science are discontinued); commercial textbook content (Stewart, Griffiths, Hibbeler,
+  Çengel, Fogler, Sedra–Smith, Nilsson, Rosen, CLRS, …: chapter titles from public pages only, as
+  `"content": "titles"`); MCAT material; Chegg, Course Hero, Quizlet, solution manuals, and
+  anything behind a login. AP Central free-response questions are © College Board: record the
+  type only (no text, no numbers), as the plans say.
+- **Fetching.** Read robots.txt first and obey it; record what it said (or that it was absent).
+  One request per second per host at most, sequential, with the User-Agent
+  `EducationalCalculatorResearch/0.3 (offline study-app research; contact …)`. Record the
+  retrieval date on every record and file. If a host is blocked by this environment's proxy (the
+  plans hit this for ocw.mit.edu, libretexts.org, engineeringstatics.org, mathforcollege.com,
+  doitpoms.ac.uk and mechanicsmap.psu.edu), note it in the sources file and move on; never work
+  around a block.
+- **Licences.** Quote each source's licence or reuse statement with its URL in
+  `research/textbooks/sources/he-<field>.md`. The tables below give each licence as the plans
+  stated it, marked **confirmed** (a plan read it on the publisher's page) or **to confirm**.
+  Confirm before you record anything beyond titles.
+- **What a question record may hold.** Question text (as published, with attribution) only from
+  sources whose licence allows copying with attribution: public domain, CC BY, CC BY-SA. From
+  every other source (CC BY-NC, -NC-SA, -ND, custom free licences, all rights reserved) record
+  the **type only**: the question type in our words, the unknown, the givens' sizes as ranges,
+  the answer's form and what the figure shows, with `"question": null`.
+
+## Textbooks (one row per source)
+
+Groups: **M** math, **P** physics, **C** chemistry, **EG** earth and geography, **B** biology and
+bioengineering, **ME** mechanical, **ACC** aero, civil and chemical, **EC** electrical and
+computer. "Extract" is what each plan wants from it, always in our words.
+
+### OpenStax (titles only)
+
+| Source                              | URL                                                              | Licence as the plans state it                                                                 | Groups, courses                                         |
+| ----------------------------------- | ---------------------------------------------------------------- | --------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| Calculus Vols 1–3                   | https://openstax.org/details/books/calculus-volume-1 (-2, -3)    | CC BY-NC-SA 4.0 + the no-LLM statement (to confirm)                                           | M: calc-1, calc-2, calc-3, diff-eq#0, #1, #4            |
+| University Physics Vols 1–3         | https://openstax.org/details/books/university-physics-volume-1   | CC BY 4.0 (to confirm: read from mirrors, openstax.org was not reachable) + no-LLM statement  | P: university-1–3, thermal-statistical#0                |
+| Chemistry 2e                        | https://openstax.org/details/books/chemistry-2e                  | **discrepancy**: CC BY 4.0 on the book page (chemistry plan) vs CC BY-NC-SA 4.0 in the repo   | C: gen-chem-1, gen-chem-2, inorganic#1–#3               |
+| Organic Chemistry (McMurry, 2023)   | https://openstax.org/details/books/organic-chemistry             | CC BY-NC-SA 4.0 + no-LLM statement (to confirm)                                               | C: organic-1, organic-2, biochemistry#0                 |
+| Biology 2e                          | https://openstax.org/details/books/biology-2e                    | **discrepancy**: CC BY 4.0 (biology plan) vs CC BY-NC-SA 4.0 (`sources/hs-d.md`)              | B: principles-1, -2, genetics, cell-molecular, ecology, evolution |
+| Microbiology                        | https://openstax.org/details/books/microbiology                  | CC BY 4.0 + no-LLM statement (to confirm)                                                     | B: microbiology                                         |
+| Anatomy and Physiology 2e           | https://openstax.org/details/books/anatomy-and-physiology-2e     | CC BY 4.0 + no-LLM statement (to confirm)                                                     | B: anatomy-physiology; biotransport, biomechanics       |
+
+The existing `toc/science/openstax-chemistry-2e.json` and `openstax-biology-2e.json` hold the
+titles already; add only a college topic crosswalk.
+
+### Open and free textbooks
+
+| Source                                                            | URL                                                                     | Licence                                                    | Groups, courses                                             | Extract                                                                          |
+| ----------------------------------------------------------------- | ----------------------------------------------------------------------- | ---------------------------------------------------------- | ----------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| MIT OpenCourseWare (courses listed below)                         | https://ocw.mit.edu                                                     | CC BY-NC-SA 4.0 (confirmed by most plans; EC: to confirm)  | all                                                         | syllabus and lecture order, problem-set and exam types, notation, number ranges |
+| Active Calculus; Active Calculus Multivariable (Boelkins et al.)  | https://activecalculus.org                                              | CC BY-SA 4.0 (to confirm)                                  | M: calc-1–3                                                 | section lists, activity types, topic order                                       |
+| APEX Calculus (Hartman et al.)                                    | https://www.apexcalculus.com                                            | CC BY-NC 4.0 (to confirm)                                  | M: calc-1–3                                                 | section lists, exercise types                                                    |
+| CLP-1 to CLP-4 and problem books (UBC)                            | https://personal.math.ubc.ca/~CLP/                                      | CC BY-NC-SA 4.0 (to confirm)                               | M: calc-1–3                                                 | section lists, problem types and ranges                                          |
+| Lebl, _Notes on Diffy Qs_                                         | https://www.jirka.org/diffyqs/                                          | CC BY-SA 4.0 or CC BY-NC-SA 4.0, dual (to confirm which)   | M: diff-eq                                                  | section list; cooling, mixing, springs, Laplace table                            |
+| Trench, _Elementary Differential Equations_                       | LibreTexts Mathematics                                                  | CC BY-NC-SA 3.0 (to confirm)                               | M: diff-eq                                                  | section list, exercise types                                                     |
+| Austin, _Understanding Linear Algebra_                            | https://understandinglinearalgebra.org                                  | CC BY 4.0 (to confirm)                                     | M: linear-algebra                                           | section list, activity types                                                     |
+| Hefferon, _Linear Algebra_                                        | https://hefferon.net/linearalgebra/                                     | GFDL or CC BY-SA 3.0 US (to confirm)                       | M: linear-algebra                                           | chapter list, exercise types                                                     |
+| Beezer, _A First Course in Linear Algebra_                        | http://linear.ups.edu                                                   | GFDL (to confirm)                                          | M: linear-algebra                                           | chapter list                                                                     |
+| Tong, _Lectures on Theoretical Physics_                           | https://www.damtp.cam.ac.uk/user/tong                                   | © Tong; free to copy unaltered, attributed, not for profit (confirmed; not CC) | P: classical-mechanics, electromagnetism, quantum, thermal-statistical | section lists, recurring examples, notation                |
+| LibreTexts Physics (Cline; Fitzpatrick; Tatum)                    | https://phys.libretexts.org                                             | per book, mostly CC BY-NC-SA (to confirm each)             | P: classical-mechanics, quantum, thermal-statistical        | chapter lists, example kinds                                                     |
+| Ellingson, _Electromagnetics_ Vols 1–2                            | https://doi.org/10.21061/electromagnetics-vol-1                         | CC BY-SA 4.0 (confirmed for vol. 1; vol. 2 to confirm)     | P: electromagnetism; EC: electromagnetics                   | chapter list, examples, end-of-section problem types                             |
+| Crowell, _Simple Nature_; _Light and Matter_                      | https://www.lightandmatter.com                                          | CC BY-SA (to confirm)                                      | P: university-1–3                                           | chapter order (cross-check)                                                      |
+| Harvey, _Analytical Chemistry 2.1_                                | https://open.umn.edu/opentextbooks/textbooks/486                        | CC BY-NC-SA (to confirm)                                   | C: analytical                                               | chapter list, worked-example kinds, t and Q table layouts, typical sizes         |
+| Ahern, Rajagopal and Tan, _Biochemistry Free For All_             | https://open.oregonstate.education/biochemfreeforall/                   | CC BY-NC 4.0 (to confirm)                                  | C: biochemistry                                             | chapter list; K_m, k_cat, ΔG°′ ranges                                            |
+| LibreTexts Chemistry (Physical, Inorganic, Analytical shelves)    | https://chem.libretexts.org                                             | per page, mostly CC BY-NC-SA; skip "undeclared" pages      | C: physical-1, physical-2, inorganic                        | tables of contents; which "Map:" books mirror commercial texts (titles only)     |
+| Earle, _Physical Geology_ 2e (BCcampus)                           | https://opentextbc.ca/physicalgeology2ed/                               | CC BY 4.0 (confirmed)                                      | EG: physical-geology, historical-geology#0–1, hydrology#2   | chapter list; exercise types; slope, stream and quake data sizes                 |
+| Johnson, Affolter et al., _An Introduction to Geology_            | https://opengeology.org/textbook/                                       | CC BY-NC-SA 4.0 (to confirm)                               | EG: physical-geology                                        | topic order; rock and mineral tables (names only)                                |
+| OpenGeology, _Historical Geology_                                 | https://opengeology.org/historicalgeology/                              | CC BY-NC-SA 4.0 (to confirm)                               | EG: historical-geology                                      | dating principles, isotope systems, boundaries                                   |
+| Perkins, _Mineralogy_ (OpenGeology)                               | https://opengeology.org/Mineralogy/                                     | CC BY-NC-SA 4.0 (to confirm)                               | EG: mineralogy                                              | formula recalculation, Bragg and d-spacing, optics terms                         |
+| Stull, _Practical Meteorology_                                    | https://www.eoas.ubc.ca/books/Practical_Meteorology/                    | CC BY-NC-SA 4.0 (confirmed)                                | EG: meteorology, climatology#0–1, remote sensing (radar)    | equations as written, constants, exercise types                                  |
+| Webb, _Introduction to Oceanography_                              | https://rwu.pressbooks.pub/webboceanography/                            | CC BY 4.0 (confirmed)                                      | EG: oceanography                                            | chapter list, salinity and density conventions, wave and tide sizes             |
+| Freeze and Cherry, _Groundwater_ (Groundwater Project)            | https://fc79.gw-project.org/english/                                    | CC BY-NC-ND 4.0 (confirmed)                                | EG: hydrology#2                                             | Darcy, head and Thiem notation; K and porosity ranges                            |
+| Heath, _Basic Ground-Water Hydrology_ (USGS WSP 2220)             | https://pubs.usgs.gov/publication/wsp2220                               | public domain (to confirm)                                 | EG: hydrology#2                                             | topic order, units, number sizes                                                 |
+| _Guidelines for Flood Flow Frequency_ (Bulletin 17C)              | https://pubs.usgs.gov/publication/tm4B5                                 | public domain (to confirm)                                 | EG: hydrology#3                                             | return period and plotting-position wording                                      |
+| An open hydrology text (e.g. Margulis)                            | LibreTexts Geosciences or the author's page                             | to confirm                                                 | EG: hydrology#0–1, #3                                       | water budget, rational method, SCS-CN, Manning                                   |
+| _Geophysics for Practicing Geoscientists_ (UBC GIF)               | https://gpg.geosci.xyz/                                                 | CC BY 4.0 (to confirm)                                     | EG: geophysics#0, #1, #3                                    | survey geometry, Wenner and Bouguer forms, typical values                        |
+| Dastrup, _Physical Geography and Natural Disasters_               | https://slcc.pressbooks.pub/physicalgeography/                          | CC BY-NC-SA 4.0 (confirmed)                                | EG: physical-geography, climatology                         | Earth–sun, Köppen, landforms, biomes                                             |
+| Dastrup, _Introduction to Human Geography_                        | https://pressbooks.pub/humangeography/                                  | CC BY 4.0 (confirmed; an SLCC copy is CC BY-NC-SA)         | EG: human-geography                                         | population measures, models, diffusion terms                                     |
+| Snyder, _Map Projections — A Working Manual_ (USGS PP 1395)       | https://pubs.usgs.gov/publication/pp1395                                | public domain (to confirm)                                 | EG: cartography#0–1                                         | projection formulas and notation                                                 |
+| Campbell and Shin, _Essentials of GIS_                            | https://saylordotorg.github.io/text_essentials-of-geographic-information-systems/ | CC BY-NC-SA 3.0 (to confirm)                     | EG: gis#0–2, cartography#2–3                                | data models, classification, geoprocessing tools                                 |
+| DiBiase, _The Nature of Geographic Information_                   | https://www.e-education.psu.edu/natureofgeoinfo/                        | CC BY-NC-SA (to confirm)                                   | EG: cartography, gis, remote-sensing                        | scale, coordinate systems, raster resolution                                     |
+| Penn State GEOG 486, 586, 883 course notes                        | https://www.e-education.psu.edu/                                        | CC BY-NC-SA 4.0 (to confirm per course)                    | EG: cartography#2–3, gis#3, remote-sensing#1–3              | map design, nearest neighbor, accuracy assessment                                |
+| Schmittner, _Introduction to Climate Science_                     | https://open.oregonstate.education/climatescience/                      | CC BY-NC 4.0 (confirmed)                                   | EG: climatology                                             | one-layer model, forcing and sensitivity, variability                            |
+| _Fundamentals of Remote Sensing_ (Natural Resources Canada)       | https://natural-resources.canada.ca/                                    | Open Government Licence – Canada (to confirm)              | EG: remote-sensing#0–2                                      | sensor and resolution terms, processing order                                    |
+| _Landsat 8–9 Data Users Handbook_ (USGS)                          | https://www.usgs.gov/landsat-missions                                   | public domain (to confirm)                                 | EG: remote-sensing#0–1, #3                                  | radiance and reflectance forms, band wavelengths                                 |
+| Nickle and Barrette-Ng, _Online Open Genetics_                    | LibreTexts Biology; open.umn.edu                                        | CC BY-SA 3.0 (to confirm)                                  | B: genetics                                                 | chapter list; pedigree, chi-square, three-point types; counts                    |
+| LibreTexts Biology and Engineering (Biological Engineering)       | https://bio.libretexts.org, https://eng.libretexts.org                  | per book (to confirm; eng.libretexts.org was blocked)      | B: ecology, evolution, biotransport, biomaterials           | licence per book, chapter list, notation                                         |
+| _Human Biomechanics_ (BCcampus)                                   | https://pressbooks.bccampus.ca/humanbiomechanics                        | CC BY 4.0 (to confirm)                                     | B: biomechanics                                             | chapter list; moment arms, tendon moduli, cadence                                |
+| _Biomedical Engineering Lab Manual_ (UMN)                         | https://open.umn.edu/opentextbooks/textbooks/1472                       | open, exact licence to confirm                             | B: bioinstrumentation, biomechanics                         | lab list, measured quantities and ranges                                         |
+| Baker and Haynes, _Engineering Statics: Open and Interactive_     | https://engineeringstatics.org                                          | CC BY-NC-SA 4.0 (confirmed)                                | ME: statics                                                 | chapter list, example types, sizes, sign conventions                             |
+| Moore et al., _Mechanics Map_ (Penn State)                        | https://mechanicsmap.psu.edu                                            | CC BY-SA 4.0 (to confirm)                                  | ME: statics, dynamics                                       | topic order, problem types                                                       |
+| Roylance, _Mechanics of Materials_                                | https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_of_Materials_(Roylance) | CC BY-NC-SA 4.0 (confirmed) | ME: mechanics-of-materials                          | chapter list, notation, ranges                                                   |
+| _Strength of Materials_ (Engineering Mechanics OER)               | https://engineeringmechanicsoer.github.io/StrengthBook/                 | CC BY-NC-SA 4.0 (confirmed)                                | ME: mechanics-of-materials                                  | whether transformation and vessels are chapters                                  |
+| _Essential Mechanics_ with MATLAB and Octave (RIT Scholar Works)  | RIT Scholar Works                                                       | CC BY (confirmed)                                          | ME: statics, MoM, engineering-programming#3                 | scripting examples                                                               |
+| DoITPoMS teaching and learning packages                           | https://www.doitpoms.ac.uk                                              | CC BY-NC-SA 2.0 UK (to confirm)                            | ME: materials-science                                       | package list, question types                                                     |
+| Yan, _Introduction to Engineering Thermodynamics_ (BCcampus)      | https://pressbooks.bccampus.ca/thermo1/                                 | CC BY-NC-SA 4.0 (confirmed)                                | ME: thermodynamics                                          | chapter list, example types, typical states                                      |
+| IAPWS-IF97 release                                                | https://www.iapws.org                                                   | free release of the equations (to confirm)                 | ME: thermodynamics (engine need HE-E27)                     | the equations' form only; no tables                                              |
+| Bar-Meir, _Fluid Mechanics_ and _Compressible Fluid Mechanics_ (Potto) | http://www.potto.org; LibreTexts                                   | GNU FDL (to confirm version)                               | ME: fluid-mechanics; ACC: compressible-flow, propulsion#2   | chapter order, example types and ranges                                          |
+| Lienhard, _A Heat Transfer Textbook_                              | https://ahtt.mit.edu                                                    | free for personal and non-profit teaching, otherwise © (confirmed) | ME: heat-transfer                                   | chapter list, correlation names and ranges                                       |
+| NPTEL, _Design of Machine Elements_                               | https://nptel.ac.in                                                     | to confirm (NPTEL states CC BY-SA on many courses)         | ME: machine-design                                          | module list, metric practice                                                     |
+| Virasak, _Manufacturing Processes 4-5_                            | https://openoregon.pressbooks.pub/manufacturingprocesses45/             | CC BY 4.0 (confirmed)                                      | ME: manufacturing                                           | chapter list, machining formulas, review-question types                          |
+| Kong, Siauw and Bayen, _Python Programming and Numerical Methods_ | https://pythonnumericalmethods.berkeley.edu                             | free to read, © Elsevier (reference only)                  | ME: engineering-programming, numerical-methods              | chapter list, exercise types                                                     |
+| Kaw, _Holistic Numerical Methods_ (USF)                           | https://nm.mathforcollege.com                                           | CC BY-NC-SA 3.0 US (confirmed)                             | ME: numerical-methods                                       | chapter list, quiz types                                                         |
+| Ford, _Engineering Graphics and Design_ (UW Tacoma)               | https://uw.pressbooks.pub/enggraphics/                                  | CC BY-NC-SA 4.0 (confirmed)                                | ME: cad-graphics                                            | projection and dimensioning conventions                                          |
+| _Blueprint Reading_ (WisTech Open)                                | https://wtcs.pressbooks.pub/blueprintreading/                           | CC BY 4.0 (confirmed)                                      | ME: cad-graphics                                            | line types, first and third angle, GD&T names                                    |
+| Bower, _Applied Mechanics of Solids_                              | https://www.solidmechanics.org                                          | free to read, all rights reserved                          | ME: advanced-solid-mechanics                                | chapter list, tensor and energy notation                                         |
+| Felippa, _Introduction to Finite Element Methods_                 | University of Colorado course page                                      | free to read (to confirm)                                  | ME: finite-element-analysis                                 | element list, 1-D and truss examples                                             |
+| Greitzer, Spakovszky and Waitz, _Thermodynamics and Propulsion_   | https://web.mit.edu/16.unified/www/FALL/thermodynamics/                 | freely readable, licence to confirm                        | ME: thermodynamics; ACC: propulsion#0–1                     | cycle notation, T–s conventions, thrust derivations                              |
+| Leishman, _Introduction to Aerospace Flight Vehicles_             | https://eaglepubs.erau.edu/introductiontoaerospaceflightvehicles/       | CC BY-NC-ND 4.0 (confirmed)                                | ACC: aerodynamics, flight-mechanics#0–1, propulsion#0–1, aerospace-structures#0 | chapter list, example types, typical numbers                 |
+| NASA Glenn, _Beginner's Guide to Aeronautics_                     | https://www.grc.nasa.gov/www/k-12/airplane/                             | US government, public domain (to confirm page notices)     | ACC: aerodynamics, compressible-flow#0–1, propulsion#0–1    | equations as NASA writes them, standard atmosphere                               |
+| NACA Report 1135                                                  | https://ntrs.nasa.gov                                                   | public domain                                              | ACC: compressible-flow                                      | relation forms and symbols; check values for the harness                         |
+| JPL, _Basics of Space Flight_                                     | https://science.nasa.gov/learn/basics-of-space-flight/                  | NASA, public (to confirm)                                  | ACC: orbital-mechanics                                      | element definitions, Hohmann and gravity assists                                 |
+| Udoeyo, _Structural Analysis_                                     | https://temple.manifoldapp.org/projects/structural-analysis             | CC BY-NC-ND 4.0 (confirmed)                                | ACC: structural-analysis                                    | chapter list, example types                                                      |
+| Verruijt, _Soil Mechanics_                                        | https://geo.verruijt.net                                                | free to read, all rights reserved (to confirm)             | ACC: soil-mechanics                                         | chapter order, conventions                                                       |
+| Wikibooks, _Fundamentals of Transportation_                       | https://en.wikibooks.org/wiki/Fundamentals_of_Transportation            | CC BY-SA (to confirm)                                      | ACC: transportation                                         | traffic flow, SSD, curves, pavement, queueing                                    |
+| NRCS _National Engineering Handbook_ Part 630; TR-55              | https://www.nrcs.usda.gov                                               | public domain                                              | ACC: hydraulics-hydrology#2–3                               | curve number, t_c, unit hydrograph                                               |
+| FHWA HEC-22, HDS-4, HDS-5                                         | https://www.fhwa.dot.gov/engineering/hydraulics/                        | public domain                                              | ACC: hydraulics-hydrology                                   | rational method, inlets, Manning in SI and US                                    |
+| AISC 360-22 and _Design Examples_                                 | https://www.aisc.org/publications/steel-standards/                      | free download, all rights reserved                         | ACC: steel-design                                           | equation numbers, φ and Ω, which shapes (facts only)                             |
+| ACI 318-19 (summary pages only)                                   | https://www.concrete.org                                                | all rights reserved (paid code)                            | ACC: concrete-design                                        | which provisions the course teaches; no text                                     |
+| EPA water and wastewater manuals; SWTR CT guidance                | https://www.epa.gov                                                     | public domain                                              | ACC: environmental#0–1                                      | treatment order, CT ranges, BOD test                                             |
+| EPA AP-42 and dispersion-model guidance                           | https://www.epa.gov/air-emissions-factors-and-quantification            | public domain                                              | ACC: environmental#2                                        | Gaussian plume form, stability classes                                           |
+| NOAA NGS, _Geodesy for the Layman_, GNSS guidance                 | https://geodesy.noaa.gov                                                | public domain                                              | ACC: surveying#3                                            | h, N, H; error sources                                                           |
+| Wikibooks, _Introduction to Chemical Engineering Processes_       | https://en.wikibooks.org/wiki/Introduction_to_Chemical_Engineering_Processes | CC BY-SA (to confirm)                                 | ACC: material-energy-balances                               | DOF analysis, recycle and bypass, extent                                         |
+| LearnChemE                                                        | https://learncheme.com                                                  | CC BY-SA 4.0 (confirmed)                                   | ACC: every chemical course                                  | topic lists, ConcepTest types                                                    |
+| Woolf et al., _Chemical Process Dynamics and Controls_            | https://eng.libretexts.org/Bookshelves/Industrial_and_Systems_Engineering/Chemical_Process_Dynamics_and_Controls_(Woolf) | CC BY 3.0 (confirmed) | ACC: process-control, process-design#3 | chapter order, tuning rules, example types      |
+| Rawlings and Ekerdt, _Chemical Reactor Analysis and Design Fundamentals_ | https://sites.engineering.ucsb.edu/~jbraw/chemreacfun/          | free PDF, all rights reserved (to confirm)                 | ACC: reaction-engineering                                   | rate laws, design equations, notation                                            |
+| Fogler, _Elements of CRE_ companion site                          | http://umich.edu/~elements/                                             | free to read, all rights reserved                          | ACC: reaction-engineering                                   | problem types (titles and types only)                                            |
+| Northwestern _Process Design_ open textbook                       | https://processdesign.mccormick.northwestern.edu                        | to confirm                                                 | ACC: process-design                                         | sizing heuristics, economics, safety                                             |
+| U.S. Chemical Safety Board reports                                | https://www.csb.gov                                                     | public domain                                              | ACC: process-design#3                                       | hazard types (paraphrased, no case text)                                         |
+| Kuphaldt, _Lessons in Electric Circuits_ I–IV                     | https://www.ibiblio.org/kuphaldt/electricCircuits/                      | Design Science License (to confirm)                        | EC: circuits-1, circuits-2, electronics, digital-logic#0–2  | example types, notation                                                          |
+| Kuphaldt, _Modular Electronics Learning_ (ModEL)                  | https://www.ibiblio.org/kuphaldt/socratic/model/                        | CC BY 4.0 (confirmed)                                      | EC: circuits, electronics, digital-logic, embedded          | modules and worksheet types                                                      |
+| Kuphaldt, _Lessons in Industrial Instrumentation_                 | https://www.ibiblio.org/kuphaldt/socratic/sinst/                        | CC BY 4.0 (to confirm)                                     | EC: power-systems, control#4                                | PID tuning, power topics                                                         |
+| Fiore, _DC_ and _AC Electrical Circuit Analysis_, _Semiconductor Devices_, _Operational Amplifiers & Linear ICs_ | LibreTexts Engineering                | CC BY-NC-SA 4.0 (to confirm)                               | EC: circuits-1, circuits-2, electronics                     | chapter lists, example types                                                     |
+| Johnson, _Fundamentals of Electrical Engineering I_               | LibreTexts Engineering                                                  | CC BY (to confirm)                                         | EC: circuits, signals#2, communication                      | chapter list                                                                     |
+| Baraniuk et al., _Signals and Systems_                            | LibreTexts Engineering                                                  | CC BY (to confirm)                                         | EC: signals-systems                                         | chapter list, notation                                                           |
+| Downey, _Think DSP_                                               | https://greenteapress.com/wp/think-dsp/                                 | CC BY-NC (to confirm)                                      | EC: signals#2, #4                                           | topic order                                                                      |
+| Åström and Murray, _Feedback Systems_ (2nd ed.)                   | https://fbswiki.org/                                                    | free PDF, licence to confirm                               | EC: control-systems                                         | chapter list                                                                     |
+| Wikibooks, _Control Systems_                                      | https://en.wikibooks.org/wiki/Control_Systems                           | CC BY-SA (to confirm)                                      | EC: control-systems                                         | example types                                                                    |
+| Levin, _Discrete Mathematics: An Open Introduction_               | https://discrete.openmathbooks.org/                                     | CC BY-SA 4.0 (to confirm)                                  | EC: discrete-math                                           | chapter list, exercise types                                                     |
+| Lehman, Leighton and Meyer, _Mathematics for Computer Science_    | MIT OCW 6.042J                                                          | CC BY-SA 3.0 (to confirm)                                  | EC: discrete-math, data-structures#3                        | chapter list                                                                     |
+| Hammack, _Book of Proof_                                          | https://www.people.vcu.edu/~rhammack/BookOfProof/                       | CC BY-NC-ND (to confirm)                                   | EC: discrete-math#0–1                                       | chapter list                                                                     |
+| Morin, _Open Data Structures_                                     | https://opendatastructures.org/                                         | CC BY 2.5 (to confirm)                                     | EC: data-structures                                         | chapter list, exercise types                                                     |
+| Erickson, _Algorithms_                                            | https://jeffe.cs.illinois.edu/teaching/algorithms/                      | CC BY 4.0 (to confirm)                                     | EC: data-structures#2–3, networks#2                         | chapter list, exercise types                                                     |
+| Matthews, Newhall and Webb, _Dive into Systems_                   | https://diveintosystems.org/                                            | CC BY-NC-ND 4.0 (to confirm)                               | EC: computer-architecture, operating-systems#0, #2          | chapter list                                                                     |
+| RISC-V ISA specification                                          | https://riscv.org/specifications/                                       | CC BY 4.0 (to confirm)                                     | EC: computer-architecture#0                                 | formats, immediates                                                              |
+| Lee and Seshia, _Introduction to Embedded Systems_                | https://ptolemy.berkeley.edu/books/leeseshia/                           | CC BY-NC-ND 4.0 (confirmed)                                | EC: embedded-systems, digital-logic#3                       | chapter list, exercise types                                                     |
+| Arpaci-Dusseau, _Operating Systems: Three Easy Pieces_            | https://pages.cs.wisc.edu/~remzi/OSTEP/                                 | free to read, licence to confirm                           | EC: operating-systems                                       | chapter list                                                                     |
+| Hailperin, _Operating Systems and Middleware_                     | https://gustavus.edu/mcs/max/os-book/                                   | CC BY-SA 3.0 (to confirm)                                  | EC: operating-systems                                       | chapter list                                                                     |
+| Peterson and Davie, _Computer Networks: A Systems Approach_       | https://book.systemsapproach.org/                                       | CC BY 4.0 (confirmed)                                      | EC: networks                                                | chapter list, exercise types                                                     |
+| Bonaventure, _Computer Networking: Principles, Protocols and Practice_ | https://www.computer-networking.info/                              | CC BY (to confirm)                                         | EC: networks                                                | chapter list, exercise types                                                     |
+| NCEES FE exam specifications (Civil, Chemical, Mechanical, Electrical and Computer, Other Disciplines) | https://ncees.org/exams/fe-exam/ | free to view, © NCEES                                      | ME, ACC, EC, EG (hydrology)                                 | topic lists and item counts per knowledge area only                              |
+| NCEES _FE Reference Handbook_                                     | https://ncees.org                                                       | © NCEES (ME and ACC: free to view; EC: behind a login)     | ME, ACC (notation)                                          | table of contents only (this brief's rule)                                       |
+
+**MIT OpenCourseWare courses by group** (one source; record each course as its own `toc/college`
+file): M 18.01, 18.02, 18.03, 18.06. P 8.01, 8.02, 8.03, 8.04, 8.05, 8.07, 8.09, 8.044. C
+5.111/5.112, 5.12, 5.13, 5.60, 5.61, 5.07SC, 5.03/5.04, 5.35/5.310. EG 12.001, 12.003, 12.201,
+12.510, 1.72, 11.205 (numbers to confirm). B 7.012/7.013/7.016, 7.03, 7.06, 20.330J, 20.310J/2.797J,
+HST.151, 6.021J. ME 2.001, 2.002, 2.003SC, 2.005/2.006, 2.06, 2.080J, 2.086, 2.092/2.093, 2.51,
+2.72, 2.008, 3.091, 6.0001. ACC 16.01–16.04, 16.100, 16.120, 16.20, 16.333, 16.346, 16.50,
+16.512; 1.050, 1.060, 1.061, 1.201, 1.34, 1.571, 1.85; 10.213, 10.302, 10.37, 10.40, 10.450,
+10.490, 10.50. EC 6.002, 6.003, 6.004, 6.006, 6.012, 6.013, 6.02, 6.033, 6.042J, 6.061, 6.1810,
+6.302, 6.450, 6.829, 16.06. Some OCW pages carry third-party content outside the CC licence:
+skip it.
+
+**Commercial texts, titles only** (public tables of contents, cited, `"content": "titles"`): M
+Strang, Lay, Stewart, Boyce–DiPrima. P Taylor, Griffiths (E&M, QM), Schroeder. EG Tarbuck and
+Lutgens, Wicander and Monroe, Klein and Dutrow, Ahrens, Garrison, Dingman, Lowrie,
+Christopherson, Rubenstein, Slocum, Bolstad, Lillesand. B Campbell, Griffiths (genetic
+analysis), Alberts, Tortora, Molles, Futuyma, Marieb, Truskey, Ratner, Webster, Enderle and
+Bronzino. ME and ACC: the plans name no commercial list; add the standard texts of each course
+(titles only) where they help check order and coverage. EC Alexander and Sadiku, Nilsson and Riedel, Sedra and Smith, Razavi,
+Oppenheim and Willsky, Nise, Ogata, Ulaby, Hayt and Buck, Glover–Sarma–Overbye, Chapman,
+Haykin, Proakis, Harris and Harris, Mano, Rosen, CLRS, Patterson and Hennessy, Silberschatz,
+Tanenbaum, Kurose and Ross, Valvano.
+
+## Question sources (one row per source)
+
+| Source                                                                     | Licence or terms                                       | Record          | Groups (target from this source)                                                      |
+| -------------------------------------------------------------------------- | ------------------------------------------------------ | --------------- | ------------------------------------------------------------------------------------- |
+| MIT OCW problem sets and exams (courses above)                             | CC BY-NC-SA 4.0                                        | type only       | M 30 a course; P 40 an upper course, 20 an intro course; C 15 a course; EG 60; B 30 a biology course (not microbiology), 15 a bioengineering course; ME main source; ACC 30 a course; EC 15 a course |
+| AP Central released free response (Calculus AB/BC, Physics C Mechanics and E&M, Chemistry, Biology, Human Geography, Environmental Science, Computer Science A) | © College Board; classroom copying only | type only | M 40 calc-1, 40 calc-2; P 30 university-1, 30 university-2; C 40; B 40; EG 30; ME bridge; ACC 5; EC 10 + 5 |
+| GRE Mathematics and Physics practice books                                 | © ETS                                                  | type only       | M 20; P all items by topic; ME and ACC bridge (≤ 5)                                    |
+| NCEES FE exam specifications                                               | © NCEES, free to view                                  | topic list only | weights for ME, ACC, EC, EG hydrology (no items; the math and earth plans' "sample questions" are off limits) |
+| Active Calculus and CLP exercises                                          | CC BY-SA 4.0; CC BY-NC-SA 4.0                          | text (Active Calculus), type (CLP) | M 30 across calc-1–3                                               |
+| Lebl and Austin exercises                                                  | CC BY-SA / BY-NC-SA; CC BY 4.0                         | by licence      | M 40 diff-eq, 40 linear-algebra                                                        |
+| Tong example sheets                                                        | © Tong, free unaltered, not for profit                 | type only       | P 15 a course (CM, EM, QM, TS)                                                         |
+| Harvey, _Analytical Chemistry 2.1_ problems                                | CC BY-NC-SA                                            | type only       | C 30 analytical                                                                        |
+| International Chemistry Olympiad preparatory problems                      | terms vary by host year; check each                    | type only       | C 20 (physical, inorganic, analytical, biochemistry)                                   |
+| LibreTexts homework and exercise pages                                     | per page; skip undeclared                              | by licence      | C 20 (physical-2, inorganic, biochemistry)                                             |
+| Earle, _Physical Geology_ 2e exercises                                     | CC BY 4.0                                              | text            | EG 60                                                                                  |
+| Stull, _Practical Meteorology_ exercises                                   | CC BY-NC-SA 4.0                                        | type only       | EG 60                                                                                  |
+| Webb, _Introduction to Oceanography_ review questions                      | CC BY 4.0                                              | text            | EG 30                                                                                  |
+| Schmittner, _Introduction to Climate Science_ questions                    | CC BY-NC 4.0                                           | type only       | EG 25                                                                                  |
+| Dastrup review questions (both books)                                      | CC BY / CC BY-NC-SA                                    | by licence      | EG 40                                                                                  |
+| NAEP Geography released items, grades 8 and 12 (NQT)                       | public domain (as `SOURCES.md` §1)                     | text            | EG 30 (bridge level)                                                                   |
+| NAEP grade 12 science items already filed                                  | public domain; cross-list only                         | cross-list      | EG 10                                                                                  |
+| International Earth Science and Geography Olympiad past tests              | terms unclear                                          | type only       | EG 40                                                                                  |
+| NOAA JetStream, USGS Water Science School, NASA ARSET exercises            | public domain (to confirm)                             | text            | EG 40                                                                                  |
+| Penn State e-Education lesson quizzes                                      | CC BY-NC-SA 4.0 (to confirm)                           | type only       | EG 30                                                                                  |
+| USA Biology Olympiad open exams (cee.org)                                  | © Center for Excellence in Education; check terms      | type only       | B 20                                                                                   |
+| _Engineering Statics_ interactive problems                                 | CC BY-NC-SA 4.0                                        | type only       | ME statics                                                                             |
+| Yan end-of-section practice problems                                       | CC BY-NC-SA 4.0                                        | type only       | ME thermodynamics                                                                      |
+| Kaw multiple-choice quizzes                                                | CC BY-NC-SA 3.0 US                                     | type only       | ME numerical-methods                                                                   |
+| Virasak review questions                                                   | CC BY 4.0                                              | text            | ME manufacturing                                                                       |
+| DoITPoMS questions; _Mechanics Map_ exercises                              | to confirm                                             | by licence      | ME materials-science; statics, dynamics                                                |
+| LearnChemE ConcepTests                                                     | CC BY-SA 4.0                                           | text            | ACC 40 a chemical course                                                               |
+| Woolf end-of-section exercises                                             | CC BY 3.0                                              | text            | ACC 20 process-control                                                                 |
+| Wikibooks _Fundamentals of Transportation_ and _ICEP_ exercises            | CC BY-SA                                               | text            | ACC 20 transportation, 20 material-energy-balances                                     |
+| NASA Glenn and JPL worked problems                                         | public domain                                          | text            | ACC 15 a course (aerodynamics, compressible-flow, propulsion, orbital-mechanics)       |
+| Kuphaldt ModEL and Socratic worksheets                                     | CC BY 4.0 (ModEL confirmed)                            | text            | EC 15 a course (circuits-1/2, electronics, digital-logic)                              |
+| Ellingson end-of-section problems                                          | CC BY-SA 4.0                                           | text            | EC 25 electromagnetics; P electromagnetism                                             |
+| Levin and _Mathematics for Computer Science_ exercises                     | CC BY-SA (to confirm)                                  | text            | EC 30 discrete-math                                                                    |
+| Erickson, Morin and OpenDSA exercises                                      | CC BY (to confirm); OpenDSA to confirm                 | by licence      | EC 30 data-structures                                                                  |
+| Peterson and Davie, Bonaventure exercises                                  | CC BY                                                  | text            | EC 25 networks                                                                         |
+| Lee and Seshia exercises                                                   | CC BY-NC-ND 4.0                                        | type only       | EC 15 embedded-systems, digital-logic#3                                                |
+| Wikibooks _Control Systems_ examples                                       | CC BY-SA (to confirm)                                  | text            | EC 15 control-systems                                                                  |
+
+**Off limits** (also listed under Rules): OpenStax end-of-chapter exercises (titles only); ACS
+standardized exams and, unless the owner allows, US National Chemistry Olympiad papers; NCEES
+practice exams, sample items and the FE Reference Handbook beyond its contents; GRE Biology,
+Chemistry and Computer Science; MCAT; Chegg, Course Hero, Quizlet, solution manuals, anything
+behind a login.
+
+## Targets per course
+
+| Group               | Targets                                                                                                                                         | Total  |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
+| Mathematics         | calc-1 120, calc-2 120, calc-3 100, diff-eq 80, linear-algebra 100                                                                               | 520    |
+| Physics             | university-1 90, university-2 75, university-3 75, classical-mechanics 50, electromagnetism 40, quantum 40, thermal-statistical 40               | 410    |
+| Chemistry           | gen-chem-1 60, gen-chem-2 60, organic-1 40, organic-2 40, analytical 40, physical-1 30, physical-2 30, biochemistry 30, inorganic 30             | 360    |
+| Earth and geography | at least 25 a course (13 courses); mineralogy, cartography, GIS and remote sensing have the thinnest open sources                                 | ≈ 470  |
+| Biology             | 30 a biology course (8), 15 a bioengineering course (5), with AP Biology 40 and USABO 20 spread over principles, genetics, ecology, evolution     | ≈ 345  |
+| Mechanical          | 40 each statics, dynamics, mechanics-of-materials, thermodynamics, fluid-mechanics, heat-transfer; 30 each materials-science, machine-design, vibrations, numerical-methods, manufacturing; 20 each advanced-solid-mechanics, FEA, engineering-programming, cad-graphics | 470 (the plan says 480; its list sums to 470) |
+| Aero, civil, chem.  | 30–40 a course (21 courses)                                                                                                                      | ≈ 700  |
+| Electrical, comp.   | 40 each circuits-1, circuits-2, signals-systems, control-systems, digital-logic, discrete-math, data-structures, computer-architecture; 25 each of the other seven | 495    |
+
+About **3,770 question records** in all. Without OpenStax, physics' intro courses lean on MIT
+OCW, AP Physics C (types), Crowell and Ellingson; record what you reach and say what is short.
+Also note per course any question type the plan lacks (`[new-page]`), as the earth plan asks.
+
+## Recording format
+
+Follow the K–12 conventions (`research/textbooks/README.md`, `research/questions/SOURCES.md`),
+with a college topic id in place of a skill id.
+
+- **Tables of contents:** `research/textbooks/toc/college/<book-id>.json`, shaped like the
+  K–12 `toc/*.json` (`id`, `curriculum`, `publisher`, `edition`, `subject` (the field id from
+  `HE_FIELDS`: `math`, `physics`, `chemistry`, `earth-science`, `geography`, `biology`,
+  `aerospace`, `mechanical`, `classical`, `electrical`, `bio`, `chemical`, `civil`, `computer`),
+  `"level": "college"`, `content` `"titles"` or `"full"`, `license` {`name`, `url`,
+  `attribution`}, `terms`, `sourceUrl`, `retrieved`, `notes`, `books[].units[]`), with each unit
+  or section carrying `topics: ["he.physics.university-1#0", …]` in place of `skills` (an empty
+  list with a note where no topic fits: that is a taxonomy gap). For open books add, per section,
+  `examples` (the worked-example kinds in our words), `ranges` (typical number sizes) and
+  `notation` (symbols and conventions: j or i, KiB or KB, sign of work, 0- or 1-based heaps).
+  Commercial books: titles only.
+- **Crosswalks:** `research/textbooks/college/<field>.md`, one per field: for each topic
+  `<courseId>#<i>`, the chapter or section of each book that teaches it, the order the books
+  teach it in, the example kinds and ranges, and topics the books teach that the course lacks.
+  Plus `research/textbooks/college/CROSSWALK.md` as the index (extend `tools/build.py`, or add a
+  college builder beside it, so these are generated the way the K–12 ones are).
+- **Sources:** `research/textbooks/sources/he-<field>.md`: each source, its licence or reuse
+  statement quoted with the URL, robots.txt as read, what was skipped and why.
+- **Questions:** `research/questions/college/<field>.jsonl`, one JSON line per question:
+
+  ```json
+  {
+    "id": "OCW-8.01-PS3-Q2",
+    "level": "college",
+    "field": "physics",
+    "courseId": "he.physics.university-1",
+    "topicId": "he.physics.university-1#1",
+    "alsoTopics": [],
+    "page": "he.physics.university-1#1~atwood",
+    "standardCode": null,
+    "question": null,
+    "choices": null,
+    "answer": null,
+    "type": "constructed",
+    "questionType": "two blocks over a pulley: acceleration and tension",
+    "unknown": "a, T",
+    "givens": [{ "name": "mass", "unit": "kg", "range": "1–10" }],
+    "answerForm": "numbers with units",
+    "picture": { "involved": true, "kind": "diagram", "description": "our words" },
+    "feArea": null,
+    "source": { "name": "MIT OCW 8.01", "pageUrl": "…", "itemUrl": "…", "author": "…" },
+    "license": { "name": "CC BY-NC-SA 4.0", "url": "…", "attribution": "…" },
+    "content": "type",
+    "retrieved": "2026-10-…",
+    "notes": "",
+    "mark": null
+  }
+  ```
+
+  `content` is `"text"` when the question is copied (public domain, CC BY, CC BY-SA, with
+  attribution) and `"type"` otherwise (`question`, `choices` and `answer` null). `page` is the
+  plan's page that should answer it, or null. `mark` stays null until the last step.
+  `research/questions/college/SOURCES.md` and `COVERAGE.md` follow the K–12 files (counts by
+  source, course and topic; topics with no question). Extend `research/questions/validate.py`
+  (or add a college validator) so every `topicId` names a real topic of `COURSES` and every
+  required key is present.
+
+## Licence discrepancies and open points to resolve
+
+Record the answer in the sources file; the owner decides where a rule is in question.
+
+1. **OpenStax Chemistry 2e:** CC BY 4.0 on the book page (chemistry plan) vs CC BY-NC-SA 4.0 in
+   `research/textbooks/toc/science/openstax-chemistry-2e.json` and `sources/hs-d.md`.
+2. **OpenStax Biology 2e:** CC BY 4.0 (biology plan) vs CC BY-NC-SA 4.0 (`sources/hs-d.md`).
+3. **OpenStax University Physics, Calculus, Organic Chemistry, Microbiology, A&P 2e:** licences
+   read from mirrors or memory; confirm. Titles only either way (the no-LLM statement).
+4. **Ellingson:** CC BY-SA 4.0 confirmed for vol. 1 only.
+5. **Dastrup, _Human Geography_:** the pressbooks.pub copy is CC BY, the SLCC copy CC BY-NC-SA;
+   record which copy you read.
+6. **Dual or choice licences:** Lebl (CC BY-SA or BY-NC-SA), Hefferon (GFDL or CC BY-SA 3.0 US),
+   Bar-Meir (GFDL version), Beezer (GFDL).
+7. **MIT OCW:** CC BY-NC-SA 4.0 per most plans, "to confirm" per the electrical plan; the 16
+   Unified thermodynamics notes sit on web.mit.edu, outside OCW, with no stated licence.
+8. **NCEES FE Reference Handbook:** "free to view, symbols only" (mechanical, aero-civil-chemical)
+   vs "sold or behind a login" (electrical); this brief allows its table of contents only. The
+   math (10) and earth (15) plans' NCEES "sample questions" are off limits.
+9. **US National Chemistry Olympiad** (chemistry plan, 30 records, "check terms"): ACS material,
+   off limits under this brief unless the owner allows it.
+10. **OpenStax exercises** (physics plan, 240 records): off limits; the owner may revisit.
+11. **Free-to-read, all-rights-reserved texts** (Lienhard, Bower, Kong et al., Rawlings and
+    Ekerdt, Verruijt, Fogler's site, OSTEP, Åström and Murray): titles, order and types only.
+12. **LibreTexts:** licence per page; skip pages marked "undeclared".
+
+## Final step: re-mark the plans
+
+Each plan marks the question types it expects as Solves, Partly or No: math and physics in each
+topic's "Answers" line, chemistry and biology in "Tests ask", earth and geography and mechanical
+in "Asks", aero-civil-chemical in the "Question type | Page | Mark" tables, electrical and
+computer in each topic's "ask (→ page)" list. When a group's questions are recorded:
+
+1. For each topic, match the recorded items to the plan's rows (fill `page` and `mark` on each
+   record).
+2. Re-mark each row against the real items: keep, change (with the item ids that show why), or
+   add a row for a question type the items show and the plan lacks (`[new-page]`).
+3. Write the changes per plan to `research/questions/college/MARKS.md` (topic, row, old mark, new
+   mark, item ids) and update the marks in the plan file itself in a separate commit per plan
+   (marks and new rows only; no other plan text).
+4. List taxonomy gaps the items reveal under the plan's "Not in the taxonomy" heading in
+   `MARKS.md`, for `docs/HE_TAXONOMY_GAPS.md`.
+
+## Checks and commits
+
+- `python3 research/questions/validate.py` (and the college validator) and
+  `python3 research/textbooks/tools/build.py` after changing `toc/` or `practice/`.
+- `npx prettier --write` on the Markdown you write. Nothing under `research/` is imported by the
+  app; no app test is needed.
+- Commit per field with a clear message; push after each group.
