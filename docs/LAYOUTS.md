@@ -193,6 +193,14 @@ functional group lit (`alcohol`, `acid`, `ester`, `amine`, `ketone`, `aldehyde`,
 `halide`). The `molecule` card now draws BF₃, CCl₄, CHCl₃ and CH₂O (`reps/chemLayoutsHs2d.ts`).
 Card icons for the models of the atom (`layouts/icons/h2d.tsx`): `Dalton atom model`, `Thomson
 atom model`, `Rutherford atom model`, `Bohr atom model`, `quantum atom model`.
+College card icons (HC85, `layouts/icons/he3i.tsx`): crystal defects `vacancy`, `interstitial
+atom`, `substitutional impurity`, `edge dislocation`, `screw dislocation`, `grain boundary`,
+`twin boundary`, `pore in metal`, `inclusion in metal`; process families `sand casting`, `die
+casting`, `investment casting`, `forging`, `rolling mill`, `extrusion`, `deep drawing`,
+`press-brake bending`, `lathe turning`, `milling cutter`, `arc welding`, `brazing`; additive
+families `SLA printing`, `DLP printing`, `FDM printing`, `SLS printing`, `laser metal powder
+fusion`, `electron beam melting`, `PolyJet-style jetting`, `binder jet`, `wire-and-arc DED`,
+`laminated sheets`.
 
 Observe figures: an observation can set `figure: { kind: 'shadowStick', stick: 100 }`
 (`layouts/ShadowStick.tsx`): a meter stick and its noon shadow for the column tapped last, to

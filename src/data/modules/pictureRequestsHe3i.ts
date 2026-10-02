@@ -125,4 +125,28 @@ export const HE3I_REQUESTS: PictureRequest[] = [
       'g.he-linkage-slider-crank',
     ],
   },
+  {
+    ...ask(
+      'HC85',
+      'icon',
+      'Card icons for three sorts: crystal defects (point, line, interfacial, volume), manufacturing process families, and the seven additive families',
+      [
+        `${E}materials-science#1~defects`,
+        `${E}manufacturing#0~families`,
+        `${E}manufacturing#2~families`,
+      ],
+      [
+        'From ME-P31. Card icons in layouts/icons/he3i.ts (names) and components/module/layouts/icons/he3i.tsx (drawings), registered in both icon indexes; a line in docs/LAYOUTS.md.',
+        "A card passes figure: { kind: 'icon', icon: <name> }. Defects (flat atom diagrams, the defect lit): 'vacancy', 'interstitial atom', 'substitutional impurity', 'edge dislocation', 'screw dislocation', 'grain boundary', 'twin boundary', 'pore in metal', 'inclusion in metal'. Processes (small machines in steel, sand and hot metal): 'sand casting', 'die casting', 'investment casting', 'forging', 'rolling mill', 'extrusion', 'deep drawing', 'press-brake bending', 'lathe turning', 'milling cutter', 'arc welding', 'brazing'. Additive: 'SLA printing', 'DLP printing', 'FDM printing', 'SLS printing', 'laser metal powder fusion', 'electron beam melting', 'PolyJet-style jetting', 'binder jet', 'wire-and-arc DED', 'laminated sheets'.",
+        "Example (manufacturing#0~families): cards: [{ label: 'Sand casting', bin: 'casting', figure: { kind: 'icon', icon: 'sand casting' } }, …]. The three gallery sorts are the plans' sorts with every card (bins Point, Line, Interfacial, Volume; Casting, Bulk forming, Sheet forming, Material removal, Joining; the seven ISO/ASTM 52900 families).",
+        'Checked by the layout tests (every card names an icon that exists, bins and cards agree). The pages are not built yet.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-cardIcons-defects',
+      'g.he-cardIcons-process-families',
+      'g.he-cardIcons-additive-families',
+    ],
+  },
 ];

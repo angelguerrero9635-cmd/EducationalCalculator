@@ -9,6 +9,7 @@
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
 import type { LayoutDef } from './layouts';
+import type { CardIcon } from './layouts/types';
 import type { ModuleDef, StepText } from './types';
 
 /** A relation and its step text, built together so a demo lists both from one place. */
@@ -1005,6 +1006,142 @@ const linkSliderCrank = mechanismDemo(
   true,
 );
 
+// ── HC85: card icons on the three sorts they serve ──
+
+const icon = (label: string, bin: string, name: CardIcon) => ({
+  label,
+  bin,
+  figure: { kind: 'icon' as const, icon: name },
+});
+
+const sortDefects: LayoutDef = {
+  id: 'g.he-cardIcons-defects',
+  title: 'Crystal defects by dimension',
+  kind: 'sort',
+  use: 'Use this for sorting crystal defects as point, line, interfacial or volume defects.',
+  assumptions: [
+    'Defects are sorted by how many dimensions they extend in.',
+    'Point defects are one atom site; line defects run along a line of atoms; interfacial defects are planes; volume defects are three-dimensional.',
+  ],
+  question: 'How many dimensions does the defect extend in?',
+  bins: [
+    { id: 'point', label: 'Point', why: 'One atom site is missing, extra or a different element.' },
+    {
+      id: 'line',
+      label: 'Line',
+      why: 'Atoms are out of place along a line: the dislocation line.',
+    },
+    {
+      id: 'interfacial',
+      label: 'Interfacial',
+      why: 'Two orientations of the crystal meet along a plane.',
+    },
+    { id: 'volume', label: 'Volume', why: 'A void or a particle of another phase fills a region.' },
+  ],
+  cards: [
+    icon('Vacancy', 'point', 'vacancy'),
+    icon('Interstitial atom', 'point', 'interstitial atom'),
+    icon('Substitutional impurity', 'point', 'substitutional impurity'),
+    icon('Edge dislocation', 'line', 'edge dislocation'),
+    icon('Screw dislocation', 'line', 'screw dislocation'),
+    icon('Grain boundary', 'interfacial', 'grain boundary'),
+    icon('Twin boundary', 'interfacial', 'twin boundary'),
+    icon('Pore', 'volume', 'pore in metal'),
+    icon('Inclusion', 'volume', 'inclusion in metal'),
+  ],
+};
+
+const sortProcesses: LayoutDef = {
+  id: 'g.he-cardIcons-process-families',
+  title: 'Which process family?',
+  kind: 'sort',
+  use: 'Use this for sorting manufacturing processes into casting, forming, removal and joining.',
+  assumptions: [
+    'Casting pours liquid metal into a mold; forming reshapes solid metal; removal cuts it away; joining fixes parts together.',
+    'Bulk forming reshapes thick stock; sheet forming bends and stretches thin sheet.',
+  ],
+  question: 'How does the process shape the metal?',
+  pickBar: true,
+  bins: [
+    { id: 'casting', label: 'Casting', why: 'Liquid metal fills a mold and freezes to its shape.' },
+    { id: 'bulk', label: 'Bulk forming', why: 'Thick solid stock is squeezed into shape.' },
+    {
+      id: 'sheet',
+      label: 'Sheet forming',
+      why: 'Thin sheet is bent or drawn without changing its thickness much.',
+    },
+    { id: 'removal', label: 'Material removal', why: 'A cutting tool takes chips off the part.' },
+    { id: 'joining', label: 'Joining', why: 'Parts are fixed together with melted metal.' },
+  ],
+  cards: [
+    icon('Sand casting', 'casting', 'sand casting'),
+    icon('Die casting', 'casting', 'die casting'),
+    icon('Investment casting', 'casting', 'investment casting'),
+    icon('Forging', 'bulk', 'forging'),
+    icon('Rolling', 'bulk', 'rolling mill'),
+    icon('Extrusion', 'bulk', 'extrusion'),
+    icon('Deep drawing', 'sheet', 'deep drawing'),
+    icon('Bending', 'sheet', 'press-brake bending'),
+    icon('Turning', 'removal', 'lathe turning'),
+    icon('Milling', 'removal', 'milling cutter'),
+    icon('Welding', 'joining', 'arc welding'),
+    icon('Brazing', 'joining', 'brazing'),
+  ],
+};
+
+const sortAdditive: LayoutDef = {
+  id: 'g.he-cardIcons-additive-families',
+  title: 'The seven additive families',
+  kind: 'sort',
+  use: 'Use this for sorting 3D printing processes into the seven additive manufacturing families.',
+  assumptions: [
+    'The families are told apart by how each layer is made: cured, extruded, fused, jetted, bonded, deposited or laminated.',
+  ],
+  question: 'How is each layer made?',
+  pickBar: true,
+  bins: [
+    { id: 'vat', label: 'Vat photopolymerization', why: 'Light cures liquid resin in a vat.' },
+    {
+      id: 'extrusion',
+      label: 'Material extrusion',
+      why: 'A heated nozzle lays down a bead of plastic.',
+    },
+    {
+      id: 'pbf',
+      label: 'Powder bed fusion',
+      why: 'A laser or electron beam fuses powder in a bed.',
+    },
+    {
+      id: 'jetting',
+      label: 'Material jetting',
+      why: 'A printhead jets droplets of the part material, cured by UV.',
+    },
+    { id: 'binder', label: 'Binder jetting', why: 'A printhead jets glue onto powder.' },
+    {
+      id: 'ded',
+      label: 'Directed energy deposition',
+      why: 'Wire or powder melts as it is fed into a focused heat source.',
+    },
+    {
+      id: 'sheet',
+      label: 'Sheet lamination',
+      why: 'Sheets are bonded and cut to the layer’s outline.',
+    },
+  ],
+  cards: [
+    icon('SLA', 'vat', 'SLA printing'),
+    icon('DLP', 'vat', 'DLP printing'),
+    icon('FDM', 'extrusion', 'FDM printing'),
+    icon('SLS', 'pbf', 'SLS printing'),
+    icon('Laser metal powder fusion', 'pbf', 'laser metal powder fusion'),
+    icon('Electron beam melting', 'pbf', 'electron beam melting'),
+    icon('PolyJet-style jetting', 'jetting', 'PolyJet-style jetting'),
+    icon('Binder jet', 'binder', 'binder jet'),
+    icon('Wire-and-arc DED', 'ded', 'wire-and-arc DED'),
+    icon('Laminated sheets', 'sheet', 'laminated sheets'),
+  ],
+};
+
 export const HE3I_GALLERY_MODULES: ModuleDef[] = [
   forearmLoad,
   forearmLevel,
@@ -1029,4 +1166,4 @@ export const HE3I_GALLERY_MODULES: ModuleDef[] = [
   linkSliderCrank,
 ];
 
-export const HE3I_GALLERY_LAYOUTS: LayoutDef[] = [];
+export const HE3I_GALLERY_LAYOUTS: LayoutDef[] = [sortDefects, sortProcesses, sortAdditive];
