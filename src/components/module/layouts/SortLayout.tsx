@@ -6,6 +6,7 @@ import { Text } from '@/components/Text';
 import type { SortLayout as Spec } from '@/data/modules/layouts';
 import { OffspringFigure } from './animalFigures';
 import { CardFigureView } from './CardFigure';
+import { LabelText } from './LabelText';
 import { font, radius, space, usePalette } from '@/theme';
 
 /** A stable shuffle from the card labels, so the page opens the same way every time. */
@@ -97,7 +98,9 @@ export function SortLayout({ spec }: { spec: Spec }) {
                 {card.figure ? (
                   <CardFigureView figure={card.figure} ink={c.text} shade={c.chartHighlight} />
                 ) : null}
-                <Text style={[styles.cardText, { color: c.text }]}>{card.label}</Text>
+                <LabelText code={spec.code} style={[styles.cardText, { color: c.text }]}>
+                  {card.label}
+                </LabelText>
               </Pressable>
               {/* H117: the groups right under the picked card, so a phone never scrolls between
                 them; a hint about this card shows here too. */}
@@ -195,9 +198,9 @@ export function SortLayout({ spec }: { spec: Spec }) {
                 </Text>
               </View>
               {here.map((card) => (
-                <Text key={card.i} style={[styles.inBin, { color: c.text }]}>
+                <LabelText key={card.i} code={spec.code} style={[styles.inBin, { color: c.text }]}>
                   {card.label}
-                </Text>
+                </LabelText>
               ))}
               {full && here.length ? (
                 <Text style={[styles.why, { color: c.textMuted }]}>{bin.why}</Text>

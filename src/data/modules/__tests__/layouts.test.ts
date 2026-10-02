@@ -79,7 +79,10 @@ const FORMAT: [RegExp, string][] = [
   [/\.\./, 'double period (use …)'],
   [/\s[,.;:]/, 'space before punctuation'],
 ];
-const words = (s: string) => s.split(/\s+/).filter((w) => /[A-Za-z]{2,}|\b[aI]\b/.test(w)).length;
+/** A chemical formula or ion (H₂O, O₂, Fe³⁺, (2R,3S)-…): one word (HE-E25). */
+const FORMULA = /^(?=.*[₀-₉⁺⁻])[([]?(?:[A-Z][a-z]?[₀-₉]*)+[⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻]*[)\]]?[.,;:]?$/;
+const words = (s: string) =>
+  s.split(/\s+/).filter((w) => /[A-Za-z]{2,}|\b[aI]\b/.test(w) || FORMULA.test(w)).length;
 const sentences = (text: string) =>
   text
     .split(/(?<=[.!?])\s+/)
@@ -87,8 +90,10 @@ const sentences = (text: string) =>
     .filter(Boolean);
 
 /** Everything a student reads on the page. */
-function studentText(l: LayoutDef): { where: string; text: string; prose: boolean }[] {
-  const out: { where: string; text: string; prose: boolean }[] = [];
+function studentText(
+  l: LayoutDef,
+): { where: string; text: string; prose: boolean; code?: boolean }[] {
+  const out: { where: string; text: string; prose: boolean; code?: boolean }[] = [];
   l.assumptions.forEach((a, i) => out.push({ where: `assumption ${i + 1}`, text: a, prose: true }));
   if (l.use) out.push({ where: 'use', text: l.use, prose: true });
   if (l.title) out.push({ where: 'title', text: l.title, prose: false });
@@ -100,11 +105,16 @@ function studentText(l: LayoutDef): { where: string; text: string; prose: boolea
         out.push({ where: `bin ${b.id}`, text: b.label, prose: false });
         out.push({ where: `bin ${b.id} why`, text: b.why, prose: true });
       });
-      l.cards.forEach((c) => out.push({ where: `card ${c.label}`, text: c.label, prose: false }));
+      // (code cards, HE-E25, are code as written: straight quotes, no copy-editing)
+      l.cards.forEach((c) =>
+        out.push({ where: `card ${c.label}`, text: c.label, prose: false, code: l.code }),
+      );
       break;
     case 'sequence':
       out.push({ where: 'question', text: l.question, prose: true });
-      l.stages.forEach((s) => out.push({ where: `stage ${s.label}`, text: s.label, prose: false }));
+      l.stages.forEach((s) =>
+        out.push({ where: `stage ${s.label}`, text: s.label, prose: false, code: l.code }),
+      );
       break;
     case 'explore':
       l.scenes.forEach((s) => {
@@ -168,6 +178,11 @@ describe.each(pages(LAYOUTS))('layout %s', (id, l) => {
         if (l.totalLabel) {
           expect(l.stages.slice(0, -1).every((s) => s.span !== undefined)).toBe(true);
         }
+        // Signed spans (HE-E25) are whole changes with a net: every stage has one.
+        if (l.signed) {
+          expect(l.stages.every((s) => s.span !== undefined)).toBe(true);
+          expect(l.totalLabel).toBeDefined();
+        }
         break;
       case 'explore':
         expect(l.scenes.length).toBeGreaterThanOrEqual(2);
@@ -224,8 +239,9 @@ describe.each(pages(LAYOUTS))('layout %s', (id, l) => {
 
   it('reads at the grade level and is formatted the way the copy editor expects', () => {
     const limit = wordLimit(gradeOf(l.id));
-    const failures = studentText(l).flatMap(({ where, text, prose }) => {
+    const failures = studentText(l).flatMap(({ where, text, prose, code }) => {
       const out: string[] = [];
+      if (code) return out;
       const bad = FORMAT.find(([re]) => re.test(text));
       if (bad) out.push(`${where}: ${bad[1]} — "${text}"`);
       if (prose && !/[.!?”…]$/.test(text))
