@@ -135,6 +135,7 @@ search or the sitemap, but the module tests and the harness run over it):
 | `timingDiagram`    | CLK/Q/D, timer ramp, PWM, UART frame, packet space–time; brackets     | College digital and embedded (HC49) |
 | `graph`            | fixed or planar V, E graph: degrees, costs, cheapest path; trees      | College graphs and networks (HC50)  |
 | `scheduleChart`    | Gantt: RM or EDF tasks, releases, misses, response; FCFS, SJF, RR     | College real-time and OS (HC51)     |
+| `bitFields`        | a word's fields to scale, bit numbers, address and mask bits; headers | College computer, networks (HC64)   |
 | `projectile`       | a launch to scale: path, vₓ and v_y at three points, H and R; drag θ  | Physics 2D motion, parametric (H59) |
 | `freeBody`         | a block on a floor, ramp or rope; forces to scale, W sin θ; the net   | Physics forces, inclines (H60)      |
 | `circularMotion`   | v tangent, v²/r to the center; Gm₁m₂/r² pulls; Kepler ellipse, areas  | Physics circles, gravity (H61)      |

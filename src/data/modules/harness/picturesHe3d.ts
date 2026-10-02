@@ -1,8 +1,9 @@
 /**
  * Harness checks for the college round 3 group D pictures (docs/RENDERINGS_HE.md): HC48 code
  * traces and code cards, HC49 timing diagrams, HC50 graphs and graph cards, HC51
- * schedules. Test-only.
+ * schedules, HC64 bit fields and headers. Test-only.
  */
+import { placeFields } from '@/components/module/reps/bitMath';
 import { TIME_UNITS } from '@/components/module/reps/he3dTime';
 import {
   cheapestPath,
@@ -20,6 +21,7 @@ import type { CardFigure, LayoutDef } from '../layouts';
 import type { Representation } from '../types';
 import type { NumOrVar } from '../typesGraphs';
 import type {
+  BitFieldsSpec,
   CodeTraceFigure,
   CodeTraceScene,
   GraphSpec,
@@ -60,6 +62,8 @@ export function he3dIssues(rep: Representation, get: Get, unitOf: UnitOf): strin
       return graphIssues(rep, get, unitOf);
     case 'scheduleChart':
       return scheduleIssues(rep, get, unitOf);
+    case 'bitFields':
+      return bitFieldsIssues(rep, get, unitOf);
     default:
       return [];
   }
@@ -408,6 +412,53 @@ function scheduleIssues(s: ScheduleChartSpec, get: Get, unitOf: UnitOf): string[
       out.push(`schedule: the bracket ends at ${drawn}, the page's R is ${R}`);
     }
   }
+  return out;
+}
+
+/** HC64: the field widths add to the word; octets and masks in range; the headers add to the frame. */
+function bitFieldsIssues(s: BitFieldsSpec, get: Get, unitOf: UnitOf): string[] {
+  const out: string[] = [];
+  const { v } = reader(get, unitOf);
+  if (s.mode === 'headers') {
+    const payload = v(s.payload);
+    const layers = (s.layers ?? []).map((l) => v(l.bytes));
+    if (payload === undefined || layers.some((n) => n === undefined)) return out;
+    const total = payload + layers.reduce<number>((a, n) => a + n!, 0);
+    const frame = v(s.frame);
+    if (frame !== undefined && !near(frame, total)) {
+      out.push(`headers: the bytes drawn add to ${total}, the frame is ${frame}`);
+    }
+    const eff = v(s.efficiency);
+    if (eff !== undefined && !near(eff, (100 * payload) / total)) {
+      out.push(`headers: efficiency ${eff}% ≠ payload ÷ frame`);
+    }
+    return out;
+  }
+  const W = v(s.word);
+  if (W === undefined) return out;
+  const fields = placeFields(s.fields ?? [], W, (x) => v(x));
+  if (fields) {
+    const sum = fields.reduce((a, f) => a + f.bits, 0);
+    // A page limit keeps the fields inside the word; the picture fades past it.
+    if (fields.every((f) => f.bits >= 0) && Math.abs(sum - W) > 1e-9) {
+      out.push(`bitFields: the fields add to ${sum} bits, the word is ${W}`);
+    }
+    if (fields.some((f) => Math.abs(f.bits - Math.round(f.bits)) > 1e-9)) {
+      out.push(
+        `bitFields: a field ${fields.map((f) => f.bits).join(', ')} is not a whole number of bits`,
+      );
+    }
+  }
+  for (const o of (s.octets ?? []).map((x) => v(x))) {
+    if (o !== undefined && !(Number.isInteger(o) && o >= 0 && o <= 255))
+      out.push(`bitFields: octet ${o}`);
+  }
+  if ((s.octets ?? []).length && W !== 32) out.push(`bitFields: four octets in a ${W}-bit word`);
+  const mask = v(s.mask);
+  if (mask !== undefined && !(mask >= 0 && mask <= W)) out.push(`bitFields: mask /${mask}`);
+  const value = v(s.value);
+  if (value !== undefined && value >= 2 ** W)
+    out.push(`bitFields: ${value} needs more than ${W} bits`);
   return out;
 }
 

@@ -165,6 +165,7 @@ const PICTURE_NAMES: Record<string, string> = {
   timingDiagram: 'digital waveforms on one time axis with their intervals bracketed',
   graph: 'a graph with its degrees or costs and a path lit; a binary or code tree',
   scheduleChart: 'a Gantt chart of tasks or jobs with releases, deadlines and waits',
+  bitFields: 'a word cut into named bit fields, or a packet’s nested headers',
   matrixGrid: 'matrices in brackets',
   membrane: 'cell membrane with particles on each side',
   dnaStrand: 'DNA ladder, mRNA and amino acids',

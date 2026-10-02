@@ -1,7 +1,8 @@
 /**
  * College pictures, round 3, group D (docs/RENDERINGS_HE.md): the computing and signals
  * pictures. HC48 the `codeTrace` explore figure and the `code` card figure; HC49
- * `timingDiagram`; HC50 `graph` (and its card); HC51 `scheduleChart`.
+ * `timingDiagram`; HC50 `graph` (and its card); HC51 `scheduleChart`; HC64
+ * `bitFields`.
  */
 import type { NumOrVar } from './typesGraphs';
 
@@ -238,9 +239,57 @@ export interface ScheduleChartSpec {
   unit?: string;
 }
 
+// ─── HC64: bit fields and headers ────────────────────────────────────────────
+
+/** A named field of a word, MSB side first. */
+export interface BitField {
+  name: string;
+  /** Its width in bits (a variable id or number); `rest` takes what the others leave. */
+  bits?: NumOrVar;
+  rest?: boolean;
+  /** Drawn only while `count` is at least `nth` (the second or third register field). */
+  when?: { count: NumOrVar; nth: number };
+}
+
+/** A header (and its share) around the payload, innermost first: TCP, then IP, then the link. */
+export interface HeaderLayer {
+  name: string;
+  bytes: NumOrVar;
+  /** What the unit is called with this header on ("segment", "datagram", "frame"). */
+  unit?: string;
+}
+
+/**
+ * A word as a bar cut into named fields, or a packet's nested headers:
+ *
+ * - `word` (default): `word` bits, the `fields` to scale with their widths and the bit numbers
+ *   at their edges; with `value` (a number) or `octets` (four, an IPv4 address) the bits are
+ *   written in a row under the bar (to 32 bits; the octets' decimals over each byte), and `mask`
+ *   (a prefix length) adds the mask's row; past 32 bits each field is a box with its width only.
+ * - `headers`: the payload, then each layer's header added on the left (not to scale, each row
+ *   with its bytes and its name), and a to-scale strip of the whole frame with the payload's
+ *   share.
+ */
+export interface BitFieldsSpec {
+  kind: 'bitFields';
+  mode?: 'word' | 'headers';
+  word?: NumOrVar;
+  fields?: BitField[];
+  value?: NumOrVar;
+  octets?: NumOrVar[];
+  mask?: NumOrVar;
+  /** `headers`: the payload (bytes), the layers, the frame and the efficiency (%). */
+  payload?: NumOrVar;
+  layers?: HeaderLayer[];
+  frame?: NumOrVar;
+  efficiency?: NumOrVar;
+  /** Further values said in the caption (their labels as the page shows them). */
+  more?: string[];
+}
+
 // ─── The group's calculator pictures ─────────────────────────────────────────
 
-export type He3dSpec = TimingDiagramSpec | GraphSpec | ScheduleChartSpec;
+export type He3dSpec = TimingDiagramSpec | GraphSpec | ScheduleChartSpec | BitFieldsSpec;
 
 const ids = (xs: unknown[]): string[] =>
   xs.flat(4).filter((x): x is string => typeof x === 'string');
@@ -278,6 +327,19 @@ export function he3dSpecVars(r: He3dSpec): string[] {
         r.quantum,
         r.U,
         r.response?.value,
+      ]);
+    case 'bitFields':
+      return ids([
+        r.word,
+        (r.fields ?? []).map((f) => [f.bits, f.when?.count]),
+        r.value,
+        r.octets ?? [],
+        r.mask,
+        r.payload,
+        (r.layers ?? []).map((l) => l.bytes),
+        r.frame,
+        r.efficiency,
+        r.more ?? [],
       ]);
   }
 }

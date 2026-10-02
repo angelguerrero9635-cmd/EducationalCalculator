@@ -15,13 +15,16 @@
  *
  * HC51: `scheduleChart` (embedded-systems#3, ~response-time, ~edf; operating-systems#1,
  * ~round-robin) and a rate-monotonic set that misses a deadline at the edge.
+ *
+ * HC64: `bitFields` (computer-architecture#0 and #3, networks#0 headers and #1), each with an
+ * edge: three register fields, a 64-bit address, a /30.
  */
 import { jobOrder } from '@/components/module/reps/scheduleMath';
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
 import type { LayoutDef } from './layouts';
 import type { ModuleDef } from './types';
-import type { GraphSpec, TimingDiagramSpec } from './typesHe3d';
+import type { BitFieldsSpec, GraphSpec, TimingDiagramSpec } from './typesHe3d';
 
 type Fn = (x: Values) => number | number[] | undefined;
 /** A rearrangement's right-hand side: a template, or one built from the values (a sorted order). */
@@ -1685,6 +1688,430 @@ const roundRobin = demo({
   },
 });
 
+// ─── HC64: computer-architecture#0, an instruction format ─────────────────────
+
+const bits = (id: string, symbol: string, name: string, min = 0, max = 64, more = {}) =>
+  vr(id, symbol, name, 'bits', min, max, { integer: true, ...more });
+
+const instrVars = () => [
+  bits('w', 'w', 'Word size', 16, 64, { allowed: [16, 32, 64] }),
+  bits('o', 'o', 'Opcode bits', 1, 16),
+  vr('R', 'R', 'Registers', undefined, 8, 64, { allowed: [8, 16, 32, 64] }),
+  bits('r', 'r', 'Bits a register field', 3, 6),
+  vr('k', 'k', 'Register fields', undefined, 1, 3, { allowed: [1, 2, 3] }),
+  bits('f', 'f', 'Function bits', 0, 16),
+  bits('i', 'i', 'Immediate bits', 1, 64),
+  vr('lo', 'imm_min', 'Smallest immediate', undefined, -9.3e18, 0, { integer: true }),
+  vr('hi', 'imm_max', 'Largest immediate', undefined, 0, 9.3e18, { integer: true }),
+];
+
+const instrRules = (): Rule[] => [
+  rule('r = log₂R', '{r} = log_2({R})', ['r', 'R'], (x) => x.r! - Math.log2(x.R!), {
+    r: [(x) => Math.log2(x.R!), 'log_2({R})', 'Each register needs its own pattern of bits.'],
+    R: [(x) => 2 ** x.r!, '2^{r}', 'r bits name 2^r registers.'],
+  }),
+  rule(
+    'i = w − o − kr − f',
+    '{i} = {w} − {o} − {k} × {r} − {f}',
+    ['i', 'w', 'o', 'k', 'r', 'f'],
+    (x) => x.i! - (x.w! - x.o! - x.k! * x.r! - x.f!),
+    {
+      i: [
+        (x) => x.w! - x.o! - x.k! * x.r! - x.f!,
+        '{w} − {o} − {k} × {r} − {f}',
+        'The immediate gets the bits the other fields leave.',
+      ],
+      o: [
+        (x) => x.w! - x.i! - x.k! * x.r! - x.f!,
+        '{w} − {i} − {k} × {r} − {f}',
+        'The opcode gets the bits the other fields leave.',
+      ],
+      f: [
+        (x) => x.w! - x.o! - x.k! * x.r! - x.i!,
+        '{w} − {o} − {k} × {r} − {i}',
+        'The function field gets the bits the others leave.',
+      ],
+    },
+  ),
+  rule(
+    'smallest = −2^(i − 1)',
+    '{lo} = −2^({i} − 1)',
+    ['lo', 'i'],
+    (x) => x.lo! + 2 ** (x.i! - 1),
+    {
+      lo: [
+        (x) => -(2 ** (x.i! - 1)),
+        '−2^({i} − 1)',
+        'In two’s complement the top bit weighs −2^(i − 1).',
+      ],
+    },
+  ),
+  rule(
+    'largest = 2^(i − 1) − 1',
+    '{hi} = 2^({i} − 1) − 1',
+    ['hi', 'i'],
+    (x) => x.hi! - 2 ** (x.i! - 1) + 1,
+    {
+      hi: [(x) => 2 ** (x.i! - 1) - 1, '2^({i} − 1) − 1', 'All the bits but the sign bit set.'],
+      i: [(x) => Math.log2(x.hi! + 1) + 1, 'ln({hi} + 1) ÷ ln(2) + 1', 'Undo the power of 2.'],
+    },
+  ),
+];
+
+const instrLimit = limit(
+  'the fields fit the word',
+  '{i} ≥ 1',
+  ['i'],
+  (x) => x.i! >= 1,
+  'The other fields take the whole word: no bits are left for an immediate.',
+);
+
+const instrSpec: BitFieldsSpec = {
+  kind: 'bitFields',
+  word: 'w',
+  fields: [
+    { name: 'imm', bits: 'i' },
+    { name: 'rs2', bits: 'r', when: { count: 'k', nth: 3 } },
+    { name: 'rs1', bits: 'r', when: { count: 'k', nth: 1 } },
+    { name: 'funct', bits: 'f' },
+    { name: 'rd', bits: 'r', when: { count: 'k', nth: 2 } },
+    { name: 'opcode', bits: 'o' },
+  ],
+  more: ['lo', 'hi'],
+};
+
+const instruction = demo({
+  id: 'g.he-bit-fields-instruction',
+  title: 'Bit fields: an instruction format',
+  use: 'Use this for “A 32-bit instruction has a 7-bit opcode, two 5-bit register fields and a 3-bit funct. What immediates fit?”',
+  assumptions: [
+    'RISC-V I-type order: imm, rs1, funct3, rd, opcode (bit 31 on the left).',
+    'The immediate is a two’s complement number.',
+  ],
+  variables: instrVars(),
+  rules: instrRules(),
+  limits: [instrLimit],
+  example: { w: 32, o: 7, R: 32, r: 5, k: 2, f: 3, i: 12, lo: -2048, hi: 2047 },
+  startWith: ['w', 'o', 'R', 'k', 'f'],
+  representation: instrSpec,
+});
+
+// The edge: three register fields leave 7 bits, the R-type's funct7 place.
+const instructionR = demo({
+  id: 'g.he-bit-fields-instruction-r',
+  title: 'Bit fields: three register fields',
+  use: 'Use this for “With three 5-bit register fields, a 7-bit opcode and a 3-bit funct, how many bits are left in a 32-bit instruction?”',
+  assumptions: [
+    'RISC-V order: the leftover bits, rs2, rs1, funct3, rd, opcode (bit 31 on the left).',
+    'The leftover 7 bits are where R-type keeps funct7.',
+  ],
+  variables: instrVars(),
+  rules: instrRules(),
+  limits: [instrLimit],
+  example: { w: 32, o: 7, R: 32, r: 5, k: 3, f: 3, i: 7, lo: -64, hi: 63 },
+  startWith: ['w', 'o', 'R', 'k', 'f'],
+  representation: instrSpec,
+});
+
+// ─── HC64: computer-architecture#3, cache address bits ────────────────────────
+
+const cacheVars = () => [
+  bits('A', 'A', 'Address bits', 16, 64, { allowed: [16, 32, 48, 64] }),
+  vr('C', 'C', 'Cache size', 'KiB', 1, 1048576, { step: 1 }),
+  vr('B', 'B', 'Block size', 'B', 4, 4096, {
+    allowed: [4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096],
+  }),
+  vr('wy', 'w', 'Ways', undefined, 1, 16, { allowed: [1, 2, 4, 8, 16] }),
+  vr('S', 'S', 'Sets', undefined, 1, 1e9, { integer: true }),
+  bits('off', 'offset', 'Offset bits', 0, 12),
+  bits('idx', 'index', 'Index bits', 0, 40),
+  bits('tag', 'tag', 'Tag bits', 0, 64),
+];
+
+const cacheRules = (): Rule[] => [
+  rule(
+    'S = C ÷ (B × w)',
+    '{S} = 1024 × {C} ÷ ({B} × {wy})',
+    ['S', 'C', 'B', 'wy'],
+    (x) => x.S! * x.B! * x.wy! - 1024 * x.C!,
+    {
+      S: [
+        (x) => (1024 * x.C!) / (x.B! * x.wy!),
+        '1024 × {C} ÷ ({B} × {wy})',
+        'The cache’s bytes over the bytes a set holds (1024 bytes a KiB).',
+      ],
+      C: [
+        (x) => (x.S! * x.B! * x.wy!) / 1024,
+        '{S} × {B} × {wy} ÷ 1024',
+        'Sets times ways times block size, in KiB.',
+      ],
+    },
+  ),
+  rule('offset = log₂B', '{off} = log_2({B})', ['off', 'B'], (x) => x.off! - Math.log2(x.B!), {
+    off: [(x) => Math.log2(x.B!), 'log_2({B})', 'The offset picks one byte of the block.'],
+    B: [(x) => 2 ** x.off!, '2^{off}', 'The offset’s bits name every byte of a block.'],
+  }),
+  rule('index = log₂S', '{idx} = log_2({S})', ['idx', 'S'], (x) => x.idx! - Math.log2(x.S!), {
+    idx: [(x) => Math.log2(x.S!), 'log_2({S})', 'The index picks one set.'],
+    S: [(x) => 2 ** x.idx!, '2^{idx}', 'The index’s bits name every set.'],
+  }),
+  sumRule(
+    'A = tag + index + offset',
+    'A',
+    ['tag', 'idx', 'off'],
+    'The address splits into tag, index and offset.',
+  ),
+];
+
+const cacheLimit = limit(
+  'the sets are a whole power of 2',
+  '{S} is a power of 2',
+  ['S'],
+  (x) => Number.isInteger(Math.log2(x.S!)),
+  'The cache must hold a whole power of 2 of sets.',
+);
+
+const cacheSpec: BitFieldsSpec = {
+  kind: 'bitFields',
+  word: 'A',
+  fields: [
+    { name: 'tag', bits: 'tag' },
+    { name: 'index', bits: 'idx' },
+    { name: 'offset', bits: 'off' },
+  ],
+  more: ['S'],
+};
+
+const cache = demo({
+  id: 'g.he-bit-fields-cache',
+  title: 'Bit fields: a cache address',
+  use: 'Use this for “A 32 KiB direct-mapped cache has 64-byte blocks and 32-bit addresses. How many tag bits?”',
+  assumptions: [
+    'Byte addresses; direct-mapped is 1 way.',
+    'The offset picks the byte, the index the set, and the tag is compared in that set.',
+  ],
+  variables: cacheVars(),
+  rules: cacheRules(),
+  limits: [cacheLimit],
+  example: { A: 32, C: 32, B: 64, wy: 1, S: 512, off: 6, idx: 9, tag: 17 },
+  startWith: ['A', 'C', 'B', 'wy'],
+  representation: cacheSpec,
+});
+
+// The edge: a 64-bit address, too long to write bit by bit: each field is a box.
+const cache64 = demo({
+  id: 'g.he-bit-fields-cache-64',
+  title: 'Bit fields: a 64-bit cache address',
+  use: 'Use this for “A 64 KiB 16-way cache with 64-byte blocks takes 64-bit addresses. Split the address.”',
+  assumptions: [
+    'Byte addresses; a 16-way cache has 16 blocks a set.',
+    'More ways mean fewer sets, so fewer index bits and more tag bits.',
+  ],
+  variables: cacheVars(),
+  rules: cacheRules(),
+  limits: [cacheLimit],
+  example: { A: 64, C: 64, B: 64, wy: 16, S: 64, off: 6, idx: 6, tag: 52 },
+  startWith: ['A', 'C', 'B', 'wy'],
+  representation: cacheSpec,
+});
+
+// ─── HC64: networks#0, header overhead ────────────────────────────────────────
+
+const headersDemo = demo({
+  id: 'g.he-bit-fields-headers',
+  title: 'Bit fields: headers around a payload',
+  use: 'Use this for “What fraction of a full Ethernet frame is application data?”',
+  assumptions: [
+    'TCP and IP headers without options are 20 bytes each.',
+    'Ethernet adds 18 bytes: a 14-byte header and a 4-byte check sequence.',
+  ],
+  variables: [
+    vr('pay', 'payload', 'Payload', 'B', 1, 65535, { step: 1 }),
+    vr('tcp', 'TCP', 'TCP header', 'B', 20, 60, { step: 1 }),
+    vr('ip', 'IP', 'IP header', 'B', 20, 60, { step: 1 }),
+    vr('link', 'link', 'Link overhead', 'B', 1, 100, { step: 1 }),
+    vr('frame', 'frame', 'Frame size', 'B', 1, 70000, { step: 1 }),
+    vr('eff', 'efficiency', 'Efficiency', '%', 0, 100, { step: 0.1 }),
+  ],
+  rules: [
+    sumRule(
+      'frame = payload + TCP + IP + link',
+      'frame',
+      ['pay', 'tcp', 'ip', 'link'],
+      'Each layer adds its header to what it carries.',
+    ),
+    rule(
+      'efficiency = payload ÷ frame',
+      '{eff} = 100 × {pay} ÷ {frame}',
+      ['eff', 'pay', 'frame'],
+      (x) => x.eff! * x.frame! - 100 * x.pay!,
+      {
+        eff: [
+          (x) => (100 * x.pay!) / x.frame!,
+          '100 × {pay} ÷ {frame}',
+          'The share of the frame that is the application’s data.',
+        ],
+        pay: [
+          (x) => (x.eff! * x.frame!) / 100,
+          '{eff} × {frame} ÷ 100',
+          'The efficiency’s share of the frame.',
+        ],
+      },
+    ),
+  ],
+  example: { pay: 1460, tcp: 20, ip: 20, link: 18, frame: 1518, eff: (100 * 1460) / 1518 },
+  startWith: ['pay', 'tcp', 'ip', 'link'],
+  representation: {
+    kind: 'bitFields',
+    mode: 'headers',
+    payload: 'pay',
+    layers: [
+      { name: 'TCP', bytes: 'tcp', unit: 'TCP segment' },
+      { name: 'IP', bytes: 'ip', unit: 'IP datagram' },
+      { name: 'Ethernet', bytes: 'link', unit: 'Ethernet frame' },
+    ],
+    frame: 'frame',
+    efficiency: 'eff',
+  },
+});
+
+// ─── HC64: networks#1, a subnet ───────────────────────────────────────────────
+
+const subnetVars = () => [
+  bits('n', 'n', 'Prefix length', 24, 30),
+  vr('block', 'block', 'Block size', undefined, 4, 256, { integer: true }),
+  vr('m', 'mask', 'Mask’s last octet', undefined, 0, 252, { integer: true }),
+  vr('a', 'a', 'Address’s last octet', undefined, 0, 255, { integer: true }),
+  vr('net', 'network', 'Network’s last octet', undefined, 0, 255, { integer: true, derived: true }),
+  vr('bc', 'broadcast', 'Broadcast’s last octet', undefined, 0, 255, {
+    integer: true,
+    derived: true,
+  }),
+  vr('hosts', 'hosts', 'Usable hosts', undefined, 2, 254, { integer: true }),
+];
+
+const subnetRules = (): Rule[] => [
+  rule(
+    'block = 2^(32 − n)',
+    '{block} = 2^(32 − {n})',
+    ['block', 'n'],
+    (x) => x.block! - 2 ** (32 - x.n!),
+    {
+      block: [
+        (x) => 2 ** (32 - x.n!),
+        '2^(32 − {n})',
+        'The host bits, 32 − n of them, count the addresses.',
+      ],
+      n: [
+        (x) => 32 - Math.log2(x.block!),
+        '32 − log_2({block})',
+        'The bits the block takes from 32.',
+      ],
+    },
+  ),
+  rule(
+    'mask octet = 256 − block',
+    '{m} = 256 − {block}',
+    ['m', 'block'],
+    (x) => x.m! - 256 + x.block!,
+    {
+      m: [
+        (x) => 256 - x.block!,
+        '256 − {block}',
+        'The mask’s last octet has 1s down to the block.',
+      ],
+      block: [(x) => 256 - x.m!, '256 − {m}', 'What the mask leaves of 256.'],
+    },
+  ),
+  rule(
+    'network = ⌊a ÷ block⌋ × block',
+    '{net} = ⌊{a} ÷ {block}⌋ × {block}',
+    ['net', 'a', 'block'],
+    (x) => x.net! - Math.floor(x.a! / x.block!) * x.block!,
+    {
+      net: [
+        (x) => Math.floor(x.a! / x.block!) * x.block!,
+        '⌊{a} ÷ {block}⌋ × {block}',
+        'Round the address down to a whole block: the host bits all 0.',
+      ],
+    },
+  ),
+  rule(
+    'broadcast = network + block − 1',
+    '{bc} = {net} + {block} − 1',
+    ['bc', 'net', 'block'],
+    (x) => x.bc! - x.net! - x.block! + 1,
+    {
+      bc: [
+        (x) => x.net! + x.block! - 1,
+        '{net} + {block} − 1',
+        'The last address of the block: the host bits all 1.',
+      ],
+    },
+  ),
+  rule(
+    'hosts = block − 2',
+    '{hosts} = {block} − 2',
+    ['hosts', 'block'],
+    (x) => x.hosts! - x.block! + 2,
+    {
+      hosts: [
+        (x) => x.block! - 2,
+        '{block} − 2',
+        'Every address but the network and the broadcast.',
+      ],
+      block: [
+        (x) => x.hosts! + 2,
+        '{hosts} + 2',
+        'The hosts plus the network and broadcast addresses.',
+      ],
+    },
+  ),
+];
+
+const subnetSpec: BitFieldsSpec = {
+  kind: 'bitFields',
+  word: 32,
+  fields: [
+    { name: 'network', bits: 'n' },
+    { name: 'host', rest: true },
+  ],
+  octets: [192, 168, 10, 'a'],
+  mask: 'n',
+  more: ['net', 'bc', 'hosts'],
+};
+
+const subnet = demo({
+  id: 'g.he-bit-fields-subnet',
+  title: 'Bit fields: a subnet',
+  use: 'Use this for “Find the network and broadcast address of 192.168.10.77/26.”',
+  assumptions: [
+    'The first three octets, 192.168.10, are all network bits (n is 24 to 30).',
+    'Host bits all 0 name the network; all 1 are the broadcast.',
+  ],
+  variables: subnetVars(),
+  rules: subnetRules(),
+  example: { n: 26, block: 64, m: 192, a: 77, net: 64, bc: 127, hosts: 62 },
+  startWith: ['n', 'a'],
+  representation: subnetSpec,
+});
+
+// The edge: a /30, the smallest block with hosts (2 of them).
+const subnet30 = demo({
+  id: 'g.he-bit-fields-subnet-30',
+  title: 'Bit fields: a /30 subnet',
+  use: 'Use this for “Which /30 block holds 192.168.10.77, and how many hosts does it have?”',
+  assumptions: [
+    'The first three octets, 192.168.10, are all network bits (n is 24 to 30).',
+    'A /30 leaves 2 host bits: 4 addresses, 2 of them usable (a point-to-point link).',
+  ],
+  variables: subnetVars(),
+  rules: subnetRules(),
+  example: { n: 30, block: 4, m: 252, a: 77, net: 76, bc: 79, hosts: 2 },
+  startWith: ['n', 'a'],
+  representation: subnetSpec,
+});
+
 export const HE3D_GALLERY_MODULES: ModuleDef[] = [
   register,
   registerHold,
@@ -1708,6 +2135,13 @@ export const HE3D_GALLERY_MODULES: ModuleDef[] = [
   edf,
   fcfsSjf,
   roundRobin,
+  instruction,
+  instructionR,
+  cache,
+  cache64,
+  headersDemo,
+  subnet,
+  subnet30,
 ];
 
 export const HE3D_GALLERY_LAYOUTS: LayoutDef[] = [

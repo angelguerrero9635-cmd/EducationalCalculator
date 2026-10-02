@@ -2318,6 +2318,7 @@ export function repIssues(
     case 'timingDiagram':
     case 'graph':
     case 'scheduleChart':
+    case 'bitFields':
       out.push(
         ...he3dIssues(
           rep,

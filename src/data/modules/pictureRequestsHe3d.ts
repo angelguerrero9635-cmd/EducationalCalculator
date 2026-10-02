@@ -141,4 +141,34 @@ export const HE3D_REQUESTS: PictureRequest[] = [
       'g.he-schedule-chart-round-robin',
     ],
   },
+  {
+    ...ask(
+      'HC64',
+      'bitFields',
+      'Bit fields: a word cut into named fields to scale (instruction formats, tag | index | offset, network | host with the address and mask bits); a packet’s nested headers',
+      {
+        'he.engineering.computer-architecture#0': '"bitFields"',
+        'he.engineering.computer-architecture#3': '"bitFields"',
+        [`${NET}#0`]: '"headers"',
+        [`${NET}#1`]: '"octets"',
+      },
+      [
+        'From EC-P18. Drawn by reps/BitFields.tsx (widths and bits in reps/bitMath.ts, shared with the harness); types in typesHe3d.ts (BitFieldsSpec).',
+        'Fields: mode "word" (default) | "headers". word: word (bits), fields [{ name, bits? | rest: true, when?: { count, nth } }] MSB side first (when draws a field only while count ≥ nth: a page’s k register fields), value? (a number, its bits written in) or octets? (four, an IPv4 address; each a variable id or number), mask? (a prefix length: the mask’s row), more? (variable ids said in the caption). Bits are written to 32 bits; a 48- or 64-bit word draws field boxes with their widths only. A field too narrow for its name has it under the bar (two staggered rows). headers: payload, layers [{ name, bytes, unit? }] innermost first (each row adds the next header on the left, each header with its bytes), frame, efficiency (%); a to-scale strip of the frame shows the payload’s share.',
+        'When the fields don’t add up to the word, the bar is faded and the caption says so (the demos keep that out with a page limit, i ≥ 1).',
+        'Harness (picturesHe3d.ts): the drawn field widths add to the word size and are whole; octets 0–255 in a 32-bit word; the mask within the word; the value fits; payload + headers = the frame; efficiency = payload ÷ frame.',
+        'Example (computer-architecture#0 main): { kind: "bitFields", word: "w", fields: [{ name: "imm", bits: "i" }, { name: "rs2", bits: "r", when: { count: "k", nth: 3 } }, { name: "rs1", bits: "r", when: { count: "k", nth: 1 } }, { name: "funct", bits: "f" }, { name: "rd", bits: "r", when: { count: "k", nth: 2 } }, { name: "opcode", bits: "o" }], more: ["lo", "hi"] }; #3: fields tag, index, offset; networks#1: { kind: "bitFields", word: 32, fields: [{ name: "network", bits: "n" }, { name: "host", rest: true }], octets: [192, 168, 10, "a"], mask: "n", more: ["net", "bc", "hosts"] }; networks#0: { kind: "bitFields", mode: "headers", payload: "pay", layers: [{ name: "TCP", bytes: "tcp", unit: "TCP segment" }, { name: "IP", bytes: "ip", unit: "IP datagram" }, { name: "Ethernet", bytes: "link", unit: "Ethernet frame" }], frame: "frame", efficiency: "eff" }.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-bit-fields-instruction',
+      'g.he-bit-fields-instruction-r',
+      'g.he-bit-fields-cache',
+      'g.he-bit-fields-cache-64',
+      'g.he-bit-fields-headers',
+      'g.he-bit-fields-subnet',
+      'g.he-bit-fields-subnet-30',
+    ],
+  },
 ];
