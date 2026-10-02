@@ -5,6 +5,32 @@ helpers, pictures, tests, harness) could have prevented are turned into engine w
 next section is written, so each section starts from a better engine than the last. One entry
 per review; each line names the finding and what the engine now does about it.
 
+## HE-E19: angles as units, atan2, bearings and DMS
+
+- **An angle was a number with a ° label**, so no page could take 4°30′00″ or N 52°10′ E, show a
+  surveyor's angle, or convert degrees to radians in its steps; each grade file kept its own
+  `sin(d * RAD)`. → `engine/angles.ts` (trig in degrees, `atan2D`, `azimuthD`, both answers of
+  sin⁻¹ and cos⁻¹, DMS and bearing text and parsing) and the `angle` dimension in `units.ts` (°,
+  rad, grad, ′, ″, rev, mrad, μrad, all `listed`: K–12 labels unchanged). `VariableDef.angleForm`
+  shows a value as DMS, a bearing or an azimuth in boxes and steps and takes it typed;
+  `conversionRule` writes "180° = π rad" in a conversion line.
+- **tan⁻¹(y ÷ x) gives the wrong quadrant when x < 0**, and nothing checked it. → `atan2Lines`
+  names the quadrant ("(−8, 6) is in quadrant II: add 180°") and writes the turn; `bearingLines`
+  does the same for a compass bearing; `atan2Rule` and `bearingRule` (`data/modules/angles.ts`)
+  make them a page's forward-only rule. The harness (`harness/angles.ts`) checks the quadrant and
+  compass claims against the signs and fails a tan⁻¹ of a negative bottom left unturned.
+- **The evaluator stopped at a degree mark** outside sin( ) and could not read rad, atan2, DMS or
+  bearings. → `evaluate` reads them (a lone 12.5′ is its number; 4°30′ is 4.5°), and a line marked
+  "rad" reads in radians on a page of degrees. DMS sides are compared to half their last part
+  (one second), not the 0.2% of display rounding.
+- **A template's "−0" rule dropped the sign of −0°00′05″** → `renderTemplate` keeps a minus before
+  a DMS angle; `sin({α})` with a DMS α no longer adds a second °.
+- K–12 text unchanged (every listed unit is a label without `units`; no K–12 value has
+  `angleForm`). Ids run: m.10.right-triangle-trig, m.10.law-sines-cosines, m.11.unit-circle,
+  m.12.vectors, s.11.kinematics-2d, s.11.dynamics-vectors and every `he.` page; tests
+  `engine/__tests__/angles.test.ts`, `harness/__tests__/angles.test.ts` (every form on 300 random
+  points, each wrong variant caught), `__tests__/angles.test.ts` (test-only plan pages).
+
 ## HE-E6: calculus lines and notation in steps
 
 - **The solver is numeric, so a calculus page states closed forms, and nothing read them**: a
