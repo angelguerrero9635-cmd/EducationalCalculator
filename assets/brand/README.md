@@ -56,6 +56,8 @@ Clear space around a lockup: the U's width in the mark as drawn, on every side.
 
 ## Fonts (lettering only, outlined; no font file is shipped)
 
+- **Playfair Display** Black (the seal's $ and U, drawn as tattoo lettering: high-contrast letters, our own double bar with tapered tips, line work, a drop shadow, an engraved hatching wash, an inner highlight and a glint), SIL Open Font License 1.1, from the google/fonts repository (`ofl/playfairdisplay`).
+
 - **Cinzel** (the ring lettering), SIL Open Font License 1.1, from the google/fonts repository
   (`ofl/cinzel`).
 - **Inter** (the wordmark at weight 700 and the slogan), SIL Open Font License 1.1, from the
