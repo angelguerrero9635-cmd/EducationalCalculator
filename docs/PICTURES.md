@@ -138,6 +138,10 @@ search or the sitemap, but the module tests and the harness run over it):
 | solidOfRevolution  | a region turned about x or y; one disk, washer or shell; V checked    | College volumes (HC65)              |
 | `propertyDiagram`  | T–v, P–v, T–s: IAPWS vapor dome, tie line, states, cycles; vdW P–v    | College thermodynamics (HC17)       |
 | `thermalWall`      | layered wall, pipe, fin, tube, wire: T profile, R network; εσT⁴       | College heat transfer (HC23)        |
+| `heatExchanger`    | double pipe; T_h, T_c along x, counter/parallel; ΔT₁, ΔT₂, LMTD       | College heat exchangers (HC40)      |
+| `shaft`            | steel shaft: T arrows, scribed line twisting φ; τ on the face; M, σ   | College torsion, shafts (HC59)      |
+| `fatigueDiagram`   | Goodman, load line, n; S–N on log axes to S_e; Basquin; Miner bar     | College fatigue (HC52)              |
+| `elementChain`     | springs or bars between nodes; walls, F, R, u to scale; f T/C; a mesh | College FEA, stiffness (HC41)       |
 | `projectile`       | a launch to scale: path, vₓ and v_y at three points, H and R; drag θ  | Physics 2D motion, parametric (H59) |
 | `freeBody`         | a block on a floor, ramp or rope; forces to scale, W sin θ; the net   | Physics forces, inclines (H60)      |
 | `circularMotion`   | v tangent, v²/r to the center; Gm₁m₂/r² pulls; Kepler ellipse, areas  | Physics circles, gravity (H61)      |

@@ -42,6 +42,7 @@ import { he2jSpecVars } from '../typesHe2j';
 import { fieldPlotVars } from '../typesHe2g';
 import { solidOfRevolutionVars, spaceObjectsVars, surfacePlotVars } from '../typesHe3b';
 import { he2cSpecVars } from '../typesHe2c';
+import { he3hSpecVars } from '../typesHe3h';
 import { hskOptionVars, hskSpecVars } from '../typesHsk';
 import { he2fSpecVars, isHe2fSpec } from '../typesHe2f';
 import { he3lSpecVars, isHe3lSpec } from '../typesHe3l';
@@ -635,6 +636,11 @@ function representationVars(r: Representation): string[] {
     case 'propertyDiagram':
     case 'thermalWall':
       return he2cSpecVars(r);
+    case 'heatExchanger':
+    case 'shaft':
+    case 'fatigueDiagram':
+    case 'elementChain':
+      return he3hSpecVars(r); // HC40, HC41, HC52, HC59
     case 'projectile':
     case 'induction':
     case 'charges':

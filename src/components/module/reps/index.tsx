@@ -208,6 +208,10 @@ import { SolidOfRevolution } from './SolidOfRevolution';
 import { SpaceObjects } from './SpaceObjects';
 import { hasSpaceObjects } from '@/data/modules/typesHe3b';
 import { ThermalWall } from './ThermalWall';
+import { HeatExchanger } from './HeatExchanger';
+import { Shaft } from './Shaft';
+import { FatigueDiagram } from './FatigueDiagram';
+import { ElementChain } from './ElementChain';
 import { PropertyDiagram } from './PropertyDiagram';
 import { MotionGraphHs } from './MotionGraphHs';
 import { HskView } from './HskView';
@@ -410,6 +414,14 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <SolidOfRevolution spec={spec} calc={calc} />; // HC65
     case 'thermalWall':
       return <ThermalWall spec={spec} calc={calc} />;
+    case 'heatExchanger':
+      return <HeatExchanger spec={spec} calc={calc} />; // HC40
+    case 'shaft':
+      return <Shaft spec={spec} calc={calc} />; // HC59
+    case 'fatigueDiagram':
+      return <FatigueDiagram spec={spec} calc={calc} />; // HC52
+    case 'elementChain':
+      return <ElementChain spec={spec} calc={calc} />; // HC41
     case 'propertyDiagram':
       return <PropertyDiagram spec={spec} calc={calc} />;
     case 'linearFunction':
