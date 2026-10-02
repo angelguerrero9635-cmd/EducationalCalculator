@@ -1,0 +1,87 @@
+{
+  "id": "mit-ocw-12-510",
+  "curriculum": "MIT OCW 12.510 Introduction to Seismology",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Spring 2010",
+  "subject": "earth-science",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Robert Van Der Hilst and Scott Burdick. 12.510 Introduction to Seismology, Spring 2010. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu/courses/12-510-introduction-to-seismology-spring-2010/. License: Creative Commons BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Assignment",
+    "lesson": "Part"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/12-510-introduction-to-seismology-spring-2010/",
+  "retrieved": "2026-10-02",
+  "notes": "Instructor(s): Robert Van Der Hilst and Scott Burdick. Units are the problem sets, labs and exams read (type only; no solutions fetched). No calendar text captured. Third-party content inside OCW files (figures credited to other publishers) was not used.",
+  "books": [
+    {
+      "grade": "college",
+      "url": "https://ocw.mit.edu/courses/12-510-introduction-to-seismology-spring-2010/",
+      "units": [
+        {
+          "n": "1",
+          "title": "problem_set_1",
+          "url": "https://ocw.mit.edu/courses/12-510-introduction-to-seismology-spring-2010/resources/problem_set_1/",
+          "topics": [
+            "he.earth-science.geophysics#0",
+            "he.earth-science.geophysics#3",
+            "he.earth-science.oceanography#0"
+          ],
+          "examples": [
+            "S-wave delay from a velocity anomaly over a 300 km layer",
+            "time for a P wave to cross the Earth, Moon and Sun from rough velocity profiles",
+            "water depths and depth to a magma chamber from two-way times on a seismic reflection section"
+          ],
+          "lessons": [],
+          "notes": "3 question record(s): OCW-12.510-PS1-Q3, OCW-12.510-PS1-Q4, OCW-12.510-PS1-Q5"
+        },
+        {
+          "n": "2",
+          "title": "problem_set_2",
+          "url": "https://ocw.mit.edu/courses/12-510-introduction-to-seismology-spring-2010/resources/problem_set_2/",
+          "topics": [
+            "he.earth-science.geophysics#0"
+          ],
+          "examples": [
+            "reflection and transmission coefficients against incidence angle at an interface (Zoeppritz)"
+          ],
+          "lessons": [],
+          "notes": "1 question record(s): OCW-12.510-PS2-Q1"
+        },
+        {
+          "n": "3",
+          "title": "problem_set_3",
+          "url": "https://ocw.mit.edu/courses/12-510-introduction-to-seismology-spring-2010/resources/problem_set_3/",
+          "topics": [
+            "he.earth-science.geophysics#0"
+          ],
+          "examples": [
+            "travel time for a linear velocity gradient: circular rays; T against distance"
+          ],
+          "lessons": [],
+          "notes": "1 question record(s): OCW-12.510-PS3-Q5"
+        },
+        {
+          "n": "4",
+          "title": "problem_set_4",
+          "url": "https://ocw.mit.edu/courses/12-510-introduction-to-seismology-spring-2010/resources/problem_set_4/",
+          "topics": [
+            "he.earth-science.geophysics#3",
+            "he.earth-science.geophysics#0"
+          ],
+          "examples": [
+            "group and phase velocity of Rayleigh waves from peak and trough times at two stations",
+            "receiver function: Ps − P delay for a converter at depth; depth from a measured delay"
+          ],
+          "lessons": [],
+          "notes": "2 question record(s): OCW-12.510-PS4-Q1, OCW-12.510-PS4-Q2"
+        }
+      ]
+    }
+  ]
+}

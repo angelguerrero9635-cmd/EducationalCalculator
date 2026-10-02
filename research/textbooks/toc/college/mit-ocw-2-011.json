@@ -1,0 +1,105 @@
+{
+  "id": "mit-ocw-2-011",
+  "curriculum": "MIT OCW 2.011 Introduction to Ocean Science and Engineering",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Spring 2006",
+  "subject": "earth-science",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Alexandra Techet. 2.011 Introduction to Ocean Science and Engineering, Spring 2006. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu/courses/2-011-introduction-to-ocean-science-and-engineering-spring-2006/. License: Creative Commons BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Assignment",
+    "lesson": "Part"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/2-011-introduction-to-ocean-science-and-engineering-spring-2006/",
+  "retrieved": "2026-10-02",
+  "notes": "Instructor(s): Alexandra Techet. Units are the problem sets, labs and exams read (type only; no solutions fetched). Calendar (topic order) as published: SES # TOPICS KEY DATES L1 Introduction to Ocean Systems and Engineering L2 Sea Floor; Measurements in the Ocean; Accuracy of Measurements L3 Atmospheric Effects on the Ocean; Wind and Heat Lab 1 SeaPerch II ROV: Introduction to SeaPerch, Construction Plan, Lab Procedures Homework 1 due L4 Ocean Seawater Properties Lab 2 SeaPerch II: Building and Motors Lab 3 Extra SeaPerch II Lab Session, In Place of Lecture: Building Motors and Electronics (cont.) L5 Light Propagation in the Ocean Homework 2 due Lab 4 SeaPerch II: Continue Work L6 Sound Propagation in the Ocean: Basics, Speed of Sound, Sound Channel L7 Acoustics 1 Lab 5 SeaPerch II: Completion L8 Acoustics 2 Homework 3 due L9 Acoustics 3 Lab 6 Field/Pool Test of SeaPerch II ROV L10 Acoustics 4 L11 Introduction to GFD; Conservation of Mass/Momentum/Energy Homework 4 due Lab 7 Start Final Project Exam 1 (In-class) L12 Turbulence, Scaling, Third-party content inside OCW files (figures credited to other publishers) was not used.",
+  "books": [
+    {
+      "grade": "college",
+      "url": "https://ocw.mit.edu/courses/2-011-introduction-to-ocean-science-and-engineering-spring-2006/",
+      "units": [
+        {
+          "n": "1",
+          "title": "hw2",
+          "url": "https://ocw.mit.edu/courses/2-011-introduction-to-ocean-science-and-engineering-spring-2006/resources/hw2/",
+          "topics": [
+            "he.earth-science.oceanography#0",
+            "he.geography.cartography#1",
+            "he.geography.remote-sensing#0",
+            "he.earth-science.oceanography#1"
+          ],
+          "examples": [
+            "ocean facts: deepest point, km per degree of latitude and longitude, what sets the speed of sound, the sound channel",
+            "why the sky is blue; wave speed, wavelength and frequency; which colour travels farthest in water",
+            "width of the equatorial Pacific in degrees and km; why a great-circle flight heads north"
+          ],
+          "lessons": [],
+          "notes": "3 question record(s): OCW-2.011-HW2-P2, OCW-2.011-HW2-P3, OCW-2.011-HW2-P4"
+        },
+        {
+          "n": "2",
+          "title": "hw3",
+          "url": "https://ocw.mit.edu/courses/2-011-introduction-to-ocean-science-and-engineering-spring-2006/resources/hw3/",
+          "topics": [
+            "he.earth-science.oceanography#1",
+            "he.earth-science.oceanography#2"
+          ],
+          "examples": [
+            "describe temperature and salinity with depth from Atlantic sections",
+            "potential temperature of air aloft and water at depth; read sigma-t from a T–S diagram",
+            "practical salinity from the conductivity ratio (polynomial)",
+            "why cold fresh water can float on 4 °C water, and whether that happens in the sea"
+          ],
+          "lessons": [],
+          "notes": "4 question record(s): OCW-2.011-HW3-P2, OCW-2.011-HW3-P3, OCW-2.011-HW3-P4, OCW-2.011-HW3-P5"
+        },
+        {
+          "n": "3",
+          "title": "hw4",
+          "url": "https://ocw.mit.edu/courses/2-011-introduction-to-ocean-science-and-engineering-spring-2006/resources/hw4/",
+          "topics": [
+            "he.earth-science.oceanography#3"
+          ],
+          "examples": [
+            "frequency or wavelength of sound in air and water"
+          ],
+          "lessons": [],
+          "notes": "1 question record(s): OCW-2.011-HW4-P2"
+        },
+        {
+          "n": "4",
+          "title": "hw7",
+          "url": "https://ocw.mit.edu/courses/2-011-introduction-to-ocean-science-and-engineering-spring-2006/resources/hw7/",
+          "topics": [
+            "he.earth-science.oceanography#2",
+            "he.geography.climatology#1"
+          ],
+          "examples": [
+            "Coriolis deflection of a thrown ball in each hemisphere and at the equator",
+            "sketch Ekman transport, sea-surface slope and geostrophic flow round Antarctica"
+          ],
+          "lessons": [],
+          "notes": "2 question record(s): OCW-2.011-HW7-P4, OCW-2.011-HW7-P5"
+        },
+        {
+          "n": "5",
+          "title": "exams",
+          "url": "https://ocw.mit.edu/courses/2-011-introduction-to-ocean-science-and-engineering-spring-2006/resources/exams/",
+          "topics": [
+            "he.earth-science.oceanography#2"
+          ],
+          "examples": [
+            "describe a circumpolar current; model a passage as a channel for its velocity profile and transport"
+          ],
+          "lessons": [],
+          "notes": "1 question record(s): OCW-2.011-EXAM-P1"
+        }
+      ]
+    }
+  ]
+}

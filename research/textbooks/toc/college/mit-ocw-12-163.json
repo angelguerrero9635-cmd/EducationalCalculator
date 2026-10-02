@@ -1,0 +1,56 @@
+{
+  "id": "mit-ocw-12-163",
+  "curriculum": "MIT OCW 12.163 Surface Processes and Landscape Evolution",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Fall 2004",
+  "subject": "earth-science",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Kelin Whipple and Ben Crosby. 12.163 Surface Processes and Landscape Evolution, Fall 2004. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu/courses/12-163-surface-processes-and-landscape-evolution-fall-2004/. License: Creative Commons BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Assignment",
+    "lesson": "Part"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/12-163-surface-processes-and-landscape-evolution-fall-2004/",
+  "retrieved": "2026-10-02",
+  "notes": "Instructor(s): Kelin Whipple and Ben Crosby. Units are the problem sets, labs and exams read (type only; no solutions fetched). Calendar (topic order) as published: WEEK # LECTURE TOPICS LAB EXERCISES / FIELD TRIPS KEY DATES 1 Introduction, Geomorphic Systems Lab 1: Mt. Washington – Airphotos/Maps Mt. Washington Field Trip 2 I. Flow Mechanics Mt. Washington Follow-up: Geomorphic Landform and Processes Map - IPAQ 3 I. Flow Mechanics and II. Alluvial Channels Lab 2: Baker River I: Flow Mechanics - Roughness; Airphoto Analysis Lab 1: Mt. Washington Notebooks and Write-up due 4 III. Flow Around Bends Lab 2: Baker River I: Flow Mechanics - Roughness; Airphoto Analysis (cont.) Baker River Trip #I 5 IV. Sediment Transport Baker Trip I Analysis: Flow Mechanics Baker River Trip #II 6 V. Alluvial Profiles Baker River II: Flow Around Bends, Erosion, Sedimentation 7 VI. Erosional Channel Networks Lab 2: Baker River Project due 8 VII. Bedrock Channels Lab 3: Bedrock Channels Project 9 VII. Bedrock Channels 10 VII. Bedrock Channels and VIII. Hillslope Evolution L Third-party content inside OCW files (figures credited to other publishers) was not used.",
+  "books": [
+    {
+      "grade": "college",
+      "url": "https://ocw.mit.edu/courses/12-163-surface-processes-and-landscape-evolution-fall-2004/",
+      "units": [
+        {
+          "n": "1",
+          "title": "lab2a",
+          "url": "https://ocw.mit.edu/courses/12-163-surface-processes-and-landscape-evolution-fall-2004/resources/lab2a/",
+          "topics": [
+            "he.earth-science.hydrology#1",
+            "he.earth-science.physical-geology#3"
+          ],
+          "examples": [
+            "from a measured velocity profile in a gravel channel: slope, mean velocity, bed shear stress, shear velocity, roughness, friction factor and Manning's n"
+          ],
+          "lessons": [],
+          "notes": "1 question record(s): OCW-12.163-LAB2A-Q4"
+        },
+        {
+          "n": "2",
+          "title": "lab2c",
+          "url": "https://ocw.mit.edu/courses/12-163-surface-processes-and-landscape-evolution-fall-2004/resources/lab2c/",
+          "topics": [
+            "he.earth-science.hydrology#1"
+          ],
+          "examples": [
+            "units of Chezy's C and Manning's n"
+          ],
+          "lessons": [],
+          "notes": "1 question record(s): OCW-12.163-LAB2C-Q1"
+        }
+      ]
+    }
+  ]
+}

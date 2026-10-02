@@ -1,0 +1,116 @@
+{
+  "id": "mit-ocw-12-108",
+  "curriculum": "MIT OCW 12.108 Structure of Earth Materials",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Fall 2004",
+  "subject": "earth-science",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "J. Evans and Timothy Grove. 12.108 Structure of Earth Materials, Fall 2004. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu/courses/12-108-structure-of-earth-materials-fall-2004/. License: Creative Commons BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Assignment",
+    "lesson": "Part"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/12-108-structure-of-earth-materials-fall-2004/",
+  "retrieved": "2026-10-02",
+  "notes": "Instructor(s): J. Evans and Timothy Grove. Units are the problem sets, labs and exams read (type only; no solutions fetched). Calendar (topic order) as published: SES # TOPICS KEY DATES I. Crystal Symmetry Lec 1 2-D Symmetry Operations Lab 1 Field Trip Lec 2 3-D Symmetry + Translation Lab 2 Plane Symmetry Lec 3 Point Groups and Space Groups Lab 3 3-D Symmetry II. Crystal Chemistry and Bonding Lec 4 Coordination Number and Polyhedra Lab 4 Packing of Spheres Lec 5 Bonding Models - Ionic - Electrostatics Lab 5 Polyhedral Models Lec 6 Bonding Models - Covalent - Metallic Quiz III. X-ray and Electron Diffraction Lec 7 Crystal Lattices - Reciprocal Lattices Lab 6 Stereo-nets Lec 8 X-ray Generation, Diffraction, Bragg’s Law Lab 7 X-ray Diffraction IV. Mineral Groups Lec 9 Earth’s Element Inventory - Metals and Sulfides Lab 8 Minerals I Lec 10 High P Mantle Mineralogy Lab 9 Minerals II Lec 11 Pyriboles Lab 10 Minerals III Lec 12 Feldspar, Quartz Lab 11 Minerals IV Lec 13 Carbonates, Sulfates, etc. Quiz V. Tensor Analysis Lec 14 Tensor Properties Lab 12 Ha Third-party content inside OCW files (figures credited to other publishers) was not used.",
+  "books": [
+    {
+      "grade": "college",
+      "url": "https://ocw.mit.edu/courses/12-108-structure-of-earth-materials-fall-2004/",
+      "units": [
+        {
+          "n": "1",
+          "title": "assignments",
+          "url": "https://ocw.mit.edu/courses/12-108-structure-of-earth-materials-fall-2004/resources/assignments/",
+          "topics": [
+            "he.earth-science.mineralogy#1",
+            "he.earth-science.mineralogy#0"
+          ],
+          "examples": [
+            "point group from combining a 4-bar axis with a perpendicular 2-fold",
+            "radius ratio and preferred coordination of Si, Al, Mg, Ca, Na with oxygen; Pauling's second rule in spinel, olivine, perovskite",
+            "radius-ratio rule: ideal cation radius for coordination numbers 3–12"
+          ],
+          "lessons": [],
+          "notes": "3 question record(s): OCW-12.108-PS1-Q2, OCW-12.108-PS1-Q3, OCW-12.108-PS1-Q1"
+        },
+        {
+          "n": "2",
+          "title": "lab7_diffraction",
+          "url": "https://ocw.mit.edu/courses/12-108-structure-of-earth-materials-fall-2004/resources/lab7_diffraction/",
+          "topics": [
+            "he.earth-science.mineralogy#0"
+          ],
+          "examples": [
+            "d-spacing and 2θ of (100) and (201) in orthorhombic forsterite for Cu Kα",
+            "d-spacings of three peaks from their 2θ (Bragg) for two candidate cells",
+            "primitive, face- or body-centred cubic from a diffraction pattern"
+          ],
+          "lessons": [],
+          "notes": "3 question record(s): OCW-12.108-LAB7-Q1, OCW-12.108-LAB7-Q2, OCW-12.108-LAB7-Q4"
+        },
+        {
+          "n": "3",
+          "title": "lab12_hardness",
+          "url": "https://ocw.mit.edu/courses/12-108-structure-of-earth-materials-fall-2004/resources/lab12_hardness/",
+          "topics": [
+            "he.earth-science.mineralogy#1"
+          ],
+          "examples": [
+            "Knoop hardness of the Mohs minerals and its plot against Mohs number"
+          ],
+          "lessons": [],
+          "notes": "1 question record(s): OCW-12.108-LAB12-Q1"
+        },
+        {
+          "n": "4",
+          "title": "lab13_optics1",
+          "url": "https://ocw.mit.edu/courses/12-108-structure-of-earth-materials-fall-2004/resources/lab13_optics1/",
+          "topics": [
+            "he.earth-science.mineralogy#2",
+            "he.earth-science.mineralogy#0"
+          ],
+          "examples": [
+            "behaviour of quartz, feldspars and micas on rotating the stage in plane and crossed polars",
+            "which crystal systems are isotropic, uniaxial or biaxial"
+          ],
+          "lessons": [],
+          "notes": "2 question record(s): OCW-12.108-LAB13-Q4, OCW-12.108-LAB13-Q3"
+        },
+        {
+          "n": "5",
+          "title": "lab16_optics4",
+          "url": "https://ocw.mit.edu/courses/12-108-structure-of-earth-materials-fall-2004/resources/lab16_optics4/",
+          "topics": [
+            "he.earth-science.mineralogy#2"
+          ],
+          "examples": [
+            "optic sign and 2V of a biaxial mineral from an interference figure"
+          ],
+          "lessons": [],
+          "notes": "1 question record(s): OCW-12.108-LAB16-Q1"
+        },
+        {
+          "n": "6",
+          "title": "lab2_plane_sym",
+          "url": "https://ocw.mit.edu/courses/12-108-structure-of-earth-materials-fall-2004/resources/lab2_plane_sym/",
+          "topics": [
+            "he.earth-science.mineralogy#0"
+          ],
+          "examples": [
+            "multiplicity of general and special positions in plane group p4m",
+            "point group of pictured objects; mirror angles that make 1m–6mm with a letter motif",
+            "unit cell and plane group of a pattern"
+          ],
+          "lessons": [],
+          "notes": "3 question record(s): OCW-12.108-LAB2-Q1, OCW-12.108-LAB2-Q2, OCW-12.108-LAB2-Q3"
+        }
+      ]
+    }
+  ]
+}

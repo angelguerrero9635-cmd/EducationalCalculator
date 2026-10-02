@@ -1,0 +1,62 @@
+{
+  "id": "mit-ocw-12-090",
+  "curriculum": "MIT OCW 12.090 The Environment of the Earth's Surface",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Spring 2007",
+  "subject": "earth-science",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "John Southard. 12.090 The Environment of the Earth's Surface, Spring 2007. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu/courses/12-090-the-environment-of-the-earths-surface-spring-2007/. License: Creative Commons BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Assignment",
+    "lesson": "Part"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/12-090-the-environment-of-the-earths-surface-spring-2007/",
+  "retrieved": "2026-10-02",
+  "notes": "Instructor(s): John Southard. Units are the problem sets, labs and exams read (type only; no solutions fetched). No calendar text captured. Third-party content inside OCW files (figures credited to other publishers) was not used.",
+  "books": [
+    {
+      "grade": "college",
+      "url": "https://ocw.mit.edu/courses/12-090-the-environment-of-the-earths-surface-spring-2007/",
+      "units": [
+        {
+          "n": "1",
+          "title": "final_exam",
+          "url": "https://ocw.mit.edu/courses/12-090-the-environment-of-the-earths-surface-spring-2007/resources/final_exam/",
+          "topics": [
+            "he.earth-science.physical-geology#3",
+            "he.earth-science.oceanography#3",
+            "he.geography.physical-geography#2"
+          ],
+          "examples": [
+            "define surface-process terms (ablation, base level, bed load, cirque, esker, loess, saltation, point bar, porosity, …)",
+            "how a meandering river responds to slow subsidence, and what it means for floodplain use",
+            "trace stream valleys and drainage divides on a contour map",
+            "why beaches steepen with coarser sediment"
+          ],
+          "lessons": [],
+          "notes": "4 question record(s): OCW-12.090-FIN-Q1, OCW-12.090-FIN-Q3, OCW-12.090-FIN-Q4, OCW-12.090-FIN-Q2"
+        },
+        {
+          "n": "2",
+          "title": "midterm_exam",
+          "url": "https://ocw.mit.edu/courses/12-090-the-environment-of-the-earths-surface-spring-2007/resources/midterm_exam/",
+          "topics": [
+            "he.earth-science.hydrology#2",
+            "he.geography.physical-geography#2"
+          ],
+          "examples": [
+            "draw a self-consistent contour map with saddles, four outflowing streams and their divides",
+            "factors that set groundwater flow through a cubic metre of regolith"
+          ],
+          "lessons": [],
+          "notes": "2 question record(s): OCW-12.090-MID-Q2, OCW-12.090-MID-Q1"
+        }
+      ]
+    }
+  ]
+}

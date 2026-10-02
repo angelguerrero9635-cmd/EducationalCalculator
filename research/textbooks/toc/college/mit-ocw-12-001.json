@@ -1,0 +1,85 @@
+{
+  "id": "mit-ocw-12-001",
+  "curriculum": "MIT OCW 12.001 Introduction to Geology",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Fall 2013",
+  "subject": "earth-science",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Taylor Perron and Oliver Jagoutz. 12.001 Introduction to Geology, Fall 2013. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu/courses/12-001-introduction-to-geology-fall-2013/. License: Creative Commons BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Assignment",
+    "lesson": "Part"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/12-001-introduction-to-geology-fall-2013/",
+  "retrieved": "2026-10-02",
+  "notes": "Instructor(s): Taylor Perron and Oliver Jagoutz. Units are the problem sets, labs and exams read (type only; no solutions fetched). Calendar (topic order) as published: SES # INSTRUCTORS LECTURES, Labs, and Exercises KEY DATES 1 TP, OJ Overview: Introduction to the Introduction of Geology Earthquake Predictions 2 TP Origin and Age of the Earth Exercise 1: Composition of the Mantle 3 OJ Introduction to Minerals Lab 1: Mineral Identification Earthquake Predictions Due 4 OJ Igneous Rocks Lab 1: Mineral Identification (cont.) 5 OJ Metamorphic Rocks Lab 2: Rock Identification 6 TP Sedimentary Rocks Lab 2: Rock Identification (cont.) 7 TA Lab 2: Rock Identification (cont.) Lab 1 Due 8 OJ Rock Structure and Deformation Lab 2: Rock Identification (cont.) 9 OJ Quiz 1: Rocks and Minerals (No lecture or lab) 10 TA Exercise 2: Rock Structure and Deformation 11 OJ Geologic Time: Relative versus Absolute Dating Lab 3: Geochronology Lab 2 Due 12 OJ Volcanoes Lab 3: Geochronology (cont.) 13 TP Plate Tectonics Lab 4: Plate Tectonics 14 TP Plate Tectonics (cont.) Lab 4:  Third-party content inside OCW files (figures credited to other publishers) was not used.",
+  "books": [
+    {
+      "grade": "college",
+      "url": "https://ocw.mit.edu/courses/12-001-introduction-to-geology-fall-2013/",
+      "units": [
+        {
+          "n": "1",
+          "title": "mit12_001f13_lab3-geochron",
+          "url": "https://ocw.mit.edu/courses/12-001-introduction-to-geology-fall-2013/resources/mit12_001f13_lab3-geochron/",
+          "topics": [
+            "he.earth-science.historical-geology#1",
+            "he.earth-science.historical-geology#3"
+          ],
+          "examples": [
+            "U–Pb age of an ash from counted 206Pb and 238U atoms, with the age uncertainty from a ratio uncertainty",
+            "date the K–T boundary and compare with Deccan Traps and impact ages",
+            "fill a decay table by half-lives (parent left, daughter made, D/P) and plot it"
+          ],
+          "lessons": [],
+          "notes": "3 question record(s): OCW-12.001-LAB3-Q1, OCW-12.001-LAB3-Q2, OCW-12.001-LAB3-Q3"
+        },
+        {
+          "n": "2",
+          "title": "mit12_001f13_lab4-platete-in",
+          "url": "https://ocw.mit.edu/courses/12-001-introduction-to-geology-fall-2013/resources/mit12_001f13_lab4-platete-in/",
+          "topics": [
+            "he.earth-science.physical-geology#1"
+          ],
+          "examples": [
+            "classify plate boundaries from maps of quakes, volcanoes, topography or seafloor age"
+          ],
+          "lessons": [],
+          "notes": "1 question record(s): OCW-12.001-LAB4-Q1"
+        },
+        {
+          "n": "3",
+          "title": "mit12_001f13_lab5parti",
+          "url": "https://ocw.mit.edu/courses/12-001-introduction-to-geology-fall-2013/resources/mit12_001f13_lab5parti/",
+          "topics": [
+            "he.earth-science.geophysics#0"
+          ],
+          "examples": [
+            "S-wave speed against stretch on a slinky; fit the power n in β = (σ/ρ)^n"
+          ],
+          "lessons": [],
+          "notes": "1 question record(s): OCW-12.001-LAB5-Q1"
+        },
+        {
+          "n": "4",
+          "title": "mit12_001f13_lab7-riv-instr",
+          "url": "https://ocw.mit.edu/courses/12-001-introduction-to-geology-fall-2013/resources/mit12_001f13_lab7-riv-instr/",
+          "topics": [
+            "he.earth-science.hydrology#3"
+          ],
+          "examples": [
+            "chance of a given flood in the next N years from its recurrence interval",
+            "flood frequency from a gauge's annual peaks: rank, recurrence interval RI = (n + 1)/r, plot and read the 100-year flood"
+          ],
+          "lessons": [],
+          "notes": "2 question record(s): OCW-12.001-LAB7-Q1, OCW-12.001-LAB7-Q2"
+        }
+      ]
+    }
+  ]
+}
