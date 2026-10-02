@@ -41,6 +41,7 @@ import type { Hs3dSpec, PieStage } from './typesHs3d';
 import type { SkeletalSpec } from './typesHe1c';
 import type { PhaseEnvelopeSpec } from './typesHe1i';
 import type { BeamSpec } from './typesHe1a';
+import type { He2hSpec } from './typesHe2h';
 
 /**
  * Plot axis: which variable it shows and the visible range, as numbers in the shown unit.
@@ -1158,6 +1159,8 @@ export type Representation =
   | SkeletalSpec
   /** College round 1, group A: the `beam` (HC1; specs in `typesHe1a.ts`). */
   | BeamSpec
+  /** College round 2, group H: HC24 wing (`typesHe2h.ts`). */
+  | He2hSpec
   /** Box plot: the five-number summary on a number line, each mark draggable. */
   | {
       kind: 'boxPlot';
