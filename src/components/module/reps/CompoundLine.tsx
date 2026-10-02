@@ -265,7 +265,7 @@ export function CompoundLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
                             fill={c.chartMuted}
                             textAnchor="middle"
                           >
-                            {num(radius!)}
+                            {rep.known(distance.r) ? num(radius!) : '?'}
                           </ChartText>
                         </G>
                       );
@@ -286,7 +286,7 @@ export function CompoundLine({ spec, calc }: { spec: Spec; calc: Calculator }) {
                         fontWeight="700"
                         textAnchor="middle"
                       >
-                        {n(center!)}
+                        {rep.known(distance.c) ? n(center!) : '?'}
                       </ChartText>
                     ) : null}
                   </G>
