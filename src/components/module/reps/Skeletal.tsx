@@ -200,7 +200,7 @@ function StructureView({ spec, calc }: { spec: SkeletalSpec; calc: Calculator })
     }
     if (tally && pick.counts && !pick.why) {
       const text = spec.ihd?.hydrogen
-        ? `${plural(u!.pi, 'π bond')} take ${plural(u!.pi, 'H₂', 'H₂')}; ${plural(u!.rings, 'ring')} stay${u!.rings === 1 ? 's' : ''}`
+        ? `${plural(u!.pi, 'π bond')} take${u!.pi === 1 ? 's' : ''} ${plural(u!.pi, 'H₂', 'H₂')}; ${plural(u!.rings, 'ring')} stay${u!.rings === 1 ? 's' : ''}`
         : `${plural(u!.rings, 'ring')} + ${plural(u!.pi, 'π bond')} = IHD ${u!.ihd}`;
       views.push(
         <ChartText
@@ -379,8 +379,15 @@ function ChairView({ spec, calc }: { spec: SkeletalSpec; calc: Calculator }) {
         const from = ring[at]!;
         const len = 0.85;
         const to: [number, number] = [from[0] + d[0] * s * len, from[1] - d[1] * s * len];
-        const lx = from[0] + d[0] * s * (len + 0.3);
-        const ly = from[1] - d[1] * s * (len + 0.3);
+        let lx = from[0] + d[0] * s * (len + 0.3);
+        let ly = from[1] - d[1] * s * (len + 0.3);
+        // A group pointing into the middle (an equatorial one at the inner corner) would sit on
+        // the equilibrium arrows: its name goes under the bond's end, outside the middle.
+        const half = ([...g.label].length * font * 0.6) / 2;
+        if (ci === 1 ? lx - half < w - bw : lx + half > bw) {
+          lx = ci === 1 ? Math.max(to[0], w - bw + half) : Math.min(to[0], bw - half);
+          ly = to[1] + 16;
+        }
         nodes.push(
           <G key={`g${ci}-${gi}`}>
             <Line

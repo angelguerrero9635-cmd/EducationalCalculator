@@ -188,9 +188,10 @@ export function BeamAxial({ spec, calc }: { spec: BeamSpec; calc: Calculator }) 
                           stroke={c.beamLoad}
                           strokeWidth={1}
                         />
+                        {/* A row over the end load's P, which sits at the same height. */}
                         <HeLabel
-                          x={xs[i + 1]! + 34}
-                          y={yc - MAX_H / 2 - 2}
+                          x={xs[i + 1]! + 2}
+                          y={yc - MAX_H / 2 - 16}
                           text={B.named(s.load, 'Q', v(s.load), fu)}
                           color={c.beamLoad}
                           anchor="start"

@@ -499,7 +499,7 @@ export function Section({ spec, calc }: { spec: SectionSpec; calc: Calculator })
                 />
                 <Lbl
                   x={X(sizes.bf! / 2 + sizes.tw! / 2) + 6}
-                  y={Y(sizes.d! / 2) + 4}
+                  y={Y(sizes.d! * 0.3) + 4}
                   text={say(spec.web)!}
                   anchor="start"
                   color={c.sectionShear}
@@ -829,16 +829,18 @@ export function Section({ spec, calc }: { spec: SectionSpec; calc: Calculator })
                       strokeDasharray={chart.dash}
                       strokeWidth={1.5}
                     />,
+                    // In the outer quarter of each block, clear of the dashed first-yield line
+                    // that crosses the blocks' middles.
                     <Letter
                       key="C"
-                      x={ax - half / 2}
+                      x={ax - half * 0.78}
                       y={Y((yTop + yp) / 2) + 5}
                       text="C"
                       color={c.sectionCompression}
                     />,
                     <Letter
                       key="T"
-                      x={ax + half / 2}
+                      x={ax + half * 0.78}
                       y={Y(yp / 2) + 5}
                       text="T"
                       color={c.sectionTension}
@@ -1070,10 +1072,11 @@ export function Section({ spec, calc }: { spec: SectionSpec; calc: Calculator })
                       />,
                     );
                   items.push(
+                    // Under the element, past the dashed axial arrow when there is one.
                     <Lbl
                       key="hl"
                       x={cxE}
-                      y={cyE + half2 + 18}
+                      y={cyE + half2 + (sa !== undefined ? L(sa) + 16 : 18)}
                       text={edgeText}
                       w={w}
                       color={c.sectionTension}
@@ -1241,7 +1244,7 @@ export function Section({ spec, calc }: { spec: SectionSpec; calc: Calculator })
                   key="fc"
                   x={bx + bw / 2}
                   y={Y(H) - 8}
-                  text="0.85f′_c"
+                  text="0.85 f′_c"
                   anchor="middle"
                   w={w}
                   color={c.sectionCompression}
@@ -1255,10 +1258,11 @@ export function Section({ spec, calc }: { spec: SectionSpec; calc: Calculator })
                   color={c.sectionCompression}
                   width={2.5}
                 />,
+                // Under the arrow's tail: over it, C met the "a" of the block's depth.
                 <Letter
                   key="Cl"
-                  x={bx + bw + 14}
-                  y={Y(H - av / 2) - 6}
+                  x={bx + bw + 12}
+                  y={Y(H - av / 2) + 21}
                   text="C"
                   color={c.sectionCompression}
                 />,
@@ -1397,7 +1401,7 @@ export function Section({ spec, calc }: { spec: SectionSpec; calc: Calculator })
       if (depths) out.push(depths);
       out.push('a = β₁c, and the strain line crosses zero at c.');
     }
-    if (spec.thinWalled) out.push('q = T ÷ (2A_m) is the same all round one closed cell.');
+    if (spec.thinWalled) out.push('q = T ÷ (2Aₘ) is the same all round one closed cell.');
     return out;
   }
 

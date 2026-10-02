@@ -1311,7 +1311,9 @@ export function ControlVolume({ spec, calc }: { spec: ControlVolumeSpec; calc: C
       }
     }
     if (spec.dof && extras.length) parts.push(`${extras[0]}.`);
-    if (!parts.length) return 'Type the flows to balance the unit.';
+    // A single stream has nothing to balance; a membrane's result is in its panel already.
+    if (!parts.length)
+      return isStream || extras.length ? '' : 'Type the flows to balance the unit.';
     return parts.join(' ');
   })();
 

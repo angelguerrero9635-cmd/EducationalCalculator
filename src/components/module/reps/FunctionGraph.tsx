@@ -18,6 +18,7 @@ import {
   type NumOrVar,
 } from '@/data/modules/typesFunctionGraph';
 import { formatNumber } from '@/engine/format';
+import { subscriptRuns } from '@/engine/subscripts';
 import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
@@ -79,18 +80,69 @@ const widthOf = (text: string, size: number) =>
 
 // ─── Text with italic letters ─────────────────────────────────────────────────
 
-/** Single letters in italic (x, f, a), words upright (sin, ln, max). */
+/**
+ * Single letters in italic (x, f, a), words upright (sin, ln, max); a "_" subscript (F_A0,
+ * U_eff) small and lowered, never a raw underscore.
+ */
 function Runs({ text, size }: { text: string; size: number }) {
-  const parts = text.split(/([A-Za-z]+)/).filter((p) => p !== '');
-  return (
-    <>
-      {parts.map((p, i) => (
-        <TSpan key={i} fontStyle={/^[A-Za-z]$/.test(p) ? 'italic' : 'normal'} fontSize={size}>
-          {p}
-        </TSpan>
-      ))}
-    </>
-  );
+  return <>{runSpans(text, size)}</>;
+}
+
+/**
+ * Runs' spans, flat: `lead` shifts the first one (a raised or lowered part set inside one text
+ * element; a shift on a span wrapping others is not applied on the web).
+ */
+function runSpans(
+  text: string,
+  size: number,
+  key = 'r',
+  lead: { dx?: number; dy?: number } = {},
+): ReactNode[] {
+  const drop = size * 0.3;
+  const spans: ReactNode[] = [];
+  let down = false;
+  const first = () => {
+    if (!spans.length) return { dx: lead.dx ?? 0, dy: lead.dy ?? 0 };
+    return { dx: 0, dy: 0 };
+  };
+  subscriptRuns(text).forEach((r, j) => {
+    if (r.sub) {
+      const f = first();
+      spans.push(
+        <TSpan key={`${key}s${j}`} dx={f.dx} dy={drop + f.dy} fontSize={size * 0.72}>
+          {r.s}
+        </TSpan>,
+      );
+      down = true;
+      return;
+    }
+    r.s
+      .split(/([A-Za-z]+)/)
+      .filter((p) => p !== '')
+      .forEach((p, i) => {
+        const f = first();
+        spans.push(
+          <TSpan
+            key={`${key}${j}-${i}`}
+            dx={f.dx}
+            dy={(down ? -drop : 0) + f.dy}
+            fontStyle={/^[A-Za-z]$/.test(p) ? 'italic' : 'normal'}
+            fontSize={size}
+          >
+            {p}
+          </TSpan>,
+        );
+        down = false;
+      });
+  });
+  // Back on the line, so whatever is set after this text sits where it should.
+  if (down)
+    spans.push(
+      <TSpan key={`${key}up`} dy={-drop} fontSize={size}>
+        {'\u200B'}
+      </TSpan>,
+    );
+  return spans;
 }
 
 const width = widthOf;
@@ -116,7 +168,11 @@ function layout(
   let cx = x;
   let up = size;
   let down = 4;
+  const simple = (t: Tok) => !('frac' in t) && !('root' in t) && !('cases' in t);
+  /** Tokens before this index were drawn with the run before them. */
+  let skipTo = 0;
   toks.forEach((t, i) => {
+    if (i < skipTo) return;
     const k = `${key}-${i}`;
     if ('frac' in t) {
       const s = size - 1;
@@ -187,30 +243,39 @@ function layout(
       up = Math.max(up, y - h0);
       down = Math.max(down, h1 - y);
       cx += 19 + fw + Math.max(...laid.map((l) => l.when.w));
-    } else if (t.sup || t.sub) {
-      // A superscript after ")" starts a little right, so the italic letter clears the bracket.
-      const prev = toks[i - 1];
-      if (t.sup && prev && 't' in prev && !prev.sup && prev.t.endsWith(')')) cx += size * 0.18 + 2;
-      nodes.push(
-        <ChartText
-          key={k}
-          x={cx}
-          y={y + (t.sup ? -size * 0.45 : size * 0.3)}
-          fontSize={SUP}
-          fill={color}
-        >
-          <Runs text={t.t} size={SUP} />
-        </ChartText>,
+    } else {
+      // A run of plain, raised and lowered text is one text element: the browser sets each
+      // part after the last, so an exponent sits right after its base (estimated widths put
+      // "e⁻⁰·¹ᵗ" over the e, or left a gap before it).
+      let j = i;
+      while (j < toks.length && simple(toks[j]!)) j++;
+      skipTo = j;
+      const run = (toks.slice(i, j) as { t: string; sup?: boolean; sub?: boolean }[]).filter(
+        (r) => r.t,
       );
-      if (t.sup) up = Math.max(up, size * 0.45 + SUP);
-      cx += width(t.t, SUP) + 1;
-    } else if (t.t) {
+      if (!run.length) return;
+      let level = 0;
+      const spans = run.map((r, n) => {
+        const at = r.sup ? -size * 0.45 : r.sub ? size * 0.3 : 0;
+        const dy = at - level;
+        level = at;
+        const prev = run[n - 1];
+        // A superscript after ")" starts a little right, so the italic letter clears it.
+        const dx = r.sup && prev && !prev.sup && prev.t.endsWith(')') ? size * 0.18 + 2 : 0;
+        const fs = r.sup || r.sub ? SUP : size;
+        return runSpans(r.t, fs, `${n}-`, { dx, dy });
+      });
       nodes.push(
         <ChartText key={k} x={cx} y={y} fontSize={size} fill={color}>
-          <Runs text={t.t} size={size} />
+          {spans}
         </ChartText>,
       );
-      cx += width(t.t, size);
+      run.forEach((r, n) => {
+        const prev = run[n - 1];
+        if (r.sup && prev && !prev.sup && prev.t.endsWith(')')) cx += size * 0.18 + 2;
+        if (r.sup) up = Math.max(up, size * 0.45 + SUP);
+        cx += r.sup || r.sub ? width(r.t, SUP) + 1 : width(r.t, size);
+      });
     }
   });
   return { node: <G>{nodes}</G>, w: cx - x, up, down };

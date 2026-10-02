@@ -1248,8 +1248,9 @@ export function chairOf(flipped: boolean): Chair {
   const axial: P[] = [];
   const equatorial: P[] = [];
   for (let k = 0; k < 6; k++) {
-    // Turned 10° about the vertical so the near and far carbons part.
-    const t = Math.PI + (k * Math.PI) / 3 + (10 * Math.PI) / 180;
+    // Turned 10° about the vertical so the near and far carbons part; the flipped chair the
+    // other way, so it draws as the first one's mirror image, as a ring flip is drawn.
+    const t = Math.PI + (k * Math.PI) / 3 + ((flipped ? -10 : 10) * Math.PI) / 180;
     const s = (k % 2 === 0 ? -1 : 1) * (flipped ? -1 : 1);
     const [x, y, z] = [Math.cos(t), Math.sin(t), s * h];
     ring.push([x, z + y * tilt]);

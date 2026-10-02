@@ -190,7 +190,7 @@ export function FluidPlate({ spec, calc }: { spec: FluidPlateSpec; calc: Calcula
         {wrong
           ? `Re_L = ${num(Re!, 3)} is past 5 × 10⁵: the layer would turn turbulent before the end, so the laminar formula doesn’t hold.`
           : ok && pos(dL)
-            ? `Re_L = VL ÷ ν = ${num(Re!, 3)}. ${turb ? `δ = 0.37x ÷ Re_x^0.2 grows as x^0.8` : `δ = 5x ÷ √Re_x grows as √x`}: ${num(dL, 3)} m at the end, ${num(layerAt(L / 2, V, nu, turb), 3)} m halfway. Heights are stretched ${num(stretch, 2)} times to be seen.`
+            ? `Re_L = VL ÷ ν = ${num(Re!, 3)}. ${turb ? `δ = 0.37x ÷ Reₓ⁰·² grows as x⁰·⁸` : `δ = 5x ÷ √Reₓ grows as √x`}: ${num(dL, 3)} m at the end, ${num(layerAt(L / 2, V, nu, turb), 3)} m halfway. Heights are stretched ${num(stretch, 2)} times to be seen.`
             : 'Type the speed, the plate’s length and ν to grow the layer.'}
       </Caption>
     </View>

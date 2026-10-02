@@ -1022,6 +1022,7 @@ const gradation = page({
     d30: 'D30',
     d60: 'D60',
     axes: { x: 'Grain size D (mm)', y: 'Percent finer (%)' },
+    scale: { x: 'log' },
   },
 });
 

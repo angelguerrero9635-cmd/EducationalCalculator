@@ -79,8 +79,10 @@ export function HeLabel({
 }) {
   const c = usePalette();
   const cut = text.indexOf(' = ');
-  const head = cut >= 0 ? text.slice(0, cut) : '';
-  const tail = cut >= 0 ? text.slice(cut) : text;
+  // A bare symbol with a subscript ("δ_max") is all head, so its subscript is typeset too.
+  const bare = cut < 0 && /^\S+_\S+$/.test(text);
+  const head = cut >= 0 ? text.slice(0, cut) : bare ? text : '';
+  const tail = cut >= 0 ? text.slice(cut) : bare ? '' : text;
   // The symbol's parts: base letters, then "_sub" runs.
   const parts = head.split(/(_[A-Za-z0-9α-ω,]+)/).filter(Boolean);
   const width =

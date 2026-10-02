@@ -15,7 +15,7 @@ import type {
 } from '@/data/modules/typesHe1g';
 import { chart, usePalette } from '@/theme';
 
-import { HaloText } from '../layouts/earthKit';
+import { HaloText, textW } from '../layouts/earthKit';
 import type { Calculator } from '../useCalculator';
 import { Caption } from './common';
 import { Arrow, Board, BW, Dimension, niceStep, num, pos, useFluidReader } from './fluidKit';
@@ -132,6 +132,22 @@ function GradeLines({ spec, calc }: { spec: FluidPipeSpec; calc: Calculator }) {
   const lines = [r.label(spec.reynolds, 'Re'), r.label(spec.friction, 'f')].filter(
     (x): x is string => !!x,
   );
+  // h_L (and ΔP under it) sit in the wedge over the falling energy line, clear of it: their
+  // baselines above where the line passes under their left end; where the wedge is too thin,
+  // beside the drop's dimension as before.
+  const hlText = r.label(spec.headLoss, 'h_L', 'm') ?? '';
+  const dpText = dP !== undefined ? (r.label(spec.drop, 'ΔP', 'Pa') ?? `ΔP = ${num(dP)} Pa`) : '';
+  const lossLabels = (() => {
+    const mid = (y(eIn) + y(eOut)) / 2;
+    const wide = Math.max(
+      textW(hlText, chart.value, true),
+      dpText ? textW(dpText, chart.label) : 0,
+    );
+    const left = x1 - 40 - wide;
+    const under = y(eIn) + ((y(eOut) - y(eIn)) * (left - x0)) / (x1 - x0);
+    const hl = under - (dpText ? 22 : 6);
+    return hl - chart.value > y(eIn) + 14 ? { hl, dp: under - 6 } : { hl: mid + 4, dp: mid + 20 };
+  })();
   return (
     <View>
       <Board
@@ -243,18 +259,18 @@ function GradeLines({ spec, calc }: { spec: FluidPipeSpec; calc: Calculator }) {
                 <Dimension x1={x1 - 34} y1={y(eIn)} x2={x1 - 34} y2={y(eOut)} color={c.chartInk} />
                 <HaloText
                   x={x1 - 40}
-                  y={(y(eIn) + y(eOut)) / 2 + 4}
-                  text={r.label(spec.headLoss, 'h_L', 'm') ?? ''}
+                  y={lossLabels.hl}
+                  text={hlText}
                   c={c}
                   size={chart.value}
                   bold
                   anchor="end"
                 />
-                {dP !== undefined ? (
+                {dpText ? (
                   <HaloText
                     x={x1 - 40}
-                    y={(y(eIn) + y(eOut)) / 2 + 20}
-                    text={r.label(spec.drop, 'ΔP', 'Pa') ?? `ΔP = ${num(dP)} Pa`}
+                    y={lossLabels.dp}
+                    text={dpText}
                     c={c}
                     size={chart.label}
                     anchor="end"
@@ -392,7 +408,7 @@ function PumpLine({ spec, calc }: { spec: FluidPipeSpec; calc: Calculator }) {
                 />
                 <HaloText
                   x={(xp + xb) / 2}
-                  y={y(e1 + hp - (hL - hL * share) / 2) - 12}
+                  y={y(e1 + hp - (hL - hL * share) / 2) + 26}
                   text={`EGL falls h_L = ${r.text(spec.headLoss) ?? ''}`}
                   c={c}
                   size={chart.label}
@@ -609,12 +625,14 @@ export function FluidLoop({ spec, calc }: { spec: FluidLoopSpec; calc: Calculato
   // Pipes clockwise: top, right, bottom, left; each runs from its start corner to its end.
   const sides = [
     { a: [L, T], b: [R, T], lx: (L + R) / 2, ly: T - 34, anchor: 'middle' as const },
-    { a: [R, T], b: [R, B], lx: R - 16, ly: (T + B) / 2 - 8, anchor: 'end' as const },
+    // The side pipes' labels sit inside the loop on different rows (the left one high, the
+    // right one low) so they never run into each other; the ΔQ circle sits between them.
+    { a: [R, T], b: [R, B], lx: R - 16, ly: B - 56, anchor: 'end' as const },
     { a: [R, B], b: [L, B], lx: (L + R) / 2, ly: B + 30, anchor: 'middle' as const },
-    { a: [L, B], b: [L, T], lx: L + 16, ly: (T + B) / 2 - 8, anchor: 'start' as const },
+    { a: [L, B], b: [L, T], lx: L + 16, ly: T + 52, anchor: 'start' as const },
   ];
   const turn = dQ !== undefined && dQ < 0 ? -1 : 1;
-  const [cx, cy, rr] = [(L + R) / 2, (T + B) / 2 + 16, 26];
+  const [cx, cy, rr] = [(L + R) / 2, (T + B) / 2 + 4, 18];
   return (
     <View>
       <Board
@@ -710,7 +728,7 @@ export function FluidLoop({ spec, calc }: { spec: FluidLoopSpec; calc: Calculato
                 />
                 <HaloText
                   x={cx}
-                  y={T + 30}
+                  y={T + 28}
                   text={r.label(spec.correction, 'ΔQ', 'm³/s') ?? `ΔQ = ${num(dQ, 3)} m³/s`}
                   c={c}
                   size={chart.value}
@@ -721,8 +739,8 @@ export function FluidLoop({ spec, calc }: { spec: FluidLoopSpec; calc: Calculato
             {hc ? (
               <HaloText
                 x={cx}
-                y={B - 16}
-                text={`Σh_f = ${num(hc.sum, 3)} · Σ2h_f/Q = ${num(hc.slope, 3)}`}
+                y={B - 14}
+                text={`Σh_f = ${num(hc.sum, 3)} · Σ(2 h_f ÷ Q) = ${num(hc.slope, 3)}`}
                 c={c}
                 size={chart.label}
               />
@@ -732,7 +750,7 @@ export function FluidLoop({ spec, calc }: { spec: FluidLoopSpec; calc: Calculato
       />
       <Caption>
         {hc && dQ !== undefined
-          ? `Clockwise flows are +. ΔQ = −Σh_f ÷ Σ(2h_f ÷ Q) = −${num(hc.sum, 3)} ÷ ${num(hc.slope, 3)} = ${num(dQ, 3)} m³/s, added to every pipe’s flow (the arrows show the new direction where one changes sign).`
+          ? `Clockwise flows are +. ΔQ = −Σh_f ÷ Σ(2 h_f ÷ Q) = −${num(hc.sum, 3)} ÷ ${num(hc.slope, 3)} = ${num(dQ, 3)} m³/s, added to every pipe’s flow (the arrows show the new direction where one changes sign).`
           : 'Type each pipe’s K and assumed flow to make one correction.'}
       </Caption>
     </View>
@@ -886,7 +904,7 @@ export function FluidFull({ spec, calc }: { spec: FluidFullSpec; calc: Calculato
       />
       <Caption>
         {pos(Q) && pos(S) && pos(D) && V !== undefined
-          ? `Full by Manning: D = (3.208Qn ÷ √S)^(3/8) = ${num(D, 3)} m (dashed), so the next size up is laid. Full, V = Q ÷ A = ${num(V, 3)} m/s${slow ? `, under about ${SELF_CLEANING} m/s: solids would settle` : `, above about ${SELF_CLEANING} m/s, so solids keep moving`}.`
+          ? `Full by Manning: D = (3.208Qn ÷ √S)³ᐟ⁸ = ${num(D, 3)} m (dashed), so the next size up is laid. Full, V = Q ÷ A = ${num(V, 3)} m/s${slow ? `, under about ${SELF_CLEANING} m/s: solids would settle` : `, above about ${SELF_CLEANING} m/s, so solids keep moving`}.`
           : 'Type the flow, n and the slope to size the pipe.'}
       </Caption>
     </View>

@@ -52,6 +52,9 @@ export function BeamColumn({ spec, calc }: { spec: BeamSpec; calc: Calculator })
           const yBot = yTop + colPx;
           const xc = w * 0.42;
           const Y = (s: number) => yBot - s * colPx;
+          /** KL's labels at its bracket's middle, lifted off the base's "fixed" (fixed–free). */
+          const kY = (a: number, b: number) =>
+            Math.abs((a + b) / 2 - yBot) < 30 ? yBot - 34 : (a + b) / 2;
           const Xs = (s: number) => xc + (kKnown ? SWAY * bucklingShape(K, s) : 0);
           const pts = (a: number, b: number) =>
             [...Array(61).keys()].map((i) => {
@@ -192,11 +195,11 @@ export function BeamColumn({ spec, calc }: { spec: BeamSpec; calc: Calculator })
                   />
                   <HeLabel
                     x={xc + SWAY + 44}
-                    y={(Y(h0) + Y(h1)) / 2 - 4}
+                    y={kY(Y(h0), Y(h1)) - 4}
                     text={
                       col.effective !== undefined && known(col.effective)
                         ? B.named(col.effective, 'KL', 0)
-                        : `KL = ${fmt(K)}L`
+                        : `KL = ${fmt(K) === '1' ? '' : fmt(K)}L`
                     }
                     color={c.beamDeflect}
                     anchor="start"
@@ -205,7 +208,7 @@ export function BeamColumn({ spec, calc }: { spec: BeamSpec; calc: Calculator })
                   {known(col.k) && typeof col.k === 'string' ? (
                     <HeLabel
                       x={xc + SWAY + 44}
-                      y={(Y(h0) + Y(h1)) / 2 + 14}
+                      y={kY(Y(h0), Y(h1)) + 14}
                       text={B.named(col.k, 'K', K)}
                       anchor="start"
                       w={w}

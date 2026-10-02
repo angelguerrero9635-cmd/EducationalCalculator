@@ -473,7 +473,7 @@ function accumulationPanel(p: He1eLayerProps): ReactNode {
           <ChartText
             x={p.L - 4}
             y={sy(v) + 4}
-            fontSize={chart.small}
+            fontSize={chart.label}
             textAnchor="end"
             fill={c.chartMuted}
           >

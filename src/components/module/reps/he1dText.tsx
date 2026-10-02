@@ -17,7 +17,7 @@ export const fig3 = (x: number) =>
  * Single letters in italic (t, τ, v), words and numbers upright; "v_C" draws C as a subscript
  * (lowered and smaller, upright when it is a word: v_out).
  */
-export function Ital({ text, size = chart.small }: { text: string; size?: number }) {
+export function Ital({ text, size = chart.label }: { text: string; size?: number }) {
   const parts = text.split(/(_[A-Za-z0-9]+|[A-Za-zα-ωΑ-Ω]+)/).filter((p) => p !== '');
   const drop = size * 0.3;
   const isSub = (i: number) => !!parts[i]?.startsWith('_');

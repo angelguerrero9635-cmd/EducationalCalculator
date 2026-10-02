@@ -193,7 +193,7 @@ export function FunctionGraphScaledHe1d({
       const [a, b, d] = gradDs.map((v) => get(v, 1)) as [number, number, number];
       const { cu, cc } = gradationCoefficients(a, b, d);
       captions.push(
-        `Percent passing against grain size, on a log axis`,
+        `Percent passing against grain size${xLog ? ', on a log axis' : ''}`,
         `C_u = D₆₀ ÷ D₁₀ = ${fig3(cu)} · C_c = D₃₀² ÷ (D₁₀ × D₆₀) = ${fig3(cc)}`,
       );
     }
@@ -406,9 +406,9 @@ export function FunctionGraphScaledHe1d({
                 <ChartText
                   x={Math.min(L + pw - 2, xEdge + 6)}
                   y={py - 6}
-                  fontSize={chart.small}
+                  fontSize={chart.label}
                   fill={c.chartInk}
-                  textAnchor={xEdge + 6 + textW(text, chart.small) > L + pw ? 'end' : 'start'}
+                  textAnchor={xEdge + 6 + textW(text, chart.label) > L + pw ? 'end' : 'start'}
                   halo
                 >
                   <Ital text={text} />
@@ -426,17 +426,41 @@ export function FunctionGraphScaledHe1d({
           if (atP) {
             const yText = spec.at?.y && rep.known(spec.at.y) ? rep.value(spec.at.y) : fig3(yAt!);
             const label = `${xName} = ${rep.value(spec.at!.x)}, ${spec.at?.y ? rep.variable(spec.at.y).symbol : fName} = ${yText}`;
-            const right = atP[0] + 12 + textW(label, chart.value) < L + pw;
+            // Beside the point on the side the curve leaves open (below-right of a rising
+            // line, above-right of a falling one, else the opposite corner); a label too wide
+            // for either side is centred over or under the point, inside the plot.
+            const wide = textW(label, chart.value);
+            const [px, py] = atP;
+            const d = (along: number) => P(atX! * (1 + along), f!(atX! * (1 + along)));
+            const [a0, a1] = [d(-0.02), d(0.02)];
+            const rising = !!a0 && !!a1 && (a1[1] - a0[1]) * (a1[0] - a0[0]) < 0;
+            const corners: [boolean, boolean][] = rising
+              ? [
+                  [true, false],
+                  [false, true],
+                ]
+              : [
+                  [true, true],
+                  [false, false],
+                ];
+            const fits = ([r, up]: [boolean, boolean]) =>
+              (r ? px + 12 + wide < L + pw : px - 12 - wide > L) &&
+              (up ? py - 24 > top : py + 24 < bottom);
+            const pick = corners.find(fits);
+            const lx = pick
+              ? px + (pick[0] ? 12 : -12)
+              : Math.min(L + pw - wide / 2 - 2, Math.max(L + wide / 2 + 2, px));
+            const ly = pick ? py + (pick[1] ? -10 : 22) : py + (py - 30 > top ? -14 : 26);
             nodes.push(
               <G key="at">
                 <Circle cx={atP[0]} cy={atP[1]} r={5.5} fill={c.chartHighlight} />
                 <ChartText
-                  x={right ? atP[0] + 12 : atP[0] - 12}
-                  y={atP[1] + (atP[1] > top + 30 ? -10 : 20)}
+                  x={lx}
+                  y={ly}
                   fontSize={chart.value}
                   fontWeight="600"
                   fill={c.chartHighlight}
-                  textAnchor={right ? 'start' : 'end'}
+                  textAnchor={pick ? (pick[0] ? 'start' : 'end') : 'middle'}
                   halo
                 >
                   <Ital text={label} size={chart.value} />
