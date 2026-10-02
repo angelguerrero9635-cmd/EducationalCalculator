@@ -9,6 +9,14 @@
  */
 export const rootOf = (x: number, scale: number) => (x < 0 && x > -1e-5 * scale ? 0 : Math.sqrt(x));
 
+/**
+ * A time worked out by division, with a rounding crumb below 0 (−1 × 10⁻⁶ s from a value typed
+ * in another unit) read as 0, so a clock that starts at 0 never reads a moment before it.
+ */
+export function atLeastZero(t: number | undefined): number | undefined {
+  return t !== undefined && t < 0 && t > -1e-5 ? 0 : t;
+}
+
 /** Both signs of a square root (one value when it is 0). */
 export const plusMinus = (x: number) => (x === 0 ? [0] : [x, -x]);
 

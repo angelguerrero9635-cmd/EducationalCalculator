@@ -7,17 +7,18 @@
 import { div } from '../helpers';
 import type { ModuleDef } from '../types';
 
-import { plusMinus, rootOf } from './shared';
+import { atLeastZero, plusMinus, rootOf } from './shared';
 
 export const COLLEGE_PHYSICS_MODULES: ModuleDef[] = [
   {
     // University Physics I: Mechanics → Kinematics
     id: 'he.physics.university-1#0',
+    use: 'Use this for “A car at 5 m/s speeds up at 2 m/s² for 4 s. How fast is it going, and how far has it gone?”',
     assumptions: [
       'Acceleration is constant, and the clock starts (t = 0) when the velocity is v₀.',
       'Motion is along a straight line. Pick a positive direction; signs follow it.',
-      'Free fall: a = −9.8 m/s² (−32.2 ft/s²) if up is positive.',
-      'd is displacement (change in position), not total distance traveled.',
+      'Free fall: a = −9.81 m/s² (−32.2 ft/s²) if up is positive.',
+      'Δx is displacement (change in position), the shaded area under the v–t line, not total distance traveled.',
     ],
     variables: [
       {
@@ -32,7 +33,7 @@ export const COLLEGE_PHYSICS_MODULES: ModuleDef[] = [
       { id: 'v', symbol: 'v', name: 'Final velocity', unit: 'm/s', min: -15000, max: 15000 },
       { id: 'a', symbol: 'a', name: 'Acceleration', unit: 'm/s²', min: -100, max: 100, step: 0.1 },
       { id: 't', symbol: 't', name: 'Time', unit: 's', min: 0, max: 120, step: 0.1 },
-      { id: 'd', symbol: 'd', name: 'Displacement', unit: 'm', min: -1000000, max: 1000000 },
+      { id: 'd', symbol: 'Δx', name: 'Displacement', unit: 'm', min: -1000000, max: 1000000 },
     ],
     relations: [
       {
@@ -44,11 +45,11 @@ export const COLLEGE_PHYSICS_MODULES: ModuleDef[] = [
           v: (x) => x.v0! + x.a! * x.t!,
           v0: (x) => x.v! - x.a! * x.t!,
           a: (x) => div(x.v! - x.v0!, x.t!),
-          t: (x) => div(x.v! - x.v0!, x.a!),
+          t: (x) => atLeastZero(div(x.v! - x.v0!, x.a!)),
         },
       },
       {
-        id: 'd = v₀t + ½at²',
+        id: 'Δx = v₀t + ½at²',
         display: '{d} = {v0} × {t} + ½ × {a} × {t}²',
         vars: ['d', 'v0', 'a', 't'],
         residual: (x) => x.d! - x.v0! * x.t! - 0.5 * x.a! * x.t! ** 2,
@@ -57,17 +58,17 @@ export const COLLEGE_PHYSICS_MODULES: ModuleDef[] = [
           v0: (x) => div(x.d! - 0.5 * x.a! * x.t! ** 2, x.t!),
           a: (x) => (x.t === 0 ? undefined : (2 * (x.d! - x.v0! * x.t!)) / x.t! ** 2),
           t: (x) => {
-            // ½a·t² + v₀·t − d = 0
-            if (x.a === 0) return x.v0 === 0 ? undefined : [x.d! / x.v0!];
+            // ½a·t² + v₀·t − Δx = 0
+            if (x.a === 0) return x.v0 === 0 ? undefined : [atLeastZero(x.d! / x.v0!)!];
             const disc = x.v0! ** 2 + 2 * x.a! * x.d!;
             const s = rootOf(disc, x.v0! ** 2 + Math.abs(2 * x.a! * x.d!));
             if (Number.isNaN(s)) return [];
-            return [(-x.v0! + s) / x.a!, (-x.v0! - s) / x.a!];
+            return [(-x.v0! + s) / x.a!, (-x.v0! - s) / x.a!].map((r) => atLeastZero(r)!);
           },
         },
       },
       {
-        id: 'v² = v₀² + 2ad',
+        id: 'v² = v₀² + 2aΔx',
         display: '{v}² = {v0}² + 2 × {a} × {d}',
         vars: ['v', 'v0', 'a', 'd'],
         residual: (x) => x.v! ** 2 - x.v0! ** 2 - 2 * x.a! * x.d!,
@@ -81,7 +82,7 @@ export const COLLEGE_PHYSICS_MODULES: ModuleDef[] = [
         },
       },
       {
-        id: 'd = ½(v₀ + v)t',
+        id: 'Δx = ½(v₀ + v)t',
         display: '{d} = ½ × ({v0} + {v}) × {t}',
         vars: ['d', 'v0', 'v', 't'],
         residual: (x) => x.d! - 0.5 * (x.v0! + x.v!) * x.t!,
@@ -89,7 +90,7 @@ export const COLLEGE_PHYSICS_MODULES: ModuleDef[] = [
           d: (x) => 0.5 * (x.v0! + x.v!) * x.t!,
           v0: (x) => (x.t === 0 ? undefined : (2 * x.d!) / x.t! - x.v!),
           v: (x) => (x.t === 0 ? undefined : (2 * x.d!) / x.t! - x.v0!),
-          t: (x) => div(2 * x.d!, x.v0! + x.v!),
+          t: (x) => atLeastZero(div(2 * x.d!, x.v0! + x.v!)),
         },
       },
     ],
@@ -109,7 +110,7 @@ export const COLLEGE_PHYSICS_MODULES: ModuleDef[] = [
           how: 'Divide the change in velocity by the acceleration.',
         },
       },
-      'd = v₀t + ½at²': {
+      'Δx = v₀t + ½at²': {
         d: {
           expr: '{v0} × {t} + ½ × {a} × {t}²',
           how: 'Add the distance covered at the starting velocity to the extra distance from accelerating.',
@@ -124,28 +125,28 @@ export const COLLEGE_PHYSICS_MODULES: ModuleDef[] = [
         },
         t: {
           expr: '(−{v0} ± √({v0}² + 2 × {a} × {d})) ÷ {a}',
-          how: 'Rewrite as ½a·t² + v₀·t − d = 0 and use the quadratic formula. Time can’t be negative, so keep the root that is 0 or more.',
+          how: 'Rewrite as ½a·t² + v₀·t − Δx = 0 and use the quadratic formula. Time can’t be negative, so keep the root that is 0 or more.',
         },
       },
-      'v² = v₀² + 2ad': {
+      'v² = v₀² + 2aΔx': {
         v: {
           expr: '±√({v0}² + 2 × {a} × {d})',
-          how: 'Add 2ad to v₀², then take the square root. Both + and − solve the equation: the sign is the direction of motion, so keep the one that matches how the object is moving.',
+          how: 'Add 2aΔx to v₀², then take the square root. Both + and − solve the equation: the sign is the direction of motion, so keep the one that matches how the object is moving.',
         },
         v0: {
           expr: '±√({v}² − 2 × {a} × {d})',
-          how: 'Subtract 2ad from v², then take the square root. Both + and − solve the equation: the sign is the direction of motion, so keep the one that matches how the object was moving at the start.',
+          how: 'Subtract 2aΔx from v², then take the square root. Both + and − solve the equation: the sign is the direction of motion, so keep the one that matches how the object was moving at the start.',
         },
         a: {
           expr: '({v}² − {v0}²) ÷ (2 × {d})',
-          how: 'Subtract v₀² from both sides, then divide by 2d.',
+          how: 'Subtract v₀² from both sides, then divide by 2Δx.',
         },
         d: {
           expr: '({v}² − {v0}²) ÷ (2 × {a})',
           how: 'Subtract v₀² from both sides, then divide by 2a.',
         },
       },
-      'd = ½(v₀ + v)t': {
+      'Δx = ½(v₀ + v)t': {
         d: {
           expr: '½ × ({v0} + {v}) × {t}',
           how: 'With constant acceleration, the average velocity is halfway between v₀ and v. Multiply it by the time.',
@@ -166,13 +167,16 @@ export const COLLEGE_PHYSICS_MODULES: ModuleDef[] = [
     },
     example: { v0: 5, a: 2, t: 4, v: 13, d: 36 },
     startWith: ['t', 'v0', 'a'],
+    // The s.11 v–t graph: the area between the line and the axis is the displacement Δx.
     representation: {
-      kind: 'plot',
-      x: { var: 't', min: 0, max: 10 },
-      y: { var: 'v', min: -10, max: 30 },
-      params: ['v0', 'a'],
-      shadeToPoint: true,
-      autoRange: true,
+      kind: 'motionGraph',
+      graph: 'speed',
+      time: 't',
+      acceleration: 'a',
+      speed: 'v',
+      start: 'v0',
+      distance: 'd',
+      kinematics: { view: 'velocity' },
     },
   },
 ];

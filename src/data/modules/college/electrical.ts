@@ -22,7 +22,7 @@ export const COLLEGE_ELECTRICAL_MODULES: ModuleDef[] = [
       {
         id: 'R1',
         symbol: 'R₁',
-        name: 'Resistor 1',
+        name: 'Resistance 1',
         unit: 'Ω',
         min: 0.1,
         max: 1000000,
@@ -31,7 +31,7 @@ export const COLLEGE_ELECTRICAL_MODULES: ModuleDef[] = [
       {
         id: 'R2',
         symbol: 'R₂',
-        name: 'Resistor 2',
+        name: 'Resistance 2',
         unit: 'Ω',
         min: 0.1,
         max: 1000000,

@@ -14,6 +14,7 @@ export const COLLEGE_MATH_MODULES: ModuleDef[] = [
   {
     // Calculus I → Derivatives and differentiation rules
     id: 'he.math.calc-1#1',
+    use: 'Use this for “Find the slope of y = 3x⁴ at x = −1.”',
     assumptions: [
       'f′(x) = lim (h → 0) [f(x + h) − f(x)] ÷ h: the slope of the tangent line at x.',
       'Power rule: the derivative of xⁿ is n·xⁿ⁻¹.',
@@ -117,6 +118,7 @@ export const COLLEGE_MATH_MODULES: ModuleDef[] = [
     },
     example: { c: 1, n: 2, x: 1.5, y: 2.25, m: 3 },
     startWith: ['x', 'c', 'n'],
+    // Moves to `functionGraph` `family: 'power'` with `tangent` once HC37 is drawn (the plan).
     representation: {
       kind: 'plot',
       x: { var: 'x', min: -3, max: 3 },
