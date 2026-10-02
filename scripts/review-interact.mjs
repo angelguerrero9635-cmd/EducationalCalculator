@@ -29,7 +29,9 @@
 // Nor is a text that reads the same when the "?" box is typed with another number (the same
 // first edit, then the box moved a step of its own size, or doubled or halved, in its range): it
 // does not come from that box ("n = 2" on a ladder, the unit circle's π/4 family, "2V", the
-// 68–95–99.7 brackets); the line notes it as fixed text. Only texts that then change are flagged.
+// 68–95–99.7 brackets); the line notes it as fixed text. Only texts that then change are flagged,
+// and a text of the same shape whose number in that slot is unchanged counts as the same text
+// ("Dollar bills ($1 each): 3" keeps its "$1" while the count moved).
 // A worked-out "?" box takes no number, so the other "?" boxes are varied in its place; when no
 // box can be varied, the text stays flagged.
 // Gallery demos (g.…) are opened under /gallery, every other page under /skill. A page whose
@@ -196,6 +198,29 @@ const pictureTexts = () =>
     }
     return out;
   });
+/** A text's shape: its numbers as "#" ("Dollar bills ($# each): #"), and the numbers in order. */
+const shapeOf = (t) => {
+  const nums = numbersIn(t).map((n) => n.text);
+  let shape = t;
+  for (const n of nums) shape = shape.replace(n, '#');
+  shape = shape.replace(/\?/g, '#'); // a "?" is a number slot too
+  return { shape, nums };
+};
+/**
+ * Whether the number `num` of text `t` is still drawn after a box was varied: the same text is
+ * there, or a text of the same shape whose number in that slot is unchanged ("Dollar bills
+ * ($1 each): 3" keeps its "$1" while its count moved).
+ */
+function stillThere(t, num, after) {
+  if (after.includes(t)) return true;
+  const was = shapeOf(t);
+  const slots = was.nums.flatMap((n, i) => (n === num ? [i] : []));
+  if (!slots.length) return false;
+  return after.some((a) => {
+    const now = shapeOf(a);
+    return now.shape === was.shape && slots.every((i) => now.nums[i] === num);
+  });
+}
 /** The picture's texts once two reads 250 ms apart agree (a slow machine still re-rendering). */
 async function settledTexts() {
   let last = await pictureTexts();
@@ -603,11 +628,12 @@ async function unknowns(id) {
     const standIns = [...varied.values()].filter(Boolean);
     for (const [k, ts] of found) {
       const us = unknown.filter((u) => k.includes(`${u.id} = ${u.value}`));
+      const num = k.split(' (')[0];
       const kept = ts.filter((t) =>
         us.some((u) => {
           const after = varied.get(u.id);
-          if (after) return !after.includes(t);
-          return !standIns.length || standIns.some((a) => !a.includes(t));
+          if (after) return !stillThere(t, num, after);
+          return !standIns.length || standIns.some((a) => !stillThere(t, num, a));
         }),
       );
       for (const t of ts) if (!kept.includes(t)) fixed.push(t);

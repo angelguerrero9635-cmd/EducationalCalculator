@@ -49,7 +49,11 @@ export function Hops({ spec, calc }: { spec: Spec; calc: Calculator }) {
     lo + 2 * tick,
   );
   const arcs = hopArcs(stops, signs, tick);
-  const text = (i: number, size: number) => `${signs[i]! > 0 ? '+' : '−'}${formatSize(size)}`;
+  // A hop whose value is "?" is labelled "?" (never the example's number behind the "?"); a stop
+  // after one reads "?" too.
+  const text = (i: number, size: number) =>
+    `${signs[i]! > 0 ? '+' : '−'}${rep.known(spec.hops[i]!.var) ? formatSize(size) : '?'}`;
+  const stopText = (i: number) => (ids.slice(0, i + 1).every(rep.known) ? String(stops[i]!) : '?');
   const formatSize = (n: number) => String(Math.round(n * 1e6) / 1e6);
 
   const layout = (w: number) => {
@@ -254,13 +258,13 @@ export function Hops({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     strokeWidth={chart.strokeLight}
                   />
                   <ChartText
-                    {...fitLabel(s.x, String(s.n), s.end ? chart.emphasis : chart.value, w)}
+                    {...fitLabel(s.x, stopText(i), s.end ? chart.emphasis : chart.value, w)}
                     y={y + (lowered[i] ? 44 : 25)}
                     fontSize={s.end ? chart.emphasis : chart.value}
                     fontWeight={s.end ? '700' : '600'}
                     fill={s.end ? c.chartInk : c.chartMuted}
                   >
-                    {String(s.n)}
+                    {stopText(i)}
                   </ChartText>
                 </G>
               ))}
