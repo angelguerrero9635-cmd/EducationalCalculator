@@ -472,6 +472,18 @@ const light = {
   skeletalN: '#1D4ED8',
   skeletalS: '#A16207',
   skeletalHalogen: '#15803D',
+  /**
+   * HC1 beam (college): loads, reactions, the shear and moment diagrams, the bent shape;
+   * concrete and its bars.
+   */
+  beamLoad: '#C2410C',
+  beamReaction: '#1D4ED8',
+  beamShear: '#0E7490',
+  beamMoment: '#7C3AED',
+  beamDeflect: '#BE185D',
+  beamConcrete: '#CFCBC2',
+  beamConcreteDark: '#8C877D',
+  beamRebar: '#6B4F3A',
   /** H106: a town's land and its outline on a population map. */
   populationLand: '#DDEFD6',
   populationEdge: '#4F8A3C',
@@ -861,6 +873,14 @@ const dark: Palette = {
   skeletalN: '#93C5FD',
   skeletalS: '#FACC15',
   skeletalHalogen: '#86EFAC',
+  beamLoad: '#FB8A4C',
+  beamReaction: '#6EA3FF',
+  beamShear: '#22D3EE',
+  beamMoment: '#B794F6',
+  beamDeflect: '#F472B6',
+  beamConcrete: '#67635B',
+  beamConcreteDark: '#45423C',
+  beamRebar: '#B08C70',
   populationLand: '#1F3320',
   populationEdge: '#7CC46A',
   boundsBand: 'rgba(245, 160, 74, 0.22)',

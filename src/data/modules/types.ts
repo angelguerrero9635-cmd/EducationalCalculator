@@ -39,6 +39,7 @@ import type { BarFlows, Hs2eSpec } from './typesHs2e';
 import type { Hs3dSpec, PieStage } from './typesHs3d';
 import type { SkeletalSpec } from './typesHe1c';
 import type { PhaseEnvelopeSpec } from './typesHe1i';
+import type { BeamSpec } from './typesHe1a';
 
 /**
  * Plot axis: which variable it shows and the visible range, as numbers in the shown unit.
@@ -1152,6 +1153,8 @@ export type Representation =
   | Hs3dSpec
   /** College round 1, group C (HC2): a line-angle structure (`typesHe1c.ts`). */
   | SkeletalSpec
+  /** College round 1, group A: the `beam` (HC1; specs in `typesHe1a.ts`). */
+  | BeamSpec
   /** Box plot: the five-number summary on a number line, each mark draggable. */
   | {
       kind: 'boxPlot';

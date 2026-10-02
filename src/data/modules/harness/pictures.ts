@@ -67,6 +67,7 @@ import * as hsk from './picturesHsk';
 import { gasEnergyIssues, hs2cIssues, siOf } from './picturesHs2c';
 import { hs3aIssues, hs3aOptionIssues } from './picturesHs3a';
 import { sectionIssues } from './picturesHe1b';
+import { he1aIssues } from './picturesHe1a';
 import { gasMixtureIssues } from './picturesHs3e';
 import { netIssues, oscillatorIssues } from './picturesHe1h';
 import { skeletalIssues } from './picturesHe1c';
@@ -2279,6 +2280,9 @@ export function repIssues(
       break;
     case 'section':
       out.push(...sectionIssues(rep, siOf(val, byId), byId));
+      break;
+    case 'beam':
+      out.push(...he1aIssues(rep, siOf(val, byId)));
       break;
     case 'bars':
       out.push(...barFlowIssues(rep, val));
