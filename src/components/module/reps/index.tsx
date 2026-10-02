@@ -77,6 +77,7 @@ import { CubeRoot } from './CubeRoot';
 import { ParallelAngles } from './ParallelAngles';
 import { TriangleAngles } from './TriangleAngles';
 import { RightTriangle } from './RightTriangle';
+import { RightTriangleRatesHe3c } from './RightTriangleRatesHe3c';
 import { PictureGraph } from './PictureGraph';
 import { SeriesCircuit } from './SeriesCircuit';
 import { NetSchematic } from './NetSchematic';
@@ -553,6 +554,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'scaleCopy':
       return <ScaleCopy spec={spec} calc={calc} />;
     case 'rightTriangle':
+      if (spec.rates) return <RightTriangleRatesHe3c spec={spec} calc={calc} />; // HC54
       return <RightTriangle spec={spec} calc={calc} />;
     case 'plot':
       return <Plot spec={spec} calc={calc} />;

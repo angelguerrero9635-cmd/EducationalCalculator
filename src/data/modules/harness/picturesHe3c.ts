@@ -1,6 +1,6 @@
 /**
  * Picture checks for the college round 3 group C options (`typesHe3c.ts`): HC53 `polarGrid`
- * areas, regions, tangent and traced length. What each draws must agree with the page's
+ * areas, regions, tangent and traced length; HC54 related rates and pumping work. What each draws must agree with the page's
  * values. Called from `repIssues` in `pictures.ts`. Test-only.
  */
 import { CURVE_FIELDS, PATH_FIELDS } from '@/components/module/reps/polar';
@@ -10,6 +10,15 @@ import {
   polarTangent,
   regionArea,
 } from '@/components/module/reps/polarHe3cMath';
+import {
+  coneRise,
+  coneSurface,
+  pumpWork,
+  rateGap,
+  slabLift,
+} from '@/components/module/reps/ratesHe3cMath';
+
+import type { VariableDef } from '@/engine/types';
 
 import type { NumOrVar } from '../typesGraphs';
 import type { PolarGridSpec } from '../typesHsd';
@@ -21,8 +30,17 @@ type Val = (x: string | number) => number | undefined;
 const near = (a: number, b: number, tol = 1e-3) =>
   Math.abs(a - b) <= tol * Math.max(1e-6, Math.abs(a), Math.abs(b));
 
-export function he3cIssues(rep: Representation, val: Val): string[] {
+export function he3cIssues(
+  rep: Representation,
+  shown: Val,
+  byId: Map<string, VariableDef>,
+): string[] {
   const out: string[] = [];
+  // Values in the formula's units (the shown value times its unit factor).
+  const val: Val = (x) => {
+    const v = shown(x);
+    return v === undefined || typeof x === 'number' ? v : v * (byId.get(x)?.unitFactor ?? 1);
+  };
   const get = (x: NumOrVar | undefined) => {
     if (x === undefined) return undefined;
     const y = val(x);
@@ -34,6 +52,43 @@ export function he3cIssues(rep: Representation, val: Val): string[] {
       out.push(`${what} is ${got}, the picture gives ${want}`);
   };
   if (rep.kind === 'polarGrid') polarIssues(rep, get, check, out);
+  if (rep.kind === 'rightTriangle' && rep.rates) {
+    // a² + b² = c² differentiated: a·a′ + b·b′ = c·c′ (a side with no rate is fixed).
+    const [a, b, c] = [get(rep.a), get(rep.b), get(rep.c)];
+    const r = (id: string | undefined) => (id === undefined ? 0 : get(id));
+    const [da, db, dc] = [r(rep.rates.a), r(rep.rates.b), r(rep.rates.c)];
+    if ([a, b, c, da, db, dc].every((x) => x !== undefined)) {
+      const gap = rateGap(a!, b!, c!, da!, db!, dc!);
+      const scale = Math.max(Math.abs(a! * da!), Math.abs(b! * db!), Math.abs(c! * dc!), 1e-9);
+      if (Math.abs(gap) > 1e-3 * scale)
+        out.push(`the rates don't satisfy a·a′ + b·b′ = c·c′ (off by ${gap})`);
+    }
+  }
+  if (rep.kind === 'curvedSolid') {
+    const [R, H] = [get(rep.radius), get(rep.height)];
+    const f = rep.fill;
+    if (f && rep.shape !== 'cone') out.push('fill is drawn on a cone');
+    const h = get(f?.depth);
+    if (f && R !== undefined && H !== undefined && h !== undefined) {
+      if (h < 0 || h > H * (1 + 1e-9)) out.push(`depth ${h} is outside the tank (0 to ${H})`);
+      const r = coneSurface(R, H, h);
+      check(f.r, r, 'the surface radius');
+      const q = get(f.inflow);
+      if (q !== undefined && r > 0) check(f.rise, coneRise(q, r), 'dh/dt');
+    }
+    const sl = rep.slab;
+    if (sl && rep.shape !== 'cylinder') out.push('slab is drawn in a cylinder');
+    const [y, above] = [get(sl?.y), sl ? get(sl.above ?? 0) : undefined];
+    if (sl && H !== undefined && y !== undefined && above !== undefined) {
+      if (y < 0 || y > H * (1 + 1e-9)) out.push(`the slab at ${y} is outside the tank (0 to ${H})`);
+      check(sl.lift, slabLift(H, above, y), 'the lift');
+    }
+    const [rho, g] = [get(sl?.density), get(sl?.g)];
+    if (sl?.work && R !== undefined && H !== undefined && above !== undefined) {
+      if (rho !== undefined && g !== undefined)
+        check(sl.work, pumpWork(rho, g, R, H, above), 'the pumping work');
+    }
+  }
   return out;
 }
 

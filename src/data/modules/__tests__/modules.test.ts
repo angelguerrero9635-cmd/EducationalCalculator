@@ -50,7 +50,7 @@ import { he1bSpecVars } from '../typesHe1b';
 import { he1aSpecVars } from '../typesHe1a';
 import { bodeVars, complexPlaneHe2aVars } from '../typesHe2a';
 import { he2hSpecVars } from '../typesHe2h';
-import { polarGridHe3cVars } from '../typesHe3c';
+import { curvedSolidHe3cVars, polarGridHe3cVars, rightTriangleHe3cVars } from '../typesHe3c';
 import { isStandIn, pages } from '../harness/scope';
 import { treeChanceVars, twoWayVars, vennChanceVars } from '../harness/picturesHse';
 
@@ -452,7 +452,7 @@ function representationVars(r: Representation): string[] {
         ...scaleCopyHsfVars(r),
       ].filter((v): v is string => typeof v === 'string');
     case 'rightTriangle':
-      return [r.a, r.b, r.c];
+      return [r.a, r.b, r.c, ...rightTriangleHe3cVars(r)]; // HC54
     case 'plot':
       return [
         r.x.var,
@@ -485,6 +485,7 @@ function representationVars(r: Representation): string[] {
       return [
         r.radius,
         ...[r.height, r.volume, r.slant, r.surface].filter((x): x is string => !!x),
+        ...curvedSolidHe3cVars(r), // HC54
       ];
     case 'rootSquare':
       return [r.area, r.side, ...(r.between ?? [])];

@@ -1856,6 +1856,7 @@ export function repIssues(
       if (h !== undefined && h < 0) out.push(`height ${h} is negative`);
       // The caption works V from the radius and height drawn (in the radius's unit), so a
       // volume shown in another unit (L) is not compared here; the relation holds it.
+      out.push(...he3cIssues(rep, val, byId)); // HC54: fill, slab
       break;
     }
     case 'rightTriangle': {
@@ -1865,6 +1866,7 @@ export function repIssues(
         if (Math.abs(a * a + b * b - c * c) > 1e-6 * (1 + c * c))
           out.push(`squares ${a}² + ${b}² don't make ${c}²`);
       }
+      out.push(...he3cIssues(rep, val, byId)); // HC54: rates
       break;
     }
     case 'quadrilateral': {
@@ -2200,7 +2202,7 @@ export function repIssues(
       out.push(...hsdIssues(rep, (id) => val(id)), ...hs2gIssues(rep, val));
       if (rep.kind === 'complexPlane') out.push(...complexPlaneHe2aIssues(rep, siOf(val, byId))); // HC14
       out.push(...hs3bIssues(rep, val, byId)); // H106: space, polar conics, turned conics
-      if (rep.kind === 'polarGrid') out.push(...he3cIssues(rep, val)); // HC53
+      if (rep.kind === 'polarGrid') out.push(...he3cIssues(rep, val, byId)); // HC53
       break;
     case 'membrane':
     case 'dnaStrand':

@@ -6,6 +6,10 @@
  */
 import type { NumOrVar } from './typesGraphs';
 
+/** The variable ids among some fields. */
+const ids = (...xs: (NumOrVar | undefined)[]) =>
+  xs.filter((x): x is string => typeof x === 'string');
+
 // ─── HC53: polarGrid ─────────────────────────────────────────────────────────
 
 /** x = r(t − sin t), y = r(1 − cos t): a point on a rolling circle of radius r (t in radians). */
@@ -41,6 +45,65 @@ export interface ParametricHe3c {
   length?: string;
 }
 
+// ─── HC54: related rates and pumping work ────────────────────────────────────
+
+/**
+ * `rightTriangle` with `rates`: the triangle drawn large (no side squares), each side's rate
+ * (an id, its sign the way the side changes) as an arrow at the end that moves, and the
+ * caption working a·a′ + b·b′ = c·c′ from a² + b² = c² (a side with no rate is fixed, rate 0).
+ * `scene` draws it as a ladder against a wall or two roads meeting at a right angle.
+ */
+export interface RightTriangleHe3c {
+  rates?: { a?: string; b?: string; c?: string };
+  scene?: 'ladder' | 'roads';
+  /** Values held while the foot is dragged (the ladder holds c). */
+  keep?: string[];
+  /** No drag. */
+  fixed?: boolean;
+}
+
+/**
+ * `curvedSolid` options. `fill` (shape 'cone'): the cone stands on its apex as a tank, water
+ * to `depth` with the surface radius r = R·depth ÷ H (`r`, checked), the inflow poured in and
+ * the surface's rise dh/dt = inflow ÷ (πr²) (`rise`, checked). `slab` (shape 'cylinder'): a
+ * full tank with a thin layer at height `y` lifted to the outlet `above` the rim; its lift
+ * H + above − y (`lift`, checked) and the whole tank's work ρgπr²(H²/2 + above·H) (`work`,
+ * checked with the page's `density` and `g`).
+ */
+export interface CurvedSolidHe3c {
+  fill?: { depth: NumOrVar; r?: string; inflow?: NumOrVar; rise?: string };
+  slab?: {
+    y: NumOrVar;
+    above?: NumOrVar;
+    lift?: string;
+    density?: NumOrVar;
+    g?: NumOrVar;
+    work?: string;
+  };
+}
+
+/** The variable ids the HC54 options name (for the module tests). */
+export function rightTriangleHe3cVars(r: RightTriangleHe3c): string[] {
+  return ids(r.rates?.a, r.rates?.b, r.rates?.c);
+}
+
+/** The variable ids the HC54 options name (for the module tests). */
+export function curvedSolidHe3cVars(r: CurvedSolidHe3c): string[] {
+  const { fill: f, slab: s } = r;
+  return ids(
+    f?.depth,
+    f?.r,
+    f?.inflow,
+    f?.rise,
+    s?.y,
+    s?.above,
+    s?.lift,
+    s?.density,
+    s?.g,
+    s?.work,
+  );
+}
+
 /** The variable ids the HC53 options name (for the module tests). */
 export function polarGridHe3cVars(r: PolarGridHe3c): string[] {
   const t = r.tangent && r.tangent !== true ? r.tangent.slope : undefined;
@@ -56,6 +119,3 @@ export function polarGridHe3cVars(r: PolarGridHe3c): string[] {
     t,
   );
 }
-
-const ids = (...xs: (NumOrVar | undefined)[]) =>
-  xs.filter((x): x is string => typeof x === 'string');

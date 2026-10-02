@@ -2,6 +2,7 @@
  * College gallery demos, round 3, group C (docs/RENDERINGS_HE.md). Each stands in for the
  * college page that waits, built from the plan's worked example. Spread into gallery.ts.
  * HC53: `polarGrid` areas, regions, tangent and the cycloid (calc-2#5, calc-3#2).
+ * HC54: `rightTriangle` rates and `curvedSolid` fill and slab (calc-1#2, calc-2#2).
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
@@ -57,6 +58,20 @@ function page(d: Omit<ModuleDef, 'relations' | 'steps'> & { rules: Rule[] }): Mo
     steps: Object.fromEntries(rules.map((r) => [r.relation.id, r.steps])),
   };
 }
+
+/** a ≤ b, checked only (a page limit); `why` is the reason a conflict is refused. */
+const atMost = (a: string, b: string, display: string, why: string): Rule => ({
+  relation: {
+    id: `${a} ≤ ${b}`,
+    constraint: true,
+    display,
+    vars: [a, b],
+    residual: (v: Values) => (v[a]! <= v[b]! * (1 + 1e-9) ? 0 : 1),
+    solve: {},
+    message: () => why,
+  },
+  steps: {},
+});
 
 // ─── HC53: polarGrid areas, regions, tangent, cycloid ─────────────────────────
 
@@ -451,6 +466,375 @@ const HC53: ModuleDef[] = [
   ),
 ];
 
-export const HE3C_GALLERY_MODULES: ModuleDef[] = [...HC53];
+// ─── HC54: related rates and pumping work ────────────────────────────────────
+
+/** calc-1#2~ladder: a ladder of length L slides; dy/dt = −x·(dx/dt) ÷ y. */
+function ladder(id: string, title: string, use: string, ex: Values) {
+  return page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'The wall is vertical and the floor level, so x² + y² = L² at every instant.',
+      'L does not change, so differentiating gives x·(dx/dt) + y·(dy/dt) = 0.',
+      'A negative dy/dt means the top slides down.',
+    ],
+    variables: [
+      num('L', 'L', 'Ladder length', 'm', 0.1, 100, { step: 0.1 }),
+      num('x', 'x', 'Foot from the wall', 'm', 0.01, 100, { step: 0.01 }),
+      num('y', 'y', 'Top up the wall', 'm', 0.01, 100),
+      num('dx', 'dx/dt', 'Foot’s speed out', 'm/s', -100, 100, { step: 0.01 }),
+      num('dy', 'dy/dt', 'Top’s rate up', 'm/s', -1e4, 1e4),
+    ],
+    rules: [
+      rule(
+        'x² + y² = L²',
+        '{x}² + {y}² = {L}²',
+        ['x', 'y', 'L'],
+        (v) => v.x! ** 2 + v.y! ** 2 - v.L! ** 2,
+        {
+          y: [
+            (v) => root(v.L! ** 2 - v.x! ** 2),
+            '√({L}² − {x}²)',
+            'The ladder is the hypotenuse: take x² from L², then the root.',
+          ],
+          x: [
+            (v) => root(v.L! ** 2 - v.y! ** 2),
+            '√({L}² − {y}²)',
+            'Take y² from L², then the square root.',
+          ],
+          L: [
+            (v) => Math.hypot(v.x!, v.y!),
+            '√({x}² + {y}²)',
+            'Add the squares of the two legs, then the square root.',
+          ],
+        },
+      ),
+      rule(
+        'x·x′ + y·y′ = 0',
+        '{x} × {dx} + {y} × {dy} = 0',
+        ['x', 'dx', 'y', 'dy'],
+        (v) => v.x! * v.dx! + v.y! * v.dy!,
+        {
+          dy: [
+            (v) => div(-v.x! * v.dx!, v.y!),
+            '−{x} × {dx} ÷ {y}',
+            'Differentiate x² + y² = L² with L fixed, then solve for dy/dt.',
+          ],
+          dx: [
+            (v) => div(-v.y! * v.dy!, v.x!),
+            '−{y} × {dy} ÷ {x}',
+            'Differentiate x² + y² = L² with L fixed, then solve for dx/dt.',
+          ],
+        },
+      ),
+    ],
+    example: ex,
+    startWith: ['L', 'x', 'dx'],
+    representation: {
+      kind: 'rightTriangle',
+      a: 'y',
+      b: 'x',
+      c: 'L',
+      extent: 5,
+      rates: { a: 'dy', b: 'dx' },
+      scene: 'ladder',
+      keep: ['dx'],
+    },
+  });
+}
+
+const ladderEx = (L: number, x: number, dx: number) => {
+  const y = Math.sqrt(L * L - x * x);
+  return { L, x, y, dx, dy: (-x * dx) / y };
+};
+
+/** calc-1#2~two-cars: cars on perpendicular roads; D′ = (x·x′ + y·y′) ÷ D. */
+const twoCars = page({
+  id: 'g.he-rightTriangle-cars',
+  title: 'Two cars moving apart',
+  use: 'Use this for “Two cars leave a crossing, one east at 60 km/h, one north at 80 km/h. How fast is the distance growing when they are 30 km and 40 km out?”',
+  assumptions: [
+    'The roads cross at a right angle, so D² = x² + y² at every instant.',
+    'Differentiating gives D·D′ = x·x′ + y·y′.',
+  ],
+  variables: [
+    num('x', 'x', 'East car’s distance', 'km', 0.01, 1000, { step: 0.1 }),
+    num('y', 'y', 'North car’s distance', 'km', 0.01, 1000, { step: 0.1 }),
+    num('vx', 'x′', 'East car’s speed', 'km/h', -300, 300, { step: 1 }),
+    num('vy', 'y′', 'North car’s speed', 'km/h', -300, 300, { step: 1 }),
+    num('D', 'D', 'Distance between', 'km', 0.01, 1500),
+    num('vD', 'D′', 'Rate the distance grows', 'km/h', -1e3, 1e3),
+  ],
+  rules: [
+    rule(
+      'D² = x² + y²',
+      '{D}² = {x}² + {y}²',
+      ['D', 'x', 'y'],
+      (v) => v.D! ** 2 - v.x! ** 2 - v.y! ** 2,
+      {
+        D: [
+          (v) => Math.hypot(v.x!, v.y!),
+          '√({x}² + {y}²)',
+          'The cars and the crossing make a right triangle: Pythagoras.',
+        ],
+        x: [
+          (v) => root(v.D! ** 2 - v.y! ** 2),
+          '√({D}² − {y}²)',
+          'Take y² from D², then the square root.',
+        ],
+        y: [
+          (v) => root(v.D! ** 2 - v.x! ** 2),
+          '√({D}² − {x}²)',
+          'Take x² from D², then the square root.',
+        ],
+      },
+    ),
+    rule(
+      'D·D′ = x·x′ + y·y′',
+      '{D} × {vD} = {x} × {vx} + {y} × {vy}',
+      ['D', 'vD', 'x', 'vx', 'y', 'vy'],
+      (v) => v.D! * v.vD! - v.x! * v.vx! - v.y! * v.vy!,
+      {
+        vD: [
+          (v) => div(v.x! * v.vx! + v.y! * v.vy!, v.D!),
+          '({x} × {vx} + {y} × {vy}) ÷ {D}',
+          'Differentiate D² = x² + y², then divide by D.',
+        ],
+        vx: [
+          (v) => div(v.D! * v.vD! - v.y! * v.vy!, v.x!),
+          '({D} × {vD} − {y} × {vy}) ÷ {x}',
+          'Take y·y′ from D·D′, then divide by x.',
+        ],
+        vy: [
+          (v) => div(v.D! * v.vD! - v.x! * v.vx!, v.y!),
+          '({D} × {vD} − {x} × {vx}) ÷ {y}',
+          'Take x·x′ from D·D′, then divide by y.',
+        ],
+      },
+    ),
+  ],
+  example: { x: 30, y: 40, vx: 60, vy: 80, D: 50, vD: 100 },
+  startWith: ['x', 'y', 'vx', 'vy'],
+  representation: {
+    kind: 'rightTriangle',
+    a: 'y',
+    b: 'x',
+    c: 'D',
+    extent: 40,
+    rates: { a: 'vy', b: 'vx', c: 'vD' },
+    scene: 'roads',
+    keep: ['vx', 'vy', 'y'],
+  },
+});
+
+/** calc-1#2~cone-tank: water into a cone on its apex; r = Rh ÷ H, dh/dt = (dV/dt) ÷ (πr²). */
+function coneTank(id: string, title: string, use: string, ex: Values) {
+  return page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'The tank is a cone on its apex: the water is a smaller cone of the same shape.',
+      'Similar triangles: r ÷ h = R ÷ H.',
+      'V = ⅓πr²h, so dV/dt = πr²·(dh/dt): the inflow spreads over the surface.',
+    ],
+    variables: [
+      num('R', 'R', 'Rim radius', 'm', 0.01, 100, { step: 0.1 }),
+      num('H', 'H', 'Tank height', 'm', 0.01, 100, { step: 0.1 }),
+      num('h', 'h', 'Water depth', 'm', 0.01, 100, { step: 0.01 }),
+      num('q', 'dV/dt', 'Inflow', 'm³/min', 0.001, 1000, { step: 0.01 }),
+      num('r', 'r', 'Surface radius', 'm', 0.001, 100),
+      num('dh', 'dh/dt', 'Rise rate', 'm/min', 0, 1e6),
+    ],
+    rules: [
+      rule(
+        'r = Rh/H',
+        '{r} = {R} × {h} ÷ {H}',
+        ['r', 'R', 'h', 'H'],
+        (v) => v.r! * v.H! - v.R! * v.h!,
+        {
+          r: [
+            (v) => div(v.R! * v.h!, v.H!),
+            '{R} × {h} ÷ {H}',
+            'Similar triangles: the surface radius is to the depth as R is to H.',
+          ],
+          h: [
+            (v) => div(v.r! * v.H!, v.R!),
+            '{r} × {H} ÷ {R}',
+            'Similar triangles, solved for the depth.',
+          ],
+        },
+      ),
+      rule(
+        'dh/dt = (dV/dt) ÷ (πr²)',
+        '{dh} = {q} ÷ (π × {r}²)',
+        ['dh', 'q', 'r'],
+        (v) => v.dh! * Math.PI * v.r! ** 2 - v.q!,
+        {
+          dh: [
+            (v) => div(v.q!, Math.PI * v.r! ** 2),
+            '{q} ÷ (π × {r}²)',
+            'The inflow spreads over the surface’s area πr².',
+          ],
+          q: [
+            (v) => v.dh! * Math.PI * v.r! ** 2,
+            '{dh} × π × {r}²',
+            'Multiply the rise by the surface’s area.',
+          ],
+        },
+      ),
+      atMost('h', 'H', '{h} ≤ {H}', 'The water can’t be deeper than the tank.'),
+    ],
+    example: ex,
+    startWith: ['R', 'H', 'h', 'q'],
+    representation: {
+      kind: 'curvedSolid',
+      shape: 'cone',
+      radius: 'R',
+      height: 'H',
+      extent: 4,
+      fill: { depth: 'h', r: 'r', inflow: 'q', rise: 'dh' },
+    },
+  });
+}
+
+const coneEx = (R: number, H: number, h: number, q: number) => {
+  const r = (R * h) / H;
+  return { R, H, h, q, r, dh: q / (Math.PI * r * r) };
+};
+
+/** calc-2#2~pump-work: pump a full cylinder out over its top plus h; W = ρgπr²(H²/2 + hH). */
+function pumping(id: string, title: string, use: string, ex: Values) {
+  const work = (v: Values) => v.rho! * 9.8 * Math.PI * v.r! ** 2 * (v.H! ** 2 / 2 + v.h! * v.H!);
+  return page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'g = 9.8 m/s². A slab dy thick at height y weighs ρgπr² dy and rises H + h − y.',
+      'W = ∫ ρgπr²(H + h − y) dy from 0 to H = ρgπr²(H²/2 + hH).',
+      'The tank starts full; water leaves at h above the rim.',
+    ],
+    variables: [
+      num('r', 'r', 'Tank radius', 'm', 0.01, 100, { step: 0.1 }),
+      num('H', 'H', 'Tank height', 'm', 0.01, 100, { step: 0.1 }),
+      num('h', 'h', 'Outlet above the rim', 'm', 0.01, 100, { step: 0.1 }),
+      num('rho', 'ρ', 'Liquid density', 'kg/m³', 1, 20000, { step: 10 }),
+      num('y', 'y', 'Slab height', 'm', 0.01, 100, { step: 0.01 }),
+      num('lift', 'd', 'Slab’s lift', 'm', 0, 200),
+      num('W', 'W', 'Work to empty it', 'J', 0, 1e12),
+    ],
+    rules: [
+      rule(
+        'd = H + h − y',
+        '{lift} = {H} + {h} − {y}',
+        ['lift', 'H', 'h', 'y'],
+        (v) => v.lift! - v.H! - v.h! + v.y!,
+        {
+          lift: [
+            (v) => v.H! + v.h! - v.y!,
+            '{H} + {h} − {y}',
+            'The slab rises to the rim, then h more to the outlet.',
+          ],
+          y: [
+            (v) => v.H! + v.h! - v.lift!,
+            '{H} + {h} − {lift}',
+            'Take the lift from the outlet’s height.',
+          ],
+        },
+      ),
+      rule(
+        'W = ρgπr²(H²/2 + hH)',
+        '{W} = {rho} × 9.8 × π × {r}² × ({H}² ÷ 2 + {h} × {H})',
+        ['W', 'rho', 'r', 'H', 'h'],
+        (v) => v.W! - work(v),
+        {
+          W: [
+            work,
+            '{rho} × 9.8 × π × {r}² × ({H}² ÷ 2 + {h} × {H})',
+            'Add up each slab’s weight times its lift from the bottom to the top.',
+          ],
+          rho: [
+            (v) => div(v.W!, 9.8 * Math.PI * v.r! ** 2 * (v.H! ** 2 / 2 + v.h! * v.H!)),
+            '{W} ÷ (9.8 × π × {r}² × ({H}² ÷ 2 + {h} × {H}))',
+            'Divide the work by g, πr² and the lift integral.',
+          ],
+          h: [
+            (v) => {
+              const k = div(v.W!, v.rho! * 9.8 * Math.PI * v.r! ** 2);
+              return k === undefined ? undefined : div(k - v.H! ** 2 / 2, v.H!);
+            },
+            '({W} ÷ ({rho} × 9.8 × π × {r}²) − {H}² ÷ 2) ÷ {H}',
+            'Divide the work by ρgπr², take away H²/2, then divide by H.',
+          ],
+        },
+      ),
+      atMost('y', 'H', '{y} ≤ {H}', 'The slab has to be inside the tank.'),
+    ],
+    example: ex,
+    startWith: ['r', 'H', 'h', 'rho', 'y'],
+    representation: {
+      kind: 'curvedSolid',
+      shape: 'cylinder',
+      radius: 'r',
+      height: 'H',
+      extent: 3,
+      slab: { y: 'y', above: 'h', lift: 'lift', density: 'rho', g: 9.8, work: 'W' },
+    },
+  });
+}
+
+const pumpEx = (r: number, H: number, h: number, rho: number, y: number) => ({
+  r,
+  H,
+  h,
+  rho,
+  y,
+  lift: H + h - y,
+  W: rho * 9.8 * Math.PI * r * r * ((H * H) / 2 + h * H),
+});
+
+const HC54: ModuleDef[] = [
+  ladder(
+    'g.he-rightTriangle-ladder',
+    'A sliding ladder',
+    'Use this for “A 5 m ladder slides away from a wall at 0.5 m/s. How fast does the top fall when the foot is 3 m out?”',
+    ladderEx(5, 3, 0.5),
+  ),
+  ladder(
+    'g.he-rightTriangle-ladder-low',
+    'A ladder near the floor',
+    'Use this for “A 5 m ladder’s foot slides out at 0.5 m/s. How fast does the top fall when the foot is 4.8 m out?”',
+    ladderEx(5, 4.8, 0.5),
+  ),
+  twoCars,
+  coneTank(
+    'g.he-curvedSolid-cone-tank',
+    'Filling a cone tank',
+    'Use this for “Water runs at 0.5 m³/min into a cone tank of rim radius 2 m and depth 4 m. How fast does it rise at 2 m deep?”',
+    coneEx(2, 4, 2, 0.5),
+  ),
+  coneTank(
+    'g.he-curvedSolid-cone-shallow',
+    'A cone tank just starting to fill',
+    'Use this for “How fast does the water rise in the same tank when it is only 0.5 m deep?”',
+    coneEx(2, 4, 0.5, 0.5),
+  ),
+  pumping(
+    'g.he-curvedSolid-pump',
+    'Pumping a tank empty',
+    'Use this for “A cylinder 1 m in radius and 2 m tall is full of water. How much work pumps it out 1 m above the rim?”',
+    pumpEx(1, 2, 1, 1000, 0.5),
+  ),
+  pumping(
+    'g.he-curvedSolid-pump-oil',
+    'Pumping oil from a tall tank',
+    'Use this for “Oil of 900 kg/m³ fills a tank 0.5 m in radius and 3 m tall. How much work pumps it 2 m above the rim?”',
+    pumpEx(0.5, 3, 2, 900, 2.5),
+  ),
+];
+
+export const HE3C_GALLERY_MODULES: ModuleDef[] = [...HC53, ...HC54];
 
 export const HE3C_GALLERY_LAYOUTS: LayoutDef[] = [];

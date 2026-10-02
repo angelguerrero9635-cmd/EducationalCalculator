@@ -56,4 +56,34 @@ export const HE3C_REQUESTS: PictureRequest[] = [
       'g.he-polarGrid-cycloid-part',
     ],
   },
+  {
+    ...ask(
+      'HC54',
+      'rightTriangle',
+      'Related rates and pumping work: a right triangle with each side’s rate as an arrow at its moving end (a ladder against a wall, two cars on crossing roads), a cone tank on its apex filling to depth h, and a full cylinder with a thin slab lifted to the outlet',
+      {
+        [`${M}calc-1#2~ladder`]: 'rightTriangle rates, scene ladder',
+        [`${M}calc-1#2~two-cars`]: 'rightTriangle rates, scene roads',
+        [`${M}calc-1#2~cone-tank`]: 'curvedSolid cone fill',
+        [`${M}calc-2#2~pump-work`]: 'curvedSolid cylinder slab',
+      },
+      [
+        'From M-P16. Options on rightTriangle and curvedSolid (typesHe3c.ts; drawn by reps/RightTriangleRatesHe3c.tsx and reps/TankHe3c.tsx, sums in reps/ratesHe3cMath.ts); each is off unless a page sets it.',
+        "rightTriangle fields: rates: { a?, b?, c? } (ids; the triangle drawn large to scale with no side squares, the right angle at the bottom right, b along the ground to the left, a up; each rate an arrow at the side's moving end, its length scaled to the biggest rate and its direction the rate's sign, c's rate a double arrow along the hypotenuse; the caption works a·a′ + b·b′ = c·c′, a side with no rate fixed at 0), scene?: 'ladder' (TriangleScene's wooden ladder and brick wall) | 'roads' (two roads, a car at each end, D dashed), keep?, fixed?. Drag the foot (b), holding c on a ladder and a otherwise.",
+        "curvedSolid fields: fill: { depth, r?, inflow?, rise? } (shape 'cone': the glass cone on its apex, water to depth h with surface radius r = R·h ÷ H, the inflow poured in and the rise arrow; drag the surface when depth is typed); slab: { y, above?, lift?, density?, g?, work? } (shape 'cylinder': full of water, a slab at y outlined, a pipe up to h over the rim, the lift arrow H + h − y; the caption works W = ρgπr²(H²/2 + hH) with the page's density and g; drag the slab). A '?' depth, slab height or rate draws nothing for it.",
+        "Examples. ~ladder: { kind: 'rightTriangle', a: 'y', b: 'x', c: 'L', extent: 5, rates: { a: 'dy', b: 'dx' }, scene: 'ladder', keep: ['dx'] }. ~two-cars: { kind: 'rightTriangle', a: 'y', b: 'x', c: 'D', extent: 40, rates: { a: 'vy', b: 'vx', c: 'vD' }, scene: 'roads' }. ~cone-tank: { kind: 'curvedSolid', shape: 'cone', radius: 'R', height: 'H', extent: 4, fill: { depth: 'h', r: 'r', inflow: 'q', rise: 'dh' } } (add the page limit h ≤ H). ~pump-work: { kind: 'curvedSolid', shape: 'cylinder', radius: 'r', height: 'H', extent: 3, slab: { y: 'y', above: 'h', lift: 'lift', density: 'rho', g: 9.8, work: 'W' } } (the page gains y and the lift d; the plan's h = 0 example needs h > 0 to show the outlet, or above: 0).",
+        'The harness (harness/picturesHe3c.ts, formula units) checks a·a′ + b·b′ = c·c′; r = R·h ÷ H, dh/dt = (dV/dt) ÷ (πr²) and 0 ≤ h ≤ H; the lift H + h − y with 0 ≤ y ≤ H; and the work.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-rightTriangle-ladder',
+      'g.he-rightTriangle-ladder-low',
+      'g.he-rightTriangle-cars',
+      'g.he-curvedSolid-cone-tank',
+      'g.he-curvedSolid-cone-shallow',
+      'g.he-curvedSolid-pump',
+      'g.he-curvedSolid-pump-oil',
+    ],
+  },
 ];
