@@ -56,7 +56,7 @@ export function OscillatorHe({ spec, calc }: { spec: Swing & OscillatorHe1h; cal
   // Which graph: the response curve, transmissibility, coupled traces, or a trace in time.
   const graph = f ? 'forced' : tr ? 'transmit' : cp ? 'coupled' : sp ? 'none' : 'trace';
   const sketchH = cp ? FLOOR + 110 : FLOOR + 34;
-  const graphH = graph === 'none' ? 0 : graph === 'coupled' ? 170 : 190;
+  const graphH = graph === 'none' ? 0 : graph === 'coupled' ? 184 : 198;
 
   return (
     <View>
@@ -435,7 +435,17 @@ export function OscillatorHe({ spec, calc }: { spec: Swing & OscillatorHe1h; cal
             {(d?.x ?? ph?.x) ? (
               <SubLabel
                 x={TX(si(tMark))}
-                y={fv.x(si(tMark)) >= 0 ? TY(fv.x(si(tMark))) - 10 : TY(fv.x(si(tMark))) + 20}
+                y={
+                  // Over the point when x ≥ 0, unless the phase shift's label is there.
+                  fv.x(si(tMark)) >= 0 &&
+                  !(
+                    showPhase &&
+                    fv.envelope &&
+                    Math.abs(TY(fv.x(si(tMark))) - 10 - (TY(fv.envelope(0)) - 4)) < 18
+                  )
+                    ? TY(fv.x(si(tMark))) - 10
+                    : TY(fv.x(si(tMark))) + 20
+                }
                 text={rep.label((d?.x ?? ph?.x)!)}
                 size={chart.label}
                 color={c.forceNet}
@@ -481,10 +491,25 @@ export function OscillatorHe({ spec, calc }: { spec: Swing & OscillatorHe1h; cal
     const yMax = Math.ceil(top0 / yStep) * yStep;
     const RX = (x: number) => GX0 + ((gx1 - GX0) * x) / rMax;
     const RY = (y: number) => gy1 - ((gy1 - gy0) * Math.min(y, yMax * 1.02)) / yMax;
-    const path = Array.from({ length: 301 }, (_, i) => {
-      const x = (rMax * i) / 300;
-      return `${i ? 'L' : 'M'} ${RX(x)} ${RY(fn(x))}`;
-    }).join(' ');
+    // Past the top the curve leaves the plot and comes back in (never flat along the top).
+    const cap = yMax * 1.02;
+    const path = (() => {
+      const out: string[] = [];
+      let prev: [number, number] | undefined;
+      for (let i = 0; i <= 600; i++) {
+        const x = (rMax * i) / 600;
+        const y = fn(x);
+        const inside = Number.isFinite(y) && y <= cap;
+        const wasIn = !!prev && prev[1] <= cap;
+        if (prev && inside !== wasIn && Number.isFinite(prev[1]) && Number.isFinite(y)) {
+          const xc = prev[0] + ((cap - prev[1]) / (y - prev[1])) * (x - prev[0]);
+          out.push(`${inside ? 'M' : 'L'} ${RX(xc)} ${RY(cap)}`);
+        }
+        if (inside) out.push(`${out.length ? 'L' : 'M'} ${RX(x)} ${RY(y)}`);
+        prev = [x, Number.isFinite(y) ? y : Infinity];
+      }
+      return out.join(' ');
+    })();
     const yTicks = Array.from({ length: Math.round(yMax / yStep) + 1 }, (_, i) => i * yStep);
     const name = which === 'forced' ? 'X ÷ δ_st' : 'TR';
     return (
@@ -746,7 +771,7 @@ export function OscillatorHe({ spec, calc }: { spec: Swing & OscillatorHe1h; cal
     const md = coupledModes();
     if (!md.ok) return null;
     const gx1 = w - 14;
-    const lanes = [top + 34, top + 108];
+    const lanes = [top + 46, top + 120];
     const half = 30;
     const [w1, w2] = md.w;
     const tex = (2 * Math.PI) / Math.max(1e-9, w2 - w1);
@@ -808,7 +833,8 @@ export function OscillatorHe({ spec, calc }: { spec: Swing & OscillatorHe1h; cal
             />
           </G>
         ) : null}
-        <ChartText x={gx1} y={top + 18} textAnchor="end" fontSize={chart.label} fill={c.chartMuted}>
+        {/* Over the first lane, not on its trace. */}
+        <ChartText x={gx1} y={top + 10} textAnchor="end" fontSize={chart.label} fill={c.chartMuted}>
           m₁ let go alone, m₂ at rest
         </ChartText>
       </G>
@@ -833,7 +859,7 @@ export function OscillatorHe({ spec, calc }: { spec: Swing & OscillatorHe1h; cal
       if (ok)
         lines.push(
           fv.regime === 'under'
-            ? `ζ < 1, underdamped: ω_d = ωₙ√(1 − ζ²) = ${sig(fv.wd)} rad/s, less than ωₙ; the crests shrink inside ±Xe^(−ζωₙt).`
+            ? `ζ < 1, underdamped: ω_d = ωₙ√(1 − ζ²) = ${sig(fv.wd)} rad/s, less than ωₙ; the crests shrink inside ±X exp(−ζωₙt).`
             : fv.regime === 'critical'
               ? 'ζ = 1, critically damped: back to rest fastest, with no swing past 0.'
               : 'ζ > 1, overdamped: it creeps back to rest without swinging.',
@@ -841,7 +867,7 @@ export function OscillatorHe({ spec, calc }: { spec: Swing & OscillatorHe1h; cal
       if (d.cycles !== undefined && d.decrement && ok && fv.regime === 'under') {
         const delta = (2 * Math.PI * zeta) / Math.sqrt(1 - zeta * zeta);
         lines.push(
-          `δ = (1/n) ln(x₀ ÷ xₙ) = 2πζ ÷ √(1 − ζ²) = ${sig(delta)}: each crest is e^(−δ) of the one before.`,
+          `δ = (1/n) ln(x₀ ÷ xₙ) = 2πζ ÷ √(1 − ζ²) = ${sig(delta)}: each crest is e⁻ᵟ of the one before.`,
         );
       }
     }
