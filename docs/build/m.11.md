@@ -259,3 +259,12 @@ other parts wait).
 | `m.11.radical-functions~rational-exponent` | H106 (3): functionGraph `family: 'power'`                                       | y is typable: x = (y ÷ a)^(q/p) solves "x^(3/2) = 27" (x ≥ 0 keeps it to one answer); limits a ≠ 0, p ≠ 0, x ≠ 0 for p < 0; both demos (p > 0, p < 0) went |
 
 No new step phrases or unit labels were needed.
+
+### Drawn parts placed
+
+Picture parts that were drawn but on no page, each now on a lesson page; the tracker entry is
+`placed` when every part is on a page, and the demo the page shows is retired.
+
+| Page                               | Entry | What it teaches                                                                                                                                             |
+| ---------------------------------- | ----- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `m.11.radical-functions~cube-root` | H01   | y = a∛(x − h) + k: the parent ∛x moved to its center (h, k), every x in the domain; y from x, or x = h + ((y − k) ÷ a)³ from y; the parent dashed beside it |

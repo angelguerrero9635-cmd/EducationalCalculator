@@ -1711,6 +1711,7 @@ const RETIRED = new Set<string>([
   'g.m11-probability-distributions-binomial',
   'g.m11-probability-distributions-expected',
   'g.m11-pythagorean-identities',
+  'g.m11-radical-functions-cube',
   'g.m11-radical-functions-equation',
   'g.m11-radical-functions-sqrt',
   'g.m11-rational-functions-hole',
