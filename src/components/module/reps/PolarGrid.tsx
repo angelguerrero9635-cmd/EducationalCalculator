@@ -73,8 +73,6 @@ export function PolarGrid({ spec, calc }: { spec: PolarGridSpec; calc: Calculato
   // The ellipse's t is an angle, in degrees.
   // A "?" t reads "?", and the point's coordinates read "?" until t and the path's numbers are
   // all typed: never the example's point behind a "?".
-  const tText =
-    par && !isKnown(par.t) ? '?' : par?.family === 'ellipse' ? `${short(t)}°` : short(t);
   const pathKnown =
     !!par &&
     isKnown(par.t) &&
@@ -84,7 +82,12 @@ export function PolarGrid({ spec, calc }: { spec: PolarGridSpec; calc: Calculato
   const xyText = (p: { x: number; y: number }) =>
     pathKnown ? `(${short(p.x)}, ${short(p.y)})` : '(?, ?)';
   const he3cPar = useParametricHe3c(par, pv, t, isKnown); // HC53: cycloid, radians, length
-  const tText = par?.family === 'ellipse' ? `${short(t)}°` : (he3cPar.tText ?? short(t));
+  const tText =
+    par && !isKnown(par.t)
+      ? '?'
+      : par?.family === 'ellipse'
+        ? `${short(t)}°`
+        : (he3cPar.tText ?? short(t));
   // The path over its range, stretched to reach a t typed past either end.
   const [t0, t1] = par ? [Math.min(par.range[0], t), Math.max(par.range[1], t)] : [0, 0];
   const samples = par
@@ -282,10 +285,8 @@ export function PolarGrid({ spec, calc }: { spec: PolarGridSpec; calc: Calculato
                     {/* Below the point, away from the y-axis numbers (the edge clamps it). */}
                     <MathChip
                       x={f.sx(at.x) + (at.x < 0 ? -10 : 10)}
-                      y={f.sy(at.y) + 24}
-                      text={`t = ${tText}: ${xyText(at)}`}
                       y={f.sy(at.y) + (par.family === 'cycloid' ? -14 : 24)}
-                      text={`t = ${tText}: (${short(at.x)}, ${short(at.y)})`}
+                      text={`t = ${tText}: ${xyText(at)}`}
                       anchor={at.x < 0 ? 'end' : 'start'}
                       w={w}
                       h={h}
