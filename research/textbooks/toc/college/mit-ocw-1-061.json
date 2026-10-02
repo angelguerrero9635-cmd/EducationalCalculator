@@ -1,0 +1,73 @@
+{
+  "id": "mit-ocw-1-061",
+  "curriculum": "MIT OpenCourseWare 1.061 Transport Processes in the Environment",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Fall 2008",
+  "subject": "civil",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Heidi Nepf. 1.061 Transport Processes in the Environment. Fall 2008. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu/courses/1-061-transport-processes-in-the-environment-fall-2008/. License: CC BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Lecture block"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/1-061-transport-processes-in-the-environment-fall-2008/",
+  "retrieved": "2026-10-02",
+  "sources": [
+    "https://ocw.mit.edu/courses/1-061-transport-processes-in-the-environment-fall-2008/pages/calendar/",
+    "https://ocw.mit.edu/courses/1-061-transport-processes-in-the-environment-fall-2008/pages/assignments/"
+  ],
+  "notes": "Session list from the calendar; ten problem sets read.",
+  "books": [
+    {
+      "course": "he.engineering.environmental",
+      "title": "1.061 Transport Processes in the Environment (Fall 2008)",
+      "url": "https://ocw.mit.edu/courses/1-061-transport-processes-in-the-environment-fall-2008/",
+      "units": [
+        {
+          "n": "1–5",
+          "title": "Control volumes, time scales, flow profiles, reactor models and residence time",
+          "topics": [
+            "he.engineering.environmental#0"
+          ],
+          "examples": [
+            "mixing chamber balance",
+            "stirred tank with a source"
+          ]
+        },
+        {
+          "n": "6–14",
+          "title": "Diffusion, point sources, boundaries, turbulent diffusion, continuous releases, dispersion",
+          "topics": [
+            "he.engineering.environmental#2"
+          ],
+          "examples": [
+            "puff released aloft",
+            "spill in a hallway",
+            "stack plume"
+          ],
+          "notation": "C(x, t) = M ÷ (A√(4πDt)) …; Péclet number"
+        },
+        {
+          "n": "15–23",
+          "title": "Reactions, air–water exchange, partitioning, retardation",
+          "topics": [],
+          "notes": "Environmental fate; no taxonomy topic (nearest environmental#1)."
+        },
+        {
+          "n": "24–26",
+          "title": "Particle and colloid transport; lake physics",
+          "topics": [
+            "he.engineering.environmental#0"
+          ],
+          "examples": [
+            "settling basin for site runoff"
+          ]
+        }
+      ]
+    }
+  ]
+}

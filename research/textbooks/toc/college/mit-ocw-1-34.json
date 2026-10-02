@@ -1,0 +1,56 @@
+{
+  "id": "mit-ocw-1-34",
+  "curriculum": "MIT OpenCourseWare 1.34 Waste Containment and Remediation Technology",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Spring 2004",
+  "subject": "civil",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Peter Shanahan. 1.34 Waste Containment and Remediation Technology. Spring 2004. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu/courses/1-34-waste-containment-and-remediation-technology-spring-2004/. License: CC BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Lecture block"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/1-34-waste-containment-and-remediation-technology-spring-2004/",
+  "retrieved": "2026-10-02",
+  "sources": [
+    "https://ocw.mit.edu/courses/1-34-waste-containment-and-remediation-technology-spring-2004/pages/calendar/",
+    "https://ocw.mit.edu/courses/1-34-waste-containment-and-remediation-technology-spring-2004/pages/assignments/"
+  ],
+  "notes": "Lecture list from the calendar; homework 1–4, 6, 7 read.",
+  "books": [
+    {
+      "course": "he.engineering.environmental",
+      "title": "1.34 Waste Containment and Remediation Technology (Spring 2004)",
+      "url": "https://ocw.mit.edu/courses/1-34-waste-containment-and-remediation-technology-spring-2004/",
+      "units": [
+        {
+          "n": "1–15",
+          "title": "Hazardous-waste rules; contaminant transport; NAPLs; site characterization; remediation technologies; risk",
+          "topics": [],
+          "notes": "Site remediation: no taxonomy topic (nearest environmental#3)."
+        },
+        {
+          "n": "16–23",
+          "title": "Solid and hazardous waste disposal; landfill design, leachate and gas, hydrology, liners, closure",
+          "topics": [
+            "he.engineering.environmental#3"
+          ],
+          "examples": [
+            "Thornthwaite cover water balance",
+            "where your trash goes"
+          ]
+        },
+        {
+          "n": "24–25",
+          "title": "Brownfields; practice",
+          "topics": [],
+          "notes": "No taxonomy topic."
+        }
+      ]
+    }
+  ]
+}

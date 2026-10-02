@@ -1,0 +1,69 @@
+{
+  "id": "mit-ocw-1-364",
+  "curriculum": "MIT OpenCourseWare 1.364 Advanced Geotechnical Engineering",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Fall 2003",
+  "subject": "civil",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Andrew Whittle and others. 1.364 Advanced Geotechnical Engineering. Fall 2003. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu/courses/1-364-advanced-geotechnical-engineering-fall-2003/. License: CC BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Lecture block"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/1-364-advanced-geotechnical-engineering-fall-2003/",
+  "retrieved": "2026-10-02",
+  "sources": [
+    "https://ocw.mit.edu/courses/1-364-advanced-geotechnical-engineering-fall-2003/pages/calendar/",
+    "https://ocw.mit.edu/courses/1-364-advanced-geotechnical-engineering-fall-2003/pages/assignments/"
+  ],
+  "notes": "Graduate course; lecture list from the calendar; five homework sets read.",
+  "books": [
+    {
+      "course": "he.engineering.soil-mechanics",
+      "title": "1.364 Advanced Geotechnical Engineering (Fall 2003)",
+      "url": "https://ocw.mit.edu/courses/1-364-advanced-geotechnical-engineering-fall-2003/",
+      "units": [
+        {
+          "n": "1–6",
+          "title": "Design and safety factors; site investigation; sampling; classification; in situ tests",
+          "topics": [
+            "he.engineering.soil-mechanics#0"
+          ]
+        },
+        {
+          "n": "7–16",
+          "title": "Spread foundations; bearing capacity; strength parameters; settlements on sand and clay",
+          "topics": [
+            "he.engineering.soil-mechanics#4",
+            "he.engineering.soil-mechanics#2"
+          ],
+          "examples": [
+            "footings from SPT/CPT data"
+          ]
+        },
+        {
+          "n": "17–27",
+          "title": "Piles: types, capacity, settlement, groups, lateral load, driving, load tests, downdrag",
+          "topics": [],
+          "notes": "Deep foundations: taxonomy gap."
+        },
+        {
+          "n": "28–30",
+          "title": "Slope stability",
+          "topics": [],
+          "notes": "Slope stability: taxonomy gap."
+        },
+        {
+          "n": "31–36",
+          "title": "Earth retaining structures; earth pressures; walls; anchors; braced excavations",
+          "topics": [],
+          "notes": "Lateral earth pressure: taxonomy gap the plan names."
+        }
+      ]
+    }
+  ]
+}

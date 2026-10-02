@@ -1,0 +1,147 @@
+{
+  "id": "udoeyo-structural-analysis",
+  "curriculum": "Structural Analysis (Udoeyo)",
+  "publisher": "Temple University Press / North Broad Press",
+  "edition": "2020",
+  "subject": "civil",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-ND 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+    "attribution": "Felix F. Udoeyo, Structural Analysis, Temple University Press, 2020, CC BY-NC-ND 4.0 (US), https://temple.manifoldapp.org/projects/structural-analysis"
+  },
+  "terms": {
+    "unit": "Chapter"
+  },
+  "sourceUrl": "https://temple.manifoldapp.org/projects/structural-analysis",
+  "retrieved": "2026-10-02",
+  "notes": "Chapter list from the Manifold project page; practice-problem kinds read from the PDF (licence on its copyright page: \"All material in this work is licensed under a Creative Commons Attribution-NonCommercial-No Derivatives 4.0 United States License unless otherwise noted\"). US and SI units mixed; ASCE 7-16 combinations.",
+  "books": [
+    {
+      "course": "he.engineering.structural-analysis",
+      "title": "Structural Analysis",
+      "url": "https://temple.manifoldapp.org/projects/structural-analysis",
+      "units": [
+        {
+          "n": "1",
+          "title": "Introduction to Structural Analysis",
+          "topics": [
+            "he.engineering.structural-analysis#0"
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Structural Loads and Loading System",
+          "topics": [
+            "he.engineering.steel-design#0",
+            "he.engineering.structural-analysis#0"
+          ],
+          "examples": [
+            "governing LRFD combination",
+            "dead load on a beam from tributary width"
+          ],
+          "notation": "LRFD 1.4D; 1.2D + 1.6L + 0.5(L_r or S or R); ASD set"
+        },
+        {
+          "n": "3",
+          "title": "Equilibrium, Support Reactions, Determinacy and Stability of Beams and Frames",
+          "topics": [
+            "he.engineering.structural-analysis#0"
+          ],
+          "examples": [
+            "classify sixteen structures",
+            "reactions with hinges"
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Internal Forces in Beams and Frames",
+          "topics": [
+            "he.engineering.structural-analysis#0"
+          ],
+          "examples": [
+            "shear and moment diagrams"
+          ]
+        },
+        {
+          "n": "5",
+          "title": "Internal Forces in Plane Trusses",
+          "topics": [
+            "he.engineering.structural-analysis#0"
+          ],
+          "examples": [
+            "truss classification",
+            "method of joints"
+          ]
+        },
+        {
+          "n": "6",
+          "title": "Arches and Cables",
+          "topics": [],
+          "notes": "Not a plan row."
+        },
+        {
+          "n": "7",
+          "title": "Deflection of Beams: Geometric Methods",
+          "topics": [],
+          "notes": "Deflections: taxonomy gap (the plan proposes a topic)."
+        },
+        {
+          "n": "8",
+          "title": "Deflections of Structures: Work-Energy Methods",
+          "topics": [],
+          "notes": "Deflections: taxonomy gap."
+        },
+        {
+          "n": "9",
+          "title": "Influence Lines for Statically Determinate Structures",
+          "topics": [
+            "he.engineering.structural-analysis#1"
+          ],
+          "examples": [
+            "IL for shear and moment",
+            "beam with overhangs"
+          ]
+        },
+        {
+          "n": "10",
+          "title": "Force Method of Analysis of Indeterminate Structures",
+          "topics": [
+            "he.engineering.structural-analysis#2"
+          ],
+          "examples": [
+            "two-span beams by consistent deformation"
+          ]
+        },
+        {
+          "n": "11",
+          "title": "Slope-Deflection Method",
+          "topics": [
+            "he.engineering.structural-analysis#2"
+          ],
+          "examples": [
+            "end moments; support settlement"
+          ]
+        },
+        {
+          "n": "12",
+          "title": "Moment Distribution Method",
+          "topics": [
+            "he.engineering.structural-analysis#2"
+          ],
+          "examples": [
+            "continuous beams"
+          ]
+        },
+        {
+          "n": "13",
+          "title": "Influence Lines for Statically Indeterminate Structures",
+          "topics": [
+            "he.engineering.structural-analysis#1"
+          ]
+        }
+      ]
+    }
+  ]
+}

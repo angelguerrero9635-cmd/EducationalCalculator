@@ -1,0 +1,67 @@
+{
+  "id": "mit-ocw-1-571",
+  "curriculum": "MIT OpenCourseWare 1.571 Structural Analysis and Control",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Spring 2004",
+  "subject": "civil",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Jerome J. Connor. 1.571 Structural Analysis and Control. Spring 2004. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu/courses/1-571-structural-analysis-and-control-spring-2004/. License: CC BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Lecture block"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/1-571-structural-analysis-and-control-spring-2004/",
+  "retrieved": "2026-10-02",
+  "sources": [
+    "https://ocw.mit.edu/courses/1-571-structural-analysis-and-control-spring-2004/pages/calendar/",
+    "https://ocw.mit.edu/courses/1-571-structural-analysis-and-control-spring-2004/pages/assignments/"
+  ],
+  "notes": "Graduate course; lecture list from the calendar; problem sets 1–4 read (5–6 are scanned images without text).",
+  "books": [
+    {
+      "course": "he.engineering.structural-analysis",
+      "title": "1.571 Structural Analysis and Control (Spring 2004)",
+      "url": "https://ocw.mit.edu/courses/1-571-structural-analysis-and-control-spring-2004/",
+      "units": [
+        {
+          "n": "1–4",
+          "title": "Straight and curved member equations; matrix displacement formulation",
+          "topics": [
+            "he.engineering.structural-analysis#3",
+            "he.engineering.structural-analysis#2"
+          ],
+          "examples": [
+            "fixed-end actions with shear deformation and settlement"
+          ]
+        },
+        {
+          "n": "6–9",
+          "title": "Center of twist; cables and cable-stayed systems; beam on elastic foundation",
+          "topics": [
+            "he.engineering.structural-analysis#0"
+          ],
+          "examples": [
+            "cable-stayed mast",
+            "infinite beam on springs"
+          ]
+        },
+        {
+          "n": "10–13",
+          "title": "Nonlinear truss analysis; elastic stability of trusses and frames",
+          "topics": [],
+          "notes": "Stability: nearest aerospace-structures#2 / mechanics-of-materials#5."
+        },
+        {
+          "n": "15–27",
+          "title": "Active structural control; state-space formulation; LQR",
+          "topics": [],
+          "notes": "Control: no civil topic (nearest control-systems)."
+        }
+      ]
+    }
+  ]
+}
