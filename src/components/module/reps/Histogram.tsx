@@ -9,7 +9,7 @@ import { chart, usePalette } from '@/theme';
 import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, ChartText, DragHandle, fitLabel, useFrozen, useRep } from './common';
 import { histModel } from './histModel';
-import { rangeOf } from './histRange';
+import { probDecimals, rangeOf } from './histRange';
 import { prob4 } from './NormalCurve';
 import { niceStep } from './Plot';
 
@@ -41,9 +41,11 @@ export function Histogram({ spec, calc }: { spec: HistogramSpec; calc: Calculato
     spec.binomial?.n,
     spec.binomial?.p,
   ].every(known);
+  // Binomial bars wait for n and p: a "?" box draws no bars from the example's numbers.
+  const waiting = !!spec.binomial && !allKnown;
   const frozen = useFrozen({ top: Math.max(0, ...model.bars.map((b) => height(b.h))) });
   // H99: a range of bars lit, and their sum in the caption.
-  const range = rangeOf(spec, model, get, prob);
+  const range = waiting ? undefined : rangeOf(spec, model, get, prob);
   const litIndex = (() => {
     const l = get(spec.lit);
     if (l === undefined) return -1;
@@ -54,6 +56,7 @@ export function Histogram({ spec, calc }: { spec: HistogramSpec; calc: Calculato
   const lines: string[] = [];
   const meanSym = prob ? 'E(X)' : 'x̄';
   if (model.problem) lines.push(`${model.problem} The bars can’t be drawn.`);
+  else if (waiting) lines.push('Type n and p to draw the bars.');
   else if (prob) {
     if (spec.binomial) {
       const n = get(spec.binomial.n)!;
@@ -95,7 +98,7 @@ export function Histogram({ spec, calc }: { spec: HistogramSpec; calc: Calculato
   const meanValue =
     spec.mean === true || (prob && spec.mean === undefined) ? model.mean : get(spec.mean);
   const medianValue = spec.median === true ? model.median : get(spec.median);
-  const showMean = !model.problem && (!!spec.mean || prob) && meanValue !== undefined;
+  const showMean = !model.problem && !waiting && (!!spec.mean || prob) && meanValue !== undefined;
   const showMedian = !model.problem && !!spec.median && medianValue !== undefined && !prob;
   if (!prob && showMean)
     lines.push(
@@ -176,7 +179,10 @@ export function Histogram({ spec, calc }: { spec: HistogramSpec; calc: Calculato
           const widest = Math.max(...xs.map((x) => num(x).length)) * chart.label * 0.6 + 6;
           // Every 1, 2, 5, 10 or 20 labels, whichever first leaves room.
           const every = [1, 2, 5, 10, 20].find((e) => e * slotPx >= widest) ?? 40;
-          const barLabels = bars.length <= 16 && barW >= (prob ? 36 : 22);
+          const barLabels = !waiting && bars.length <= 16 && barW >= (prob ? 36 : 22);
+          // Probability labels to the caption's decimals; 4 decimals a size smaller to fit.
+          const decimals = probDecimals(bars.length);
+          const labelSize = prob && decimals === 4 ? chart.label - 1 : chart.label;
           return (
             <>
               <Svg width={w} height={h}>
@@ -198,8 +204,20 @@ export function Histogram({ spec, calc }: { spec: HistogramSpec; calc: Calculato
                 <ChartText x={4} y={14} fontWeight="600">
                   {prob ? 'P(X = k)' : rel ? 'Relative frequency' : 'Frequency'}
                 </ChartText>
+                {waiting ? (
+                  <ChartText
+                    x={(L + w - R) / 2}
+                    y={(T + axisY) / 2 + 8}
+                    textAnchor="middle"
+                    fontSize={chart.value + 8}
+                    fontWeight="700"
+                    fill={c.chartMuted}
+                  >
+                    ?
+                  </ChartText>
+                ) : null}
                 <G opacity={op}>
-                  {bars.map((b, i) => {
+                  {(waiting ? [] : bars).map((b, i) => {
                     const x = prob ? sx(b.lo) - barW / 2 : sx(b.lo);
                     const hh = height(b.h) * uy;
                     const lit = i === litIndex || !!range?.lit.includes(i);
@@ -220,13 +238,13 @@ export function Histogram({ spec, calc }: { spec: HistogramSpec; calc: Calculato
                   {barLabels
                     ? bars.map((b, i) => {
                         const text = prob
-                          ? b.h.toFixed(prob && bars.length > 8 ? 2 : 3)
+                          ? b.h.toFixed(decimals)
                           : rel
                             ? num(height(b.h))
                             : num(b.h);
                         const cx = prob ? sx(b.lo) : sx(b.lo) + slotPx / 2;
                         const ly = sy(height(b.h)) - (handleIds.includes(i) ? 16 : 5);
-                        const tw = text.length * chart.label * 0.6 + 4;
+                        const tw = text.length * labelSize * 0.6 + 4;
                         return (
                           <G key={`l${i}`}>
                             <Rect
@@ -238,7 +256,13 @@ export function Histogram({ spec, calc }: { spec: HistogramSpec; calc: Calculato
                               fill={c.background}
                               opacity={0.85}
                             />
-                            <ChartText x={cx} y={ly} textAnchor="middle" fontWeight="600">
+                            <ChartText
+                              x={cx}
+                              y={ly}
+                              textAnchor="middle"
+                              fontWeight="600"
+                              fontSize={labelSize}
+                            >
                               {text}
                             </ChartText>
                           </G>
