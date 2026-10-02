@@ -85,13 +85,31 @@ const widthOf = (text: string, size: number) =>
  * U_eff) small and lowered, never a raw underscore.
  */
 function Runs({ text, size }: { text: string; size: number }) {
+  return <>{runSpans(text, size)}</>;
+}
+
+/**
+ * Runs' spans, flat: `lead` shifts the first one (a raised or lowered part set inside one text
+ * element; a shift on a span wrapping others is not applied on the web).
+ */
+function runSpans(
+  text: string,
+  size: number,
+  key = 'r',
+  lead: { dx?: number; dy?: number } = {},
+): ReactNode[] {
   const drop = size * 0.3;
   const spans: ReactNode[] = [];
   let down = false;
+  const first = () => {
+    if (!spans.length) return { dx: lead.dx ?? 0, dy: lead.dy ?? 0 };
+    return { dx: 0, dy: 0 };
+  };
   subscriptRuns(text).forEach((r, j) => {
     if (r.sub) {
+      const f = first();
       spans.push(
-        <TSpan key={`s${j}`} dy={drop} fontSize={size * 0.72}>
+        <TSpan key={`${key}s${j}`} dx={f.dx} dy={drop + f.dy} fontSize={size * 0.72}>
           {r.s}
         </TSpan>,
       );
@@ -102,10 +120,12 @@ function Runs({ text, size }: { text: string; size: number }) {
       .split(/([A-Za-z]+)/)
       .filter((p) => p !== '')
       .forEach((p, i) => {
+        const f = first();
         spans.push(
           <TSpan
-            key={`${j}-${i}`}
-            dy={down ? -drop : 0}
+            key={`${key}${j}-${i}`}
+            dx={f.dx}
+            dy={(down ? -drop : 0) + f.dy}
             fontStyle={/^[A-Za-z]$/.test(p) ? 'italic' : 'normal'}
             fontSize={size}
           >
@@ -118,11 +138,11 @@ function Runs({ text, size }: { text: string; size: number }) {
   // Back on the line, so whatever is set after this text sits where it should.
   if (down)
     spans.push(
-      <TSpan key="up" dy={-drop} fontSize={size}>
+      <TSpan key={`${key}up`} dy={-drop} fontSize={size}>
         {'\u200B'}
       </TSpan>,
     );
-  return <>{spans}</>;
+  return spans;
 }
 
 const width = widthOf;
@@ -243,11 +263,7 @@ function layout(
         // A superscript after ")" starts a little right, so the italic letter clears it.
         const dx = r.sup && prev && !prev.sup && prev.t.endsWith(')') ? size * 0.18 + 2 : 0;
         const fs = r.sup || r.sub ? SUP : size;
-        return (
-          <TSpan key={n} dy={dy} dx={dx} fontSize={fs}>
-            <Runs text={r.t} size={fs} />
-          </TSpan>
-        );
+        return runSpans(r.t, fs, `${n}-`, { dx, dy });
       });
       nodes.push(
         <ChartText key={k} x={cx} y={y} fontSize={size} fill={color}>
