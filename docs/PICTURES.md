@@ -106,6 +106,7 @@ search or the sitemap, but the module tests and the harness run over it):
 | `phScale`          | pH 0–14 in indicator colors, [H⁺] as 10ⁿ; a titration curve           | Grade 10 acids and bases (H55)      |
 | `decayChart`       | 100 atoms decaying, the half-life curve; nuclear equations balanced   | Grades 10, 12 nuclear, dating (H57) |
 | `chemDiagram`      | effusion trails ∝ 1/√M; 100 isotope atoms, a beam; ox. numbers; Δm    | Grade 10 gases, atoms, redox (H101) |
+| `phaseEnvelope`    | binary Pxy, Txy, x–y: bubble/dew, tie line; McCabe–Thiele stairs      | College VLE, distillation (HC8)     |
 | `earthLayers`      | Earth cut open: P, S paths, shadow zones; seismogram; epicenter       | Earth science interior (H72)        |
 | `oceanProfile`     | the seafloor, shelf to trench, with a sonar ship; spring, neap tides  | Earth science ocean (H75)           |
 | `atmosphereLayers` | temperature by altitude through four layers; a pressure map, winds    | Earth science atmosphere (H76)      |
@@ -356,6 +357,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `chemDiagram`      | `mode: 'phase'`, `freezing`, `boiling`   | water's phase diagram, the solution's lines dashed at Tf and Tb (H108)        |
 | `chemDiagram`      | `mode: 'rate'`, `times, concentrations`  | [A] against t through two readings, the secant, Δt and Δ[A], the rate (H108)  |
 | `chemDiagram`      | `mode: 'cell'`, `cathode`, `anode`       | the galvanic cell of two E° values, its meter E°cell, the E° scale (H108)     |
+| `chemDiagram`      | `mode: 'phase'`, `substance`             | any substance, log P: Clausius–Clapeyron vapor curve, F = C − P + 2 (HC8)     |
 | `beaker`           | `solution: { mode, … }`                  | solute as dots by moles; a dilution’s two beakers; solubility (H52)           |
 | `rockLayers`       | `dating` (Grades 9–12)                   | ages on dated layers, a dike cutting across, index fossils, 100 atoms         |
 | `motionGraph`      | `kinematics: { view, at?, slope? }`      | signed v–t, + and − areas as Δx; x–t with a tangent at t₁; strobe (H58)       |

@@ -38,6 +38,7 @@ import type { CircleHs3b, PolygonHs3b, RectangleHs3b, TableHs3b } from './typesH
 import type { BarFlows, Hs2eSpec } from './typesHs2e';
 import type { Hs3dSpec, PieStage } from './typesHs3d';
 import type { SkeletalSpec } from './typesHe1c';
+import type { PhaseEnvelopeSpec } from './typesHe1i';
 
 /**
  * Plot axis: which variable it shows and the visible range, as numbers in the shown unit.
@@ -1136,6 +1137,8 @@ export type Representation =
   | HsjSpec
   /** Grades 9–12 round 2, group H2D: effusion, isotopes, oxidation numbers, mass defect. */
   | ChemDiagramSpec
+  /** College round 1, group I (HC8): a binary's Pxy, Txy or x–y diagram (`typesHe1i.ts`). */
+  | PhaseEnvelopeSpec
   /** Grades 9–12 physics, group HK: projectile, free body, … (specs in typesHsk.ts). */
   | HskSpec
   /** Grades 9–12 physics round 2, group H2C: impulse, … (specs in typesHs2c.ts). */

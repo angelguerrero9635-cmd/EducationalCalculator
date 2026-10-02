@@ -70,6 +70,7 @@ import { sectionIssues } from './picturesHe1b';
 import { gasMixtureIssues } from './picturesHs3e';
 import { netIssues, oscillatorIssues } from './picturesHe1h';
 import { skeletalIssues } from './picturesHe1c';
+import { phaseEnvelopeIssues, phaseSubstanceIssues } from './picturesHe1i';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -2222,6 +2223,10 @@ export function repIssues(
       break;
     case 'chemDiagram':
       out.push(...chemDiagramIssues(rep, (id) => val(id)));
+      if (rep.mode === 'phase') out.push(...phaseSubstanceIssues(rep.substance, val));
+      break;
+    case 'phaseEnvelope':
+      out.push(...phaseEnvelopeIssues(rep, val));
       break;
     case 'earthLayers':
     case 'oceanProfile':

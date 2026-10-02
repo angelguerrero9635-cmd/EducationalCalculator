@@ -177,6 +177,7 @@ import { HsiRep } from './hsi';
 import { PeriodicTrend } from './PeriodicTrend';
 import { ReactionLimiting } from './ReactionLimiting';
 import { ChemDiagram } from './ChemDiagram';
+import { PhaseEnvelope } from './PhaseEnvelope';
 import { ReactionMany } from './ReactionMany';
 import { HslPicture } from './HslPicture';
 import { Hs2fPicture } from './Hs2fPicture';
@@ -264,6 +265,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <HsjView spec={spec} calc={calc} />;
     case 'chemDiagram':
       return <ChemDiagram spec={spec} calc={calc} />;
+    case 'phaseEnvelope':
+      return <PhaseEnvelope spec={spec} calc={calc} />;
     case 'projectile':
     case 'induction':
     case 'charges':
