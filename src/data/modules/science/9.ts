@@ -1380,7 +1380,7 @@ const BIOTECH: ModuleDef[] = [
     assumptions: [
       `The template strand is the first L bases of ${GENE}; base p is deleted.`,
       'The ribosome reads in threes, so from the codon that held the lost base on, every codon is read in a shifted frame.',
-      'With one base fewer the last codon is cut short, so a stop codon at the end is lost; deleting three bases together would keep the frame.',
+      'With one base fewer the last codon is cut short; in the full 12-base gene the stop codon UAA at the end is lost. Deleting three bases together would keep the frame.',
     ],
     variables: [
       { ...count('L', 'L', 'Template bases', 6, 12), multipleOf: 3 },
@@ -2044,15 +2044,7 @@ const ECOSYSTEMS: ModuleDef[] = [
       count('a', 'a', 'Caterpillars on each tree', 1, 20000),
       count('N2', 'N₂', 'Caterpillars', 1, 2000000, true),
       count('b', 'b', 'Caterpillars one warbler eats', 1, 5000),
-      {
-        id: 'N3',
-        symbol: 'N₃',
-        name: 'Warblers fed',
-        min: 0,
-        max: 2000000,
-        step: 0.1,
-        derived: true,
-      },
+      count('N3', 'N₃', 'Warblers fed', 0, 2000000, true),
     ],
     ...rules(
       forward(
@@ -2065,13 +2057,13 @@ const ECOSYSTEMS: ModuleDef[] = [
         'Every tree carries a caterpillars.',
       ),
       forward(
-        'N₃ = N₂ ÷ b',
-        '{N3} = {N2} ÷ {b}',
+        'N₃ = ⌊N₂ ÷ b⌋',
+        '{N3} = ⌊{N2} ÷ {b}⌋',
         'N3',
         ['N2', 'b'],
-        (v) => div(v.N2!, v.b!),
-        '{N2} ÷ {b}',
-        'Each warbler needs b caterpillars, so share the caterpillars out b to a bird.',
+        (v) => (v.b! > 0 ? Math.floor(v.N2! / v.b! + 1e-9) : undefined),
+        '⌊{N2} ÷ {b}⌋',
+        'Each warbler needs b caterpillars: share them out b to a bird, whole birds only; the leftover caterpillars feed no one.',
       ),
     ),
     example: { N1: 2, a: 3000, N2: 6000, b: 250, N3: 24 },
@@ -2100,7 +2092,7 @@ const ECOSYSTEMS: ModuleDef[] = [
         name: 'Biomass of the phytoplankton',
         unit: 'g/m²',
         min: 0.01,
-        max: 100000,
+        max: 50000,
         step: 0.1,
       },
       {
@@ -2109,7 +2101,7 @@ const ECOSYSTEMS: ModuleDef[] = [
         name: 'Biomass of the zooplankton',
         unit: 'g/m²',
         min: 0.01,
-        max: 100000,
+        max: 1000,
         step: 0.1,
       },
       {

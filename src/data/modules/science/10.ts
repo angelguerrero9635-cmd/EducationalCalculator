@@ -1381,6 +1381,7 @@ const SHAPES: ModuleDef[] = [
     assumptions: [
       'Water is bent and polar: its O is partly negative (δ−) and its two H atoms partly positive (δ+).',
       'A hydrogen bond pulls an H of one molecule to a lone pair on another; it is an attraction between molecules, much weaker than a covalent bond.',
+      'One molecule has 4 places for them: its 2 H atoms and the 2 lone pairs on its O, pointing to the corners of a tetrahedron.',
     ],
     variables: [
       whole('n', 'n', 'Water molecules', 2, 5),

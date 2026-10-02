@@ -4606,19 +4606,33 @@ const modernPages: ModuleDef[] = [
         'Light comes in photons of E = hc/λ = 1240/λ eV, with λ in nm.',
         'One photon frees at most one electron; the work function φ is the least energy that takes.',
         'Past the threshold wavelength λ₀ = 1240/φ (longer waves, less energy per photon) no electron leaves, however bright the light.',
+        'By frequency: E = hf with h = 4.136 × 10⁻¹⁵ eV·s, and the threshold frequency is f₀ = φ/h.',
       ],
       variables: [
         q('l', 'λ', 'Wavelength of the light', 'nm', 10, 2000, 0.1, { units: ['nm'] }),
+        q('f', 'f', 'Frequency of the light', 'Hz', 1.4e14, 3.1e16, 1, { scientific: true }),
         q('E', 'E', 'Photon energy', 'eV', 0.62, 124, 0.001),
         q('p', 'φ', 'Work function of the metal', 'eV', 0.5, 10, 0.01),
         q('K', 'Kₘₐₓ', 'Greatest kinetic energy of an electron', 'eV', 0, 124, 0.001),
         q('z', 'λ₀', 'Threshold wavelength', 'nm', 124, 2480, 0.1, { units: ['nm'] }),
+        q('F', 'f₀', 'Threshold frequency', 'Hz', 1.2e14, 2.5e15, 1, { scientific: true }),
         q('V', 'V₀', 'Stopping voltage', 'V', 0, 124, 0.001),
       ],
+      // A first edit of λ keeps the metal: the student types one number to see light below
+      // the threshold.
+      clearTo: { p },
       ...rules(
         rule('E = 1240/λ', '{E} = 1240/{l}', (x) => x.E! * x.l! - 1240, {
           E: [(x) => div(1240, x.l!), '1240/{l}', 'hc in eV·nm over the wavelength in nm.'],
           l: [(x) => div(1240, x.E!), '1240/{E}', 'The wavelength whose photons carry E.'],
+        }),
+        rule('E = hf', '{E} = 4.136 × 10⁻¹⁵ × {f}', (x) => x.E! - 4.136e-15 * x.f!, {
+          E: [
+            (x) => 4.136e-15 * x.f!,
+            '4.136 × 10⁻¹⁵ × {f}',
+            'Planck’s constant in eV·s times the frequency.',
+          ],
+          f: [(x) => x.E! / 4.136e-15, '{E}/(4.136 × 10⁻¹⁵)', 'The photon energy over h.'],
         }),
         withMessage(
           rule('Kₘₐₓ = E − φ', '{K} = {E} − {p}', (x) => x.K! - (x.E! - x.p!), {
@@ -4661,8 +4675,29 @@ const modernPages: ModuleDef[] = [
             'A photon at the threshold carries just the work function.',
           ],
         }),
+        rule('f₀ = φ/h', '{F} = {p}/(4.136 × 10⁻¹⁵)', (x) => x.F! - x.p! / 4.136e-15, {
+          F: [
+            (x) => x.p! / 4.136e-15,
+            '{p}/(4.136 × 10⁻¹⁵)',
+            'The frequency whose photons carry just φ: below it no electron leaves.',
+          ],
+          p: [
+            (x) => 4.136e-15 * x.F!,
+            '4.136 × 10⁻¹⁵ × {F}',
+            'A photon at the threshold frequency carries just the work function.',
+          ],
+        }),
       ),
-      example: { l, E: 1240 / l, p, K: 1240 / l - p, z: 1240 / p, V: 1240 / l - p },
+      example: {
+        l,
+        f: 1240 / l / 4.136e-15,
+        E: 1240 / l,
+        p,
+        K: 1240 / l - p,
+        z: 1240 / p,
+        F: p / 4.136e-15,
+        V: 1240 / l - p,
+      },
       startWith: ['l', 'p'],
       representation: {
         kind: 'photoelectric',

@@ -4432,6 +4432,14 @@ const MATH_12_POLAR: ModuleDef[] = [
             '{r} ÷ cos({t}°)',
             'Divide r by cos θ.',
           ],
+          t: [
+            (v) =>
+              v.a! !== 0 && Math.abs(v.r! / v.a!) <= 1
+                ? exact(Math.acos(v.r! / v.a!) / RAD)
+                : undefined,
+            'cos⁻¹({r} ÷ {a})',
+            'Divide r by a, then take the inverse cosine; 360° − θ is the mirror point.',
+          ],
         },
       ),
       rel('h = a ÷ 2', '{h} = {a} ÷ 2', ['h', 'a'], (v) => v.h! - v.a! / 2, {
