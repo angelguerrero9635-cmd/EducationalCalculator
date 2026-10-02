@@ -1,0 +1,204 @@
+{
+  "id": "pearson-marieb-human-ap-12e",
+  "curriculum": "Marieb, Hoehn, Haynes and Abbott, Marieb Human Anatomy & Physiology",
+  "publisher": "Pearson",
+  "edition": "12th edition",
+  "subject": "biology",
+  "level": "college",
+  "content": "titles",
+  "terms": {
+    "unit": "Chapter",
+    "lesson": null,
+    "part": "Unit"
+  },
+  "license": null,
+  "sourceUrl": "https://www.pearson.com/en-us/subject-catalog/p/marieb-human-anatomy-physiology/P200000011643/9780138244415",
+  "retrieved": "2026-10-02",
+  "notes": "Titles only (all rights reserved). Chapter titles as listed on the publisher's public product page (robots.txt allows it; no login). Chapter numbers are by order on that page. ",
+  "books": [
+    {
+      "url": "https://www.pearson.com/en-us/subject-catalog/p/marieb-human-anatomy-physiology/P200000011643/9780138244415",
+      "units": [
+        {
+          "n": "1",
+          "title": "The Human Body: An Orientation",
+          "topics": ["he.biology.anatomy-physiology#0"],
+          "part": "Unit 1: Organization of the Body"
+        },
+        {
+          "n": "2",
+          "title": "Chemistry Comes Alive",
+          "topics": ["he.biology.principles-1#0"],
+          "part": "Unit 1: Organization of the Body"
+        },
+        {
+          "n": "3",
+          "title": "Cells: The Living Units",
+          "topics": ["he.biology.principles-1#1"],
+          "part": "Unit 1: Organization of the Body"
+        },
+        {
+          "n": "4",
+          "title": "Tissue: The Living Fabric",
+          "topics": ["he.biology.anatomy-physiology#0"],
+          "part": "Unit 1: Organization of the Body"
+        },
+        {
+          "n": "5",
+          "title": "The Integumentary System",
+          "topics": ["he.biology.anatomy-physiology#0"],
+          "part": "Unit 2: Covering, Support, and Movement of the Body"
+        },
+        {
+          "n": "6",
+          "title": "Bones and Skeletal Tissue",
+          "topics": ["he.biology.anatomy-physiology#1"],
+          "part": "Unit 2: Covering, Support, and Movement of the Body"
+        },
+        {
+          "n": "7",
+          "title": "The Skeleton",
+          "topics": ["he.biology.anatomy-physiology#1"],
+          "part": "Unit 2: Covering, Support, and Movement of the Body"
+        },
+        {
+          "n": "8",
+          "title": "Joints",
+          "topics": ["he.biology.anatomy-physiology#1"],
+          "part": "Unit 2: Covering, Support, and Movement of the Body"
+        },
+        {
+          "n": "9",
+          "title": "Muscles and Muscle Tissue",
+          "topics": ["he.biology.anatomy-physiology#1"],
+          "part": "Unit 2: Covering, Support, and Movement of the Body"
+        },
+        {
+          "n": "10",
+          "title": "The Muscular System",
+          "topics": ["he.biology.anatomy-physiology#1"],
+          "part": "Unit 2: Covering, Support, and Movement of the Body"
+        },
+        {
+          "n": "11",
+          "title": "Fundamentals of the Nervous System and Nervous Tissue",
+          "topics": ["he.biology.anatomy-physiology#2"],
+          "part": "Unit 3: Regulation and Integration of the Body"
+        },
+        {
+          "n": "12",
+          "title": "The Central Nervous System",
+          "topics": ["he.biology.anatomy-physiology#2"],
+          "part": "Unit 3: Regulation and Integration of the Body"
+        },
+        {
+          "n": "13",
+          "title": "The Peripheral Nervous System and Reflex Activity",
+          "topics": ["he.biology.anatomy-physiology#2"],
+          "part": "Unit 3: Regulation and Integration of the Body"
+        },
+        {
+          "n": "14",
+          "title": "The Autonomic Nervous System",
+          "topics": ["he.biology.anatomy-physiology#2"],
+          "part": "Unit 3: Regulation and Integration of the Body"
+        },
+        {
+          "n": "15",
+          "title": "The Special Senses",
+          "topics": ["he.biology.anatomy-physiology#2"],
+          "part": "Unit 3: Regulation and Integration of the Body"
+        },
+        {
+          "n": "16",
+          "title": "The Endocrine System",
+          "topics": ["he.biology.principles-2#3"],
+          "part": "Unit 3: Regulation and Integration of the Body"
+        },
+        {
+          "n": "17",
+          "title": "Blood",
+          "topics": ["he.biology.anatomy-physiology#3"],
+          "part": "Unit 4: Maintenance of the Body"
+        },
+        {
+          "n": "18",
+          "title": "The Cardiovascular System: The Heart",
+          "topics": ["he.biology.anatomy-physiology#3"],
+          "part": "Unit 4: Maintenance of the Body"
+        },
+        {
+          "n": "19",
+          "title": "The Cardiovascular System: Blood Vessels",
+          "topics": ["he.biology.anatomy-physiology#3", "he.engineering.biotransport#1"],
+          "part": "Unit 4: Maintenance of the Body"
+        },
+        {
+          "n": "20",
+          "title": "The Lymphatic System and Lymphoid Organs and Tissues",
+          "topics": ["he.biology.microbiology#3"],
+          "part": "Unit 4: Maintenance of the Body"
+        },
+        {
+          "n": "21",
+          "title": "The Immune System: Innate and Adaptive Body Defenses",
+          "topics": ["he.biology.microbiology#3"],
+          "part": "Unit 4: Maintenance of the Body"
+        },
+        {
+          "n": "22",
+          "title": "The Respiratory System",
+          "topics": ["he.biology.anatomy-physiology#3"],
+          "part": "Unit 4: Maintenance of the Body"
+        },
+        {
+          "n": "23",
+          "title": "The Digestive System",
+          "topics": [],
+          "part": "Unit 4: Maintenance of the Body",
+          "notes": "No taxonomy topic."
+        },
+        {
+          "n": "24",
+          "title": "Nutrition, Metabolism, and Energy Balance",
+          "topics": ["he.biology.principles-1#2"],
+          "part": "Unit 4: Maintenance of the Body"
+        },
+        {
+          "n": "25",
+          "title": "The Urinary System",
+          "topics": [],
+          "part": "Unit 4: Maintenance of the Body",
+          "notes": "No taxonomy topic."
+        },
+        {
+          "n": "26",
+          "title": "Fluid, Electrolyte, and Acid-Base Balance",
+          "topics": [],
+          "part": "Unit 4: Maintenance of the Body",
+          "notes": "No taxonomy topic."
+        },
+        {
+          "n": "27",
+          "title": "The Reproductive System",
+          "topics": [],
+          "part": "Unit 5: Continuity",
+          "notes": "No taxonomy topic."
+        },
+        {
+          "n": "28",
+          "title": "Pregnancy and Human Development",
+          "topics": [],
+          "part": "Unit 5: Continuity",
+          "notes": "No taxonomy topic."
+        },
+        {
+          "n": "29",
+          "title": "Heredity",
+          "topics": ["he.biology.principles-1#4"],
+          "part": "Unit 5: Continuity"
+        }
+      ]
+    }
+  ]
+}

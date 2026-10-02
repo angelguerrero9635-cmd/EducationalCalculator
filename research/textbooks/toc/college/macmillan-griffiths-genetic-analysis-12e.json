@@ -1,0 +1,125 @@
+{
+  "id": "macmillan-griffiths-genetic-analysis-12e",
+  "curriculum": "Griffiths, Doebley, Peichel and Wassarman, Introduction to Genetic Analysis",
+  "publisher": "Macmillan Learning (W. H. Freeman)",
+  "edition": "12th edition, digital update (©2025)",
+  "subject": "biology",
+  "level": "college",
+  "content": "titles",
+  "terms": {
+    "unit": "Chapter",
+    "lesson": null,
+    "part": "Part"
+  },
+  "license": null,
+  "sourceUrl": "https://www.macmillanlearning.com/college/us/product/Introduction-to-Genetic-Analysis/p/1319114784",
+  "retrieved": "2026-10-02",
+  "notes": "Titles only (all rights reserved). Chapter titles as listed on the publisher's public product page (robots.txt allows it; no login). Chapter numbers are by order on that page. The page prints chapter 13 as \"1.\"; numbered 13 here by order.",
+  "books": [
+    {
+      "url": "https://www.macmillanlearning.com/college/us/product/Introduction-to-Genetic-Analysis/p/1319114784",
+      "units": [
+        {
+          "n": "1",
+          "title": "The Genetics Revolution in the Life Sciences",
+          "topics": ["he.biology.genetics#2"]
+        },
+        {
+          "n": "2",
+          "title": "Single-Gene Inheritance",
+          "topics": ["he.biology.genetics#0"]
+        },
+        {
+          "n": "3",
+          "title": "Independent Assortment of Genes",
+          "topics": ["he.biology.genetics#0"]
+        },
+        {
+          "n": "4",
+          "title": "Mapping Eukaryote Chromosomes by Recombination",
+          "topics": ["he.biology.genetics#1"]
+        },
+        {
+          "n": "5",
+          "title": "Gene Interaction",
+          "topics": ["he.biology.genetics#0"]
+        },
+        {
+          "n": "6",
+          "title": "The Genetics of Bacteria and Their Viruses",
+          "topics": ["he.biology.microbiology#2"]
+        },
+        {
+          "n": "7",
+          "title": "DNA: Structure and Replication",
+          "topics": ["he.biology.genetics#2"]
+        },
+        {
+          "n": "8",
+          "title": "RNA: Transcription and Processing",
+          "topics": ["he.biology.genetics#2"]
+        },
+        {
+          "n": "9",
+          "title": "Proteins and Their Synthesis",
+          "topics": ["he.biology.genetics#2"]
+        },
+        {
+          "n": "10",
+          "title": "Gene Isolation and Manipulation",
+          "topics": ["he.biology.genetics#2"]
+        },
+        {
+          "n": "11",
+          "title": "Regulation of Gene Expression in Bacteria and Their Viruses",
+          "topics": ["he.biology.cell-molecular#2"]
+        },
+        {
+          "n": "12",
+          "title": "Regulation of Transcription in Eukaryotes",
+          "topics": ["he.biology.cell-molecular#2"]
+        },
+        {
+          "n": "13",
+          "title": "The Genetic Control of Development",
+          "topics": ["he.biology.cell-molecular#2"]
+        },
+        {
+          "n": "14",
+          "title": "Genomes and Genomics",
+          "topics": ["he.biology.genetics#2"]
+        },
+        {
+          "n": "15",
+          "title": "Mutation, Repair, and Recombination",
+          "topics": ["he.biology.genetics#2"]
+        },
+        {
+          "n": "16",
+          "title": "The Dynamic Genome: Transposable Elements",
+          "topics": ["he.biology.genetics#2"]
+        },
+        {
+          "n": "17",
+          "title": "Large-Scale Chromosomal Changes",
+          "topics": ["he.biology.principles-1#3"]
+        },
+        {
+          "n": "18",
+          "title": "Population Genetics",
+          "topics": ["he.biology.genetics#3", "he.biology.evolution#0", "he.biology.evolution#1"]
+        },
+        {
+          "n": "19",
+          "title": "The Inheritance of Complex Traits",
+          "topics": ["he.biology.genetics#0"]
+        },
+        {
+          "n": "20",
+          "title": "Evolution of Genes, Traits, and Species",
+          "topics": ["he.biology.evolution#0", "he.biology.evolution#3"]
+        }
+      ]
+    }
+  ]
+}

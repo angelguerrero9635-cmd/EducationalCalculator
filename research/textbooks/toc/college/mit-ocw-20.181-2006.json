@@ -1,0 +1,97 @@
+{
+  "id": "mit-ocw-20.181-2006",
+  "curriculum": "MIT OCW 20.181 Computation for Biological Engineers",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Fall 2006",
+  "subject": "biology",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Eric Alm and Andrew Endy. 20.181 Computation for Biological Engineers. Fall 2006. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu. License: Creative Commons BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Part",
+    "lesson": "Lecture"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/20-181-computation-for-biological-engineers-fall-2006/",
+  "retrieved": "2026-10-02",
+  "notes": "Reference only (CC BY-NC-SA 4.0; OCW terms https://ocw.mit.edu/pages/privacy-and-terms-of-use/). Lecture list and order from the course calendar or lecture-notes page; examples, ranges and notation are our words, read from the exams and problem sets (no problem text or numbers copied). Third-party figures inside OCW PDFs are outside the licence and were not used. Homework 3–5 (phylogenetics) read for the records; modules 2–3 have no biology taxonomy topic.",
+  "books": [
+    {
+      "course": "20.181",
+      "url": "https://ocw.mit.edu/courses/20-181-computation-for-biological-engineers-fall-2006/",
+      "units": [
+        {
+          "n": "1",
+          "title": "Phylogenetic inference",
+          "topics": ["he.biology.evolution#2"],
+          "examples": [
+            "root-to-leaf distances",
+            "parsimony score of a tree",
+            "Jukes–Cantor probability of no change",
+            "likelihood of a site on a tree"
+          ],
+          "notation": ["P_same(t) = ¼ + ¾e^(−4at)"],
+          "lessons": [
+            {
+              "n": "1",
+              "title": "Introduction to phylogenetic inference; trees",
+              "topics": ["he.biology.evolution#2"]
+            },
+            {
+              "n": "2",
+              "title": "UPGMA; Newick notation",
+              "topics": ["he.biology.evolution#2"]
+            },
+            {
+              "n": "3",
+              "title": "Possible trees; tree data structures",
+              "topics": ["he.biology.evolution#2"]
+            },
+            {
+              "n": "4–6",
+              "title": "Parsimony: Sankoff down-pass, Fitch up-pass",
+              "topics": ["he.biology.evolution#2"]
+            },
+            {
+              "n": "7",
+              "title": "Maximum likelihood; Jukes–Cantor model",
+              "topics": ["he.biology.evolution#2", "he.biology.evolution#1"]
+            },
+            {
+              "n": "8",
+              "title": "Greedy tree search",
+              "topics": ["he.biology.evolution#2"]
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Molecular modelling and protein design",
+          "topics": [],
+          "lessons": [
+            {
+              "n": "10–17",
+              "title": "Protein design; dihedrals; building structures",
+              "topics": []
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Discrete reaction event network modelling",
+          "topics": [],
+          "lessons": [
+            {
+              "n": "19–24",
+              "title": "Gillespie methods; propensities; next reaction method",
+              "topics": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

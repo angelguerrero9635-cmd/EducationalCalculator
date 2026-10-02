@@ -1,0 +1,643 @@
+{
+  "id": "libretexts-lehman-quantitative-ecology",
+  "curriculum": "Lehman, Loberg and Clark, Quantitative Ecology: A New Unified Approach",
+  "publisher": "Clarence Lehman, Shelby Loberg, Adam Clark (University of Minnesota); LibreTexts",
+  "edition": "LibreTexts edition",
+  "subject": "biology",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc/4.0/",
+    "attribution": "Clarence Lehman, Shelby Loberg and Adam Clark, Quantitative Ecology: A New Unified Approach, LibreTexts Biology. License: CC BY-NC 4.0."
+  },
+  "terms": {
+    "unit": "Chapter",
+    "lesson": "Section"
+  },
+  "sourceUrl": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)",
+  "retrieved": "2026-10-02",
+  "notes": "Reference only. Chapter pages tagged license:ccbync. No exercise pages; used for notation and topic order (population models, interactions, SIR disease model). Licence tags seen on chapter pages: license:ccbync.",
+  "books": [
+    {
+      "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)",
+      "units": [
+        {
+          "n": "1",
+          "title": "What is Ecology?",
+          "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/01%3A_What_is_Ecology",
+          "topics": [],
+          "notes": "Introduction.",
+          "lessons": [
+            {
+              "n": "1.1",
+              "title": "Introduction",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/01%3A_What_is_Ecology/1.01%3A_Introduction"
+            },
+            {
+              "n": "1.2",
+              "title": "Definitions of Ecology",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/01%3A_What_is_Ecology/1.02%3A_Definitions_of_ecology"
+            },
+            {
+              "n": "1.3",
+              "title": "Ecology then and now",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/01%3A_What_is_Ecology/1.03%3A_Ecology_then_and_now"
+            },
+            {
+              "n": "1.4",
+              "title": "Methods of ecology",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/01%3A_What_is_Ecology/1.04%3A_Methods_of_ecology"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Ecological Theory",
+          "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/02%3A_Ecological_Theory",
+          "topics": [],
+          "notes": "Ecological theory and models.",
+          "lessons": [
+            {
+              "n": "2.1",
+              "title": "Levels of Ecology",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/02%3A_Ecological_Theory/2.01%3A_Levels_of_Ecology"
+            },
+            {
+              "n": "2.2",
+              "title": "Role of theory",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/02%3A_Ecological_Theory/2.02%3A_Role_of_theory"
+            },
+            {
+              "n": "2.3",
+              "title": "What is a model?",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/02%3A_Ecological_Theory/2.03%3A_What_is_a_model"
+            },
+            {
+              "n": "2.4",
+              "title": "Present State",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/02%3A_Ecological_Theory/2.04%3A_Present_State"
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "A Basic Population Model",
+          "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/03%3A_A_Basic_Population_Model",
+          "topics": ["he.biology.ecology#0", "he.biology.microbiology#1"],
+          "lessons": [
+            {
+              "n": "3.1",
+              "title": "Characterizing populations",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/03%3A_A_Basic_Population_Model/3.01%3A_Characterizing_populations"
+            },
+            {
+              "n": "3.2",
+              "title": "Bacterial Growth",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/03%3A_A_Basic_Population_Model/3.02%3A_Bacterial_Growth"
+            },
+            {
+              "n": "3.3",
+              "title": "A First Computer Model",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/03%3A_A_Basic_Population_Model/3.03%3A_A_First_Computer_Model"
+            },
+            {
+              "n": "3.4",
+              "title": "Program results",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/03%3A_A_Basic_Population_Model/3.04%3A_Program_results"
+            },
+            {
+              "n": "3.5",
+              "title": "Darwin's elephants",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/03%3A_A_Basic_Population_Model/3.05%3A_Darwin's_elephants"
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Modeling a Single Population",
+          "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/04%3A_Modeling_a_Single_Population",
+          "topics": ["he.biology.ecology#0"],
+          "notation": [
+            "dN/dt = (r + sN)N, a unified form for exponential, logistic and orthologistic growth"
+          ],
+          "lessons": [
+            {
+              "n": "4.1",
+              "title": "Density-independent growth",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/04%3A_Modeling_a_Single_Population/4.01%3A_Density-independent_growth"
+            },
+            {
+              "n": "4.2",
+              "title": "Density-enhanced growth",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/04%3A_Modeling_a_Single_Population/4.02%3A_Density-enhanced_growth"
+            },
+            {
+              "n": "4.3",
+              "title": "Density-limited growth",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/04%3A_Modeling_a_Single_Population/4.03%3A_Density-limited_growth"
+            },
+            {
+              "n": "4.4",
+              "title": "Parameter combinations",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/04%3A_Modeling_a_Single_Population/4.04%3A_Parameter_combinations"
+            },
+            {
+              "n": "4.5",
+              "title": "Generalization",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/04%3A_Modeling_a_Single_Population/4.05%3A_Generalization"
+            }
+          ]
+        },
+        {
+          "n": "5",
+          "title": "Differential and Difference Forms",
+          "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/05%3A_Differential_and_Difference_Forms",
+          "topics": ["he.biology.ecology#0"],
+          "lessons": [
+            {
+              "n": "5.1",
+              "title": "Chapter Introduction",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/05%3A_Differential_and_Difference_Forms/5.01%3A_Chapter_Introduction"
+            },
+            {
+              "n": "5.2",
+              "title": "A mathematical view",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/05%3A_Differential_and_Difference_Forms/5.02%3A_A_mathematical_view"
+            },
+            {
+              "n": "5.3",
+              "title": "Exponential Solution",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/05%3A_Differential_and_Difference_Forms/5.03%3A_Exponential_Solution"
+            },
+            {
+              "n": "5.4",
+              "title": "Logistic solution",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/05%3A_Differential_and_Difference_Forms/5.04%3A_Logistic_solution"
+            },
+            {
+              "n": "5.5",
+              "title": "Orthologistic solution",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/05%3A_Differential_and_Difference_Forms/5.05%3A_Orthologistic_solution"
+            }
+          ]
+        },
+        {
+          "n": "6",
+          "title": "Human Population Growth",
+          "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/06%3A_Human_Population_Growth",
+          "topics": ["he.biology.ecology#0"],
+          "lessons": [
+            {
+              "n": "6.1",
+              "title": "Chapter Introduction",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/06%3A_Human_Population_Growth/6.01%3A_Chapter_Introduction"
+            },
+            {
+              "n": "6.2",
+              "title": "Phenomological Graph",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/06%3A_Human_Population_Growth/6.02%3A_Phenomological_Graph"
+            },
+            {
+              "n": "6.3",
+              "title": "Biological-ecological graph",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/06%3A_Human_Population_Growth/6.03%3A_Biological-ecological_graph"
+            },
+            {
+              "n": "6.4",
+              "title": "A global transition",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/06%3A_Human_Population_Growth/6.04%3A_A_global_transition"
+            }
+          ]
+        },
+        {
+          "n": "7",
+          "title": "Chaos and Randomness",
+          "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/07%3A_Chaos_and_Randomness",
+          "topics": ["he.biology.ecology#0"],
+          "lessons": [
+            {
+              "n": "7.1",
+              "title": "Chapter Introduction",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/07%3A_Chaos_and_Randomness/7.01%3A_Chapter_Introduction"
+            },
+            {
+              "n": "7.2",
+              "title": "Depicting population growth",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/07%3A_Chaos_and_Randomness/7.02%3A_Depicting_population_growth"
+            },
+            {
+              "n": "7.3",
+              "title": "Hypothetical insect data",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/07%3A_Chaos_and_Randomness/7.03%3A_Hypothetical_insect_data"
+            },
+            {
+              "n": "7.4",
+              "title": "Sensitive Dependence",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/07%3A_Chaos_and_Randomness/7.04%3A_Sensitive_Dependence"
+            },
+            {
+              "n": "7.5",
+              "title": "Dampening of Chaos",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/07%3A_Chaos_and_Randomness/7.05%3A_Dampening_of_Chaos"
+            },
+            {
+              "n": "7.6",
+              "title": "Bifurcation diagram",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/07%3A_Chaos_and_Randomness/7.06%3A_Bifurcation_diagram"
+            },
+            {
+              "n": "7.7",
+              "title": "Properties",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/07%3A_Chaos_and_Randomness/7.07%3A_Properties"
+            }
+          ]
+        },
+        {
+          "n": "8",
+          "title": "Theory of Interactions",
+          "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/08%3A_Theory_of_Interactions",
+          "topics": ["he.biology.ecology#1"],
+          "lessons": [
+            {
+              "n": "8.1",
+              "title": "Dynamics of two Interacting Species",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/08%3A_Theory_of_Interactions/8.01%3A_Dynamics_of_two_Interacting_Species"
+            },
+            {
+              "n": "8.2",
+              "title": "Code for two species",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/08%3A_Theory_of_Interactions/8.02%3A_Code_for_two_species"
+            },
+            {
+              "n": "8.3",
+              "title": "Summary of interactions",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/08%3A_Theory_of_Interactions/8.03%3A_Summary_of_interactions"
+            }
+          ]
+        },
+        {
+          "n": "9",
+          "title": "Embodied by Natural Selection",
+          "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/09%3A_Embodied_by_Natural_Selection",
+          "topics": ["he.biology.ecology#1"],
+          "lessons": [
+            {
+              "n": "9.1",
+              "title": "Chapter Introduction",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/09%3A_Embodied_by_Natural_Selection/9.01%3A_Chapter_Introduction"
+            },
+            {
+              "n": "9.2",
+              "title": "Mutualism",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/09%3A_Embodied_by_Natural_Selection/9.02%3A_Mutualism"
+            },
+            {
+              "n": "9.3",
+              "title": "Herbivory",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/09%3A_Embodied_by_Natural_Selection/9.03%3A_Herbivory"
+            },
+            {
+              "n": "9.4",
+              "title": "Predation",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/09%3A_Embodied_by_Natural_Selection/9.04%3A_Predation"
+            },
+            {
+              "n": "9.5",
+              "title": "Predatory plants",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/09%3A_Embodied_by_Natural_Selection/9.05%3A_Predatory_plants"
+            },
+            {
+              "n": "9.6",
+              "title": "Defense",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/09%3A_Embodied_by_Natural_Selection/9.06%3A_Defense"
+            },
+            {
+              "n": "9.7",
+              "title": "Competition",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/09%3A_Embodied_by_Natural_Selection/9.07%3A_Competition"
+            }
+          ]
+        },
+        {
+          "n": "10",
+          "title": "Phase Space",
+          "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/10%3A_Phase_Space",
+          "topics": ["he.biology.ecology#1"],
+          "lessons": [
+            {
+              "n": "10.1",
+              "title": "Chapter Introduction",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/10%3A_Phase_Space/10.01%3A_Chapter_Introduction"
+            },
+            {
+              "n": "10.2",
+              "title": "Phase Space",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/10%3A_Phase_Space/10.02%3A_Phase_Space"
+            },
+            {
+              "n": "10.3",
+              "title": "Surface generating the flow",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/10%3A_Phase_Space/10.03%3A_Surface_generating_the_flow"
+            },
+            {
+              "n": "10.4",
+              "title": "A phase space example",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/10%3A_Phase_Space/10.04%3A_A_phase_space_example"
+            }
+          ]
+        },
+        {
+          "n": "11",
+          "title": "State Spaces",
+          "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/11%3A_State_Spaces",
+          "topics": ["he.biology.ecology#1"],
+          "lessons": [
+            {
+              "n": "11.1",
+              "title": "State Spaces",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/11%3A_State_Spaces/11.01%3A_State_Spaces"
+            }
+          ]
+        },
+        {
+          "n": "12",
+          "title": "Predator and Prey",
+          "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/12%3A_Predator_and_Prey",
+          "topics": ["he.biology.ecology#1"],
+          "lessons": [
+            {
+              "n": "12.1",
+              "title": "Further Examples of Predation",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/12%3A_Predator_and_Prey/12.01%3A_Further_Examples_of_Predation"
+            },
+            {
+              "n": "12.2",
+              "title": "Ecological communities are complex",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/12%3A_Predator_and_Prey/12.02%3A_Ecological_communities_are_complex"
+            },
+            {
+              "n": "12.3",
+              "title": "Predator-prey model",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/12%3A_Predator_and_Prey/12.03%3A_Predator-prey_model"
+            },
+            {
+              "n": "12.4",
+              "title": "Phase Space",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/12%3A_Predator_and_Prey/12.04%3A_Phase_Space"
+            },
+            {
+              "n": "12.5",
+              "title": "Assumption of the basic model",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/12%3A_Predator_and_Prey/12.05%3A_Assumption_of_the_basic_model"
+            },
+            {
+              "n": "12.6",
+              "title": "Independent carrying capacities",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/12%3A_Predator_and_Prey/12.06%3A_Independent_carrying_capacities"
+            },
+            {
+              "n": "12.7",
+              "title": "Predator satiation and starvation",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/12%3A_Predator_and_Prey/12.07%3A_Predator_satiation_and_starvation"
+            },
+            {
+              "n": "12.8",
+              "title": "Effects of Space",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/12%3A_Predator_and_Prey/12.08%3A_Effects_of_Space"
+            }
+          ]
+        },
+        {
+          "n": "13",
+          "title": "Humans as Predators",
+          "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/13%3A_Humans_as_Predators",
+          "topics": ["he.biology.ecology#3"],
+          "lessons": [
+            {
+              "n": "13.1",
+              "title": "Chapter Introduction",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/13%3A_Humans_as_Predators/13.01%3A_Chapter_Introduction"
+            },
+            {
+              "n": "13.2",
+              "title": "Consciously Controlled Predation",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/13%3A_Humans_as_Predators/13.02%3A_Consciously_Controlled_Predation"
+            },
+            {
+              "n": "13.3",
+              "title": "Stochastic modeling",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/13%3A_Humans_as_Predators/13.03%3A_Stochastic_modeling"
+            },
+            {
+              "n": "13.4",
+              "title": "Present Situation",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/13%3A_Humans_as_Predators/13.04%3A_Present_Situation"
+            }
+          ]
+        },
+        {
+          "n": "14",
+          "title": "Humans as Prey",
+          "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/14%3A_Humans_as_Prey",
+          "topics": ["he.biology.microbiology#3"],
+          "lessons": [
+            {
+              "n": "14.1",
+              "title": "Chapter Introduction",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/14%3A_Humans_as_Prey/14.01%3A_Chapter_Introduction"
+            },
+            {
+              "n": "14.2",
+              "title": "Portals",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/14%3A_Humans_as_Prey/14.02%3A_Portals"
+            },
+            {
+              "n": "14.3",
+              "title": "Pathogen Mobility",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/14%3A_Humans_as_Prey/14.03%3A_Pathogen_Mobility"
+            },
+            {
+              "n": "14.4",
+              "title": "Disease more generally",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/14%3A_Humans_as_Prey/14.04%3A_Disease_more_generally"
+            },
+            {
+              "n": "14.5",
+              "title": "The Strange Case of Polio",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/14%3A_Humans_as_Prey/14.05%3A_The_Strange_Case_of_Polio"
+            },
+            {
+              "n": "14.6",
+              "title": "Modern disease trends",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/14%3A_Humans_as_Prey/14.06%3A_Modern_disease_trends"
+            },
+            {
+              "n": "14.7",
+              "title": "An ancient plague perhaps vanishing",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/14%3A_Humans_as_Prey/14.07%3A_An_ancient_plague_perhaps_vanishing"
+            }
+          ]
+        },
+        {
+          "n": "15",
+          "title": "Theory of Disease",
+          "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/15%3A_Theory_of_Disease",
+          "topics": ["he.biology.microbiology#3"],
+          "notation": ["SIR equations; R₀"],
+          "lessons": [
+            {
+              "n": "15.1",
+              "title": "New terminology",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/15%3A_Theory_of_Disease/15.01%3A_New_terminology"
+            },
+            {
+              "n": "15.2",
+              "title": "The SIR flowchart",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/15%3A_Theory_of_Disease/15.02%3A_The_SIR_flowchart"
+            },
+            {
+              "n": "15.3",
+              "title": "The SIR Equations",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/15%3A_Theory_of_Disease/15.03%3A_The_SIR_Equations"
+            },
+            {
+              "n": "15.4",
+              "title": "The SI Equations",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/15%3A_Theory_of_Disease/15.04%3A_The_SI_Equations"
+            },
+            {
+              "n": "15.5",
+              "title": "The I Equation",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/15%3A_Theory_of_Disease/15.05%3A_The_I_Equation"
+            },
+            {
+              "n": "15.6",
+              "title": "Analysis of the I model",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/15%3A_Theory_of_Disease/15.06%3A_Analysis_of_the_I_model"
+            },
+            {
+              "n": "15.7",
+              "title": "15.7 The rsN model again",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/15%3A_Theory_of_Disease/15.07%3A_15.7_The_rsN_model_again"
+            },
+            {
+              "n": "15.8",
+              "title": "Application to an actual outbreak",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/15%3A_Theory_of_Disease/15.08%3A_Application_to_an_actual_outbreak"
+            },
+            {
+              "n": "15.9",
+              "title": "Conflicting ethics",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/15%3A_Theory_of_Disease/15.09%3A_Conflicting_ethics"
+            }
+          ]
+        },
+        {
+          "n": "16",
+          "title": "Competition",
+          "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/16%3A_Competition",
+          "topics": ["he.biology.ecology#1"],
+          "lessons": [
+            {
+              "n": "16.1",
+              "title": "Chapter Introduction",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/16%3A_Competition/16.01%3A_Chapter_Introduction"
+            },
+            {
+              "n": "16.2",
+              "title": "The niche concept",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/16%3A_Competition/16.02%3A_The_niche_concept"
+            },
+            {
+              "n": "16.3",
+              "title": "Resource competition",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/16%3A_Competition/16.03%3A_Resource_competition"
+            },
+            {
+              "n": "16.4",
+              "title": "Competitive exclusion",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/16%3A_Competition/16.04%3A_Competitive_exclusion"
+            },
+            {
+              "n": "16.5",
+              "title": "Succession",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/16%3A_Competition/16.05%3A_Succession"
+            },
+            {
+              "n": "16.6",
+              "title": "Single-resource phase space",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/16%3A_Competition/16.06%3A_Single-resource_phase_space"
+            },
+            {
+              "n": "16.7",
+              "title": "Multiple resource phase space",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/16%3A_Competition/16.07%3A_Multiple_resource_phase_space"
+            },
+            {
+              "n": "16.8",
+              "title": "Lotka-Volterra formulation",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/16%3A_Competition/16.08%3A_Lotka-Volterra_formulation"
+            }
+          ]
+        },
+        {
+          "n": "17",
+          "title": "Mutualism",
+          "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/17%3A_Mutualism",
+          "topics": ["he.biology.ecology#1"],
+          "lessons": [
+            {
+              "n": "17.1",
+              "title": "Chapter Introduction",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/17%3A_Mutualism/17.01%3A_Chapter_Introduction"
+            },
+            {
+              "n": "17.2",
+              "title": "Phase Diagrams",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/17%3A_Mutualism/17.02%3A_Phase_Diagrams"
+            },
+            {
+              "n": "17.3",
+              "title": "Quasi-species",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/17%3A_Mutualism/17.03%3A_Quasi-species"
+            },
+            {
+              "n": "17.4",
+              "title": "Our own species",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/17%3A_Mutualism/17.04%3A_Our_own_species"
+            }
+          ]
+        },
+        {
+          "n": "18",
+          "title": "Higher-order models",
+          "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/18%3A_Higher-order_models",
+          "topics": ["he.biology.ecology#1"],
+          "lessons": [
+            {
+              "n": "18.1",
+              "title": "Chapter Introduction",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/18%3A_Higher-order_models/18.01%3A_Chapter_Introduction"
+            },
+            {
+              "n": "18.2",
+              "title": "One-species Example",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/18%3A_Higher-order_models/18.02%3A_One-species_Example"
+            },
+            {
+              "n": "18.3",
+              "title": "Two-species blending",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/18%3A_Higher-order_models/18.03%3A_Two-species_blending"
+            },
+            {
+              "n": "18.4",
+              "title": "A way of organizing",
+              "url": "https://bio.libretexts.org/Bookshelves/Ecology/Book%3A_Quantitative_Ecology_-_A_New_Unified_Approach_(Lehman_Loberg_and_Clark)/18%3A_Higher-order_models/18.04%3A_A_way_of_organizing"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

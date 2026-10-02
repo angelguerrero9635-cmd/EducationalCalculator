@@ -1,0 +1,122 @@
+{
+  "id": "mit-ocw-hst.542j-2004",
+  "curriculum": "MIT OCW HST.542J Quantitative Physiology: Organ Transport Systems",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Spring 2004",
+  "subject": "biology",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Jose Venegas and Roger Mark. HST.542J Quantitative Physiology: Organ Transport Systems. Spring 2004. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu. License: Creative Commons BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Part",
+    "lesson": "Lecture"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/hst-542j-quantitative-physiology-organ-transport-systems-spring-2004/",
+  "retrieved": "2026-10-02",
+  "notes": "Reference only (CC BY-NC-SA 4.0; OCW terms https://ocw.mit.edu/pages/privacy-and-terms-of-use/). Lecture list and order from the course calendar or lecture-notes page; examples, ranges and notation are our words, read from the exams and problem sets (no problem text or numbers copied). Third-party figures inside OCW PDFs are outside the licence and were not used. Problem sets 1–10 and quiz 1 read for the records. Renal physiology has no taxonomy topic.",
+  "books": [
+    {
+      "course": "HST.542J",
+      "url": "https://ocw.mit.edu/courses/hst-542j-quantitative-physiology-organ-transport-systems-spring-2004/",
+      "units": [
+        {
+          "n": "1",
+          "title": "Cardiovascular physiology",
+          "topics": ["he.biology.anatomy-physiology#3"],
+          "examples": [
+            "resistive model of a fistula",
+            "venous return and cardiac output curves",
+            "P–V loops: stroke volume, ejection fraction",
+            "Fick cardiac output"
+          ],
+          "ranges": ["pressures 0–150 mmHg", "volumes 15–300 mL", "V̇O₂ 200–400 mL/min"],
+          "notation": ["C.O. = V̇O₂/(Ca − Cv)", "EF = SV/EDV"],
+          "lessons": [
+            {
+              "n": "2",
+              "title": "Models of the peripheral circulation",
+              "topics": ["he.biology.anatomy-physiology#3", "he.engineering.biotransport#1"]
+            },
+            {
+              "n": "3",
+              "title": "The heart as a pump",
+              "topics": ["he.biology.anatomy-physiology#3"]
+            },
+            {
+              "n": "4",
+              "title": "Modelling the intact system",
+              "topics": ["he.biology.anatomy-physiology#3"]
+            },
+            {
+              "n": "5",
+              "title": "Electrophysiology of myocardial cells",
+              "topics": ["he.biology.anatomy-physiology#3", "he.biology.cell-molecular#0"]
+            },
+            {
+              "n": "6–7",
+              "title": "Electrocardiography and arrhythmias",
+              "topics": ["he.biology.anatomy-physiology#3"]
+            },
+            {
+              "n": "8–9",
+              "title": "Control and integration",
+              "topics": ["he.biology.anatomy-physiology#3"]
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Physiological fluid mechanics",
+          "topics": ["he.engineering.biotransport#1"],
+          "examples": [
+            "continuity and Bernoulli in a syringe; valve stenosis",
+            "cone-and-plate viscometer",
+            "wave reflection at a bifurcation"
+          ],
+          "lessons": [
+            {
+              "n": "10–14",
+              "title": "Physiological fluid mechanics 1–5",
+              "topics": ["he.engineering.biotransport#1"]
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Respiratory physiology",
+          "topics": ["he.biology.anatomy-physiology#3"],
+          "examples": [
+            "airway velocity, Reynolds number and resistance by generation",
+            "R–C lung model pleural pressure",
+            "alveolar gas equation; shunt fraction"
+          ],
+          "lessons": [
+            {
+              "n": "15–19",
+              "title": "Respiratory physiology 1–5",
+              "topics": ["he.biology.anatomy-physiology#3"]
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Renal physiology",
+          "topics": ["he.engineering.biotransport#3"],
+          "examples": ["GFR from inulin; RPF from PAH; transport maximum"],
+          "notation": ["C = UV̇/P"],
+          "lessons": [
+            {
+              "n": "20–23",
+              "title": "Renal physiology 1–4",
+              "topics": ["he.engineering.biotransport#3"]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
