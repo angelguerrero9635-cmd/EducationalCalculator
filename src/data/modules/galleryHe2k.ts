@@ -4,6 +4,7 @@
  *
  * HC34: the college options of `chemDiagram` mode `rate` (C-P7, ACC-P32): integrated rate laws
  * of order 0, 1 and 2, Arrhenius, and consecutive reactions A → B → C.
+ * HC36: the `globe` kind (EG-P3): sun, route, euler, dipole and momentum.
  */
 import {
   arrheniusEa,
@@ -11,6 +12,18 @@ import {
   peakConc,
   peakTime,
 } from '@/components/module/reps/rateHe2kMath';
+import {
+  EARTH_KM,
+  RIM_MS,
+  centralAngle,
+  dayLength,
+  inclination,
+  momentumWind,
+  noonAngle,
+  paleolatitude,
+  plateSpeed,
+  sunriseHour,
+} from '@/components/module/reps/globeMath';
 import type { Relation, VariableDef, Values } from '@/engine/types';
 
 import type { LayoutDef } from './layouts';
@@ -710,6 +723,435 @@ const RATE_DEMOS: ModuleDef[] = [
   rateSeries,
 ];
 
-export const HE2K_GALLERY_MODULES: ModuleDef[] = [...RATE_DEMOS];
+// ─── HC36 globe (EG-P3) ──────────────────────────────────────────────────────
+
+const degrees = (
+  id: string,
+  symbol: string,
+  name: string,
+  min: number,
+  max: number,
+  more: Partial<VariableDef> = {},
+) => quantity(id, symbol, name, '°', min, max, 0.01, more);
+
+/** Noon sun angle = 90 − |φ − δ|. */
+const noonRule: Rule = {
+  relation: {
+    id: 'noon angle = 90 − |φ − δ|',
+    display: '{noon} = 90 − |{lat} − {dec}|',
+    vars: ['noon', 'lat', 'dec'],
+    residual: (v) => v.noon! - noonAngle(v.lat!, v.dec!),
+    solve: { noon: (v) => noonAngle(v.lat!, v.dec!) },
+  },
+  steps: {
+    noon: st(
+      '90 − |{lat} − {dec}|',
+      'The Sun is overhead at δ; each degree of latitude away lowers it a degree.',
+    ),
+  },
+};
+
+/** cos H = −tan φ tan δ. */
+const sunriseRule: Rule = {
+  relation: {
+    id: 'cos H = −tan φ tan δ',
+    display: 'cos({H}°) = −tan({lat}°) × tan({dec}°)',
+    vars: ['H', 'lat', 'dec'],
+    residual: (v) => v.H! - sunriseHour(v.lat!, v.dec!),
+    solve: { H: (v) => sunriseHour(v.lat!, v.dec!) },
+  },
+  steps: {
+    H: st(
+      'arccos(−tan({lat}°) × tan({dec}°))',
+      'The hour angle of sunrise: where the parallel crosses the circle of illumination.',
+    ),
+  },
+};
+
+/** day = 2H ÷ 15. */
+const dayRule: Rule = {
+  relation: {
+    id: 'day = 2H ÷ 15',
+    display: '{day} = 2 × {H} ÷ 15',
+    vars: ['day', 'H'],
+    residual: (v) => 15 * v.day! - 2 * v.H!,
+    solve: { day: (v) => (2 * v.H!) / 15, H: (v) => (15 * v.day!) / 2 },
+  },
+  steps: {
+    day: st('2 × {H} ÷ 15', 'Sunrise to sunset is 2H of turning, and 15° of turning is one hour.'),
+    H: st('15 × {day} ÷ 2', 'Turn the hours into degrees of turning, then halve.'),
+  },
+};
+
+/** The page keeps φ inside the polar circles, where the Sun rises and sets each day. */
+const SUN_VARS = [
+  degrees('lat', 'φ', 'Latitude', -66.5, 66.5),
+  degrees('dec', 'δ', 'Declination of the Sun', -23.44, 23.44),
+  degrees('noon', 'α', 'Noon sun angle', 0, 90),
+  degrees('H', 'H', 'Sunrise hour angle', 0, 180),
+  quantity('day', 'D', 'Day length', 'h', 0.01, 24, 0.01),
+];
+
+const sunExample = (lat: number, dec: number) => ({
+  lat,
+  dec,
+  noon: noonAngle(lat, dec),
+  H: sunriseHour(lat, dec),
+  day: dayLength(lat, dec),
+});
+
+const sunDemo = (id: string, title: string, lat: number, dec: number): ModuleDef => ({
+  id,
+  title,
+  use: 'Use this for the noon sun angle and the day length at a latitude on a date.',
+  assumptions: [
+    'δ is the latitude where the Sun is overhead at noon; 15° of turning is one hour.',
+    'Refraction and the Sun’s width (a few minutes) are ignored; φ stays inside the polar circles.',
+  ],
+  variables: SUN_VARS,
+  ...rules(noonRule, sunriseRule, dayRule),
+  example: sunExample(lat, dec),
+  startWith: ['lat', 'dec'],
+  representation: {
+    kind: 'globe',
+    mode: 'sun',
+    latitude: 'lat',
+    declination: 'dec',
+    noon: 'noon',
+    hour: 'H',
+    day: 'day',
+  },
+});
+
+const globeSun = sunDemo('g.he-globe-sun', 'The noon sun and the day at 40° N in June', 40, 23.44);
+const globeSunDecember = sunDemo(
+  'g.he-globe-sun-december',
+  'The noon sun and the day at 40° N in December',
+  40,
+  -23.44,
+);
+const globeSunArctic = sunDemo(
+  'g.he-globe-sun-arctic',
+  'Just inside the Arctic Circle at the June solstice',
+  66,
+  23.44,
+);
+
+function insolation(lat: number, dec: number, H: number) {
+  const r = Math.PI / 180;
+  return (
+    (1361 / Math.PI) *
+    (H * r * Math.sin(lat * r) * Math.sin(dec * r) +
+      Math.cos(lat * r) * Math.cos(dec * r) * Math.sin(H * r))
+  );
+}
+
+/** Daily mean sunlight at the top of the atmosphere (~insolation). */
+const insolationRule: Rule = {
+  relation: {
+    id: 'Q = (1361 ÷ π)(H sin φ sin δ + cos φ cos δ sin H)',
+    display:
+      '{Q} = (1361 ÷ π) × ({H} × π ÷ 180 × sin({lat}°) × sin({dec}°) + cos({lat}°) × cos({dec}°) × sin({H}°))',
+    vars: ['Q', 'H', 'lat', 'dec'],
+    residual: (v) => v.Q! - insolation(v.lat!, v.dec!, v.H!),
+    solve: { Q: (v) => insolation(v.lat!, v.dec!, v.H!) },
+  },
+  steps: {
+    Q: st(
+      '(1361 ÷ π) × ({H} × π ÷ 180 × sin({lat}°) × sin({dec}°) + cos({lat}°) × cos({dec}°) × sin({H}°))',
+      'Add up the sunlight from sunrise to sunset (H in radians in the first term), then average over the day.',
+    ),
+  },
+};
+
+const INSOL_H = sunriseHour(40, 23.44);
+const globeInsolation: ModuleDef = {
+  id: 'g.he-globe-sun-insolation',
+  title: 'Daily sunlight at the top of the atmosphere',
+  use: 'Use this for the day’s mean sunlight at a latitude on a date.',
+  assumptions: [
+    'The solar constant is 1,361 W/m²; Earth’s distance from the Sun is taken as average.',
+    'φ stays inside the polar circles, where the Sun rises and sets each day.',
+  ],
+  variables: [
+    SUN_VARS[0]!,
+    SUN_VARS[1]!,
+    SUN_VARS[3]!,
+    quantity('Q', 'Q', 'Daily mean sunlight', 'W/m²', 0.01, 600, 0.1),
+  ],
+  ...rules(sunriseRule, insolationRule),
+  example: { lat: 40, dec: 23.44, H: INSOL_H, Q: insolation(40, 23.44, INSOL_H) },
+  startWith: ['lat', 'dec'],
+  representation: { kind: 'globe', mode: 'sun', latitude: 'lat', declination: 'dec', hour: 'H' },
+};
+
+/** cos c = sin φ₁ sin φ₂ + cos φ₁ cos φ₂ cos(λ₂ − λ₁). */
+const lawOfCosines: Rule = {
+  relation: {
+    id: 'cos c = sin φ₁ sin φ₂ + cos φ₁ cos φ₂ cos(λ₂ − λ₁)',
+    display:
+      'cos({c}°) = sin({lat1}°) × sin({lat2}°) + cos({lat1}°) × cos({lat2}°) × cos({lon2} − {lon1})',
+    vars: ['c', 'lat1', 'lat2', 'lon1', 'lon2'],
+    residual: (v) => v.c! - centralAngle(v.lat1!, v.lon1!, v.lat2!, v.lon2!),
+    solve: { c: (v) => centralAngle(v.lat1!, v.lon1!, v.lat2!, v.lon2!) },
+  },
+  steps: {
+    c: st(
+      'arccos(sin({lat1}°) × sin({lat2}°) + cos({lat1}°) × cos({lat2}°) × cos({lon2} − {lon1}))',
+      'The spherical law of cosines gives cos c; its arccos is the angle at Earth’s centre.',
+    ),
+  },
+};
+
+const arcLength: Rule = {
+  relation: {
+    id: 'd = 6371 × c × π ÷ 180',
+    display: '{d} = 6371 × {c} × π ÷ 180',
+    vars: ['d', 'c'],
+    residual: (v) => v.d! - (EARTH_KM * v.c! * Math.PI) / 180,
+    solve: {
+      d: (v) => (EARTH_KM * v.c! * Math.PI) / 180,
+      c: (v) => (v.d! * 180) / (EARTH_KM * Math.PI),
+    },
+  },
+  steps: {
+    d: st('6371 × {c} × π ÷ 180', 'An arc is the radius times the angle in radians.'),
+    c: st(
+      '{d} × 180 ÷ (6371 × π)',
+      'Divide the arc by the radius, then turn radians into degrees.',
+    ),
+  },
+};
+
+const routeDemo = (
+  id: string,
+  title: string,
+  [lat1, lon1, lat2, lon2]: [number, number, number, number],
+): ModuleDef => {
+  const c = centralAngle(lat1, lon1, lat2, lon2);
+  return {
+    id,
+    title,
+    use: 'Use this for the great-circle distance between two places from their latitudes and longitudes.',
+    assumptions: [
+      'Earth is a sphere of radius 6,371 km (within 0.5% of the real shape).',
+      'The shortest route is an arc of a great circle, not a straight line on a Mercator map.',
+    ],
+    variables: [
+      degrees('lat1', 'φ₁', 'Latitude of the first place', -90, 90),
+      degrees('lon1', 'λ₁', 'Longitude of the first place', -180, 180),
+      degrees('lat2', 'φ₂', 'Latitude of the second place', -90, 90),
+      degrees('lon2', 'λ₂', 'Longitude of the second place', -180, 180),
+      degrees('c', 'c', 'Central angle', 0, 180),
+      quantity('d', 'd', 'Great-circle distance', 'km', 0, 20016, 0.1),
+    ],
+    ...rules(lawOfCosines, arcLength),
+    example: { lat1, lon1, lat2, lon2, c, d: (EARTH_KM * c * Math.PI) / 180 },
+    startWith: ['lat1', 'lon1', 'lat2', 'lon2'],
+    representation: {
+      kind: 'globe',
+      mode: 'route',
+      lat1: 'lat1',
+      lon1: 'lon1',
+      lat2: 'lat2',
+      lon2: 'lon2',
+      angle: 'c',
+      km: 'd',
+    },
+  };
+};
+
+const globeRoute = routeDemo(
+  'g.he-globe-route',
+  'A great-circle route and its central angle',
+  [40, -75, 52, 0],
+);
+const globeRoutePacific = routeDemo(
+  'g.he-globe-route-pacific',
+  'A great circle across the 180° meridian',
+  [35.7, 139.7, 37.6, -122.4],
+);
+
+/** ω in rad/Myr. */
+const toRadians: Rule = {
+  relation: {
+    id: 'ω_rad = ω × π ÷ 180',
+    display: '{wr} = {w} × π ÷ 180',
+    vars: ['wr', 'w'],
+    residual: (v) => v.wr! - (v.w! * Math.PI) / 180,
+    solve: { wr: (v) => (v.w! * Math.PI) / 180, w: (v) => (v.wr! * 180) / Math.PI },
+  },
+  steps: {
+    wr: st('{w} × π ÷ 180', 'Degrees to radians: times π ÷ 180.'),
+    w: st('{wr} × 180 ÷ π', 'Radians to degrees: times 180 ÷ π.'),
+  },
+};
+
+/** v = ω_rad × 6371 × sin Δ (km/Myr = mm/yr). */
+const plateRule: Rule = {
+  relation: {
+    id: 'v = ω_rad × 6371 × sin Δ',
+    display: '{v} = {wr} × 6371 × sin({D}°)',
+    vars: ['v', 'wr', 'D'],
+    residual: (v) => v.v! - v.wr! * EARTH_KM * Math.sin((v.D! * Math.PI) / 180),
+    solve: {
+      v: (v) => v.wr! * EARTH_KM * Math.sin((v.D! * Math.PI) / 180),
+      wr: (v) => div(v.v!, EARTH_KM * Math.sin((v.D! * Math.PI) / 180)),
+    },
+  },
+  steps: {
+    v: st(
+      '{wr} × 6371 × sin({D}°)',
+      'The point turns on a circle of radius R sin Δ about the pole’s axis: ω times that radius.',
+    ),
+    wr: st('{v} ÷ (6371 × sin({D}°))', 'Divide the speed by the radius of the point’s circle.'),
+  },
+};
+
+const eulerDemo = (id: string, title: string, w: number, D: number): ModuleDef => ({
+  id,
+  title,
+  use: 'Use this for the speed of a point on a plate turning about its Euler pole.',
+  assumptions: [
+    'A plate turns as a rigid cap about its Euler pole; R = 6,371 km.',
+    'Speed is greatest 90° from the pole and 0 at it; 1 km per million years is 1 mm per year.',
+  ],
+  variables: [
+    quantity('w', 'ω', 'Rotation rate', '°/Myr', 0.01, 5, 0.01),
+    degrees('D', 'Δ', 'Angular distance from the Euler pole', 0.01, 179.99),
+    quantity('wr', 'ω_rad', 'Rotation rate in radians', 'rad/Myr', 0.0001, 0.1, 0.000001, {
+      derived: true,
+    }),
+    quantity('v', 'v', 'Speed', 'mm/yr', 0.0001, 600, 0.01),
+  ],
+  ...rules(toRadians, plateRule),
+  example: { w, D, wr: (w * Math.PI) / 180, v: plateSpeed(w, D) },
+  startWith: ['w', 'D'],
+  representation: { kind: 'globe', mode: 'euler', omega: 'w', distance: 'D', speed: 'v' },
+});
+
+const globeEuler = eulerDemo('g.he-globe-euler', 'A plate turning about its Euler pole', 0.5, 60);
+const globeEulerFar = eulerDemo(
+  'g.he-globe-euler-far',
+  'A point 150° from the Euler pole: slower again',
+  1.2,
+  150,
+);
+
+/** tan I = 2 tan φ. */
+const dipRule: Rule = {
+  relation: {
+    id: 'tan I = 2 tan φ',
+    display: 'tan({I}°) = 2 × tan({lat}°)',
+    vars: ['I', 'lat'],
+    residual: (v) => v.I! - inclination(v.lat!),
+    solve: { I: (v) => inclination(v.lat!), lat: (v) => paleolatitude(v.I!) },
+  },
+  steps: {
+    I: st(
+      'arctan(2 × tan({lat}°))',
+      'A dipole’s field dips more steeply than the latitude: tan I = 2 tan φ.',
+    ),
+    lat: st('arctan(tan({I}°) ÷ 2)', 'Halve tan I, then take the arctan.'),
+  },
+};
+
+const dipoleDemo = (id: string, title: string, I: number): ModuleDef => ({
+  id,
+  title,
+  use: 'Use this for a paleolatitude from a rock’s magnetic inclination.',
+  assumptions: [
+    'Earth’s field averaged over thousands of years is a dipole on the spin axis.',
+    'I is measured from the horizontal, down in the north and up in the south.',
+  ],
+  variables: [
+    degrees('I', 'I', 'Inclination', -89.9, 89.9),
+    degrees('lat', 'φ', 'Latitude', -89.9, 89.9),
+  ],
+  ...rules(dipRule),
+  example: { I, lat: paleolatitude(I) },
+  startWith: ['I'],
+  representation: { kind: 'globe', mode: 'dipole', inclination: 'I', latitude: 'lat' },
+});
+
+const globeDipole = dipoleDemo(
+  'g.he-globe-dipole',
+  'Paleolatitude from a dipole field’s dip',
+  49.1,
+);
+const globeDipoleSouth = dipoleDemo(
+  'g.he-globe-dipole-south',
+  'A rock that formed far south: the field points up',
+  -60,
+);
+
+/** u = ΩR sin²φ ÷ cos φ. */
+const windRule: Rule = {
+  relation: {
+    id: 'u = ΩR sin²φ ÷ cos φ',
+    display: '{u} = {rim} × sin({lat}°)^2 ÷ cos({lat}°)',
+    vars: ['u', 'rim', 'lat'],
+    residual: (v) => v.u! - momentumWind(v.lat!, v.rim!),
+    solve: {
+      u: (v) => momentumWind(v.lat!, v.rim!),
+      rim: (v) => div(v.u!, momentumWind(v.lat!, 1)),
+    },
+  },
+  steps: {
+    u: st(
+      '{rim} × sin({lat}°)^2 ÷ cos({lat}°)',
+      'Air keeps its angular momentum, so it turns faster than the ground as its circle shrinks.',
+    ),
+    rim: st('{u} × cos({lat}°) ÷ sin({lat}°)^2', 'Undo the factor sin²φ ÷ cos φ.'),
+  },
+};
+
+const momentumDemo = (id: string, title: string, lat: number): ModuleDef => ({
+  id,
+  title,
+  use: 'Use this for the wind of air carried poleward keeping its angular momentum.',
+  assumptions: [
+    'Air leaves the equator at rest with the ground and keeps its angular momentum.',
+    'Real Hadley flow loses some to friction and eddies; ΩR = 464.6 m/s.',
+  ],
+  variables: [
+    degrees('lat', 'φ', 'Latitude', 0.01, 60),
+    quantity('rim', 'ΩR', 'Earth’s rim speed', 'm/s', 400, 500, 0.1),
+    quantity('u', 'u', 'Eastward wind', 'm/s', 0.0001, 1000, 0.1),
+  ],
+  ...rules(windRule),
+  example: { lat, rim: RIM_MS, u: momentumWind(lat, RIM_MS) },
+  startWith: ['lat', 'rim'],
+  representation: { kind: 'globe', mode: 'momentum', latitude: 'lat', wind: 'u', rim: 'rim' },
+});
+
+const globeMomentum = momentumDemo(
+  'g.he-globe-momentum',
+  'Air carried from the equator to 30°: the westerly jet',
+  30,
+);
+const globeMomentumHigh = momentumDemo(
+  'g.he-globe-momentum-high',
+  'Air carried to 60°: far faster than any real wind',
+  60,
+);
+
+/** The globe demos (HC36). */
+const GLOBE_DEMOS: ModuleDef[] = [
+  globeSun,
+  globeSunDecember,
+  globeSunArctic,
+  globeInsolation,
+  globeRoute,
+  globeRoutePacific,
+  globeEuler,
+  globeEulerFar,
+  globeDipole,
+  globeDipoleSouth,
+  globeMomentum,
+  globeMomentumHigh,
+];
+
+export const HE2K_GALLERY_MODULES: ModuleDef[] = [...RATE_DEMOS, ...GLOBE_DEMOS];
 
 export const HE2K_GALLERY_LAYOUTS: LayoutDef[] = [];

@@ -35,6 +35,7 @@ import { hs2fSpecVars } from '../typesHs2f';
 import { hs3cSpecVars } from '../typesHs3c';
 import { he1gSpecVars } from '../typesHe1g';
 import { he1fSpecVars } from '../typesHe1f';
+import { globeVars } from '../typesHe2k';
 import { hskOptionVars, hskSpecVars } from '../typesHsk';
 import { he1hSpecVars } from '../typesHe1h';
 import { hs2cSpecVars } from '../typesHs2c';
@@ -589,6 +590,8 @@ function representationVars(r: Representation): string[] {
     case 'controlVolume':
     case 'velocityProfile':
       return he1fSpecVars(r);
+    case 'globe':
+      return globeVars(r);
     case 'projectile':
     case 'induction':
     case 'charges':

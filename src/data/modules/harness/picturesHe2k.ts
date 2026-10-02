@@ -15,7 +15,23 @@ import {
   timeToFraction,
 } from '@/components/module/reps/rateHe2kMath';
 
-import type { ChemRateHe2kSpec } from '../typesHe2k';
+import {
+  EARTH_KM,
+  RAD,
+  RIM_MS,
+  centralAngle,
+  dayLength,
+  drawnAngle,
+  inclination,
+  litShare,
+  momentumWind,
+  noonAngle,
+  plateSpeed,
+  sunriseHour,
+  toVec,
+} from '@/components/module/reps/globeMath';
+
+import type { ChemRateHe2kSpec, GlobeSpec } from '../typesHe2k';
 
 type Val = (x: string | number) => number | undefined;
 type UnitOf = (x: string | number | undefined) => string | undefined;
@@ -109,6 +125,75 @@ export function chemRateHe2kIssues(rep: ChemRateHe2kSpec, val: Val, unitOf: Unit
         const names = s.species ?? ['A', 'B', 'C'];
         [v.A, v.B, v.C].forEach((x, j) => same(`${names[j]} at t`, num(s.at![j]), x));
       }
+    }
+  }
+  return out;
+}
+
+export function globeIssues(rep: GlobeSpec, val: Val): string[] {
+  const out: string[] = [];
+  const num = (x: string | number | undefined) => (x === undefined ? undefined : val(x));
+  const same = (what: string, shown: number | undefined, drawn: number, tol = 2e-3) => {
+    if (shown !== undefined && Number.isFinite(drawn) && !near(shown, drawn, tol))
+      out.push(`${what} is drawn as ${drawn}, the value shows ${shown}`);
+  };
+  const latOk = (x: number | undefined, what: string) => {
+    if (x !== undefined && Math.abs(x) > 90) out.push(`${what} ${x}° is past a pole`);
+  };
+  switch (rep.mode) {
+    case 'sun': {
+      const [lat, dec] = [num(rep.latitude), num(rep.declination)];
+      latOk(lat, 'latitude');
+      if (dec !== undefined && Math.abs(dec) > 23.5)
+        out.push(`declination ${dec}° is past a tropic`);
+      if (lat === undefined || dec === undefined) break;
+      // Noon within 0.1°; the lit share of the parallel is H ÷ 180, so the day is 24 × share.
+      const noon = num(rep.noon);
+      if (noon !== undefined && Math.abs(noon - noonAngle(lat, dec)) > 0.1)
+        out.push(`the noon angle is drawn as ${noonAngle(lat, dec)}, the value shows ${noon}`);
+      const H = sunriseHour(lat, dec);
+      same('the sunrise hour angle H', num(rep.hour), H);
+      same('the day length', num(rep.day), dayLength(lat, dec));
+      if (!near(litShare(lat, dec) * 24, dayLength(lat, dec), 1e-9))
+        out.push('the lit share of the parallel is not H ÷ 180');
+      break;
+    }
+    case 'route': {
+      const [a1, o1, a2, o2] = [num(rep.lat1), num(rep.lon1), num(rep.lat2), num(rep.lon2)];
+      latOk(a1, 'latitude 1');
+      latOk(a2, 'latitude 2');
+      if (a1 === undefined || o1 === undefined || a2 === undefined || o2 === undefined) break;
+      const c = centralAngle(a1, o1, a2, o2);
+      // The angle the picture draws (between the two places' vectors) is the law of cosines'.
+      const drawn = drawnAngle(toVec(a1, o1), toVec(a2, o2));
+      if (Math.abs(drawn - c) > 1e-6) out.push(`the drawn central angle ${drawn}° is not ${c}°`);
+      same('the central angle', num(rep.angle), c);
+      const R = rep.radius === undefined ? EARTH_KM : num(rep.radius);
+      if (R !== undefined) same('the distance', num(rep.km), R * c * RAD);
+      break;
+    }
+    case 'euler': {
+      const [w, D] = [num(rep.omega), num(rep.distance)];
+      if (D !== undefined && (D < 0 || D > 180)) out.push(`Δ = ${D}° is not 0° to 180°`);
+      const R = rep.radius === undefined ? EARTH_KM : num(rep.radius);
+      if (w !== undefined && D !== undefined && R !== undefined)
+        same('v = ωR sin Δ', num(rep.speed), plateSpeed(w, D, R));
+      break;
+    }
+    case 'dipole': {
+      const [I, lat] = [num(rep.inclination), num(rep.latitude)];
+      latOk(lat, 'latitude');
+      if (I !== undefined && lat !== undefined && Math.abs(lat) < 90)
+        same('the inclination (tan I = 2 tan φ)', I, inclination(lat));
+      break;
+    }
+    case 'momentum': {
+      const lat = num(rep.latitude);
+      latOk(lat, 'latitude');
+      const rim = rep.rim === undefined ? RIM_MS : num(rep.rim);
+      if (lat !== undefined && rim !== undefined && Math.abs(lat) < 90)
+        same('u = ΩR sin²φ ÷ cos φ', num(rep.wind), momentumWind(lat, rim));
+      break;
     }
   }
   return out;

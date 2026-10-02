@@ -72,7 +72,7 @@ import { gasMixtureIssues } from './picturesHs3e';
 import { netIssues, oscillatorIssues } from './picturesHe1h';
 import { skeletalIssues } from './picturesHe1c';
 import { phaseEnvelopeIssues, phaseSubstanceIssues } from './picturesHe1i';
-import { chemRateHe2kIssues } from './picturesHe2k';
+import { chemRateHe2kIssues, globeIssues } from './picturesHe2k';
 import { he1fIssues } from './picturesHe1f';
 import type { ModuleDef, Representation } from '../types';
 
@@ -2263,6 +2263,17 @@ export function repIssues(
     case 'velocityProfile':
       // In formula units, as the picture draws them.
       out.push(...he1fIssues(rep, (id) => (val(id) ?? NaN) * (byId.get(id)?.unitFactor ?? 1)));
+      break;
+    case 'globe':
+      // In formula units (a distance in km, a speed in m/s), as the picture draws them.
+      out.push(
+        ...globeIssues(rep, (x) =>
+          ((v) =>
+            v === undefined || typeof x === 'number' ? v : v * (byId.get(x)?.unitFactor ?? 1))(
+            val(x),
+          ),
+        ),
+      );
       break;
     case 'projectile':
     case 'induction':

@@ -67,6 +67,10 @@ const light = {
   chartDay: '#E4E7F0',
   /** The night half of a globe or moon. */
   chartNight: '#8A8E99',
+  /** The college globe (HC36): its sea, and the sunlit and night halves in mode `sun`. */
+  globeSea: '#D3E6F4',
+  globeDay: '#FBEFC4',
+  globeNight: '#7E8494',
 
   // Materials: real objects in pictures (jugs of water, coins, wood, rock) drawn in their own
   // colors, so a picture reads like the thing it shows. Shading is layered on with the sheen.
@@ -573,6 +577,9 @@ const dark: Palette = {
   lineUpright: '#F472B6',
   chartDay: '#4A5068',
   chartNight: '#0B0C10',
+  globeSea: '#1F3A55',
+  globeDay: '#6A5E34',
+  globeNight: '#1A1D26',
 
   water: '#3C8BD0',
   waterDeep: '#1F5E99',
