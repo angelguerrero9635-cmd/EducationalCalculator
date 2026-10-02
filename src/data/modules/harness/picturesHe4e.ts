@@ -3,11 +3,20 @@
  * holds the level (two-sided) within 0.001 (when the picture or the page works it out; a typed
  * t is the page's to pick, and the caption says the area it holds); the half-width is t⋆s ÷ √n,
  * the ends x̄ ∓ it; the observed t is |x̄ − μ|√n ÷ s. HC152: the shaded tail's mean (an
- * independent sum over the drawn tail) is μ + S; R = h²S; the offspring's mean is μ + R. Called from `repIssues` in `pictures.ts`.
+ * independent sum over the drawn tail) is μ + S; R = h²S; the offspring's mean is μ + R. HC151
+ * and HC153 below. Called from `repIssues` in `pictures.ts`.
  * Test-only.
  */
 import type { VariableDef } from '@/engine/types';
-import { halfWidth, selectedTail, tCritical, tMiddle } from '@/components/module/reps/he4eMath';
+import {
+  driftPaths,
+  halfWidth,
+  heterozygosity,
+  pForH,
+  selectedTail,
+  tCritical,
+  tMiddle,
+} from '@/components/module/reps/he4eMath';
 import { normalPdf, simpson } from '@/components/module/reps/statMath';
 
 import type { Representation } from '../types';
@@ -113,5 +122,50 @@ export function he4eAlleleIssues(rep: Representation, val: Val): string[] {
       if (!close(wbar!, m)) out.push(`w̄ = ${wbar} is not p²w_AA + 2pqw_Aa + q²w_aa = ${m}`);
     }
   }
+  return out;
+}
+
+/**
+ * HC153 `driftPaths`: every drawn path starts at p₀ and stays in [0, 1] in steps of 1 ÷ 2Nₑ (a
+ * count of gene copies); the dashed H at t is H₀(1 − 1 ÷ 2Nₑ)ᵗ (an independent product) and
+ * equals the page's H_t; the page's share kept is H_t ÷ H₀; Nₑ ≥ 1.
+ */
+export function driftPathsIssues(rep: Representation, val: Val): string[] {
+  if (rep.kind !== 'driftPaths') return [];
+  const out: string[] = [];
+  const get = (v: string | number | undefined) => (v === undefined ? undefined : val(v));
+  const [ne, gens, h0Given, pGiven] = [get(rep.ne), get(rep.generations), get(rep.h0), get(rep.p0)];
+  if (ne !== undefined && ne < 1) out.push(`drift: Nₑ = ${ne} is below 1`);
+  if (gens !== undefined && (gens < 1 || Math.abs(gens - Math.round(gens)) > 1e-9))
+    out.push(`drift: ${gens} generations is not a whole number of at least 1`);
+  if (h0Given !== undefined && (h0Given < 0 || h0Given > 0.5))
+    out.push(`drift: H₀ = ${h0Given} is outside 0 to 0.5`);
+  if (ne === undefined || ne < 1 || gens === undefined || gens < 1) return out;
+  const p0 = pGiven ?? (h0Given !== undefined ? pForH(h0Given) : 0.5);
+  const h0 = h0Given ?? 2 * p0 * (1 - p0);
+  if (h0Given !== undefined && pGiven !== undefined && !close(h0Given, 2 * pGiven * (1 - pGiven)))
+    out.push(`drift: H₀ = ${h0Given} is not 2p₀(1 − p₀) for p₀ = ${pGiven}`);
+  const N2 = Math.max(2, Math.round(2 * ne));
+  const paths = driftPaths(ne, Math.min(gens, 200), p0, rep.populations ?? 12, rep.seed);
+  for (const path of paths) {
+    if (Math.abs(path[0]! - p0) > 1e-12)
+      out.push(`drift: a path starts at ${path[0]}, not p₀ = ${p0}`);
+    for (const p of path.slice(1))
+      if (p < 0 || p > 1 || Math.abs(p * N2 - Math.round(p * N2)) > 1e-6) {
+        out.push(`drift: a path reaches p = ${p}, not a count out of 2Nₑ = ${N2} in [0, 1]`);
+        break;
+      }
+  }
+  const t = rep.t !== undefined ? get(rep.t) : gens;
+  if (t === undefined) return out;
+  let h = h0;
+  for (let i = 0; i < t; i++) h *= 1 - 1 / (2 * ne);
+  if (Math.abs(heterozygosity(h0, ne, t) - h) > 1e-9 * Math.max(1e-12, h))
+    out.push(`drift: the dashed H at t = ${t} is not H₀(1 − 1 ÷ 2Nₑ)ᵗ = ${h}`);
+  const ht = get(rep.ht);
+  if (ht !== undefined && !close(ht, h, 1e-6)) out.push(`drift: H_t = ${ht} is not ${h}`);
+  const kept = get(rep.kept);
+  if (kept !== undefined && h0 > 0 && !close(kept, h / h0) && !close(kept, (100 * h) / h0))
+    out.push(`drift: the share kept ${kept} is not H_t ÷ H₀ = ${h / h0}`);
   return out;
 }

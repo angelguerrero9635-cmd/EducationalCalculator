@@ -4,6 +4,7 @@
  * HC114: `normalCurve` `family: 't'` (he.chemistry.analytical#0, ~t-test).
  * HC152: `normalCurve` `shift` (he.biology.evolution#0~breeders).
  * HC151: `alleleFrequencies` `after` (he.biology.evolution#0).
+ * HC153: `driftPaths`, the new kind (he.biology.evolution#1).
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 import { invT } from '@/components/module/reps/statMath';
@@ -450,7 +451,77 @@ const SELECTION_AGAINST = selectionPage(
   { p: 0.95, wAA: 0.7, wAa: 0.85, waa: 1 },
 );
 
+// ─── HC153: genetic drift (evolution#1) ─────────────────────────────────────────
+
+const keptOf = (v: Values) => (1 - 1 / (2 * v.ne!)) ** v.t!;
+
+const driftPage = (id: string, title: string, use: string, typed: Values) =>
+  page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'A Wright–Fisher population: Nₑ diploids, so 2Nₑ gene copies drawn at random each generation.',
+      'No selection, mutation or migration: drift alone changes p.',
+      'Each generation keeps 1 − 1 ÷ (2Nₑ) of the heterozygosity on average; the paths are 12 random runs.',
+    ],
+    variables: [
+      num('ne', 'Nₑ', 'Effective population size', undefined, 2, 1e6, { integer: true, step: 1 }),
+      num('h0', 'H₀', 'Starting heterozygosity', undefined, 0, 0.5, { step: 0.01 }),
+      num('t', 't', 'Generations', undefined, 1, 500, { integer: true, step: 1 }),
+      out('kept', 'H_t ÷ H₀', 'Share kept'),
+      out('ht', 'H_t', 'Heterozygosity after t generations'),
+    ],
+    rules: [
+      derive(
+        'kept',
+        'kept',
+        ['ne', 't'],
+        '{kept} = (1 − 1 ÷ (2 × {ne}))^{t}',
+        keptOf,
+        '(1 − 1 ÷ (2 × {ne}))^{t}',
+        'Each generation keeps 1 − 1 ÷ 2Nₑ of the heterozygosity, so t generations multiply it in t times.',
+      ),
+      derive(
+        'ht',
+        'ht',
+        ['h0', 'kept'],
+        '{ht} = {h0} × {kept}',
+        (v) => v.h0! * v.kept!,
+        '{h0} × {kept}',
+        'The heterozygosity left is the starting one times the share kept.',
+      ),
+    ],
+    example: example(typed, ['kept', keptOf], ['ht', (v) => v.h0! * v.kept!]),
+    startWith: ['ne', 'h0', 't'],
+    representation: {
+      kind: 'driftPaths',
+      ne: 'ne',
+      generations: 't',
+      h0: 'h0',
+      ht: 'ht',
+      kept: 'kept',
+    },
+  });
+
+const DRIFT = driftPage(
+  'g.he-driftPaths-decay',
+  'Genetic drift: heterozygosity lost over generations',
+  'Use this for “Nₑ = 50 and H₀ = 0.5. What is the expected heterozygosity after 100 generations?”',
+  { ne: 50, h0: 0.5, t: 100 },
+);
+
+/** A tiny population: most paths fix or are lost within 40 generations. */
+const DRIFT_SMALL = driftPage(
+  'g.he-driftPaths-small',
+  'Drift in a tiny population',
+  'Use this for “A population of Nₑ = 5 starts at H₀ = 0.5. How much heterozygosity is left after 40 generations?”',
+  { ne: 5, h0: 0.5, t: 40 },
+);
+
 export const HE4E_GALLERY_MODULES: ModuleDef[] = [
+  DRIFT,
+  DRIFT_SMALL,
   SELECTION,
   SELECTION_AGAINST,
   T_INTERVAL,

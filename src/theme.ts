@@ -614,6 +614,8 @@ const light = {
   he4eOffspring: '#0F766E',
   /** HC151: p′ after selection (its tray title, its mark and the Δp arrow). */
   he4eAfter: '#B45309',
+  /** HC153: drift's expected heterozygosity (dashed) and its right-hand axis. */
+  he4eDrift: '#BE185D',
   satellitePanel: '#2B4C8C',
   /** HC2 skeletal structures: a lit functional group's band; O, N, S and halogen letters. */
   skeletalLit: '#FBBF24',
@@ -1136,6 +1138,7 @@ const dark: Palette = {
   he3lBead: '#F59E0B',
   he4eOffspring: '#2DD4BF',
   he4eAfter: '#FBBF24',
+  he4eDrift: '#F472B6',
   satellitePanel: '#3D5FA3',
   skeletalLit: '#F59E0B',
   skeletalO: '#FF8A80',

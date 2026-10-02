@@ -83,4 +83,21 @@ export const HE4E_REQUESTS: PictureRequest[] = [
     status: 'drawn',
     gallery: ['g.he-alleleFrequencies-after', 'g.he-alleleFrequencies-after-against'],
   },
+  {
+    ...ask(
+      'HC153',
+      'driftPaths',
+      'Genetic drift: twelve populations’ allele frequency p over the generations at Nₑ, and the expected heterozygosity H₀(1 − 1 ÷ 2Nₑ)ᵗ dashed on a second axis',
+      [`${B}evolution#1`],
+      [
+        'From B-P19. New kind (typesHe4e.ts DriftPathsSpec, reps/DriftPaths.tsx, the Wright–Fisher draws in reps/he4eMath.ts).',
+        "Fields: { kind: 'driftPaths', ne (Nₑ, 2 to 10⁶), generations (up to 1000), p0? (default the p with 2p(1 − p) = H₀, else 0.5), h0?, t? (the generation marked, default the last), ht? (H_t), kept? (H_t ÷ H₀, a share or a percent), populations? (default 12), seed? }.",
+        'Each population draws its 2Nₑ gene copies from the last generation’s p (one at a time up to 400 copies, past that by the normal approximation), from fixed seeds, so the same Nₑ always draws the same paths; fixed and lost paths stay at 1 and 0 and are counted in the caption. p on the left axis, H on the right (0 to 0.5), the dashed H with its value ringed at t. A "?" Nₑ or t draws no paths and no curve. No handles.',
+        "Example: { kind: 'driftPaths', ne: 'ne', generations: 't', h0: 'h0', ht: 'ht', kept: 'kept' }.",
+        'Harness (harness/picturesHe4e.ts): each path starts at p₀ and stays in [0, 1] in steps of 1 ÷ 2Nₑ; H at t is H₀(1 − 1 ÷ 2Nₑ)ᵗ (an independent product) and equals H_t; the share kept is H_t ÷ H₀.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: ['g.he-driftPaths-decay', 'g.he-driftPaths-small'],
+  },
 ];

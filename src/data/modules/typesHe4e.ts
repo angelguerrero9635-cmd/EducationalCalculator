@@ -97,3 +97,31 @@ export interface AlleleFrequenciesHe4e {
 /** The variable ids HC151's fields name. */
 export const alleleHe4eVars = (r: AlleleFrequenciesHe4e): string[] =>
   ids(r.after, r.change, ...(r.fitness ?? []), r.mean);
+
+// ─── HC153: driftPaths (new kind) ──────────────────────────────────────────────
+
+/**
+ * HC153 (B-P19): genetic drift. `populations` (default 12) Wright–Fisher populations of Nₑ
+ * diploids (2Nₑ gene copies, each generation drawn from the last), all starting at p₀, their p
+ * traced over `generations` (up to 1000) from a fixed seed, so the same Nₑ always draws the same
+ * paths. On a second axis (right, 0 to 0.5) the expected heterozygosity H₀(1 − 1 ÷ 2Nₑ)ᵗ dashed,
+ * with H at generation `t` (default the last) ringed. `p0` defaults to the p with
+ * 2p(1 − p) = H₀ when the page passes `h0` only, else 0.5. `ht` is the page's H_t, `kept` its
+ * share H_t ÷ H₀ (both checked). Values: Nₑ from 2 to 10⁶.
+ */
+export interface DriftPathsSpec {
+  kind: 'driftPaths';
+  ne: NumOrVar;
+  generations: NumOrVar;
+  p0?: NumOrVar;
+  h0?: NumOrVar;
+  t?: NumOrVar;
+  ht?: string;
+  kept?: string;
+  populations?: number;
+  seed?: number;
+}
+
+/** The variable ids a driftPaths spec names. */
+export const driftPathsVars = (r: DriftPathsSpec): string[] =>
+  ids(r.ne, r.generations, r.p0, r.h0, r.t, r.ht, r.kept);

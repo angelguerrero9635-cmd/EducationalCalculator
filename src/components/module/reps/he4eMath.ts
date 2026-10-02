@@ -2,7 +2,7 @@
  * The sums behind group E's round-4 college pictures (docs/RENDERINGS_HE.md), shared by the
  * pictures and their harness checks so both read the same numbers.
  */
-import { Phi, phi, tCdf, tStar } from './statMath';
+import { Phi, phi, seeded, tCdf, tStar } from './statMath';
 
 // ─── HC114: the t curve ──────────────────────────────────────────────────────
 
@@ -59,4 +59,57 @@ export function selectedTail(m: number, sd: number, S: number) {
   const side = S > 0 ? 1 : -1;
   const { z, share } = cutoffFor(Math.abs(S) / sd);
   return { cut: m + side * z * sd, side, share };
+}
+
+// ─── HC153: drift ────────────────────────────────────────────────────────────
+
+/** Most generations a drift picture draws. */
+export const DRIFT_MAX_GENERATIONS = 1000;
+
+/** The expected heterozygosity after t generations: H₀(1 − 1 ÷ 2Nₑ)ᵗ. */
+export const heterozygosity = (h0: number, ne: number, t: number) => h0 * (1 - 1 / (2 * ne)) ** t;
+
+/** The p whose heterozygosity 2p(1 − p) is H (the smaller root; H ≤ 0.5). */
+export const pForH = (h: number) => (1 - Math.sqrt(Math.max(0, 1 - 2 * Math.min(h, 0.5)))) / 2;
+
+/**
+ * Wright–Fisher paths: `count` populations of `ne` diploids from p₀, each generation's 2Nₑ gene
+ * copies drawn at random from the last generation's p (exactly, one copy at a time, up to 400
+ * copies; past that by the normal approximation to the binomial, rounded and kept in 0 to 2Nₑ).
+ * A fixed seed per population and Nₑ: the same Nₑ draws the same paths. Each path has
+ * `generations` + 1 values, p at t = 0, 1, …; a path that fixes or is lost stays there.
+ */
+export function driftPaths(
+  ne: number,
+  generations: number,
+  p0: number,
+  count = 12,
+  seed = 2026,
+): number[][] {
+  const N2 = Math.max(2, Math.round(2 * ne));
+  const T = Math.max(0, Math.min(DRIFT_MAX_GENERATIONS, Math.round(generations)));
+  const paths: number[][] = [];
+  for (let k = 0; k < count; k++) {
+    const rand = seeded(seed + 7919 * k + (N2 % 100003));
+    let p = Math.min(1, Math.max(0, p0));
+    const path = [p];
+    for (let t = 1; t <= T; t++) {
+      if (p > 0 && p < 1) {
+        let copies: number;
+        if (N2 <= 400) {
+          copies = 0;
+          for (let i = 0; i < N2; i++) if (rand() < p) copies++;
+        } else {
+          const u1 = Math.max(rand(), 1e-12);
+          const z = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * rand());
+          copies = Math.round(N2 * p + z * Math.sqrt(N2 * p * (1 - p)));
+          copies = Math.min(N2, Math.max(0, copies));
+        }
+        p = copies / N2;
+      }
+      path.push(p);
+    }
+    paths.push(path);
+  }
+  return paths;
 }

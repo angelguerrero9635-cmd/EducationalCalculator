@@ -68,6 +68,7 @@ import { LinearFunction, LineSystem } from './Lines';
 import { FunctionGraph } from './FunctionGraph';
 import { FunctionGraphHe1d } from './FunctionGraphHe1d';
 import { NormalCurveHe4e } from './NormalCurveHe4e';
+import { DriftPaths } from './DriftPaths';
 import { AlleleFrequenciesAfterHe4e } from './AlleleFrequenciesAfterHe4e';
 import { BarsLogHe1d } from './BarsLogHe1d';
 import { FunctionMachine } from './FunctionMachine';
@@ -410,6 +411,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <FieldPlot spec={spec} calc={calc} />;
     case 'surfacePlot':
       return <SurfacePlot spec={spec} calc={calc} />; // HC46
+    case 'driftPaths':
+      return <DriftPaths spec={spec} calc={calc} />; // HC153
     case 'solidOfRevolution':
       return <SolidOfRevolution spec={spec} calc={calc} />; // HC65
     case 'thermalWall':
