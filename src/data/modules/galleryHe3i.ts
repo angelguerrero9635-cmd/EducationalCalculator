@@ -795,6 +795,216 @@ const machFinishFine = finishDemo(
   1.2,
 );
 
+// ── HC84: instantaneous centres and linkages (dynamics#3~rolling, ~ic; cad-graphics#3) ──
+
+const DEG = Math.PI / 180;
+
+const ladderDemo = (id: string, title: string, L: number, th: number, vA: number) => {
+  const omega = vA / (L * Math.sin(th * DEG));
+  return demo({
+    id,
+    title,
+    use: 'Use this for a sliding ladder’s angular speed and how fast its top moves, from its instantaneous centre.',
+    assumptions: [
+      'The foot slides along the floor and the top down the wall.',
+      'The IC is where the normals to those two paths meet.',
+    ],
+    variables: [
+      quantity('L', 'L', 'Ladder length', 'm', 0.5, 20, 0.01),
+      quantity('th', 'θ', 'Angle with the floor', '°', 1, 89, 0.1),
+      quantity('vA', 'v_A', 'Foot speed', 'm/s', 0.01, 20, 0.001),
+      quantity('w', 'ω', 'Angular speed', 'rad/s', 0.001, 100, 0.001),
+      quantity('vB', 'v_B', 'Top speed', 'm/s', 0.001, 1000, 0.001),
+    ],
+    ...rules(
+      {
+        relation: {
+          id: 'ω = v_A ÷ (L sin θ)',
+          display: '{w} = {vA} ÷ ({L} × sin({th}°))',
+          vars: ['w', 'vA', 'L', 'th'],
+          residual: (x) => x.w! * x.L! * Math.sin(x.th! * DEG) - x.vA!,
+          solve: {
+            w: (x) => div(x.vA!, x.L! * Math.sin(x.th! * DEG)),
+            vA: (x) => x.w! * x.L! * Math.sin(x.th! * DEG),
+            L: (x) => div(x.vA!, x.w! * Math.sin(x.th! * DEG)),
+          },
+        },
+        steps: {
+          w: st('{vA} ÷ ({L} × sin({th}°))', 'The foot is L sin θ from the IC: ω = v ÷ r.'),
+          vA: st('{w} × {L} × sin({th}°)', 'v = ωr, with the foot L sin θ from the IC.'),
+          L: st('{vA} ÷ ({w} × sin({th}°))', 'Solve v_A = ωL sin θ for L.'),
+        },
+      },
+      {
+        relation: {
+          id: 'v_B = ωL cos θ',
+          display: '{vB} = {w} × {L} × cos({th}°)',
+          vars: ['vB', 'w', 'L', 'th'],
+          residual: (x) => x.vB! - x.w! * x.L! * Math.cos(x.th! * DEG),
+          solve: {
+            vB: (x) => x.w! * x.L! * Math.cos(x.th! * DEG),
+            w: (x) => div(x.vB!, x.L! * Math.cos(x.th! * DEG)),
+          },
+        },
+        steps: {
+          vB: st('{w} × {L} × cos({th}°)', 'The top is L cos θ from the IC: v = ωr.'),
+          w: st('{vB} ÷ ({L} × cos({th}°))', 'ω = v ÷ r for the top.'),
+        },
+      },
+    ),
+    example: { L, th, vA, w: omega, vB: omega * L * Math.cos(th * DEG) },
+    startWith: ['L', 'th', 'vA'],
+    representation: {
+      kind: 'linkage',
+      mode: 'ladder',
+      length: 'L',
+      angle: 'th',
+      footSpeed: 'vA',
+      topSpeed: 'vB',
+      omega: 'w',
+    },
+  });
+};
+
+const linkLadder = ladderDemo(
+  'g.he-linkage-ladder',
+  'A sliding ladder and its instantaneous centre',
+  5,
+  60,
+  2,
+);
+const linkLadderSteep = ladderDemo(
+  'g.he-linkage-ladder-steep',
+  'A nearly upright ladder: the top barely moves',
+  4,
+  80,
+  0.5,
+);
+
+const rollingDemo = (id: string, title: string, th: number, c: number) =>
+  demo({
+    id,
+    title,
+    use: 'Use this for how fast a ball, disk or hoop speeds up rolling down a slope without slipping.',
+    assumptions: [
+      'It rolls without slipping: the contact point is the instantaneous centre.',
+      'I = cmr² (hoop 1, hollow ball 2/3, disk 1/2, solid ball 0.4); g = 9.81 m/s².',
+    ],
+    variables: [
+      quantity('th', 'θ', 'Slope angle', '°', 0.5, 60, 0.1),
+      quantity('c', 'c', 'Shape factor I ÷ mr²', undefined, 0.05, 1, 0.001),
+      quantity('a', 'a', 'Acceleration', 'm/s²', 0.001, 9.81, 0.001),
+    ],
+    ...rules({
+      relation: {
+        id: 'a = g sin θ ÷ (1 + c)',
+        display: '{a} = 9.81 × sin({th}°) ÷ (1 + {c})',
+        vars: ['a', 'th', 'c'],
+        residual: (x) => x.a! * (1 + x.c!) - 9.81 * Math.sin(x.th! * DEG),
+        solve: {
+          a: (x) => (9.81 * Math.sin(x.th! * DEG)) / (1 + x.c!),
+          c: (x) => div(9.81 * Math.sin(x.th! * DEG), x.a!)! - 1,
+        },
+      },
+      steps: {
+        a: st(
+          '9.81 × sin({th}°) ÷ (1 + {c})',
+          'Gravity along the slope, shared between speeding up and spinning up.',
+        ),
+        c: st('9.81 × sin({th}°) ÷ {a} − 1', 'Solve a(1 + c) = g sin θ for c.'),
+      },
+    }),
+    example: { th, c, a: (9.81 * Math.sin(th * DEG)) / (1 + c) },
+    startWith: ['th', 'c'],
+    representation: {
+      kind: 'linkage',
+      mode: 'rolling',
+      angle: 'th',
+      shape: 'c',
+      acceleration: 'a',
+      gravity: 9.81,
+    },
+  });
+
+const linkRolling = rollingDemo('g.he-linkage-rolling', 'A ball rolling down a 30° slope', 30, 0.4);
+const linkRollingHoop = rollingDemo(
+  'g.he-linkage-rolling-hoop',
+  'A hoop on a gentle 10° slope',
+  10,
+  1,
+);
+
+const mechanismDemo = (id: string, title: string, n: number, j1: number, slider = false) =>
+  demo({
+    id,
+    title,
+    use: 'Use this for the degrees of freedom of a planar linkage from its links and joints (Gruebler’s equation).',
+    assumptions: [
+      'Count the ground as a link.',
+      'Pins and sliders are full joints (j₁); a pin in a slot or a rolling-and-sliding contact is a half joint (j₂).',
+    ],
+    variables: [
+      quantity('n', 'n', 'Links', undefined, 2, 12, 1, { integer: true }),
+      quantity('j1', 'j_1', 'Full joints', undefined, 1, 16, 1, { integer: true }),
+      quantity('j2', 'j_2', 'Half joints', undefined, 0, 8, 1, { integer: true }),
+      quantity('M', 'M', 'Mobility', undefined, -20, 20, 1, { integer: true }),
+    ],
+    ...rules({
+      relation: {
+        id: 'M = 3(n − 1) − 2j₁ − j₂',
+        display: '{M} = 3 × ({n} − 1) − 2 × {j1} − {j2}',
+        vars: ['M', 'n', 'j1', 'j2'],
+        residual: (x) => x.M! - (3 * (x.n! - 1) - 2 * x.j1! - x.j2!),
+        solve: {
+          M: (x) => 3 * (x.n! - 1) - 2 * x.j1! - x.j2!,
+          n: (x) => (x.M! + 2 * x.j1! + x.j2!) / 3 + 1,
+          j1: (x) => (3 * (x.n! - 1) - x.j2! - x.M!) / 2,
+          j2: (x) => 3 * (x.n! - 1) - 2 * x.j1! - x.M!,
+        },
+      },
+      steps: {
+        M: st(
+          '3 × ({n} − 1) − 2 × {j1} − {j2}',
+          'Each moving link has 3 freedoms; a full joint takes 2, a half joint 1.',
+        ),
+        n: st('({M} + 2 × {j1} + {j2}) ÷ 3 + 1', 'Solve Gruebler’s equation for the links.'),
+        j1: st('(3 × ({n} − 1) − {j2} − {M}) ÷ 2', 'Solve for the full joints.'),
+        j2: st('3 × ({n} − 1) − 2 × {j1} − {M}', 'Solve for the half joints.'),
+      },
+    }),
+    example: { n, j1, j2: 0, M: 3 * (n - 1) - 2 * j1 },
+    startWith: ['n', 'j1', 'j2'],
+    representation: {
+      kind: 'linkage',
+      mode: 'mechanism',
+      links: 'n',
+      full: 'j1',
+      half: 'j2',
+      mobility: 'M',
+      ...(slider ? { slider: true } : {}),
+    },
+  });
+
+const linkFourBar = mechanismDemo(
+  'g.he-linkage-fourbar',
+  'A four-bar linkage: one input drives it',
+  4,
+  4,
+);
+const linkFiveBar = mechanismDemo(
+  'g.he-linkage-fivebar',
+  'A five-bar linkage needs two inputs',
+  5,
+  5,
+);
+const linkSliderCrank = mechanismDemo(
+  'g.he-linkage-slider-crank',
+  'A slider-crank: three pins and a slider',
+  4,
+  4,
+  true,
+);
+
 export const HE3I_GALLERY_MODULES: ModuleDef[] = [
   forearmLoad,
   forearmLevel,
@@ -810,6 +1020,13 @@ export const HE3I_GALLERY_MODULES: ModuleDef[] = [
   machMilling,
   machFinish,
   machFinishFine,
+  linkLadder,
+  linkLadderSteep,
+  linkRolling,
+  linkRollingHoop,
+  linkFourBar,
+  linkFiveBar,
+  linkSliderCrank,
 ];
 
 export const HE3I_GALLERY_LAYOUTS: LayoutDef[] = [];

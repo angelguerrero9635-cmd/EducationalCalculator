@@ -100,4 +100,29 @@ export const HE3I_REQUESTS: PictureRequest[] = [
       'g.he-machining-finish-fine',
     ],
   },
+  {
+    ...ask(
+      'HC84',
+      'linkage',
+      'Rigid bodies in plane motion with their instantaneous centre: a sliding ladder, a ball or wheel rolling down a slope, and a single closed loop of links with its joints counted for Gruebler',
+      [`${E}dynamics#3~rolling`, `${E}dynamics#3~ic`, `${E}cad-graphics#3`],
+      [
+        'From ME-P29. New kind (typesHe3i.ts LinkageSpec, reps/Linkage.tsx, the sums in reps/linkageMath.ts).',
+        "Fields: { kind: 'linkage', mode: 'ladder' | 'rolling' | 'mechanism', length? (L), angle? (θ in degrees: the ladder's with the floor, or the slope's), footSpeed? (v_A), topSpeed? (v_B), omega? (ω), radius? (r), speed? (the centre's v), acceleration? (a), shape? (c = I ÷ mr²), gravity? (g as the page writes it, for the a check), links? (n, with the ground), full? (j₁), half? (j₂), mobility? (M), slider? (a slider-crank), more? }.",
+        "Example (dynamics#3~ic): { kind: 'linkage', mode: 'ladder', length: 'L', angle: 'th', footSpeed: 'vA', topSpeed: 'vB', omega: 'w' }. Example (dynamics#3~rolling): { kind: 'linkage', mode: 'rolling', angle: 'th', shape: 'c', acceleration: 'a', gravity: 9.81 }. Example (cad-graphics#3): { kind: 'linkage', mode: 'mechanism', links: 'n', full: 'j1', half: 'j2', mobility: 'M' } (slider: true for a slider-crank).",
+        'Ladder: a brick wall, a hatched floor, the ladder in wood to scale from L and θ; the IC where the normals to the two paths meet (above the foot, level with the top), dashed rays r_A = L sin θ and r_B = L cos θ (and to the middle), each velocity ⟂ its ray and ∝ its distance, ω round the IC. Rolling: a ball (painted), disk or hoop by c on a slope at θ, the contact as the IC (v = 0), rays to the centre, the top and three rim points with their velocities ⟂ and ∝ distance (v, 2v at the top; the page’s v when it gives one), a along the slope. Mechanism: the ground hatched as link 1, the moving links numbered from 2, pins ringed, a pin in a slot for each half joint, a slider block and its rail for a slider-crank; a count that needs more than one loop draws the links and says so. A "?" draws no arrow or label for it.',
+        'The harness (harness/picturesHe3i.ts) checks ω = v_A ÷ (L sin θ) and v_B = ωL cos θ (velocities ⟂ their IC rays and ∝ distance), ω = v ÷ r and a = g sin θ ÷ (1 + c) on a slope, M = 3(n − 1) − 2j₁ − j₂ with whole counts. A slider-crank draws its slider only at n = 4 (any other n draws the plain loop). The pages are not built yet.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-linkage-ladder',
+      'g.he-linkage-ladder-steep',
+      'g.he-linkage-rolling',
+      'g.he-linkage-rolling-hoop',
+      'g.he-linkage-fourbar',
+      'g.he-linkage-fivebar',
+      'g.he-linkage-slider-crank',
+    ],
+  },
 ];

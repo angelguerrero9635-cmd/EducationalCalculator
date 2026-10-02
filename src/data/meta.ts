@@ -153,6 +153,7 @@ const PICTURE_NAMES: Record<string, string> = {
   unitCell: 'a cubic unit cell, its lattice planes and Bragg reflection',
   binaryPhase: 'a binary phase diagram with a tie line and the lever rule',
   machining: 'a turning or milling cut, or the surface a tool nose leaves',
+  linkage: 'a ladder, a rolling wheel or a linkage with its instantaneous centre',
   globe:
     'a globe: the Sun’s rays, a great-circle route, a turning plate, a dipole field or a ring of air',
   stressStrain:

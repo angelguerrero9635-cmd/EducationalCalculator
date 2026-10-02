@@ -7,10 +7,11 @@
 import { HIP_SHARE, limbBalance } from '@/components/module/reps/limbMath';
 import { STEEL } from '@/components/module/reps/binaryPhaseMath';
 import { siFactor } from '@/components/module/reps/he3iUnits';
+import { ladderOf, mobility, rollingAcceleration } from '@/components/module/reps/linkageMath';
 import { cuttingSpeed, idealSurface, profile } from '@/components/module/reps/machiningMath';
 import type { VariableDef } from '@/engine/types';
 
-import type { BinaryPhaseSpec, He3iSpec, MachiningSpec } from '../typesHe3i';
+import type { BinaryPhaseSpec, He3iSpec, LinkageSpec, MachiningSpec } from '../typesHe3i';
 import type { SimpleMachineSpec } from '../typesHsk';
 
 type Val = (id: string) => number | undefined;
@@ -89,6 +90,9 @@ export function he3iIssues(rep: He3iSpec, val: Val, byId: Map<string, VariableDe
       break;
     case 'machining':
       out.push(...machiningIssues(rep, si, val));
+      break;
+    case 'linkage':
+      out.push(...linkageIssues(rep, si, val));
       break;
     default:
       break;
@@ -197,6 +201,53 @@ function machiningIssues(
           `machining: the drawn profile's R_a ${drawn} is far from f² ÷ 32r = ${s.roughness}`,
         );
     }
+  }
+  return out;
+}
+
+/** HC84: velocities ⟂ their IC rays and ∝ distance (ω = v_A ÷ L sin θ, v_B = ωL cos θ; a rolling
+ * centre's v = ωr); a = g sin θ ÷ (1 + c); Gruebler's M = 3(n − 1) − 2j₁ − j₂. */
+function linkageIssues(
+  rep: LinkageSpec,
+  si: (x: X, unit: string) => number | undefined,
+  val: Val,
+): string[] {
+  const out: string[] = [];
+  const raw = (x: X) => (x === undefined ? undefined : typeof x === 'number' ? x : val(x));
+  const same = (got: number | undefined, want: number | undefined, what: string) => {
+    if (got !== undefined && want !== undefined && Number.isFinite(want) && !near(got, want))
+      out.push(`linkage: ${what} = ${got}, the picture draws ${want}`);
+  };
+  const th = raw(rep.angle);
+  if (th !== undefined && (th < 0 || th > 90))
+    out.push(`linkage: angle ${th}° is not from 0° to 90°`);
+  if (rep.mode === 'ladder') {
+    const [L, vA] = [si(rep.length, 'm'), si(rep.footSpeed, 'm/s')];
+    if (L === undefined || vA === undefined || th === undefined || th <= 0) return out;
+    const l = ladderOf(L, th, vA);
+    same(si(rep.omega, 'rad/s'), l.omega, 'ω = v_A ÷ (L sin θ)');
+    same(si(rep.topSpeed, 'm/s'), l.vB, 'v_B = ωL cos θ');
+  }
+  if (rep.mode === 'rolling') {
+    const [R, v] = [si(rep.radius, 'm'), si(rep.speed, 'm/s')];
+    if (R !== undefined && v !== undefined && R > 0)
+      same(si(rep.omega, 'rad/s'), v / R, 'ω = v ÷ r');
+    const [g, cS] = [si(rep.gravity, 'm/s²'), raw(rep.shape)];
+    if (cS !== undefined && (cS <= 0 || cS > 1))
+      out.push(`linkage: shape factor ${cS} is not in (0, 1]`);
+    if (g !== undefined && cS !== undefined && th !== undefined)
+      same(si(rep.acceleration, 'm/s²'), rollingAcceleration(g, th, cS), 'a = g sin θ ÷ (1 + c)');
+  }
+  if (rep.mode === 'mechanism') {
+    const [n, j1, j2] = [raw(rep.links), raw(rep.full), raw(rep.half) ?? 0];
+    for (const [x, what] of [
+      [n, 'links'],
+      [j1, 'full joints'],
+      [j2, 'half joints'],
+    ] as const)
+      if (x !== undefined && (x < 0 || Math.abs(x - Math.round(x)) > 1e-9))
+        out.push(`linkage: ${what} ${x} is not a whole number`);
+    if (n !== undefined && j1 !== undefined) same(raw(rep.mobility), mobility(n, j1, j2), 'M');
   }
   return out;
 }

@@ -159,6 +159,8 @@ export interface LinkageSpec {
   speed?: NumOrVar;
   acceleration?: NumOrVar;
   shape?: NumOrVar;
+  /** `rolling`: g as the page writes it (9.81 m/s² on engineering pages), for a = g sin θ ÷ (1 + c). */
+  gravity?: NumOrVar;
   /** `mechanism`: links n (with the ground), full joints j₁, half joints j₂ and mobility M. */
   links?: NumOrVar;
   full?: NumOrVar;
