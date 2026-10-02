@@ -15,6 +15,7 @@ import {
   type PhPolyprotic,
   type PhScaleHe3fSpec,
 } from './typesHe3f';
+import {
   energyHe3gVars,
   gasHe3gVars,
   type EnergyBombSpec,

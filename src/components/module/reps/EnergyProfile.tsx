@@ -248,18 +248,18 @@ function ProfileView({ spec, rep, calc }: { spec: Profile; rep: Rep; calc: Calcu
         {[
           problem ??
             (!(r.known && p.known)
-              ? 'ΔH = products − reactants: type both to compare them.'
-            (free
-              ? dH < 0
-                ? `The products are lower: ${sym} < 0, so it runs forward on its own (exergonic).`
-                : dH > 0
-                  ? `The products are higher: ${sym} > 0, so it does not run on its own (endergonic).`
-                  : `The products are at the same level: ${sym} = 0.`
-              : dH < 0
-                ? `The products are lower: the reaction gives off ${formatNumber(Number((-dH).toFixed(6)))} ${unit}. Exothermic.`
-                : dH > 0
-                  ? `The products are higher: the reaction takes in ${formatNumber(Number(dH.toFixed(6)))} ${unit}. Endothermic.`
-                  : 'The products are at the same level: ΔH = 0.'),
+              ? `${sym} = products − reactants: type both to compare them.`
+              : free
+                ? dH < 0
+                  ? `The products are lower: ${sym} < 0, so it runs forward on its own (exergonic).`
+                  : dH > 0
+                    ? `The products are higher: ${sym} > 0, so it does not run on its own (endergonic).`
+                    : `The products are at the same level: ${sym} = 0.`
+                : dH < 0
+                  ? `The products are lower: the reaction gives off ${formatNumber(Number((-dH).toFixed(6)))} ${unit}. Exothermic.`
+                  : dH > 0
+                    ? `The products are higher: the reaction takes in ${formatNumber(Number(dH.toFixed(6)))} ${unit}. Endothermic.`
+                    : 'The products are at the same level: ΔH = 0.'),
           ...(cat && !catProblem
             ? [`A catalyst lowers the hump, not the levels: ${sym} stays the same.`]
             : []),

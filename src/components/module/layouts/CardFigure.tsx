@@ -138,10 +138,9 @@ export function CardFigureView({
                 ? IR_CARD_H
                 : figure.kind === 'projection'
                   ? PROJECTION_CARD_H
-                  : S);
-            : figure.kind === 'pathwayStep'
-              ? PATHWAY_CARD_H
-              : S);
+                  : figure.kind === 'pathwayStep'
+                    ? PATHWAY_CARD_H
+                    : S);
   return (
     <Svg width={w} height={h}>
       <Drawing f={figure} w={w} ink={ink} shade={shade} />
