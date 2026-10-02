@@ -6,7 +6,7 @@ can't and the picture has no handle or tap of its own for that value. Every othe
 has the input boxes (and the picture’s own handles or taps) alone. A module can override
 its kind with `sliders: true | false`.
 
-68 of 1369 pages show sliders.
+68 of 1371 pages show sliders.
 
 ## By picture kind
 
@@ -47,8 +47,8 @@ its kind with `sliders: true | false`.
 | curvedSolid | 14 | no | the picture has its own handles or taps, or the inputs are enough |
 | decayChart | 8 | no | the picture has its own handles or taps, or the inputs are enough |
 | diceGrid | 3 | no | the picture has its own handles or taps, or the inputs are enough |
-| dnaStrand | 10 | no | the picture has its own handles or taps, or the inputs are enough |
-| dotPlot | 7 | no | the picture has its own handles or taps, or the inputs are enough |
+| dnaStrand | 11 | no | the picture has its own handles or taps, or the inputs are enough |
+| dotPlot | 8 | no | the picture has its own handles or taps, or the inputs are enough |
 | dotSet | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | doubleNumberLine | 16 | no | the picture has its own handles or taps, or the inputs are enough |
 | earthLayers | 6 | no | the picture has its own handles or taps, or the inputs are enough |
@@ -843,6 +843,7 @@ its kind with `sliders: true | false`.
 | m.9.data-displays~standard-deviation | dotPlot | no |
 | m.9.data-displays~compare | boxPlot | no |
 | m.9.data-displays~histogram-from-list | histogram | no |
+| m.9.data-displays~dot-plot | dotPlot | no |
 | m.9.two-way-tables | table | no |
 | m.9.two-way-tables~marginal | table | no |
 | m.9.two-way-tables~conditional | table | no |
@@ -1114,6 +1115,7 @@ its kind with `sliders: true | false`.
 | s.9.biotechnology | dnaStrand | no |
 | s.9.biotechnology~frameshift | dnaStrand | no |
 | s.9.biotechnology~deletion | dnaStrand | no |
+| s.9.biotechnology~substitution | dnaStrand | no |
 | s.9.biotechnology~gel | gel | no |
 | s.9.biotechnology~pcr | gel | no |
 | s.9.evolution-evidence | alleleFrequencies | no |

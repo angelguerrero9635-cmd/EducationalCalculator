@@ -5927,7 +5927,6 @@ const DATA_DISPLAYS: ModuleDef[] = [
       max: 10,
       mean: 'mean',
       median: 'md',
-      range: 'R',
     },
   }),
 ];
