@@ -2267,6 +2267,7 @@ export function repIssues(
       break;
     case 'fluidSystem':
       out.push(...he1gIssues(rep, siOf(val, byId), byId));
+      break;
     case 'controlVolume':
     case 'velocityProfile':
       // In formula units, as the picture draws them.
@@ -2280,6 +2281,9 @@ export function repIssues(
           rep,
           (id) => (val(id) ?? NaN) * (byId.get(id)?.unitFactor ?? 1),
           (id) => byId.get(id)?.unit,
+        ),
+      );
+      break;
     case 'globe':
       // In formula units (a distance in km, a speed in m/s), as the picture draws them.
       out.push(
