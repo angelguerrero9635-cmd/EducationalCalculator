@@ -25,6 +25,7 @@ import type { HslSpec } from './typesHsl';
 import type { ChemDiagramSpec } from './typesHs2d';
 import type { Hs2fKindSpec } from './typesHs2f';
 import type { Hs3cSpec } from './typesHs3c';
+import type { He1gSpec } from './typesHe1g';
 import type { DopplerWave, HskSpec, StandingWave } from './typesHsk';
 import type { Hs2cSpec } from './typesHs2c';
 import type { Hs3aSpec } from './typesHs3a';
@@ -1112,6 +1113,8 @@ export type Representation =
   | Hs2fKindSpec
   /** Grades 9–12 round 3 earth and space, group H3C: geologic clock, … (`typesHs3c.ts`). */
   | Hs3cSpec
+  /** College round 1, group G: fluidSystem (HC6; specs in `typesHe1g.ts`). */
+  | He1gSpec
   /** Grades 9–12 statistics and counting, group HB (specs in `typesHsb.ts`). */
   | HsbSpec
   /** Grades 9–12 group D: unit circle, algebra tiles, vectors, … (specs in `typesHsd.ts`). */
