@@ -18,6 +18,11 @@ Where the work stands, for the next session. Everything listed as merged is on
   owner approved the network calls and dependencies payments need (calls limited to payment
   and entitlement; the exact rule wording and package list come from `docs/plans/site-upgrade.md`).
 
+- Site upgrade (`docs/plans/site-upgrade.md`): phases A (tokens, web template, meta), B (one
+  header, desktop sidebar and top bar, breadcrumbs, footer) and C (every screen) are done.
+  Left: C13 legal and support pages, D brand assets (waiting on `docs/RENDERINGS_BRAND.md` from
+  the pictures chat), E–G payments (waiting on owner decisions D-1 to D-12 in the plan).
+
 ## Done and merged
 
 - K–12: every skill has pages; reviews done; site-wide "?" and drag sweep merged (`70fa18d`).
