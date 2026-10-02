@@ -5,6 +5,24 @@ helpers, pictures, tests, harness) could have prevented are turned into engine w
 next section is written, so each section starts from a better engine than the last. One entry
 per review; each line names the finding and what the engine now does about it.
 
+## Grades 9–12 picture tracker: H01–H88 by parts, demos retired
+
+- **H01–H88 all still said `drawn`** though most pictures had long been on their pages, and a
+  probe by kind could not see parts drawn under another kind (icon cards, explore figures,
+  equation templates). → Each request was checked part by part against its notes: 80 are
+  `placed`, their page lists naming the problem types where a skill's main page lacks the
+  picture, and requests in parts (H16, H19, H71, H78, H80, H81–H88) map each page to the text
+  that shows its part. Pages whose part lives elsewhere are dropped with a note (H01, H06, H23,
+  H26, H44). Eight stay `drawn`, each note naming the part no page shows: H01 cube root, H03
+  bins from data and the median, H10 polar circle and spiral, H35 codominance, H36 deletion,
+  H40 biomass and numbers pyramids, H48 hydrogen bonds, H74 the intrusion. Two small page
+  changes finished requests: the kingdom icons on s.9.classification~kingdoms (H39) and the
+  augmented matrix on m.12.matrices (H86). K–8: R11b and R18 placed where their option is shown;
+  R01b waits on the camouflage page.
+- **436 gallery demos repeated what a lesson page now shows.** → They join `RETIRED` in
+  gallery.ts; a demo stays where it is the only place an option is shown (the unit circle's
+  linked graph and `arc`, `window`, the emission `lines`, the hydrogen-bond mode, …).
+
 ## Solver open items: silent clears, rounding chains (E29), circular fills (E21)
 
 - **A newer value cleared an older one with no reason** (m.10 modeling-density main r = 0.01
