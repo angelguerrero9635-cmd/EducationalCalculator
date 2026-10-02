@@ -17,7 +17,9 @@ import {
   RYDBERG,
 } from '@/components/module/reps/orbitalHe4dMath';
 
-import type { OrbitalHe4dSpec } from '../typesHe4d';
+import { electronTotals, formalCharges, resonanceSet } from '@/components/module/reps/lewisHe4d';
+
+import type { LewisHe4dSpec, OrbitalHe4dSpec } from '../typesHe4d';
 
 type Val = (x: string | number) => number | undefined;
 
@@ -97,5 +99,43 @@ export function orbitalHe4dIssues(rep: OrbitalHe4dSpec, val: Val): string[] {
   agree(out, read(val, rep.meanNm), mean * BOHR_NM, '⟨r⟩ (nm)', 4e-3);
   agree(out, read(val, rep.peak), peak, 'r_mp (a₀)');
   agree(out, read(val, rep.peakNm), peak * BOHR_NM, 'r_mp (nm)', 4e-3);
+  return out;
+}
+
+/**
+ * HC111: every drawn form counts the ion's valence electrons and its formal charges add to the
+ * ion's charge; the page's v, N and B name an atom drawn (in some form) and FC = v − N − B ÷ 2.
+ */
+export function lewisHe4dIssues(rep: LewisHe4dSpec, val: Val): string[] {
+  const out: string[] = [];
+  const set = rep.formula ? resonanceSet(rep.formula) : undefined;
+  if (!set) return [`no college Lewis structure for ${rep.formula ?? '(no formula)'}`];
+  const forms = rep.resonance ? set.forms : set.forms.slice(0, 1);
+  if (rep.resonance && set.forms.length < 2) out.push(`${rep.formula} has one form only`);
+  const q = read(val, rep.charge);
+  if (q !== undefined && q !== set.charge) out.push(`charge ${q}, ${rep.formula} is ${set.charge}`);
+  forms.forEach((form, k) => {
+    const t = electronTotals(set, form);
+    if (t.valence !== t.drawn)
+      out.push(`form ${k + 1}: ${t.drawn} electrons drawn, ${t.valence} valence`);
+    const cs = formalCharges(set, form);
+    const sum = cs.reduce((s, x) => s + x.FC, 0);
+    if (sum !== set.charge)
+      out.push(`form ${k + 1}: formal charges add to ${sum}, not ${set.charge}`);
+    cs.forEach((x, i) => {
+      const el = set.atoms[i]!.el;
+      // Second-period atoms never pass 8 (H 2); only period 3 and below expand.
+      if (['B', 'C', 'N', 'O', 'F'].includes(el) && x.around > 8)
+        out.push(`form ${k + 1}: ${el} has ${x.around} electrons around it`);
+    });
+  });
+  const f = rep.formal;
+  if (!f) return out;
+  const [v, N, B, FC] = [f.valence, f.nonbonding, f.bonding, f.charge].map((x) => read(val, x));
+  if (v !== undefined && N !== undefined && B !== undefined) {
+    if (FC !== undefined && Math.abs(FC - (v - N - B / 2)) > 1e-9)
+      out.push(`FC = ${v} − ${N} − ${B} ÷ 2 = ${v - N - B / 2}, the value shows ${FC}`);
+  }
+  if (f.atom !== undefined && !set.atoms[f.atom]) out.push(`no atom ${f.atom} in ${rep.formula}`);
   return out;
 }

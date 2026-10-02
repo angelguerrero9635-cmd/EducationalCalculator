@@ -43,6 +43,8 @@ import { ionicChargeIssues } from './picturesHs3e';
 import type { ChemSpec } from '../typesChem';
 import type { HsiSpec } from '../typesHsi';
 import { isOrbitalHe4d } from '../typesHe4d';
+import { isLewisHe4d } from '@/components/module/reps/lewisHe4d';
+import { lewisHe4dIssues } from './picturesHe4d';
 
 /** Equal to display rounding (values are read as shown, 4 decimals or 4 significant figures). */
 const near = (a: number, b: number, tol = 1e-4) =>
@@ -50,6 +52,8 @@ const near = (a: number, b: number, tol = 1e-4) =>
 
 export function hsiIssues(rep: HsiSpec, val: (id: string) => number | undefined): string[] {
   if (isOrbitalHe4d(rep)) return []; // HC109, HC110: picturesHe4d.ts
+  if (rep.kind === 'lewisStructure' && rep.mode === 'molecule' && isLewisHe4d(rep))
+    return lewisHe4dIssues(rep, (x) => (typeof x === 'number' ? x : val(x))); // HC111
   const out: string[] = [];
   const num = (x: string | number | undefined) =>
     x === undefined ? undefined : typeof x === 'number' ? x : val(x);

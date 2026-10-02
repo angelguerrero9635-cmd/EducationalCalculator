@@ -62,4 +62,23 @@ export const HE4D_REQUESTS: PictureRequest[] = [
       'g.he-orbitalDiagram-crystal-field-tetrahedral',
     ],
   },
+  {
+    ...ask(
+      'HC111',
+      'lewisStructure',
+      'lewisStructure formal charges, resonance and expanded octets: every atom’s FC = v − N − B ÷ 2 circled beside it (signed), the atom with the page’s v, N and B ringed in each form, an ion in brackets; resonance forms two to a row joined by double-headed arrows (NO₃⁻, NO₂⁻, CO₃²⁻, O₃, SO₄²⁻ 3 of 6); expanded octets PCl₅, SF₄, SF₆, ClF₃, XeF₄, I₃⁻ named in the caption',
+      ['he.chemistry.gen-chem-1#4~formal-charge'],
+      [
+        'From C-P12. New fields on the molecule mode (typesHsi.ts, typed in typesHe4d.ts): formal?: { valence?, nonbonding?, bonding?, charge?, atom? (an index, used while the values are "?") }, resonance?: boolean. Structures by `formula` from reps/lewisHe4d.ts: "NO3-", "NO2-", "CO3 2-", "O3", "SO4 2-", "PCl5", "SF4", "SF6", "ClF3", "XeF4", "I3-" (and any Grades 9–12 formula, one form). Pages without these fields draw as before.',
+        '~formal-charge: { kind: "lewisStructure", mode: "molecule", formula: "NO3-", resonance: true, formal: { valence: "v", nonbonding: "N", bonding: "B", charge: "FC" } } (N: 5 − 0 − 8 ÷ 2 = +1; a single-bonded O: 6 − 6 − 2 ÷ 2 = −1, ringed in each form where it sits). The page may swap formula for O3 or I3- in other examples.',
+        'Checks (harness/picturesHe4d.ts): each drawn form holds the valence electrons V (charge counted); its formal charges add to the ion’s charge; no second-period atom passes 8; FC = v − N − B ÷ 2.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-lewisStructure-formal',
+      'g.he-lewisStructure-formal-ozone',
+      'g.he-lewisStructure-formal-expanded',
+    ],
+  },
 ];

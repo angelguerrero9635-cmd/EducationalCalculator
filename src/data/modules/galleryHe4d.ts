@@ -608,6 +608,98 @@ const fieldTet = fieldDemo(
   'tetrahedral',
 );
 
+// ── HC111: formal charges, resonance, expanded octets (gen-chem-1#4~formal-charge) ──
+
+const formalRule: Rule = {
+  relation: {
+    id: 'FC = v − N − B ÷ 2',
+    display: '{FC} = {v} − {N} − {B} ÷ 2',
+    vars: ['FC', 'v', 'N', 'B'],
+    residual: (x) => x.FC! - (x.v! - x.N! - x.B! / 2),
+    solve: {
+      FC: (x) => x.v! - x.N! - x.B! / 2,
+      v: (x) => x.FC! + x.N! + x.B! / 2,
+      N: (x) => x.v! - x.FC! - x.B! / 2,
+      B: (x) => 2 * (x.v! - x.N! - x.FC!),
+    },
+  },
+  steps: {
+    FC: st(
+      '{v} − {N} − {B} ÷ 2',
+      'The atom owns its lone-pair electrons and half of each shared pair.',
+    ),
+    v: st(
+      '{FC} + {N} + {B} ÷ 2',
+      'Add back the electrons the atom keeps and half the shared ones.',
+    ),
+    N: st('{v} − {FC} − {B} ÷ 2', 'Take the charge and half the bonding electrons from v.'),
+    B: st('2 × ({v} − {N} − {FC})', 'Solve for B ÷ 2, then double it.'),
+  },
+};
+
+const formalDemo = (
+  id: string,
+  title: string,
+  formula: string,
+  resonance: boolean,
+  v: number,
+  N: number,
+  B: number,
+): ModuleDef =>
+  demo({
+    id,
+    title,
+    use: 'Use this for the formal charge on an atom of a Lewis structure, and to pick the best structure.',
+    assumptions: [
+      'The charges in one structure add to the ion’s charge (0 for a molecule).',
+      'The best structure has charges nearest zero, a negative one on the more electronegative atom.',
+    ],
+    variables: [
+      whole('v', 'v', 'Valence electrons of the free atom', 1, 8),
+      whole('N', 'N', 'Nonbonding electrons', 0, 8),
+      whole('B', 'B', 'Bonding electrons', 0, 12),
+      whole('FC', 'FC', 'Formal charge', -4, 4),
+    ],
+    ...rules(formalRule),
+    example: { v, N, B, FC: v - N - B / 2 },
+    startWith: ['v', 'N', 'B'],
+    representation: {
+      kind: 'lewisStructure',
+      mode: 'molecule',
+      formula,
+      ...(resonance ? { resonance } : {}),
+      formal: { valence: 'v', nonbonding: 'N', bonding: 'B', charge: 'FC' },
+    },
+  });
+
+const formalNitrate = formalDemo(
+  'g.he-lewisStructure-formal',
+  'Nitrate: the formal charge on N and the three resonance forms',
+  'NO3-',
+  true,
+  5,
+  0,
+  8,
+);
+const formalOzone = formalDemo(
+  'g.he-lewisStructure-formal-ozone',
+  'Ozone: the middle oxygen’s formal charge, two forms',
+  'O3',
+  true,
+  6,
+  2,
+  6,
+);
+const formalTriiodide = formalDemo(
+  'g.he-lewisStructure-formal-expanded',
+  'Triiodide: an expanded octet on the middle iodine',
+  'I3-',
+  false,
+  7,
+  6,
+  4,
+);
+
 export const HE4D_GALLERY_MODULES: ModuleDef[] = [
   ladderHe,
   ladderHigh,
@@ -616,6 +708,9 @@ export const HE4D_GALLERY_MODULES: ModuleDef[] = [
   fieldHigh,
   fieldLow,
   fieldTet,
+  formalNitrate,
+  formalOzone,
+  formalTriiodide,
 ];
 
 export const HE4D_GALLERY_LAYOUTS: LayoutDef[] = [];

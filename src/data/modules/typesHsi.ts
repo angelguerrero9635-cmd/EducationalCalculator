@@ -4,7 +4,13 @@
  * `types.ts` so that file's union only lists them. A `NumOrVar` field is a fixed number or a
  * variable id. Formulas are written plainly ("H2O", "NH4+"); the pictures print subscripts.
  */
-import { isOrbitalHe4d, orbitalHe4dVars, type OrbitalHe4dSpec } from './typesHe4d';
+import {
+  isOrbitalHe4d,
+  lewisFormalVars,
+  orbitalHe4dVars,
+  type LewisFormal,
+  type OrbitalHe4dSpec,
+} from './typesHe4d';
 import type { NumOrVar } from './typesGraphs';
 import { ionicChargeVars, type IonicCharges } from './typesHs3e';
 import { moleMapHs2dVars, type MoleMapLimiting } from './typesHs2d';
@@ -177,6 +183,9 @@ export type LewisStructureSpec = { kind: 'lewisStructure' } & (
       bonding?: string;
       lone?: string;
       dots?: boolean;
+      /** College HC111: formal charges, resonance forms (`typesHe4d.ts`). */
+      formal?: LewisFormal;
+      resonance?: boolean;
     }
   | {
       mode: 'ionic';
@@ -281,7 +290,10 @@ export function hsiSpecVars(r: HsiSpec): string[] {
     case 'lewisStructure':
       switch (r.mode) {
         case 'molecule':
-          return ids(...Object.values(r.atoms ?? {}), r.charge, r.valence, r.bonding, r.lone);
+          return [
+            ...ids(...Object.values(r.atoms ?? {}), r.charge, r.valence, r.bonding, r.lone),
+            ...lewisFormalVars(r.formal), // HC111
+          ];
         case 'ionic':
           return ids(r.metals, r.nonmetals, r.transferred, ...ionicChargeVars(r.charges));
         case 'metallic':

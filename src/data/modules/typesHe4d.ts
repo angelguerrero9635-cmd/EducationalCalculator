@@ -106,3 +106,39 @@ export function orbitalHe4dVars(r: OrbitalHe4dSpec): string[] {
       return ids(r.d, r.split, r.pairing, r.t2g, r.eg, r.unpaired, r.cfse, r.moment);
   }
 }
+
+// ─── HC111: lewisStructure `formal`, `resonance`, expanded octets ────────────
+
+/**
+ * Formal charges on a `lewisStructure` molecule (HC111, C-P12): every atom's FC = v − N − B ÷ 2
+ * circled beside it (signed; 0 drawn small), and the atom whose valence electrons v,
+ * nonbonding electrons N and bonding electrons B are the page's values ringed in each form
+ * where it matches (or atom `atom`, an index into the structure, while they are "?"). `charge`
+ * is checked as v − N − B ÷ 2; the charges of each form must add to the ion's charge.
+ */
+export interface LewisFormal {
+  valence?: NumOrVar;
+  nonbonding?: NumOrVar;
+  bonding?: NumOrVar;
+  charge?: NumOrVar;
+  atom?: number;
+}
+
+/**
+ * The college structures a `lewisStructure` molecule draws by `formula` (HC111): resonance
+ * sets NO3-, NO2-, "CO3 2-", O3 and "SO4 2-" (3 of its 6 forms), and expanded octets PCl5, SF4,
+ * SF6, ClF3, XeF4, I3-. `resonance: true` draws every form, joined by double-headed arrows (two
+ * on a row); without it the first form only.
+ */
+export interface LewisHe4dSpec {
+  kind: 'lewisStructure';
+  mode: 'molecule';
+  formula?: string;
+  charge?: NumOrVar;
+  formal?: LewisFormal;
+  resonance?: boolean;
+}
+
+export function lewisFormalVars(f: LewisFormal | undefined): string[] {
+  return f ? ids(f.valence, f.nonbonding, f.bonding, f.charge) : [];
+}
