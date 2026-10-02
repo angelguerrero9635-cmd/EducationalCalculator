@@ -45,6 +45,8 @@ import { SignBand, SignFill, signCaption } from './FunctionSign';
 import { reshape, reshapeCaption, reshapeVars } from './functionGraphHs2g';
 import { transformCurve, transformText } from './functionGraphHs3b';
 import { RiemannRects, riemannCaption } from './functionGraphRiemann';
+import { he1eLayer } from './FunctionGraphMarksHe1e';
+import { he1eCaption, he1ePanel, he1eXs, he1eYs, repeatCurve } from './functionGraphHe1e';
 import { riemannOf, riemannXs } from './riemann';
 import { toShownUnits, unitPositionIds } from './functionGraphUnits';
 import { usePaintIds, url } from './paint';
@@ -385,7 +387,9 @@ export function FunctionGraph({
   const dep = spec.axes && spec.name ? spec.name : 'y';
   // H94: |f(x)|, a horizontal factor and a kept domain reshape the family's curve.
   const shaped = reshape(spec, get, say, xName, (f, l) => buildCurve(f, get, say, l));
-  const main = shaped.curve;
+  const main = repeatCurve(spec, shaped.curve, get, say, xName, (f, l) =>
+    buildCurve(f, get, say, l),
+  ); // HC10
   const allKnown = [...familyVars(given), ...reshapeVars(given)].every((id) => rep.known(id));
   // H106: g(x) = a·f(x − h) + k beside f, an arrow from f's point to its image.
   const tf = spec.other ? undefined : spec.transform;
@@ -440,6 +444,7 @@ export function FunctionGraph({
     ...(limX !== undefined ? [limX - 3, limX, limX + 3] : []),
     ...(shadeRange ?? []),
     ...riemannXs(spec.riemann, get), // H106
+    ...he1eXs(spec, main, other, get), // HC10, HC12
     ...main.domain
       .flatMap((i) => [i.lo, i.hi])
       .filter((v) => Number.isFinite(v) && Math.abs(v) < 50),
@@ -504,6 +509,7 @@ export function FunctionGraph({
       : []),
     // H106: the log sum's plunge to its asymptote, below its zero.
     ...(main.family === 'logSum' ? [-2.5] : []),
+    ...he1eYs(spec, main, other, get), // HC10, HC12
   ].filter((v) => Number.isFinite(v) && Math.abs(v) < 1e6);
 
   const legend: { toks: Tok[]; name: string; color: string; dash?: string }[] = [
@@ -605,11 +611,13 @@ export function FunctionGraph({
 
   return (
     <View>
-      <Canvas aspect={(w) => (legendH + (named ? 30 : 12) + 30 + w * plotAspect) / w}>
+      <Canvas
+        aspect={(w) => (legendH + (named ? 30 : 12) + 30 + w * plotAspect + he1ePanel(spec, w)) / w}
+      >
         {({ w, h }) => {
           const L0 = 34;
           const top = legendH + (named ? 26 : 10);
-          const bottom = h - (named ? 40 : 24);
+          const bottom = h - (named ? 40 : 24) - he1ePanel(spec, w); // HC12: the F(x) panel
           const pw0 = w - L0 - 14;
           const win = frozen.value ?? live(pw0, bottom - top);
           drawn.current = win;
@@ -999,6 +1007,30 @@ export function FunctionGraph({
               `(${numText(atPt.x, piX)}, ${fName}(${numText(atPt.x, piX)}))`;
             label(atPt.x, atPt.y, rep.known(spec.at!.x) ? t : undefined, c.chartHighlight);
           }
+          // HC10, HC12: the families' marks, the repeated dose and the regions.
+          const he1e = he1eLayer({
+            spec,
+            main,
+            other,
+            get,
+            allKnown,
+            c,
+            sx,
+            sy,
+            win,
+            L,
+            pw,
+            top,
+            bottom,
+            w,
+            h,
+            xName,
+            fName,
+            label,
+            dots,
+            dashes,
+            valueOf: (id) => (rep.known(id) ? rep.value(id) : undefined),
+          });
           // Limit: arrows along the curve from both sides.
           const lim =
             limX !== undefined && inX(limX)
@@ -1360,6 +1392,7 @@ export function FunctionGraph({
                       faded={!allKnown}
                     />
                   ) : null}
+                  {he1e.under}
                   {dashes.map((d, i) => (
                     <Line
                       key={`d${i}`}
@@ -1582,6 +1615,7 @@ export function FunctionGraph({
                     />
                   ) : null}
                 </G>
+                {he1e.over}
                 {ineq && allKnown ? (
                   <SignBand curve={main} sign={ineq} sx={sx} sy={sy} win={win} />
                 ) : null}
@@ -1857,6 +1891,7 @@ export function FunctionGraph({
         `Shaded: the points ${shade} the curve, y ${shade === 'above' ? '>' : '<'} ${fName}(${xName})`,
       );
     if (spec.riemann) lines.push(riemannCaption(spec.riemann, main.f, get, xName)); // H106
+    lines.push(...he1eCaption(spec, main, other, get, xName, fName, gName)); // HC10, HC12
     if (spec.inequality) lines.push(signCaption(main, ineq, fName, xName));
     lines.push(...reshapeCaption(spec, shaped, fName, xName));
     if (spec.inverse) lines.push(`The inverse is the reflection across the line y = ${xName}`);

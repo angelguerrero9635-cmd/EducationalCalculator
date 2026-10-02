@@ -58,6 +58,9 @@ const light = {
   fnSecond: '#C2570C',
   /** Elimination's sum of two equations (H16), a third line beside the system's two. */
   lineSum: '#0F766E',
+  /** College function graph regions (HC12): the part above the axis (+) and below it (−). */
+  regionPlus: '#0F7A55',
+  regionMinus: '#B42318',
   /** An upright boundary x = k on a line system (H92), beside its two lines. */
   lineUpright: '#BE185D',
   /** The sunlit half of a globe or moon (lighter than the night half in both themes). */
@@ -536,6 +539,8 @@ const dark: Palette = {
   hopBack: '#F08A4B',
   fnSecond: '#F5A04A',
   lineSum: '#2DD4BF',
+  regionPlus: '#34D399',
+  regionMinus: '#F87171',
   lineUpright: '#F472B6',
   chartDay: '#4A5068',
   chartNight: '#0B0C10',
