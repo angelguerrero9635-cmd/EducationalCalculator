@@ -8,6 +8,7 @@
  * is with `difference` (`VariableDef`), and `getUnit`, `convert` and `unitInSystem` take the
  * same flag, so ΔT never picks up the offset.
  */
+import { angleRule } from './angles';
 
 export type Dimension =
   | 'length'
@@ -97,7 +98,9 @@ export type Dimension =
   | 'specificActivity'
   | 'gravitationalParameter'
   | 'trafficFlow'
-  | 'laneDensity';
+  | 'laneDensity'
+  // Angles (HE-E19): degrees, radians, gradians, minutes and seconds of arc, turns
+  | 'angle';
 
 /** The dimensions every K–8 page had before the high-school and college ones. */
 const CORE: ReadonlySet<Dimension> = new Set<Dimension>([
@@ -726,6 +729,16 @@ export const UNITS: readonly UnitDef[] = [
     u('pc/km/ln', 'passenger cars per kilometer per lane', 'laneDensity', 1, 'metric', 'pc/mi/ln'),
   ),
   listed(usu('pc/mi/ln', 'passenger cars per mile per lane', 'laneDensity', 1000 / MI, 'pc/km/ln')),
+  // Angles (rad), HE-E19: listed, so the K–12 pages that write ° or rad keep it as a label; a
+  // value that lists two of them gets a menu, and its steps convert ("180° = π rad").
+  listed(u('°', 'degrees', 'angle', Math.PI / 180, 'both')),
+  listed(u('rad', 'radians', 'angle', 1, 'both')),
+  listed(u('grad', 'gradians (gons)', 'angle', Math.PI / 200, 'both')),
+  listed(u('′', 'minutes of arc', 'angle', Math.PI / 10800, 'both')),
+  listed(u('″', 'seconds of arc', 'angle', Math.PI / 648000, 'both')),
+  listed(u('rev', 'revolutions (turns)', 'angle', 2 * Math.PI, 'both')),
+  listed(u('mrad', 'milliradians', 'angle', 1e-3, 'both')),
+  listed(u('μrad', 'microradians', 'angle', 1e-6, 'both')),
 ];
 
 /**
@@ -826,4 +839,20 @@ export function offsetRule(
   if (pair('dBm', 'dBW')) return 'dBm = dBW + 30';
   if (pair('dBi', 'dBd')) return 'dBi = dBd + 2.15';
   return undefined;
+}
+
+/**
+ * The rule a conversion line states: an offset pair's ("K = °C + 273.15"), or two angle units'
+ * as a class writes it ("180° = π rad", "1° = 60′", HE-E19); undefined for any other pair (the
+ * line then states "1 X = f Y").
+ */
+export function conversionRule(
+  shown: string | undefined,
+  formula: string | undefined,
+  difference?: boolean,
+): string | undefined {
+  return (
+    offsetRule(shown, formula, difference) ??
+    (shown && formula ? angleRule(shown, formula) : undefined)
+  );
 }

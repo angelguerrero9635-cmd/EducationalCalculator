@@ -14,7 +14,7 @@ import {
 import { holds, outOfCount, type SolveResult } from '@/engine/solve';
 import type { Values, VariableDef } from '@/engine/types';
 import { makeUnitContext, type UnitContext } from '@/engine/unitContext';
-import { offsetRule } from '@/engine/units';
+import { conversionRule } from '@/engine/units';
 
 import {
   gradeBand,
@@ -342,6 +342,10 @@ export function buildSteps(
     if (!unit) return n;
     // $ goes before the number; ¢ right after it; word units in the singular for 1 ("1 cup").
     if (unit === '$') return dollarsOf(x, n);
+    // An angle shown as DMS or a bearing carries its own marks (4°30′00″, N 52°10′ E); minutes
+    // and seconds of arc on a value that lists them are written on the number (25″), HE-E19.
+    if (v?.angleForm && unit === '°') return n;
+    if ((unit === '′' || unit === '″') && v?.units) return `${n}${unit}`;
     if (unit === '¢' || unit === '°' || unit === '%' || unit === '×') return `${n}${unit}`;
     return `${n} ${x === 1 ? (SINGULAR[unit] ?? unitFor(1, unit)) : unit}`;
   };
@@ -682,7 +686,7 @@ export function buildSteps(
       return String(Number(x.toPrecision(6)));
     };
     const one =
-      offsetRule(shownUnit(id), formulaUnit(id), v.difference) ??
+      conversionRule(shownUnit(id), formulaUnit(id), v.difference) ??
       (f >= 1
         ? `1 ${shownUnit(id)} = ${sig(f)} ${formulaUnit(id)}`
         : `1 ${formulaUnit(id)} = ${sig(1 / f)} ${shownUnit(id)}`);

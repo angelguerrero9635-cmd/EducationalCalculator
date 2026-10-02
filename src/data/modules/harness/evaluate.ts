@@ -8,6 +8,7 @@ import { INTEGRAL, SIGMA } from '@/engine/latex';
 
 import type { Walkthrough } from '../buildSteps';
 import { complexPrepass } from './algebraLines';
+import { ANGLE_MARKS, anglePrepass } from './angles';
 import { HE_PHRASES } from './phrasesHe';
 import { HSB_PHRASES } from './phrasesHsb';
 import { HSF_PHRASES } from './phrasesHsf';
@@ -392,6 +393,8 @@ let angleUnit: 'degrees' | 'radians' = 'radians';
 export function setAngleUnit(unit: 'degrees' | 'radians') {
   angleUnit = unit;
 }
+/** The page's angle unit as set (HE-E19: the angle reader sets a clause's own and puts it back). */
+export const angleUnitNow = () => angleUnit;
 
 /**
  * Each sum with its limits ("Σ from k = 1 to 8 of (3k − 1)", E5) worked out term by term, as
@@ -592,7 +595,11 @@ export function evaluate(text: string, clampRoots = false): number | undefined {
   // HE-E6: an antiderivative at its limits, and a limit worked out near its point.
   if (text.includes('] from ')) text = expandBrackets(text);
   if (text.includes('lim')) text = expandLimits(text);
-  const degrees = angleUnit === 'degrees' || text.includes('°');
+  // HE-E19: a DMS angle or a bearing is its decimal degrees (4°30′00″ → 4.5°, N 52° E → 52°).
+  if (ANGLE_MARKS.test(text)) text = anglePrepass(text);
+  // (a line in radians on a page of degrees says so: "−0.9273 rad")
+  const degrees =
+    text.includes('°') || (angleUnit === 'degrees' && !/(?:\d|\)|π) ?m?rad\b(?!\/)/.test(text));
   let s = text
     // A repeating decimal (0.1666…) is its exact value, 1/6.
     .replace(/\d+\.\d+…/g, (m) => `(${parseNumber(m)})`)
@@ -607,6 +614,10 @@ export function evaluate(text: string, clampRoots = false): number | undefined {
       String(Math[f]((Number(d) * Math.PI) / 180)),
     )
     .replace(/(?<![\w.])e\^/g, `(${Math.E})^`)
+    // HE-E19: an angle unit after a number is no factor (0.7854 rad, π rad, 50 grad), and atan2
+    // takes y first: atan2(6, −8) is 143.13° (in the page's unit).
+    .replace(/(\d|\)|π) ?(?:m?rad|grad)\b(?!\/)/g, '$1')
+    .replace(/\batan2\(/g, 'at2(')
     // Symbols from Grade 6 on: π, ½, squares and cubes, square roots.
     // 36π is 36 × π.
     // (bracketed, so 90 ÷ 9π is 90 ÷ (9 × π), as it is written)
@@ -618,6 +629,8 @@ export function evaluate(text: string, clampRoots = false): number | undefined {
     .replace(/(sin|cos|tan)⁻¹\(/g, 'a$1(')
     .replace(/arc(sin|cos|tan)\(/g, 'a$1(')
     .replace(/(?<![a-z])(sin|cos|tan)\(([^()]*[\d⁰¹²³⁴⁵⁶⁷⁸⁹])°\)/g, '$1d($2)')
+    // (a degree mark left after the trig is the number's unit: −36.87° + 180°, HE-E19)
+    .replace(/([\d)])°/g, '$1')
     // (never a name's e with a prime or a mark: e′, ē)
     .replace(/(?<![\w.])e(?![\w′\u0300-\u036f])/g, `(${Math.E})`)
     .replace(/⌈([^⌈⌉]+)⌉/g, 'ceil($1)')
@@ -667,7 +680,7 @@ export function evaluate(text: string, clampRoots = false): number | undefined {
       prev = s;
       s = s
         .replace(
-          /(?<!sqrt|cbrt|qrt|log|log10|log2|abs|sin|cos|tan|sind|cosd|tand|ceil|floor|min|max)\((-?\d+(?:\.\d+)?(?:e[-+]?\d+)?)\)(?!\s*\*\*)/g,
+          /(?<!sqrt|cbrt|qrt|log|log10|log2|abs|sin|cos|tan|sind|cosd|tand|ceil|floor|min|max|at2)\((-?\d+(?:\.\d+)?(?:e[-+]?\d+)?)\)(?!\s*\*\*)/g,
           ' $1 ',
         )
         .replace(/\s+/g, ' ')
@@ -731,12 +744,12 @@ export function evaluate(text: string, clampRoots = false): number | undefined {
   s = s.replace(/(^|[(*/+\-]\s*)-\s*(?=\(|\d)(?=(?:\([^()]*\)|[\d.e]+)\s*\*\*)/g, '$1-1 * ');
   const bare = s
     .replace(
-      /(?:sqrt|cbrt|qrt|log10|log2|log|abs|a?sin|a?cos|a?tan|sind|cosd|tand|ceil|floor|min|max)\(/g,
+      /(?:sqrt|cbrt|qrt|log10|log2|log|abs|a?sin|a?cos|a?tan|sind|cosd|tand|ceil|floor|min|max|at2)\(/g,
       '(',
     )
     .replace(/\*\*/g, '*');
   // (a comma only between the values of min( or max(: an ordered pair is not a number)
-  const listCommas = [...s.matchAll(/(?:min|max)\(([^()]*)\)/g)].reduce(
+  const listCommas = [...s.matchAll(/(?:min|max|at2)\(([^()]*)\)/g)].reduce(
     (n, m) => n + (m[1]!.match(/,/g)?.length ?? 0),
     0,
   );
@@ -750,7 +763,7 @@ export function evaluate(text: string, clampRoots = false): number | undefined {
         `const D = Math.PI / 180; const sin = degrees ? (d) => Math.sin(d * D) : Math.sin, cos = degrees ? (d) => Math.cos(d * D) : Math.cos, tan = degrees ? (d) => Math.tan(d * D) : Math.tan; ` +
         `const sind = (d) => Math.sin(d * D), cosd = (d) => Math.cos(d * D), tand = (d) => Math.tan(d * D); ` +
         `const one = (x) => (clampRoots ? Math.max(-1, Math.min(1, x)) : x); const U = degrees ? D : 1; ` +
-        `const asin = (x) => Math.asin(one(x)) / U, acos = (x) => Math.acos(one(x)) / U, atan = (x) => Math.atan(x) / U; return (${s});`,
+        `const asin = (x) => Math.asin(one(x)) / U, acos = (x) => Math.acos(one(x)) / U, atan = (x) => Math.atan(x) / U, at2 = (y, x) => Math.atan2(y, x) / U; return (${s});`,
     )(clampRoots, degrees) as unknown;
     return typeof x === 'number' ? x : undefined;
   } catch {

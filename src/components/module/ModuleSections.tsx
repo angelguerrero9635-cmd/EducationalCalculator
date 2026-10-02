@@ -38,7 +38,8 @@ function PictureLabels({ ids, calc }: { ids: string[]; calc: Calculator }) {
       {ids.map((id) => {
         const v = byId.get(id)!;
         const x = calc.values[id];
-        const unit = calc.units.display[id] ?? v.unit;
+        // (an angle in DMS or a bearing carries its own marks: no unit after it, HE-E19)
+        const unit = v.angleForm ? undefined : (calc.units.display[id] ?? v.unit);
         const display = x === undefined ? undefined : calc.units.toDisplay(id, x);
         // As in its box: a worked-out value shows the page's figures, a typed one as typed.
         const derived = calc.status(id) === 'derived';

@@ -1,3 +1,5 @@
+import type { AngleForm } from './angles';
+
 /** Values keyed by variable id. */
 export type Values = Record<string, number>;
 
@@ -67,6 +69,14 @@ export interface VariableDef {
   decimals?: number;
   /** A plus sign on a positive value (+3, −1, 0): a charge, an oxidation state, a signed change. */
   signed?: boolean;
+  /**
+   * An angle in degrees shown and typed as degrees–minutes–seconds or a compass direction
+   * (HE-E19): 'dms' "4°30′00″", 'dm' "52°10′", 'bearing' "N 52°10′ E", 'bearing-decimal'
+   * "S 56.31° W", 'azimuth' "052°". `decimals` are of the last part shown. The value's unit is
+   * '°' and it lists no other (the text carries its marks, so no unit follows it); boxes take
+   * any of these typed, and decimal degrees.
+   */
+  angleForm?: AngleForm;
   /**
    * A fraction whose decimal repeats shows its repeating digits and "…" (1/3 → 0.333…,
    * 1/6 → 0.1666…) when the block is at most 6 digits; boxes take the same.

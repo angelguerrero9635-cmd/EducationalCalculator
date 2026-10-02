@@ -1,3 +1,4 @@
+import { angleFormText, parseAngle } from './angles';
 import { exactRoot } from './exact';
 import type { Values, VariableDef } from './types';
 
@@ -34,6 +35,7 @@ export function formatNumber(
     | 'exact'
     | 'decimals'
     | 'signed'
+    | 'angleForm'
   > & {
     /**
      * A worked-out value's significant figures on a page that sets them (Grades 9–12 science:
@@ -49,6 +51,9 @@ export function formatNumber(
     values?: Values;
   },
 ): string {
+  // An angle as degrees–minutes–seconds or a compass direction (HE-E19).
+  if (variable?.angleForm && Number.isFinite(x))
+    return angleFormText(x, variable.angleForm, variable.decimals);
   // A charge or signed change: +3, −1 (HE-E10).
   if (variable?.signed && x > 0 && Number.isFinite(x)) {
     const shown = formatNumber(x, { ...variable, signed: false });
@@ -407,6 +412,11 @@ export const plainDigits = (s: string) => s.replace(/(\d),(?=\d{3}(?!\d))/g, '$1
 export function parseNumber(text: string): number | undefined | 'invalid' {
   const cleaned = text.trim().replace(/,/g, '').replace(/−/g, '-');
   if (cleaned === '') return undefined;
+  // An angle typed with its marks (HE-E19): 34°12′30″, 34° 12' 30", 45°, N 52°10′ E, 052°.
+  if (/[°′″'"]|^[NSns]\s*\d.*[EWew]$/.test(cleaned)) {
+    const a = parseAngle(text.replace(/,/g, ''));
+    return a === undefined ? 'invalid' : a;
+  }
   // A multiple of π: "36π", "36 pi", "36*pi", "π", "-2.5π", and a fraction of it: "5π/2",
   // "π/6", "3pi/4".
   const pi = /^([-+]?)(\d+\.?\d*|\.\d+)?\s*\*?\s*(?:π|pi)(?:\s*\/\s*(\d+))?$/i.exec(cleaned);
@@ -531,7 +541,12 @@ export function renderTemplate(
     if (/\^$/.test(before) && /[/ ]/.test(s)) return `(${s})`;
     // An angle in degrees inside sin, cos or tan keeps its sign: sin(40°), not sin(40), which
     // would be radians.
-    if (variable.unit === '°' && /(sin|cos|tan)\($/.test(before) && after.startsWith(')'))
+    if (
+      variable.unit === '°' &&
+      !variable.angleForm &&
+      /(sin|cos|tan)\($/.test(before) &&
+      after.startsWith(')')
+    )
       return `${s}°`;
     // An exact sum (2 − √3, but not (√6 + √2)/4, already one bracket) reads as one number
     // only in brackets: 3 × (2 − √3).
@@ -540,9 +555,9 @@ export function renderTemplate(
     return (x < 0 || s.startsWith('+') || s.includes(' × 10') || sum) && needs ? `(${s})` : s;
   });
   if (!values) return filled;
-  // A minus sign in the template in front of a 0 (e.g. −v₀ with v₀ = 0) reads as just 0; a
-  // whole-number power is written raised (10^3 → 10³), the way it is written on paper.
-  return superscript(filled.replace(/(^|[(\s])−0(?![\d.])/g, '$10'));
+  // A minus sign in the template in front of a 0 (e.g. −v₀ with v₀ = 0) reads as just 0 (not
+  // before a DMS angle: −0°00′05″, HE-E19); a whole-number power is written raised (10^3 → 10³), the way it is written on paper.
+  return superscript(filled.replace(/(^|[(\s])−0(?![\d.]|°\d)/g, '$10'));
 }
 
 /** Whole-number exponents after a caret written as superscript digits: "10^3" → "10³". */
