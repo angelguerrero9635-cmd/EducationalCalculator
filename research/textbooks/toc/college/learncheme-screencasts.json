@@ -1,0 +1,115 @@
+{
+  "id": "learncheme-screencasts",
+  "curriculum": "LearnChemE screencast lists (University of Colorado Boulder)",
+  "publisher": "LearnChemE, University of Colorado Boulder",
+  "edition": "web site, read 2026-10-02",
+  "subject": "chemical",
+  "level": "college",
+  "content": "titles",
+  "license": null,
+  "terms": {
+    "unit": "Course page"
+  },
+  "sourceUrl": "https://learncheme.com/screencasts/",
+  "retrieved": "2026-10-02",
+  "notes": "Topic headings and video counts per course page (titles only). No licence statement was found on the pages read (the plan listed CC BY-SA 4.0 as confirmed); the ConcepTest inventory is behind an instructor sign-in (\"Click here to sign in to the ConcepTest Inventory … For access, email us using your university account to verify instructor status\") and is off limits, so no ConcepTest records.",
+  "books": [
+    {
+      "course": null,
+      "title": "LearnChemE screencasts",
+      "url": "https://learncheme.com/screencasts/",
+      "units": [
+        {
+          "n": "mass-energy-balances",
+          "title": "Screencasts: mass energy balances (233 videos): Numerical calculations; Process variables; Material Balances; Single unit balances - transient; Multiple unit balances; Multiple unit balances - reactions and reaction systems; Multiple unit balances - example problems; Combustion; Phase Equilibrium; Single phase systems: Non-ideal fluids; Single-condensable component; Single-condensable component: Water-air mixtures; Multi-component; Multi-component: Raoult's Law; Multi-component: Non-ideal solutions and colligative properties; Muliti-component: Ternary phase diagrams; Multi-component: other; Balances with phase equilibrium; Energy Balances; Water and steam tables; Using steam tables; Balances on nonreactive flow systems; Balances on reactive processes; Balances on reactive processes - Examples",
+          "url": "https://learncheme.com/screencasts/mass-energy-balances/",
+          "topics": [
+            "he.engineering.material-energy-balances#0",
+            "he.engineering.material-energy-balances#1",
+            "he.engineering.material-energy-balances#2",
+            "he.engineering.material-energy-balances#3"
+          ]
+        },
+        {
+          "n": "thermodynamics-2",
+          "title": "Screencasts: thermodynamics 2 (212 videos): Ideal Vapor-Liquid Equilibrium (Raoult's law); Ideal Vapor-Liquid Equilibrium (Raoult's law) simulations/interactive; Ideal Vapor-Liquid Equilibrium (Raoult's law) examples; Non-ideal Vapor-Liquid Equilibrium; Non-ideal Vapor-Liquid Equilibrium examples; Partially miscible liquids; Immiscible liquids/Solid-liquid phase diagrams; Solution properties; Chemical reactions; Gas-phase chemical equilibrium; Heterogeneous chemical equilibrium; Biosystems; Thermal effects for reactions; Software help",
+          "url": "https://learncheme.com/screencasts/thermodynamics/thermodynamics-2/",
+          "topics": [
+            "he.engineering.chemical-thermodynamics#0",
+            "he.engineering.chemical-thermodynamics#1",
+            "he.engineering.chemical-thermodynamics#2",
+            "he.engineering.chemical-thermodynamics#3"
+          ]
+        },
+        {
+          "n": "kinetics-reactor-design",
+          "title": "Screencasts: kinetics reactor design (328 videos): Isothermal reactors; Batch and semibatch reactors; Continuous stirred tank reactors; Plug flow reactors; Mole change in PFR; Compare CSTRs and PFRs; Packed bed reactors; Multiple reactors; Bioreactors; Other reactor types; Non-isothermal reactors; Adiabatic PFRs; Adiabatic CSTRs; PFRs with heat exchange; CSTRs, BRs, and SBRs with heat exchange; Multiple steady-states in CSTRs; Rate expressions; Rate laws; Catalysis, Biokinetics, Polymerization; Catalytic mechanisms; Diffusion and reaction in catalysts; Biokinetics; Polymerization; Analyzing rate data; Non-linear regression",
+          "url": "https://learncheme.com/screencasts/kinetics-reactor-design/",
+          "topics": [
+            "he.engineering.reaction-engineering#0",
+            "he.engineering.reaction-engineering#1",
+            "he.engineering.reaction-engineering#2",
+            "he.engineering.reaction-engineering#3"
+          ]
+        },
+        {
+          "n": "separations-mass-transfer",
+          "title": "Screencasts: separations mass transfer (142 videos): Flash distillation; Batch distillation; Continuous distillation; Ternary phase diagrams; Liquid-liquid extraction; Absorption/stripping; Membranes; Other separation techniques; Diffusion and mass transfer",
+          "url": "https://learncheme.com/screencasts/separations-mass-transfer/",
+          "topics": [
+            "he.engineering.separations#0",
+            "he.engineering.separations#1",
+            "he.engineering.separations#2",
+            "he.engineering.separations#3"
+          ]
+        },
+        {
+          "n": "process-controls",
+          "title": "Screencasts: process controls (79 videos): Equipment; First- and second-order models; Mathematical modeling/Laplace transforms; Simulink; Stability/controller tuning; The blending process",
+          "url": "https://learncheme.com/screencasts/process-controls/",
+          "topics": [
+            "he.engineering.process-control#0",
+            "he.engineering.process-control#1",
+            "he.engineering.process-control#2",
+            "he.engineering.process-control#3"
+          ]
+        },
+        {
+          "n": "process-design",
+          "title": "Screencasts: process design (75 videos): Process equipment; Process design; Team dynamics/Communication; Simulation software; Aspen Plus chlorobenzene plant; Aspen Plus introduction; Superpro designer",
+          "url": "https://learncheme.com/screencasts/process-design/",
+          "topics": [
+            "he.engineering.process-design#0",
+            "he.engineering.process-design#1",
+            "he.engineering.process-design#2",
+            "he.engineering.process-design#3"
+          ]
+        },
+        {
+          "n": "heat-transfer",
+          "title": "Screencasts: heat transfer (132 videos): Conduction; One-dimensional steady-state; One-dimensional steady-state: Heat Transfer Fins; One-dimensional steady-state: Conduction and generation; Transient conduction; Convection; External flow; Internal flow; Free convection; Heat exchangers; Parallel and counter flow; Other; Radiation",
+          "url": "https://learncheme.com/screencasts/heat-transfer/",
+          "topics": [
+            "he.engineering.transport-phenomena#1"
+          ]
+        },
+        {
+          "n": "fluid-mechanics",
+          "title": "Screencasts: fluid mechanics (162 videos): What is a Fluid?; Introduction to Viscosity; Non-Newtonian Fluids Part 1; Surface Tension Part 1; Buoyancy/floatation; Manometry; Rigid body motion; Conservation of momentum; Conservation of Energy; Bernoulli equation; Differential analysis of fluid flow; Coordinate Transformations Part 1; Simple viscous flow; Viscous flow in pipes; Losses and Friction Factors Part 1; Flow between parallel plates, through ducts, and along a plate; Flow around objects; Fluid kinematics",
+          "url": "https://learncheme.com/screencasts/fluid-mechanics/",
+          "topics": [
+            "he.engineering.transport-phenomena#0"
+          ]
+        },
+        {
+          "n": "catalysis",
+          "title": "Screencasts: catalysis (35 videos): Introduction; Selectivity and equilibrium; Adsorption/desorption; Reaction kinetics; Mass transfer/diffusion",
+          "url": "https://learncheme.com/screencasts/catalysis/",
+          "topics": [
+            "he.engineering.reaction-engineering#3"
+          ]
+        }
+      ]
+    }
+  ]
+}

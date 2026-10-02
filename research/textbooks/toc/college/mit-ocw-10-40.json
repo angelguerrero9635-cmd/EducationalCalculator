@@ -1,0 +1,62 @@
+{
+  "id": "mit-ocw-10-40",
+  "curriculum": "MIT OpenCourseWare 10.40 Chemical Engineering Thermodynamics",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Fall 2003",
+  "subject": "chemical",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Jefferson Tester and others. 10.40 Chemical Engineering Thermodynamics. Fall 2003. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu/courses/10-40-chemical-engineering-thermodynamics-fall-2003/. License: CC BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Lecture block"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/10-40-chemical-engineering-thermodynamics-fall-2003/",
+  "retrieved": "2026-10-02",
+  "sources": [
+    "https://ocw.mit.edu/courses/10-40-chemical-engineering-thermodynamics-fall-2003/pages/calendar/",
+    "https://ocw.mit.edu/courses/10-40-chemical-engineering-thermodynamics-fall-2003/pages/assignments/"
+  ],
+  "notes": "Calendar topics (first 12 sessions printed; later sessions from the problem sets). Most homework is from Tester and Modell, Thermodynamics and Its Applications (skipped).",
+  "books": [
+    {
+      "course": "he.engineering.chemical-thermodynamics",
+      "title": "10.40 Chemical Engineering Thermodynamics (Fall 2003)",
+      "url": "https://ocw.mit.edu/courses/10-40-chemical-engineering-thermodynamics-fall-2003/",
+      "units": [
+        {
+          "n": "1–7",
+          "title": "First and second laws; entropy balance; availability and exergy",
+          "topics": [],
+          "notes": "Classical thermodynamics (he.engineering.thermodynamics, mechanical plan)."
+        },
+        {
+          "n": "8–11",
+          "title": "Calculus of thermodynamics; Maxwell relations; Legendre transforms",
+          "topics": [
+            "he.engineering.chemical-thermodynamics#0"
+          ]
+        },
+        {
+          "n": "12–",
+          "title": "Equilibrium and stability; PVT equations of state; departure functions; mixtures and fugacity; phase and reaction equilibrium; statistical mechanics",
+          "topics": [
+            "he.engineering.chemical-thermodynamics#0",
+            "he.engineering.chemical-thermodynamics#1",
+            "he.engineering.chemical-thermodynamics#2",
+            "he.engineering.chemical-thermodynamics#3"
+          ],
+          "examples": [
+            "JT vs isentropic expansion",
+            "Peng–Robinson vapor pressure of CO₂",
+            "sign of B(T)",
+            "K-value charts"
+          ]
+        }
+      ]
+    }
+  ]
+}
