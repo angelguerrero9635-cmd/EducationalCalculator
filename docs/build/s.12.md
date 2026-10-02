@@ -320,3 +320,17 @@ Need 8's `particles` was already on `s.12.climate-systems`; its demo is retired,
 potassium and carbon-volcano demos (`HS2F_GALLERY_LAYOUTS` is empty). No released question or
 research practice problem names potassium-argon (checked); the page is the potassium-40 clock the `~bracket` plan set aside (only about 11% of K-40 becomes argon). No new
 step phrases or unit labels.
+
+### Reserves with growing use
+
+`s.12.resource-management~growing-use` ("How long a reserve lasts when use grows"), after
+`~reserves`: Q, this year's use r and the growth g% a year (all typed); k = g ÷ 100, the
+exponential expiration time T = ln(1 + kQ ÷ r) ÷ k and, for comparison, the constant-use
+lifetime y = Q ÷ r (all worked out). The model is continuous growth (use r × eᵏᵗ, summed to Q),
+the form environmental-science and physics texts use for how long a resource lasts; the
+assumption says so. Its step writes ln and ÷ k as work lines (T = ln(1.8) ÷ 0.02, 0.5878 ÷
+0.02). Example 600 billion barrels, 15 a year, 2% → 29.4 years against 40. Picture: the
+`reserve` bar as on `~reserves`, which draws constant use only (its caption says "if use stays
+the same"); an option `growth: id` cutting the bar into slices growing by g% and marking T
+before y would draw this page's idea. Same units as `~reserves`; no new step phrases or unit
+labels.
