@@ -5653,6 +5653,139 @@ const DATA_DISPLAYS: ModuleDef[] = [
       labels: ['Class A', 'Class B'],
     },
   }),
+  page({
+    id: 'm.9.data-displays~histogram-from-list',
+    title: 'Histogram from a data list',
+    use: 'Use this for “Minutes of homework: 35, 42, 18, 50, 27, 44, 38, 60, 30, 47, 25, 40. Make a relative frequency histogram.”',
+    assumptions: [
+      'Pick a start at or below the least value and a bin width; each bin takes its left end and leaves out its right.',
+      'Add bins until the greatest value is in one: k = ⌊(max − a) ÷ w⌋ + 1.',
+      'Each height is a relative frequency, the bin’s count ÷ n, so the heights add to 1.',
+    ],
+    variables: [
+      int('n', 'n', 'Number of values', 5, 12),
+      ...LIST_IDS.map((id, i) => listValue(id, i, `Value ${i + 1}`, 100)),
+      num('a', 'a', 'First bin starts at', 0, 100, { step: 1 }),
+      num('w', 'w', 'Bin width', 1, 50, { step: 1 }),
+      num('lo', 'min', 'Least', 0, 100, { derived: true }),
+      num('hi', 'max', 'Greatest', 0, 100, { derived: true }),
+      int('k', 'k', 'Number of bins', 1, 101, { derived: true }),
+      num('e', 'e', 'Last bin ends at', 0, 5100, { derived: true }),
+      num('md', 'M', 'Median', 0, 100, { derived: true }),
+      num('mean', 'x̄', 'Mean', 0, 100, { derived: true }),
+    ],
+    rules: [
+      listRule('lo', 'least', (xs) => Math.min(...xs), 'The smallest value, first in order.', true),
+      listRule('hi', 'greatest', (xs) => Math.max(...xs), 'The largest value, last in order.'),
+      constraint(
+        'a ≤ min',
+        '{a} is at most {lo}',
+        ['a', 'lo'],
+        (v) => v.a! > v.lo!,
+        (v) =>
+          `The least value, ${fmt(v.lo!)}, would fall left of the first bin: start at ${fmt(v.lo!)} or below.`,
+      ),
+      derive(
+        'k = ⌊(max − a) ÷ w⌋ + 1',
+        'k',
+        ['hi', 'a', 'w'],
+        '{k} = ⌊({hi} − {a}) ÷ {w}⌋ + 1',
+        (v) => (v.w! > 0 ? Math.floor(exact((v.hi! - v.a!) / v.w!)) + 1 : undefined),
+        '⌊({hi} − {a}) ÷ {w}⌋ + 1',
+        'Count the whole widths from the start to the greatest value, then one more bin to hold it.',
+      ),
+      constraint(
+        'k ≤ 30',
+        '{k} is at most 30',
+        ['k'],
+        (v) => v.k! > 30,
+        () => 'More than 30 bins are too many to read: take a wider bin.',
+      ),
+      derive(
+        'e = a + k × w',
+        'e',
+        ['a', 'k', 'w'],
+        '{e} = {a} + {k} × {w}',
+        (v) => v.a! + v.k! * v.w!,
+        '{a} + {k} × {w}',
+        'Start at a and add k widths: the right end of the last bin.',
+      ),
+      listRule(
+        'md',
+        'median',
+        medianOf,
+        'The middle value in order (halfway between the middle two); half the values lie on each side.',
+      ),
+      rule(
+        'x̄ = sum ÷ n',
+        '{mean} = sum of the {n} values ÷ {n}',
+        ['mean', 'n', ...LIST_IDS],
+        (v) => v.mean! * v.n! - sumList(firstValues(LIST_IDS, v)),
+        {
+          mean: [
+            (v) => div(sumList(firstValues(LIST_IDS, v)), v.n!),
+            (v) =>
+              `(${firstIds(LIST_IDS, v)
+                .map((x) => `{${x}}`)
+                .join(' + ')}) ÷ {n}`,
+            'Add the values, then divide by how many there are.',
+            {
+              work: (v) => {
+                const xs = firstValues(LIST_IDS, v);
+                const t = sumList(xs);
+                return [
+                  `${xs.map(fmt).join(' + ')} = ${fmt(t)}`,
+                  `${fmt(t)} ÷ ${v.n} = ${fmt(v.mean!)}`,
+                ];
+              },
+              written: false,
+            },
+          ],
+        },
+        {
+          check: (v) =>
+            `(${firstValues(LIST_IDS, v).map(fmt).join(' + ')}) ÷ ${v.n} = ${fmt(v.mean!)}`,
+        },
+      ),
+    ],
+    example: {
+      n: 12,
+      d1: 35,
+      d2: 42,
+      d3: 18,
+      d4: 50,
+      d5: 27,
+      d6: 44,
+      d7: 38,
+      d8: 60,
+      d9: 30,
+      d10: 47,
+      d11: 25,
+      d12: 40,
+      a: 10,
+      w: 10,
+      lo: 18,
+      hi: 60,
+      k: 6,
+      e: 70,
+      md: 39,
+      mean: 38,
+    },
+    startWith: ['n', ...LIST_IDS, 'a', 'w'],
+    representation: {
+      kind: 'histogram',
+      data: LIST_IDS,
+      count: 'n',
+      start: 'a',
+      width: 'w',
+      end: 'e',
+      relative: true,
+      mean: 'mean',
+      median: 'md',
+      shape: true,
+      axis: 'Minutes of homework',
+    },
+  }),
 ];
 
 // ── Two-way tables ──

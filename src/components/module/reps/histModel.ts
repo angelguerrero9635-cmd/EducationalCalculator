@@ -35,6 +35,13 @@ export interface HistModel {
 
 type Val = (v: number | string | undefined) => number | undefined;
 
+/** The data entries binned: all of `data`, or its first `count` when the list has a length. */
+export function histDataIds(spec: HistogramSpec, val: Val): (number | string)[] {
+  const data = spec.data ?? [];
+  const n = val(spec.count);
+  return n === undefined ? data : data.slice(0, Math.max(0, Math.round(n)));
+}
+
 const medianOf = (xs: number[]) => {
   const s = [...xs].sort((a, b) => a - b);
   const n = s.length;
@@ -173,7 +180,9 @@ export function histModel(spec: HistogramSpec, val: Val): HistModel {
       shape: shapeOf(bars, mean, undefined, sd),
     };
   }
-  const data = (spec.data ?? []).map((d) => val(d)).filter((x): x is number => x !== undefined);
+  const data = histDataIds(spec, val)
+    .map((d) => val(d))
+    .filter((x): x is number => x !== undefined);
   const hiData = Math.max(start + width, ...data);
   const end = val(spec.end) ?? start + Math.ceil((hiData - start) / width + 1e-9) * width;
   const k = Math.max(1, Math.round((end - start) / width));

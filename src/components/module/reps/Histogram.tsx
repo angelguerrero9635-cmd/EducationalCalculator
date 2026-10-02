@@ -8,7 +8,7 @@ import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, ChartText, DragHandle, fitLabel, useFrozen, useRep } from './common';
-import { histModel } from './histModel';
+import { histDataIds, histModel } from './histModel';
 import { probDecimals, rangeOf } from './histRange';
 import { prob4 } from './NormalCurve';
 import { niceStep } from './Plot';
@@ -32,7 +32,8 @@ export function Histogram({ spec, calc }: { spec: HistogramSpec; calc: Calculato
   const rel = !!spec.relative && !prob && (model.n ?? 0) > 0;
   const height = (h: number) => (rel ? h / model.n! : h);
   const allKnown = [
-    ...(spec.data ?? []),
+    spec.count,
+    ...histDataIds(spec, get),
     ...(spec.counts ?? []),
     spec.width,
     spec.start,

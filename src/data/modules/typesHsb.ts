@@ -71,6 +71,8 @@ export interface NormalCurveSpec extends NormalCurveHs2g, NormalCurveHs3b {
 export interface HistogramSpec extends HistogramHs2g {
   kind: 'histogram';
   data?: NumOrVar[];
+  /** The list's length value: only the first n of `data` are binned (a list of 5 to 12). */
+  count?: NumOrVar;
   counts?: NumOrVar[];
   width?: NumOrVar;
   start?: NumOrVar;

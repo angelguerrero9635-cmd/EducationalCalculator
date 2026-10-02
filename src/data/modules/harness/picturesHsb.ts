@@ -3,7 +3,7 @@
  * (`typesHsb.ts`): what each one draws must agree with the values. Called from `repIssues` in
  * `pictures.ts`. Test-only.
  */
-import { histModel } from '@/components/module/reps/histModel';
+import { histDataIds, histModel } from '@/components/module/reps/histModel';
 import { normalModel, type Span } from '@/components/module/reps/normalModel';
 import { pascalRows, slotsOf } from '@/components/module/reps/pascal';
 import { termsModel } from '@/components/module/reps/termsModel';
@@ -109,8 +109,10 @@ export function hsbIssues(rep: HsbSpec, val: (id: string) => number | undefined)
       break;
     }
     case 'histogram': {
+      const dataIds = histDataIds(rep, get);
       const needed = [
-        ...(rep.data ?? []),
+        rep.count,
+        ...dataIds,
         ...(rep.counts ?? []),
         rep.width,
         rep.start,
@@ -160,7 +162,7 @@ export function hsbIssues(rep: HsbSpec, val: (id: string) => number | undefined)
           out.push('bar heights are not the counts');
       } else {
         // Recount the data into the bins drawn, independently.
-        const data = (rep.data ?? []).map((x) => get(x)!);
+        const data = dataIds.map((x) => get(x)!);
         const inBins = data.filter((x) =>
           m.bars.some((b) => x >= b.lo - 1e-9 && x < b.hi - 1e-9),
         ).length;

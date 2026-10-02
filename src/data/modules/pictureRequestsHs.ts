@@ -91,17 +91,18 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'H03',
       'histogram',
       'Histogram with bins from the data, and probability bars with the expected value',
-      ['m.9.data-displays', 'm.11.probability-distributions', 'm.12.sampling-distributions'],
+      {
+        'm.9.data-displays': '"counts"',
+        'm.9.data-displays~histogram-from-list': '"relative":true',
+        'm.11.probability-distributions': '"binomial"',
+        'm.12.sampling-distributions~counts': '"binomial"',
+      },
     ),
-    status: 'drawn',
-    gallery: [
-      'g.m9-data-displays-histogram',
-      'g.m9-data-displays-frequency',
-      'g.m9-data-displays-bimodal',
-    ],
+    status: 'placed',
+    gallery: ['g.m9-data-displays-frequency'],
     notes:
       'Shape words (symmetric, skewed left or right, uniform, bimodal) in the caption; mean and median marked; binomial bars from n and p. Drawn (group HB). Fields: data (numbers or ids) or counts (ids per bin); start, width, end (bins left end in, right end out); relative; mean and median (true to work them out, or a variable id; from counts the mean is estimated from the midpoints); shape (true names it: symmetric, skewed left or right, uniform, bimodal; or a word); axis; lit (a 1-based bin, or a value k); probability { values, probs, mean? } (E(X) marked, a list not adding to 1 draws faded with the reason); binomial { n 1–40, p, mean?, sd? }; keep; fixed. Count and probability bars drag by their tops (derived ones don\'t). The harness recounts the data into the bins and checks the heights sum to the count, or to 1. Example: { kind: "histogram", counts: ["f1", "f2", "f3", "f4", "f5", "f6"], start: 0, width: 5, lit: 3, mean: true, shape: true, axis: "Wait (min)" }; binomial: { kind: "histogram", binomial: { n: "n", p: "p", mean: "E", sd: "S" }, lit: "k", axis: "Successes (k)" }.' +
-      ' Tracker: still drawn. The histogram is drawn from bin counts (m.9.data-displays), probability and binomial bars are placed; bins from a list of values (`data`), the median mark and `relative` heights are on no page yet (their demos stay).',
+      ' Placed (parts by page in `uses`): bins from counts on m.9.data-displays, probability and binomial bars on the m.11 and m.12 pages; bins from a typed list (`data` with its length `count`, new), the median mark and `relative` heights on m.9.data-displays~histogram-from-list (the data and bimodal demos retired; the frequency demo stays for `lit` as a bin).',
   },
   {
     ...ask(

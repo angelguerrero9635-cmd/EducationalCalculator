@@ -269,3 +269,12 @@ Gallery demos built from these pages that no longer pass (the lead's to retire):
 - linear-inequalities~two-variables: "run 2" sat on the test point's "(1, 0)" at 1024 px. The
   slope triangle (`LinearFunction`) now moves on until its run and rise labels clear the test
   point's label, and keeps its corner off the test point.
+
+### Drawn parts placed
+
+| Page                                    | Entry | What it teaches                                                                                                                                                                                          |
+| --------------------------------------- | ----- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `m.9.data-displays~histogram-from-list` | H03   | a relative frequency histogram from a typed list (5 to 12 values): start a ≤ the least value, width w, k = ⌊(max − a) ÷ w⌋ + 1 bins ending at e = a + k × w; the median and mean marked, the shape named |
+
+The histogram gained `count` (the list's length value): only the first n of `data` are binned,
+as on the dot and box plots; without it every entry is binned, as before.
