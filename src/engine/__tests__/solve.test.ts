@@ -179,7 +179,7 @@ describe('solve', () => {
     };
     expect(solve(sq, [{ id: 'A', value: -4 }]).rejected).toEqual({
       id: 'A',
-      reason: 'Makes side impossible',
+      reason: 'That would leave no possible value for the side.',
     });
   });
 
@@ -259,6 +259,35 @@ describe('solve', () => {
     expect(holds(rate, { CBR: 12, B: 6000, P: 500000 })).toBe(true);
     // 12.3 per 1,000 is off by 150 births out of 6,000: must not pass as consistent.
     expect(holds(rate, { CBR: 12.3, B: 6000, P: 500000 })).toBe(false);
+  });
+
+  it('tiny values are compared relative to their size, not to a floor of 10⁻⁶', () => {
+    // A lap of 2π × 0.157 m at 3 × 10⁶ m/s takes 3.28 × 10⁻⁷ s, not 1 × 10⁻⁹ s.
+    const lap: Relation = {
+      id: 'T = 2πr/v',
+      display: '',
+      vars: ['T', 'r', 'v'],
+      residual: (x) => x.T! * x.v! - 2 * Math.PI * x.r!,
+      solve: { T: (x) => (2 * Math.PI * x.r!) / x.v! },
+    };
+    const variables = [
+      { id: 'T', symbol: 'T', name: 'Time', min: 0, max: 1, step: 1e-15, scientific: true },
+      { id: 'r', symbol: 'r', name: 'Radius', min: 0, max: 1e6, step: 1e-15, scientific: true },
+      { id: 'v', symbol: 'v', name: 'Speed', min: 1, max: 3e7, step: 1, scientific: true },
+    ];
+    const T = (2 * Math.PI * 0.157) / 3e6;
+    expect(holds(lap, { T, r: 0.157, v: 3e6 }, variables)).toBe(true);
+    expect(holds(lap, { T: T * (1 + 1e-9), r: 0.157, v: 3e6 }, variables)).toBe(true);
+    expect(holds(lap, { T: 1e-9, r: 0.157, v: 3e6 }, variables)).toBe(false);
+    const sys: System = { variables, relations: [lap] };
+    // The older T = 1 × 10⁻⁹ no longer counts as the T that r and v work out.
+    const typed = solve(sys, [
+      { id: 'T', value: 1e-9 },
+      { id: 'r', value: 0.157 },
+      { id: 'v', value: 3e6 },
+    ]);
+    expect(typed.dropped).toContain('T');
+    expect(typed.values.T).toBeCloseTo(T, 15);
   });
 
   it('findRoots brackets every sign change', () => {
@@ -498,10 +527,15 @@ describe('a newer value that doesn’t fit the older ones', () => {
     // m = 40 g in a 0.1 cm cube is 40,000 g/cm³: the side is refused, the mass stays.
     const s = setInput(block(), initialState(block(), older), { s: 0.1 });
     expect(s.errors).toEqual({
-      s: 'Density would have to be 40,000 g/cm³, but it can be at most 100 g/cm³',
+      s: 'That would make the density 40,000 g/cm³, but it can be at most 100 g/cm³.',
     });
     expect(s.result.given).toEqual(older);
     expect(s.result.cleared).toEqual([]);
+    // 0.5 cm gives 320 g/cm³; doubling the side fits and halving it doesn't: the hint says so.
+    const half = setInput(block(), initialState(block(), older), { s: 0.5 });
+    expect(half.errors.s).toBe(
+      'That would make the density 320 g/cm³, but it can be at most 100 g/cm³. Try a larger number for the side.',
+    );
   });
 
   it('refuses it with a rule’s sentence when one speaks for those numbers', () => {

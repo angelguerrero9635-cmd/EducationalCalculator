@@ -706,7 +706,7 @@ describe.each(pages(TESTED_MODULES))('module %s', (id, m) => {
     // Values past a data set's count are left out of the example.
     const inSet = inExample;
     expect(Object.keys(m.example).sort()).toEqual([...inSet].sort());
-    for (const r of m.relations) expect(holds(r, m.example)).toBe(true);
+    for (const r of m.relations) expect(holds(r, m.example, m.variables)).toBe(true);
     const result = solve(
       m,
       inSet.map((id) => ({ id, value: m.example[id]! })),

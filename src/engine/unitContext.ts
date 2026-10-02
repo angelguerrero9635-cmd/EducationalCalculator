@@ -213,7 +213,7 @@ export function makeUnitContext(module: ModuleLike, asked: UnitChoice): UnitCont
   const shownExample = Object.fromEntries(
     Object.entries(module.example).map(([id, x]) => [id, toDisplay(id, x)]),
   );
-  const coherent = module.relations.every((r) => holds(r, shownExample));
+  const coherent = module.relations.every((r) => holds(r, shownExample, module.variables));
 
   return { choice, display, toDisplay, fromDisplay, factor, system, coherent };
 }
