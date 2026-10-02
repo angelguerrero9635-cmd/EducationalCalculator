@@ -5,6 +5,46 @@ helpers, pictures, tests, harness) could have prevented are turned into engine w
 next section is written, so each section starts from a better engine than the last. One entry
 per review; each line names the finding and what the engine now does about it.
 
+## HE-E16, HE-E17: linear algebra and complex values in steps, read back by the harness
+
+- **About 50 college pages need matrix, vector and eigenvalue lines and 8 need complex
+    arithmetic, and the harness read none of them** (a work line was checked only when it was a
+    sum: "[[2, 1], [3, 4]] × ⟨5, −1⟩ = ⟨9, 11⟩" or "(30 + j40) ÷ (1 − j2) = −10 + j20" could have
+    been wrong unseen, and so could Grade 11's "(2 + 3i)(1 − 4i) = 2 − 8i + 3i − 12i²"). →
+  `engine/linalg.ts` and `engine/complex.ts` write the lines (products, determinants, Cramer,
+    [A | I] and reduced echelon form one row operation a line, rank and nullity, eigenvalues and
+    eigenvectors, dot, cross, projection; complex sums, products, quotients by the conjugate,
+    polar products and quotients, polar ↔ rectangular), and `harness/algebraLines.ts` reads every
+    form back: each chain of equal sides must hold (exactly on a line of whole numbers and
+    fractions, within display rounding on one with decimals or angles), a λ polynomial at four
+    values of λ, ± as both signs, and each row operation against the matrix before it.
+  `sampling.test.ts` runs it on every step's lines (one added loop); `evaluate` reads Re(…),
+    Im(…), |a + jb| and det [[…]] (one pre-pass line).
+- **The solver has numbers only, so a matrix or a phasor was nine or two unrelated values.** →
+  `written.ts`: `matrixVariables`, `vectorVariables`, `complexVariables`, `polarVariables` give
+  a group (counted once toward the 10 values), `cramerRules` solves A x = b with its lines, and
+  `complexRule` works a complex value as one: its real part's step shows the arithmetic, its
+  imaginary part's ends "→ Z = 40 − j30 Ω = 50∠−36.87° Ω".
+- **A rounded number can pass for a fraction** (49.6488 is 34208/689 to 10⁻⁹ of its top):
+  `exactShow` writes a fraction only when the value is one to 10⁻¹⁰, and a magnitude that is a
+  fraction is bracketed before ∠ ((2/5)∠−90°, never 2/5∠−90°, which reads 2 ÷ (5∠−90°)).
+- **A factor written beside another must be bracketed even when it is one number**: the
+  quotient line read "(−7 + 5i)4 ÷ (44)" for a real bottom, and "j6* = −j6" conjugated the 6.
+  → `complexText` products and conjugates bracket every factor.
+- **A page whose example doesn't hold exactly loses its notes** (`units.coherent`): an angle
+  typed as 36.87° in an example makes E = V + jXₛI miss by 10⁻⁵, and the one-value note goes.
+  Page builders take an example angle from its exact pair (the angle of 0.8 − j0.6).
+- Left: 4 × 4 cofactor lines, K − ω²M, a cubic's surd roots, a row-operation page helper; a
+  box that takes "8 + j6" as one value, complex values found backwards, α ± βi as one solver
+  value (docs/HE_NEEDS.md).
+- Tests: `engine/__tests__/complex.test.ts`, `linalg.test.ts` (the plans' examples: LA#0–LA#4,
+  10∠36.87° = 8 + j6, 30 + j40 over 1 − j2), `__tests__/algebraLines.test.ts` (every builder
+  over 150 seeded inputs reads true; a wrong number in any line read is caught, over 1,000
+  lines; Grade 11's product lines read; test-only pages for input impedance, a synchronous
+  generator and a 3 × 3 Cramer system). Pages tested by id: m.12.matrices,
+  m.12.matrix-transformations, m.12.polar, m.12.vectors, m.11.complex-numbers, every college
+  page; no K–12 text changed.
+
 ## E31: college units, temperature differences, unit sets and constants (HE-E5, E26, E9)
 
 - **The college plans need about 300 units the registry lacked, and a temperature difference

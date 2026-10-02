@@ -165,8 +165,8 @@ state one.
   isentropic, film temperature, quality, Colebrook, governs, case n, branch n, LMTD, Routh,
   compass rule, integrated, ", for a first-order …"); `LMTD(a, b)`. Already read: ⌈ ⌉, ⌊ ⌋,
   mod, Σ from …, 64^0.75, 10^(−t ÷ D). A name's e with a prime or mark (e′, ē) is never Euler's
-  number. **Left:** complex arithmetic with j (a sum or product of phasors; HE-E17); a
-  sign-convention _check_ per page (the phrases give the sign; a page that states a convention
+  number. Complex arithmetic with i or j, polar values and matrices are read by HE-E16 and
+  HE-E17 (`harness/algebraLines.ts`). **Left:** a sign-convention _check_ per page (the phrases give the sign; a page that states a convention
   still needs its own assertion in the sampling test, when the first such page is built).
 
 ### HE-E9 Constants registry and g per page
@@ -286,6 +286,31 @@ symmetric 2 × 2 and 3 × 3 eigenvalues (stress tensor, K − ω²M); λ² − (
   classical-mechanics#4, ~chain, quantum#3~two-level); ME FEA#0, #2~beam,
   numerical-methods#1, vibrations#3; EC 3 (circuits-1#1, ~mesh, ~supernode; closed form until
   then).
+- **Status: done but for 4 × 4 lines and K − ω²M (2026-10-02).** `src/engine/linalg.ts` writes
+    each line true as printed, exact fractions where they are ones (1/3, −7/2): a matrix
+    "[[1, 2], [3, 4]]" (augmented "[[1, 1 | 6], …]"), a vector "⟨1, −2, 3⟩"; `matVecLines`,
+  `matMulLines` (one line, or a line a row past 4 entries); `detLines` (2 × 2 arithmetic, 3 × 3
+    by cofactors along the first row, then the minors' arithmetic, the products, the value);
+  `cramerLines` (D, then Dⱼ and xⱼ = Dⱼ ÷ D each); `inverseLines` ([A | I], one row operation a
+    line, "R₂ → R₂ − 2R₁: […]", A⁻¹ and its check A × A⁻¹ = I; a singular A stops at the row of
+    zeros); `rrefLines` (pivots and rank), `rankNullityLines` (nullity = n − rank and each null
+    basis vector with A × v = 0); `eigenLines` (det(A − λI) worked to the characteristic
+    polynomial, the roots by the quadratic formula (2 × 2, real or a ± bi) or each root of the
+    cubic checked "λ = 3: 3³ − 6 × 3² + 11 × 3 − 6 = 0" (3 × 3), then A − λI, an eigenvector as a
+    whole multiple and "A × v = λv"); `dotLine`, `crossLine`, `normLine`, `projectionLines`
+    (u · v, v · v, the projection, the part square to v and its dot product 0). The harness
+    (`harness/algebraLines.ts`, run by `sampling.test.ts` on every step's lines) reads matrices,
+    vectors, det, ᵀ, ⁻¹, I, λ as a variable (a polynomial line is checked at four values of λ), ±
+    and "or", and checks each row operation against the matrix before it; `evaluate` reads
+  `det [[…]]` in a substituted line. Pages: `matrixVariables`/`vectorVariables` declare the
+    group (3 × 4 and 4-vectors too; a group counts once), `matrixOf`/`vectorOf` read it, and
+  `cramerRules` (written.ts) solves A x = b with D and each unknown a relation whose steps are
+    the determinant and Cramer lines (K u = F, node and mesh equations). **Left:** 4 × 4
+    determinants print only their value (no cofactor lines); K − ω²M needs its own line
+    (det(K − ω²M) = 0 in ω²; today a page can use the eigenvalues of M⁻¹K); a cubic's irrational
+    roots print as decimals (checked within display rounding), not surds; a system solved by row
+    operations has the lines (`rrefLines`) but no page helper yet (a page puts them in a step's
+  `work`).
 
 ### HE-E17 Complex values
 
@@ -296,6 +321,29 @@ lines, and the picture reading both parts; a value pair α ± βi from one relat
 - **Waiting:** EC 4 (electromagnetics#0~input-impedance, power#0~load-flow,
   power#1~sync-generator, power#2~sym-components; later parallel impedances in circuits-2#0); M 4
   (diff-eq#1, ~characteristic, diff-eq#3, linear-algebra#3~complex).
+- **Status: done but for the one-box entry and solving backwards (2026-10-02).**
+  `src/engine/complex.ts`: the value (`Complex`), its arithmetic, and the text a page shows:
+  "3 + 4i", "2/5 − 1/5 i" (math), "8 + j6", "40 − j30", "−j6" (electrical, decision 9), polar
+  "10∠36.87°" (`complexText`, `polarText`, the page's `show` for figures or fractions). Lines:
+  `complexSumLines`, `complexProductLines` (term by term, then i² = −1), `complexQuotientLines`
+  (by the conjugate of the bottom, its c² + d², the parts), `polarProductLines` and
+  `polarQuotientLines` ((10 × 2)∠(30° + 45°)), `toPolarLines` (|z| = √(a² + b²), θ = ∠(z) =
+  tan⁻¹(b ÷ a) ± 180° on the left half), `toRectangularLines` (r cos θ + jr sin θ),
+  `conjugateLine`; `parseComplex` reads a typed "8 − j6", "3 - 4i" or "10∠36.87°". The harness
+  reads i, j, ∠, polar and rectangular arithmetic, √ of a negative number, ± pairs ("r = (−2 ±
+  √(4 − 40)) ÷ 2 = −1 ± 3i") and a conjugate "(3 + j4)*", and checks each chain; `evaluate`
+  reads Re(…), Im(…), arg(…) and |…| of a complex expression in a substituted line. One value
+  on a page: `complexVariables` (real and imaginary parts) or `polarVariables` (magnitude and
+  angle, as a phasor is given) declare it as one group (counted once), `complexOf` reads it,
+  and `complexRule` (written.ts) works a complex value from complex and real inputs as two
+  relations: the real part's step shows the worked lines, the imaginary part's ends with the one
+  value ("→ Z_in = 40 − j30 Ω = 50∠−36.87° Ω"). Tested on the plans' input impedance (50 Ω line,
+  100 Ω load, λ/8 → 40 − j30 Ω) and synchronous generator (E = V + jXₛI) as test-only pages.
+  `complexPlane` already takes `{ re, im }` or `{ modulus, argument }` ids, so a group draws as
+  it is. **Left:** a box that takes "8 + j6" as one typed value (the two parts are two boxes;
+  `parseComplex` is ready for it); a complex value is found forward only (no input worked back
+  from a complex result); α ± βi as one solver value (a page gives α and β as two values and
+  says "r = α ± βi" in its note; HE-E6 names the case).
 
 ### HE-E18 Exponentials, logs and powers in solves and the simplifying chain
 
