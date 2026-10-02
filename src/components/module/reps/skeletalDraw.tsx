@@ -568,7 +568,11 @@ export function SkeletalView({
         if (nx - d > gw) [gs, gw] = [d, nx - d];
       });
       const ang = gs + gw / 2;
-      const d = font * 1.5;
+      // Further out where a rank badge sits in the same gap.
+      const at = (dd: number): P => [p0[0] + Math.cos(ang) * dd, p0[1] + Math.sin(ang) * dd];
+      const crowded = (q: P) =>
+        placed.some((b) => Math.hypot(b[0] - q[0], b[1] - q[1]) < r + font * 1.3);
+      const d = [1.5, 2.1, 2.7].map((k) => font * k).find((dd) => !crowded(at(dd))) ?? font * 2.7;
       parts.push(
         <ChartText
           key="rs"
