@@ -33,21 +33,21 @@ truth for grades, skills and courses (log changes in `TAXONOMY_ISSUES.md`).
 
 ## Commands
 
-| Command                                                                     | Use                                                                                                      |
-| --------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| `pnpm new-module m.5.skill[~slug] ["Title"]`                                | Scaffold a module in the right grade file                                                                |
-| `MODULE_IDS=m.5. pnpm test src/data/modules`                                | Module, standards and sampling tests for a prefix (the review evidence alone samples deeply)             |
-| `pnpm check`                                                                | Typecheck, lint, format check, all tests                                                                 |
-| `pnpm review -- --prefix m.5. --stage lesson [--changed]`                   | Lesson evidence (dump, deep harness, questions): no build, no browser                                    |
-| `pnpm review -- --prefix m.5. --stage page [--changed]`                     | Page evidence: builds only the pages in scope when `dist/` is stale, screenshots, drags, sheets          |
-| `node scripts/ci-test.mjs`                                                  | Before a push: the cheap suites (the heavy ones run nightly; `--heavy` scopes them to the pages changed) |
-| `node scripts/plan-brief.mjs --grade 8 --subject m`                         | The brief a direction plan starts from (`.review/plans/m.8/brief.md`)                                    |
-| `node scripts/promote-demo.mjs g.demo-id m.8.skill~slug ["Title"]`          | Copy a gallery demo into its grade file as a page                                                        |
-| `node scripts/review-questions.mjs --prefix m.5.`                           | The released questions for a section's skills into `.review/questions.md`                                |
-| `NODE_PATH=$(npm root -g) pnpm shots -- <ids> --widths 390 --out .review/x` | Screenshots with layout checks                                                                           |
-| `NODE_PATH=$(npm root -g) pnpm sliders -- [ids]`                            | Tap and drag every slider; report in `.review/sliders.md`                                                |
-| `pnpm docs:sliders`                                                         | Regenerate `docs/SLIDERS.md`                                                                             |
-| `pnpm verify:ssr`                                                           | After a build: pages are pre-rendered with content                                                       |
+| Command                                                                     | Use                                                                                             |
+| --------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| `pnpm new-module m.5.skill[~slug] ["Title"]`                                | Scaffold a module in the right grade file                                                       |
+| `MODULE_IDS=m.5. pnpm test src/data/modules`                                | Module, standards and sampling tests for a prefix (the review evidence alone samples deeply)    |
+| `pnpm check`                                                                | Typecheck, lint, format check, all tests                                                        |
+| `pnpm review -- --prefix m.5. --stage lesson [--changed]`                   | Lesson evidence (dump, deep harness, questions): no build, no browser                           |
+| `pnpm review -- --prefix m.5. --stage page [--changed]`                     | Page evidence: builds only the pages in scope when `dist/` is stale, screenshots, drags, sheets |
+| `node scripts/ci-test.mjs`                                                  | Before a push: the cheap suites (the heavy ones run nightly only)                               |
+| `node scripts/plan-brief.mjs --grade 8 --subject m`                         | The brief a direction plan starts from (`.review/plans/m.8/brief.md`)                           |
+| `node scripts/promote-demo.mjs g.demo-id m.8.skill~slug ["Title"]`          | Copy a gallery demo into its grade file as a page                                               |
+| `node scripts/review-questions.mjs --prefix m.5.`                           | The released questions for a section's skills into `.review/questions.md`                       |
+| `NODE_PATH=$(npm root -g) pnpm shots -- <ids> --widths 390 --out .review/x` | Screenshots with layout checks                                                                  |
+| `NODE_PATH=$(npm root -g) pnpm sliders -- [ids]`                            | Tap and drag every slider; report in `.review/sliders.md`                                       |
+| `pnpm docs:sliders`                                                         | Regenerate `docs/SLIDERS.md`                                                                    |
+| `pnpm verify:ssr`                                                           | After a build: pages are pre-rendered with content                                              |
 
 The Playwright used by the scripts is the container's global one (`NODE_PATH=$(npm root -g)`),
 not a dependency. Chromium is at `/opt/pw-browsers/chromium`.
@@ -73,7 +73,9 @@ not a dependency. Chromium is at `/opt/pw-browsers/chromium`.
 - Testing: the heavy suites (modules, sampling) run once a day, on the nightly CI run. Before a
   push, `node scripts/ci-test.mjs` runs the cheap suites only. While building a new page, its
   own tests by id (`MODULE_IDS=<id>`) are fine; no broader or deep runs (the review evidence
-  alone samples deeply). Fix what the nightly run finds the next day.
+  alone samples deeply). No `--heavy` or `--full` runs outside the nightly, engine changes
+  included: test the ids a change is about by `MODULE_IDS`, and fix what the nightly run finds
+  the next day.
 - Don't add dependencies without asking.
 - Never edit `taxonomy.ts` casually; it is kept byte-for-byte and Prettier ignores it.
 - Licensed material is never used; lesson text is original. Any licensed or restricted material
