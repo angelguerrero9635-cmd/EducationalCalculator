@@ -30,6 +30,8 @@
 // first edit, then the box moved a step of its own size, or doubled or halved, in its range): it
 // does not come from that box ("n = 2" on a ladder, the unit circle's π/4 family, "2V", the
 // 68–95–99.7 brackets); the line notes it as fixed text. Only texts that then change are flagged.
+// A worked-out "?" box takes no number, so the other "?" boxes are varied in its place; when no
+// box can be varied, the text stays flagged.
 // Gallery demos (g.…) are opened under /gallery, every other page under /skill. A page whose
 // check fails is one ERROR line; the run goes on (and restarts its server if it stopped). The
 // reports are rewritten after each page. PORT picks the server's port (runs side by side).
@@ -186,6 +188,17 @@ const pictureTexts = () =>
     }
     return out;
   });
+/** The picture's texts once two reads 250 ms apart agree (a slow machine still re-rendering). */
+async function settledTexts() {
+  let last = await pictureTexts();
+  for (let i = 0; i < 6; i++) {
+    await page.waitForTimeout(250);
+    const next = await pictureTexts();
+    if (next.length === last.length && next.every((t, j) => t === last[j])) return next;
+    last = next;
+  }
+  return last;
+}
 /**
  * Bare numbers (or a bare percent, degrees or imaginary tick: "40%", "4i") among the texts that sit in
  * a run of three evenly spaced ones: axis ticks.
@@ -511,7 +524,7 @@ async function textsWhenVaried(edited, how, u) {
     const got = parseShown(now?.value ?? '?');
     if (!Number.isFinite(got) || Math.abs(got - Number(text)) > 1e-6 * Math.max(1, Math.abs(got)))
       continue;
-    return await pictureTexts();
+    return await settledTexts();
   }
   return null;
 }
@@ -549,7 +562,7 @@ async function unknowns(id) {
         all.findIndex((o) => o.id === b.id) === i,
     );
     const known = now.filter((b) => b.value !== '?');
-    const texts = await pictureTexts();
+    const texts = await settledTexts();
     const ticks = tickValues(texts).map(Math.abs);
     // Each drawn number that is a "?" box's example value, with the texts it is in.
     const found = new Map();
@@ -560,7 +573,7 @@ async function unknowns(id) {
         const us = unknown.filter((b) => sameNumber(p, b.value));
         if (!us.length) continue;
         const key = `${p.text} (the example's ${us.map((u) => `${u.id} = ${u.value}`).join(' or ')})`;
-        found.set(key, uniq([...(found.get(key) ?? []), `"${t}"`]));
+        found.set(key, uniq([...(found.get(key) ?? []), t]));
       }
     // A text that reads the same when the "?" box is typed with another number does not come
     // from that box (a fixed label that happens to equal the example: "n = 2", "2V", the unit
@@ -572,19 +585,26 @@ async function unknowns(id) {
       if (![...found.keys()].some((k) => k.includes(`${u.id} = ${u.value}`))) continue;
       varied.set(u.id, await textsWhenVaried(edited, how, u));
     }
+    // A worked-out box takes no number: the other "?" boxes, which it is worked out from, are
+    // varied in its place (a text that depends on it changes when one of them does).
+    if ([...varied.values()].some((v) => !v))
+      for (const u of unknown)
+        if (!varied.has(u.id)) varied.set(u.id, await textsWhenVaried(edited, how, u));
+    const standIns = [...varied.values()].filter(Boolean);
     for (const [k, ts] of found) {
       const us = unknown.filter((u) => k.includes(`${u.id} = ${u.value}`));
       const kept = ts.filter((t) =>
         us.some((u) => {
           const after = varied.get(u.id);
-          return !after || !after.includes(t);
+          if (after) return !after.includes(t);
+          return !standIns.length || standIns.some((a) => !a.includes(t));
         }),
       );
       for (const t of ts) if (!kept.includes(t)) fixed.push(t);
       if (kept.length) found.set(k, kept);
       else found.delete(k);
     }
-    const hits = [...found].map(([k, ts]) => `${k} in ${ts.join(', ')}`);
+    const hits = [...found].map(([k, ts]) => `${k} in ${ts.map((t) => `"${t}"`).join(', ')}`);
     if (pageErrors.length > errs) hits.push(`page error: ${pageErrors.slice(errs).join(' | ')}`);
     out.push({
       line: `${id} ${how}: ? in ${unknown.map((b) => b.id).join(', ') || '(none)'}`,
