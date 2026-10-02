@@ -17,13 +17,14 @@
  */
 import {
   checkValue,
+  floorOf,
   holds,
   solve,
   type Given,
   type SolveResult,
   type System,
 } from '@/engine/solve';
-import { parseNumber } from '@/engine/format';
+import { parseNumber, significant } from '@/engine/format';
 import { SIGMA } from '@/engine/latex';
 import { changeUnits, initialState, setValues, type CalcState } from '@/engine/state';
 import type { Values, VariableDef } from '@/engine/types';
@@ -177,7 +178,12 @@ const wordIn = (text: string, word: string) =>
     `(?<![\\p{L}\\d_.])${word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![\\p{L}\\d_])`,
     'u',
   ).test(text);
-const close = (a: number, b: number, rel = 1e-6) => Math.abs(a - b) <= rel * (1 + Math.abs(b));
+/**
+ * Equal to `rel` of the larger size, or within `floor` near 0 (the solver's `closeTo`; pass a
+ * value's `floorOf`): an absolute floor of 10⁻⁶ let tiny values pass for each other.
+ */
+const close = (a: number, b: number, rel = 1e-6, floor = 1e-6) =>
+  Math.abs(a - b) <= Math.max(rel * Math.max(Math.abs(a), Math.abs(b)), floor);
 
 const describe_ = (sys: System, vals: Values | readonly Given[]) => {
   const byId = new Map(sys.variables.map((v) => [v.id, v]));
@@ -257,12 +263,12 @@ function checkInvariants(c: Ctx, res: SolveResult, where: string) {
     if (bad) c.f.add('error', `${c.label}${id} out of range / not whole: ${bad}`, where);
   }
   for (const rel of c.sys.relations) {
-    if (rel.vars.every((id) => id in res.values) && !holds(rel, res.values)) {
+    if (rel.vars.every((id) => id in res.values) && !holds(rel, res.values, c.sys.variables)) {
       c.f.add('error', `${c.label}relation "${rel.id}" fails for returned values`, where);
     }
   }
   for (const g of res.given) {
-    if (!close(res.values[g.id]!, g.value)) {
+    if (!close(res.values[g.id]!, g.value, 1e-6, floorOf(c.byId.get(g.id)))) {
       c.f.add('error', `${c.label}given ${g.id} silently changed`, where);
     }
   }
@@ -324,7 +330,7 @@ function checkAgainstSearch(c: Ctx, sent: readonly Given[], res: SolveResult, wh
           `${where} → ${v.id} = ${shown}`,
         );
       }
-    } else if (!close(res.values[v.id]!, x)) {
+    } else if (!close(res.values[v.id]!, x, 1e-6, floorOf(v))) {
       c.f.add('error', `${c.label}${v.id} calculated wrong`, `${where} → expected ${shown}`);
     }
   }
@@ -341,7 +347,8 @@ function checkAgainstSearch(c: Ctx, sent: readonly Given[], res: SolveResult, wh
   // allow several values (e.g. "more or fewer"), it must not be overwritten while it still fits.
   for (const id of res.dropped.filter((x) => !res.cleared.includes(x))) {
     const g = sentById.get(id);
-    if (!g || !(id in res.values) || close(res.values[id]!, g.value)) continue;
+    if (!g || !(id in res.values) || close(res.values[id]!, g.value, 1e-6, floorOf(c.byId.get(id))))
+      continue;
     if (determined(search, id) !== undefined) continue;
     if (complete(c.sys, { ...kept, [id]: g.value }).feasible === true) {
       c.f.add(
@@ -359,9 +366,15 @@ function checkAgainstSearch(c: Ctx, sent: readonly Given[], res: SolveResult, wh
     }
     // A rule that says why (equal slopes, the same x on both sides) refuses the newest input on
     // purpose, even though that number is possible with other inputs.
-    // (the engine's own refusals are "Doesn’t fit …", "Makes … impossible" and "Must be …")
+    // (the engine's own refusals are "Doesn’t fit …", "That would leave no possible value …"
+    // and "Must be …", and a range sentence, "That would make …", unless it refuses the newest
+    // for not fitting the older inputs)
     const said =
-      !!reason && !/^(Doesn’t fit|Makes .* impossible|Must be|These numbers)/.test(reason);
+      !!reason &&
+      !/^(Doesn’t fit|Makes .* impossible|That would leave no possible|Must be|These numbers)/.test(
+        reason,
+      ) &&
+      !(/^That would make /.test(reason) && !res.rejected.older);
     const alone = complete(c.sys, { [g.id]: g.value });
     if (alone.feasible === true && !said) {
       c.f.add('error', `${c.label}rejects ${g.id} although it is possible`, where);
@@ -655,7 +668,14 @@ function checkSteps(c: Ctx, res: SolveResult, where: string) {
     } else if (
       !shownClose(l, r, chk.formula) &&
       !withinRounding(l, sides[1]!) &&
-      !withinRounding(r, sides[0]!)
+      !withinRounding(r, sides[0]!) &&
+      // A left side shown to the page's figures that the right side rounds to (161 = 0.129 ×
+      // 1250, which is 161.25): true to the precision it is shown with.
+      !(
+        figures !== undefined &&
+        /^-?[\d.]+(?: × 10[⁻⁰¹²³⁴⁵⁶⁷⁸⁹]+)?$/.test(sides[0]!.trim()) &&
+        Number(parseNumber(significant(r, figures))) === l
+      )
     ) {
       c.f.add('error', `${c.label}check line shows unequal sides: "${chk.formula}"`, where);
     }
@@ -840,7 +860,10 @@ function stageEdits(c: Ctx, r: Rng, sequences: number) {
       }
       if (mode === 'same') {
         for (const [id, x] of Object.entries(before.result.values)) {
-          if (!(id in state.result.values) || !close(state.result.values[id]!, x)) {
+          if (
+            !(id in state.result.values) ||
+            !close(state.result.values[id]!, x, 1e-6, floorOf(c.byId.get(id)))
+          ) {
             c.f.add('error', `${c.label}retyping a shown value changed ${id}`, where);
           }
         }
@@ -851,7 +874,7 @@ function stageEdits(c: Ctx, r: Rng, sequences: number) {
       if (mode === 'set' || mode === 'multi') {
         for (const [id, x] of Object.entries(updates)) {
           if (!state.result.rejected && state.result.given.some((g) => g.id === id)) {
-            if (!close(state.result.values[id]!, x!)) {
+            if (!close(state.result.values[id]!, x!, 1e-6, floorOf(c.byId.get(id)))) {
               c.f.add('error', `${c.label}typed ${id} not kept`, where);
             }
           }
@@ -931,13 +954,13 @@ function stageUnits(m: ModuleDef, f: Findings, r: Rng) {
       const expected = v.integer
         ? c.units.fromDisplay(v.id, base.units.toDisplay(v.id, before))
         : before;
-      if (!close(after, expected)) {
+      if (!close(after, expected, 1e-6, floorOf(v))) {
         f.add('error', `${label}${v.id} changes value when changing units`, `${before} → ${after}`);
       }
     }
     const back = changeUnits(base.sys, there, c.sys);
     for (const [id, x] of Object.entries(baseState.result.values)) {
-      if (!close(back.result.values[id] ?? NaN, x)) {
+      if (!close(back.result.values[id] ?? NaN, x, 1e-6, floorOf(c.byId.get(id)))) {
         f.add('error', `${label}${id} differs after changing units there and back`, `${x}`);
       }
     }

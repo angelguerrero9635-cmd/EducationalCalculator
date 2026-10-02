@@ -261,7 +261,6 @@ const PLATES_PICTURE: Representation = {
   dielectric: 'k',
   area: 'A',
   gap: 'd',
-  meters: 1e-3,
   capacitance: 'C',
   voltage: 'V',
   charge: 'Q',
@@ -273,9 +272,7 @@ const parallelPlate = fromPage(
   'g.s-11-electric-potential-parallel-plate',
   'A parallel-plate capacitor in air',
   PLATES_PICTURE,
-  // The page's solver reports consistent values as a conflict when the area is near 0 (sent to
-  // the lesson chat); the demo keeps the area at 1 cm² or more.
-  { pictureLabels: [], vars: { A: { min: 0.0001 } } },
+  { pictureLabels: [] },
 );
 
 const dielectric = fromPage(
@@ -286,9 +283,10 @@ const dielectric = fromPage(
   {
     use: 'Use this for “A plastic sheet with κ = 3.5 fills the 0.2 mm gap between 0.05 m² plates. What is C, and what charge does 9 V put on it?”',
     example: (() => {
-      const [k, A, d, V] = [3.5, 0.05, 0.2, 9];
-      const C = (8.85 * k * A) / (d * 1e-3);
-      return { k, A, d, C, V, Q: C * V, E: V / (d * 1e-3) };
+      // The page counts the gap in meters (shown in mm): 0.2 mm is 2 × 10⁻⁴ m.
+      const [k, A, d, V] = [3.5, 0.05, 2e-4, 9];
+      const C = (8.85 * k * A) / d;
+      return { k, A, d, C, V, Q: C * V, E: V / d };
     })(),
     pictureLabels: [],
   },

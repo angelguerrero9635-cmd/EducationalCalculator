@@ -116,6 +116,9 @@ describe('simplify chain', () => {
       '100 ÷ 1.05²',
       '100 ÷ 1.1025',
     ]);
+    // A fraction exponent keeps its brackets: 27²/3 would read as 27² ÷ 3 = 243.
+    expect(simplifyChain('(27 ÷ 1)^(2/3)')[0]).toBe('27^(2/3)');
+    expect(simplifyChain('(54 ÷ 2)^(1.5)')[0]).toBe('27^(1.5)');
   });
 
   it('keeps single operations, words and impossible stages out', () => {

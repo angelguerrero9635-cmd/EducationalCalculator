@@ -178,9 +178,18 @@ export function solveTriangle(
 
 /** The triangle from three sides that close. */
 function close3(a: number, b: number, c: number): Tri {
-  const A = cosAngle(a, b, c);
-  const B = cosAngle(b, c, a);
-  return make([a, b, c], [A, B, 180 - A - B]);
+  // The angles from the area (Kahan's form, stable for a sliver), not acos: acos near 1 loses
+  // half the digits of a tiny angle (a = 1000, b = 0.1, C = 178° gave B off by 10⁻⁵ of
+  // itself). The largest angle is what the other two leave of 180°.
+  const [x, y, z] = [a, b, c].sort((p, q) => q - p) as [number, number, number];
+  const q = (x + (y + z)) * (z - (x - y)) * (z + (x - y)) * (x + (y - z));
+  const s4 = q > 0 ? Math.sqrt(q) : 0;
+  const angle = (u: number, v: number, w: number) =>
+    s4 > 0 ? deg(Math.atan2(s4, v * v + w * w - u * u)) : cosAngle(u, v, w);
+  const g = [angle(a, b, c), angle(b, c, a), angle(c, a, b)];
+  const big = [a, b, c].indexOf(x);
+  g[big] = 180 - g.reduce((t, d, i) => (i === big ? t : t + d), 0);
+  return make([a, b, c], g);
 }
 
 /** A triangle's vertices: A at (0, 0), B at (c, 0), C above AB (y up). */

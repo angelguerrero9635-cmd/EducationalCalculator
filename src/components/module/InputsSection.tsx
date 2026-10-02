@@ -80,7 +80,7 @@ function kidMessage(message: string): string {
   const most = /^Must be at most (.+)$/.exec(message);
   if (most) return `Use ${most[1]} or less`;
   if (/^Must be \d/.test(message)) return message.replace('Must be ', 'Use ');
-  if (/^(Makes|No whole numbers|Doesn’t fit)/.test(message)) {
+  if (/^(Makes|No whole numbers|Doesn’t fit|That would)/.test(message)) {
     return 'That doesn’t fit. Try another number.';
   }
   return message;

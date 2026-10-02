@@ -169,7 +169,7 @@ export function complete(
       for (const rel of sys.relations) {
         const unknowns = rel.vars.filter((id) => !(id in vals));
         if (unknowns.length === 0) {
-          if (!holds(rel, vals)) return;
+          if (!holds(rel, vals, sys.variables)) return;
           continue;
         }
         if (unknowns.length !== 1) continue;
@@ -185,7 +185,7 @@ export function complete(
             raw
               .filter((x) => Number.isFinite(x) && valid(v, x))
               .map((x) => norm(v, x))
-              .filter((x) => holds(rel, { ...vals, [id]: x })),
+              .filter((x) => holds(rel, { ...vals, [id]: x }, sys.variables)),
           ),
         ];
         // A rule these values leave indifferent to it (0 ÷ 0 at t = 0), as for the solver.

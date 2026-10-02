@@ -1,4 +1,4 @@
-import { dollars, formatNumber } from './format';
+import { dollars, formatNumber, lowerFirst } from './format';
 import type { Relation, Values, VariableDef } from './types';
 
 export interface Given {
@@ -110,19 +110,54 @@ const normalizeValue = (variable: VariableDef, x: number) => {
   return Math.abs(x) < 1e-12 ? 0 : x;
 };
 
-const closeTo = (x: number, target: number) =>
-  Math.abs(x - target) <= TOLERANCE * (1 + Math.abs(target));
+/**
+ * How near 0 a value of `v` counts as 0: a millionth of its step (rounding dust, far below
+ * anything its box shows), else a millionth, or next to nothing for a value in scientific
+ * notation with no step. Only near 0: elsewhere values are compared relative to their size.
+ */
+export function floorOf(v: VariableDef | undefined): number {
+  const step = v?.step !== undefined && v.step > 0 ? v.step : v?.scientific ? 1e-30 : 1;
+  return TOLERANCE * Math.min(1, step);
+}
+
+/**
+ * Equal to a millionth of the larger size, or both within `floor` of each other near 0. An
+ * absolute tolerance (a millionth of 1 + |target|) let any two values under 10⁻⁶ pass:
+ * T = 1 × 10⁻⁹ s "checked" against 3.28 × 10⁻⁷ s.
+ */
+export const closeTo = (x: number, target: number, floor = TOLERANCE) =>
+  Math.abs(x - target) <= Math.max(TOLERANCE * Math.max(Math.abs(x), Math.abs(target)), floor);
+
+/** Each variable's near-zero floor by id (cached per variable list). */
+const floorsCache = new WeakMap<readonly VariableDef[], Map<string, number>>();
+function floorsOf(variables: readonly VariableDef[] | undefined): (id: string) => number {
+  if (!variables) return () => TOLERANCE;
+  let map = floorsCache.get(variables);
+  if (!map) {
+    map = new Map(variables.map((v) => [v.id, floorOf(v)]));
+    floorsCache.set(variables, map);
+  }
+  const m = map;
+  return (id) => m.get(id) ?? TOLERANCE;
+}
 
 /**
  * True when a relation holds for `values`. Where the relation has an exact rearrangement, it
  * re-solves for that variable and compares with a relative tolerance, so formulas that mix
- * very different magnitudes (a rate of 12 and a population of 500,000) are checked precisely.
+ * very different magnitudes (a rate of 12 and a population of 500,000) are checked precisely,
+ * and so are tiny ones (a force of 5 × 10⁻¹⁴ N is not 9.61 × 10⁻¹⁴ N). `variables` gives each
+ * value's floor near 0 (`floorOf`); without them it is a millionth.
  * Otherwise it falls back to the residual, scaled by the size of the values.
  */
-export function holds(relation: Relation, values: Values): boolean {
+export function holds(
+  relation: Relation,
+  values: Values,
+  variables?: readonly VariableDef[],
+): boolean {
   // A rule only checks (0 when it holds, 1 when not): no tolerance scaled by the values, or
   // a 1 would pass once the numbers are in the thousands.
   if (relation.constraint) return relation.residual(values) === 0;
+  const floor = floorsOf(variables);
   for (const [id, fn] of Object.entries(relation.solve ?? {})) {
     const others = { ...values };
     delete others[id];
@@ -130,7 +165,7 @@ export function holds(relation: Relation, values: Values): boolean {
     const candidates = (out === undefined ? [] : Array.isArray(out) ? out : [out]).filter(
       Number.isFinite,
     );
-    if (candidates.length > 0) return candidates.some((x) => closeTo(x, values[id]!));
+    if (candidates.length > 0) return candidates.some((x) => closeTo(x, values[id]!, floor(id)));
   }
   const r = relation.residual(values);
   if (!Number.isFinite(r)) return false;
@@ -199,14 +234,46 @@ function affineOf(rel: Relation): Affine | undefined {
 function shownWithUnit(v: VariableDef, x: number): string {
   const f = v.unitFactor ?? 1;
   const unit = v.displayUnit ?? v.unit;
-  return `${formatNumber(Number((x / f).toPrecision(6)))}${unit && !/^[$¢%°]/.test(unit) ? ` ${unit}` : ''}`;
+  const n = formatNumber(Number((x / f).toPrecision(6)));
+  if (!unit) return n;
+  if (unit === '$') return dollars(n);
+  // 91.5%, 40°, 5¢: no space.
+  return /^[¢%°]/.test(unit) ? `${n}${unit}` : `${n} ${unit}`;
+}
+
+/** A value's name inside a sentence: "the potassium-40 left", "the Carnot limit", "the IQR". */
+export const theName = (v: Pick<VariableDef, 'name'>) => `the ${lowerFirst(v.name)}`;
+
+/**
+ * Why a value can't be `x`, in a sentence a student reads: "That would make the density
+ * 108,225 g/cm³, but it can be at most 100 g/cm³." Undefined when its range allows `x`.
+ */
+function rangeSentence(v: VariableDef, x: number): string | undefined {
+  const range = checkValue(v, x);
+  if (!range) return undefined;
+  // 60,300.00000008 "must be a whole number" reads as nonsense: no sentence for rounding dust.
+  const f = v.unitFactor ?? 1;
+  if (checkValue(v, Number((x / f).toPrecision(6)) * f) === undefined) return undefined;
+  const need = `That would make ${theName(v)} ${shownWithUnit(v, x)}, but it`;
+  if (v.max !== undefined && /^Must be at most/.test(range))
+    return `${need} can be at most ${shownWithUnit(v, v.max)}.`;
+  if (v.min !== undefined && /^Must be at least/.test(range))
+    return `${need} must be at least ${shownWithUnit(v, v.min)}.`;
+  return `${need} ${range[0]!.toLowerCase()}${range.slice(1)}.`;
 }
 
 /**
+ * What the engine says when no value of `v` fits the other numbers and nothing more precise
+ * can be said (a root of a negative, a log of 0).
+ */
+export const noValueFor = (v: Pick<VariableDef, 'name'>) =>
+  `That would leave no possible value for ${theName(v)}.`;
+
+/**
  * Why `x` can't be `v`'s value, in a sentence: a rule's own message when one speaks for the
- * values with `x` in them ("No material is denser than …"), else the range it breaks
- * ("Density would have to be 108,225 g/cm³, but it can be at most 100 g/cm³"). Undefined
- * when `x` is not a number.
+ * values with `x` in them ("No material is denser than …"), else the range it breaks ("That
+ * would make the density 108,225 g/cm³, but it can be at most 100 g/cm³."). Undefined when `x`
+ * is not a number.
  */
 function whyNot(system: System, v: VariableDef, x: number, values: Values): string | undefined {
   if (!Number.isFinite(x)) return undefined;
@@ -220,17 +287,7 @@ function whyNot(system: System, v: VariableDef, x: number, values: Values): stri
       // A message that needs values not known yet stays quiet.
     }
   }
-  const range = checkValue(v, x);
-  if (!range) return undefined;
-  // 60,300.00000008 "must be a whole number" reads as nonsense: no sentence for rounding dust.
-  const f = v.unitFactor ?? 1;
-  if (checkValue(v, Number((x / f).toPrecision(6)) * f) === undefined) return undefined;
-  const need = `${v.name} would have to be ${shownWithUnit(v, x)}, but it`;
-  if (v.max !== undefined && /^Must be at most/.test(range))
-    return `${need} can be at most ${shownWithUnit(v, v.max)}`;
-  if (v.min !== undefined && /^Must be at least/.test(range))
-    return `${need} can be at least ${shownWithUnit(v, v.min)}`;
-  return `${need} ${range[0]!.toLowerCase()}${range.slice(1)}`;
+  return rangeSentence(v, x);
 }
 
 /**
@@ -338,6 +395,7 @@ function candidatesFor(
   variable: VariableDef,
   values: Values,
   previous: Values,
+  variables?: readonly VariableDef[],
 ): number[] {
   const explicit = relation.solve?.[variable.id];
   let candidates: number[];
@@ -352,8 +410,8 @@ function candidatesFor(
   const valid = candidates
     .filter((x) => checkValue(variable, x) === undefined)
     .map((x) => normalizeValue(variable, x))
-    .filter((x) => holds(relation, { ...values, [variable.id]: x }))
-    .filter((x, i, all) => all.findIndex((y) => closeTo(y, x)) === i);
+    .filter((x) => holds(relation, { ...values, [variable.id]: x }, variables))
+    .filter((x, i, all) => all.findIndex((y) => closeTo(y, x, floorOf(variable))) === i);
   const prev = previous[variable.id];
   return prev === undefined
     ? valid
@@ -396,7 +454,7 @@ function propagate(
         (id) => !(id in values) && !outOfCount(byId.get(id), values),
       );
       if (unknowns.length === 0) {
-        if (!holds(relation, values)) {
+        if (!holds(relation, values, system.variables)) {
           const said = relation.message?.(values);
           if (said) return { ok: false, reason: said, said: true };
           return { ok: false, reason: `Doesn’t fit ${relation.id}` };
@@ -407,7 +465,7 @@ function propagate(
       } else if (unknowns.length === 1) {
         const id = unknowns[0]!;
         const variable = byId.get(id)!;
-        const xs = candidatesFor(relation, variable, values, previous);
+        const xs = candidatesFor(relation, variable, values, previous, system.variables);
         if (xs.length === 0) {
           // A rule that says why it has no single answer here (parallel lines, the same x on
           // both sides) says so under the box.
@@ -427,7 +485,7 @@ function propagate(
             const at = { ...values };
             return {
               ok: false,
-              reason: `Makes ${variable.name.toLowerCase()} impossible`,
+              reason: noValueFor(variable),
               why: () =>
                 xs.map((x) => whyNot(system, variable, x, at)).find((t) => t !== undefined),
             };
@@ -718,6 +776,36 @@ function roundedOut(
   return undefined;
 }
 
+/** The engine's own sentence for a value past its range (`rangeSentence`). */
+const RANGE_SENTENCE = /^That would make /;
+
+/**
+ * Which way to move the newest value so it fits the older ones, when halving or doubling it
+ * does and the other does not: " Try a smaller number for the age." (with its leading space),
+ * else "".
+ */
+let probing = false;
+function tryInstead(system: System, given: readonly Given[], previous: Values): string {
+  const newest = given[given.length - 1]!;
+  const v = system.variables.find((x) => x.id === newest.id);
+  // (The probes' own refusals need no hint.)
+  if (!v || newest.value === 0 || probing) return '';
+  const fits = (factor: number) => {
+    const x = newest.value * factor;
+    if (checkValue(v, x) !== undefined) return false;
+    const r = solve(system, [...given.slice(0, -1), { id: newest.id, value: x }], previous);
+    return !r.rejected && r.cleared.length === 0;
+  };
+  probing = true;
+  try {
+    const [smaller, larger] = newest.value > 0 ? [fits(0.5), fits(2)] : [fits(2), fits(0.5)];
+    if (smaller === larger) return '';
+    return ` Try a ${smaller ? 'smaller' : 'larger'} number for ${theName(v)}.`;
+  } finally {
+    probing = false;
+  }
+}
+
 /**
  * Solves the system from the givens. Newer givens take priority: an older given is dropped
  * when newer ones already determine it or conflict with it.
@@ -747,7 +835,7 @@ export function solve(system: System, given: readonly Given[], previous: Values 
       !variable.integer &&
       variable.step !== undefined &&
       Math.abs(typed - known[g.id]!) <= variable.step / 2 + 1e-12;
-    if (determined && (closeTo(typed, known[g.id]!) || rounded)) {
+    if (determined && (closeTo(typed, known[g.id]!, floorOf(variable)) || rounded)) {
       dropped.push(g.id);
       continue;
     }
@@ -787,6 +875,9 @@ export function solve(system: System, given: readonly Given[], previous: Values 
         ? propagated.values
         : { ...givens, [g.id]: normalizeValue(variable, g.value) };
       for (const r of system.relations) {
+        // A rule that only checks speaks only for values it has: with u unknown, "843.3 cm is
+        // not a reading to the nearest NaN cm" (a missing value fails every check).
+        if (r.constraint && !r.vars.every((id) => values[id] !== undefined)) continue;
         try {
           const text = r.message?.(values);
           if (text) return text;
@@ -829,9 +920,12 @@ export function solve(system: System, given: readonly Given[], previous: Values 
       // the older numbers stay as they were. Only a conflict nothing explains clears the older.
       const newest = given[given.length - 1]!;
       const before = solve(system, given.slice(0, -1), previous);
-      return { ...before, rejected: { id: newest.id, reason: why, older: true } };
+      const reason = RANGE_SENTENCE.test(why)
+        ? `${why}${tryInstead(system, given, previous)}`
+        : why;
+      return { ...before, rejected: { id: newest.id, reason, older: true } };
     } else if (isNewest) {
-      rejected = { id: g.id, reason: trial.reason };
+      rejected = { id: g.id, reason: trial.why?.() ?? trial.reason };
     } else {
       dropped.push(g.id);
       if (!determined) cleared.push(g.id);
@@ -850,7 +944,7 @@ export function solve(system: System, given: readonly Given[], previous: Values 
         if (v.id in known || !(v.id in first)) continue;
         // Same value in every solution: the formulas fix it (e.g. a difference).
         const x = first[v.id]!;
-        if (!r.solutions.every((sol) => closeTo(sol[v.id]!, x))) continue;
+        if (!r.solutions.every((sol) => closeTo(sol[v.id]!, x, floorOf(v)))) continue;
         if (checkValue(v, x) !== undefined) continue;
         // A value from a list (an allowed mass) that every rule marks "never worked out from
         // this rule" (a `null` part) is the student's to pick, whatever the search finds. Other
@@ -921,7 +1015,9 @@ export function solve(system: System, given: readonly Given[], previous: Values 
       const first = r.solutions[0];
       if (!first) continue;
       const loose = [...group].filter((v) =>
-        r.solutions.some((sol) => !(v in sol) || !closeTo(sol[v]!, first[v]!)),
+        r.solutions.some(
+          (sol) => !(v in sol) || !closeTo(sol[v]!, first[v]!, floorOf(byId.get(v))),
+        ),
       );
       if (!loose.length) continue;
       const next = { ...known };
@@ -944,7 +1040,7 @@ export function solve(system: System, given: readonly Given[], previous: Values 
       delete others[id];
       const out = fn(others);
       const xs = out === undefined ? [] : Array.isArray(out) ? out : [out];
-      return xs.some((x) => closeTo(x, known[id]!));
+      return xs.some((x) => closeTo(x, known[id]!, floorOf(byId.get(id))));
     });
     const relation =
       direct ?? system.relations.find((rel) => rel.vars.includes(id) && !rel.constraint);

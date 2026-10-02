@@ -74,11 +74,12 @@ describeOrSkip('review dump', () => {
       lines.push(`example: ${JSON.stringify(m.example)} start: ${m.startWith.join(', ')}`);
       lines.push(`picture: ${JSON.stringify(m.representation)}`);
       for (const a of m.assumptions) lines.push(`assume: ${a}`);
-      // From the opening values, then finding each other value from the rest of the example.
+      // From the opening values, then finding each value from the rest of the example: the
+      // opening ones too (x = 27^(2/3) only showed when x was the one to find).
       const cases: [string, string[]][] = [
         ['opening', m.startWith],
         ...m.variables
-          .filter((v) => !m.startWith.includes(v.id) && !v.derived)
+          .filter((v) => !v.derived)
           .map((v): [string, string[]] => [
             `find ${v.id}`,
             m.variables.filter((x) => x.id !== v.id && !x.derived).map((x) => x.id),
