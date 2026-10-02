@@ -1481,3 +1481,166 @@ original and was worked by hand; nothing is copied from `research/` or from a te
   area after A₂ (km²), years t, change (%), yearly rate r (%/yr). Relations: change = 100(A₂ − A₁) ÷
   A₁; r = 100 ln(A₂ ÷ A₁) ÷ t. Example: 1,200 to 1,050 km² in 10 yr → −12.5 %, −1.34 %/yr.
 - **Verdict:** 2 calculators; every type Solves.
+
+## Part 3. Pictures for the pictures chat
+
+Ids are `HE-earth-geography-P<n>`. Options on drawn kinds come first where one fits; 15 are options
+on existing kinds, 16 are new kinds, 1 is a layout figure and 1 an explore figure. Every value a
+picture reads is a variable id or a number (`NumOrVar`), as in `typesHsl.ts`.
+
+1. **P1 `ternary` (new kind).** Pages: `he.earth-science.physical-geology#0`,
+   `he.earth-science.mineralogy#1~plagioclase`. Draws a triangle with a 10 % grid, the three corners
+   named, the point from three amounts (normalized to 100 %), and the classification's fields with
+   their names: `fields: 'qap'` (IUGS plutonic: quartzolite, quartz-rich granitoid, alkali-feldspar
+   granite, syenogranite, monzogranite, granodiorite, tonalite, the syenite to diorite row) or
+   `'feldspar'` (An–Ab–Or: albite to anorthite along the plagioclase edge, the alkali feldspars).
+   Fields: `a`, `b`, `c`, `labels`, `fields?`, `share?` (the P ÷ (A + P) line). Must stay true: the
+   point's coordinates equal each amount ÷ the sum (0.5 %); the field named in the caption contains
+   the point; nothing drawn while a sum is 0 or "?". Later also sand–silt–clay.
+2. **P2 `silicateChain` (new kind, drawn like `vsepr`'s tetrahedra from above).** Page:
+   `…physical-geology#0~silicates`. Tetrahedra as triangles with O at the corners and Si at the
+   centre: isolated, pair, six-ring, single chain, double chain, sheet, a framework corner; the repeat
+   unit boxed, shared oxygens ringed. Fields: `shared` (0, 1, 2, 2.5, 3, 4), `units` (Si in the box),
+   `oxygens?`, `charge?`. Must stay true: oxygens counted in the box = n(4 − s ÷ 2); charge = −n(4 − s).
+3. **P3 `globe` (new kind).** An orthographic globe with a graticule, in five modes. `sun`:
+   `{ latitude, declination, noon?, day? }`, the subsolar point at δ, the circle of illumination, the
+   place's parallel with its lit part, the noon ray's angle at the place
+   (`…physical-geography#0`, `#0~insolation`). `route`: `{ lat1, lon1, lat2, lon2, angle?, km? }`, two
+   places, the great-circle arc and its central angle, the rhumb line dashed (`…cartography#1~great-circle`).
+   `euler`: `{ omega, distance, speed? }`, the Euler pole, small circles, a point's velocity arrow
+   (`…physical-geology#1`). `dipole`: `{ inclination, latitude }`, dipole field lines and the dip at the
+   place (`…geophysics#1~paleolatitude`). `momentum`: `{ latitude, wind? }`, a ring of air from the
+   equator moved to φ with its eastward arrow (`…climatology#1`). Must stay true: noon = 90 − |φ − δ|
+   (0.1°) and the lit part of the parallel = H ÷ 180; the drawn central angle = the spherical law of
+   cosines; v = ωR sin Δ; tan I = 2 tan φ; u = ΩR sin²φ ÷ cos φ.
+4. **P4 `freeBody` incline option `slab: { thickness, material: 'soil' | 'ice', strength?, safety? }`.**
+   Pages: `…physical-geology#3`, `#3~glacier`. The slope as a slab of depth z over a dashed slip
+   surface, the stresses σ and τ on it as arrows to scale, the strength s against τ, FS (or τ_b for
+   ice) in the caption. Must stay true: τ = γz sin θ cos θ, σ = γz cos²θ, FS = s ÷ τ (ice: ρgH sin α);
+   "slides" in the caption exactly when FS < 1.
+5. **P5 `earthLayers` mode `rupture`.** Page: `…physical-geology#2`. A block diagram with the fault
+   plane L × W to scale and slip arrows D; beside it the magnitude bar of `magnitude` mode with an
+   M 6 reference. Fields: `length`, `width`, `slip`, `rigidity`, `moment?`, `magnitude?`. Must stay
+   true: M₀ = μLWD and Mw = (2 ÷ 3)(log₁₀ M₀ − 9.1) (0.01); the rectangle's sides in the ratio L : W.
+6. **P6 `rockLayers` dating: (a) `ranges: { name, first, last }[]` (2–4 fossils) and (b) the dated
+   cliff as a sequence page's `header` figure, with `tilt` (beds under an unconformity tilted),
+   `unconformity` (its index) and `intrusion`.** Pages: (a) `…historical-geology#2`; (b)
+   `…historical-geology#0`. (a) Range bars on a Ma axis beside the column, their overlap shaded and
+   bracketed. (b) A cross-section for reading an order of events. Must stay true: (a) the window is
+   [the older of the last appearances, the younger of the first] and none is drawn when empty;
+   (b) the dike cuts every bed it reaches, tilted beds lie only under the unconformity, and the
+   sequence's right order agrees with the figure (the layout check compares them).
+7. **P7 `rayDiagram` mode `bragg`.** Page: `…mineralogy#0`. At least three atomic planes d apart
+   (Å, to scale), the incoming and diffracted rays at θ, the extra path 2d sin θ lit, "in phase"
+   when it is a whole number of wavelengths. Fields: `spacing`, `angle` (θ or `twoTheta`),
+   `wavelength`, `order`. Must stay true: nλ = 2d sin θ (0.1 %); 2θ = 2 × θ.
+8. **P8 `crossSection` option `cell: { edge, h, k, l, atoms? }`.** Pages: `…mineralogy#0~cubic-d`,
+   `#0~cell-density`. A cubic cell with the (hkl) plane shaded, the next parallel plane, d marked;
+   `atoms` draws a rock-salt cell. Must stay true: intercepts a ÷ h, a ÷ k, a ÷ l (none for 0);
+   d = a ÷ √(h² + k² + l²); four NaCl units for the rock-salt cell.
+9. **P9 `michelLevy` (new kind).** Page: `…mineralogy#2`. Retardation 0–1,800 nm across in the
+   first to third order colors (a fixed ramp drawn in code), thickness 0–50 μm up, birefringence
+   lines from the origin with their values, the grain's point and its line. Fields: `thickness`,
+   `birefringence`, `retardation?`. Must stay true: Γ = 1,000tδ; the order printed by the point
+   (color never alone) is floor(Γ ÷ 550) + 1.
+10. **P10 `atmosphereLayers` mode `thickness`.** Pages: `…meteorology#0`, `#0~pressure-altitude`.
+    Pressure on a log scale against height, the curve for the mean temperature, two levels and the
+    bracketed thickness, the scale height marked where p falls to 1 ÷ e. Fields: `lower`, `upper`,
+    `temperature`, `thickness?`, `scaleHeight?`. Must stay true: Δz = (R_d T̄ ÷ g) ln(p₁ ÷ p₂) (1 m).
+11. **P11 `atmosphereLayers` modes `adiabat` and `saturation`.** Pages: `…meteorology#1`,
+    `#1~humidity`. `adiabat`: a temperature–log-pressure chart with dry adiabats every 10 K labeled
+    θ, the parcel and its adiabat down to 1,000 hPa (`{ temperature, pressure, theta? }`).
+    `saturation`: the e_s(T) curve from −40 to 50 °C, the air's point (T, e), across to the curve at
+    T_d, RH = e ÷ e_s (`{ temperature, dewPoint, rh? }`). Must stay true: θ = T(1,000 ÷ p)^0.286;
+    Tetens' e_s; T_d ≤ T.
+12. **P12 `atmosphereLayers` parcel options `dry` (°C/km, default 10) and `dewLapse` (default 2).**
+    Page: `…meteorology#1~lcl` (9.8 and 1.8). Must stay true: base = (T − T_d) ÷ (dry − dewLapse);
+    the base's temperature = T − dry × base.
+13. **P13 `atmosphereLayers` balance option `layer: { emissivity, surface? }`.** Page:
+    `…climatology#0`. One layer over the ground absorbing a share ε of its infrared and sending
+    half up and half down, the bands to scale, thermometers for Tₑ and T_s. Must stay true:
+    T_s = Tₑ(2 ÷ (2 − ε))^(1/4); the bands balance at the top, in the layer and at the ground.
+14. **P14 `oceanProfile` mode `slope`.** Page: `…oceanography#2`. A section across a current, the
+    sea surface tilted Δη over Δx (the vertical stretch labeled), the pressure-gradient force down
+    the slope, the Coriolis force back, the current into or out of the page by hemisphere. Fields:
+    `rise`, `width`, `latitude`, `speed?`. Must stay true: v = gΔη ÷ (fΔx); high sea level on the
+    current's right in the north, left in the south.
+15. **P15 `tsDiagram` (new kind).** Page: `…oceanography#1`. Temperature up, salinity across,
+    isopycnals of the page's equation of state every 0.5 kg/m³, the freezing line, the water's
+    point with its density. Fields: `temperature`, `salinity`, `density?`. Must stay true: the point's
+    density = the page's relation (0.01 kg/m³); the isopycnals use the same relation.
+16. **P16 `wave` option `depth: { depth }`.** Pages: `…oceanography#3`, `#3~tsunami`. The floor under
+    the wave at d (scaled to L), particle orbits as circles shrinking with depth (deep) or flat
+    ellipses touching the floor (shallow), L ÷ 2 dashed. Must stay true: the label deep, intermediate
+    or shallow matches d ÷ L (½ and 1/20).
+17. **P17 `aquifer` (new kind).** Pages: `…hydrology#2`, `#2~head`, `#2~thiem`. A cross-section with
+    the land surface and an unconfined water table, or a confining layer and its potentiometric
+    surface. `section`: two wells L apart with heads h₁, h₂, flow arrows, the face of area A.
+    `head`: one piezometer with z and the pressure head stacked. `well`: a pumped well, its cone of
+    depression and observation wells at r₁, r₂. Must stay true: i = Δh ÷ L; flow from high head to
+    low; the Thiem curve h(r) passes both observed heads.
+18. **P18 `catchment` (new kind).** Page: `…hydrology#1`. A basin outline with a km scale bar, rain at
+    i mm/h, a share C of the drops running to the outlet and the rest soaking in, the outlet arrow
+    with Q. Fields: `coefficient`, `intensity`, `area`, `peak?`. Must stay true: Q = CiA ÷ 3.6; the
+    drawn share = C.
+19. **P19 `functionGraph` options `invertY` and `logX`/`logY`.** Pages: `…oceanography#0~age-depth`,
+    `…geophysics#2` (depth down); `…physical-geography#3`, `…hydrology#3~weibull` (log axes).
+    Must stay true: points sit at (x, f(x)) read on the flipped or log axis; log axes refuse values
+    ≤ 0.
+20. **P20 `refraction` (new kind).** Pages: `…geophysics#0`, `#0~reflection`, `#3~gpr`. Two layers
+    (v₁ over v₂, depth h), a source and geophones, the direct, head-wave (i_c marked) and reflected
+    paths; under them the travel-time graph with the crossover. Modes `refraction`, `reflection`
+    (offset x, the hyperbola, t₀ and moveout), `gpr` (an antenna, one reflector, εᵣ). Must stay true:
+    i_c = sin⁻¹(v₁ ÷ v₂); the lines cross at x_c; t(x) = √(x² + 4h²) ÷ v.
+21. **P21 `rayDiagram` Snell option `speeds: { v1, v2 }`.** Page: `…geophysics#0~critical-angle`. The
+    media named by speed, the ray bent by sin r = (v₂ ÷ v₁) sin i, the critical angle marked when
+    v₂ > v₁. Must stay true: Snell's law with speeds; total reflection past i_c.
+22. **P22 `gravityProfile` (new kind).** Pages: `…geophysics#1~sphere` (`sphere`: a buried sphere,
+    the anomaly curve above it, peak and half-width) and `#1~isostasy` (`airy`: crust columns
+    floating on the mantle, a mountain and its root, the compensation depth). Must stay true:
+    Δg(x) = Δg_max(1 + x² ÷ z²)^(−3/2), x½ = 0.766z; r = hρ_c ÷ (ρ_m − ρ_c) and equal column masses.
+23. **P23 `electrodeArray` (new kind).** Page: `…geophysics#3`. Four electrodes a apart, current
+    lines from C₁ to C₂, equipotentials, V and I on meters, the sampled depth (about a ÷ 2) shaded.
+    Must stay true: ρ_a = 2πaV ÷ I; equal spacing.
+24. **P24 `contourMap` (new kind).** Page: `…physical-geography#2` (later Cartography and GIS). A
+    made-up hill of contours at interval CI (every fifth bold), a transect A–B with its scale bar,
+    and the profile under it with rise and run. Fields: `interval`, `crossed`, `mapDistance`, `scale`,
+    `gradient?`. Must stay true: the transect crosses exactly n intervals; the profile's slope is the
+    gradient.
+25. **P25 `rasterGrid` (new kind).** Pages: `…gis#0` (`extent`: a feature on a grid of cells, the
+    cells it covers filled, columns × rows counted; halving c shows four times the cells) and
+    `…gis#2` (`window`: 3 × 3 elevations, the east–west and north–south differences, the downhill
+    arrow and a compass for aspect). Must stay true: columns = extent ÷ c; cells = columns × rows;
+    slope and aspect by the page's formula, the arrow pointing downhill.
+26. **P26 `coordinatePlane` options `polygon`, `buffer`, `center`.** Pages: `…gis#1`, `#1~buffer`,
+    `#3~mean-center`. `polygon`: 3–6 vertices in order, shaded, the shoelace terms listed;
+    `buffer`: a segment of length L (or a point) and its outline at r with round ends; `center`: the
+    points, the mean center and the standard-distance circle. Must stay true: the shoelace area;
+    2rL + πr²; the centre is the mean and the circle's radius the SD.
+27. **P27 `sample` option `pattern: { n, index }`.** Page: `…gis#3`. n points in a square, seeded,
+    clustered, random or dispersed so their nearest-neighbor index is R; segments to each point's
+    nearest neighbor on tap. Must stay true: the drawn points' index within 0.05 of R.
+28. **P28 `projection` (new kind, with a card figure).** Pages: `…cartography#0`, `#0~equal-area`,
+    `#0~properties` (cards). The graticule every 15° of `mercator`, `cylindricalEqualArea` or
+    `equirectangular`, Tissot ellipses at the equator and at φ, the parallel φ lit with its y.
+    Must stay true: y(φ) by the projection's formula; the Tissot axes are k_E and k_N; their product
+    is 1 on the equal-area projection.
+29. **P29 `populationPyramid` (new kind).** Page: `…human-geography#0~dependency`. Five-year age bars,
+    male left and female right, built from the three group totals and a shape (expansive,
+    stationary, constrictive), the dependency groups bracketed with the ratio. Must stay true: the
+    groups' bars sum to the page's values; ratio = 100(young + old) ÷ working age.
+30. **P30 `sensorGeometry` (new kind).** Page: `…remote-sensing#0`. A satellite at H, the IFOV cone to
+    one pixel (an enlarged inset) and the FOV fan to the swath. Must stay true: pixel = H × IFOV;
+    swath = 2H tan(FOV ÷ 2).
+31. **P31 `spectralCurve` (new kind).** Pages: `…remote-sensing#1~ndvi`, `#3`. Reflectance against
+    wavelength (0.4–2.5 μm) for vegetation, soil and water, the red, NIR and SWIR bands boxed, the
+    pixel's reflectances as dots; `burn: true` adds the burned curve beside the healthy one. Must stay
+    true: the index from the dots (NDVI, NBR) equals the page's value.
+32. **P32 `scatter` option `classes: { name, x, y }[]`.** Page: `…remote-sensing#2~min-distance`.
+    Feature space (red across, NIR up), class means as named stars, the pixel and a segment to each
+    mean with its length, the nearest lit. Must stay true: Euclidean lengths; the caption names the
+    nearest class.
+33. **P33 explore figure `circulationCells`.** Page: `…climatology#1~cells` (as an explore later; the
+    sort ships now). Earth from the side with the Hadley, Ferrel and polar cells, the ITCZ, the
+    subtropical highs and the surface winds; a scene lights a cell or a wind. Must stay true: cell
+    edges at 0°, 30°, 60° and 90°; trades blow toward the equator, westerlies poleward.

@@ -60,11 +60,15 @@ Every id below starts `he.engineering.`; it is left off inside the blocks (`aero
 - **Equation inputs.** Two pages take an `equation`: `surveying#3` (`{H:unit} = {h:unit} − {N:unit}`)
   and `transportation#0~headway` (`{h:unit} = 3600 ÷ {q:unit}`); every other page keeps rows
   (units change, several steps).
-- **Shared kinds with the mechanics/fluids group.** Prerequisite courses (Statics, Mechanics of
-  Materials, Fluid Mechanics, Thermodynamics, Heat Transfer, Control Systems) belong to another
-  group. If that group's plan requests a beam, column, Mohr circle, pipe, property diagram, block
-  diagram or exchanger kind, merge its request with P14, P7, P18, P20, P10, P34, P35 here: one
-  kind, the options of both.
+- **Shared kinds with `docs/plans/he.mechanical.md`.** The prerequisite courses (Statics,
+  Mechanics of Materials, Fluid Mechanics, Thermodynamics, Heat Transfer) are planned there. Build
+  one kind for both plans: P14 `beam` = HE-mechanical-P1; P15 `truss` = P2; P6 `section` = P3;
+  P18 `mohrCircle` = P4 `stressElement` (its Mohr mode); P10 `propertyDiagram` = P10; P20
+  `pipeNetwork` = P12 `fluidSystem`; P31 `temperature` mode = P14 `thermalWall`; P35
+  `exchangerProfile` = P15 `heatExchanger`; P4 `freeBody` options join P27; the S–N page may use
+  P17 `fatigueDiagram` instead of P37. Engine needs overlap the same way: N1 = E1, N2 = E6,
+  N3 = E4, N4 (steam rows) = E5, N8 = E7, the 2 × 2 solves = E8. Whichever plan is built first
+  owns the kind; the other adds its options.
 - **Page count:** 85 topic pages + 169 problem types = **254 pages** (230 calculators, 24
   layouts); 102 wait on an engine or picture need (marked ⏳), most of them on a new picture kind.
   Picture ids below are `HE-aero-civil-chemical-Pn`, written **Pn** in the blocks; engine needs
@@ -82,13 +86,13 @@ Mechanics_ (GNU FDL); JPL _Basics of Space Flight_ (public). Reference only.
 
 #### aerodynamics#0 — Airfoil theory
 
-| Question type                                   | Page                   | Mark   |
-| ----------------------------------------------- | ---------------------- | ------ |
-| lift coefficient of a thin airfoil at α         | main                   | Solves |
-| zero-lift angle from c_l at one α               | main                   | Solves |
-| pressure coefficient from local speed           | ~pressure-coefficient  | Solves |
+| Question type                                    | Page                  | Mark   |
+| ------------------------------------------------ | --------------------- | ------ |
+| lift coefficient of a thin airfoil at α          | main                  | Solves |
+| zero-lift angle from c_l at one α                | main                  | Solves |
+| pressure coefficient from local speed            | ~pressure-coefficient | Solves |
 | lift per span from circulation (Kutta–Joukowski) | ~circulation          | Solves |
-| what NACA 2412 means; thickness in meters       | ~naca                  | Solves |
+| what NACA 2412 means; thickness in meters        | ~naca                 | Solves |
 
 - **Main — BUILD (calculator):** picture **P1** `wing` section mode (chord line, camber line,
   α between chord and relative wind, lift arrow ⟂ wind). Values: angle of attack α (−10 to 20°),
@@ -141,11 +145,11 @@ Mechanics_ (GNU FDL); JPL _Basics of Space Flight_ (public). Reference only.
 
 #### aerodynamics#2 — Finite wings
 
-| Question type                                   | Page           | Mark   |
-| ----------------------------------------------- | -------------- | ------ |
-| induced drag coefficient and induced angle      | main           | Solves |
-| finite-wing lift slope from a₀ and AR           | ~lift-slope    | Solves |
-| aspect ratio, taper, mean chord from a planform | ~aspect-ratio  | Solves |
+| Question type                                   | Page          | Mark   |
+| ----------------------------------------------- | ------------- | ------ |
+| induced drag coefficient and induced angle      | main          | Solves |
+| finite-wing lift slope from a₀ and AR           | ~lift-slope   | Solves |
+| aspect ratio, taper, mean chord from a planform | ~aspect-ratio | Solves |
 
 - **Main — BUILD:** **P1** `wing` planform mode (span b, area S, trailing tip vortices, downwash
   arrows). Values C_L, AR, span efficiency e (0.5–1), C_Di, induced angle α_i (deg). Relations:
@@ -162,11 +166,11 @@ Mechanics_ (GNU FDL); JPL _Basics of Space Flight_ (public). Reference only.
 
 #### aerodynamics#3 — Intro to compressibility
 
-| Question type                                      | Page             | Mark   |
-| -------------------------------------------------- | ---------------- | ------ |
-| Mach number at an altitude's temperature           | main             | Solves |
-| Prandtl–Glauert correction of C_p                  | ~prandtl-glauert | Solves |
-| subsonic, transonic, supersonic or hypersonic      | ~flow-regimes    | Solves |
+| Question type                                 | Page             | Mark   |
+| --------------------------------------------- | ---------------- | ------ |
+| Mach number at an altitude's temperature      | main             | Solves |
+| Prandtl–Glauert correction of C_p             | ~prandtl-glauert | Solves |
+| subsonic, transonic, supersonic or hypersonic | ~flow-regimes    | Solves |
 
 - **Main — BUILD:** `none` until P3 (then P3 `mach` mode: a moving point with sound fronts, the
   Mach cone at M > 1). Values temperature T (150–400 K), γ (fixed 1.4), R (fixed 287), speed of
@@ -187,12 +191,12 @@ Mechanics_ (GNU FDL); JPL _Basics of Space Flight_ (public). Reference only.
 
 #### compressible-flow#0 — Isentropic flow
 
-| Question type                                         | Page          | Mark              |
-| ----------------------------------------------------- | ------------- | ----------------- |
-| T₀/T, p₀/p, ρ₀/ρ at a Mach number                     | main          | Solves            |
-| A/A* at M; M from A/A* (subsonic or supersonic)       | ~area-mach    | Solves (⏳ N3)    |
-| choked mass flow through a throat                     | ~choked       | Solves            |
-| stagnation temperature on a probe tip                 | main          | Solves            |
+| Question type                                   | Page       | Mark           |
+| ----------------------------------------------- | ---------- | -------------- |
+| T₀/T, p₀/p, ρ₀/ρ at a Mach number               | main       | Solves         |
+| A/A* at M; M from A/A* (subsonic or supersonic) | ~area-mach | Solves (⏳ N3) |
+| choked mass flow through a throat               | ~choked    | Solves         |
+| stagnation temperature on a probe tip           | main       | Solves         |
 
 - **Main — BUILD:** **P2** `duct` one station (a stream tube with M, T, p and the stagnation
   state in a box). Values Mach M (0–10), γ (fixed 1.4), T, T₀, p, p₀, ρ₀/ρ. Relations:
@@ -210,12 +214,12 @@ Mechanics_ (GNU FDL); JPL _Basics of Space Flight_ (public). Reference only.
 
 #### compressible-flow#1 — Normal and oblique shocks
 
-| Question type                                       | Page          | Mark            |
-| --------------------------------------------------- | ------------- | --------------- |
-| M₂, p₂/p₁, T₂/T₁, p₀₂/p₀₁ across a normal shock      | main          | Solves          |
-| oblique shock: θ from β and M₁; M₂                   | ~oblique      | Solves          |
-| β from θ and M₁ (weak or strong)                     | ~oblique      | Partly (⏳ N3)  |
-| pitot tube in supersonic flow                       | ~pitot        | Solves (⏳ N2)  |
+| Question type                                   | Page     | Mark           |
+| ----------------------------------------------- | -------- | -------------- |
+| M₂, p₂/p₁, T₂/T₁, p₀₂/p₀₁ across a normal shock | main     | Solves         |
+| oblique shock: θ from β and M₁; M₂              | ~oblique | Solves         |
+| β from θ and M₁ (weak or strong)                | ~oblique | Partly (⏳ N3) |
+| pitot tube in supersonic flow                   | ~pitot   | Solves (⏳ N2) |
 
 - **Main — BUILD:** **P3** `supersonicFlow` normal mode (shock line, M₁ > 1 in, M₂ < 1 out, ratio
   bars). Values M₁ (1–10), M₂, p₂/p₁, ρ₂/ρ₁, T₂/T₁, p₀₂/p₀₁. Relations: M₂² = (1 + ((γ − 1) ÷ 2)M₁²)
@@ -235,12 +239,12 @@ Mechanics_ (GNU FDL); JPL _Basics of Space Flight_ (public). Reference only.
 
 #### compressible-flow#2 — Nozzle flow
 
-| Question type                                         | Page            | Mark              |
-| ----------------------------------------------------- | --------------- | ----------------- |
-| design exit Mach, pressure, temperature from Ae/At    | main            | Solves (⏳ N3)    |
-| mass flow of a choked nozzle                          | main            | Solves            |
-| what happens as back pressure is lowered              | ~back-pressure  | Solves            |
-| over- or underexpanded at a given back pressure       | ~expansion      | Solves            |
+| Question type                                      | Page           | Mark           |
+| -------------------------------------------------- | -------------- | -------------- |
+| design exit Mach, pressure, temperature from Ae/At | main           | Solves (⏳ N3) |
+| mass flow of a choked nozzle                       | main           | Solves         |
+| what happens as back pressure is lowered           | ~back-pressure | Solves         |
+| over- or underexpanded at a given back pressure    | ~expansion     | Solves         |
 
 - **Main — BUILD ⏳ N3:** **P2** `duct` nozzle (reservoir, throat, exit; p and M along the axis).
   Values p₀, T₀, throat area A_t, exit-to-throat ratio Ae/At, exit Mach M_e (supersonic branch),
@@ -261,11 +265,11 @@ Mechanics_ (GNU FDL); JPL _Basics of Space Flight_ (public). Reference only.
 
 #### compressible-flow#3 — Supersonic aerodynamics
 
-| Question type                                         | Page          | Mark            |
-| ----------------------------------------------------- | ------------- | --------------- |
-| lift and wave drag of a thin airfoil (Ackeret)        | main          | Solves          |
-| Mach angle                                            | ~mach-angle   | Solves          |
-| Prandtl–Meyer expansion round a corner                | ~expansion-fan| Solves (⏳ N2)  |
+| Question type                                  | Page           | Mark           |
+| ---------------------------------------------- | -------------- | -------------- |
+| lift and wave drag of a thin airfoil (Ackeret) | main           | Solves         |
+| Mach angle                                     | ~mach-angle    | Solves         |
+| Prandtl–Meyer expansion round a corner         | ~expansion-fan | Solves (⏳ N2) |
 
 - **Main — BUILD:** **P3** flat-plate mode (plate at α, shocks and fans at both edges). Values M∞
   (1.2–5), α (0–10°), c_l, c_d (wave), L/D. Relations: c_l = 4α ÷ √(M∞² − 1);
@@ -281,14 +285,14 @@ Mechanics_ (GNU FDL); JPL _Basics of Space Flight_ (public). Reference only.
 
 #### flight-mechanics#0 — Aircraft performance
 
-| Question type                                  | Page        | Mark   |
-| ---------------------------------------------- | ----------- | ------ |
-| C_L, drag and thrust required in level flight  | main        | Solves |
-| stall speed                                    | ~stall      | Solves |
-| jet range (Breguet)                            | ~range      | Solves |
-| rate of climb from excess thrust               | ~climb      | Solves |
-| load factor and radius of a level turn         | ~turn       | Solves |
-| density at an altitude (standard atmosphere)   | ~atmosphere | Solves |
+| Question type                                 | Page        | Mark   |
+| --------------------------------------------- | ----------- | ------ |
+| C_L, drag and thrust required in level flight | main        | Solves |
+| stall speed                                   | ~stall      | Solves |
+| jet range (Breguet)                           | ~range      | Solves |
+| rate of climb from excess thrust              | ~climb      | Solves |
+| load factor and radius of a level turn        | ~turn       | Solves |
+| density at an altitude (standard atmosphere)  | ~atmosphere | Solves |
 
 - **Main — BUILD:** **P4** `freeBody` `object: 'aircraft'` (side view: L up, W down, T forward,
   D back, to scale). Values weight W (100–5 × 10⁶ N), ρ, V, S, C_L, C_D0, K, C_D, drag D (= thrust
@@ -315,11 +319,11 @@ Mechanics_ (GNU FDL); JPL _Basics of Space Flight_ (public). Reference only.
 
 #### flight-mechanics#1 — Static stability
 
-| Question type                                         | Page          | Mark   |
-| ----------------------------------------------------- | ------------- | ------ |
-| neutral point and static margin                       | main          | Solves |
-| trim angle of attack from C_m0 and C_mα               | ~trim         | Solves |
-| stable or not from a C_m–α line                       | ~stable       | Solves |
+| Question type                           | Page    | Mark   |
+| --------------------------------------- | ------- | ------ |
+| neutral point and static margin         | main    | Solves |
+| trim angle of attack from C_m0 and C_mα | ~trim   | Solves |
+| stable or not from a C_m–α line         | ~stable | Solves |
 
 - **Main — BUILD:** P4 aircraft with `stability` (aerodynamic center, CG and neutral point along
   the mean chord). Values wing h_ac (fraction of c̄), tail arm l_t, tail area S_t, c̄, S, tail
@@ -345,7 +349,7 @@ Mechanics_ (GNU FDL); JPL _Basics of Space Flight_ (public). Reference only.
 | ------------------------------------------------------ | ----------- | ------ |
 | phugoid period and damping (Lanchester)                | main        | Solves |
 | ω_n, ζ, period, time to half amplitude from λ = n ± iω | ~eigenvalue | Solves |
-| which mode: short period, phugoid, Dutch roll, spiral   | ~modes      | Solves |
+| which mode: short period, phugoid, Dutch roll, spiral  | ~modes      | Solves |
 
 - **Main — BUILD ⏳ P5:** **P5** `stepResponse` oscillation mode (a disturbance decaying inside
   its envelope, period and t½ marked). Values V (20–300 m/s), L/D, ω_ph, period T, ζ, t½.
@@ -364,11 +368,11 @@ Mechanics_ (GNU FDL); JPL _Basics of Space Flight_ (public). Reference only.
 
 #### flight-mechanics#3 — Flight control
 
-| Question type                                   | Page              | Mark   |
-| ----------------------------------------------- | ----------------- | ------ |
-| elevator angle to trim at α                     | main              | Solves |
-| which surface controls pitch, roll or yaw       | ~surfaces         | Solves |
-| bank angle for a coordinated turn rate          | ~coordinated-turn | Solves |
+| Question type                             | Page              | Mark   |
+| ----------------------------------------- | ----------------- | ------ |
+| elevator angle to trim at α               | main              | Solves |
+| which surface controls pitch, roll or yaw | ~surfaces         | Solves |
+| bank angle for a coordinated turn rate    | ~coordinated-turn | Solves |
 
 - **Main — BUILD:** P4 aircraft side view with the elevator deflection drawn. Values C_m0, C_mα,
   α, C_mδe (per degree), δe. Relation: C_m0 + C_mα α + C_mδe δe = 0. Assumptions: linear
@@ -386,11 +390,11 @@ Mechanics_ (GNU FDL); JPL _Basics of Space Flight_ (public). Reference only.
 
 #### aerospace-structures#0 — Thin-walled structures
 
-| Question type                                         | Page        | Mark   |
-| ----------------------------------------------------- | ----------- | ------ |
-| shear flow and stress in a closed box under torque    | main        | Solves |
-| twist rate of a closed cell                           | main        | Solves |
-| hoop and axial stress in a pressurized fuselage       | ~cabin      | Solves |
+| Question type                                      | Page   | Mark   |
+| -------------------------------------------------- | ------ | ------ |
+| shear flow and stress in a closed box under torque | main   | Solves |
+| twist rate of a closed cell                        | main   | Solves |
+| hoop and axial stress in a pressurized fuselage    | ~cabin | Solves |
 
 - **Main — BUILD:** **P6** `section` thin-walled box (enclosed area A_m shaded, shear-flow arrows
   round the wall). Values torque T, width, height, wall t, enclosed area A_m, shear flow q,
@@ -406,11 +410,11 @@ Mechanics_ (GNU FDL); JPL _Basics of Space Flight_ (public). Reference only.
 
 #### aerospace-structures#1 — Composites
 
-| Question type                                   | Page          | Mark   |
-| ----------------------------------------------- | ------------- | ------ |
-| longitudinal modulus by the rule of mixtures    | main          | Solves |
-| transverse modulus                              | ~transverse   | Solves |
-| density and specific stiffness                  | ~specific     | Solves |
+| Question type                                | Page        | Mark   |
+| -------------------------------------------- | ----------- | ------ |
+| longitudinal modulus by the rule of mixtures | main        | Solves |
+| transverse modulus                           | ~transverse | Solves |
+| density and specific stiffness               | ~specific   | Solves |
 
 - **Main — BUILD:** **P8** `lamina` (fibers in matrix; load along the fibers, the two as springs
   side by side). Values fiber modulus E_f, matrix modulus E_m, fiber fraction V_f (0–0.8),
@@ -425,12 +429,12 @@ Mechanics_ (GNU FDL); JPL _Basics of Space Flight_ (public). Reference only.
 
 #### aerospace-structures#2 — Buckling
 
-| Question type                                         | Page            | Mark   |
-| ----------------------------------------------------- | --------------- | ------ |
-| Euler load of a pinned column                         | main            | Solves |
-| effect of end conditions (K)                          | main            | Solves |
-| critical stress of a skin panel between stringers     | ~plate          | Solves |
-| short column: Johnson parabola                        | ~johnson        | Solves |
+| Question type                                     | Page     | Mark   |
+| ------------------------------------------------- | -------- | ------ |
+| Euler load of a pinned column                     | main     | Solves |
+| effect of end conditions (K)                      | main     | Solves |
+| critical stress of a skin panel between stringers | ~plate   | Solves |
+| short column: Johnson parabola                    | ~johnson | Solves |
 
 - **Main — BUILD:** **P7** `column` (ends drawn pinned, fixed or free; the buckled shape; KL).
   Values E, I, length L, K (allowed 0.5, 0.7, 1, 2), P_cr, area A, σ_cr. Relations:
@@ -448,11 +452,11 @@ Mechanics_ (GNU FDL); JPL _Basics of Space Flight_ (public). Reference only.
 
 #### aerospace-structures#3 — Fatigue
 
-| Question type                                         | Page       | Mark   |
-| ----------------------------------------------------- | ---------- | ------ |
-| mean and alternating stress, Goodman safety factor    | main       | Solves |
-| Miner's rule damage and repeats to failure            | ~miner     | Solves |
-| cycles to failure from Basquin's law                  | ~basquin   | Solves |
+| Question type                                      | Page     | Mark   |
+| -------------------------------------------------- | -------- | ------ |
+| mean and alternating stress, Goodman safety factor | main     | Solves |
+| Miner's rule damage and repeats to failure         | ~miner   | Solves |
+| cycles to failure from Basquin's law               | ~basquin | Solves |
 
 - **Main — BUILD:** `linearFunction` with `test` (the Goodman line from (0, S_e) to (S_u, 0), the
   load point (σ_m, σ_a) inside or outside). Values σ_max, σ_min, σ_m, σ_a, fatigue strength S_e,
@@ -472,12 +476,12 @@ Mechanics_ (GNU FDL); JPL _Basics of Space Flight_ (public). Reference only.
 
 #### propulsion#0 — Gas turbine cycles
 
-| Question type                                         | Page          | Mark   |
-| ----------------------------------------------------- | ------------- | ------ |
-| ideal Brayton efficiency and net work                 | main          | Solves |
-| compressor exit temperature with an efficiency        | ~compressor   | Solves |
-| turbojet thrust, propulsive efficiency, TSFC          | ~turbojet     | Solves |
-| turbofan thrust with a bypass ratio                   | ~turbofan     | Solves |
+| Question type                                  | Page        | Mark   |
+| ---------------------------------------------- | ----------- | ------ |
+| ideal Brayton efficiency and net work          | main        | Solves |
+| compressor exit temperature with an efficiency | ~compressor | Solves |
+| turbojet thrust, propulsive efficiency, TSFC   | ~turbojet   | Solves |
+| turbofan thrust with a bypass ratio            | ~turbofan   | Solves |
 
 - **Main — BUILD ⏳ P10:** **P10** `propertyDiagram` T–s mode (states 1–4, compression and
   expansion vertical, heat in and out on the constant-pressure lines). Values T₁, pressure ratio
@@ -501,12 +505,12 @@ Mechanics_ (GNU FDL); JPL _Basics of Space Flight_ (public). Reference only.
 
 #### propulsion#1 — Rocket propulsion
 
-| Question type                                   | Page           | Mark   |
-| ----------------------------------------------- | -------------- | ------ |
-| Δv from Isp and mass ratio (rocket equation)    | main           | Solves |
-| propellant fraction for a Δv                    | main           | Solves |
-| thrust with a pressure term; Isp from thrust    | ~thrust        | Solves |
-| two-stage Δv                                    | ~staging       | Solves |
+| Question type                                | Page     | Mark   |
+| -------------------------------------------- | -------- | ------ |
+| Δv from Isp and mass ratio (rocket equation) | main     | Solves |
+| propellant fraction for a Δv                 | main     | Solves |
+| thrust with a pressure term; Isp from thrust | ~thrust  | Solves |
+| two-stage Δv                                 | ~staging | Solves |
 
 - **Main — BUILD ⏳ P11:** **P11** `rocket` (propellant and dry mass as bars, v_e arrow, Δv).
   Values specific impulse I_sp (100–500 s), initial mass m₀, final mass m_f, mass ratio, propellant
@@ -524,12 +528,12 @@ Mechanics_ (GNU FDL); JPL _Basics of Space Flight_ (public). Reference only.
 
 #### propulsion#2 — Nozzle performance
 
-| Question type                                         | Page             | Mark   |
-| ----------------------------------------------------- | ---------------- | ------ |
-| thrust from C_F, chamber pressure, throat area        | main             | Solves |
-| c* and mass flow; I_sp from C_F and c*                | main             | Solves |
-| ideal exhaust velocity from chamber state             | ~exhaust-velocity| Solves |
-| over-, ideally or underexpanded                       | compressible-flow#2~expansion | cross-listed |
+| Question type                                  | Page                          | Mark         |
+| ---------------------------------------------- | ----------------------------- | ------------ |
+| thrust from C_F, chamber pressure, throat area | main                          | Solves       |
+| c* and mass flow; I_sp from C_F and c*         | main                          | Solves       |
+| ideal exhaust velocity from chamber state      | ~exhaust-velocity             | Solves       |
+| over-, ideally or underexpanded                | compressible-flow#2~expansion | cross-listed |
 
 - **Main — BUILD:** P2 duct with a chamber (P2 `chamber`). Values chamber pressure p_c, throat
   A_t, thrust coefficient C_F, characteristic velocity c*, F, ṁ, I_sp. Relations: F = C_Fp_cA_t;
@@ -543,11 +547,11 @@ Mechanics_ (GNU FDL); JPL _Basics of Space Flight_ (public). Reference only.
 
 #### propulsion#3 — Combustion
 
-| Question type                                         | Page            | Mark   |
-| ----------------------------------------------------- | --------------- | ------ |
-| stoichiometric fuel–air ratio of a hydrocarbon        | main            | Solves |
-| equivalence ratio                                     | main            | Solves |
-| fuel–air ratio for a combustor exit temperature       | ~burner         | Solves |
+| Question type                                   | Page    | Mark   |
+| ----------------------------------------------- | ------- | ------ |
+| stoichiometric fuel–air ratio of a hydrocarbon  | main    | Solves |
+| equivalence ratio                               | main    | Solves |
+| fuel–air ratio for a combustor exit temperature | ~burner | Solves |
 
 - **Main — BUILD:** `reaction` (CₓH_y + O₂ + N₂ → CO₂ + H₂O + N₂, atoms counted; the `C{x}H{y}`
   terms option). Values carbon x, hydrogen y, moles of air (x + y ÷ 4) × 4.76, air mass, fuel
@@ -565,12 +569,12 @@ Mechanics_ (GNU FDL); JPL _Basics of Space Flight_ (public). Reference only.
 
 #### orbital-mechanics#0 — Two-body problem
 
-| Question type                                   | Page          | Mark   |
-| ----------------------------------------------- | ------------- | ------ |
-| circular speed and period at an altitude        | main          | Solves |
-| escape speed                                    | main          | Solves |
-| speed anywhere on an ellipse (vis-viva)         | ~vis-viva     | Solves |
-| geostationary radius and altitude               | ~geostationary| Solves |
+| Question type                            | Page           | Mark   |
+| ---------------------------------------- | -------------- | ------ |
+| circular speed and period at an altitude | main           | Solves |
+| escape speed                             | main           | Solves |
+| speed anywhere on an ellipse (vis-viva)  | ~vis-viva      | Solves |
+| geostationary radius and altitude        | ~geostationary | Solves |
 
 - **Main — BUILD:** `circularMotion` `mode: 'satellite'` (Earth to scale, v tangent). Values
   altitude z (100–400,000 km), radius r, μ (fixed), circular speed v, period T, escape speed
@@ -586,12 +590,12 @@ Mechanics_ (GNU FDL); JPL _Basics of Space Flight_ (public). Reference only.
 
 #### orbital-mechanics#1 — Orbital elements
 
-| Question type                                          | Page          | Mark            |
-| ------------------------------------------------------ | ------------- | --------------- |
-| a, e, period, h from perigee and apogee                | main          | Solves          |
-| radius at a true anomaly (orbit equation)              | ~orbit-equation| Solves         |
-| position after a time (Kepler's equation)              | ~kepler       | Solves (⏳ N2)  |
-| what i, Ω, ω and ν describe                            | ~elements     | Solves (⏳ P13) |
+| Question type                             | Page            | Mark            |
+| ----------------------------------------- | --------------- | --------------- |
+| a, e, period, h from perigee and apogee   | main            | Solves          |
+| radius at a true anomaly (orbit equation) | ~orbit-equation | Solves          |
+| position after a time (Kepler's equation) | ~kepler         | Solves (⏳ N2)  |
+| what i, Ω, ω and ν describe               | ~elements       | Solves (⏳ P13) |
 
 - **Main — BUILD:** `circularMotion` kepler (`eccentricity` to 0.97; perigee and apogee marked).
   Values r_p, r_a, a, e, period T, angular momentum h, v_p, v_a. Relations: a = (r_p + r_a) ÷ 2;
@@ -613,11 +617,11 @@ Mechanics_ (GNU FDL); JPL _Basics of Space Flight_ (public). Reference only.
 
 #### orbital-mechanics#2 — Orbital maneuvers
 
-| Question type                                         | Page          | Mark   |
-| ----------------------------------------------------- | ------------- | ------ |
-| Hohmann transfer Δv₁, Δv₂, time of flight             | main          | Solves |
-| plane-change Δv                                       | ~plane-change | Solves |
-| combined circularize-and-turn burn at apogee          | ~combined     | Solves |
+| Question type                                | Page          | Mark   |
+| -------------------------------------------- | ------------- | ------ |
+| Hohmann transfer Δv₁, Δv₂, time of flight    | main          | Solves |
+| plane-change Δv                              | ~plane-change | Solves |
+| combined circularize-and-turn burn at apogee | ~combined     | Solves |
 
 - **Main — BUILD ⏳ P12:** **P12** `circularMotion` `mode: 'hohmann'` (both circles, the half
   ellipse, burn arrows). Values r₁, r₂, transfer a, v₁, v_p, v_a, v₂, Δv₁, Δv₂, TOF (10).
@@ -635,11 +639,11 @@ Mechanics_ (GNU FDL); JPL _Basics of Space Flight_ (public). Reference only.
 
 #### orbital-mechanics#3 — Interplanetary transfers
 
-| Question type                                          | Page        | Mark   |
-| ------------------------------------------------------ | ----------- | ------ |
-| v∞ and departure Δv from a parking orbit (patched conic)| main       | Solves |
-| synodic period, next launch window                     | ~synodic    | Solves |
-| sphere of influence radius                             | ~soi        | Solves |
+| Question type                                            | Page     | Mark   |
+| -------------------------------------------------------- | -------- | ------ |
+| v∞ and departure Δv from a parking orbit (patched conic) | main     | Solves |
+| synodic period, next launch window                       | ~synodic | Solves |
+| sphere of influence radius                               | ~soi     | Solves |
 
 - **Main — BUILD ⏳ P12:** P12 hohmann on the Sun's scale with the planet's hyperbola inset.
   Values r₁ (AU or km), r₂, v∞ (departure), parking radius r_p, v_c there, Δv, TOF (days).
@@ -667,13 +671,13 @@ and the 360-22 specification (free download, all rights reserved); MIT OCW 1.050
 
 #### structural-analysis#0 — Determinate structures
 
-| Question type                                            | Page          | Mark   |
-| -------------------------------------------------------- | ------------- | ------ |
-| reactions and maximum moment, point load on a span       | main          | Solves |
-| shear and moment of a uniform load                       | ~udl          | Solves |
-| cantilever end reaction and fixed-end moment             | ~cantilever   | Solves |
-| truss member force by the method of sections             | ~truss        | Solves (⏳ P15) |
-| determinate, indeterminate or unstable                   | ~determinacy  | Solves |
+| Question type                                      | Page         | Mark            |
+| -------------------------------------------------- | ------------ | --------------- |
+| reactions and maximum moment, point load on a span | main         | Solves          |
+| shear and moment of a uniform load                 | ~udl         | Solves          |
+| cantilever end reaction and fixed-end moment       | ~cantilever  | Solves          |
+| truss member force by the method of sections       | ~truss       | Solves (⏳ P15) |
+| determinate, indeterminate or unstable             | ~determinacy | Solves          |
 
 - **Main — BUILD ⏳ P14:** **P14** `beam` (pin and roller, the load, reactions, shear and moment
   diagrams under the beam). Values span L, load P, distance a, b (derived), R_A, R_B, M_max.
@@ -697,11 +701,11 @@ and the 360-22 specification (free download, all rights reserved); MIT OCW 1.050
 
 #### structural-analysis#1 — Influence lines
 
-| Question type                                         | Page         | Mark   |
-| ----------------------------------------------------- | ------------ | ------ |
-| maximum moment at a section from a moving load        | main         | Solves |
-| moment from a uniform live load on the influence area | main         | Solves |
-| shear influence line ordinates                        | ~shear       | Solves |
+| Question type                                         | Page            | Mark            |
+| ----------------------------------------------------- | --------------- | --------------- |
+| maximum moment at a section from a moving load        | main            | Solves          |
+| moment from a uniform live load on the influence area | main            | Solves          |
+| shear influence line ordinates                        | ~shear          | Solves          |
 | where to place live load on a continuous beam         | ~muller-breslau | Solves (⏳ P14) |
 
 - **Main — BUILD ⏳ P14:** P14 `influence` (the triangle for moment at section C, the load's
@@ -719,11 +723,11 @@ and the 360-22 specification (free download, all rights reserved); MIT OCW 1.050
 
 #### structural-analysis#2 — Indeterminate structures
 
-| Question type                                          | Page              | Mark   |
-| ------------------------------------------------------ | ----------------- | ------ |
-| propped cantilever reactions (force method)            | main              | Solves |
-| fixed-end moments                                      | ~fixed-end        | Solves |
-| two-span continuous beam by moment distribution        | ~moment-distribution | Solves (⏳ P14) |
+| Question type                                   | Page                 | Mark            |
+| ----------------------------------------------- | -------------------- | --------------- |
+| propped cantilever reactions (force method)     | main                 | Solves          |
+| fixed-end moments                               | ~fixed-end           | Solves          |
+| two-span continuous beam by moment distribution | ~moment-distribution | Solves (⏳ P14) |
 
 - **Main — BUILD ⏳ P14:** P14 fixed–roller beam. Values w, L, prop reaction R_B, fixed reaction
   R_A, fixed-end moment M_A. Relations: R_B = 3wL ÷ 8 (from the compatibility condition: the
@@ -741,12 +745,12 @@ and the 360-22 specification (free download, all rights reserved); MIT OCW 1.050
 
 #### structural-analysis#3 — Matrix methods
 
-| Question type                                          | Page          | Mark            |
-| ------------------------------------------------------ | ------------- | --------------- |
-| element stiffness AE ÷ L                               | main          | Solves          |
-| displacements of two bars in series (assembled K)      | main          | Solves          |
-| spring system by the direct stiffness method           | ~springs      | Solves          |
-| beam element stiffness matrix                          | —             | No (⏳ N9, 4 × 4) |
+| Question type                                     | Page     | Mark              |
+| ------------------------------------------------- | -------- | ----------------- |
+| element stiffness AE ÷ L                          | main     | Solves            |
+| displacements of two bars in series (assembled K) | main     | Solves            |
+| spring system by the direct stiffness method      | ~springs | Solves            |
+| beam element stiffness matrix                     | —        | No (⏳ N9, 4 × 4) |
 
 - **Main — BUILD:** `matrixGrid` `mode: 'determinant'`, `cramer` (the 2 × 2 reduced K, u solved
   by Cramer's rule); a bar chain sketch from P14 `axial`. Values A₁, L₁, A₂, L₂, E, k₁, k₂, load P,
@@ -762,12 +766,12 @@ and the 360-22 specification (free download, all rights reserved); MIT OCW 1.050
 
 #### soil-mechanics#0 — Soil classification
 
-| Question type                                         | Page          | Mark            |
-| ----------------------------------------------------- | ------------- | --------------- |
-| void ratio, porosity, dry unit weight from w, G_s, S  | main          | Solves          |
-| C_u, C_c and well or poorly graded                    | ~gradation    | Solves (⏳ N5)  |
-| plasticity index and the A-line                       | ~plasticity   | Solves (⏳ N5)  |
-| USCS group from gradation and limits                  | ~uscs         | Solves          |
+| Question type                                        | Page        | Mark           |
+| ---------------------------------------------------- | ----------- | -------------- |
+| void ratio, porosity, dry unit weight from w, G_s, S | main        | Solves         |
+| C_u, C_c and well or poorly graded                   | ~gradation  | Solves (⏳ N5) |
+| plasticity index and the A-line                      | ~plasticity | Solves (⏳ N5) |
+| USCS group from gradation and limits                 | ~uscs       | Solves         |
 
 - **Main — BUILD ⏳ P16:** **P16** `soilPhases` (air, water, solid blocks with volumes and weights).
   Values G_s (2.5–2.9), w, degree of saturation S, void ratio e, porosity n, dry unit weight γ_d,
@@ -789,12 +793,12 @@ and the 360-22 specification (free download, all rights reserved); MIT OCW 1.050
 
 #### soil-mechanics#1 — Compaction
 
-| Question type                                        | Page        | Mark   |
-| ---------------------------------------------------- | ----------- | ------ |
-| dry unit weight from a Proctor point                 | main        | Solves |
-| zero-air-voids unit weight                           | main        | Solves |
-| relative compaction against the specification        | main        | Solves |
-| sand-cone field density                              | ~sand-cone  | Solves |
+| Question type                                 | Page       | Mark   |
+| --------------------------------------------- | ---------- | ------ |
+| dry unit weight from a Proctor point          | main       | Solves |
+| zero-air-voids unit weight                    | main       | Solves |
+| relative compaction against the specification | main       | Solves |
+| sand-cone field density                       | ~sand-cone | Solves |
 
 - **Main — BUILD:** `functionGraph` rational family (the zero-air-voids curve G_sγ_w ÷ (1 + G_sw)
   against w; the field point and γ_d,max marked). Values moist γ, w, γ_d, G_s, γ_zav, γ_d,max, RC.
@@ -809,12 +813,12 @@ and the 360-22 specification (free download, all rights reserved); MIT OCW 1.050
 
 #### soil-mechanics#2 — Consolidation
 
-| Question type                                          | Page               | Mark   |
-| ------------------------------------------------------ | ------------------ | ------ |
-| primary settlement of a normally consolidated clay     | main               | Solves |
-| effective stress at a depth (layers, water table)      | ~effective-stress  | Solves |
-| settlement of an overconsolidated clay                 | ~overconsolidated  | Solves (⏳ N9) |
-| time for a degree of consolidation                     | ~time-rate         | Solves |
+| Question type                                      | Page              | Mark           |
+| -------------------------------------------------- | ----------------- | -------------- |
+| primary settlement of a normally consolidated clay | main              | Solves         |
+| effective stress at a depth (layers, water table)  | ~effective-stress | Solves         |
+| settlement of an overconsolidated clay             | ~overconsolidated | Solves (⏳ N9) |
+| time for a degree of consolidation                 | ~time-rate        | Solves         |
 
 - **Main — BUILD ⏳ P17:** **P17** `soilProfile` consolidation (a clay layer under a new load, its
   mid-depth point, drainage arrows, the settled surface dashed). Values thickness H, C_c, e₀,
@@ -837,12 +841,12 @@ and the 360-22 specification (free download, all rights reserved); MIT OCW 1.050
 
 #### soil-mechanics#3 — Shear strength
 
-| Question type                                         | Page          | Mark   |
-| ----------------------------------------------------- | ------------- | ------ |
-| σ′₁ at failure in a drained triaxial test             | main          | Solves |
-| failure plane angle                                   | main          | Solves |
-| c′ and φ′ from two direct shear tests                 | ~direct-shear | Solves |
-| undrained shear strength from a UU test               | ~undrained    | Solves |
+| Question type                             | Page          | Mark   |
+| ----------------------------------------- | ------------- | ------ |
+| σ′₁ at failure in a drained triaxial test | main          | Solves |
+| failure plane angle                       | main          | Solves |
+| c′ and φ′ from two direct shear tests     | ~direct-shear | Solves |
+| undrained shear strength from a UU test   | ~undrained    | Solves |
 
 - **Main — BUILD ⏳ P18:** **P18** `mohrCircle` (circle from σ′₃ to σ′₁, the failure envelope
   touching it, the failure plane angle). Values c′, φ′, σ′₃, σ′₁, deviator stress, plane angle θ.
@@ -859,11 +863,11 @@ and the 360-22 specification (free download, all rights reserved); MIT OCW 1.050
 
 #### soil-mechanics#4 — Bearing capacity
 
-| Question type                                          | Page      | Mark   |
-| ------------------------------------------------------ | --------- | ------ |
-| ultimate and allowable bearing of a strip footing      | main      | Solves |
-| bearing factors from φ′                                | main      | Solves |
-| square footing (shape factors)                         | ~square   | Solves |
+| Question type                                     | Page    | Mark   |
+| ------------------------------------------------- | ------- | ------ |
+| ultimate and allowable bearing of a strip footing | main    | Solves |
+| bearing factors from φ′                           | main    | Solves |
+| square footing (shape factors)                    | ~square | Solves |
 
 - **Main — BUILD ⏳ P17:** P17 `footing` (width B at depth D_f, the failure wedges, q at the base).
   Values φ′, c′, γ, B, D_f, N_q, N_c, N_γ, q_u, q_all (FS fixed 3 in the use line, or a value: 10
@@ -881,13 +885,13 @@ and the 360-22 specification (free download, all rights reserved); MIT OCW 1.050
 
 #### hydraulics-hydrology#0 — Open-channel flow
 
-| Question type                                          | Page              | Mark            |
-| ------------------------------------------------------ | ----------------- | --------------- |
-| discharge by Manning's equation                        | main              | Solves          |
-| Froude number, sub- or supercritical                   | main              | Solves          |
-| normal depth for a discharge                           | main (type Q)     | Solves (⏳ N2)  |
-| critical depth and specific energy                     | ~critical-depth   | Solves          |
-| hydraulic jump depth and head loss                     | ~jump             | Solves          |
+| Question type                        | Page            | Mark           |
+| ------------------------------------ | --------------- | -------------- |
+| discharge by Manning's equation      | main            | Solves         |
+| Froude number, sub- or supercritical | main            | Solves         |
+| normal depth for a discharge         | main (type Q)   | Solves (⏳ N2) |
+| critical depth and specific energy   | ~critical-depth | Solves         |
+| hydraulic jump depth and head loss   | ~jump           | Solves         |
 
 - **Main — BUILD ⏳ P19:** `streamChannel` with **P19** `manning` and `froude` (rectangular section to
   scale, slope drawn, Q = A × V). Values width b, depth y, Manning n, slope S, area A, hydraulic
@@ -907,12 +911,12 @@ and the 360-22 specification (free download, all rights reserved); MIT OCW 1.050
 
 #### hydraulics-hydrology#1 — Pipe networks
 
-| Question type                                          | Page            | Mark            |
-| ------------------------------------------------------ | --------------- | --------------- |
-| head loss by Darcy–Weisbach with a friction factor     | main            | Solves          |
-| head loss by Hazen–Williams                            | ~hazen-williams | Solves          |
-| flow split between two parallel pipes                  | ~parallel       | Solves          |
-| one Hardy Cross correction of a loop                   | ~hardy-cross    | Solves (⏳ P20) |
+| Question type                                      | Page            | Mark            |
+| -------------------------------------------------- | --------------- | --------------- |
+| head loss by Darcy–Weisbach with a friction factor | main            | Solves          |
+| head loss by Hazen–Williams                        | ~hazen-williams | Solves          |
+| flow split between two parallel pipes              | ~parallel       | Solves          |
+| one Hardy Cross correction of a loop               | ~hardy-cross    | Solves (⏳ P20) |
 
 - **Main — BUILD ⏳ P20:** **P20** `pipeNetwork` single pipe with the energy and hydraulic grade
   lines. Values D, L, Q, roughness ε, V, Reynolds Re, friction factor f, head loss h_f. Relations:
@@ -935,12 +939,12 @@ and the 360-22 specification (free download, all rights reserved); MIT OCW 1.050
 
 #### hydraulics-hydrology#2 — Rainfall–runoff
 
-| Question type                                         | Page          | Mark   |
-| ----------------------------------------------------- | ------------- | ------ |
-| runoff depth by the NRCS curve number                 | main          | Solves |
-| peak flow by the rational method                      | ~rational     | Solves |
-| time of concentration (Kirpich)                       | ~kirpich      | Solves |
-| unit hydrograph convolution                           | —             | No (⏳ N7, a table of ordinates) |
+| Question type                         | Page      | Mark                             |
+| ------------------------------------- | --------- | -------------------------------- |
+| runoff depth by the NRCS curve number | main      | Solves                           |
+| peak flow by the rational method      | ~rational | Solves                           |
+| time of concentration (Kirpich)       | ~kirpich  | Solves                           |
+| unit hydrograph convolution           | —         | No (⏳ N7, a table of ordinates) |
 
 - **Main — BUILD ⏳ P21:** **P21** `hydrograph` `split` (rain depth P cut into initial abstraction,
   infiltration and runoff bars). Values curve number CN (30–98), storage S, initial abstraction
@@ -956,11 +960,11 @@ and the 360-22 specification (free download, all rights reserved); MIT OCW 1.050
 
 #### hydraulics-hydrology#3 — Stormwater design
 
-| Question type                                           | Page         | Mark   |
-| ------------------------------------------------------- | ------------ | ------ |
-| storm sewer diameter flowing full (Manning)             | main         | Solves |
-| detention volume from inflow and allowed outflow peaks  | ~detention   | Solves |
-| order of the design steps                               | ~design-steps| Solves |
+| Question type                                          | Page          | Mark   |
+| ------------------------------------------------------ | ------------- | ------ |
+| storm sewer diameter flowing full (Manning)            | main          | Solves |
+| detention volume from inflow and allowed outflow peaks | ~detention    | Solves |
+| order of the design steps                              | ~design-steps | Solves |
 
 - **Main — BUILD ⏳ P20:** P20 pipe in section, full. Values Q, n, slope S, D (computed), next
   standard size (allowed list in mm, N4). Relation: D = (3.208Qn ÷ √S)^(3/8) (SI, full flow).
@@ -979,12 +983,12 @@ and the 360-22 specification (free download, all rights reserved); MIT OCW 1.050
 
 #### transportation#0 — Traffic flow
 
-| Question type                                         | Page        | Mark   |
-| ----------------------------------------------------- | ----------- | ------ |
-| speed and flow at a density (Greenshields)            | main        | Solves |
-| capacity and the density at capacity                  | main        | Solves |
-| shock wave speed at a queue                           | ~shockwave  | Solves |
-| headway and spacing                                   | ~headway    | Solves |
+| Question type                              | Page       | Mark   |
+| ------------------------------------------ | ---------- | ------ |
+| speed and flow at a density (Greenshields) | main       | Solves |
+| capacity and the density at capacity       | main       | Solves |
+| shock wave speed at a queue                | ~shockwave | Solves |
+| headway and spacing                        | ~headway   | Solves |
 
 - **Main — BUILD:** `functionGraph` quadratic (flow q against density k, vertex at capacity, the
   current point; the chord from the origin has slope v). Values free-flow speed v_f, jam density
@@ -1001,12 +1005,12 @@ and the 360-22 specification (free download, all rights reserved); MIT OCW 1.050
 
 #### transportation#1 — Geometric design
 
-| Question type                                          | Page              | Mark   |
-| ------------------------------------------------------ | ----------------- | ------ |
-| stopping sight distance at a design speed and grade    | main              | Solves |
-| minimum radius of a horizontal curve                   | ~horizontal-curve | Solves |
-| curve length and tangent from R and Δ                  | ~curve-elements   | Solves |
-| length of a crest vertical curve for SSD               | ~crest-curve      | Solves (⏳ N9) |
+| Question type                                       | Page              | Mark           |
+| --------------------------------------------------- | ----------------- | -------------- |
+| stopping sight distance at a design speed and grade | main              | Solves         |
+| minimum radius of a horizontal curve                | ~horizontal-curve | Solves         |
+| curve length and tangent from R and Δ               | ~curve-elements   | Solves         |
+| length of a crest vertical curve for SSD            | ~crest-curve      | Solves (⏳ N9) |
 
 - **Main — BUILD ⏳ P22:** **P22** `roadCurve` stopping (reaction strip, then braking strip, the
   object ahead). Values speed V (km/h), reaction time t (s), deceleration a (m/s²), grade G,
@@ -1026,17 +1030,17 @@ and the 360-22 specification (free download, all rights reserved); MIT OCW 1.050
 
 #### transportation#2 — Pavement design
 
-| Question type                                         | Page    | Mark   |
-| ----------------------------------------------------- | ------- | ------ |
-| structural number of a flexible pavement              | main    | Solves |
-| ESALs from an axle load (fourth-power law)            | ~esal   | Solves |
-| layer thickness for a required SN                     | main    | Solves |
+| Question type                              | Page  | Mark   |
+| ------------------------------------------ | ----- | ------ |
+| structural number of a flexible pavement   | main  | Solves |
+| ESALs from an axle load (fourth-power law) | ~esal | Solves |
+| layer thickness for a required SN          | main  | Solves |
 
 - **Main — BUILD ⏳ P17:** P17 `pavement` (surface, base, subbase to scale, each with a and m).
   Values a₁, D₁, a₂, D₂, m₂, a₃, D₃, m₃, SN. Relation: SN = a₁D₁ + a₂D₂m₂ + a₃D₃m₃. Assumptions:
   AASHTO 1993 method, thicknesses in inches; the required SN comes from the design chart for the
   ESALs and the subgrade (not on this page); m reflects drainage. Example: 0.44 × 4 + 0.14 × 8 × 1.0
-  + 0.11 × 10 × 0.9 = 1.76 + 1.12 + 0.99 = 3.87. Typing SN finds D₃. startWith a's, m's, D₁, D₂, D₃.
+  - 0.11 × 10 × 0.9 = 1.76 + 1.12 + 0.99 = 3.87. Typing SN finds D₃. startWith a's, m's, D₁, D₂, D₃.
 - **~esal — BUILD:** `bars` (load equivalency per truck, total). Values axle load P (kN), standard
   80 kN, LEF, trucks per day, years, ESAL. Relations: LEF = (P ÷ 80)⁴; ESAL = LEF × trucks × 365 ×
   years. Assumptions: a single axle; no traffic growth; the fourth-power rule is an approximation of
@@ -1045,11 +1049,11 @@ and the 360-22 specification (free download, all rights reserved); MIT OCW 1.050
 
 #### transportation#3 — Capacity analysis
 
-| Question type                                          | Page       | Mark            |
-| ------------------------------------------------------ | ---------- | --------------- |
-| flow rate in passenger cars, density, level of service | main       | Solves (⏳ N5)  |
-| heavy-vehicle factor                                   | main       | Solves          |
-| optimum signal cycle (Webster)                         | ~webster   | Solves          |
+| Question type                                          | Page     | Mark           |
+| ------------------------------------------------------ | -------- | -------------- |
+| flow rate in passenger cars, density, level of service | main     | Solves (⏳ N5) |
+| heavy-vehicle factor                                   | main     | Solves         |
+| optimum signal cycle (Webster)                         | ~webster | Solves         |
 
 - **Main — BUILD ⏳ P23, N5:** **P23** `losScale` (density bar with A–F bands, the segment marked).
   Values hourly volume V (veh/h), peak-hour factor PHF, lanes N, truck share P_T, truck equivalent
@@ -1068,11 +1072,11 @@ and the 360-22 specification (free download, all rights reserved); MIT OCW 1.050
 
 #### steel-design#0 — LRFD
 
-| Question type                                          | Page        | Mark            |
-| ------------------------------------------------------ | ----------- | --------------- |
-| governing factored load from D, L, S                   | main        | Solves (⏳ N5)  |
-| design strength φR_n against R_u; ASD R_n ÷ Ω          | ~phi-omega  | Solves          |
-| dead, live or environmental load                       | ~load-types | Solves          |
+| Question type                                 | Page        | Mark           |
+| --------------------------------------------- | ----------- | -------------- |
+| governing factored load from D, L, S          | main        | Solves (⏳ N5) |
+| design strength φR_n against R_u; ASD R_n ÷ Ω | ~phi-omega  | Solves         |
+| dead, live or environmental load              | ~load-types | Solves         |
 
 - **Main — BUILD ⏳ N5:** `bars` (one bar per combination, the largest ringed). Values dead D,
   live L, snow S, 1.4D, 1.2D + 1.6L + 0.5S, 1.2D + 1.6S + L, U (the largest). Relations: the three
@@ -1088,11 +1092,11 @@ and the 360-22 specification (free download, all rights reserved); MIT OCW 1.050
 
 #### steel-design#1 — Tension and compression members
 
-| Question type                                          | Page       | Mark            |
-| ------------------------------------------------------ | ---------- | --------------- |
-| column design strength φP_n (W-shape, KL)              | main       | Solves (⏳ N4, N9) |
-| tension member: yielding against rupture               | ~tension   | Solves (⏳ N9)  |
-| slenderness limit KL ÷ r ≤ 200                         | main       | Solves          |
+| Question type                             | Page     | Mark               |
+| ----------------------------------------- | -------- | ------------------ |
+| column design strength φP_n (W-shape, KL) | main     | Solves (⏳ N4, N9) |
+| tension member: yielding against rupture  | ~tension | Solves (⏳ N9)     |
+| slenderness limit KL ÷ r ≤ 200            | main     | Solves             |
 
 - **Main — BUILD ⏳ P7, N4, N9:** P7 `column` with P6 `section` W-shape inset. Values shape
   (allowed rows: W10×49, W12×65, W14×90, setting A_g and r_y), A_g, r_y, KL (ft), F_y, KL ÷ r,
@@ -1110,12 +1114,12 @@ and the 360-22 specification (free download, all rights reserved); MIT OCW 1.050
 
 #### steel-design#2 — Beams
 
-| Question type                                           | Page        | Mark   |
-| ------------------------------------------------------- | ----------- | ------ |
-| plastic moment strength of a braced compact beam        | main        | Solves (⏳ N4) |
-| L_p and whether lateral bracing is close enough         | main        | Solves |
-| live-load deflection against L ÷ 360                    | ~deflection | Solves |
-| shear strength of a rolled W-shape                      | ~shear      | Solves |
+| Question type                                    | Page        | Mark           |
+| ------------------------------------------------ | ----------- | -------------- |
+| plastic moment strength of a braced compact beam | main        | Solves (⏳ N4) |
+| L_p and whether lateral bracing is close enough  | main        | Solves         |
+| live-load deflection against L ÷ 360             | ~deflection | Solves         |
+| shear strength of a rolled W-shape               | ~shear      | Solves         |
 
 - **Main — BUILD ⏳ P14, N4:** P14 beam with uniform load, P6 W-shape inset. Values shape (W18×50,
   W21×44, W16×40 rows set Z_x, r_y), Z_x, F_y, φM_p (kip·ft), L_p (ft), w_u, span L, M_u.
@@ -1132,11 +1136,11 @@ and the 360-22 specification (free download, all rights reserved); MIT OCW 1.050
 
 #### steel-design#3 — Connections
 
-| Question type                                         | Page         | Mark            |
-| ----------------------------------------------------- | ------------ | --------------- |
-| bolt group in single shear                            | main         | Solves          |
-| fillet weld strength per inch and total               | ~weld        | Solves          |
-| block shear rupture                                   | ~block-shear | Solves (⏳ N9)  |
+| Question type                           | Page         | Mark           |
+| --------------------------------------- | ------------ | -------------- |
+| bolt group in single shear              | main         | Solves         |
+| fillet weld strength per inch and total | ~weld        | Solves         |
+| block shear rupture                     | ~block-shear | Solves (⏳ N9) |
 
 - **Main — BUILD ⏳ P24:** P24 lap splice with a bolt group. Values bolt diameter d (allowed ⅝,
   ¾, ⅞, 1 in), A_b, F_nv (allowed 54 Group A threads included, 68 excluded), bolts n, φr_n, φR_n.
@@ -1156,12 +1160,12 @@ and the 360-22 specification (free download, all rights reserved); MIT OCW 1.050
 
 #### concrete-design#0 — Flexure
 
-| Question type                                          | Page        | Mark            |
-| ------------------------------------------------------ | ----------- | --------------- |
-| φM_n of a singly reinforced rectangular beam           | main        | Solves          |
-| tension-controlled check (ε_t ≥ 0.005)                 | main        | Solves (⏳ N5)  |
-| minimum steel                                          | ~min-steel  | Solves (⏳ N9)  |
-| steel needed for a factored moment                     | main (type φM_n) | Solves (⏳ N3) |
+| Question type                                | Page             | Mark           |
+| -------------------------------------------- | ---------------- | -------------- |
+| φM_n of a singly reinforced rectangular beam | main             | Solves         |
+| tension-controlled check (ε_t ≥ 0.005)       | main             | Solves (⏳ N5) |
+| minimum steel                                | ~min-steel       | Solves (⏳ N9) |
+| steel needed for a factored moment           | main (type φM_n) | Solves (⏳ N3) |
 
 - **Main — BUILD ⏳ P6, N4:** **P6** `section` rectangular beam with bars and `whitney` (the
   0.85f′_c block of depth a, the strain line from 0.003 to ε_t). Values b, d, bars (allowed #3–#11
@@ -1178,11 +1182,11 @@ and the 360-22 specification (free download, all rights reserved); MIT OCW 1.050
 
 #### concrete-design#1 — Shear
 
-| Question type                                          | Page        | Mark   |
-| ------------------------------------------------------ | ----------- | ------ |
-| concrete shear strength φV_c                           | main        | Solves |
-| stirrup spacing for a factored shear                   | main        | Solves |
-| maximum spacing d ÷ 2                                  | main        | Solves |
+| Question type                        | Page | Mark   |
+| ------------------------------------ | ---- | ------ |
+| concrete shear strength φV_c         | main | Solves |
+| stirrup spacing for a factored shear | main | Solves |
+| maximum spacing d ÷ 2                | main | Solves |
 
 - **Main — BUILD ⏳ P14:** P14 beam elevation with `stirrups` and the shear diagram; P6 section
   showing the two legs. Values b_w, d, f′_c, V_c, V_u, V_s, A_v, f_yt, spacing s. Relations:
@@ -1195,13 +1199,13 @@ and the 360-22 specification (free download, all rights reserved); MIT OCW 1.050
 
 #### concrete-design#2 — Columns
 
-| Question type                                         | Page          | Mark            |
-| ----------------------------------------------------- | ------------- | --------------- |
-| maximum axial strength of a tied column               | main          | Solves          |
-| spiral column                                         | ~spiral       | Solves          |
-| steel ratio between 1% and 8%                         | main          | Solves          |
-| short or slender (kℓ_u ÷ r ≤ 22)                      | ~slenderness  | Solves (⏳ N5)  |
-| P–M interaction diagram                               | —             | No (⏳ P6 `interaction`, N9) |
+| Question type                           | Page         | Mark                         |
+| --------------------------------------- | ------------ | ---------------------------- |
+| maximum axial strength of a tied column | main         | Solves                       |
+| spiral column                           | ~spiral      | Solves                       |
+| steel ratio between 1% and 8%           | main         | Solves                       |
+| short or slender (kℓ_u ÷ r ≤ 22)        | ~slenderness | Solves (⏳ N5)               |
+| P–M interaction diagram                 | —            | No (⏳ P6 `interaction`, N9) |
 
 - **Main — BUILD:** P6 `section` square column with bars. Values width h, A_g, bars (count and
   size, setting A_st), A_st, f′_c, f_y, ρ_g, P₀, φP_n,max. Relations: A_g = h²; P₀ = 0.85f′_c(A_g −
@@ -1215,11 +1219,11 @@ and the 360-22 specification (free download, all rights reserved); MIT OCW 1.050
 
 #### concrete-design#3 — Slabs and footings
 
-| Question type                                          | Page           | Mark   |
-| ------------------------------------------------------ | -------------- | ------ |
-| spread footing size from the allowable soil pressure   | main           | Solves |
-| two-way (punching) shear check                         | main           | Solves |
-| minimum thickness of a one-way slab                    | ~slab-thickness| Solves |
+| Question type                                        | Page            | Mark   |
+| ---------------------------------------------------- | --------------- | ------ |
+| spread footing size from the allowable soil pressure | main            | Solves |
+| two-way (punching) shear check                       | main            | Solves |
+| minimum thickness of a one-way slab                  | ~slab-thickness | Solves |
 
 - **Main — BUILD ⏳ P17:** P17 `footing` plan with the critical perimeter d ÷ 2 from the column.
   Values service load P, net allowable q, side B, factored P_u, column c, depth d, b₀, V_u, φV_c
@@ -1238,12 +1242,12 @@ and the 360-22 specification (free download, all rights reserved); MIT OCW 1.050
 
 #### environmental#0 — Water treatment
 
-| Question type                                         | Page           | Mark   |
-| ----------------------------------------------------- | -------------- | ------ |
-| overflow rate and detention time of a settling tank   | main           | Solves |
-| settling velocity (Stokes) and fraction removed       | main           | Solves |
-| CT for disinfection                                   | ~ct            | Solves |
-| order of a conventional treatment plant               | ~treatment-train | Solves |
+| Question type                                       | Page             | Mark   |
+| --------------------------------------------------- | ---------------- | ------ |
+| overflow rate and detention time of a settling tank | main             | Solves |
+| settling velocity (Stokes) and fraction removed     | main             | Solves |
+| CT for disinfection                                 | ~ct              | Solves |
+| order of a conventional treatment plant             | ~treatment-train | Solves |
 
 - **Main — BUILD ⏳ P25:** **P25** `settlingTank` (basin to scale, a particle's path falling at
   v_s while crossing; the removed share). Values flow Q, length, width, depth, overflow rate v₀,
@@ -1261,12 +1265,12 @@ and the 360-22 specification (free download, all rights reserved); MIT OCW 1.050
 
 #### environmental#1 — Wastewater treatment
 
-| Question type                                         | Page              | Mark   |
-| ----------------------------------------------------- | ----------------- | ------ |
-| BOD exerted by day t; ultimate BOD                    | main              | Solves |
-| BOD from a dilution test                              | ~dilution         | Solves |
-| food-to-microorganism ratio, HRT                      | ~activated-sludge | Solves |
-| order of a secondary treatment plant                  | ~plant-order      | Solves |
+| Question type                        | Page              | Mark   |
+| ------------------------------------ | ----------------- | ------ |
+| BOD exerted by day t; ultimate BOD   | main              | Solves |
+| BOD from a dilution test             | ~dilution         | Solves |
+| food-to-microorganism ratio, HRT     | ~activated-sludge | Solves |
+| order of a secondary treatment plant | ~plant-order      | Solves |
 
 - **Main — BUILD:** `functionGraph` exponential with `r` (BOD_t = L₀ − L₀e^(−kt): a = −L₀, r = −k,
   k = L₀; the asymptote L₀ and the day-5 point). Values L₀ (mg/L), rate k (per day), t (days), BOD_t.
@@ -1286,11 +1290,11 @@ and the 360-22 specification (free download, all rights reserved); MIT OCW 1.050
 
 #### environmental#2 — Air pollution
 
-| Question type                                          | Page           | Mark   |
-| ------------------------------------------------------ | -------------- | ------ |
-| ground-level centerline concentration (Gaussian plume) | main           | Solves |
-| ppm to μg/m³                                           | ~ppm           | Solves |
-| overall efficiency of control devices in series        | ~control       | Solves |
+| Question type                                          | Page     | Mark   |
+| ------------------------------------------------------ | -------- | ------ |
+| ground-level centerline concentration (Gaussian plume) | main     | Solves |
+| ppm to μg/m³                                           | ~ppm     | Solves |
+| overall efficiency of control devices in series        | ~control | Solves |
 
 - **Main — BUILD ⏳ P26:** **P26** `plume` (stack, effective height H, the plume widening, a
   receptor downwind). Values emission Q (g/s), wind u, σ_y, σ_z, H, concentration C (μg/m³).
@@ -1306,12 +1310,12 @@ and the 360-22 specification (free download, all rights reserved); MIT OCW 1.050
 
 #### environmental#3 — Solid waste
 
-| Question type                                          | Page        | Mark   |
-| ------------------------------------------------------ | ----------- | ------ |
-| landfill volume a year and the life of a site          | main        | Solves |
-| area needed for a depth                                | main        | Solves |
-| waste hierarchy order                                  | ~hierarchy  | Solves |
-| heating value of mixed waste                           | ~heating-value | Solves |
+| Question type                                 | Page           | Mark   |
+| --------------------------------------------- | -------------- | ------ |
+| landfill volume a year and the life of a site | main           | Solves |
+| area needed for a depth                       | main           | Solves |
+| waste hierarchy order                         | ~hierarchy     | Solves |
+| heating value of mixed waste                  | ~heating-value | Solves |
 
 - **Main — BUILD:** `reserve` (the site as a bar cut into each year's volume). Values population,
   rate (kg per person per day), compacted density (kg/m³), cover ratio, volume a year, capacity,
@@ -1331,11 +1335,11 @@ and the 360-22 specification (free download, all rights reserved); MIT OCW 1.050
 
 #### surveying#0 — Distance and angle measurement
 
-| Question type                                         | Page             | Mark            |
-| ----------------------------------------------------- | ---------------- | --------------- |
-| horizontal and vertical distance from a slope reading | main             | Solves (⏳ N6)  |
-| temperature correction of a steel tape                | ~tape            | Solves          |
-| interior angle sum and misclosure of a polygon        | ~angle-closure   | Solves (⏳ N6)  |
+| Question type                                         | Page           | Mark           |
+| ----------------------------------------------------- | -------------- | -------------- |
+| horizontal and vertical distance from a slope reading | main           | Solves (⏳ N6) |
+| temperature correction of a steel tape                | ~tape          | Solves         |
+| interior angle sum and misclosure of a polygon        | ~angle-closure | Solves (⏳ N6) |
 
 - **Main — BUILD:** `triangleSolver` right triangle (slope distance as hypotenuse, vertical angle
   at the instrument). Values slope distance S, vertical angle α (degrees, minutes, seconds, N6),
@@ -1352,12 +1356,12 @@ and the 360-22 specification (free download, all rights reserved); MIT OCW 1.050
 
 #### surveying#1 — Leveling
 
-| Question type                                           | Page        | Mark   |
-| ------------------------------------------------------- | ----------- | ------ |
-| elevation by differential leveling (two setups)         | main        | Solves |
-| arithmetic check ΣBS − ΣFS                              | main        | Solves |
-| curvature and refraction over a long sight              | ~curvature  | Solves |
-| trigonometric leveling                                  | ~trig       | Solves |
+| Question type                                   | Page       | Mark   |
+| ----------------------------------------------- | ---------- | ------ |
+| elevation by differential leveling (two setups) | main       | Solves |
+| arithmetic check ΣBS − ΣFS                      | main       | Solves |
+| curvature and refraction over a long sight      | ~curvature | Solves |
+| trigonometric leveling                          | ~trig      | Solves |
 
 - **Main — BUILD ⏳ P28:** **P28** `survey` level (two setups, rods at BM, TP1 and B; HI lines).
   Values BM elevation, BS₁, FS₁, TP1 elevation, BS₂, FS₂, HI₁, HI₂, B elevation (9). Relations:
@@ -1374,12 +1378,12 @@ and the 360-22 specification (free download, all rights reserved); MIT OCW 1.050
 
 #### surveying#2 — Traverse computations
 
-| Question type                                         | Page          | Mark            |
-| ----------------------------------------------------- | ------------- | --------------- |
-| latitude and departure of a course                    | main          | Solves (⏳ N6)  |
-| linear misclosure and relative precision              | ~closure      | Solves          |
-| compass-rule correction of one course                 | ~compass-rule | Solves          |
-| area from coordinates                                 | ~area         | Solves          |
+| Question type                            | Page          | Mark           |
+| ---------------------------------------- | ------------- | -------------- |
+| latitude and departure of a course       | main          | Solves (⏳ N6) |
+| linear misclosure and relative precision | ~closure      | Solves         |
+| compass-rule correction of one course    | ~compass-rule | Solves         |
+| area from coordinates                    | ~area         | Solves         |
 
 - **Main — BUILD ⏳ P27:** **P27** `survey` traverse, one course lit, its north and east components drawn.
   Values azimuth (or bearing, N6), length L, latitude, departure. Relations: lat = L cos(azimuth);
@@ -1397,12 +1401,12 @@ and the 360-22 specification (free download, all rights reserved); MIT OCW 1.050
 
 #### surveying#3 — GNSS
 
-| Question type                                          | Page          | Mark   |
-| ------------------------------------------------------ | ------------- | ------ |
-| orthometric height from ellipsoid height and geoid     | main          | Solves |
-| range from signal travel time; a clock error's effect  | ~pseudorange  | Solves |
-| expected position error from DOP                       | ~dop          | Solves |
-| which error source is which                            | ~errors       | Solves |
+| Question type                                         | Page         | Mark   |
+| ----------------------------------------------------- | ------------ | ------ |
+| orthometric height from ellipsoid height and geoid    | main         | Solves |
+| range from signal travel time; a clock error's effect | ~pseudorange | Solves |
+| expected position error from DOP                      | ~dop         | Solves |
+| which error source is which                           | ~errors      | Solves |
 
 - **Main — BUILD ⏳ P29:** equation `{H:unit} = {h:unit} − {N:unit}`; **P29** `survey` heights (terrain,
   geoid and ellipsoid curves, h, N and H at the point). Assumptions: h is what GNSS measures; N
@@ -1432,11 +1436,11 @@ Reference only.
 
 #### material-energy-balances#0 — Process flow diagrams
 
-| Question type                                          | Page          | Mark            |
-| ------------------------------------------------------ | ------------- | --------------- |
-| mass flow to molar flow and mole fractions of a stream | main          | Solves          |
-| degrees of freedom of a unit                           | ~dof          | Solves          |
-| what each PFD symbol does                              | ~symbols      | Solves (⏳ P36) |
+| Question type                                          | Page     | Mark            |
+| ------------------------------------------------------ | -------- | --------------- |
+| mass flow to molar flow and mole fractions of a stream | main     | Solves          |
+| degrees of freedom of a unit                           | ~dof     | Solves          |
+| what each PFD symbol does                              | ~symbols | Solves (⏳ P36) |
 
 - **Main — BUILD ⏳ P9:** **P9** `controlVolume` one stream (a labeled arrow with its flow and
   composition box). Values total mass flow ṁ, mass fraction w_A, molar masses M_A, M_B, molar
@@ -1456,11 +1460,11 @@ Reference only.
 
 #### material-energy-balances#1 — Material balances
 
-| Question type                                          | Page        | Mark   |
-| ------------------------------------------------------ | ----------- | ------ |
-| mixer: outlet flow and composition                     | main        | Solves |
-| column split: distillate, bottoms, recovery            | ~splitter   | Solves |
-| bypass around a unit                                   | ~bypass     | Solves |
+| Question type                               | Page      | Mark   |
+| ------------------------------------------- | --------- | ------ |
+| mixer: outlet flow and composition          | main      | Solves |
+| column split: distillate, bottoms, recovery | ~splitter | Solves |
+| bypass around a unit                        | ~bypass   | Solves |
 
 - **Main — BUILD ⏳ P9:** P9 mixer (two in, one out; the in = out check). Values F₁, x₁, F₂, x₂, F₃,
   x₃. Relations: F₁ + F₂ = F₃; F₁x₁ + F₂x₂ = F₃x₃. Assumptions: steady state, no reaction, so mass
@@ -1478,11 +1482,11 @@ Reference only.
 
 #### material-energy-balances#2 — Reactive systems
 
-| Question type                                          | Page          | Mark   |
-| ------------------------------------------------------ | ------------- | ------ |
-| outlet flows from conversion (extent of reaction)      | main          | Solves |
-| limiting reactant and percent excess                   | main          | Solves |
-| combustion with excess air; dry-basis CO₂ %            | ~combustion   | Solves |
+| Question type                                     | Page        | Mark   |
+| ------------------------------------------------- | ----------- | ------ |
+| outlet flows from conversion (extent of reaction) | main        | Solves |
+| limiting reactant and percent excess              | main        | Solves |
+| combustion with excess air; dry-basis CO₂ %       | ~combustion | Solves |
 
 - **Main — BUILD:** `reaction` with `limiting` (N₂ + 3H₂ → 2NH₃, before and after counts). Values
   N₂ in, H₂ in, conversion of H₂ X, extent ξ, N₂ out, H₂ out, NH₃ out, % excess N₂. Relations:
@@ -1498,12 +1502,12 @@ Reference only.
 
 #### material-energy-balances#3 — Energy balances
 
-| Question type                                          | Page              | Mark            |
-| ------------------------------------------------------ | ----------------- | --------------- |
-| heat duty to warm a stream                             | main              | Solves          |
-| steam needed for that duty                             | main              | Solves          |
-| heat released by a reaction at 25 °C                   | ~heat-of-reaction | Solves          |
-| enthalpy from steam tables                             | —                 | No (⏳ N4 steam table rows) |
+| Question type                        | Page              | Mark                        |
+| ------------------------------------ | ----------------- | --------------------------- |
+| heat duty to warm a stream           | main              | Solves                      |
+| steam needed for that duty           | main              | Solves                      |
+| heat released by a reaction at 25 °C | ~heat-of-reaction | Solves                      |
+| enthalpy from steam tables           | —                 | No (⏳ N4 steam table rows) |
 
 - **Main — BUILD ⏳ P9:** P9 heater with a Q arrow and the steam line. Values ṁ, c_p, T_in, T_out,
   Q̇, latent heat λ, steam ṁ_s. Relations: Q̇ = ṁc_p(T_out − T_in); ṁ_s = Q̇ ÷ λ. Assumptions: steady
@@ -1519,12 +1523,12 @@ Reference only.
 
 #### chemical-thermodynamics#0 — Equations of state
 
-| Question type                                          | Page          | Mark            |
-| ------------------------------------------------------ | ------------- | --------------- |
-| compressibility factor from the virial (Pitzer) form   | main          | Solves          |
-| pressure from van der Waals at a molar volume          | ~van-der-waals| Solves          |
-| volume from van der Waals at a pressure (cubic)        | ~van-der-waals| Partly (⏳ N2, N3) |
-| Peng–Robinson                                          | —             | No (⏳ N2, N3, N4) |
+| Question type                                        | Page           | Mark               |
+| ---------------------------------------------------- | -------------- | ------------------ |
+| compressibility factor from the virial (Pitzer) form | main           | Solves             |
+| pressure from van der Waals at a molar volume        | ~van-der-waals | Solves             |
+| volume from van der Waals at a pressure (cubic)      | ~van-der-waals | Partly (⏳ N2, N3) |
+| Peng–Robinson                                        | —              | No (⏳ N2, N3, N4) |
 
 - **Main — BUILD ⏳ N4:** **P10** `propertyDiagram` P–v mode (the isotherm, ideal dashed, the
   state). Values T_c, P_c, acentric ω (a compound row sets these, N4), T, P, T_r, P_r, B⁰, B¹, Z.
@@ -1541,10 +1545,10 @@ Reference only.
 
 #### chemical-thermodynamics#1 — Fugacity
 
-| Question type                                         | Page        | Mark   |
-| ----------------------------------------------------- | ----------- | ------ |
-| fugacity coefficient from the virial form             | main        | Solves |
-| liquid fugacity with the Poynting factor              | ~poynting   | Solves |
+| Question type                             | Page      | Mark   |
+| ----------------------------------------- | --------- | ------ |
+| fugacity coefficient from the virial form | main      | Solves |
+| liquid fugacity with the Poynting factor  | ~poynting | Solves |
 
 - **Main — BUILD:** `plot` with `reference` (f against P; the ideal line f = P dashed, the gas's
   point below it). Values T_r, P_r, B⁰ + ωB¹, ln φ, φ, P, f. Relations: ln φ = (B⁰ + ωB¹)P_r ÷ T_r;
@@ -1557,13 +1561,13 @@ Reference only.
 
 #### chemical-thermodynamics#2 — Vapor–liquid equilibrium
 
-| Question type                                          | Page          | Mark            |
-| ------------------------------------------------------ | ------------- | --------------- |
-| bubble pressure and vapor composition (Raoult)         | main          | Solves (⏳ N4)  |
-| dew pressure                                           | ~dew          | Solves          |
-| binary flash: phase fractions at T and P               | ~flash        | Solves          |
-| activity coefficients (one-parameter Margules)         | ~margules     | Solves          |
-| bubble temperature at a pressure                       | main (type P) | Solves (⏳ N2)  |
+| Question type                                  | Page          | Mark           |
+| ---------------------------------------------- | ------------- | -------------- |
+| bubble pressure and vapor composition (Raoult) | main          | Solves (⏳ N4) |
+| dew pressure                                   | ~dew          | Solves         |
+| binary flash: phase fractions at T and P       | ~flash        | Solves         |
+| activity coefficients (one-parameter Margules) | ~margules     | Solves         |
+| bubble temperature at a pressure               | main (type P) | Solves (⏳ N2) |
 
 - **Main — BUILD ⏳ P30, N4:** **P30** `phaseEnvelope` Pxy (bubble and dew curves at T, the tie
   line at x). A pair row (N4) supplies both compounds' Antoine A, B, C as data, not values. Values
@@ -1584,11 +1588,11 @@ Reference only.
 
 #### chemical-thermodynamics#3 — Reaction equilibria
 
-| Question type                                         | Page          | Mark   |
-| ----------------------------------------------------- | ------------- | ------ |
-| K from ΔG° at 298 K                                   | main          | Solves |
-| K at another temperature (van 't Hoff)                | ~van-t-hoff   | Solves |
-| equilibrium conversion of A ⇌ B                       | ~conversion   | Solves |
+| Question type                          | Page        | Mark   |
+| -------------------------------------- | ----------- | ------ |
+| K from ΔG° at 298 K                    | main        | Solves |
+| K at another temperature (van 't Hoff) | ~van-t-hoff | Solves |
+| equilibrium conversion of A ⇌ B        | ~conversion | Solves |
 
 - **Main — BUILD:** `equilibriumChart` (Q against K). Values ΔG° (kJ/mol), T, K, ln K. Relation:
   ln K = −ΔG° ÷ (RT). Assumptions: standard state 1 bar; ΔG° for the reaction as written.
@@ -1606,12 +1610,12 @@ Reference only.
 
 #### transport-phenomena#0 — Momentum transport
 
-| Question type                                          | Page          | Mark   |
-| ------------------------------------------------------ | ------------- | ------ |
-| laminar flow rate in a tube (Hagen–Poiseuille)         | main          | Solves |
-| average and maximum velocity; wall shear stress        | main          | Solves |
-| shear stress and force in Couette flow                 | ~couette      | Solves |
-| falling film average velocity                          | ~film         | Solves |
+| Question type                                   | Page     | Mark   |
+| ----------------------------------------------- | -------- | ------ |
+| laminar flow rate in a tube (Hagen–Poiseuille)  | main     | Solves |
+| average and maximum velocity; wall shear stress | main     | Solves |
+| shear stress and force in Couette flow          | ~couette | Solves |
+| falling film average velocity                   | ~film    | Solves |
 
 - **Main — BUILD ⏳ P31:** **P31** `velocityProfile` tube (parabolic arrows, v_max on the axis,
   τ_w at the wall). Values ΔP, length L, radius R, viscosity μ, Q, v_avg, v_max, τ_w, Re (ρ fixed
@@ -1628,11 +1632,11 @@ Reference only.
 
 #### transport-phenomena#1 — Heat transport
 
-| Question type                                          | Page            | Mark   |
-| ------------------------------------------------------ | --------------- | ------ |
-| heat flux through a composite wall with convection     | main            | Solves |
-| heat loss from an insulated pipe; critical radius      | ~cylinder       | Solves |
-| center temperature of a wire with heat generation      | ~heated-wire    | Solves |
+| Question type                                      | Page         | Mark   |
+| -------------------------------------------------- | ------------ | ------ |
+| heat flux through a composite wall with convection | main         | Solves |
+| heat loss from an insulated pipe; critical radius  | ~cylinder    | Solves |
+| center temperature of a wire with heat generation  | ~heated-wire | Solves |
 
 - **Main — BUILD ⏳ P31:** P31 `temperature` through layers (a straight drop in each layer, steeper
   where k is small). Values T_in, h_in, L₁, k₁, L₂, k₂, h_out, T_out, total R, flux q″. Relations:
@@ -1651,11 +1655,11 @@ Reference only.
 
 #### transport-phenomena#2 — Mass transport
 
-| Question type                                          | Page            | Mark   |
-| ------------------------------------------------------ | --------------- | ------ |
-| equimolar counterdiffusion flux (Fick)                 | main            | Solves |
-| evaporation through a stagnant gas (Stefan tube)       | ~stagnant-film  | Solves |
-| time to diffuse a distance                             | ~diffusion-time | Solves |
+| Question type                                    | Page            | Mark   |
+| ------------------------------------------------ | --------------- | ------ |
+| equimolar counterdiffusion flux (Fick)           | main            | Solves |
+| evaporation through a stagnant gas (Stefan tube) | ~stagnant-film  | Solves |
+| time to diffuse a distance                       | ~diffusion-time | Solves |
 
 - **Main — BUILD ⏳ P31:** P31 `concentration` across a film (a straight line from c_A1 to c_A2).
   Values D_AB, c_A1, c_A2, thickness L, flux N_A. Relation: N_A = D_AB(c_A1 − c_A2) ÷ L.
@@ -1671,11 +1675,11 @@ Reference only.
 
 #### transport-phenomena#3 — Transport analogies
 
-| Question type                                           | Page              | Mark   |
-| ------------------------------------------------------- | ----------------- | ------ |
-| Nusselt number from the friction factor (Chilton–Colburn)| main             | Solves |
-| Sherwood number by the same analogy                     | ~mass-analogy     | Solves |
-| Prandtl and Schmidt numbers and what they compare       | ~dimensionless    | Solves |
+| Question type                                             | Page           | Mark   |
+| --------------------------------------------------------- | -------------- | ------ |
+| Nusselt number from the friction factor (Chilton–Colburn) | main           | Solves |
+| Sherwood number by the same analogy                       | ~mass-analogy  | Solves |
+| Prandtl and Schmidt numbers and what they compare         | ~dimensionless | Solves |
 
 - **Main — BUILD ⏳ P31:** P31 `analogy` (velocity, thermal and concentration boundary layers side
   by side, δ_T = δPr^(−1/3)). Values Re, Fanning f, Pr, j_H (= f ÷ 2), Nu, Dittus–Boelter Nu for
@@ -1694,12 +1698,12 @@ Reference only.
 
 #### separations#0 — Distillation
 
-| Question type                                          | Page           | Mark            |
-| ------------------------------------------------------ | -------------- | --------------- |
-| minimum stages (Fenske)                                | main           | Solves          |
-| minimum reflux (Underwood, saturated liquid feed)      | ~min-reflux    | Solves          |
-| rectifying operating line                              | ~operating-line| Solves          |
-| stages by McCabe–Thiele stepping                       | ~mccabe-thiele | Solves (⏳ P30) |
+| Question type                                     | Page            | Mark            |
+| ------------------------------------------------- | --------------- | --------------- |
+| minimum stages (Fenske)                           | main            | Solves          |
+| minimum reflux (Underwood, saturated liquid feed) | ~min-reflux     | Solves          |
+| rectifying operating line                         | ~operating-line | Solves          |
+| stages by McCabe–Thiele stepping                  | ~mccabe-thiele  | Solves (⏳ P30) |
 
 - **Main — BUILD ⏳ P30:** P30 `xy` (equilibrium curve for constant α, the 45° line, x_B and x_D
   marked, total-reflux steps). Values x_D, x_B, relative volatility α, N_min. Relation:
@@ -1719,10 +1723,10 @@ Reference only.
 
 #### separations#1 — Absorption
 
-| Question type                                          | Page        | Mark   |
-| ------------------------------------------------------ | ----------- | ------ |
-| stages by the Kremser equation                         | main        | Solves |
-| minimum liquid-to-gas ratio                            | ~min-liquid | Solves |
+| Question type                  | Page        | Mark   |
+| ------------------------------ | ----------- | ------ |
+| stages by the Kremser equation | main        | Solves |
+| minimum liquid-to-gas ratio    | ~min-liquid | Solves |
 
 - **Main — BUILD ⏳ P30:** P30 `xy` with straight equilibrium y = mx and operating lines. Values
   y_in, y_out, x_in, m, absorption factor A, N. Relation: N = ln[((y_in − mx_in) ÷ (y_out −
@@ -1736,11 +1740,11 @@ Reference only.
 
 #### separations#2 — Extraction
 
-| Question type                                         | Page           | Mark   |
-| ----------------------------------------------------- | -------------- | ------ |
-| fraction left after one equilibrium stage             | main           | Solves |
-| crosscurrent stages with split solvent                | ~crosscurrent  | Solves |
-| one large wash or several small ones                  | ~crosscurrent  | Solves |
+| Question type                             | Page          | Mark   |
+| ----------------------------------------- | ------------- | ------ |
+| fraction left after one equilibrium stage | main          | Solves |
+| crosscurrent stages with split solvent    | ~crosscurrent | Solves |
+| one large wash or several small ones      | ~crosscurrent | Solves |
 
 - **Main — BUILD ⏳ P9:** P9 `stages: 1` (feed and solvent in, extract and raffinate out, solute
   amounts). Values distribution coefficient K_D, solvent-to-feed S ÷ F, extraction factor E,
@@ -1754,11 +1758,11 @@ Reference only.
 
 #### separations#3 — Membranes
 
-| Question type                                          | Page          | Mark   |
-| ------------------------------------------------------ | ------------- | ------ |
-| reverse-osmosis water flux                             | main          | Solves |
-| osmotic pressure of seawater                           | main          | Solves |
-| ideal selectivity and permeate purity                  | ~gas-permeation | Solves |
+| Question type                         | Page            | Mark   |
+| ------------------------------------- | --------------- | ------ |
+| reverse-osmosis water flux            | main            | Solves |
+| osmotic pressure of seawater          | main            | Solves |
+| ideal selectivity and permeate purity | ~gas-permeation | Solves |
 
 - **Main — BUILD ⏳ P9:** P9 `membrane` (feed, retentate, permeate; pressure and osmotic pressure
   bars). Values salt concentration (g/L), molar mass, ions i, T, osmotic π, applied ΔP,
@@ -1775,12 +1779,12 @@ Reference only.
 
 #### reaction-engineering#0 — Rate laws
 
-| Question type                                          | Page           | Mark   |
-| ------------------------------------------------------ | -------------- | ------ |
-| rate constant at a new temperature (Arrhenius)         | main           | Solves |
-| activation energy from two rate constants              | main (type E)  | Solves |
-| reaction order from initial rates                      | ~order         | Solves |
-| Arrhenius plot: E from the slope                       | ~arrhenius-plot| Solves |
+| Question type                                  | Page            | Mark   |
+| ---------------------------------------------- | --------------- | ------ |
+| rate constant at a new temperature (Arrhenius) | main            | Solves |
+| activation energy from two rate constants      | main (type E)   | Solves |
+| reaction order from initial rates              | ~order          | Solves |
+| Arrhenius plot: E from the slope               | ~arrhenius-plot | Solves |
 
 - **Main — BUILD:** `linearFunction` (ln k against 1 ÷ T through the two points; slope −E ÷ R).
   Values E (kJ/mol), k₁, T₁, T₂, k₂, ratio k₂ ÷ k₁. Relation: ln(k₂ ÷ k₁) = (E ÷ R)(1 ÷ T₁ − 1 ÷ T₂).
@@ -1795,13 +1799,13 @@ Reference only.
 
 #### reaction-engineering#1 — Batch, CSTR and PFR design
 
-| Question type                                           | Page           | Mark            |
-| ------------------------------------------------------- | -------------- | --------------- |
-| CSTR and PFR volume for a first-order conversion        | main           | Solves          |
-| second-order liquid reaction in each reactor            | ~second-order  | Solves          |
-| batch time for a conversion                             | ~batch         | Solves          |
-| CSTRs in series                                         | ~series        | Solves          |
-| Levenspiel plot: which reactor is smaller               | ~levenspiel    | Solves (⏳ P33) |
+| Question type                                    | Page          | Mark            |
+| ------------------------------------------------ | ------------- | --------------- |
+| CSTR and PFR volume for a first-order conversion | main          | Solves          |
+| second-order liquid reaction in each reactor     | ~second-order | Solves          |
+| batch time for a conversion                      | ~batch        | Solves          |
+| CSTRs in series                                  | ~series       | Solves          |
+| Levenspiel plot: which reactor is smaller        | ~levenspiel   | Solves (⏳ P33) |
 
 - **Main — BUILD:** `bars` (V_CSTR beside V_PFR) until P33. Values k (per min), X, v₀, τ_CSTR,
   V_CSTR, τ_PFR, V_PFR. Relations: τ_CSTR = X ÷ (k(1 − X)); τ_PFR = −ln(1 − X) ÷ k; V = v₀τ.
@@ -1822,10 +1826,10 @@ Reference only.
 
 #### reaction-engineering#2 — Multiple reactions
 
-| Question type                                          | Page         | Mark            |
-| ------------------------------------------------------ | ------------ | --------------- |
-| time and amount of the intermediate's maximum (A → B → C)| main       | Solves (⏳ P32) |
-| instantaneous selectivity of parallel reactions        | ~selectivity | Solves          |
+| Question type                                             | Page         | Mark            |
+| --------------------------------------------------------- | ------------ | --------------- |
+| time and amount of the intermediate's maximum (A → B → C) | main         | Solves (⏳ P32) |
+| instantaneous selectivity of parallel reactions           | ~selectivity | Solves          |
 
 - **Main — BUILD ⏳ P32:** `chemDiagram` **P32** `mode: 'series'` (C_A, C_B, C_C against t, B's peak).
   Values k₁, k₂, C_A0, t_max, C_B,max, yield C_B,max ÷ C_A0. Relations: t_max = ln(k₂ ÷ k₁) ÷ (k₂ −
@@ -1839,11 +1843,11 @@ Reference only.
 
 #### reaction-engineering#3 — Catalysis
 
-| Question type                                          | Page           | Mark            |
-| ------------------------------------------------------ | -------------- | --------------- |
-| fractional coverage and rate (Langmuir)                | main           | Solves          |
-| effectiveness factor of a spherical pellet (Thiele)    | ~effectiveness | Solves (⏳ N8)  |
-| order of the steps on a catalyst                       | ~steps         | Solves          |
+| Question type                                       | Page           | Mark           |
+| --------------------------------------------------- | -------------- | -------------- |
+| fractional coverage and rate (Langmuir)             | main           | Solves         |
+| effectiveness factor of a spherical pellet (Thiele) | ~effectiveness | Solves (⏳ N8) |
+| order of the steps on a catalyst                    | ~steps         | Solves         |
 
 - **Main — BUILD:** `functionGraph` rational (θ = KP ÷ (1 + KP), approaching 1). Values K
   (per atm), P_A, θ, k, rate. Relations: θ = KP ÷ (1 + KP); rate = kθ. Assumptions: one adsorbed
@@ -1861,11 +1865,11 @@ Reference only.
 
 #### process-control#0 — Process dynamics
 
-| Question type                                          | Page           | Mark   |
-| ------------------------------------------------------ | -------------- | ------ |
-| first-order step response at a time; 63.2% at τ        | main           | Solves |
-| second-order overshoot, decay ratio, period            | ~second-order  | Solves |
-| time constant of a mixing tank                         | ~tank          | Solves |
+| Question type                                   | Page          | Mark   |
+| ----------------------------------------------- | ------------- | ------ |
+| first-order step response at a time; 63.2% at τ | main          | Solves |
+| second-order overshoot, decay ratio, period     | ~second-order | Solves |
+| time constant of a mixing tank                  | ~tank         | Solves |
 
 - **Main — BUILD:** `functionGraph` exponential with `r` (y = KΔu − KΔue^(−t ÷ τ), the asymptote
   KΔu and t = τ marked) until P5. Values gain K, step Δu, time constant τ, time t, response y,
@@ -1882,12 +1886,12 @@ Reference only.
 
 #### process-control#1 — Feedback control
 
-| Question type                                          | Page          | Mark   |
-| ------------------------------------------------------ | ------------- | ------ |
-| offset with proportional control                       | main          | Solves |
-| closed-loop time constant                              | main          | Solves |
-| what P, I and D action each do                         | ~modes        | Solves |
-| fail-open or fail-closed valve                         | ~fail-safe    | Solves |
+| Question type                    | Page       | Mark   |
+| -------------------------------- | ---------- | ------ |
+| offset with proportional control | main       | Solves |
+| closed-loop time constant        | main       | Solves |
+| what P, I and D action each do   | ~modes     | Solves |
+| fail-open or fail-closed valve   | ~fail-safe | Solves |
 
 - **Main — BUILD ⏳ P34:** **P34** `blockDiagram` loop (setpoint, comparator, K_c, process K_p ÷
   (τs + 1), sensor). Values K_c, K_p, τ, setpoint change, loop gain K_cK_p, final value, offset,
@@ -1905,11 +1909,11 @@ Reference only.
 
 #### process-control#2 — Controller tuning
 
-| Question type                                          | Page        | Mark   |
-| ------------------------------------------------------ | ----------- | ------ |
-| Ziegler–Nichols settings from K_u and P_u              | main        | Solves |
-| IMC PI settings for a first-order-plus-dead-time model | ~imc        | Solves |
-| FOPDT model from a step test (two-point method)        | ~fit        | Solves |
+| Question type                                          | Page | Mark   |
+| ------------------------------------------------------ | ---- | ------ |
+| Ziegler–Nichols settings from K_u and P_u              | main | Solves |
+| IMC PI settings for a first-order-plus-dead-time model | ~imc | Solves |
+| FOPDT model from a step test (two-point method)        | ~fit | Solves |
 
 - **Main — BUILD:** `table` (P, PI, PID rows: K_c, τ_I, τ_D). Values ultimate gain K_u, period P_u,
   then K_c, τ_I, τ_D for PID. Relations: PID K_c = 0.6K_u, τ_I = P_u ÷ 2, τ_D = P_u ÷ 8 (P: 0.5K_u;
@@ -1924,12 +1928,12 @@ Reference only.
 
 #### process-control#3 — Control-loop design
 
-| Question type                                          | Page           | Mark            |
-| ------------------------------------------------------ | -------------- | --------------- |
-| ultimate gain for three equal lags (Routh)             | main           | Solves          |
-| stable or not from a cubic's coefficients              | ~routh         | Solves (⏳ N5)  |
-| static feedforward gain                                | ~feedforward   | Solves          |
-| feedback, feedforward, cascade or ratio                | ~architecture  | Solves          |
+| Question type                              | Page          | Mark           |
+| ------------------------------------------ | ------------- | -------------- |
+| ultimate gain for three equal lags (Routh) | main          | Solves         |
+| stable or not from a cubic's coefficients  | ~routh        | Solves (⏳ N5) |
+| static feedforward gain                    | ~feedforward  | Solves         |
+| feedback, feedforward, cascade or ratio    | ~architecture | Solves         |
 
 - **Main — BUILD ⏳ P34:** P34 loop with three lags. Values τ, K_p, K_c,u, crossover ω_u, P_u.
   Relations: K_c,uK_p = 8; ω_u = √3 ÷ τ; P_u = 2π ÷ ω_u. Assumptions: three equal first-order lags,
@@ -1949,11 +1953,11 @@ Reference only.
 
 #### process-design#0 — Flowsheet synthesis
 
-| Question type                                          | Page              | Mark   |
-| ------------------------------------------------------ | ----------------- | ------ |
-| the order of design decisions (hierarchy)              | main              | Solves |
-| economic potential of the input–output structure       | ~economic-potential| Solves |
-| separation-sequencing heuristics                       | ~heuristics       | Solves |
+| Question type                                    | Page                | Mark   |
+| ------------------------------------------------ | ------------------- | ------ |
+| the order of design decisions (hierarchy)        | main                | Solves |
+| economic potential of the input–output structure | ~economic-potential | Solves |
+| separation-sequencing heuristics                 | ~heuristics         | Solves |
 
 - **Main — BUILD (sequence):** batch or continuous; input–output structure; recycle structure;
   separation system; heat integration. Sentence: "Each level fixes the streams the next level
@@ -1969,11 +1973,11 @@ Reference only.
 
 #### process-design#1 — Equipment sizing
 
-| Question type                                          | Page       | Mark   |
-| ------------------------------------------------------ | ---------- | ------ |
-| heat-exchanger area from duty, U and LMTD              | main       | Solves |
-| pump power                                             | ~pump      | Solves |
-| drum diameter from holdup time and L ÷ D               | ~drum      | Solves |
+| Question type                             | Page  | Mark   |
+| ----------------------------------------- | ----- | ------ |
+| heat-exchanger area from duty, U and LMTD | main  | Solves |
+| pump power                                | ~pump | Solves |
+| drum diameter from holdup time and L ÷ D  | ~drum | Solves |
 
 - **Main — BUILD ⏳ P35:** **P35** `exchangerProfile` countercurrent (hot and cold lines along the
   length, ΔT₁ and ΔT₂). Values duty Q, U, T_h,in, T_h,out, T_c,in, T_c,out, ΔT₁, ΔT₂, LMTD, A (10).
@@ -1990,11 +1994,11 @@ Reference only.
 
 #### process-design#2 — Process economics
 
-| Question type                                          | Page       | Mark   |
-| ------------------------------------------------------ | ---------- | ------ |
-| equipment cost by the six-tenths rule and a cost index | main       | Solves |
-| net present value of a project                         | ~npv       | Solves |
-| simple payback                                         | ~npv       | Solves |
+| Question type                                          | Page | Mark   |
+| ------------------------------------------------------ | ---- | ------ |
+| equipment cost by the six-tenths rule and a cost index | main | Solves |
+| net present value of a project                         | ~npv | Solves |
+| simple payback                                         | ~npv | Solves |
 
 - **Main — BUILD:** `functionGraph` power family (cost against size, exponent 0.6). Values base
   cost C₁, base size S₁, new size S₂, exponent n, index then I₁, index now I₂, C₂. Relation:
@@ -2009,11 +2013,11 @@ Reference only.
 
 #### process-design#3 — Process safety
 
-| Question type                                          | Page       | Mark   |
-| ------------------------------------------------------ | ---------- | ------ |
-| lower flammability limit of a fuel mixture             | main       | Solves |
-| mitigated event frequency (LOPA)                       | ~lopa      | Solves |
-| HAZOP guide word for a deviation                       | ~hazop     | Solves |
+| Question type                              | Page   | Mark   |
+| ------------------------------------------ | ------ | ------ |
+| lower flammability limit of a fuel mixture | main   | Solves |
+| mitigated event frequency (LOPA)           | ~lopa  | Solves |
+| HAZOP guide word for a deviation           | ~hazop | Solves |
 
 - **Main — BUILD:** `integerLine` `compound` (the flammable range from LFL to UFL, the mixture's
   concentration as a point). Values shares y₁, y₂, y₃ of the fuel, their LFLs, LFL_mix, the
@@ -2227,3 +2231,154 @@ its symbol (`rep.label`, `rep.tag`); nothing depends on color alone.
     (S–N curve on log–log; grain size on a log x-axis with D₁₀, D₃₀, D₆₀ marked). Must stay true:
     a power law draws as a straight line on log–log axes.
 
+## Research to do
+
+For a separate research chat. Everything collected goes under `research/` (new folders
+`research/textbooks/college/` and `research/questions/college/`) and is reference only:
+no problem, number set, figure or sentence goes into a page. Licences below were checked on the
+publisher's page where marked ✓; the rest are to confirm. robots.txt was not checked here; the
+research chat checks it per site, as `research/questions/SOURCES.md` describes, and records it.
+
+### Textbooks
+
+| Source                                                                                        | URL                                                                                                                      | Licence                                               | Courses (topics)                                                                 | Extract                                                                                                                             |
+| --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------- | -------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| Leishman, _Introduction to Aerospace Flight Vehicles_                                         | https://eaglepubs.erau.edu/introductiontoaerospaceflightvehicles/                                                        | CC BY-NC-ND 4.0 ✓                                     | aerodynamics (all), flight-mechanics#0–1, propulsion#0–1, aerospace-structures#0 | chapter list, worked-example types, typical numbers (wing loading, C_L, I_sp), notation                                             |
+| NASA Glenn, _Beginner's Guide to Aeronautics_                                                 | https://www.grc.nasa.gov/www/k-12/airplane/                                                                              | U.S. government, public domain (confirm page notices) | aerodynamics#0–1, #3; compressible-flow#0–1; propulsion#0–1                      | equations as NASA writes them, the standard atmosphere, nozzle and shock pages                                                      |
+| NACA Report 1135, _Equations, Tables, and Charts for Compressible Flow_                       | https://ntrs.nasa.gov (report 1135)                                                                                      | public domain                                         | compressible-flow (all)                                                          | the relation forms and symbols; check values for the harness (A/A*, shock ratios)                                                   |
+| Bar-Meir, _Fundamentals of Compressible Fluid Mechanics_ (Potto)                              | http://www.potto.org                                                                                                     | GNU FDL (confirm version)                             | compressible-flow (all), propulsion#2                                            | chapter order (isentropic, shocks, nozzle, Fanno, Rayleigh), example types                                                          |
+| MIT OCW 16.01–16.04 Unified Engineering; 16.100, 16.120, 16.333, 16.20, 16.50, 16.512, 16.346 | https://ocw.mit.edu                                                                                                      | CC BY-NC-SA 4.0                                       | all aerospace courses                                                            | lecture order per course, problem-set types, number ranges                                                                          |
+| MIT 16 Unified, _Thermodynamics and Propulsion_ notes (Greitzer, Spakovszky, Waitz)           | https://web.mit.edu/16.unified/www/FALL/thermodynamics/                                                                  | freely readable, licence to confirm                   | propulsion#0–1                                                                   | Brayton and thrust derivations, efficiency definitions                                                                              |
+| JPL, _Basics of Space Flight_                                                                 | https://science.nasa.gov/learn/basics-of-space-flight/                                                                   | NASA, public (confirm)                                | orbital-mechanics (all)                                                          | element definitions, Hohmann and gravity-assist explanations                                                                        |
+| Udoeyo, _Structural Analysis_                                                                 | https://temple.manifoldapp.org/projects/structural-analysis                                                              | CC BY-NC-ND 4.0 ✓                                     | structural-analysis (all)                                                        | chapter list (loads, determinate, influence lines, deflections, force method, slope-deflection, moment distribution), example types |
+| Verruijt, _Soil Mechanics_                                                                    | https://geo.verruijt.net                                                                                                 | free to read, all rights reserved (confirm)           | soil-mechanics (all)                                                             | chapter order, effective-stress and consolidation conventions                                                                       |
+| Wikibooks, _Fundamentals of Transportation_                                                   | https://en.wikibooks.org/wiki/Fundamentals_of_Transportation                                                             | CC BY-SA                                              | transportation (all)                                                             | traffic flow, SSD, curves, pavement, queueing; example types                                                                        |
+| NRCS _National Engineering Handbook_ Part 630; TR-55                                          | https://www.nrcs.usda.gov                                                                                                | public domain                                         | hydraulics-hydrology#2–3                                                         | curve-number method, t_c, unit hydrograph                                                                                           |
+| FHWA HEC-22 (urban drainage), HDS-4 (highway hydraulics), HDS-5 (culverts)                    | https://www.fhwa.dot.gov/engineering/hydraulics/                                                                         | public domain                                         | hydraulics-hydrology (all)                                                       | rational method, inlet and pipe design, Manning forms in SI and US                                                                  |
+| AISC 360-22 specification; AISC _Design Examples_                                             | https://www.aisc.org/publications/steel-standards/                                                                       | free download, all rights reserved                    | steel-design (all)                                                               | equation numbers, φ and Ω, the shapes used (the facts only: A, r, Z, I)                                                             |
+| ACI 318-19 (summary pages only; the code is paid)                                             | https://www.concrete.org                                                                                                 | all rights reserved                                   | concrete-design (all)                                                            | which provisions the course teaches; no text                                                                                        |
+| EPA water and wastewater manuals; CT tables (SWTR guidance)                                   | https://www.epa.gov                                                                                                      | public domain                                         | environmental#0–1                                                                | treatment train order, CT ranges, BOD test                                                                                          |
+| EPA AP-42 and dispersion-model guidance                                                       | https://www.epa.gov/air-emissions-factors-and-quantification                                                             | public domain                                         | environmental#2                                                                  | Gaussian plume form, stability classes                                                                                              |
+| NOAA NGS, _Geodesy for the Layman_, GNSS guidance                                             | https://geodesy.noaa.gov                                                                                                 | public domain                                         | surveying#3                                                                      | h, N, H; error sources                                                                                                              |
+| MIT OCW 1.050, 1.060, 1.061, 1.201, 1.34, 1.571, 1.85                                         | https://ocw.mit.edu                                                                                                      | CC BY-NC-SA 4.0                                       | civil courses                                                                    | topic order, problem types                                                                                                          |
+| Wikibooks, _Introduction to Chemical Engineering Processes_                                   | https://en.wikibooks.org/wiki/Introduction_to_Chemical_Engineering_Processes                                             | CC BY-SA                                              | material-energy-balances (all)                                                   | DOF analysis, recycle and bypass, extent of reaction                                                                                |
+| LearnChemE (screencasts, simulations, ConcepTests)                                            | https://learncheme.com                                                                                                   | CC BY-SA 4.0 ✓                                        | every chemical course                                                            | topic lists per course; ConcepTest question types                                                                                   |
+| Woolf et al., _Chemical Process Dynamics and Controls_                                        | https://eng.libretexts.org/Bookshelves/Industrial_and_Systems_Engineering/Chemical_Process_Dynamics_and_Controls_(Woolf) | CC BY 3.0 ✓                                           | process-control (all), process-design#3 (HAZOP)                                  | chapter order, tuning rules as taught, worked examples' types                                                                       |
+| Rawlings and Ekerdt, _Chemical Reactor Analysis and Design Fundamentals_                      | https://sites.engineering.ucsb.edu/~jbraw/chemreacfun/                                                                   | free PDF, all rights reserved (confirm)               | reaction-engineering (all)                                                       | rate laws, reactor design equations, notation                                                                                       |
+| Fogler, _Elements of CRE_ companion site                                                      | http://umich.edu/~elements/                                                                                              | free to read, all rights reserved                     | reaction-engineering (all)                                                       | problem types, Levenspiel plots, catalysis steps                                                                                    |
+| Northwestern _Process Design_ open textbook (wiki)                                            | https://processdesign.mccormick.northwestern.edu                                                                         | licence to confirm                                    | process-design (all)                                                             | sizing heuristics, economics, safety chapters                                                                                       |
+| MIT OCW 10.213, 10.302, 10.37, 10.40, 10.450, 10.490, 10.50                                   | https://ocw.mit.edu                                                                                                      | CC BY-NC-SA 4.0                                       | chemical courses                                                                 | lecture order, problem-set types                                                                                                    |
+| U.S. Chemical Safety Board reports and videos                                                 | https://www.csb.gov                                                                                                      | public domain                                         | process-design#3                                                                 | hazard types for the HAZOP sort (paraphrased, no case text)                                                                         |
+| NCEES _FE Reference Handbook_ (current version)                                               | https://ncees.org/exams/fe-exam/                                                                                         | free to view, all rights reserved                     | every course                                                                     | notation, constants and which formulas the FE gives; units conventions                                                              |
+
+### Questions
+
+| Source                                                                        | URL                                | Licence                   | Courses                                                        | Record per question                                                                              | Target                 |
+| ----------------------------------------------------------------------------- | ---------------------------------- | ------------------------- | -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ | ---------------------- |
+| NCEES FE exam specifications (Civil, Chemical, Mechanical, Other Disciplines) | https://ncees.org/exams/fe-exam/   | free, all rights reserved | all                                                            | the topic list and item counts per area only (no items exist free); use to weight coverage       | 4 specs                |
+| MIT OCW problem sets and exams (courses above)                                | https://ocw.mit.edu                | CC BY-NC-SA 4.0           | all                                                            | course, topic, question type, unknown asked, the given quantities' sizes as ranges, picture used | 30 per course          |
+| LearnChemE ConcepTests                                                        | https://learncheme.com             | CC BY-SA 4.0              | chemical courses; fluids and thermo prerequisites              | course, topic, conceptual type, the answer's idea                                                | 40 per chemical course |
+| Woolf, end-of-section exercises                                               | (as above)                         | CC BY 3.0                 | process-control                                                | type, numbers as ranges                                                                          | 20                     |
+| Wikibooks _Fundamentals of Transportation_ and _ICEP_ exercises               | (as above)                         | CC BY-SA                  | transportation, material-energy-balances                       | type, ranges                                                                                     | 20 each                |
+| NASA Glenn and JPL worked problems                                            | (as above)                         | public domain             | aerodynamics, compressible-flow, propulsion, orbital-mechanics | type, ranges                                                                                     | 15 per course          |
+| AP Physics C: Mechanics released free-response (bridge level)                 | https://apcentral.collegeboard.org | all rights reserved       | orbital-mechanics#0 (gravitation, orbits)                      | type only                                                                                        | 5                      |
+| GRE Physics practice book (gravitation, fluids)                               | https://www.ets.org/gre            | all rights reserved       | orbital-mechanics#0, aerodynamics#1                            | type only                                                                                        | 5                      |
+
+Target: 30–40 recorded questions per course (about 700 in all), each filed under its topic id
+(`he.engineering.<course>#<i>`), so the next review's "Tests ask" tables cite real items.
+
+### Engine needs
+
+1. **N1 Units.** MPa, GPa, ksi, ksf, psf, kip·ft, kip·in, kN·m, N/m, kN/m, kip/ft, kN/m³, in³,
+   in⁴, mm⁴, m⁴, m³/s, ft³/s, L/s, m³/d, MGD, kg/s, kmol/h, mol/s, kJ/kg, kJ/(kg·K), J/(mol·K),
+   kJ/mol, Pa·s, cP, m²/s, W/(m·K), W/(m²·K), W/m³, mg/L, μg/m³, ppm, veh/h, veh/km, pc/h/ln,
+   pc/mi/ln, bar, km³/s², rad/s, °/s, 1/s, 1/min, 1/h, L/(mol·min), L/(m²·h), $ and $/yr.
+   Manning's 1.49 in US units needs the step to convert or the page to fix SI. Topics: almost all.
+2. **N2 Trial lines for implicit relations.** The solver's root finder already solves them; the
+   step must show two or three trial values and the converged one ("Try M = 2.2: A/A* = 2.005;
+   …") and the harness must read it. Topics: compressible-flow#0–3, orbital-mechanics#1~kepler,
+   hydraulics-hydrology#0 and #1~parallel, chemical-thermodynamics#0 and #2 (bubble T),
+   concrete-design#0 (A_s for M_u).
+3. **N3 Branch choice.** Where a relation has two physical roots, a value the student picks
+   (subsonic or supersonic; weak or strong shock; the alternate depth; vapor or liquid volume) and
+   the solver keeps to it. Topics: compressible-flow#0–2, hydraulics-hydrology#0,
+   chemical-thermodynamics#0, concrete-design#0.
+4. **N4 Data rows.** Picking a named row sets several values or hidden constants: W-shapes (A, r,
+   Z, I, d, t_w), bar sizes (#3–#11 areas), compounds (T_c, P_c, ω; Antoine A, B, C), standard pipe
+   sizes, slab support cases, steam saturation (T, P, h_f, h_g). Topics: steel-design#1–2,
+   concrete-design#0, #2–3, chemical-thermodynamics#0 and #2, hydraulics-hydrology#3,
+   material-energy-balances#3.
+5. **N5 Category results.** A derived word or letter from thresholds, shown as an answer line:
+   LOS A–F, well or poorly graded, USCS group, tension-controlled, short or slender, stable or not,
+   inside or outside the flammable range, which combination governs. Topics: soil-mechanics#0,
+   transportation#3, steel-design#0, concrete-design#0 and #2, process-control#3, process-design#3.
+6. **N6 Degrees, minutes, seconds and bearings.** Input and display of 4°30′00″ and N 52°10′ E,
+   arithmetic on them in steps. Topics: surveying#0–2.
+7. **N7 Lists and counts from a construction.** A table of ordinates as a value (unit hydrograph
+   convolution) and a whole number read off a picture's construction (McCabe–Thiele stages).
+   Topics: hydraulics-hydrology#2 (unit hydrograph, not planned yet), separations#0~mccabe-thiele.
+8. **N8 Hyperbolic functions.** sinh, cosh, tanh, coth in relations, `toLatex` and the harness.
+   Topics: reaction-engineering#3~effectiveness (later fin efficiency and catenary pages elsewhere).
+9. **N9 min, max and piecewise relations.** A relation whose formula switches at a limit (Euler
+   or inelastic buckling, yielding or rupture, NC or OC clay, S < L or S > L, A_s,min), solved
+   forward and, where single-valued, backward; the step names which case holds and why.
+   Topics: aerospace-structures#2, steel-design#1–3, soil-mechanics#2, transportation#1,
+   concrete-design#0 and #2.
+10. **N10 Integral and ODE result lines.** A step line kind that states the integral or ODE and
+    its closed-form result before substituting ("∫ dX ÷ (k(1 − X)) from 0 to X = −ln(1 − X) ÷ k"),
+    typeset by `toLatex` with ∫ and limits; the harness checks the result line, not the
+    calculus. Topics: reaction-engineering#1, propulsion#1, process-control#0, flight-mechanics#0~range.
+11. **N11 Sequences without spans.** The sequence layout shows stages in order with no time
+    span (or spans hidden). Topics: the 7 sequences.
+12. **N12 Money.** $ values with thousands separators and a money unit in relations (annuity
+    factor, NPV); the `dollars` formatter exists, a unit for it does not. Topics: process-design#0, #2.
+13. **N13 Harness phrases.** The new step words: "by trial", "branch", "governs", "case",
+    "integrate", "for a first-order", "Routh", "LMTD", "compass rule". Taught to `PHRASES` as
+    pages are built.
+14. **N14 Symbols.** Dotted symbols (ṁ, ṅ, Q̇, ξ̇) and multi-letter subscripts (C_L, C_D0, f′_c,
+    σ′₃, K_c,u) in `subscripts.ts` and `toLatex` (\dot{m}, C_{D0}). Topics: almost all.
+
+## Not in the taxonomy
+
+- **Structural Analysis has no deflection topic** (virtual work, conjugate beam, double
+  integration). Every textbook teaches it before the force method; `structural-analysis#2` leans
+  on it. Add "Deflections" between determinate and indeterminate structures.
+- **Compressible Flow lacks Fanno and Rayleigh flow** (duct friction, heat addition), standard in
+  the course after shocks. Add a topic or fold into "Nozzle flow".
+- **Soil Mechanics lacks permeability and seepage** (Darcy's law, flow nets) and **lateral earth
+  pressure** (Rankine, retaining walls); both are core and on the FE Civil specification.
+- **Hydraulics & Hydrology lacks pumps** (system curve, NPSH) and **culverts**.
+- **Reaction Engineering lacks nonisothermal reactors** (energy balance, adiabatic temperature
+  rise).
+- **Civil has no Construction Engineering course** (CPM scheduling, earthwork) and no
+  **engineering economics** home; FE Civil tests both. Process economics here covers the second
+  for chemical only.
+- **Aerospace has no spacecraft attitude dynamics or aircraft design (sizing) course**; Propulsion
+  lacks **electric propulsion**.
+- **Prerequisites:** `transportation` needs only Calculus I in the taxonomy; its geometric and
+  pavement topics also assume Statics. `surveying` lists a Grade 10 skill only, which is right for
+  its level.
+
+## Summary
+
+- **Pages:** 254 (85 topic pages + 169 problem types): 230 calculators and 24 layouts (15 sorts,
+  7 sequences, 2 explores); 102 marked ⏳, most waiting on a new picture kind, the rest on N2–N9.
+  Ready to build now with existing kinds: about 150 pages (all `functionGraph`, `linearFunction`,
+  `circularMotion`, `reaction`, `equilibriumChart`, `bars`, `matrixGrid`, `triangleSolver`,
+  `streamChannel`, `reserve`, `pieChart`, `integerLine`, `complexPlane`, `vectorDiagram`,
+  `atmosphereLayers`, `powerScale`, `table`, `none` pages, and the sorts).
+- **Pictures:** 37 requests (P1–P37): 27 new kinds (wing, duct, supersonicFlow, stepResponse,
+  section, column, lamina, controlVolume, propertyDiagram, rocket, beam, truss, soilPhases,
+  soilProfile, mohrCircle, pipeNetwork, hydrograph, roadCurve, losScale, connection,
+  settlingTank, plume, survey, phaseEnvelope, velocityProfile, blockDiagram, exchangerProfile),
+  6 options on existing kinds (freeBody aircraft, circularMotion hohmann, streamChannel manning,
+  chemDiagram series, functionGraph levenspiel and logAxes) and 2 layout figures (orbitElements,
+  pfdSymbol). The most-used: P9 controlVolume, P14 beam, P31 velocityProfile, P30 phaseEnvelope.
+  Eight are shared with the mechanical plan (Decisions): build each once.
+- **Engine needs:** 14 (N1 units; N2 trial lines; N3 branch choice; N4 data rows; N5 category
+  results; N6 DMS angles; N7 lists and constructed counts; N8 hyperbolic functions; N9 piecewise
+  relations; N10 integral result lines; N11 sequences without spans; N12 money; N13 harness
+  phrases; N14 symbols).
+- **Research:** 27 textbook sources (6 openly licensed with the licence checked: Leishman,
+  Udoeyo, Woolf, LearnChemE, and the public-domain NASA and NRCS sets) and 8 question sources;
+  target 30–40 questions per course, about 700 in all, filed by topic id.

@@ -1273,3 +1273,289 @@ Theoretical Chemistry (quantum chapters), MIT OCW 5.61.
   (Δl = 0); v = 0 → 2 of a perfect harmonic oscillator (forbidden).
 - **Verdict:** 3 pages (2 calculators, 1 sort).
 
+## Biochemistry — `he.chemistry.biochemistry`
+
+Prerequisite `he.chemistry.organic-2`. Textbooks: Ahern, Rajagopal & Tan, Biochemistry Free
+For All (protein structure, catalysis, energy, metabolism); MIT OCW 5.07SC.
+
+### biochemistry#0 — Protein structure
+
+- **Textbooks:** Biochemistry Free For All (amino acids and their charges, levels of
+  structure); 5.07SC (pKₐ values and pI).
+- **Refresh:** `s.9.biomolecules` (macromolecules), `organic-2#2~ionized`.
+- **Tests ask:**
+
+  | Question type                                      | Page          | Mark   |
+  | -------------------------------------------------- | ------------- | ------ |
+  | isoelectric point of an amino acid                 | main          | Solves |
+  | net charge of an amino acid at a pH                | main          | Solves |
+  | which level of structure a feature belongs to      | ~levels       | Solves |
+  | length of a helix or strand of n residues          | ~dimensions   | Solves |
+  | net charge of a peptide (several ionizable groups) | —             | Partly (main takes one side chain; E11 for a list) |
+
+- **Main — BUILD `he.chemistry.biochemistry#0`:** `phScale` (interim, the pH and the pI marked;
+  P6 draws the amino acid's titration curve). Values: α-carboxyl pKₐ₁, α-amino pKₐ₂, side-chain
+  pKₐR, side-chain kind (allowed none, acidic, basic), pH, net charge, isoelectric point pI.
+  Relations: charge = −1 ÷ (1 + 10^(pKₐ₁ − pH)) + 1 ÷ (1 + 10^(pH − pKₐ₂)) + the side chain's
+  term (acidic −1 ÷ (1 + 10^(pKₐR − pH)), basic +1 ÷ (1 + 10^(pH − pKₐR))); pI = the mean of the
+  two pKₐ values on either side of the neutral form. Assumptions: free amino acid in water;
+  each group follows Henderson–Hasselbalch. Example: glycine (2.34, 9.60) → pI 5.97; at pH 7.40
+  the net charge is −0.006 (a zwitterion); lysine (2.18, 8.95, 10.53) → pI 9.74.
+- **~levels — BUILD (sort):** bins Primary, Secondary, Tertiary, Quaternary. Cards: the order
+  of amino acids from the N-terminus; a peptide bond joining glycine to alanine (primary); an
+  α-helix held by C=O···H–N bonds four residues apart; a β-pleated sheet (secondary); a
+  disulfide bond between two cysteines far apart in the chain; a core of leucine and valine
+  side chains (tertiary); hemoglobin's four chains fitting together; two identical enzyme
+  subunits held by salt bridges (quaternary). `macromolecules` explore (P21) later.
+- **~dimensions — BUILD:** `macromolecules` polypeptide (H100, interim). Values residues n
+  (whole, 2–1000), rise per residue (allowed 0.15 nm α-helix, 0.34 nm β-strand), length (nm),
+  helix turns. Relations: length = n × rise; turns = n ÷ 3.6 (α-helix). Example: 18 residues →
+  2.70 nm and 5.0 turns as an α-helix; 6.12 nm as a β-strand.
+- **Verdict:** 3 pages (2 calculators, 1 sort).
+
+### biochemistry#1 — Enzyme kinetics (Michaelis–Menten)
+
+- **Textbooks:** Biochemistry Free For All (catalysis: Michaelis–Menten, k_cat, inhibition,
+  Lineweaver–Burk); 5.07SC.
+- **Tests ask:**
+
+  | Question type                                        | Page              | Mark   |
+  | ---------------------------------------------------- | ----------------- | ------ |
+  | rate at a substrate level; V_max from k_cat and [E]  | main              | Solves |
+  | K_m and V_max from two (or more) rate readings       | ~lineweaver       | Solves |
+  | rate with an inhibitor; apparent K_m and V_max       | ~inhibition       | Solves |
+  | which inhibitor type a graph or result shows         | ~inhibitor-types  | Solves |
+  | specificity constant k_cat/K_m                       | main              | Solves |
+
+- **Main — BUILD `he.chemistry.biochemistry#1`:** `functionGraph` rational (`a: 'V', zeros: [0],
+  poles: [-Km]` from a derived value, `marks: ['asymptotes']`, `at` the point). Values total
+  enzyme [E]ₜ (μM), turnover number k_cat (s⁻¹), V_max (μM/s), Michaelis constant K_m (μM),
+  substrate [S] (μM), rate v (μM/s), specificity k_cat/K_m (M⁻¹s⁻¹). Relations:
+  V_max = k_cat[E]ₜ; v = V_max[S] ÷ (K_m + [S]); specificity = k_cat ÷ K_m (a step turns μM into
+  M). Assumptions: initial rates, [S] ≫ [E]ₜ, steady state of ES; at [S] = K_m, v = V_max ÷ 2.
+  Example: [E]ₜ = 0.010 μM, k_cat = 500 s⁻¹ → V_max = 5.0 μM/s; K_m = 20 μM, [S] = 60 μM →
+  v = 3.75 μM/s; k_cat/K_m = 2.5 × 10⁷ M⁻¹s⁻¹. startWith [E]ₜ, k_cat, K_m, [S].
+- **~lineweaver — BUILD:** `functionGraph` linear (1/v against 1/[S]; `zeros` at −1/K_m,
+  `intercept` 1/V_max). Values [S]₁, v₁, [S]₂, v₂, slope (s), intercept (s/μM), V_max, K_m.
+  Relations: slope = (1/v₂ − 1/v₁) ÷ (1/[S]₂ − 1/[S]₁); intercept = 1/v₁ − slope/[S]₁;
+  V_max = 1 ÷ intercept; K_m = slope × V_max. Example: (10 μM, 1.667 μM/s), (40 μM, 3.333 μM/s)
+  → slope 4.0 s, intercept 0.20 s/μM → V_max = 5.0 μM/s, K_m = 20 μM.
+- **~inhibition — BUILD:** `functionGraph` rational with `other` (the curve without the
+  inhibitor, dashed). Values: inhibitor type (allowed competitive, uncompetitive,
+  noncompetitive; E11), V_max, K_m, [I], K_i, factor α = 1 + [I] ÷ K_i, apparent K_m′, apparent
+  V_max′, [S], v. Relations by type: competitive K_m′ = αK_m; uncompetitive K_m′ = K_m ÷ α,
+  V′ = V ÷ α; noncompetitive V′ = V ÷ α; v = V′[S] ÷ (K_m′ + [S]). Example: competitive,
+  K_i = 5.0 μM, [I] = 10 μM → α = 3, K_m′ = 60 μM; at [S] = 60 μM, v = 2.50 μM/s (3.75 without).
+  10 values.
+- **~inhibitor-types — BUILD (sort):** bins Competitive, Uncompetitive, Noncompetitive. Cards:
+  "K_m rises, V_max stays"; "Lineweaver–Burk lines meet on the y-axis"; "binds the free enzyme
+  at the active site" (competitive); "K_m and V_max fall by the same factor"; "parallel
+  Lineweaver–Burk lines"; "binds only the enzyme–substrate complex" (uncompetitive); "V_max
+  falls, K_m stays"; "lines meet on the x-axis"; "binds the enzyme and the complex equally,
+  away from the active site" (noncompetitive).
+- **Verdict:** 4 pages (3 calculators, 1 sort); the five types Solve.
+
+### biochemistry#2 — Metabolic pathways
+
+- **Textbooks:** Biochemistry Free For All (glycolysis, citric acid cycle, fatty acid
+  oxidation); 5.07SC.
+- **Refresh:** `s.9.cellular-energy` (the `organelleEnergy` explore).
+- **Tests ask:**
+
+  | Question type                                       | Page             | Mark   |
+  | --------------------------------------------------- | ---------------- | ------ |
+  | glycolysis steps and enzymes in order               | main             | Solves |
+  | citric acid cycle in order; where NADH, CO₂ form    | ~krebs           | Solves |
+  | ATP from one glucose (with either shuttle)          | ~atp-yield       | Solves |
+  | ATP from a fatty acid                               | ~beta-oxidation  | Solves |
+
+- **Main — BUILD `he.chemistry.biochemistry#2` (sequence):** "Glycolysis, from glucose": hexokinase
+  (glucose → glucose 6-phosphate, uses ATP); phosphoglucose isomerase (→ fructose 6-phosphate);
+  phosphofructokinase-1 (→ fructose 1,6-bisphosphate, uses ATP); aldolase (→ DHAP and
+  glyceraldehyde 3-phosphate); triose phosphate isomerase (DHAP → glyceraldehyde 3-phosphate);
+  glyceraldehyde 3-phosphate dehydrogenase (→ 1,3-bisphosphoglycerate, makes NADH);
+  phosphoglycerate kinase (→ 3-phosphoglycerate, makes ATP); phosphoglycerate mutase (→
+  2-phosphoglycerate); enolase (→ phosphoenolpyruvate); pyruvate kinase (→ pyruvate, makes
+  ATP). Spans (ATP per glucose: −1, 0, −1, 0, 0, 0, +2, 0, 0, +2, net +2) wait on E12; ship
+  without them. P20 adds stage cards.
+- **~krebs — BUILD (sequence):** "The citric acid cycle, from acetyl-CoA and oxaloacetate":
+  citrate synthase (→ citrate); aconitase (→ isocitrate); isocitrate dehydrogenase (→
+  α-ketoglutarate, NADH, CO₂); α-ketoglutarate dehydrogenase (→ succinyl-CoA, NADH, CO₂);
+  succinyl-CoA synthetase (→ succinate, GTP); succinate dehydrogenase (→ fumarate, FADH₂);
+  fumarase (→ malate); malate dehydrogenase (→ oxaloacetate, NADH).
+- **~atp-yield — BUILD:** `bars` (interim: ATP from NADH, from FADH₂, made directly; P20 the
+  pathway figure). Values NADH, FADH₂, ATP or GTP made directly, ATP per NADH (default 2.5),
+  ATP per FADH₂ (default 1.5), total ATP. Relation: total = 2.5 × NADH + 1.5 × FADH₂ + direct.
+  Assumptions: P/O ratios 2.5 and 1.5 (older books use 3 and 2, giving 36–38). Example:
+  glucose: 10 NADH, 2 FADH₂, 4 direct → 32 ATP; with the glycerol-phosphate shuttle, the two
+  NADH from glycolysis give 1.5 each → 30.
+- **~beta-oxidation — BUILD:** `bars` (interim). Values carbons n (even, 4–26), rounds of
+  β-oxidation, acetyl-CoA, NADH, FADH₂, total ATP. Relations: rounds = n ÷ 2 − 1; acetyl-CoA =
+  n ÷ 2; NADH = rounds + 3 × acetyl-CoA; FADH₂ = rounds + acetyl-CoA; ATP = 2.5NADH + 1.5FADH₂ +
+  acetyl-CoA − 2 (activation). Assumptions: a saturated, even chain; the GTP of each turn of the
+  cycle counted as ATP. Example: palmitate (16) → 7 rounds, 8 acetyl-CoA, 31 NADH, 15 FADH₂ →
+  106 ATP.
+- **Verdict:** 4 pages (2 calculators, 2 sequences).
+
+### biochemistry#3 — Bioenergetics
+
+- **Textbooks:** Biochemistry Free For All (energy: ΔG°′, coupled reactions, redox potentials,
+  chemiosmosis); 5.07SC.
+- **Refresh:** `gen-chem-2#3~nonstandard`, `gen-chem-2#4~free-energy-k`.
+- **Tests ask:**
+
+  | Question type                                         | Page             | Mark            |
+  | ----------------------------------------------------- | ---------------- | --------------- |
+  | ΔG of ATP hydrolysis in a cell                        | main             | Solves          |
+  | ΔG°′ and K′ of a coupled reaction                     | ~coupled         | Solves (⏳ P15) |
+  | ΔG°′ from reduction potentials (NADH → O₂)            | ~redox           | Solves          |
+  | free energy of moving one H⁺ (proton-motive force)    | ~proton-motive   | Solves          |
+
+- **Main — BUILD `he.chemistry.biochemistry#3`:** `none` (P23 later). Values ΔG°′ (kJ/mol,
+  default −30.5), T (K, default 310.15), [ATP], [ADP], [Pᵢ] (mM), Q, ΔG. Relations: Q = [ADP][Pᵢ]
+  ÷ [ATP] (concentrations in M, a step converts mM); ΔG = ΔG°′ + RT ln Q. Assumptions: °′ means
+  pH 7 and 1 M for everything else; a cell keeps ATP high, so ΔG is far below ΔG°′. Example:
+  5.0, 0.50 and 5.0 mM at 37 °C → Q = 5.0 × 10⁻⁴, RT ln Q = −19.6 kJ/mol, ΔG = −50.1 kJ/mol.
+  startWith the three concentrations.
+- **~coupled — BUILD (⏳ P15, ladder with `quantity: 'G'`):** values ΔG°′ of the uphill step,
+  ΔG°′ of the downhill step, total ΔG°′, T, K′. Relations: total = ΔG₁ + ΔG₂; K′ = e^(−total/RT).
+  Example: glucose + Pᵢ → glucose 6-phosphate (+13.8) with ATP hydrolysis (−30.5) → −16.7
+  kJ/mol, K′ = 843 at 298.15 K.
+- **~redox — BUILD:** `chemDiagram` mode `cell` (its E° scale; interim). Values E°′ of the
+  acceptor and of the donor (V), ΔE°′, electrons n, ΔG°′, ATP worth (ΔG ÷ 30.5). Relations:
+  ΔE°′ = E°′(acceptor) − E°′(donor); ΔG°′ = −nFΔE°′; worth = −ΔG°′ ÷ 30.5. Example: NADH
+  (−0.320 V) to O₂ (+0.815 V), n = 2 → ΔE°′ = 1.135 V, ΔG°′ = −219 kJ/mol, enough for 7.2 ATP
+  (about 2.5 are made).
+- **~proton-motive — BUILD:** `membrane` (H32; H⁺ dots more on the outside, the pump lit).
+  Values membrane potential Δψ (V), pH difference ΔpH (inside minus outside), T, electrical part
+  (kJ/mol), chemical part (kJ/mol), ΔG per H⁺ moved in. Relations: electrical = FΔψ ÷ 1000;
+  chemical = 2.303RTΔpH ÷ 1000; ΔG = −(electrical + chemical). Example: Δψ = 0.150 V,
+  ΔpH = 0.75 at 37 °C → 14.5 + 4.5 → ΔG = −18.9 kJ/mol for each H⁺ that flows back in.
+- **Verdict:** 4 calculators; four types Solve, one after P15.
+
+## Inorganic Chemistry — `he.chemistry.inorganic`
+
+Prerequisite `he.chemistry.gen-chem-2`. Textbooks: LibreTexts Inorganic Chemistry bookshelf
+(symmetry, coordination, crystal field, solid state); OpenStax Chemistry 2e ch. 10 and 19 for
+the general-chemistry level; MIT OCW 5.03 and 5.04.
+
+### inorganic#0 — Symmetry and group theory
+
+- **Textbooks:** 5.04 (point groups, character tables, reducible representations, IR and Raman
+  activity); LibreTexts symmetry chapters.
+- **Refresh:** `gen-chem-1#4` (shapes).
+- **Tests ask:**
+
+  | Question type                                      | Page                  | Mark   |
+  | -------------------------------------------------- | --------------------- | ------ |
+  | point group of a molecule                          | main                  | Solves |
+  | reduce Γ; how many IR-active vibrations (C₂ᵥ)      | ~reduce               | Solves |
+  | the order of questions in the point-group chart    | ~point-group-steps    | Solves |
+  | reduce Γ in C₃ᵥ, D₄ₕ …                             | —                     | Partly (E9: more character tables) |
+
+- **Main — BUILD `he.chemistry.inorganic#0` (sort):** bins C₂ᵥ, C₃ᵥ, D₃ₕ, T_d, D₄ₕ, O_h, D∞h,
+  C∞v (`pickBar: true`). Cards (`molecule` card where drawn; text with the shape named until
+  P18): H₂O, CH₂Cl₂, SO₂; NH₃, CHCl₃, PCl₃; BF₃, PCl₅; CH₄, CCl₄; XeF₄, [PtCl₄]²⁻; SF₆,
+  [Fe(CN)₆]⁴⁻; CO₂, HC≡CH; HCl, HCN. Intro: "Find the shape first (VSEPR), then its symmetry."
+- **~reduce — BUILD:** `matrixGrid` (the C₂ᵥ character table, a row times the Γ row lit).
+  Values: characters of Γ under E, C₂, σᵥ(xz), σᵥ′(yz), and the counts of A₁, A₂, B₁, B₂.
+  Relation: nᵢ = (1/4)Σ χ_Γ(R)χᵢ(R), one line per species. Assumptions: a planar molecule lies
+  in the yz plane; subtract translations (A₁ + B₁ + B₂) and rotations (A₂ + B₁ + B₂) for the
+  vibrations; A₁, B₁, B₂ are IR active. Example: H₂O, all 3N motions: Γ = 9, −1, 1, 3 →
+  3A₁ + A₂ + 2B₁ + 3B₂ → vibrations 2A₁ + B₂, all three IR active.
+- **~point-group-steps — BUILD (sequence):** "Is it linear?", "Does it have several high-order
+  axes (T_d, O_h)?", "Find the principal axis Cₙ", "Are there n C₂ axes perpendicular to it
+  (a D group)?", "Is there a mirror plane perpendicular to the axis (σₕ)?", "Are there mirror
+  planes containing the axis (σᵥ)?".
+- **Verdict:** 3 pages (1 calculator, 1 sort, 1 sequence).
+
+### inorganic#1 — Coordination chemistry
+
+- **Textbooks:** Chemistry 2e 19.2 (coordination compounds, isomers); LibreTexts coordination
+  and organometallic chapters (the 18-electron rule).
+- **Tests ask:**
+
+  | Question type                                       | Page                 | Mark   |
+  | --------------------------------------------------- | -------------------- | ------ |
+  | oxidation state, d count, coordination number       | main                 | Solves |
+  | does a complex obey the 18-electron rule            | ~eighteen-electron   | Solves |
+  | which isomers a complex has                         | ~isomers             | Solves |
+  | name a complex                                      | —                    | No (naming rules; a later sequence) |
+
+- **Main — BUILD `he.chemistry.inorganic#1`:** `none` (P13 `complex` later). Values: charge of
+  the complex ion q (−4 to 4), total ligand charge (−6 to 0), metal oxidation state, metal group
+  number (3–12), d electrons, coordination number (allowed 2, 4, 5, 6). Relations: oxidation
+  state = q − ligand charge; d = group − oxidation state. Example: [Co(NH₃)₅Cl]²⁺ → +2 − (−1) =
+  +3, cobalt(III); group 9 → d⁶; coordination number 6.
+- **~eighteen-electron — BUILD:** `none`. Values metal group G, two-electron (L) ligands, one-
+  electron (X) ligands, complex charge, electron count. Relation: count = G + 2L + X − charge
+  (neutral counting). Example: Fe(CO)₅ → 8 + 10 = 18; [Mn(CO)₆]⁺ → 7 + 12 − 1 = 18; Ni(CO)₄ → 18.
+- **~isomers — BUILD (sort):** bins "Cis and trans isomers", "Fac and mer isomers", "Optical
+  isomers only", "No stereoisomers". Cards: square-planar [Pt(NH₃)₂Cl₂]; octahedral
+  [Co(NH₃)₄Cl₂]⁺; [Co(NH₃)₃Cl₃]; [Co(en)₃]³⁺; tetrahedral [NiCl₄]²⁻; [Co(NH₃)₅Cl]²⁺;
+  square-planar [Pt(NH₃)₃Cl]⁺. ([Co(en)₂Cl₂]⁺ is left out: it has both kinds.)
+- **Verdict:** 3 pages (2 calculators, 1 sort).
+
+### inorganic#2 — Crystal field theory
+
+- **Textbooks:** Chemistry 2e 19.3 (crystal field, color, magnetism); LibreTexts (CFSE, spin
+  state, spectrochemical series).
+- **Tests ask:**
+
+  | Question type                                          | Page              | Mark           |
+  | ------------------------------------------------------ | ----------------- | -------------- |
+  | high or low spin; unpaired electrons; CFSE; μ         | main              | Solves (⏳ P4) |
+  | Δₒ from the absorbed wavelength; the color seen        | ~color            | Solves         |
+  | rank ligands by field strength                         | ~spectrochemical  | Solves         |
+
+- **Main — BUILD `he.chemistry.inorganic#2` (⏳ P4, E8):** `orbitalDiagram` mode `crystalField`.
+  Values d electrons (0–10), splitting Δₒ (cm⁻¹), pairing energy P (cm⁻¹), electrons in t₂g,
+  electrons in e_g, unpaired electrons, CFSE (cm⁻¹), spin-only moment μ (BM). Relations: low spin
+  when Δₒ > P; CFSE = (−0.4t₂g + 0.6e_g)Δₒ + (extra pairs) × P; μ = √(n(n + 2)). Assumptions:
+  octahedral (tetrahedral Δₜ ≈ 4/9 Δₒ is always high spin; a later option); pairs counted
+  against the free ion. Example: Fe²⁺ (d⁶) with water, Δₒ = 10,400, P = 17,600 → high spin
+  t₂g⁴e_g², 4 unpaired, CFSE = −4160 cm⁻¹, μ = 4.90 BM; with cyanide, Δₒ = 33,000 → low spin
+  t₂g⁶, 0 unpaired, CFSE = −79,200 + 35,200 = −44,000 cm⁻¹.
+- **~color — BUILD:** `spectrum` with `photon` (the absorbed wavelength on the visible band).
+  Values wavelength absorbed λ (nm), Δₒ (cm⁻¹), Δₒ (kJ/mol). Relations: Δ = 10⁷ ÷ λ;
+  Δ(kJ/mol) = 0.011963 × Δ(cm⁻¹). Example: [Ti(H₂O)₆]³⁺ (d¹) absorbs at 500 nm → 20,000 cm⁻¹ =
+  239 kJ/mol; it looks red-violet, the light left over.
+- **~spectrochemical — BUILD (sequence):** "Order from the weakest-field ligand to the
+  strongest": I⁻, Cl⁻, F⁻, H₂O, NH₃, CN⁻.
+- **Verdict:** 3 pages (2 calculators, 1 sequence).
+
+### inorganic#3 — Solid-state structures
+
+- **Textbooks:** Chemistry 2e 10.6 (lattice structures, unit cells, X-ray diffraction);
+  LibreTexts (radius ratios, Madelung constants, Born–Landé).
+- **Refresh:** `gen-chem-1#4~born-haber`.
+- **Tests ask:**
+
+  | Question type                                         | Page            | Mark            |
+  | ----------------------------------------------------- | --------------- | --------------- |
+  | density, radius or edge from the unit cell            | main            | Solves (⏳ P17) |
+  | coordination number from the radius ratio; NaCl density | ~radius-ratio | Solves (⏳ P17) |
+  | diffraction angle or spacing (Bragg)                  | ~bragg          | Solves          |
+  | lattice energy from Born–Landé                        | ~born-lande     | Solves          |
+
+- **Main — BUILD `he.chemistry.inorganic#3` (⏳ P17):** `unitCell`. Values: lattice (allowed
+  simple, body-centered, face-centered cubic; E11), atoms per cell Z (1, 2, 4), atomic radius r
+  (pm), edge a (pm), molar mass M, density ρ (g/cm³), packing fraction (%). Relations: a = 2r,
+  4r ÷ √3 or 2√2 r; ρ = ZM ÷ (N_A a³) (a in cm); packing = Z(4/3)πr³ ÷ a³. Example: copper, fcc,
+  r = 128 pm → a = 362 pm, ρ = 8.90 g/cm³, 74.0%.
+- **~radius-ratio — BUILD (⏳ P17):** values cation radius r₊ and anion radius r₋ (pm), ratio,
+  predicted coordination number, rock-salt edge a, formula mass M, density. Relations: ratio =
+  r₊ ÷ r₋ (0.225–0.414 → 4, 0.414–0.732 → 6, above 0.732 → 8); rock salt a = 2(r₊ + r₋),
+  ρ = 4M ÷ (N_A a³). Example: NaCl, 102 and 181 pm → 0.564 → 6; a = 566 pm, ρ = 2.14 g/cm³
+  (measured 2.17).
+- **~bragg — BUILD:** `none` (P17 `planes` later). Values wavelength λ (pm), Miller indices h,
+  k, l, edge a (pm), spacing d, angle θ. Relations: d = a ÷ √(h² + k² + l²); λ = 2d sin θ.
+  Example: Cu Kα (154.2 pm) on copper (a = 361.5 pm), (111) → d = 208.7 pm, θ = 21.68°,
+  2θ = 43.36°.
+- **~born-lande — BUILD:** `none`. Values Madelung constant A (allowed rock salt 1.7476, CsCl
+  1.7627, zinc blende 1.6381), charge sizes z₊ and z₋, nearest distance r₀ (pm), Born exponent n
+  (5–12), lattice energy U (kJ/mol). Relation: U = −N_A A z₊z₋e²(1 − 1/n) ÷ (4πε₀r₀).
+  Example: NaCl, r₀ = 282 pm, n = 8 → U = −753 kJ/mol (Born–Haber gives −786: the bonding is
+  not purely ionic).
+- **Verdict:** 4 calculators; two wait on P17.
+
