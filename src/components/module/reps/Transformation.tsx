@@ -82,6 +82,7 @@ export function Transformation({ spec, calc }: { spec: TransformationSpec; calc:
   const start = useRef({ a: 0, b: 0 });
   // A turn's angle as the drag has turned it: continuous past the center (angleDrag).
   const turn = useRef<(dx: number, dy: number) => number>(() => 0);
+  const turnFrom = useRef(0);
   const fig = spec.figure.map(([x, y]) => ({ x: read(x), y: read(y) }));
   const pts = fig.map((p) => [p.x.value, p.y.value] as Pt);
   const figKnown = fig.every((p) => p.x.known && p.y.known);
@@ -670,9 +671,10 @@ export function Transformation({ spec, calc }: { spec: TransformationSpec; calc:
                   label={`the image ${prime(0)}`}
                   onStart={() => {
                     start.current = { a: aHandle[0], b: aHandle[1] };
+                    turnFrom.current = rep.val(spec.angle as string);
                     turn.current = angleDrag(
                       { x: aHandle[0] - cxp, y: aHandle[1] - cyp },
-                      rep.val(spec.angle as string),
+                      turnFrom.current,
                     );
                     ext.freeze();
                   }}
@@ -686,6 +688,15 @@ export function Transformation({ spec, calc }: { spec: TransformationSpec; calc:
                     const lo = variable.min ?? -360;
                     while (deg < lo) deg += 360;
                     while (deg > (variable.max ?? 360)) deg -= 360;
+                    // Quarter turns only (90°, 180°, …): a turn of 10° or more goes on to the
+                    // next one that way, not back to the nearest (which stood still).
+                    const from = turnFrom.current;
+                    const list = variable.allowed;
+                    if (list && Math.abs(deg - from) >= 10) {
+                      const way = list.filter((a) => (deg > from ? a > from : a < from));
+                      const next = way.sort((a, b) => Math.abs(a - deg) - Math.abs(b - deg))[0];
+                      if (next !== undefined) deg = next;
+                    }
                     calc.set({ ...pinned([id]), [id]: rep.snapTo(id, deg) }, rep.slide(id));
                   }}
                   onEnd={ext.release}
