@@ -15,7 +15,7 @@ import { chart, usePalette } from '@/theme';
 import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, DragHandle } from './common';
 import { Arrow } from './he1fKit';
-import { fmt, Tag } from './he2fKit';
+import { fmt, Tag, tagW } from './he2fKit';
 import { fmtP, useHe4c } from './he4cKit';
 import { basalShear, soilSlabOf } from './he4cMath';
 import { TopLight, url, usePaintIds } from './paint';
@@ -125,6 +125,9 @@ export function SlopeSlab({ spec, calc }: { spec: FreeBodySlabSpec; calc: Calcul
           const qAt = at(-150);
           const foot = at(130);
           const known = th !== undefined;
+          // z's label left of its bracket when it fits there, else right of it.
+          const zText = label(b.thickness, ice ? 'H' : 'z', z, 'm');
+          const zLeft = zText !== undefined && zAt.x - 8 - tagW(zText) >= 4;
           return (
             <>
               <Svg width={w} height={H}>
@@ -159,10 +162,7 @@ export function SlopeSlab({ spec, calc }: { spec: FreeBodySlabSpec; calc: Calcul
                 {SCATTER.map(([a, d], i) => {
                   const p = at((a! - 0.5) * 2 * (w + 60), 3 + d! * (tp - 6));
                   // Ice marks keep clear of the H and τ_b labels.
-                  if (
-                    ice &&
-                    (Math.abs(p.x - zAt.x + 40) < 50 || Math.abs(p.x - M.x - lt - 50) < 60)
-                  )
+                  if (ice && (Math.abs(p.x - zAt.x) < 90 || Math.abs(p.x - M.x - lt - 50) < 60))
                     return null;
                   return ice ? (
                     <Line
@@ -241,10 +241,10 @@ export function SlopeSlab({ spec, calc }: { spec: FreeBodySlabSpec; calc: Calcul
                       stroke={c.chartInk}
                     />
                     <Tag
-                      x={zAt.x - 8}
+                      x={zLeft ? zAt.x - 8 : zAt.x + 8}
                       y={zAt.y + tp / Math.cos(t) / 2 + 4}
-                      text={label(b.thickness, ice ? 'H' : 'z', z, 'm')!}
-                      anchor="end"
+                      text={zText!}
+                      anchor={zLeft ? 'end' : 'start'}
                       w={w}
                     />
                   </G>
