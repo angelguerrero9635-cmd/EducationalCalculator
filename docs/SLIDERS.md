@@ -6,121 +6,187 @@ can't and the picture has no handle or tap of its own for that value. Every othe
 has the input boxes (and the picture’s own handles or taps) alone. A module can override
 its kind with `sliders: true | false`.
 
-26 of 477 pages show sliders.
+68 of 1369 pages show sliders.
 
 ## By picture kind
 
 | Kind | Pages | Sliders | Why |
 | --- | ---: | :---: | --- |
-| angles | 5 | no | set on the module (hidden) |
-| areaModel | 11 | no | set on the module (hidden) |
-| array | 7 | no | the picture has its own handles or taps, or the inputs are enough |
-| balance | 1 | no | set on the module (hidden) |
-| bars | 15 | no | the picture has its own handles or taps, or the inputs are enough |
-| baseHeight | 4 | no | the picture has its own handles or taps, or the inputs are enough |
-| baseTen | 17 | no | the picture has its own handles or taps, or the inputs are enough |
-| beaker | 2 | no | the picture has its own handles or taps, or the inputs are enough |
-| boxPlot | 3 | no | the picture has its own handles or taps, or the inputs are enough |
-| circle | 2 | no | the picture has its own handles or taps, or the inputs are enough |
-| circuit | 3 | no | the picture has its own handles or taps, or the inputs are enough |
-| clock | 2 | no | the picture has its own handles or taps, or the inputs are enough |
-| coinRow | 1 | no | the picture has its own handles or taps, or the inputs are enough |
+| algebraTiles | 15 | no | the picture has its own handles or taps, or the inputs are enough |
+| alleleFrequencies | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| angles | 11 | no | set on the module (hidden) |
+| areaModel | 13 | no | set on the module (hidden) |
+| array | 8 | no | the picture has its own handles or taps, or the inputs are enough |
+| atmosphereLayers | 9 | no | the picture has its own handles or taps, or the inputs are enough |
+| atomModel | 3 | yes | set on the module (shown) |
+| balance | 2 | no | set on the module (hidden) |
+| bars | 21 | no | the picture has its own handles or taps, or the inputs are enough |
+| baseHeight | 6 | no | the picture has its own handles or taps, or the inputs are enough |
+| baseTen | 16 | no | the picture has its own handles or taps, or the inputs are enough |
+| beaker | 6 | no | the picture has its own handles or taps, or the inputs are enough |
+| boxPlot | 5 | no | the picture has its own handles or taps, or the inputs are enough |
+| capacitor | 5 | no | the picture has its own handles or taps, or the inputs are enough |
+| cellDivision | 3 | no | the picture has its own handles or taps, or the inputs are enough |
+| charges | 10 | no | the picture has its own handles or taps, or the inputs are enough |
+| chemDiagram | 15 | no | the picture has its own handles or taps, or the inputs are enough |
+| circle | 11 | no | the picture has its own handles or taps, or the inputs are enough |
+| circleTheorems | 12 | no | the picture has its own handles or taps, or the inputs are enough |
+| circuit | 10 | no | the picture has its own handles or taps, or the inputs are enough |
+| circularMotion | 8 | no | the picture has its own handles or taps, or the inputs are enough |
+| clock | 3 | no | the picture has its own handles or taps, or the inputs are enough |
+| coinRow | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | coins | 4 | no | the picture has its own handles or taps, or the inputs are enough |
-| compareRows | 7 | no | the picture has its own handles or taps, or the inputs are enough |
-| coordinatePlane | 11 | no | the picture has its own handles or taps, or the inputs are enough |
-| crossSection | 4 | no | the picture has its own handles or taps, or the inputs are enough |
-| cubeTrains | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| curvedSolid | 3 | no | the picture has its own handles or taps, or the inputs are enough |
-| diceGrid | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| dotPlot | 5 | no | the picture has its own handles or taps, or the inputs are enough |
-| dotSet | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| doubleNumberLine | 7 | no | the picture has its own handles or taps, or the inputs are enough |
-| electromagnet | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| energyPyramid | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| energyTrack | 2 | no | the picture has its own handles or taps, or the inputs are enough |
-| equalGroups | 10 | no | the picture has its own handles or taps, or the inputs are enough |
-| equationBalance | 2 | no | the picture has its own handles or taps, or the inputs are enough |
-| factorPairs | 4 | no | the picture has its own handles or taps, or the inputs are enough |
-| factorRows | 3 | no | the picture has its own handles or taps, or the inputs are enough |
-| factorTree | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| fieldOfView | 1 | no | the picture has its own handles or taps, or the inputs are enough |
+| collision | 5 | no | the picture has its own handles or taps, or the inputs are enough |
+| compareRows | 8 | no | the picture has its own handles or taps, or the inputs are enough |
+| complexPlane | 12 | no | the picture has its own handles or taps, or the inputs are enough |
+| conicGraph | 13 | no | the picture has its own handles or taps, or the inputs are enough |
+| coordinatePlane | 22 | no | the picture has its own handles or taps, or the inputs are enough |
+| coralSection | 3 | no | the picture has its own handles or taps, or the inputs are enough |
+| crossSection | 10 | no | the picture has its own handles or taps, or the inputs are enough |
+| cubeTrains | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| curvedSolid | 14 | no | the picture has its own handles or taps, or the inputs are enough |
+| decayChart | 8 | no | the picture has its own handles or taps, or the inputs are enough |
+| diceGrid | 3 | no | the picture has its own handles or taps, or the inputs are enough |
+| dnaStrand | 10 | no | the picture has its own handles or taps, or the inputs are enough |
+| dotPlot | 7 | no | the picture has its own handles or taps, or the inputs are enough |
+| dotSet | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| doubleNumberLine | 16 | no | the picture has its own handles or taps, or the inputs are enough |
+| earthLayers | 6 | no | the picture has its own handles or taps, or the inputs are enough |
+| electromagnet | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| energyProfile | 10 | no | the picture has its own handles or taps, or the inputs are enough |
+| energyPyramid | 6 | no | the picture has its own handles or taps, or the inputs are enough |
+| energyTrack | 6 | no | the picture has its own handles or taps, or the inputs are enough |
+| equalGroups | 9 | no | the picture has its own handles or taps, or the inputs are enough |
+| equationBalance | 4 | no | the picture has its own handles or taps, or the inputs are enough |
+| equilibriumChart | 5 | no | the picture has its own handles or taps, or the inputs are enough |
+| expandingUniverse | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| factorPairs | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| factorRows | 6 | no | the picture has its own handles or taps, or the inputs are enough |
+| factorTree | 5 | no | the picture has its own handles or taps, or the inputs are enough |
+| fieldOfView | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | flashlights | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | force | 2 | no | the picture has its own handles or taps, or the inputs are enough |
-| fractionArea | 5 | no | set on the module (hidden) |
+| fractionArea | 3 | no | set on the module (hidden) |
 | fractionBars | 8 | no | set on the module (hidden) |
-| fractionFit | 3 | no | set on the module (hidden) |
+| fractionFit | 4 | no | set on the module (hidden) |
 | fractionLine | 14 | no | the picture has its own handles or taps, or the inputs are enough |
-| functionMachine | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| generations | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| gradCylinder | 1 | no | the picture has its own handles or taps, or the inputs are enough |
+| freeBody | 6 | no | the picture has its own handles or taps, or the inputs are enough |
+| functionGraph | 93 | no | the picture has its own handles or taps, or the inputs are enough |
+| functionMachine | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| gasPiston | 8 | no | the picture has its own handles or taps, or the inputs are enough |
+| gel | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| generations | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| geologicClock | 3 | no | the picture has its own handles or taps, or the inputs are enough |
+| gradCylinder | 3 | no | the picture has its own handles or taps, or the inputs are enough |
 | grassSlope | 2 | no | the picture has its own handles or taps, or the inputs are enough |
-| grid100 | 13 | no | the picture has its own handles or taps, or the inputs are enough |
-| hanger | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| heatingCurve | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| hops | 6 | no | set on the module (hidden) |
-| hundredChart | 9 | no | the picture has its own handles or taps, or the inputs are enough |
-| integerLine | 8 | no | the picture has its own handles or taps, or the inputs are enough |
+| grid100 | 5 | no | the picture has its own handles or taps, or the inputs are enough |
+| habitableZone | 3 | no | the picture has its own handles or taps, or the inputs are enough |
+| hanger | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| heatEngine | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| heatingCurve | 4 | no | the picture has its own handles or taps, or the inputs are enough |
+| histogram | 8 | no | the picture has its own handles or taps, or the inputs are enough |
+| hops | 7 | no | set on the module (hidden) |
+| hrDiagram | 4 | no | the picture has its own handles or taps, or the inputs are enough |
+| hundredChart | 6 | no | the picture has its own handles or taps, or the inputs are enough |
+| immuneResponse | 1 | no | the picture has its own handles or taps, or the inputs are enough |
+| impulse | 1 | no | the picture has its own handles or taps, or the inputs are enough |
+| induction | 7 | no | the picture has its own handles or taps, or the inputs are enough |
+| integerLine | 24 | no | the picture has its own handles or taps, or the inputs are enough |
 | leafCount | 2 | no | the picture has its own handles or taps, or the inputs are enough |
-| linearFunction | 2 | no | the picture has its own handles or taps, or the inputs are enough |
-| linePlot | 8 | no | the picture has its own handles or taps, or the inputs are enough |
-| lineSystem | 2 | no | the picture has its own handles or taps, or the inputs are enough |
-| mapping | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| marbles | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| molecules | 3 | yes | set on the module (shown) |
-| motionGraph | 3 | no | the picture has its own handles or taps, or the inputs are enough |
-| net | 4 | no | the picture has its own handles or taps, or the inputs are enough |
-| numberBond | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| numberLine | 6 | no | the picture has its own handles or taps, or the inputs are enough |
-| orbit | 2 | no | the picture has its own handles or taps, or the inputs are enough |
-| pairs | 1 | no | the picture has its own handles or taps, or the inputs are enough |
+| lewisStructure | 12 | yes | set on the module (shown) |
+| lightClock | 1 | no | the picture has its own handles or taps, or the inputs are enough |
+| linearFunction | 10 | no | the picture has its own handles or taps, or the inputs are enough |
+| linePlot | 5 | no | the picture has its own handles or taps, or the inputs are enough |
+| lineSystem | 22 | no | the picture has its own handles or taps, or the inputs are enough |
+| macromolecules | 3 | no | the picture has its own handles or taps, or the inputs are enough |
+| mapping | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| marbles | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| markedFigure | 29 | no | the picture has its own handles or taps, or the inputs are enough |
+| matrixGrid | 13 | no | the picture has its own handles or taps, or the inputs are enough |
+| membrane | 4 | no | the picture has its own handles or taps, or the inputs are enough |
+| molecules | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| moleMap | 5 | no | the picture has its own handles or taps, or the inputs are enough |
+| motionGraph | 12 | no | the picture has its own handles or taps, or the inputs are enough |
+| net | 8 | no | the picture has its own handles or taps, or the inputs are enough |
+| neuron | 3 | no | the picture has its own handles or taps, or the inputs are enough |
+| none | 1 | no | the picture has its own handles or taps, or the inputs are enough |
+| normalCurve | 34 | no | the picture has its own handles or taps, or the inputs are enough |
+| numberBond | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| numberLine | 4 | no | the picture has its own handles or taps, or the inputs are enough |
+| oceanProfile | 7 | no | the picture has its own handles or taps, or the inputs are enough |
+| orbit | 3 | no | the picture has its own handles or taps, or the inputs are enough |
+| orbitalDiagram | 4 | yes | set on the module (shown) |
+| oscillator | 5 | no | the picture has its own handles or taps, or the inputs are enough |
+| pairs | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| parallax | 2 | no | the picture has its own handles or taps, or the inputs are enough |
 | partition | 5 | yes | sweeping the value shows the picture change; no touch control of its own |
-| patternBlocks | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| percentBar | 4 | no | set on the module (hidden) |
-| periodicTable | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| pictureGraph | 11 | no | the picture has its own handles or taps, or the inputs are enough |
-| pieChart | 2 | no | set on the module (hidden) |
-| placeValueChart | 15 | no | the picture has its own handles or taps, or the inputs are enough |
-| plot | 6 | no | the picture has its own handles or taps, or the inputs are enough |
-| polygon | 4 | no | the picture has its own handles or taps, or the inputs are enough |
-| powerScale | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| prism | 1 | no | the picture has its own handles or taps, or the inputs are enough |
+| pascalTriangle | 7 | yes | set on the module (shown) |
+| patternBlocks | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| pendulum | 3 | no | the picture has its own handles or taps, or the inputs are enough |
+| percentBar | 14 | no | set on the module (hidden) |
+| periodicTable | 7 | no | the picture has its own handles or taps, or the inputs are enough |
+| photoelectric | 1 | no | the picture has its own handles or taps, or the inputs are enough |
+| phScale | 5 | no | the picture has its own handles or taps, or the inputs are enough |
+| pictureGraph | 8 | no | the picture has its own handles or taps, or the inputs are enough |
+| pieChart | 9 | no | set on the module (hidden) |
+| placeValueChart | 10 | no | the picture has its own handles or taps, or the inputs are enough |
+| plot | 11 | no | the picture has its own handles or taps, or the inputs are enough |
+| polarGrid | 13 | no | the picture has its own handles or taps, or the inputs are enough |
+| polygon | 6 | no | the picture has its own handles or taps, or the inputs are enough |
+| powerLift | 1 | no | the picture has its own handles or taps, or the inputs are enough |
+| powerScale | 7 | no | the picture has its own handles or taps, or the inputs are enough |
+| prism | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| projectile | 4 | no | the picture has its own handles or taps, or the inputs are enough |
 | protractor | 3 | no | the picture has its own handles or taps, or the inputs are enough |
-| punnettSquare | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| pushes | 1 | no | the picture has its own handles or taps, or the inputs are enough |
+| punnettSquare | 8 | no | the picture has its own handles or taps, or the inputs are enough |
+| pushes | 3 | no | the picture has its own handles or taps, or the inputs are enough |
 | ratioTable | 2 | no | set on the module (hidden) |
-| reaction | 2 | no | the picture has its own handles or taps, or the inputs are enough |
-| rectangle | 8 | no | the picture has its own handles or taps, or the inputs are enough |
-| rectilinear | 2 | yes | sweeping the value shows the picture change; no touch control of its own |
+| rayDiagram | 10 | no | the picture has its own handles or taps, or the inputs are enough |
+| reaction | 14 | no | the picture has its own handles or taps, or the inputs are enough |
+| rectangle | 14 | no | the picture has its own handles or taps, or the inputs are enough |
+| rectilinear | 4 | yes | sweeping the value shows the picture change; no touch control of its own |
+| reserve | 4 | no | the picture has its own handles or taps, or the inputs are enough |
 | rightTriangle | 2 | no | the picture has its own handles or taps, or the inputs are enough |
-| rockLayers | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| rootSquare | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| rounding | 9 | no | the picture has its own handles or taps, or the inputs are enough |
-| ruler | 8 | no | the picture has its own handles or taps, or the inputs are enough |
-| sample | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| scale | 9 | no | the picture has its own handles or taps, or the inputs are enough |
-| scaleCopy | 2 | no | the picture has its own handles or taps, or the inputs are enough |
-| scatter | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| seriesCircuit | 1 | no | the picture has its own handles or taps, or the inputs are enough |
+| rockLayers | 6 | no | the picture has its own handles or taps, or the inputs are enough |
+| rootSquare | 3 | no | the picture has its own handles or taps, or the inputs are enough |
+| rotor | 6 | no | the picture has its own handles or taps, or the inputs are enough |
+| rounding | 7 | no | the picture has its own handles or taps, or the inputs are enough |
+| ruler | 9 | no | the picture has its own handles or taps, or the inputs are enough |
+| sample | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| scale | 7 | no | the picture has its own handles or taps, or the inputs are enough |
+| scaleCopy | 9 | no | the picture has its own handles or taps, or the inputs are enough |
+| scatter | 5 | no | the picture has its own handles or taps, or the inputs are enough |
+| seriesCircuit | 4 | no | the picture has its own handles or taps, or the inputs are enough |
 | shareWholes | 2 | no | the picture has its own handles or taps, or the inputs are enough |
-| signTable | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| skaters | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| skipCount | 16 | no | the picture has its own handles or taps, or the inputs are enough |
-| spectrum | 2 | no | the picture has its own handles or taps, or the inputs are enough |
-| spinner | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| table | 8 | no | the picture has its own handles or taps, or the inputs are enough |
-| tally | 3 | no | the picture has its own handles or taps, or the inputs are enough |
-| tape | 39 | no | set on the module (hidden) |
-| tenFrame | 13 | no | the picture has its own handles or taps, or the inputs are enough |
-| thermometers | 10 | no | the picture has its own handles or taps, or the inputs are enough |
-| timeline | 2 | no | the picture has its own handles or taps, or the inputs are enough |
-| transformation | 4 | no | the picture has its own handles or taps, or the inputs are enough |
-| treeDiagram | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| unitCubes | 5 | yes | sweeping the value shows the picture change; no touch control of its own |
-| unitTiles | 2 | no | the picture has its own handles or taps, or the inputs are enough |
-| venn | 1 | yes | set on the module (shown) |
-| waterfall | 1 | no | the picture has its own handles or taps, or the inputs are enough |
-| wave | 3 | no | the picture has its own handles or taps, or the inputs are enough |
-| zeroPairs | 2 | yes | set on the module (shown) |
+| signTable | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| simpleMachine | 6 | no | the picture has its own handles or taps, or the inputs are enough |
+| skaters | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| skipCount | 13 | no | the picture has its own handles or taps, or the inputs are enough |
+| spectrum | 12 | no | the picture has its own handles or taps, or the inputs are enough |
+| spinner | 3 | no | the picture has its own handles or taps, or the inputs are enough |
+| streamChannel | 3 | no | the picture has its own handles or taps, or the inputs are enough |
+| table | 35 | no | the picture has its own handles or taps, or the inputs are enough |
+| tally | 4 | no | the picture has its own handles or taps, or the inputs are enough |
+| tape | 48 | no | set on the module (hidden) |
+| tenFrame | 10 | no | the picture has its own handles or taps, or the inputs are enough |
+| termsChart | 17 | no | the picture has its own handles or taps, or the inputs are enough |
+| thermometers | 11 | no | the picture has its own handles or taps, or the inputs are enough |
+| timeline | 3 | no | the picture has its own handles or taps, or the inputs are enough |
+| torque | 3 | no | the picture has its own handles or taps, or the inputs are enough |
+| transformation | 20 | no | the picture has its own handles or taps, or the inputs are enough |
+| transit | 3 | no | the picture has its own handles or taps, or the inputs are enough |
+| treeDiagram | 9 | no | the picture has its own handles or taps, or the inputs are enough |
+| triangleSolver | 22 | no | the picture has its own handles or taps, or the inputs are enough |
+| unitChain | 7 | no | the picture has its own handles or taps, or the inputs are enough |
+| unitCircle | 21 | no | the picture has its own handles or taps, or the inputs are enough |
+| unitCubes | 4 | yes | sweeping the value shows the picture change; no touch control of its own |
+| unitTiles | 3 | no | the picture has its own handles or taps, or the inputs are enough |
+| vectorDiagram | 16 | no | the picture has its own handles or taps, or the inputs are enough |
+| venn | 10 | yes | set on the module (shown) |
+| vsepr | 2 | yes | set on the module (shown) |
+| waterfall | 2 | no | the picture has its own handles or taps, or the inputs are enough |
+| wave | 9 | no | the picture has its own handles or taps, or the inputs are enough |
+| zeroPairs | 3 | yes | set on the module (shown) |
 
 ## Modules that override their kind
 
@@ -163,6 +229,11 @@ its kind with `sliders: true | false`.
 - m.4.add-fractions-like~mixed-subtract: sliders hidden
 - m.4.fraction-times-whole: sliders hidden
 - m.4.angles: sliders hidden
+- m.4.place-value-million~estimate-sum: sliders hidden
+- m.4.place-value-million~estimate-difference: sliders hidden
+- m.4.place-value-million~subtract-zeros: sliders hidden
+- m.4.decimals-intro~tenths-hundredths: sliders hidden
+- m.4.decimals-intro~money: sliders hidden
 - m.5.order-of-operations: sliders hidden
 - m.5.order-of-operations~divide: sliders hidden
 - m.5.order-of-operations~no-parentheses: sliders hidden
@@ -179,6 +250,13 @@ its kind with `sliders: true | false`.
 - m.5.multiply-fractions: sliders hidden
 - m.5.divide-unit-fractions: sliders hidden
 - m.5.divide-unit-fractions~unit-by-whole: sliders hidden
+- m.5.convert-units: sliders hidden
+- m.5.convert-units~compare: sliders hidden
+- m.5.convert-units~multi-step: sliders hidden
+- m.5.multiply-fractions~area: sliders hidden
+- m.5.decimal-operations~estimate-sum: sliders hidden
+- m.5.decimal-operations~estimate-difference: sliders hidden
+- m.5.decimal-operations~estimate-product: sliders hidden
 - s.5.earth-spheres~water-share: sliders hidden
 - m.6.ratios: sliders hidden
 - m.6.ratios~tape: sliders shown
@@ -196,25 +274,53 @@ its kind with `sliders: true | false`.
 - m.6.expressions-variables~distributive: sliders hidden
 - m.6.one-step-equations: sliders hidden
 - m.6.one-step-equations~multiply: sliders hidden
+- m.7.rational-operations~zero-pairs: sliders shown
+- m.10.volume-derivations: sliders shown
+- m.10.probability-rules~permutations: sliders shown
+- m.10.probability-rules~combinations: sliders shown
+- m.11.probability-distributions: sliders shown
+- m.11.probability-distributions~at-least: sliders shown
+- m.11.binomial-theorem~pascal-rule: sliders shown
+- m.11.series: sliders shown
+- m.11.series~arithmetic: sliders shown
+- m.11.series~sigma: sliders shown
+- m.11.series~infinite: sliders shown
+- m.12.sampling-distributions~clt: sliders shown
+- s.10.measurement~ruler: sliders shown
+- s.10.atomic-structure: sliders shown
+- s.10.atomic-structure~ions: sliders shown
+- s.10.electrons-in-atoms: sliders shown
+- s.10.electrons-in-atoms~ions: sliders shown
+- s.10.electrons-in-atoms~emission: sliders shown
+- s.10.periodic-trends: sliders shown
+- s.10.periodic-trends~ionization: sliders shown
+- s.10.periodic-trends~electronegativity: sliders shown
+- s.10.bonding: sliders shown
+- s.10.bonding~ionic: sliders shown
+- s.10.bonding~metallic: sliders shown
+- s.10.bonding~polarity: sliders shown
+- s.10.molecular-shape: sliders shown
+- s.10.molecular-shape~hydrogen-bonds: sliders shown
+- s.10.stoichiometry~limiting: sliders shown
+- s.10.organic: sliders shown
+- s.10.organic~alkene: sliders shown
+- s.10.organic~alkyne: sliders shown
+- s.11.modern-physics~hydrogen-lines: sliders shown
 - g.zero-pairs-add: sliders shown
 - g.zero-pairs-subtract: sliders shown
 - g.water-molecules: sliders shown
-- g.carbon-dioxide-molecules: sliders shown
-- g.oxygen-molecules: sliders shown
-- g.fraction-area-wholes: sliders hidden
-- g.fraction-area-mixed: sliders hidden
-- g.fraction-area-edge: sliders hidden
 - g.ten-frame-take-away: sliders hidden
-- g.ten-frame-take-away-all: sliders hidden
-- g.ten-frame-take-from-ten: sliders hidden
-- g.ten-frame-take-from-ten-edge: sliders hidden
 - g.base-ten-take-away: sliders hidden
-- g.base-ten-take-away-1000: sliders hidden
-- g.grid-product: sliders hidden
-- g.grid-product-9: sliders hidden
-- g.grid-product-area: sliders hidden
-- g.place-value-sum: sliders hidden
-- g.place-value-sum-edge: sliders hidden
+- g.r4d-fit: sliders hidden
+- g.r4d-hops-tens: sliders hidden
+- g.r4e-venn: sliders shown
+- g.r4e-area-two-digit: sliders hidden
+- g.pan-balance: sliders hidden
+- g.s10-electrons-in-atoms-valence: sliders shown
+- g.s10-bonding-triple-dots: sliders shown
+- g.s10-bonding-polyatomic-ion: sliders shown
+- g.s12-resource-management-world: sliders hidden
+- g.s10-bonding-ionic-charges: sliders shown
 
 ## Every page
 
@@ -385,6 +491,11 @@ its kind with `sliders: true | false`.
 | m.4.angles~protractor | protractor | no |
 | m.4.angles~arms | protractor | no |
 | m.4.angles~turns | angles | yes |
+| m.4.place-value-million~estimate-sum | tape | no |
+| m.4.place-value-million~estimate-difference | tape | no |
+| m.4.place-value-million~subtract-zeros | tape | no |
+| m.4.decimals-intro~tenths-hundredths | grid100 | no |
+| m.4.decimals-intro~money | tape | no |
 | s.K.pushes-pulls | ruler | no |
 | s.K.sunlight-warms | thermometers | no |
 | s.K.sunlight-warms~warming | thermometers | no |
@@ -453,6 +564,13 @@ its kind with `sliders: true | false`.
 | m.5.coordinate-plane-q1~patterns | coordinatePlane | no |
 | m.5.coordinate-plane-q1~move | coordinatePlane | no |
 | m.5.coordinate-plane-q1~distance | coordinatePlane | no |
+| m.5.convert-units | table | no |
+| m.5.convert-units~compare | tape | no |
+| m.5.convert-units~multi-step | tape | no |
+| m.5.multiply-fractions~area | fractionArea | no |
+| m.5.decimal-operations~estimate-sum | tape | no |
+| m.5.decimal-operations~estimate-difference | tape | no |
+| m.5.decimal-operations~estimate-product | areaModel | no |
 | s.4.energy-speed | skipCount | no |
 | s.4.energy-conversion~solar-oven | thermometers | no |
 | s.4.wave-patterns | wave | no |
@@ -513,6 +631,7 @@ its kind with `sliders: true | false`.
 | m.6.center-spread~median | dotPlot | no |
 | m.6.center-spread~mad | dotPlot | no |
 | m.6.center-spread~box-plot | boxPlot | no |
+| m.6.surface-area-nets~triangular-prism | net | no |
 | s.6.cells~magnification | table | no |
 | s.6.cells~cell-size | fieldOfView | no |
 | s.6.cells~why-small | table | no |
@@ -524,11 +643,691 @@ its kind with `sliders: true | false`.
 | s.6.weather-fronts~arrival | doubleNumberLine | no |
 | s.6.plate-tectonics~speed | doubleNumberLine | no |
 | s.6.rock-cycle~layer-time | doubleNumberLine | no |
+| s.6.thermal-energy | plot | no |
+| s.6.thermal-energy~mix | thermometers | no |
+| s.6.light-matter | tape | no |
+| s.6.reproduction-traits | tape | no |
+| s.6.changing-climate | plot | no |
+| s.6.human-impact | table | no |
+| m.7.proportional-relationships | plot | no |
+| m.7.proportional-relationships~proportion | doubleNumberLine | no |
+| m.7.proportional-relationships~fraction-rates | doubleNumberLine | no |
+| m.7.percent-applications | percentBar | no |
+| m.7.percent-applications~discount | percentBar | no |
+| m.7.percent-applications~percent-change | percentBar | no |
+| m.7.percent-applications~percent-error | percentBar | no |
+| m.7.percent-applications~simple-interest | table | no |
+| m.7.rational-operations | integerLine | no |
+| m.7.rational-operations~zero-pairs | zeroPairs | yes |
+| m.7.rational-operations~subtract | integerLine | no |
+| m.7.rational-operations~multiply-divide | signTable | no |
+| m.7.rational-operations~fraction-to-decimal | fractionLine | no |
+| m.7.two-step-equations | hanger | no |
+| m.7.two-step-equations~negatives | tape | no |
+| m.7.two-step-equations~grouped | tape | no |
+| m.7.two-step-equations~inequality | integerLine | no |
+| m.7.scale-drawings | doubleNumberLine | no |
+| m.7.scale-drawings~map-miles | doubleNumberLine | no |
+| m.7.scale-drawings~map-km | doubleNumberLine | no |
+| m.7.scale-drawings~scaled-copy | scaleCopy | no |
+| m.7.scale-drawings~area | scaleCopy | no |
 | m.7.circles | circle | no |
+| m.7.circles~wheel | circle | no |
+| m.7.circles~in-a-square | circle | no |
+| m.7.circles~pi-graph | plot | no |
+| m.7.angle-relationships | angles | no |
+| m.7.angle-relationships~complementary | angles | no |
+| m.7.angle-relationships~vertical | angles | no |
+| m.7.angle-relationships~equation | angles | no |
+| m.7.angle-relationships~triangle | angles | no |
+| m.7.angle-relationships~parallel-lines | angles | no |
+| m.7.prisms | crossSection | no |
+| m.7.prisms~triangular | net | no |
+| m.7.prisms~tent | net | no |
+| m.7.prisms~trapezoid-base | baseHeight | no |
+| m.7.prisms~composite-base | rectilinear | yes |
+| m.7.sampling | sample | no |
+| m.7.sampling~compare | dotPlot | no |
+| m.7.probability | spinner | no |
+| m.7.probability~marbles | marbles | no |
+| m.7.probability~expected | spinner | no |
+| m.7.probability~two-dice | diceGrid | no |
+| m.7.probability~at-least | diceGrid | no |
+| m.7.probability~tree | treeDiagram | no |
+| m.7.probability~three-stages | treeDiagram | no |
+| m.8.roots-irrationals | rootSquare | no |
+| m.8.roots-irrationals~cube-root | rootSquare | no |
+| m.8.roots-irrationals~repeating-decimal | fractionLine | no |
+| m.8.exponent-rules | factorRows | no |
+| m.8.exponent-rules~divide | factorRows | no |
+| m.8.exponent-rules~power-of-power | factorRows | no |
+| m.8.exponent-rules~negative | table | no |
+| m.8.scientific-notation | powerScale | no |
+| m.8.scientific-notation~compare | powerScale | no |
+| m.8.scientific-notation~multiply | powerScale | no |
+| m.8.scientific-notation~add-subtract | powerScale | no |
+| m.8.slope | coordinatePlane | no |
+| m.8.slope~unit-rate-graph | plot | no |
+| m.8.slope~compare-rates | lineSystem | no |
+| m.8.multi-step-equations | equationBalance | no |
+| m.8.multi-step-equations~negatives | equationBalance | no |
+| m.8.multi-step-equations~distribute | lineSystem | no |
+| m.8.multi-step-equations~fraction-coefficient | linearFunction | no |
+| m.8.systems-linear | lineSystem | no |
+| m.8.systems-linear~context | lineSystem | no |
+| m.8.systems-linear~count-and-cost | table | no |
+| m.8.systems-linear~standard-form | lineSystem | no |
+| m.8.functions-intro | functionMachine | no |
+| m.8.functions-intro~mapping | mapping | no |
+| m.8.linear-functions | linearFunction | no |
+| m.8.linear-functions~two-points | linearFunction | no |
+| m.8.linear-functions~context | linearFunction | no |
+| m.8.linear-functions~standard-form | linearFunction | no |
+| m.8.transformations | transformation | no |
+| m.8.transformations~reflect | transformation | no |
+| m.8.transformations~reflect-horizontal | transformation | no |
+| m.8.transformations~rotate | transformation | no |
+| m.8.transformations~dilate | transformation | no |
+| m.8.transformations~similar | doubleNumberLine | no |
 | m.8.pythagorean | rightTriangle | no |
-| m.8.linear-functions | plot | no |
-| m.9.exponential-functions | table | no |
+| m.8.pythagorean~distance | coordinatePlane | no |
+| m.8.pythagorean~in-a-box | crossSection | no |
+| m.8.volume-curved | curvedSolid | no |
+| m.8.volume-curved~cone | curvedSolid | no |
+| m.8.volume-curved~sphere | curvedSolid | no |
+| m.8.volume-curved~scale | table | no |
+| m.8.scatter-plots | scatter | no |
+| m.8.scatter-plots~two-way-table | bars | no |
+| s.7.atoms-molecules~count-atoms | molecules | no |
+| s.7.phase-changes~heating-curve | heatingCurve | no |
+| s.7.chemical-reactions | reaction | no |
+| s.7.chemical-reactions~rust | reaction | no |
+| s.7.chemical-reactions~methane | reaction | no |
+| s.7.chemical-reactions~mass-conserved | scale | no |
+| s.7.ecosystem-energy | energyPyramid | no |
+| s.7.punnett-squares | punnettSquare | no |
+| s.7.punnett-squares~expected | punnettSquare | no |
+| s.7.natural-selection | generations | no |
+| s.8.motion | motionGraph | no |
+| s.8.motion~walk-graph | motionGraph | no |
+| s.8.motion~speed-time | motionGraph | no |
 | s.8.newtons-laws | force | no |
+| s.8.newtons-laws~third-law | skaters | no |
+| s.8.newtons-laws~net-force | pushes | no |
+| s.8.kinetic-potential | energyTrack | no |
+| s.8.kinetic-potential~kinetic | table | no |
+| s.8.kinetic-potential~pendulum | energyTrack | no |
+| s.8.em-spectrum | spectrum | no |
+| s.8.em-spectrum~visible-light | spectrum | no |
+| s.8.em-spectrum~wave-speed | wave | no |
+| s.8.electricity-basics | circuit | no |
+| s.8.electricity-basics~parallel | circuit | no |
+| s.8.electricity-basics~more-bulbs | circuit | no |
+| s.8.magnetic-fields | electromagnet | no |
+| s.8.periodic-table~group-period | periodicTable | no |
+| s.8.periodic-table~protons-neutrons | periodicTable | no |
+| s.8.gravity-orbits | orbit | no |
+| s.8.gravity-orbits~weight | table | no |
+| s.8.gravity-orbits~year-length | table | no |
+| m.9.solving-equations | algebraTiles | no |
+| m.9.solving-equations~distribute | algebraTiles | no |
+| m.9.solving-equations~literal | rectangle | no |
+| m.9.solving-equations~literal-line | functionGraph | no |
+| m.9.units-precision | unitChain | no |
+| m.9.units-precision~area-units | unitChain | no |
+| m.9.units-precision~formula-units | doubleNumberLine | no |
+| m.9.units-precision~bounds | rectangle | no |
+| m.9.units-precision~significant-figures | rectangle | no |
+| m.9.linear-inequalities | integerLine | no |
+| m.9.linear-inequalities~compound | integerLine | no |
+| m.9.linear-inequalities~or | integerLine | no |
+| m.9.linear-inequalities~two-variables | linearFunction | no |
+| m.9.linear-inequalities~whole-number-answers | integerLine | no |
+| m.9.absolute-value | integerLine | no |
+| m.9.absolute-value~inequality | integerLine | no |
+| m.9.absolute-value~inequality-beyond | integerLine | no |
+| m.9.absolute-value~tolerance | integerLine | no |
+| m.9.function-notation | functionGraph | no |
+| m.9.function-notation~evaluate | functionGraph | no |
+| m.9.function-notation~domain-range | functionGraph | no |
+| m.9.function-notation~rate-of-change | functionGraph | no |
+| m.9.function-notation~transform | functionGraph | no |
+| m.9.linear-modeling | functionGraph | no |
+| m.9.linear-modeling~parallel-perpendicular | lineSystem | no |
+| m.9.linear-modeling~context | functionGraph | no |
+| m.9.regression | scatter | no |
+| m.9.regression~correlation-r | scatter | no |
+| m.9.inequality-systems | lineSystem | no |
+| m.9.inequality-systems~elimination | lineSystem | no |
+| m.9.inequality-systems~modeling | lineSystem | no |
+| m.9.inequality-systems~standard-form | lineSystem | no |
+| m.9.inequality-systems~box | lineSystem | no |
+| m.9.inequality-systems~nonlinear | lineSystem | no |
+| m.9.piecewise-functions | functionGraph | no |
+| m.9.piecewise-functions~context | functionGraph | no |
+| m.9.piecewise-functions~step | functionGraph | no |
+| m.9.piecewise-functions~absolute-function | functionGraph | no |
+| m.9.piecewise-functions~absolute-of-function | functionGraph | no |
+| m.9.radicals | factorTree | no |
+| m.9.radicals~cube-root | factorTree | no |
+| m.9.radicals~rational-exponent | table | no |
+| m.9.radicals~monomials | algebraTiles | no |
+| m.9.radicals~multiply | factorTree | no |
+| m.9.exponential-functions | functionGraph | no |
+| m.9.exponential-functions~percent-growth | functionGraph | no |
+| m.9.exponential-functions~decay | table | no |
+| m.9.exponential-functions~same-base | table | no |
+| m.9.exponential-functions~doubling | table | no |
+| m.9.sequences | termsChart | no |
+| m.9.sequences~geometric | termsChart | no |
+| m.9.sequences~recursive | termsChart | no |
+| m.9.polynomial-operations | algebraTiles | no |
+| m.9.polynomial-operations~add-subtract | algebraTiles | no |
+| m.9.polynomial-operations~square | algebraTiles | no |
+| m.9.polynomial-operations~box | algebraTiles | no |
+| m.9.factoring | algebraTiles | no |
+| m.9.factoring~leading-coefficient | algebraTiles | no |
+| m.9.factoring~gcf | algebraTiles | no |
+| m.9.factoring~special | algebraTiles | no |
+| m.9.quadratic-functions | functionGraph | no |
+| m.9.quadratic-functions~standard-form | functionGraph | no |
+| m.9.quadratic-functions~factored-form | functionGraph | no |
+| m.9.quadratic-functions~projectile | functionGraph | no |
+| m.9.quadratic-formula | functionGraph | no |
+| m.9.quadratic-formula~square-roots | functionGraph | no |
+| m.9.quadratic-formula~complete-square | algebraTiles | no |
+| m.9.quadratic-formula~inequality | functionGraph | no |
+| m.9.data-displays | histogram | no |
+| m.9.data-displays~outliers | boxPlot | no |
+| m.9.data-displays~five-number-summary | boxPlot | no |
+| m.9.data-displays~standard-deviation | dotPlot | no |
+| m.9.data-displays~compare | boxPlot | no |
+| m.9.data-displays~histogram-from-list | histogram | no |
+| m.9.two-way-tables | table | no |
+| m.9.two-way-tables~marginal | table | no |
+| m.9.two-way-tables~conditional | table | no |
+| m.10.constructions | markedFigure | no |
+| m.10.constructions~midpoint | markedFigure | no |
+| m.10.constructions~angle-addition | markedFigure | no |
+| m.10.constructions~perpendicular-bisector | markedFigure | no |
+| m.10.proofs~exterior-angle | markedFigure | no |
+| m.10.proofs~isosceles | markedFigure | no |
+| m.10.parallel-lines | markedFigure | no |
+| m.10.parallel-lines~alternate-interior | markedFigure | no |
+| m.10.parallel-lines~same-side | markedFigure | no |
+| m.10.parallel-lines~converse | markedFigure | no |
+| m.10.parallel-lines~algebra | markedFigure | no |
+| m.10.parallel-lines~parallel-line | lineSystem | no |
+| m.10.parallel-lines~perpendicular-line | lineSystem | no |
+| m.10.rigid-motions | transformation | no |
+| m.10.rigid-motions~glide | transformation | no |
+| m.10.rigid-motions~rotate-point | transformation | no |
+| m.10.rigid-motions~reflect-line | transformation | no |
+| m.10.rigid-motions~symmetry | transformation | no |
+| m.10.congruence~corresponding-parts | triangleSolver | no |
+| m.10.triangle-relationships | markedFigure | no |
+| m.10.triangle-relationships~centroid | markedFigure | no |
+| m.10.triangle-relationships~incenter | markedFigure | no |
+| m.10.triangle-relationships~circumcenter | markedFigure | no |
+| m.10.triangle-relationships~inequality | triangleSolver | no |
+| m.10.quadrilaterals | markedFigure | no |
+| m.10.quadrilaterals~parallelogram | markedFigure | no |
+| m.10.quadrilaterals~rectangle | markedFigure | no |
+| m.10.quadrilaterals~rhombus | markedFigure | no |
+| m.10.quadrilaterals~trapezoid | markedFigure | no |
+| m.10.quadrilaterals~kite | markedFigure | no |
+| m.10.quadrilaterals~regular-area | polygon | no |
+| m.10.similarity | triangleSolver | no |
+| m.10.similarity~dilation | scaleCopy | no |
+| m.10.similarity~side-splitter | scaleCopy | no |
+| m.10.similarity~splitter-base | scaleCopy | no |
+| m.10.similarity~splitter-converse | markedFigure | no |
+| m.10.similarity~scale-area | scaleCopy | no |
+| m.10.similarity~right-altitude | markedFigure | no |
+| m.10.special-right-triangles | triangleSolver | no |
+| m.10.special-right-triangles~45-45-90 | triangleSolver | no |
+| m.10.special-right-triangles~30-60-90 | triangleSolver | no |
+| m.10.right-triangle-trig | triangleSolver | no |
+| m.10.right-triangle-trig~find-side | triangleSolver | no |
+| m.10.right-triangle-trig~find-angle | triangleSolver | no |
+| m.10.right-triangle-trig~elevation | triangleSolver | no |
+| m.10.right-triangle-trig~complement | triangleSolver | no |
+| m.10.law-sines-cosines | triangleSolver | no |
+| m.10.law-sines-cosines~sas | triangleSolver | no |
+| m.10.law-sines-cosines~sss | triangleSolver | no |
+| m.10.law-sines-cosines~ambiguous-case | triangleSolver | no |
+| m.10.law-sines-cosines~area | triangleSolver | no |
+| m.10.coordinate-geometry | coordinatePlane | no |
+| m.10.coordinate-geometry~midpoint | coordinatePlane | no |
+| m.10.coordinate-geometry~partition | coordinatePlane | no |
+| m.10.coordinate-geometry~parallelogram | coordinatePlane | no |
+| m.10.coordinate-geometry~right-triangle | coordinatePlane | no |
+| m.10.coordinate-geometry~perimeter | coordinatePlane | no |
+| m.10.circle-theorems | circleTheorems | no |
+| m.10.circle-theorems~semicircle | circleTheorems | no |
+| m.10.circle-theorems~tangent | circleTheorems | no |
+| m.10.circle-theorems~chords | circleTheorems | no |
+| m.10.circle-theorems~secants | circleTheorems | no |
+| m.10.circle-theorems~secant-tangent | circleTheorems | no |
+| m.10.circle-theorems~cyclic-quadrilateral | circleTheorems | no |
+| m.10.circle-theorems~chord-angle | circleTheorems | no |
+| m.10.circle-equations | conicGraph | no |
+| m.10.circle-equations~general-form | conicGraph | no |
+| m.10.circle-equations~point | conicGraph | no |
+| m.10.arc-sector | circle | no |
+| m.10.arc-sector~radians | circle | no |
+| m.10.volume-derivations | curvedSolid | yes |
+| m.10.volume-derivations~cylinder-surface | curvedSolid | no |
+| m.10.volume-derivations~cone | curvedSolid | no |
+| m.10.volume-derivations~cone-surface | curvedSolid | no |
+| m.10.volume-derivations~pyramid | crossSection | no |
+| m.10.volume-derivations~sphere | curvedSolid | no |
+| m.10.volume-derivations~cross-section | crossSection | no |
+| m.10.volume-derivations~pyramid-surface | net | no |
+| m.10.modeling-density | curvedSolid | no |
+| m.10.modeling-density~sphere | curvedSolid | no |
+| m.10.modeling-density~cone | curvedSolid | no |
+| m.10.modeling-density~population | circle | no |
+| m.10.modeling-density~can-design | table | no |
+| m.10.modeling-density~fence | table | no |
+| m.10.probability-rules | venn | no |
+| m.10.probability-rules~exclusive | venn | no |
+| m.10.probability-rules~complement | venn | no |
+| m.10.probability-rules~neither | venn | no |
+| m.10.probability-rules~sample-space | treeDiagram | no |
+| m.10.probability-rules~permutations | pascalTriangle | yes |
+| m.10.probability-rules~combinations | pascalTriangle | yes |
+| m.10.probability-rules~counting-probability | pascalTriangle | no |
+| m.10.conditional-probability | table | no |
+| m.10.conditional-probability~tree | treeDiagram | no |
+| m.10.conditional-probability~independent | treeDiagram | no |
+| m.10.conditional-probability~dependent | treeDiagram | no |
+| m.10.conditional-probability~venn | venn | no |
+| m.11.normal-distribution | normalCurve | no |
+| m.11.normal-distribution~between | normalCurve | no |
+| m.11.normal-distribution~outside | normalCurve | no |
+| m.11.normal-distribution~empirical | normalCurve | no |
+| m.11.normal-distribution~percentile | normalCurve | no |
+| m.11.normal-distribution~margin | normalCurve | no |
+| m.11.probability-distributions | histogram | yes |
+| m.11.probability-distributions~expected-value | histogram | no |
+| m.11.probability-distributions~at-least | histogram | yes |
+| m.11.binomial-theorem | pascalTriangle | no |
+| m.11.binomial-theorem~expand | pascalTriangle | no |
+| m.11.binomial-theorem~pascal-rule | pascalTriangle | yes |
+| m.11.logarithms | functionGraph | no |
+| m.11.logarithms~change-of-base | functionGraph | no |
+| m.11.logarithms~common-log | powerScale | no |
+| m.11.exp-log-equations | functionGraph | no |
+| m.11.exp-log-equations~same-base | termsChart | no |
+| m.11.exp-log-equations~continuous | functionGraph | no |
+| m.11.exp-log-equations~log-equation | functionGraph | no |
+| m.11.exp-log-equations~two-logs | functionGraph | no |
+| m.11.series | termsChart | yes |
+| m.11.series~arithmetic | termsChart | yes |
+| m.11.series~sigma | termsChart | yes |
+| m.11.series~infinite | termsChart | yes |
+| m.11.function-transformations | functionGraph | no |
+| m.11.function-transformations~point | functionGraph | no |
+| m.11.function-transformations~horizontal | functionGraph | no |
+| m.11.complex-numbers | complexPlane | no |
+| m.11.complex-numbers~add-subtract | complexPlane | no |
+| m.11.complex-numbers~quadratic | complexPlane | no |
+| m.11.inverse-functions | functionGraph | no |
+| m.11.inverse-functions~operations | functionGraph | no |
+| m.11.inverse-functions~inverse | functionGraph | no |
+| m.11.inverse-functions~restrict-domain | functionGraph | no |
+| m.11.radical-functions | plot | no |
+| m.11.radical-functions~extraneous | functionGraph | no |
+| m.11.radical-functions~graph | functionGraph | no |
+| m.11.radical-functions~cube-root | functionGraph | no |
+| m.11.radical-functions~rational-exponent | functionGraph | no |
+| m.11.rational-functions | functionGraph | no |
+| m.11.rational-functions~add-subtract | functionGraph | no |
+| m.11.rational-functions~multiply-divide | functionGraph | no |
+| m.11.rational-functions~solve | functionGraph | no |
+| m.11.rational-functions~variation | functionGraph | no |
+| m.11.polynomial-functions | functionGraph | no |
+| m.11.polynomial-equations~complex-pair | complexPlane | no |
+| m.11.polynomial-equations~quadratic-form | functionGraph | no |
+| m.11.polynomial-equations~sum-of-cubes | functionGraph | no |
+| m.11.complex-numbers~powers-of-i | complexPlane | no |
+| m.11.complex-numbers~divide | complexPlane | no |
+| m.11.polynomial-functions~divide | functionGraph | no |
+| m.11.polynomial-functions~long-division | functionGraph | no |
+| m.11.polynomial-equations | functionGraph | no |
+| m.11.unit-circle | unitCircle | no |
+| m.11.unit-circle~convert | unitCircle | no |
+| m.11.unit-circle~coterminal | unitCircle | no |
+| m.11.unit-circle~point-on-side | unitCircle | no |
+| m.11.trig-graphs | functionGraph | no |
+| m.11.trig-graphs~from-features | functionGraph | no |
+| m.11.trig-graphs~tangent | functionGraph | no |
+| m.11.trig-graphs~model | functionGraph | no |
+| m.11.pythagorean-identities | unitCircle | no |
+| m.11.pythagorean-identities~tangent | unitCircle | no |
+| m.12.inverse-trig | functionGraph | no |
+| m.12.inverse-trig~arccos | unitCircle | no |
+| m.12.inverse-trig~arctan | functionGraph | no |
+| m.12.inverse-trig~compose | unitCircle | no |
+| m.12.trig-formulas-equations | unitCircle | no |
+| m.12.trig-formulas-equations~difference | unitCircle | no |
+| m.12.trig-formulas-equations~double-angle | unitCircle | no |
+| m.12.trig-formulas-equations~half-angle | unitCircle | no |
+| m.12.trig-formulas-equations~sine-equation | unitCircle | no |
+| m.12.trig-formulas-equations~tangent-equation | unitCircle | no |
+| m.12.trig-formulas-equations~quadratic | unitCircle | no |
+| m.12.vectors | vectorDiagram | no |
+| m.12.vectors~add | vectorDiagram | no |
+| m.12.vectors~scalar | vectorDiagram | no |
+| m.12.vectors~dot | vectorDiagram | no |
+| m.12.vectors~resultant | vectorDiagram | no |
+| m.12.vectors-3d | vectorDiagram | no |
+| m.12.vectors-3d~cross | vectorDiagram | no |
+| m.12.vectors-3d~triple | vectorDiagram | no |
+| m.12.vectors-3d~distance | vectorDiagram | no |
+| m.12.polar | polarGrid | no |
+| m.12.polar~complex-form | complexPlane | no |
+| m.12.polar~product | complexPlane | no |
+| m.12.polar~de-moivre | complexPlane | no |
+| m.12.polar~roots | complexPlane | no |
+| m.12.polar~rose | polarGrid | no |
+| m.12.polar~limacon | polarGrid | no |
+| m.12.polar~circle | polarGrid | no |
+| m.12.polar~spiral | polarGrid | no |
+| m.12.parametric | polarGrid | no |
+| m.12.parametric~ellipse | polarGrid | no |
+| m.12.parametric~projectile | projectile | no |
+| m.12.matrices | matrixGrid | no |
+| m.12.matrices~multiply | matrixGrid | no |
+| m.12.matrices~determinant | matrixGrid | no |
+| m.12.matrices~inverse | matrixGrid | no |
+| m.12.matrices~inverse-system | matrixGrid | no |
+| m.12.matrices~cramer | matrixGrid | no |
+| m.12.matrix-transformations | transformation | no |
+| m.12.matrix-transformations~image | matrixGrid | no |
+| m.12.matrix-transformations~area | coordinatePlane | no |
+| m.12.matrix-transformations~compose | transformation | no |
+| m.12.limits-intro | functionGraph | no |
+| m.12.limits-intro~one-sided | functionGraph | no |
+| m.12.limits-intro~derivative | functionGraph | no |
+| m.12.limits-intro~infinity | functionGraph | no |
+| m.12.area-under-curve | functionGraph | no |
+| m.12.area-under-curve~line | functionGraph | no |
+| m.12.area-under-curve~degrees | table | no |
+| m.12.conics | conicGraph | no |
+| m.12.conics~parabola | conicGraph | no |
+| m.12.conics~hyperbola | conicGraph | no |
+| m.12.induction | termsChart | no |
+| m.12.induction~odd | termsChart | no |
+| m.12.induction~powers | termsChart | no |
+| m.12.induction~squares | termsChart | no |
+| m.12.induction~divisible | table | no |
+| m.12.partial-fractions | functionGraph | no |
+| m.12.partial-fractions~repeated | functionGraph | no |
+| m.12.partial-fractions~quadratic | functionGraph | no |
+| m.12.polar-conics | polarGrid | no |
+| m.12.polar-conics~sine | polarGrid | no |
+| m.12.polar-conics~ellipse | conicGraph | no |
+| m.12.polar-conics~parabola | conicGraph | no |
+| m.12.polar-conics~rotation | conicGraph | no |
+| m.12.polar-conics~rotated-equation | conicGraph | no |
+| m.12.hypothesis-testing | normalCurve | no |
+| m.12.hypothesis-testing~mean | normalCurve | no |
+| m.12.hypothesis-testing~t-test | normalCurve | no |
+| m.12.hypothesis-testing~paired | normalCurve | no |
+| m.12.hypothesis-testing~two-proportion | normalCurve | no |
+| m.12.hypothesis-testing~two-sample | normalCurve | no |
+| m.12.confidence-intervals | normalCurve | no |
+| m.12.confidence-intervals~t-interval | normalCurve | no |
+| m.12.confidence-intervals~proportion | normalCurve | no |
+| m.12.confidence-intervals~sample-size | normalCurve | no |
+| m.12.confidence-intervals~capture | normalCurve | no |
+| m.12.sampling-distributions | normalCurve | no |
+| m.12.sampling-distributions~proportion | normalCurve | no |
+| m.12.sampling-distributions~counts | histogram | no |
+| m.12.sampling-distributions~clt | histogram | yes |
+| m.12.sampling-distributions~clt-sums | normalCurve | no |
+| m.12.chi-square | normalCurve | no |
+| m.12.chi-square~five-categories | normalCurve | no |
+| m.12.chi-square~independence | table | no |
+| m.12.regression-inference | normalCurve | no |
+| m.12.regression-inference~interval | normalCurve | no |
+| m.12.regression-inference~correlation | normalCurve | no |
+| m.12.regression-inference~standard-error | normalCurve | no |
+| m.12.anova | normalCurve | no |
+| m.12.anova~groups | normalCurve | no |
+| m.12.anova~two-variances | normalCurve | no |
+| s.9.biomolecules~dehydration | macromolecules | no |
+| s.9.membrane-transport | membrane | no |
+| s.9.membrane-transport~pump | membrane | no |
+| s.9.cellular-energy~equation | reaction | no |
+| s.9.mitosis-meiosis~mitotic-index | pieChart | yes |
+| s.9.mitosis-meiosis~chromosome-count | cellDivision | no |
+| s.9.inheritance-patterns | punnettSquare | no |
+| s.9.inheritance-patterns~genotype-ratio | punnettSquare | no |
+| s.9.inheritance-patterns~incomplete | punnettSquare | no |
+| s.9.inheritance-patterns~codominant | punnettSquare | no |
+| s.9.inheritance-patterns~x-linked | punnettSquare | no |
+| s.9.dna-protein-synthesis | dnaStrand | no |
+| s.9.dna-protein-synthesis~chargaff | dnaStrand | no |
+| s.9.biotechnology | dnaStrand | no |
+| s.9.biotechnology~frameshift | dnaStrand | no |
+| s.9.biotechnology~deletion | dnaStrand | no |
+| s.9.biotechnology~gel | gel | no |
+| s.9.biotechnology~pcr | gel | no |
+| s.9.evolution-evidence | alleleFrequencies | no |
+| s.9.evolution-evidence~allele-counts | alleleFrequencies | no |
+| s.9.plant-biology~transpiration | doubleNumberLine | no |
+| s.9.population-ecology | functionGraph | no |
+| s.9.population-ecology~rates | bars | no |
+| s.9.population-ecology~doubling | functionGraph | no |
+| s.9.ecosystem-dynamics | energyPyramid | no |
+| s.9.ecosystem-dynamics~numbers | energyPyramid | no |
+| s.9.ecosystem-dynamics~biomass | energyPyramid | no |
+| s.9.ecosystem-dynamics~biodiversity | pieChart | yes |
+| s.9.nervous-system~impulse-speed | neuron | no |
+| s.9.immune-disease | immuneResponse | no |
+| s.9.immune-disease~herd-immunity | percentBar | no |
+| s.10.measurement | unitChain | no |
+| s.10.measurement~factor | table | no |
+| s.10.measurement~rate | unitChain | no |
+| s.10.measurement~ruler | unitChain | yes |
+| s.10.measurement~accuracy | unitChain | no |
+| s.10.atomic-structure | atomModel | yes |
+| s.10.atomic-structure~ions | atomModel | yes |
+| s.10.atomic-structure~average-mass | chemDiagram | no |
+| s.10.electrons-in-atoms | orbitalDiagram | yes |
+| s.10.electrons-in-atoms~ions | orbitalDiagram | yes |
+| s.10.electrons-in-atoms~emission | orbitalDiagram | yes |
+| s.10.electrons-in-atoms~photon | spectrum | no |
+| s.10.periodic-trends | periodicTable | yes |
+| s.10.periodic-trends~ionization | periodicTable | yes |
+| s.10.periodic-trends~electronegativity | periodicTable | yes |
+| s.10.bonding | lewisStructure | yes |
+| s.10.bonding~ionic | lewisStructure | yes |
+| s.10.bonding~metallic | lewisStructure | yes |
+| s.10.bonding~polarity | periodicTable | yes |
+| s.10.molecular-shape | vsepr | yes |
+| s.10.molecular-shape~hydrogen-bonds | vsepr | yes |
+| s.10.reaction-types~combustion | reaction | no |
+| s.10.reaction-types~combustion-alkene | reaction | no |
+| s.10.reaction-types~synthesis | reaction | no |
+| s.10.reaction-types~replacement | reaction | no |
+| s.10.mole | moleMap | no |
+| s.10.mole~molar-mass | pieChart | yes |
+| s.10.mole~factor | table | no |
+| s.10.mole~gas-volume | moleMap | no |
+| s.10.mole~empirical | pieChart | yes |
+| s.10.stoichiometry | moleMap | no |
+| s.10.stoichiometry~limiting | reaction | yes |
+| s.10.stoichiometry~limiting-grams | moleMap | no |
+| s.10.stoichiometry~percent-yield | percentBar | no |
+| s.10.gas-laws | gasPiston | no |
+| s.10.gas-laws~boyle | gasPiston | no |
+| s.10.gas-laws~charles | gasPiston | no |
+| s.10.gas-laws~gay-lussac | gasPiston | no |
+| s.10.gas-laws~combined | gasPiston | no |
+| s.10.gas-laws~effusion | chemDiagram | no |
+| s.10.molarity | beaker | no |
+| s.10.molarity~from-grams | beaker | no |
+| s.10.molarity~dilution | beaker | no |
+| s.10.molarity~solubility | beaker | no |
+| s.10.thermochemistry | energyProfile | no |
+| s.10.thermochemistry~calorimetry | energyProfile | no |
+| s.10.thermochemistry~cold-pack | energyProfile | no |
+| s.10.thermochemistry~heating-curve | heatingCurve | no |
+| s.10.thermochemistry~formation | energyProfile | no |
+| s.10.thermochemistry~hess | energyProfile | no |
+| s.10.rates-equilibrium | equilibriumChart | no |
+| s.10.rates-equilibrium~le-chatelier | equilibriumChart | no |
+| s.10.rates-equilibrium~catalyst | energyProfile | no |
+| s.10.acids-bases | phScale | no |
+| s.10.acids-bases~from-ph | phScale | no |
+| s.10.acids-bases~base | phScale | no |
+| s.10.acids-bases~titration | phScale | no |
+| s.10.acids-bases~weak-titration | phScale | no |
+| s.10.organic | lewisStructure | yes |
+| s.10.organic~alkene | lewisStructure | yes |
+| s.10.organic~alkyne | lewisStructure | yes |
+| s.10.organic~isomers | lewisStructure | no |
+| s.10.nuclear-chemistry | decayChart | no |
+| s.10.nuclear-chemistry~alpha | decayChart | no |
+| s.10.nuclear-chemistry~beta | decayChart | no |
+| s.10.nuclear-chemistry~fission | decayChart | no |
+| s.10.nuclear-chemistry~mass-defect | chemDiagram | no |
+| s.10.phase-colligative | chemDiagram | no |
+| s.10.phase-colligative~vapor-pressure | pieChart | yes |
+| s.10.entropy-free-energy | functionGraph | no |
+| s.10.entropy-free-energy~crossover | functionGraph | no |
+| s.10.entropy-free-energy~from-tables | integerLine | no |
+| s.10.rates-equilibrium~average-rate | chemDiagram | no |
+| s.10.rates-equilibrium~ksp | equilibriumChart | no |
+| s.10.gas-laws~partial-pressure | gasPiston | no |
+| s.10.molarity~percent-mass | percentBar | no |
+| s.10.redox~cell-voltage | chemDiagram | no |
+| s.10.redox~oxidation-numbers | chemDiagram | no |
+| s.11.kinematics-1d | motionGraph | no |
+| s.11.kinematics-1d~free-fall | motionGraph | no |
+| s.11.kinematics-1d~braking | motionGraph | no |
+| s.11.kinematics-1d~position-graph | motionGraph | no |
+| s.11.kinematics-1d~turn | motionGraph | no |
+| s.11.kinematics-2d | projectile | no |
+| s.11.kinematics-2d~cliff | projectile | no |
+| s.11.kinematics-2d~boat | vectorDiagram | no |
+| s.11.kinematics-2d~components | vectorDiagram | no |
+| s.11.dynamics-vectors | freeBody | no |
+| s.11.dynamics-vectors~incline | freeBody | no |
+| s.11.dynamics-vectors~rope | freeBody | no |
+| s.11.dynamics-vectors~elevator | freeBody | no |
+| s.11.dynamics-vectors~force-sum | vectorDiagram | no |
+| s.11.circular-gravitation | circularMotion | no |
+| s.11.circular-gravitation~car | circularMotion | no |
+| s.11.circular-gravitation~swing | freeBody | no |
+| s.11.circular-gravitation~gravitation | circularMotion | no |
+| s.11.circular-gravitation~orbit | circularMotion | no |
+| s.11.rotation | torque | no |
+| s.11.rotation~seesaw | simpleMachine | no |
+| s.11.rotation~arc-length | circle | no |
+| s.11.rotation~angular-speed | rotor | no |
+| s.11.rotation~angular-acceleration | rotor | no |
+| s.11.rotation~rotational-inertia | rotor | no |
+| s.11.momentum | collision | no |
+| s.11.momentum~elastic | collision | no |
+| s.11.momentum~explode | collision | no |
+| s.11.momentum~one-after | collision | no |
+| s.11.momentum~impulse | impulse | no |
+| s.11.work-energy-power | energyTrack | no |
+| s.11.work-energy-power~work | freeBody | no |
+| s.11.work-energy-power~power | powerLift | no |
+| s.11.work-energy-power~lever | simpleMachine | no |
+| s.11.work-energy-power~pulley | simpleMachine | no |
+| s.11.work-energy-power~ramp | simpleMachine | no |
+| s.11.work-energy-power~spring | energyTrack | no |
+| s.11.oscillations | oscillator | no |
+| s.11.oscillations~hooke | oscillator | no |
+| s.11.oscillations~pendulum | pendulum | no |
+| s.11.thermodynamics | energyProfile | no |
+| s.11.thermodynamics~specific-heat | energyProfile | no |
+| s.11.thermodynamics~latent-heat | heatingCurve | no |
+| s.11.thermodynamics~first-law | gasPiston | no |
+| s.11.thermodynamics~engine | heatEngine | no |
+| s.11.thermodynamics~refrigerator | heatEngine | no |
+| s.11.sound-waves | wave | no |
+| s.11.sound-waves~string | wave | no |
+| s.11.sound-waves~open-pipe | wave | no |
+| s.11.sound-waves~closed-pipe | wave | no |
+| s.11.sound-waves~doppler | wave | no |
+| s.11.sound-waves~sound-level | powerScale | no |
+| s.11.optics | rayDiagram | no |
+| s.11.optics~diverging | rayDiagram | no |
+| s.11.optics~concave | rayDiagram | no |
+| s.11.optics~convex | rayDiagram | no |
+| s.11.optics~refraction | rayDiagram | no |
+| s.11.optics~critical | rayDiagram | no |
+| s.11.optics~double-slit | rayDiagram | no |
+| s.11.electrostatics | charges | no |
+| s.11.electrostatics~field | charges | no |
+| s.11.electrostatics~two-charges | charges | no |
+| s.11.electrostatics~plates | charges | no |
+| s.11.electric-potential | charges | no |
+| s.11.electric-potential~voltage-energy | charges | no |
+| s.11.electric-potential~capacitor | capacitor | no |
+| s.11.electric-potential~parallel-plate | capacitor | no |
+| s.11.circuits | seriesCircuit | no |
+| s.11.circuits~series | seriesCircuit | no |
+| s.11.circuits~parallel | circuit | no |
+| s.11.circuits~mixed | circuit | no |
+| s.11.circuits~power | circuit | no |
+| s.11.electromagnetism | induction | no |
+| s.11.electromagnetism~flux-change | induction | no |
+| s.11.electromagnetism~force | induction | no |
+| s.11.electromagnetism~moving-charge | induction | no |
+| s.11.electromagnetism~charge-circle | induction | no |
+| s.11.electromagnetism~transformer | induction | no |
+| s.11.modern-physics | spectrum | no |
+| s.11.modern-physics~hydrogen-lines | orbitalDiagram | yes |
+| s.11.modern-physics~photoelectric | photoelectric | no |
+| s.11.modern-physics~relativity | lightClock | no |
+| s.12.minerals-rocks~density | gradCylinder | no |
+| s.12.earth-interior | earthLayers | no |
+| s.12.earth-interior~epicenter | earthLayers | no |
+| s.12.earth-interior~shadow-zone | earthLayers | no |
+| s.12.earth-interior~magnitude | earthLayers | no |
+| s.12.earth-interior~spreading-rate | oceanProfile | no |
+| s.12.earth-history | geologicClock | no |
+| s.12.earth-history~day-length | coralSection | no |
+| s.12.surface-processes~discharge | streamChannel | no |
+| s.12.radiometric-dating | decayChart | no |
+| s.12.radiometric-dating~uranium | decayChart | no |
+| s.12.radiometric-dating~bracket | rockLayers | no |
+| s.12.radiometric-dating~half-life | decayChart | no |
+| s.12.radiometric-dating~potassium | rockLayers | no |
+| s.12.radiometric-dating~cross-cutting | rockLayers | no |
+| s.12.ocean-atmosphere | oceanProfile | no |
+| s.12.ocean-atmosphere~tides | oceanProfile | no |
+| s.12.atmosphere-weather | atmosphereLayers | no |
+| s.12.atmosphere-weather~pressure | atmosphereLayers | no |
+| s.12.atmosphere-weather~humidity | percentBar | no |
+| s.12.atmosphere-weather~cloud-base | atmosphereLayers | no |
+| s.12.climate-systems~energy-balance | atmosphereLayers | no |
+| s.12.resource-management~energy-mix | bars | no |
+| s.12.resource-management~reserves | reserve | no |
+| s.12.resource-management~growing-use | reserve | no |
+| s.12.solar-system | circularMotion | no |
+| s.12.starlight-spectra | spectrum | no |
+| s.12.starlight-spectra~doppler | spectrum | no |
+| s.12.starlight-spectra~telescope | rayDiagram | no |
+| s.12.starlight-spectra~parallax | parallax | no |
+| s.12.stellar-evolution | hrDiagram | no |
+| s.12.stellar-evolution~fusion | decayChart | no |
+| s.12.stellar-evolution~lifetime | hrDiagram | no |
+| s.12.cosmology | expandingUniverse | no |
+| s.12.cosmology~redshift | spectrum | no |
+| s.12.cosmology~stretch | expandingUniverse | no |
+| s.12.exoplanets | transit | no |
+| s.12.exoplanets~orbit | circularMotion | no |
+| s.12.exoplanets~habitable-zone | habitableZone | no |
 | he.physics.university-1#0 | plot | no |
 | he.engineering.circuits-1#0 | seriesCircuit | no |
 | he.math.calc-1#1 | plot | no |
@@ -546,7 +1345,6 @@ its kind with `sliders: true | false`.
 | g.fraction-of-a-set | partition | yes |
 | g.number-line-500 | numberLine | no |
 | g.jumps-in-a-quotient | skipCount | no |
-| g.share-as-mixed | tape | no |
 | g.liters-as-mixed | beaker | no |
 | g.wave | wave | no |
 | g.punnett-square | punnettSquare | no |
@@ -555,16 +1353,8 @@ its kind with `sliders: true | false`.
 | g.leaf-count | leafCount | no |
 | g.dark-light-cups | thermometers | no |
 | g.bills-and-coins | coins | no |
-| g.dot-plot-median | dotPlot | no |
-| g.box-plot-data | boxPlot | no |
-| g.inequality-line | integerLine | no |
-| g.scaled-box | unitCubes | yes |
 | g.ratio-graph | ratioTable | no |
-| g.plot-point | coordinatePlane | no |
-| g.line-plot-lengths | linePlot | no |
 | g.protractor-arms | protractor | no |
-| g.number-line-ticks | numberLine | no |
-| g.number-line-ticks-100 | numberLine | no |
 | g.proportional-graph | plot | no |
 | g.sales-tax | percentBar | no |
 | g.discount | percentBar | no |
@@ -622,10 +1412,7 @@ its kind with `sliders: true | false`.
 | g.energy-pyramid | energyPyramid | no |
 | g.beetle-generations | generations | no |
 | g.water-molecules | molecules | yes |
-| g.carbon-dioxide-molecules | molecules | yes |
-| g.oxygen-molecules | molecules | yes |
 | g.balance-water | reaction | no |
-| g.burning-methane | reaction | no |
 | g.heating-curve | heatingCurve | no |
 | g.periodic-table | periodicTable | no |
 | g.distance-time | motionGraph | no |
@@ -643,57 +1430,268 @@ its kind with `sliders: true | false`.
 | g.electromagnet | electromagnet | no |
 | g.orbit | orbit | no |
 | g.orbit-mars | orbit | no |
-| g.factor-pairs-126 | factorPairs | no |
-| g.factor-pairs-200 | factorPairs | no |
 | g.chart-piece-652 | hundredChart | no |
-| g.chart-piece-990 | hundredChart | no |
-| g.multiples-652 | hundredChart | no |
-| g.multiples-1000 | hundredChart | no |
 | g.equal-groups-50 | equalGroups | no |
-| g.equal-groups-90 | equalGroups | no |
-| g.line-plot-quarter-start | linePlot | no |
-| g.line-plot-quarter-start-halves | linePlot | no |
-| g.decimal-line-from-whole | fractionLine | no |
-| g.decimal-line-from-whole-hundredths | fractionLine | no |
 | g.hundredths-ones | grid100 | no |
-| g.hundredths-many-ones | grid100 | no |
-| g.hundredths-ones-99 | grid100 | no |
-| g.percent-grid-page | grid100 | no |
-| g.percent-grid-past-100 | grid100 | no |
-| g.percent-grid-tenths | grid100 | no |
-| g.percent-grid-edge | grid100 | no |
-| g.fraction-area-wholes | fractionArea | no |
-| g.fraction-area-mixed | fractionArea | no |
-| g.fraction-area-edge | fractionArea | no |
-| g.place-value-periods | placeValueChart | no |
-| g.place-value-billions | placeValueChart | no |
-| g.place-value-edge | placeValueChart | no |
-| g.jumps-grouped-page | skipCount | no |
-| g.jumps-grouped-tens | skipCount | no |
-| g.jumps-grouped-hundreds | skipCount | no |
 | g.ten-frame-take-away | tenFrame | no |
-| g.ten-frame-take-away-all | tenFrame | no |
-| g.ten-frame-take-from-ten | tenFrame | no |
-| g.ten-frame-take-from-ten-edge | tenFrame | no |
 | g.base-ten-take-away | baseTen | no |
-| g.base-ten-take-away-1000 | baseTen | no |
 | g.picture-graph-fruit | pictureGraph | no |
-| g.picture-graph-pond | pictureGraph | no |
-| g.picture-graph-half | pictureGraph | no |
-| g.picture-graph-half-10 | pictureGraph | no |
 | g.rounding-two-sum | rounding | no |
-| g.rounding-two-sum-edge | rounding | no |
-| g.rounding-two-difference | rounding | no |
 | g.polygon-equal-sides | polygon | no |
-| g.polygon-equal-sides-8 | polygon | no |
-| g.ratio-tape-three-parts | tape | no |
-| g.ratio-tape-three-edge | tape | no |
-| g.grid-product | grid100 | no |
-| g.grid-product-9 | grid100 | no |
-| g.grid-product-area | grid100 | no |
-| g.place-value-sum | placeValueChart | no |
-| g.place-value-sum-edge | placeValueChart | no |
 | g.scale-before-after | scale | no |
-| g.scale-before-after-edge | scale | no |
-| g.spring-scale | scale | no |
-| g.spring-scale-20 | scale | no |
+| g.r4a-coins | coinRow | no |
+| g.r4a-compare | compareRows | no |
+| g.r4a-trains | cubeTrains | no |
+| g.r4a-dots | dotSet | no |
+| g.r4a-blocks | patternBlocks | no |
+| g.r4a-pairs | pairs | no |
+| g.r4a-bond | numberBond | no |
+| g.r4d-array | array | no |
+| g.r4d-fit | fractionFit | no |
+| g.r4d-hops-tens | hops | no |
+| g.r4d-dnl | doubleNumberLine | no |
+| g.r4d-time | timeline | no |
+| g.r4d-table | table | no |
+| g.r4e-parallelogram | baseHeight | no |
+| g.r4e-factor-trees | factorTree | no |
+| g.r4e-rect-same-area | rectangle | no |
+| g.r4e-venn | venn | yes |
+| g.r4e-prism-count | prism | no |
+| g.r4e-area-two-digit | areaModel | no |
+| g.r4e-rectilinear | rectilinear | yes |
+| g.r4f-clock | clock | no |
+| g.r4f-bars | bars | no |
+| g.r4f-feet | unitTiles | no |
+| g.r4f-ruler | ruler | no |
+| g.r4f-waterfall | waterfall | no |
+| g.r4f-tally | tally | no |
+| g.series-loop | seriesCircuit | no |
+| g.pushes | pushes | no |
+| g.pan-balance | balance | no |
+| g.r4h-rock | rockLayers | no |
+| g.r4h-field | fieldOfView | no |
+| g.r4h-cylinder | gradCylinder | no |
+| g.m11-rational-functions-slant | functionGraph | no |
+| g.m11-rational-functions-shift | functionGraph | no |
+| g.m9-piecewise-functions-step | functionGraph | no |
+| g.m11-trig-graphs-sine | functionGraph | no |
+| g.m11-trig-graphs-cosine | functionGraph | no |
+| g.m11-inverse-functions-exp-log | functionGraph | no |
+| g.m9-data-displays-frequency | histogram | no |
+| g.m10-congruence-sss | triangleSolver | no |
+| g.m10-congruence-sas | triangleSolver | no |
+| g.m10-congruence-asa | triangleSolver | no |
+| g.m10-congruence-aas | triangleSolver | no |
+| g.m10-congruence-hl | triangleSolver | no |
+| g.m10-congruence-ssa | triangleSolver | no |
+| g.m10-quadrilaterals-square | markedFigure | no |
+| g.m11-unit-circle-radians | unitCircle | no |
+| g.m11-trig-graphs-sine | unitCircle | no |
+| g.m11-trig-graphs-cosine | unitCircle | no |
+| g.m10-arc-sector-radians | unitCircle | no |
+| g.m12-parametric-projectile | polarGrid | no |
+| g.m12-matrices-row-reduce | matrixGrid | no |
+| g.m9-regression-weak | scatter | no |
+| g.m9-data-displays-sd-sample | dotPlot | no |
+| g.m12-chi-square-goodness | table | no |
+| g.m10-rigid-motions-symmetry-isosceles | transformation | no |
+| g.m10-similarity-dilation-enlarge | scaleCopy | no |
+| g.m10-arc-sector-radians | circle | no |
+| g.m10-volume-derivations-cylinder-section | crossSection | no |
+| g.m10-volume-derivations-cone-upright | crossSection | no |
+| g.s9-membrane-transport-facilitated | membrane | no |
+| g.s9-membrane-transport-osmosis | membrane | no |
+| g.s9-biotechnology-nonsense | dnaStrand | no |
+| g.s9-ecosystem-dynamics-biomass | energyPyramid | no |
+| g.s10-measurement-neither | unitChain | no |
+| g.s10-electrons-in-atoms-valence | atomModel | yes |
+| g.s10-bonding-triple-dots | lewisStructure | yes |
+| g.s10-bonding-polyatomic-ion | lewisStructure | yes |
+| g.s10-rates-equilibrium-volume | equilibriumChart | no |
+| g.s10-rates-equilibrium-heat | equilibriumChart | no |
+| g.s12-starlight-spectra-refractor | rayDiagram | no |
+| g.s12-starlight-spectra-reflector | rayDiagram | no |
+| g.s11-circuits-parallel-series | circuit | no |
+| g.s11-electromagnetism-coil-out | induction | no |
+| g.s11-modern-physics-hydrogen | spectrum | no |
+| g.s11-modern-physics-helium | spectrum | no |
+| g.s11-modern-physics-photon | spectrum | no |
+| g.s12-resource-management-world | pieChart | no |
+| g.s12-atmosphere-weather-pressure-south | atmosphereLayers | no |
+| g.s12-ocean-atmosphere-sonar-ridge | oceanProfile | no |
+| g.s12-ocean-atmosphere-sonar-trench | oceanProfile | no |
+| g.s12-radiometric-dating-young | rockLayers | no |
+| g.m9-inequality-systems-box | lineSystem | no |
+| g.m10-parallel-lines-parallel-line-marks | lineSystem | no |
+| g.m10-parallel-lines-perpendicular-line-marks | lineSystem | no |
+| g.m9-absolute-value-equal | integerLine | no |
+| g.m9-absolute-value-equal-one | integerLine | no |
+| g.m9-linear-inequalities-ticks | integerLine | no |
+| g.m9-absolute-value-tolerance | integerLine | no |
+| g.m9-linear-inequalities-two-variables-sign | linearFunction | no |
+| g.m9-inequality-systems-standard-form | lineSystem | no |
+| g.m9-quadratic-formula-inequality-sign | functionGraph | no |
+| g.m9-linear-inequalities-compound-sign | integerLine | no |
+| g.m12-hypothesis-testing-sign | normalCurve | no |
+| g.m10-quadrilaterals-polygon-sums | markedFigure | no |
+| g.m10-quadrilaterals-polygon-sums-30 | markedFigure | no |
+| g.m10-circle-theorems-cyclic-quadrilateral | circleTheorems | no |
+| g.m10-circle-theorems-cyclic-narrow | circleTheorems | no |
+| g.m10-circle-theorems-chord-angle | circleTheorems | no |
+| g.m10-circle-theorems-chord-angle-outside | circleTheorems | no |
+| g.m10-coordinate-geometry-fit | coordinatePlane | no |
+| g.m10-coordinate-geometry-fit-small | coordinatePlane | no |
+| g.m10-coordinate-geometry-fit-20 | coordinatePlane | no |
+| g.m10-rigid-motions-symmetry-parallelogram | transformation | no |
+| g.s10-reaction-types-combustion-general | reaction | no |
+| g.s10-reaction-types-replacement-ions | reaction | no |
+| g.s10-reaction-types-synthesis-ions | reaction | no |
+| g.s10-stoichiometry-limiting-grams | moleMap | no |
+| g.s10-thermochemistry-formation | energyProfile | no |
+| g.s10-thermochemistry-hess | energyProfile | no |
+| g.s10-gas-laws-effusion | chemDiagram | no |
+| g.s10-atomic-structure-average-mass | chemDiagram | no |
+| g.s10-redox-oxidation-numbers | chemDiagram | no |
+| g.s10-redox-oxidation-numbers-ion | chemDiagram | no |
+| g.s10-nuclear-chemistry-mass-defect | chemDiagram | no |
+| g.s10-organic-isomer-methyl | lewisStructure | no |
+| g.s10-organic-isomer-dimethyl | lewisStructure | no |
+| g.s9-biomolecules-dehydration | macromolecules | no |
+| g.s9-biomolecules-dehydration-long | macromolecules | no |
+| g.s9-dna-protein-synthesis-long-gene | dnaStrand | no |
+| g.s9-dna-protein-synthesis-short-gene | dnaStrand | no |
+| g.s9-mitosis-meiosis-chromosome-count | cellDivision | no |
+| g.s9-mitosis-meiosis-chromosome-count-human | cellDivision | no |
+| g.s9-cellular-energy-equation | reaction | no |
+| g.s9-population-ecology-rates-flows | bars | no |
+| g.s9-population-ecology-rates-shrinking | bars | no |
+| g.s9-immune-disease-herd-immunity | percentBar | no |
+| g.s9-immune-disease-herd-immunity-measles | percentBar | no |
+| g.s12-stellar-evolution-lifetime-dwarf | hrDiagram | no |
+| g.s12-stellar-evolution-lifetime-massive | hrDiagram | no |
+| g.s12-resource-management-reserves-field | reserve | no |
+| g.s12-resource-management-reserves-long | reserve | no |
+| g.s12-climate-systems-energy-balance-ice | atmosphereLayers | no |
+| g.s12-climate-systems-energy-balance-mars | atmosphereLayers | no |
+| g.s12-atmosphere-weather-cloud-base-humid | atmosphereLayers | no |
+| g.s12-atmosphere-weather-cloud-base-dry | atmosphereLayers | no |
+| g.s12-earth-interior-magnitude-half | earthLayers | no |
+| g.s12-earth-interior-magnitude-far | earthLayers | no |
+| g.s12-earth-interior-spreading-fast | oceanProfile | no |
+| g.s12-earth-interior-spreading-young | oceanProfile | no |
+| g.s12-surface-processes-discharge-creek | streamChannel | no |
+| g.s12-surface-processes-discharge-river | streamChannel | no |
+| g.m9-sequences-far | termsChart | no |
+| g.m9-sequences-recursive-chart | termsChart | no |
+| g.m11-exp-log-equations-same-base-lit | termsChart | no |
+| g.m9-piecewise-functions-abs | functionGraph | no |
+| g.m12-limits-intro-infinity-coefficients | functionGraph | no |
+| g.m9-polynomial-operations-box | algebraTiles | no |
+| g.m9-radicals-monomials-factors | algebraTiles | no |
+| g.m9-radicals-monomials-negative | algebraTiles | no |
+| g.m10-probability-rules-neither-counts | venn | no |
+| g.m10-conditional-probability-venn-counts | venn | no |
+| g.m10-conditional-probability-three-stages | treeDiagram | no |
+| g.m10-probability-rules-counting-fraction | pascalTriangle | no |
+| g.m12-trig-formulas-equations-pair | unitCircle | no |
+| g.m12-trig-formulas-equations-difference-pair | unitCircle | no |
+| g.m12-polar-de-moivre-powers | complexPlane | no |
+| g.m12-hypothesis-testing-t-curve | normalCurve | no |
+| g.m12-confidence-intervals-t-curve | normalCurve | no |
+| g.m12-matrices-determinant-expansion | matrixGrid | no |
+| g.m12-matrices-cramer-determinants | matrixGrid | no |
+| g.m12-matrices-determinant-two | matrixGrid | no |
+| g.m12-matrices-determinant-none | none | no |
+| g.s11-momentum-explode-spring | collision | no |
+| g.m10-constructions-angle-addition-rays | markedFigure | no |
+| g.m10-proofs-exterior-angle-rays | markedFigure | no |
+| g.m10-quadrilaterals-rhombus-across | markedFigure | no |
+| g.m10-probability-rules-names-by-size | treeDiagram | no |
+| g.m12-matrices-row-reduce-typed | matrixGrid | no |
+| g.m12-matrices-echelon-auto | matrixGrid | no |
+| g.m12-inverse-trig-degrees | functionGraph | no |
+| g.m12-inverse-trig-arctan-degrees | functionGraph | no |
+| g.m9-linear-inequalities-test-point | linearFunction | no |
+| g.m11-complex-numbers-sign-box | complexPlane | no |
+| g.s11-kinematics-1d-free-fall-number | motionGraph | no |
+| g.s11-kinematics-2d-cliff-level | projectile | no |
+| g.s-11-electric-potential-launch | charges | no |
+| g.s-11-electric-potential-launch-proton | charges | no |
+| g.s-11-electric-potential-equipotentials | charges | no |
+| g.s-11-electric-potential-unlike | charges | no |
+| g.s-11-electric-potential-capacitor | capacitor | no |
+| g.s-11-electric-potential-parallel-plate | capacitor | no |
+| g.s-11-electric-potential-dielectric | capacitor | no |
+| g.s-11-oscillations-pendulum | pendulum | no |
+| g.s-11-oscillations-pendulum-moon | pendulum | no |
+| g.s-11-oscillations-spring | oscillator | no |
+| g.s-11-oscillations-spring-stiff | oscillator | no |
+| g.s-11-oscillations-hooke-hang | oscillator | no |
+| g.s-11-rotation-wrench | torque | no |
+| g.s-11-rotation-door | torque | no |
+| g.s-11-rotation-seesaw | simpleMachine | no |
+| g.s-11-rotation-seesaw-far | simpleMachine | no |
+| g.s-11-rotation-angular-acceleration | rotor | no |
+| g.s-11-rotation-angular-acceleration-reverse | rotor | no |
+| g.s-11-rotation-angular-speed | rotor | no |
+| g.m9-quadratic-functions-projectile-units | functionGraph | no |
+| g.s11-oscillations-units | functionGraph | no |
+| g.s11-oscillations-hooke-units | functionGraph | no |
+| g.m9-function-notation-transform-square | functionGraph | no |
+| g.m9-function-notation-transform-root | functionGraph | no |
+| g.m11-exp-log-equations-two-logs-curve | functionGraph | no |
+| g.m11-exp-log-equations-two-logs-curve-plus | functionGraph | no |
+| g.m9-inequality-systems-nonlinear | lineSystem | no |
+| g.m9-inequality-systems-nonlinear-shaded | lineSystem | no |
+| g.m10-quadrilaterals-regular-area-apothem | polygon | no |
+| g.m10-quadrilaterals-regular-area-apothem-12 | polygon | no |
+| g.m10-probability-rules-complement-one-event | venn | no |
+| g.m10-modeling-density-can-design-graph | table | no |
+| g.m10-modeling-density-fence-graph | table | no |
+| g.m10-modeling-density-population-map | circle | no |
+| g.m10-modeling-density-population-map-small | circle | no |
+| g.m10-rigid-motions-symmetry-center | transformation | no |
+| g.m10-rigid-motions-symmetry-center-quarter | transformation | no |
+| g.m9-units-precision-bounds-band | rectangle | no |
+| g.m9-units-precision-bounds-fine | rectangle | no |
+| g.m12-vectors-3d-angle | vectorDiagram | no |
+| g.m12-vectors-3d-cross-axes | vectorDiagram | no |
+| g.m12-vectors-3d-triple-box | vectorDiagram | no |
+| g.m12-vectors-3d-distance-axes | vectorDiagram | no |
+| g.m12-polar-conics-ellipse-curve | polarGrid | no |
+| g.m12-polar-conics-hyperbola-curve | polarGrid | no |
+| g.m12-polar-conics-sine-parabola-curve | polarGrid | no |
+| g.m12-polar-conics-rotation-turned | conicGraph | no |
+| g.m12-polar-conics-rotation-turned-hyperbola | conicGraph | no |
+| g.m12-polar-conics-rotated-equation-turned | conicGraph | no |
+| g.m12-area-under-curve-rectangles | functionGraph | no |
+| g.m12-area-under-curve-rectangles-many | functionGraph | no |
+| g.m12-area-under-curve-line-rectangles | functionGraph | no |
+| g.m12-partial-fractions-quadratic-graph | functionGraph | no |
+| g.m12-partial-fractions-number-top-graph | functionGraph | no |
+| g.m12-partial-fractions-repeated-top-graph | functionGraph | no |
+| g.m12-induction-squares-chart | termsChart | no |
+| g.m12-induction-squares-chart-far | termsChart | no |
+| g.m12-anova-f-curve | normalCurve | no |
+| g.m12-anova-groups-f-curve | normalCurve | no |
+| g.s12-earth-history-clock | geologicClock | no |
+| g.s12-earth-history-clock-late | geologicClock | no |
+| g.s12-earth-history-day-length-coral | coralSection | no |
+| g.s12-earth-history-day-length-coral-few | coralSection | no |
+| g.s12-exoplanets-transit | transit | no |
+| g.s12-exoplanets-transit-earth | transit | no |
+| g.s12-exoplanets-habitable-zone | habitableZone | no |
+| g.s12-exoplanets-habitable-zone-bright | habitableZone | no |
+| g.s12-exoplanets-orbit-star-mass | circularMotion | no |
+| g.s12-solar-system-halley | circularMotion | no |
+| g.s12-starlight-spectra-parallax-near | parallax | no |
+| g.s9-biotechnology-start-stop | dnaStrand | no |
+| g.s9-biotechnology-frameshift-start | dnaStrand | no |
+| g.s9-mitosis-meiosis-mitotic-index-stages | pieChart | yes |
+| g.s9-nervous-system-impulse-speed-neuron | neuron | no |
+| g.s9-nervous-system-impulse-speed-bare | neuron | no |
+| g.s10-bonding-ionic-charges | lewisStructure | yes |
+| g.s10-phase-colligative-diagram | chemDiagram | no |
+| g.s10-rates-equilibrium-average-rate-curve | chemDiagram | no |
+| g.s10-redox-cell-voltage-cell | chemDiagram | no |
+| g.s10-gas-laws-partial-pressure-mixture | gasPiston | no |
