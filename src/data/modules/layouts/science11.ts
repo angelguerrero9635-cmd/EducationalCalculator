@@ -17,6 +17,7 @@ export const SCIENCE_11_LAYOUTS: LayoutDef[] = [
       'The arrow is the way it moves: the gaps tell the speed whichever way that is.',
     ],
     question: 'How is it moving?',
+    pickBar: true,
     bins: [
       {
         id: 'steady',

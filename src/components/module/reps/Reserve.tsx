@@ -239,7 +239,10 @@ function ReserveGrowth({ spec, calc }: { spec: ReserveSpec; calc: Calculator }) 
     (t) => Math.abs(Y(t) - Y(T)) > 30 && Y(y) - Y(t) > 30,
   );
   const unit = typeof spec.reserve === 'string' ? rep.unit(spec.reserve) : undefined;
-  const gText = `${formatNumber(round(g, 4))}%`;
+  const gText = known(spec.growth) ? `${formatNumber(round(g, 4))}%` : '?';
+  // A worked-out value reads "?" until the values it comes from are typed.
+  const tText = on ? formatNumber(round(T)) : '?';
+  const yText = known(spec.reserve) && known(spec.rate) && r > 0 ? formatNumber(round(y)) : '?';
 
   const bar = (top: number, h: number, cuts: number[], lit: boolean) => (
     <G>
@@ -300,7 +303,7 @@ function ReserveGrowth({ spec, calc }: { spec: ReserveSpec; calc: Calculator }) 
                 <HaloText
                   x={X1}
                   y={GROW_TOP + GROW_H + 18}
-                  text={`empty after ${sym(spec.lasts)}${formatNumber(round(T))} years`}
+                  text={`empty after ${sym(spec.lasts)}${tText} years`}
                   c={c}
                   size={chart.value}
                   bold
@@ -319,7 +322,7 @@ function ReserveGrowth({ spec, calc }: { spec: ReserveSpec; calc: Calculator }) 
                   textAnchor="end"
                   fill={c.chartInk}
                 >
-                  {`empty after ${sym(spec.years)}${formatNumber(round(y))} years`}
+                  {`empty after ${sym(spec.years)}${yText} years`}
                 </ChartText>
                 {/* Years from now: T, the growing use's end, beside Q ÷ r. */}
                 <Line x1={X0} y1={TIME} x2={X1} y2={TIME} stroke={c.chartMuted} strokeWidth={1.5} />
@@ -356,7 +359,7 @@ function ReserveGrowth({ spec, calc }: { spec: ReserveSpec; calc: Calculator }) 
                 <HaloText
                   x={Math.max(X0 + 14, Y(T))}
                   y={TIME + 19}
-                  text={formatNumber(round(T))}
+                  text={tText}
                   c={c}
                   size={chart.label}
                   bold
@@ -373,7 +376,7 @@ function ReserveGrowth({ spec, calc }: { spec: ReserveSpec; calc: Calculator }) 
                 <HaloText
                   x={X1}
                   y={TIME + 19}
-                  text={formatNumber(round(y))}
+                  text={yText}
                   c={c}
                   size={chart.label}
                   bold

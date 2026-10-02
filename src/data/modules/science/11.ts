@@ -4671,6 +4671,7 @@ const modernPages: ModuleDef[] = [
         energy: 'E',
         kinetic: 'K',
         threshold: 'z',
+        blank: true,
       },
     } satisfies ModuleDef;
   })(),

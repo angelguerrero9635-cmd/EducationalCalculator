@@ -1676,7 +1676,14 @@ const growingUse: ModuleDef = {
   ),
   example: { Q: 600, r: 15, g: 2, k: 0.02, T: Math.log(1.8) / 0.02, y: 40 },
   startWith: ['Q', 'r', 'g'],
-  representation: { kind: 'reserve', reserve: 'Q', rate: 'r', years: 'y' },
+  representation: {
+    kind: 'reserve',
+    reserve: 'Q',
+    rate: 'r',
+    years: 'y',
+    growth: 'g',
+    lasts: 'T',
+  },
 };
 
 // ── The solar system: formation, planets and small bodies ──

@@ -1593,6 +1593,11 @@ const EVERY_GALLERY_LAYOUT: LayoutDef[] = [
  * demos are not tested, reviewed or pre-rendered (their code stays until the file is tidied).
  */
 const RETIRED = new Set<string>([
+  // Round 5, placed: growing use, photoelectric unknowns, sort groups in reach.
+  'g.s12-resource-management-growing-use-growth',
+  'g.s12-resource-management-growing-use-fast',
+  'g.s11-modern-physics-photoelectric-blank',
+  'g.s11-kinematics-1d-motion-diagrams-pick-bar',
   'g.base-ten-take-away-1000',
   'g.box-plot-data',
   'g.burning-methane',
