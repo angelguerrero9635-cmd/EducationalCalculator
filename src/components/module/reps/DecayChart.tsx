@@ -178,7 +178,16 @@ function DecayView({ spec, rep, calc }: { spec: Decay; rep: Rep; calc: Calculato
                   p={p}
                   xName={withUnit('Time', tUnit ? `(${tUnit})` : '')}
                   yName={withUnit('Left', nUnit ? `(${nUnit})` : '')}
-                  xText={big}
+                  // A "?" half-life: the time axis counts half-lives (T, 2T, …), not the
+                  // example's days.
+                  xText={
+                    T.known
+                      ? big
+                      : (v) => {
+                          const k = Math.round(v / T.value);
+                          return v === 0 ? '0' : k === 1 ? 'T' : `${formatNumber(k)}T`;
+                        }
+                  }
                 />
                 <G opacity={known ? 1 : 0.4}>
                   {/* Each half-life: the amount halves again. */}
