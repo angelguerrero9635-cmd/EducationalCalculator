@@ -34,6 +34,7 @@ import type { IntegerLineHs2a } from './typesHs2a';
 import type { CircleHs3b, PolygonHs3b, RectangleHs3b, TableHs3b } from './typesHs3b';
 import type { BarFlows, Hs2eSpec } from './typesHs2e';
 import type { Hs3dSpec, PieStage } from './typesHs3d';
+import type { SkeletalSpec } from './typesHe1c';
 
 /**
  * Plot axis: which variable it shows and the visible range, as numbers in the shown unit.
@@ -1135,6 +1136,8 @@ export type Representation =
   /** Grades 9–12 round 2 biology, group H2E (specs in `typesHs2e.ts`). */
   | Hs2eSpec
   | Hs3dSpec
+  /** College round 1, group C (HC2): a line-angle structure (`typesHe1c.ts`). */
+  | SkeletalSpec
   /** Box plot: the five-number summary on a number line, each mark draggable. */
   | {
       kind: 'boxPlot';

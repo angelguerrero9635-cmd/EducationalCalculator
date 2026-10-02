@@ -14,6 +14,7 @@ import type {
 } from '../typesHsh';
 import type { GalvanicScene } from '../typesHsj';
 import type { CondensedCard, HydrationScene } from '../typesHs2d';
+import type { SkeletalCard } from '../typesHe1c';
 import type {
   CurrentsScene,
   GreenhouseScene,
@@ -196,6 +197,8 @@ export type CardFigure =
   | StrobeCard
   /** An organic molecule's condensed formula, its functional group lit (`typesHs2d.ts`, H101). */
   | CondensedCard
+  /** College HC2 (`typesHe1c.ts`): a line-angle structure, 112 × 76, a group lit. */
+  | SkeletalCard
   /** One stage of DNA replication, old strands dark and new ones lit (H100, `typesHs2e.ts`). */
   | ReplicationCard
   /** Biology round 3 (H109, `typesHs3d.ts`): a reflex arc, one part lit. */

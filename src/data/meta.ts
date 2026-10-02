@@ -151,6 +151,7 @@ const PICTURE_NAMES: Record<string, string> = {
   macromolecules: 'monomers joining into a polymer, water given off',
   cellDivision: 'chromosomes of a body cell, a gamete and a zygote',
   neuron: 'a neuron with its impulse timed along the axon',
+  skeletal: 'a line-angle structure: wedges, CIP ranks, rings and π bonds, the chair',
   projectile: 'projectile path with its velocity components',
   induction: 'induction: coil and magnet, force on a wire, transformer',
   charges: 'point charges with field lines and forces',

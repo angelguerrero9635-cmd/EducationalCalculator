@@ -19,6 +19,8 @@ import { Round3Icon } from './icons';
 import { isRound3Icon } from '@/data/modules/layouts/icons';
 import { MoleculeCard } from './chemFigures';
 import { CondensedCardView, condensedWidth } from './condensedCard';
+import { SkeletalCardView } from './skeletalCard';
+import { SKELETAL_CARD_H, SKELETAL_CARD_W } from '@/data/modules/typesHe1c';
 import {
   CellPartsCard,
   DotPlotCard,
@@ -73,6 +75,8 @@ export function figureWidth(f: Spec): number {
       return STROBE_W;
     case 'condensed':
       return condensedWidth(f);
+    case 'skeletal':
+      return SKELETAL_CARD_W;
     case 'replication':
       return REPLICATION_W;
     case 'reflexArc':
@@ -106,7 +110,9 @@ export function CardFigureView({
         ? DIVISION_H
         : figure.kind === 'replication'
           ? REPLICATION_H
-          : S);
+          : figure.kind === 'skeletal'
+            ? SKELETAL_CARD_H
+            : S);
   return (
     <Svg width={w} height={h}>
       <Drawing f={figure} w={w} ink={ink} shade={shade} />
@@ -354,6 +360,8 @@ function Drawing({ f, w, ink, shade }: { f: Spec; w: number; ink: string; shade:
       return <MoleculeCard formula={f.formula} w={w} h={S} />;
     case 'condensed':
       return <CondensedCardView f={f} ink={ink} shade={shade} />;
+    case 'skeletal':
+      return <SkeletalCardView f={f} ink={ink} shade={shade} />;
     case 'ray': {
       const y = S / 2;
       const x1 = 10;
