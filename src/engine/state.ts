@@ -146,28 +146,73 @@ export function driveTyped(
    * g at the value that takes the handle to `target`, on its box's step: a whole-number g
    * lands on the nearest whole number (the handle then goes as near as it can).
    */
-  const land = (g: string, x: number) => at(g, onStep(g, x)) ?? at(g, x);
+  /**
+   * On g's steps, the value nearest x that fits with everything else held (a share of 40 into
+   * 8 groups takes l = 40 or 32, never 41): x itself, else up to 12 steps either way. Without
+   * steps, x itself.
+   */
+  const nearestFit = (g: string, x: number) => {
+    const step = stepOf(g);
+    const x0 = onStep(g, x);
+    const exact = at(g, x0);
+    if (exact || !step) return exact;
+    for (let k = 1; k <= 12; k++)
+      for (const dir of [1, -1]) {
+        const near = at(g, Number((x0 + dir * k * step).toFixed(10)));
+        if (near) return near;
+      }
+    return undefined;
+  };
+  const land = (g: string, x: number) => nearestFit(g, x) ?? at(g, x);
+  /** Whether a state moved the handle's value from where it was. */
+  const y00 = state.result.values[id];
+  const moved = (next: CalcState) =>
+    y00 === undefined || !same(next.result.values[id], y00) ? next : undefined;
+  // A typed value that can only land where it was (the nearest fitting step is the old one)
+  // is kept as the fallback while the others are tried.
+  let still: CalcState | undefined;
   for (const g of candidates) {
     const step = stepOf(g);
     // Found by trying values of g near where it is (secant steps): each try is a quick solve
     // with every value accounted for, and a straight-line rule (k from d) lands in one or two.
-    // A stepped g is tried on its steps only (a whole-number l can't be −4.95).
+    // A stepped g is tried on its steps only (a whole-number l can't be −4.95), and the first
+    // try is the nearest step either way that fits (a share into 8 groups skips 7 of 8).
     let [x0, y0] = [state.result.values[g], state.result.values[id]];
     if (x0 !== undefined && y0 !== undefined) {
-      let x1 = x0 + (step ?? Math.max(1e-3, Math.abs(x0) * 0.01));
+      const d = step ?? Math.max(1e-3, Math.abs(x0) * 0.01);
+      let x1 = x0 + d;
       let y1: number | undefined = at(g, x1)?.result.values[id];
+      // One step that doesn't fit: the nearest that does, either way (a g that fits but leaves
+      // the handle's value as it was doesn't drive it, and is not searched).
+      for (let k = 1; step && k <= 12 && y1 === undefined; k++)
+        for (const dir of k === 1 ? [-1] : [1, -1]) {
+          const xt = Number((x0 + dir * k * step).toFixed(10));
+          const yt = at(g, xt)?.result.values[id];
+          if (yt !== undefined) {
+            [x1, y1] = [xt, yt];
+            break;
+          }
+        }
       for (let k = 0; k < 16 && y1 !== undefined && Math.abs(y1 - y0) > 1e-12; k++) {
         const x2: number = onStep(g, x1 + ((target - y1) * (x1 - x0)) / (y1 - y0));
         // On steps, the search ends when it lands where it was: the nearest step to the target.
         if (step && (x2 === x1 || x2 === x0)) {
-          const near = at(g, x2);
-          if (near) return near;
+          const near = nearestFit(g, x2);
+          if (near && moved(near)) return near;
+          still ??= near;
           break;
         }
-        const next = at(g, x2);
+        const next: CalcState | undefined = step ? nearestFit(g, x2) : at(g, x2);
         if (!next) break;
         if (reaches(next)) return next;
-        [x0, y0, x1, y1] = [x1, y1, x2, next.result.values[id]];
+        const xn: number = next.result.values[g]!;
+        // A stepped g that fits only back where it was: the nearest it can go.
+        if (step && (xn === x1 || xn === x0)) {
+          if (moved(next)) return next;
+          still ??= next;
+          break;
+        }
+        [x0, y0, x1, y1] = [x1, y1, xn, next.result.values[id]];
       }
     }
     // Else worked out from the handle's value with g free (F from r on a circle); slower, as
@@ -177,9 +222,13 @@ export function driveTyped(
     const x = trial.result.values[g];
     if (x !== undefined && !trial.result.rejected && !trial.result.cleared.length) {
       const next = land(g, x);
-      if (next && (step || reaches(next))) return next;
+      if (next && (step || reaches(next))) {
+        if (moved(next)) return next;
+        still ??= next;
+      }
     }
   }
+  if (still) return still;
   return undefined;
 }
 

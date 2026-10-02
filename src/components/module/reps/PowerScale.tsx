@@ -340,7 +340,8 @@ export function PowerScale({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       );
                     }}
                   />
-                  {inView ? (
+                  {/* Mid-drag (the scale held) it stays mounted past the view, on its edge. */}
+                  {inView || lo.frozen ? (
                     <DragHandle
                       testID="drag-number"
                       x={numberX}
@@ -355,9 +356,13 @@ export function PowerScale({ spec, calc }: { spec: Spec; calc: Calculator }) {
                         // Whole decades only: the mantissa stays, the exponent moves.
                         const k = Math.round(start.current.log + dx / decade - logA);
                         const ex = rep.snapTo(spec.exponent, k * rep.factor(spec.exponent));
+                        // A worked-out exponent (from the typed number) moves the number, the
+                        // mantissa held: 4.7 × 10⁵ → 4.7 × 10⁶.
                         calc.set(
                           {
-                            ...pinHeld(calc, rep, [spec.mantissa], { [spec.exponent]: ex }),
+                            ...(rep.typed(spec.exponent)
+                              ? pinHeld(calc, rep, [spec.mantissa], { [spec.exponent]: ex })
+                              : rep.pin([spec.mantissa])),
                             [spec.exponent]: ex,
                           },
                           rep.slide(spec.exponent),

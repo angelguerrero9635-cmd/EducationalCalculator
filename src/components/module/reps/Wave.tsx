@@ -203,6 +203,7 @@ export function Wave({ spec, calc }: { spec: Spec; calc: Calculator }) {
               {known ? (
                 <DragHandle
                   testID={`drag-${spec.amplitude ?? spec.wavelength}`}
+                  drives={spec.amplitude ? [spec.amplitude, spec.wavelength] : undefined}
                   x={troughX}
                   y={troughY}
                   label={

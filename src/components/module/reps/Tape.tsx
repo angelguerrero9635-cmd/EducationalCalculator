@@ -116,8 +116,9 @@ export function Tape({ spec, calc }: { spec: Spec; calc: Calculator }) {
           const barH = 34;
           // A derived part (a rounded value, a sum) has no handle: dragging it could only
           // clear or rewrite the numbers the student typed.
+          // Nor does a part that can be one number only (a fact to read: 69 cups in ice).
           const drag = (id: string, i: number, x: number, y: number) =>
-            rep.variable(id).derived ? null : (
+            rep.variable(id).derived || !rep.movable(id) ? null : (
               <DragHandle
                 key={`d${id}`}
                 testID={`drag-${id}`}
@@ -138,7 +139,16 @@ export function Tape({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     ids[i + 1] && !compare && typeof spec.total === 'string' ? [spec.total] : [];
                   const first = { ...rep.pin([...others, ...total]), [id]: value };
                   // A worked-out part moves the typed value behind it (the engine's own way).
-                  if (!rep.typed(id)) return calc.set(first, rep.slide(id));
+                  // A worked-out total is held only while the next part can give way: beside a
+                  // typed part (3 × 8 in the boxes, then 5 extra) the total follows instead.
+                  const next = ids[i + 1];
+                  if (!rep.typed(id))
+                    return calc.set(
+                      next !== undefined && rep.typed(next)
+                        ? { ...rep.pin(others), ...rep.pinTyped(total), [id]: value }
+                        : first,
+                      rep.slide(id),
+                    );
                   // A typed part: when that would change a typed value it does not send, only
                   // the typed values hold still (a worked-out part gives way), then nothing
                   // else, then the grown total is sent along: the handle always moves something
