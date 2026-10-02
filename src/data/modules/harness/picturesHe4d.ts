@@ -21,6 +21,9 @@ import { electronTotals, formalCharges, resonanceSet } from '@/components/module
 
 import { beamHalf, cuvetteAbsorbance } from '@/components/module/reps/cuvetteMath';
 
+import { maps, SYMMETRY_MOLECULES } from '@/components/module/reps/symmetryMath';
+
+import type { LayoutDef } from '../layouts';
 import type { BeakerCuvette, LewisHe4dSpec, OrbitalHe4dSpec } from '../typesHe4d';
 
 type Val = (x: string | number) => number | undefined;
@@ -169,5 +172,32 @@ export function cuvetteIssues(rep: BeakerCuvette, val: Val): string[] {
   const drawn = cuvetteAbsorbance(A, T, eps, b, c);
   if (drawn !== undefined && Math.abs(beamHalf(16, drawn, 1) / 16 - 10 ** -drawn) > 1e-9)
     out.push('the beam leaving is not T times as wide');
+  return out;
+}
+
+/** HC113: every `symmetryElements` scene names a molecule drawn and an element it really has. */
+export function symmetryFigureIssues(l: LayoutDef): string[] {
+  const out: string[] = [];
+  if (l.kind !== 'explore') return out;
+  for (const s of l.scenes) {
+    const at = `scene "${s.label}"`;
+    if (s.symmetry && l.figure.kind !== 'symmetryElements')
+      out.push(`${at}: a symmetry scene on a ${l.figure.kind} figure`);
+    if (l.figure.kind !== 'symmetryElements') continue;
+    const sc = s.symmetry;
+    if (!sc) {
+      out.push(`${at}: no molecule`);
+      continue;
+    }
+    const m = SYMMETRY_MOLECULES[sc.molecule];
+    if (!m) {
+      out.push(`${at}: no molecule ${sc.molecule}`);
+      continue;
+    }
+    if (sc.element === undefined) continue;
+    const e = m.elements.find((x) => x.id === sc.element);
+    if (!e) out.push(`${at}: ${sc.molecule} has no element ${sc.element}`);
+    else if (!maps(m, e)) out.push(`${at}: ${e.name} does not map ${sc.molecule} onto itself`);
+  }
   return out;
 }

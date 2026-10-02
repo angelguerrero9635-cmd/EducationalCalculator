@@ -790,6 +790,169 @@ const cuvetteDark = cuvetteDemo(
   3e-5,
 );
 
+// ── HC113: symmetry elements (explore) and molecule cards (inorganic#0) ──
+
+const symmetryExplore: LayoutDef = {
+  kind: 'explore',
+  id: 'g.he-symmetryElements',
+  title: 'Symmetry elements: what maps a molecule onto itself',
+  use: 'Use this for “Which symmetry elements does water have, and what is its point group?”',
+  assumptions: [
+    'A symmetry element is an axis, a plane or a point; doing its operation leaves the molecule looking the same.',
+    'Find the shape first (VSEPR), then its symmetry.',
+  ],
+  figure: { kind: 'symmetryElements' },
+  scenes: [
+    {
+      label: 'H₂O: C₂',
+      lines: [
+        'A turn of 180° about the axis through O swaps the two H atoms.',
+        'The molecule looks the same, so the axis is a C₂.',
+      ],
+      symmetry: { molecule: 'H2O', element: 'C2' },
+    },
+    {
+      label: 'H₂O: σᵥ',
+      lines: [
+        'The plane of the molecule holds every atom, so reflecting in it moves nothing.',
+        'It contains the C₂ axis: a vertical mirror plane, σᵥ.',
+      ],
+      symmetry: { molecule: 'H2O', element: 'sv' },
+    },
+    {
+      label: 'NH₃: C₃',
+      lines: [
+        'A turn of 120° about the axis through N moves each H to the next.',
+        'With three σᵥ planes through the axis, the group is C₃ᵥ.',
+      ],
+      symmetry: { molecule: 'NH3', element: 'C3' },
+    },
+    {
+      label: 'BF₃: σₕ',
+      lines: [
+        'The molecule’s plane is perpendicular to the C₃ axis: a horizontal mirror plane, σₕ.',
+        'Three C₂ axes in that plane make the group D₃ₕ.',
+      ],
+      symmetry: { molecule: 'BF3', element: 'sh' },
+    },
+    {
+      label: 'CH₄: S₄',
+      lines: [
+        'Turn 90° about the axis between two H atoms, then reflect across: every H lands on an H.',
+        'Neither step alone works; together they make S₄.',
+      ],
+      symmetry: { molecule: 'CH4', element: 'S4' },
+    },
+    {
+      label: 'XeF₄: i',
+      lines: [
+        'Each F goes through the Xe to the F straight across from it.',
+        'A centre of inversion, i, with a C₄ axis and σₕ: the group is D₄ₕ.',
+      ],
+      symmetry: { molecule: 'XeF4', element: 'i' },
+    },
+    {
+      label: 'SF₆: C₄',
+      lines: [
+        'A turn of 90° about the line through two opposite F atoms moves each of the other four F to the next.',
+        'Three such C₄ axes, four C₃ axes and a centre make the group O_h.',
+      ],
+      symmetry: { molecule: 'SF6', element: 'C4' },
+    },
+    {
+      label: 'CO₂: C∞',
+      lines: [
+        'A linear molecule looks the same after a turn of any angle about its axis: C∞.',
+        'With a centre of inversion, the group is D∞h.',
+      ],
+      symmetry: { molecule: 'CO2', element: 'Cinf' },
+    },
+  ],
+};
+
+const symmetryEdge: LayoutDef = {
+  kind: 'explore',
+  id: 'g.he-symmetryElements-planes',
+  title: 'Planes, centres and improper axes',
+  use: 'Use this for “Does trans-N₂F₂ have a centre of inversion?”',
+  assumptions: [
+    'An improper axis Sₙ is a turn of 360° ÷ n followed by a reflection in the plane across it.',
+    'A molecule with a centre of inversion has every atom matched by a like atom straight through the centre.',
+  ],
+  figure: { kind: 'symmetryElements' },
+  scenes: [
+    {
+      label: 'PCl₅: S₃',
+      lines: [
+        'Turn 120° about the axial line, then reflect across the equatorial plane.',
+        'The two axial Cl atoms swap and the three equatorial ones move round: S₃.',
+      ],
+      symmetry: { molecule: 'PCl5', element: 'S3' },
+    },
+    {
+      label: 'trans-N₂F₂: i',
+      lines: [
+        'The two F atoms sit on opposite sides, so each passes through the centre onto the other.',
+        'With a C₂ and σₕ, the group is C₂ₕ.',
+      ],
+      symmetry: { molecule: 'N2F2', element: 'i' },
+    },
+    {
+      label: 'CH₂Cl₂: σᵥ′',
+      lines: [
+        'The plane through C and both H atoms reflects one Cl onto the other.',
+        'Two planes and a C₂ make the group C₂ᵥ, the same as water’s.',
+      ],
+      symmetry: { molecule: 'CH2Cl2', element: 'sv2' },
+    },
+  ],
+};
+
+const pointGroupCards: LayoutDef = {
+  kind: 'sort',
+  id: 'g.he-molecule-card-point-groups',
+  title: 'Sort molecules by point group',
+  use: 'Use this for “What is the point group of PCl₃?”',
+  assumptions: [
+    'Find the shape first (VSEPR), then its symmetry elements.',
+    'Lone pairs count for the shape but are not drawn on the cards.',
+  ],
+  question: 'Which point group does the molecule belong to?',
+  pickBar: true,
+  bins: [
+    { id: 'c2v', label: 'C₂ᵥ', why: 'One C₂ axis and two mirror planes containing it.' },
+    { id: 'c3v', label: 'C₃ᵥ', why: 'One C₃ axis and three mirror planes containing it.' },
+    { id: 'd3h', label: 'D₃ₕ', why: 'A C₃ axis, three C₂ axes across it and a σₕ plane.' },
+    { id: 'td', label: 'T_d', why: 'The tetrahedron: four C₃ axes and three S₄ axes.' },
+    { id: 'd4h', label: 'D₄ₕ', why: 'A C₄ axis, four C₂ axes across it, σₕ and a centre.' },
+    { id: 'oh', label: 'O_h', why: 'The octahedron: three C₄ axes, four C₃ axes and a centre.' },
+    { id: 'dinfh', label: 'D∞h', why: 'Linear with a centre of inversion.' },
+    { id: 'cinfv', label: 'C∞v', why: 'Linear with no centre of inversion.' },
+  ],
+  cards: (
+    [
+      ['H₂O', 'H2O', 'c2v'],
+      ['CH₂Cl₂', 'CH2Cl2', 'c2v'],
+      ['SO₂', 'SO2', 'c2v'],
+      ['NH₃', 'NH3', 'c3v'],
+      ['CHCl₃', 'CHCl3', 'c3v'],
+      ['PCl₃', 'PCl3', 'c3v'],
+      ['BF₃', 'BF3', 'd3h'],
+      ['PCl₅', 'PCl5', 'd3h'],
+      ['CH₄', 'CH4', 'td'],
+      ['CCl₄', 'CCl4', 'td'],
+      ['XeF₄', 'XeF4', 'd4h'],
+      ['[PtCl₄]²⁻', '[PtCl4]2-', 'd4h'],
+      ['SF₆', 'SF6', 'oh'],
+      ['[Fe(CN)₆]⁴⁻', '[Fe(CN)6]4-', 'oh'],
+      ['CO₂', 'CO2', 'dinfh'],
+      ['C₂H₂', 'C2H2', 'dinfh'],
+      ['HCl', 'HCl', 'cinfv'],
+      ['HCN', 'HCN', 'cinfv'],
+    ] as const
+  ).map(([label, formula, bin]) => ({ label, bin, figure: { kind: 'molecule', formula } })),
+};
+
 export const HE4D_GALLERY_MODULES: ModuleDef[] = [
   ladderHe,
   ladderHigh,
@@ -805,4 +968,4 @@ export const HE4D_GALLERY_MODULES: ModuleDef[] = [
   cuvetteDark,
 ];
 
-export const HE4D_GALLERY_LAYOUTS: LayoutDef[] = [];
+export const HE4D_GALLERY_LAYOUTS: LayoutDef[] = [symmetryExplore, symmetryEdge, pointGroupCards];

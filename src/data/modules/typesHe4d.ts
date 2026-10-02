@@ -163,3 +163,27 @@ export interface BeakerCuvette {
 export function cuvetteVars(c: BeakerCuvette): string[] {
   return ids(c.path, c.absorbance, c.transmittance, c.absorptivity, c.concentration);
 }
+
+// ─── HC113: explore figure `symmetryElements` ────────────────────────────────
+
+/** The molecules a `symmetryElements` figure draws (keys of `SYMMETRY_MOLECULES`). */
+export type SymmetryMolecule =
+  'H2O' | 'CH2Cl2' | 'NH3' | 'BF3' | 'PCl5' | 'CH4' | 'XeF4' | 'SF6' | 'CO2' | 'N2F2';
+
+/**
+ * A `symmetryElements` scene (HC113, C-P18): a ball-and-stick molecule in 3-D and one of its
+ * symmetry elements lit, by its id in `symmetryMath.ts`: an axis Cₙ (dashed, with the turn
+ * drawn round it), a mirror plane σ (a pane through the molecule), the centre i (the atom
+ * pairs it swaps joined through it) or an improper axis Sₙ (the axis and the pane
+ * perpendicular to it). With no `element`, the molecule alone, named with its point group.
+ */
+export interface SymmetryScene {
+  molecule: SymmetryMolecule;
+  element?: string;
+}
+
+/** The round 4 group D explore figures (listed in `layouts/types.ts`). */
+export type He4dFigure = { kind: 'symmetryElements' };
+
+/** The scene field each group D figure reads (for the layout tests). */
+export const HE4D_SCENE_FIELD = { symmetryElements: 'symmetry' } as const;

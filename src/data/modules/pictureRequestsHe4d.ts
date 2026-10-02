@@ -96,4 +96,23 @@ export const HE4D_REQUESTS: PictureRequest[] = [
     status: 'drawn',
     gallery: ['g.he-beaker-cuvette', 'g.he-beaker-cuvette-dark'],
   },
+  {
+    ...ask(
+      'HC113',
+      'symmetryElements',
+      'Explore figure symmetryElements: a ball-and-stick molecule in 3-D (H₂O, CH₂Cl₂, NH₃, BF₃, PCl₅, CH₄, XeF₄, SF₆, CO₂, trans-N₂F₂) with one symmetry element lit: a Cₙ axis with its turn, a σ pane, the centre i with the pairs it swaps, or Sₙ (axis and pane); and molecule card formulas for the point-group sort (PCl₃, PCl₅, SF₆, XeF₄, [PtCl₄]²⁻, [Fe(CN)₆]⁴⁻, HCN, C₂H₂, CH₂Cl₂, N₂F₂)',
+      ['he.chemistry.inorganic#0'],
+      [
+        'From C-P18. Explore figure: { kind: "symmetryElements" } with scenes { symmetry: { molecule: "H2O", element: "C2" } } (types in typesHe4d.ts; element ids in reps/symmetryMath.ts: C2, C3, C4, Cinf, sv, sv2, sh, sd, i, S3, S4, S6, as each molecule has them). With no element the molecule alone, named with its point group.',
+        'Cards for inorganic#0 (sort): { kind: "molecule", formula } for every card in the plan, e.g. "H2O", "CH2Cl2", "SO2", "NH3", "CHCl3", "PCl3", "BF3", "PCl5", "CH4", "CCl4", "XeF4", "[PtCl4]2-", "SF6", "[Fe(CN)6]4-", "CO2", "C2H2", "HCl", "HCN"; formulas drawn before keep their art.',
+        'Checks: layoutFigures (picturesHe4d.ts symmetryFigureIssues) applies each scene’s element and requires every atom to land on a like atom; the element must belong to the molecule.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-symmetryElements',
+      'g.he-symmetryElements-planes',
+      'g.he-molecule-card-point-groups',
+    ],
+  },
 ];

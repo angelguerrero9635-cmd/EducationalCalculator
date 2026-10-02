@@ -129,6 +129,14 @@ station that many degrees from the focus on both halves, filled where the wave a
 hollow where it doesn't. The layout check keeps a scene's lines from saying S waves arrive past
 104°.
 
+College inorganic chemistry, round 4 (group D, HC113): `symmetryElements`
+(`layouts/symmetryFigure.tsx`), a ball-and-stick molecule in 3-D with one symmetry element lit;
+`symmetry: { molecule, element? }` names the molecule (`H2O`, `CH2Cl2`, `NH3`, `BF3`, `PCl5`,
+`CH4`, `XeF4`, `SF6`, `CO2`, `N2F2`, trans) and the element by its id in `reps/symmetryMath.ts`
+(`C2`, `C3`, `C4`, `Cinf`, `sv`, `sv2`, `sh`, `sd`, `i`, `S3`, `S4`, `S6`): an axis with its
+turn, a mirror pane, the centre with the atom pairs it swaps, or an axis with a pane across it.
+The layout check applies the element and requires every atom to land on a like atom.
+
 Grade 9 biology (HS group G): `macromolecules` (`layouts/macroFigure.tsx`): monomers on their own
 cards joining into a polymer, the joining groups and new bonds lit and one water molecule drawn per
 bond; `macro: { kind, count?, split? }` builds starch, a polypeptide (folded), a DNA strand or a fat
@@ -191,6 +199,8 @@ marked), `crystal` adding the salt's lattice with its corner ions pulled off. Ca
 formula written with dashes ("CH3-C(=O)-O-CH2-CH3", the carbonyl's O drawn above) with its
 functional group lit (`alcohol`, `acid`, `ester`, `amine`, `ketone`, `aldehyde`, `ether`,
 `halide`). The `molecule` card now draws BF₃, CCl₄, CHCl₃ and CH₂O (`reps/chemLayoutsHs2d.ts`).
+The `molecule` card also draws PCl₃, PCl₅, SF₆, XeF₄, `[PtCl4]2-`, `[Fe(CN)6]4-`, HCN, C₂H₂,
+CH₂Cl₂ and N₂F₂ in 3-D (HC113, `reps/chemLayoutsHe4d.ts`).
 Card icons for the models of the atom (`layouts/icons/h2d.tsx`): `Dalton atom model`, `Thomson
 atom model`, `Rutherford atom model`, `Bohr atom model`, `quantum atom model`.
 

@@ -26,6 +26,7 @@ import type {
 import type { GeneScene, KeyScene, KeyStep, ObserveSecond, ReplicationCard } from '../typesHs2e';
 import type { Hs2fFigure, SpectraScene } from '../typesHs2f';
 import type { EarthSectionScene, Hs3cFigure } from '../typesHs3c';
+import type { He4dFigure, SymmetryScene } from '../typesHe4d';
 import type { GelScene, Hs3dCard, Hs3dFigure, ObserveScale, ReflexScene } from '../typesHs3d';
 import type { Round3Icon } from './icons';
 import type { StrobeCard } from './strobeCard';
@@ -304,6 +305,8 @@ export type Figure =
   | Hs2fFigure
   /** Earth and space round 3, group H3C (`typesHs3c.ts`): Earth cut open, a station placed. */
   | Hs3cFigure
+  /** College round 4, group D (`typesHe4d.ts`): a molecule with one symmetry element lit. */
+  | He4dFigure
   /** Biology round 3, group H3D (`typesHs3d.ts`): a gel of fixed samples. */
   | Hs3dFigure
   /**
@@ -539,6 +542,8 @@ export interface Scene {
   spectra?: SpectraScene;
   /** An `earthLayers` figure (`typesHs3c.ts`): the station's distance from the focus. */
   earthSection?: EarthSectionScene;
+  /** A `symmetryElements` figure (`typesHe4d.ts`): the molecule and the element lit. */
+  symmetry?: SymmetryScene;
   /** The part to highlight (a `parts` figure). */
   part?: string;
   /** More parts lit with `part`, on a drawn `parts` figure (a stamen: anther and filament). */

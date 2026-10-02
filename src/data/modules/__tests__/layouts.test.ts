@@ -12,6 +12,7 @@ import { HSL_SCENE_FIELD } from '../typesHsl';
 import { HS2F_SCENE_FIELD } from '../typesHs2f';
 import { HS3C_SCENE_FIELD } from '../typesHs3c';
 import { HS3D_SCENE_FIELD } from '../typesHs3d';
+import { HE4D_SCENE_FIELD } from '../typesHe4d';
 
 /** The scene field each explore figure draws from. */
 const SCENE_FIELD: Record<Figure['kind'], keyof Scene | undefined> = {
@@ -45,6 +46,7 @@ const SCENE_FIELD: Record<Figure['kind'], keyof Scene | undefined> = {
   carbonCycle: 'carbon',
   pedigree: 'family',
   molecules: 'molecules',
+  ...HE4D_SCENE_FIELD, // HC113
   phases: 'phase',
   periodicTable: 'elements',
   planets: 'planets',

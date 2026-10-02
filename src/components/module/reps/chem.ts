@@ -6,6 +6,7 @@
  */
 
 import { EXTRA_LAYOUTS } from './chemLayoutsHs2d';
+import { HE4D_LAYOUTS } from './chemLayoutsHe4d';
 
 /**
  * Every element in order of atomic number: [symbol, name, standard atomic mass]. Masses are
@@ -477,7 +478,11 @@ const keyOf = (formula: string) =>
  * each bonded to its nearest neighbor inward, so the particle has the right atoms in it.
  */
 export function moleculeOf(formula: string): Molecule {
-  const known = LAYOUTS[keyOf(formula)] ?? LAYOUTS[formula] ?? EXTRA_LAYOUTS[keyOf(formula)];
+  const known =
+    LAYOUTS[keyOf(formula)] ??
+    LAYOUTS[formula] ??
+    EXTRA_LAYOUTS[keyOf(formula)] ??
+    HE4D_LAYOUTS[keyOf(formula)]; // HC113
   if (known) return known;
   const atoms = parseFormula(formula).flatMap(({ el, n }) => Array<string>(n).fill(el));
   if (atoms.length === 0) return { atoms: [], bonds: [] };
