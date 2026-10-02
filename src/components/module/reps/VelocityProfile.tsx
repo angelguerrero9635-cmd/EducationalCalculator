@@ -309,7 +309,9 @@ export function VelocityProfile({ spec, calc }: { spec: VelocityProfileSpec; cal
     );
     const bits: string[] = [];
     if (vmax !== undefined && vavg !== undefined)
-      bits.push(`v_max = 2v_avg = 2 × ${r4(vavg)} = ${r4(vmax)} m/s at the centre, 0 at the wall.`);
+      bits.push(
+        `v_max = 2 v_avg = 2 × ${r4(vavg)} = ${r4(vmax)} m/s at the centre, 0 at the wall.`,
+      );
     if (dP !== undefined && R !== undefined && si('L') && tau !== undefined)
       bits.push(`τ_w = ΔPR ÷ 2L = ${r4(tau)} Pa.`);
     if (Re !== undefined && !spec.vessel)
@@ -500,7 +502,7 @@ export function VelocityProfile({ spec, calc }: { spec: VelocityProfileSpec; cal
             fontWeight="bold"
             fill={c.chartHighlight}
           >
-            {`v_max = 1.5v_avg = ${r4(vmax)} m/s`}
+            {`v_max = 1.5 v_avg = ${r4(vmax)} m/s`}
           </ChartText>
         )}
         {scale && vavg !== undefined && (
@@ -525,7 +527,7 @@ export function VelocityProfile({ spec, calc }: { spec: VelocityProfileSpec; cal
     caption =
       vmax === undefined
         ? 'Type the film’s values to draw the profile.'
-        : `The film is still at the wall and fastest at its free surface, where nothing drags it: v_max = 1.5v_avg = ${r4(vmax)} m/s.`;
+        : `The film is still at the wall and fastest at its free surface, where nothing drags it: v_max = 1.5 v_avg = ${r4(vmax)} m/s.`;
   }
 
   // ── Steady diffusion across a film ──
@@ -849,8 +851,8 @@ export function VelocityProfile({ spec, calc }: { spec: VelocityProfileSpec; cal
       </G>
     );
     const parts: string[] = [];
-    if (Pr !== undefined && Pr > 0) parts.push(`δ_T = δPr^(−1/3) = ${r4(layerRatio(Pr))}δ`);
-    if (Sc !== undefined && Sc > 0) parts.push(`δ_c = δSc^(−1/3) = ${r4(layerRatio(Sc))}δ`);
+    if (Pr !== undefined && Pr > 0) parts.push(`δ_T = δ·Pr⁻¹ᐟ³ = ${r4(layerRatio(Pr))}δ`);
+    if (Sc !== undefined && Sc > 0) parts.push(`δ_c = δ·Sc⁻¹ᐟ³ = ${r4(layerRatio(Sc))}δ`);
     caption = parts.length
       ? `${parts.join('; ')}. The thinner the layer, the steeper its gradient at the wall and the faster the transfer.`
       : 'Type Pr or Sc to draw the other layers.';
