@@ -320,7 +320,9 @@ export function SideSplitter({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const unit = typeof spec.width === 'string' ? rep.unit(spec.width) : undefined;
   const part = (i: number, x: number) => {
     const id = sp.parts?.[i];
-    return id ? rep.value(id) : `${formatNumber(x)}${unit ? ` ${unit}` : ''}`;
+    // Worked from k and the sides only when they are known (never the example's behind a "?").
+    if (id) return rep.value(id);
+    return kKnown && sidesKnown ? `${formatNumber(x)}${unit ? ` ${unit}` : ''}` : '?';
   };
   const [ad, db, ae, ec] = [
     part(0, k * AB),

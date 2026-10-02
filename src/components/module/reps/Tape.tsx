@@ -129,25 +129,45 @@ export function Tape({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   fit.freeze();
                 }}
                 onEnd={fit.release}
-                onMove={(dx) =>
-                  calc.set(
-                    {
-                      // Moving the line between two parts: the next part gives way and the total
-                      // stays (price up, money left down). The last part grows the total.
-                      ...rep.pin(
-                        ids
-                          .filter((v) => v !== id && v !== ids[i + 1])
-                          .concat(
-                            ids[i + 1] && !compare && typeof spec.total === 'string'
-                              ? [spec.total]
-                              : [],
-                          ),
-                      ),
-                      [id]: rep.snapTo(id, (start.current + dx / scale) * rep.factor(id)),
-                    },
-                    rep.slide(id),
-                  )
-                }
+                onMove={(dx) => {
+                  const value = rep.snapTo(id, (start.current + dx / scale) * rep.factor(id));
+                  // Moving the line between two parts: the next part gives way and the total
+                  // stays (price up, money left down). The last part grows the total.
+                  const others = ids.filter((v) => v !== id && v !== ids[i + 1]);
+                  const total =
+                    ids[i + 1] && !compare && typeof spec.total === 'string' ? [spec.total] : [];
+                  const first = { ...rep.pin([...others, ...total]), [id]: value };
+                  // A worked-out part moves the typed value behind it (the engine's own way).
+                  if (!rep.typed(id)) return calc.set(first, rep.slide(id));
+                  // A typed part: when that would change a typed value it does not send, only
+                  // the typed values hold still (a worked-out part gives way), then nothing
+                  // else, then the grown total is sent along: the handle always moves something
+                  // and never changes a typed value it does not send.
+                  const updates = [
+                    first,
+                    { ...rep.pinTyped([...others, ...total]), [id]: value },
+                    { ...rep.pinTyped(others), [id]: value },
+                  ];
+                  // Past a value that leaves a part no whole number (a share into 8 groups),
+                  // the nearest that does, on the way the pointer went.
+                  const now = calc.values[id];
+                  const step = rep.slide(id)?.slide.step ?? 0;
+                  if (now !== undefined && step > 0 && Math.abs(value - now) > 1e-9)
+                    for (let k = 1; k <= 12; k++)
+                      updates.push({
+                        ...rep.pinTyped(others),
+                        [id]: value + Math.sign(value - now) * k * step,
+                      });
+                  if (!compare && typeof spec.total === 'string' && rep.known(spec.total)) {
+                    const grown = rep.shown(spec.total) - shown[i]! + value / rep.factor(id);
+                    updates.push({
+                      ...rep.pinTyped(others),
+                      [id]: value,
+                      [spec.total]: grown * rep.factor(spec.total),
+                    });
+                  }
+                  calc.set(updates.find((u) => calc.fitsHeld(u)) ?? first, rep.slide(id));
+                }}
               />
             );
 

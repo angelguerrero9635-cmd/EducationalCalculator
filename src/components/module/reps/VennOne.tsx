@@ -26,7 +26,9 @@ export function VennOne({ spec, calc }: { spec: VennChances; calc: Calculator })
   const known = A.known && (!total || total.known);
   const a = A.value / N;
   const valid = a >= -1e-9 && a <= 1 + 1e-9;
-  const say = spec.counts ? (x: number) => countText(x, N) : probText;
+  // With a value "?" the regions read "?" (never the example's numbers behind the "?").
+  const say0 = spec.counts ? (x: number) => countText(x, N) : probText;
+  const say = (x: number) => (known ? say0(x) : '?');
   const [nA] = spec.names ?? ['A'];
   const inside = spec.shade === 'aOnly' || spec.shade === 'or' || spec.shade === 'and';
   const outside = spec.shade === 'notA' || spec.shade === 'neither';

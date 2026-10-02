@@ -8,7 +8,7 @@ import { chart, usePalette } from '@/theme';
 import type { Calculator } from '../useCalculator';
 import { bracePath } from './braces';
 import { Ball, BoxShadow, TopLight, url, usePaintIds } from './paint';
-import { Canvas, ChartText, DragHandle, fitLabel, useRep, Caption } from './common';
+import { Canvas, ChartText, DragHandle, fitLabel, setPair, useRep, Caption } from './common';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'array' }>;
@@ -451,11 +451,18 @@ export function DotArray({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 }}
                 onEnd={() => setFrozen(null)}
                 onMove={(dx, dy) =>
-                  calc.set({
-                    ...(split ? rep.pin([split.first]) : {}),
-                    [spec.rows]: rep.snapTo(spec.rows, start.current.r + dy / cell),
-                    [spec.columns]: rep.snapTo(spec.columns, start.current.c + dx / cell),
-                  })
+                  setPair(
+                    calc,
+                    rep,
+                    split ? rep.pin([split.first]) : {},
+                    {
+                      [spec.rows]: rep.snapTo(spec.rows, start.current.r + dy / cell),
+                      [spec.columns]: rep.snapTo(spec.columns, start.current.c + dx / cell),
+                    },
+                    Math.abs(dx) >= Math.abs(dy)
+                      ? [spec.columns, spec.rows]
+                      : [spec.rows, spec.columns],
+                  )
                 }
               />
             </>

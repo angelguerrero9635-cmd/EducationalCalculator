@@ -424,7 +424,11 @@ function Seismogram({ spec, calc }: { spec: SeismogramSpec; calc: Calculator }) 
   const step = tickStep(a.surface * 1.35, 6);
   const tMax = Math.ceil((a.surface * 1.35) / step) * step;
   const lag =
-    spec.lag !== undefined && known(spec.lag) ? text(spec.lag, 0) : formatNumber(round(a.s - a.p));
+    spec.lag !== undefined && known(spec.lag)
+      ? text(spec.lag, 0)
+      : all
+        ? formatNumber(round(a.s - a.p))
+        : '?'; // never worked from the example's numbers behind a "?"
   return (
     <View>
       <Canvas aspect={SH / 358}>
@@ -442,7 +446,7 @@ function Seismogram({ spec, calc }: { spec: SeismogramSpec; calc: Calculator }) 
           }
           const ticks = Array.from({ length: Math.round(tMax / step) + 1 }, (_, i) => i * step);
           const arrival = (t: number, name: string, color: string) => {
-            const label = `${name} ${formatNumber(round(t, 1))} s`;
+            const label = `${name} ${all ? formatNumber(round(t, 1)) : '?'} s`;
             const fit = fitLabel(X(t), label, chart.label, w, 'middle');
             return (
               <G key={name}>

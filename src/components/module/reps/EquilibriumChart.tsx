@@ -55,6 +55,8 @@ export function EquilibriumChart({ spec, calc }: { spec: EquilibriumChartSpec; c
     (!stress?.add || read(stress.add.amount).known) &&
     (stress?.scale === undefined || read(stress.scale).known) &&
     (stress?.K === undefined || read(stress.K).known);
+  // While a value is "?" the worked numbers read "?" (never the example's behind the "?").
+  const fmtK = (x: number) => (known ? fmt(x) : '?');
   const colors = [c.chartHighlight, c.fnSecond, c.lineSum, c.chartSecond];
   const tEnd = stress ? 2 : 1;
   const at = (t: number) => {
@@ -80,8 +82,8 @@ export function EquilibriumChart({ spec, calc }: { spec: EquilibriumChartSpec; c
   const labelOf = (i: number) => {
     const group = spec.species.map((_, j) => j).filter((j) => firstOf[j] === i);
     return group.length > 1
-      ? `${group.map(name).join(' = ')} = ${fmt(last[i]!)} M`
-      : `${name(i)} ${fmt(last[i]!)}`;
+      ? `${group.map(name).join(' = ')} = ${fmtK(last[i]!)} M`
+      : `${name(i)} ${fmtK(last[i]!)}`;
   };
   // Room on the left for the widest number up the axis, past the axis title.
   const widest = Math.max(...ticksOf(y).map((v) => formatNumber(v).length)) * chart.label * 0.58;
@@ -167,12 +169,14 @@ export function EquilibriumChart({ spec, calc }: { spec: EquilibriumChartSpec; c
       </Canvas>
       <Caption>
         {[
-          `At equilibrium Q = K = ${fmt(K)}: ${spec.species.map((_, i) => `${name(i)} = ${fmt(st.eq1[i]!)} M`).join(', ')}.`,
+          known
+            ? `At equilibrium Q = K = ${fmtK(K)}: ${spec.species.map((_, i) => `${name(i)} = ${fmtK(st.eq1[i]!)} M`).join(', ')}.`
+            : 'At equilibrium Q = K: type the amounts to find them.',
           ...(stress && st.Q2 !== undefined && st.K2 !== undefined
             ? [
                 Math.abs(st.Q2 - st.K2) <= 1e-9 * Math.max(1, st.K2)
-                  ? `After the change Q = K = ${fmt(st.K2)}: nothing shifts.`
-                  : `After the change Q = ${fmt(st.Q2)} is ${st.Q2 < st.K2 ? 'less' : 'more'} than K = ${fmt(st.K2)}: the reaction shifts ${st.Q2 < st.K2 ? 'right, making more products' : 'left, making more reactants'} until Q = K again.`,
+                  ? `After the change Q = K = ${fmtK(st.K2)}: nothing shifts.`
+                  : `After the change Q = ${fmtK(st.Q2)} is ${st.Q2 < st.K2 ? 'less' : 'more'} than K = ${fmtK(st.K2)}: the reaction shifts ${st.Q2 < st.K2 ? 'right, making more products' : 'left, making more reactants'} until Q = K again.`,
               ]
             : []),
         ].join(' · ')}

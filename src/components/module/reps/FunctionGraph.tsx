@@ -738,7 +738,10 @@ export function FunctionGraph({
                 if (x === undefined) continue;
                 placed = { ...def, x, y: main.f(x) };
               }
-              if (!inWin(placed.x, placed.y)) continue;
+              // The handle being dragged stays mounted past the held window (DragHandle keeps it
+              // on the picture): unmounting it would drop the drag.
+              const held = frozen.value !== undefined && def.name === start.current.def?.name;
+              if (!inWin(placed.x, placed.y) && !held) continue;
               handleDefs.push({ def: placed, ids: idsOf });
             }
           }

@@ -31,9 +31,12 @@ export function CubeRoot({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const k = Math.floor(edge + 1e-9);
   const span = Math.max(2, Math.ceil(edge - 1e-9) + 1);
   const rootText = `∛${formatNumber(volume)}`;
-  const rootLabel = exact
-    ? `${rootText} = ${formatNumber(edge)}`
-    : `${rootText} ≈ ${formatNumber(Math.round(edge * 100) / 100)}`;
+  // No volume or edge typed: the label reads "?" (never the example's numbers behind a "?").
+  const rootLabel = !known
+    ? '∛? = ?'
+    : exact
+      ? `${rootText} = ${formatNumber(edge)}`
+      : `${rootText} ≈ ${formatNumber(Math.round(edge * 100) / 100)}`;
 
   return (
     <View>

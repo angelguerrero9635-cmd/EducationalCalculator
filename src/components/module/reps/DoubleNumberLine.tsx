@@ -7,7 +7,7 @@ import { formatNumber } from '@/engine/format';
 import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
-import { Canvas, Caption, ChartText, DragHandle, useRep } from './common';
+import { Canvas, Caption, ChartText, DragHandle, useRep, pinHeld } from './common';
 import { Steppers } from './Steppers';
 
 type Spec = Extract<Representation, { kind: 'doubleNumberLine' }>;
@@ -236,24 +236,23 @@ export function DoubleNumberLine({ spec, calc }: { spec: Spec; calc: Calculator 
                   y={(yTop + yBottom) / 2}
                   label={rep.variable(spec.top).name}
                   onStart={() => (start.current = top)}
-                  onMove={(dx) =>
+                  onMove={(dx) => {
+                    // The drag lands on a tenth of a mark (2.5, 3, 3.1: never 3.003); the box
+                    // takes anything typed.
+                    const top = rep.snapTo(
+                      spec.top,
+                      Math.max(
+                        0,
+                        Math.round((start.current + (dx / unit) * tickStep) / (tickStep / 10)) *
+                          (tickStep / 10),
+                      ) * rep.factor(spec.top),
+                    );
+                    // A typed rate holds still; one worked out from typed totals gives way.
                     calc.set(
-                      {
-                        ...rep.pin([spec.per]),
-                        // The drag lands on a tenth of a mark (2.5, 3, 3.1: never 3.003);
-                        // the box takes anything typed.
-                        [spec.top]: rep.snapTo(
-                          spec.top,
-                          Math.max(
-                            0,
-                            Math.round((start.current + (dx / unit) * tickStep) / (tickStep / 10)) *
-                              (tickStep / 10),
-                          ) * rep.factor(spec.top),
-                        ),
-                      },
+                      { ...pinHeld(calc, rep, [spec.per], { [spec.top]: top }), [spec.top]: top },
                       rep.slide(spec.top),
-                    )
-                  }
+                    );
+                  }}
                 />
               ) : null}
             </>

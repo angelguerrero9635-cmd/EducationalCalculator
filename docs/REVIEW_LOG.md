@@ -34,6 +34,80 @@ script. One entry per review, with the token cost, so the next review is cheaper
   questions for 12 of 17 skills; m.12.: 2 for 2 of 20 (math/12.jsonl holds 3 questions, 2
   filed under m.11).
 
+## The "?" check and the end-drags on every page: 1,361 pages with a picture
+
+- **Setup.** One full build, then `review-interact.mjs` (scenes, end-drags, the "?" check) on
+  every page with a picture, grade by grade (m.K–m.12, s.K–s.12, the 359 gallery demos), three
+  browsers at once (about 2 h). Fixes per component, each re-checked on a build of the pages of
+  its kind; then a second full sweep on a fresh build, and a third pass on the pages still
+  flagged.
+- **The check first.** Its false positives buried the leaks, so before the sweep a "?" hit is
+  kept only when the text depends on the "?" box: the same first edit is made again with that
+  box given another number (a step of its own size, doubled or halved), and a text that reads
+  the same, or keeps that number in the same slot of the same shape ("Dollar bills ($1 each):
+  3"), or keeps it with its unit ("9.8 N/kg"), is fixed text, noted and not flagged. A
+  worked-out "?" box is varied through the other "?" boxes. Numbers written onto π or a root
+  ("2π√(m/k)") are a formula's; two bare numbers on a shared round step (100, 300) and runs in
+  a letter (T, 2T, 3T) are ticks. Verified on a build with the pendulum and percent-bar fixes
+  of 5490b89 reverted: the pendulum's leak is still flagged. The script also opens gallery
+  demos under /gallery, survives a failing or frozen page (one ERROR line, a 3-minute watchdog,
+  a server restart), writes its reports after each page, and its second drag starts on the
+  handle (it pressed empty space when the handle had not moved).
+- **Found (first sweep, before the fixes; the early grades ran before the false-positive
+  rules were final):** 398 "?" errors and 201 drag errors.
+
+  | Grade    | Pages | "?" before |      "?" after | Drags before | Drags after |
+  | -------- | ----: | ---------: | -------------: | -----------: | ----------: |
+  | m.K–m.5  |   212 |          8 |              0 |           35 |          24 |
+  | m.6–m.8  |   137 |         37 |              0 |           44 |          14 |
+  | m.9–m.12 |   329 |        129 | 65 (m.12 only) |           47 |          16 |
+  | s.K–s.5  |    46 |          0 |              0 |            8 |           7 |
+  | s.6–s.8  |    48 |          8 |    3 (fixed g) |           11 |           3 |
+  | s.9–s.12 |   230 |         84 |              9 |           19 |          14 |
+  | Gallery  |   359 |        132 |             73 |           37 |          11 |
+
+  "After" is the second full sweep; the third pass (after the last fixes) leaves no "?" error
+  below Grade 12 math but the ones listed under "Not fixed".
+
+- **Fixed ("?" leaks),** each per component so every page of the kind benefits: root and cube
+  labels, cross-sections (flat and round), nets, number-line jumps, hops, inequality and
+  absolute-value lines, skip-count quotients, scale copies and splitters, spinners, the wave's
+  frequency, the motion strip, sector arcs and angles, conic sizes, points and directrix,
+  circle-angle sums, probability trees and Venn regions, solid nets and Cavalieri stacks,
+  lenses and mirrors, standing waves, the normal curve's sampling line, chemistry (beaker,
+  energy profile, equilibrium, pH and titration, decay and its time axis), the DNA mutation,
+  and earth and space (habitable zone, parallax, reserves, expanding universe, spreading rate,
+  isobars, air parcel, energy balance, seismogram). A parallel-lines page with its angle
+  cleared threw a page error (`toFixed` of undefined); it now gives the rule.
+- **Fixed (drags):** `DragHandle` keeps every handle on its Canvas (no handle leaves the
+  picture); lines, conics, function graphs and the plot's unit rate keep the dragged handle
+  mounted while the window is held; the spectrum's color handle stays through its drag. A drag
+  never changes a typed value it does not send: the calculator's `fitsHeld` says whether a
+  drag's update would be taken, `setPair` moves only the typed side of a corner (rectangle,
+  roof, dot array) and skips values that leave no whole partner, `pinHeld` holds a worked-out
+  value only when that changes no typed one (double number lines, plots, skip counts, unit
+  tiles, power scales, fraction lines), tapes try typed-only pins and whole-number parts
+  before growing the total, points and thermometers pin only typed values, a wave's rope keeps
+  its length. Factor-row handles are named after the value they drive.
+- **Not fixed (listed):** Grade 12 math captions still worked with the example's numbers:
+  matrices (determinants, Cramer, inverse), polar and rotated conics, parametric points,
+  confidence intervals, and vectors (VectorDiagram was being edited by another fixer).
+  Grades 9–12: the ionic-bonding picture picks its ions from the example's charges; the
+  reserve's axis end; the transit depth; the polynomial box demo. Drags: handles on a
+  worked-out value whose typed values can't move in whole numbers stand still (two-step
+  tapes, fraction-times-whole, mixed numbers, two-unit tiles, π graph, scientific notation's
+  exponent); a point driving two typed values (the moves r and u, a pattern's t and s) is
+  flagged by the one-value rule; angle handles run away as the pointer passes the vertex;
+  two fresh-water tape handles 9 px apart; Grade 11–12 runaways (vectors, rose, matrix image,
+  stellar evolution) and frozen pages (chi-square, the histogram from a list, `or`
+  inequalities: about 0.6 s per move).
+- **False positives left (and why):** fixed counts that equal an example value where the
+  text also holds the box's own number in another form ("Shells: 2, 8, 8", the ionic rule's
+  "1, 2, 3", a jump list "0, 1, 2, …", the redox "1 × ?"), and "n < 30", the CLT's rule.
+- **Evidence for the next review:** the drag check's one-value rule can't tell a two-value
+  handle (an amplitude driving its crest-to-trough, a point driving its moves) from a stray
+  change; a list of handles each page means to drive (`drives` has one) would let it.
+
 ## Grades 11–12 new pages: one lesson-reviewer and one page-reviewer, 32 pages
 
 - Found (lesson): ranges that were absurd or excluded normal answers (a stream 100 km deep,

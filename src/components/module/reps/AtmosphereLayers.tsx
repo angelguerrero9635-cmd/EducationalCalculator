@@ -439,7 +439,7 @@ function PressureMap({ spec, calc }: { spec: PressureMapSpec; calc: Calculator }
                 textAnchor="end"
                 fill={c.chartMuted}
               >
-                {`isobars every ${isobarStep(high, low)} hPa`}
+                {`isobars every ${known(spec.high) && known(spec.low) ? isobarStep(high, low) : '?'} hPa`}
               </ChartText>
               {spec.distance !== undefined ? (
                 <G>

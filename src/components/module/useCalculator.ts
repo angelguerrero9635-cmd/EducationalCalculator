@@ -6,6 +6,7 @@ import {
   changeUnits,
   initialState,
   misfits,
+  movedGivens,
   setInput,
   setValues,
   typeValue,
@@ -45,6 +46,11 @@ export interface Calculator {
   ) => void;
   /** Whether `set(updates)` would be taken as it is (nothing rejected or cleared). */
   fits: (updates: Record<string, number | undefined>) => boolean;
+  /**
+   * Whether a drag's `set(updates, { slide })` would be taken as it is: nothing rejected or
+   * cleared, and no typed value the drag does not send moved (a drag never changes one).
+   */
+  fitsHeld: (updates: Record<string, number | undefined>) => boolean;
   /**
    * Typing in a box: `startTyping` when it gets focus, `endTyping` when it loses it. While a
    * box is being typed in, each keystroke is worked out from the values as they were at
@@ -137,6 +143,11 @@ export function useCalculator(module: ModuleDef): Calculator {
       values,
       result: calc.result,
       fits: (updates) => !misfits(setValues(units.system, calc, updates), Object.keys(updates)),
+      fitsHeld: (updates) => {
+        const ids = Object.keys(updates);
+        const next = setValues(units.system, calc, updates);
+        return !misfits(next, ids) && movedGivens(calc, next, ids).length === 0;
+      },
       status: (id) =>
         given.has(id) ? (calc.example ? 'example' : 'given') : id in values ? 'derived' : 'unknown',
       isExample: !!calc.example,

@@ -244,11 +244,13 @@ function ProfileView({ spec, rep, calc }: { spec: Profile; rep: Rep; calc: Calcu
       <Caption>
         {[
           problem ??
-            (dH < 0
-              ? `The products are lower: the reaction gives off ${formatNumber(Number((-dH).toFixed(6)))} ${unit}. Exothermic.`
-              : dH > 0
-                ? `The products are higher: the reaction takes in ${formatNumber(Number(dH.toFixed(6)))} ${unit}. Endothermic.`
-                : 'The products are at the same level: ΔH = 0.'),
+            (!(r.known && p.known)
+              ? 'ΔH = products − reactants: type both to compare them.'
+              : dH < 0
+                ? `The products are lower: the reaction gives off ${formatNumber(Number((-dH).toFixed(6)))} ${unit}. Exothermic.`
+                : dH > 0
+                  ? `The products are higher: the reaction takes in ${formatNumber(Number(dH.toFixed(6)))} ${unit}. Endothermic.`
+                  : 'The products are at the same level: ΔH = 0.'),
           ...(cat && !catProblem
             ? ['A catalyst lowers the hump, not the levels: ΔH stays the same.']
             : []),
@@ -481,7 +483,7 @@ function CalorimeterView({ spec, rep }: { spec: Calorimeter; rep: Rep }) {
               ? `The water took in ${qText} J, all of it from the ${metal.name}. It cooled by ${num(metal.start.value - t2.value)} °C, so its c = ${qText}/(${metal.mass.text} × ${num(metal.start.value - t2.value)}) = ${metal.heat ? metal.heat.text : num(q / (metal.mass.value * (metal.start.value - t2.value)))} J/(g·°C).`
               : `The water warmed: the reaction gave off ${qText} J. Exothermic.`
             : dT < 0
-              ? `The water cooled: the reaction took in ${num(-q)} J from it. Endothermic.`
+              ? `The water cooled: the reaction took in ${known ? num(-q) : '?'} J from it. Endothermic.`
               : 'The temperature did not change: no heat moved.',
         ].join(' · ')}
       </Caption>

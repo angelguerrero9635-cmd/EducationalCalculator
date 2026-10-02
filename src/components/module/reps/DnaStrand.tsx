@@ -95,7 +95,8 @@ export function DnaStrand({ spec, calc }: { spec: DnaStrandSpec; calc: Calculato
     : Math.max(0, Math.min(12, Math.round(num(spec.length) ?? full.length)));
   const template = long ? long.template : full.slice(0, len);
   const m = spec.mutation;
-  const at = m ? Math.round(num(m.at) ?? 1) : undefined;
+  // The mutation is made only where its place is known (never at the example's place behind a "?").
+  const at = m && known(m.at) ? Math.round(num(m.at) ?? 1) : undefined;
   const mut: Mutation | undefined =
     m && at !== undefined ? { type: m.type, at, base: m.base } : undefined;
   const shown = mut ? mutate(template, mut) : template;

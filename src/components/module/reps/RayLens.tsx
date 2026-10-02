@@ -230,7 +230,7 @@ export function RayLens({ spec, calc }: { spec: Spec; calc: Calculator }) {
                 <SubLabel
                   x={P.x}
                   y={h - 12}
-                  text={`dₒ ${sig(dO)} ${unit}`}
+                  text={`dₒ ${known(spec.objectDistance) ? sig(dO) : '?'} ${unit}`}
                   size={chart.label}
                   w={w}
                 />
@@ -238,7 +238,7 @@ export function RayLens({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   <SubLabel
                     x={I.x}
                     y={h - 12}
-                    text={`dᵢ ${sig(L.dI)} ${unit}`}
+                    text={`dᵢ ${all ? sig(L.dI) : '?'} ${unit}`}
                     size={chart.label}
                     color={c.forceNet}
                     w={w}
@@ -284,6 +284,13 @@ export function RayLens({ spec, calc }: { spec: Spec; calc: Calculator }) {
   );
 
   function captionLines(): string[] {
+    // A "?" value: the rules only, never worked with the example's numbers behind the "?".
+    if (!all)
+      return [
+        '1/dᵢ = 1/f − 1/dₒ',
+        'm = −dᵢ/dₒ',
+        'Type the focal length, the distance and the height to find the image.',
+      ];
     const fT = par(sig(f));
     const out = [`1/dᵢ = 1/f − 1/dₒ = 1/${fT} − 1/${sig(dO)}`];
     if (!Number.isFinite(L.dI)) {

@@ -628,7 +628,10 @@ export function CoordinatePlane({ spec, calc }: { spec: Spec; calc: Calculator }
                     }}
                     onMove={(mx, my) =>
                       calc.set({
-                        ...rep.pin(pts.filter((o) => o !== pt).flatMap((o) => [o.x, o.y])),
+                        // The other points' typed coordinates hold still; a point worked out
+                        // from typed moves (r right, u up) follows them instead of turning
+                        // them into new numbers.
+                        ...rep.pinTyped(pts.filter((o) => o !== pt).flatMap((o) => [o.x, o.y])),
                         [pt.x]: rep.snapTo(pt.x, (start.current.x + mx / unit) * rep.factor(pt.x)),
                         [pt.y]: rep.snapTo(pt.y, (start.current.y - my / unit) * rep.factor(pt.y)),
                       })

@@ -64,7 +64,8 @@ export function Parallax({ spec, calc }: { spec: ParallaxSpec; calc: Calculator 
   const seenJul = hit(jul);
   const pText = typeof spec.angle === 'string' ? rep.named(spec.angle) : `p = ${formatNumber(p)}″`;
   const dText =
-    typeof spec.parsecs === 'string' && rep.known(spec.parsecs)
+    // A box's own label ("d = ?" while it is "?"), never worked from the example's angle.
+    typeof spec.parsecs === 'string'
       ? rep.named(spec.parsecs)
       : `d = ${formatNumber(round(d))} parsecs`;
   // The angle p at the star, from its line to the Sun (straight down) to its line to July's Earth.

@@ -209,7 +209,8 @@ export function Thermometers({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     onMove={(_, dy) =>
                       calc.set(
                         {
-                          ...rep.pin(spec.items.filter((x) => x !== id)),
+                          // The other typed readings hold still; one worked out from them (a mix) follows.
+                          ...rep.pinTyped(spec.items.filter((x) => x !== id)),
                           [id]: rep.snapTo(
                             id,
                             (start.current - (dy / (bottom - top)) * (hi - lo)) * rep.factor(id),
