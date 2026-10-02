@@ -49,6 +49,7 @@ import { hs3aSpecVars } from '../typesHs3a';
 import { he1bSpecVars } from '../typesHe1b';
 import { he1aSpecVars } from '../typesHe1a';
 import { bodeVars, complexPlaneHe2aVars } from '../typesHe2a';
+import { he3jSpecVars } from '../typesHe3j';
 import { he2hSpecVars } from '../typesHe2h';
 import { isStandIn, pages } from '../harness/scope';
 import { treeChanceVars, twoWayVars, vennChanceVars } from '../harness/picturesHse';
@@ -593,6 +594,7 @@ function representationVars(r: Representation): string[] {
       return hslSpecVars(r);
     case 'streamChannel':
     case 'reserve':
+      if ('mode' in r) return he3jSpecVars(r); // HC88
       return hs2fSpecVars(r);
     case 'geologicClock':
     case 'coralSection':
@@ -645,6 +647,11 @@ function representationVars(r: Representation): string[] {
       return he1aSpecVars(r);
     case 'bode':
       return bodeVars(r); // HC22
+    case 'roadCurve':
+    case 'connection':
+    case 'hydrograph':
+    case 'blockDiagram':
+      return he3jSpecVars(r); // HC60, HC61, HC89, HC90
     case 'wing':
     case 'duct':
     case 'supersonicFlow':

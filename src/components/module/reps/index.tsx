@@ -190,6 +190,7 @@ import { ControlVolume } from './ControlVolume';
 import { VelocityProfile } from './VelocityProfile';
 import { ComplexPlaneHe2a } from './ComplexPlaneHe2a';
 import { Bode } from './Bode';
+import { StreamChannelHe } from './StreamChannelHe';
 import { PotentialWell } from './PotentialWell';
 import { UnitCell } from './UnitCell';
 import { Globe } from './Globe';
@@ -350,6 +351,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <HslPicture spec={spec} calc={calc} />;
     case 'streamChannel':
     case 'reserve':
+      if ('mode' in spec) return <StreamChannelHe spec={spec} calc={calc} />; // HC88
       return <Hs2fPicture spec={spec} calc={calc} />;
     case 'geologicClock':
     case 'coralSection':

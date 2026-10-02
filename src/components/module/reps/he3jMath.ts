@@ -89,11 +89,7 @@ export function crestProfile(g1: number, g2: number, L: number) {
   const r = (g1 - g2) / (100 * L);
   const yL = (g1 / 100) * L - (r * L * L) / 2;
   return (x: number) =>
-    x <= 0
-      ? (g1 / 100) * x
-      : x >= L
-        ? yL + (g2 / 100) * (x - L)
-        : (g1 / 100) * x - (r * x * x) / 2;
+    x <= 0 ? (g1 / 100) * x : x >= L ? yL + (g2 / 100) * (x - L) : (g1 / 100) * x - (r * x * x) / 2;
 }
 
 /** The least height of a sight line above the road, eye at xe, the object S further on. */

@@ -149,6 +149,12 @@ const PICTURE_NAMES: Record<string, string> = {
   controlVolume: 'a process unit or device with its streams balanced',
   velocityProfile: 'velocity or concentration profiles across a tube, gap or film',
   bode: 'a Bode plot: gain in dB and phase over log frequency, corners, margins',
+  roadCurve: 'a road: stopping distance, a horizontal curve, or a crest curve and its sight line',
+  connection:
+    'a steel connection: bolt holes, the net section, a bolt group, fillet welds, block shear',
+  hydrograph:
+    'rain and runoff: a storm split into losses and runoff, a peak flow, detention storage',
+  blockDiagram: 'a control loop as blocks: setpoint, comparator, controller, process and sensor',
   potentialWell: 'a potential well with its energy levels and wavefunctions',
   unitCell: 'a cubic unit cell, its lattice planes and Bragg reflection',
   globe:

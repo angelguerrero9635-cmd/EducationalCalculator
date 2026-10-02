@@ -49,7 +49,7 @@ function ticks(max: number, n = 4) {
 
 export function StreamChannelHe({ spec, calc }: { spec: StreamChannelHeSpec; calc: Calculator }) {
   const c = usePalette();
-  const { rep, get, lab, sym, unit, draggable } = useHe3j(calc);
+  const { rep, get, lab, unit, draggable } = useHe3j(calc);
   const paint = usePaintIds('water', 'concrete', 'light');
   const g = get(spec.g) ?? 9.81;
   const lu = unit(spec.depth ?? spec.y1, 'm');
@@ -100,25 +100,29 @@ export function StreamChannelHe({ spec, calc }: { spec: StreamChannelHeSpec; cal
     const P = bb + 2 * yy;
     const A = bb * yy;
     const R = A / P;
-    const Q = get(spec.discharge) ?? (n && S !== undefined ? (k / n) * A * R ** (2 / 3) * Math.sqrt(S) : undefined);
+    const Q =
+      get(spec.discharge) ??
+      (n && S !== undefined ? (k / n) * A * R ** (2 / 3) * Math.sqrt(S) : undefined);
     const V = get(spec.speed) ?? (Q !== undefined ? Q / A : undefined);
     const Fr = get(spec.froude) ?? (V !== undefined ? froude(V, yy, g) : undefined);
     // Side view: the bed falls (exaggerated), the water parallel to it.
     const [sx0, sx1] = [190, 352];
     const drop = 26;
     const Dp = Math.min(D, 46);
-    const bedAt = (x: number) => top + 30 + (drop * (x - sx0)) / (sx1 - sx0);
+    const bedAt = (x: number) => top + 50 + (drop * (x - sx0)) / (sx1 - sx0);
     const flowLab = lab(spec.speed, 'V', `${lu}/s`);
-    const frLab = spec.froude !== undefined && Fr !== undefined ? `${lab(spec.froude, 'Fr')}` : undefined;
-    const regime = Fr === undefined ? '' : Fr < 1 ? 'subcritical' : Fr > 1 ? 'supercritical' : 'critical';
-    BH = bed + 64;
+    const frLab =
+      spec.froude !== undefined && Fr !== undefined ? `${lab(spec.froude, 'Fr')}` : undefined;
+    const regime =
+      Fr === undefined ? '' : Fr < 1 ? 'subcritical' : Fr > 1 ? 'supercritical' : 'critical';
+    BH = Math.max(bed + 64, bedAt(sx1) + 40);
     body = (
       <G opacity={on ? 1 : 0.4}>
         <ChartText x={8} y={18} fontSize={chart.label} fontWeight="700">
           Section, to scale
         </ChartText>
         <ChartText x={sx0} y={18} fontSize={chart.label} fontWeight="700">
-          Side view, slope steepened
+          Side view
         </ChartText>
         {/* The lined channel: walls and floor in concrete, the water to scale. */}
         <Path
@@ -146,10 +150,22 @@ export function StreamChannelHe({ spec, calc }: { spec: StreamChannelHeSpec; cal
           </G>
         )}
         <Dim x1={x0} y1={bed + wall + 9} x2={x0 + W} y2={bed + wall + 9} color={c.chartInk} />
-        <ChartText x={x0 + W / 2} y={bed + wall + 26} fontSize={chart.label} fontWeight="700" textAnchor="middle">
+        <ChartText
+          x={x0 + W / 2}
+          y={bed + wall + 26}
+          fontSize={chart.label}
+          fontWeight="700"
+          textAnchor="middle"
+        >
           {lab(spec.width, 'b', lu) ?? ''}
         </ChartText>
-        <ChartText x={8} y={bed + wall + 46} fontSize={chart.label} fill={c.chartHighlight} fontWeight="700">
+        <ChartText
+          x={8}
+          y={bed + wall + 46}
+          fontSize={chart.label}
+          fill={c.chartHighlight}
+          fontWeight="700"
+        >
           {`Dashed: wetted perimeter P = ${nf(P)} ${lu}`}
         </ChartText>
         {/* The side view. */}
@@ -187,7 +203,14 @@ export function StreamChannelHe({ spec, calc }: { spec: StreamChannelHeSpec; cal
           />
         )}
         {flowLab && (
-          <ChartText x={sx0 + 4} y={bedAt(sx0) - Dp - 8} fontSize={chart.label} fontWeight="700" halo>
+          <ChartText
+            x={sx1}
+            y={bedAt(sx1) - Dp - 8}
+            fontSize={chart.label}
+            fontWeight="700"
+            textAnchor="end"
+            halo
+          >
             {flowLab}
           </ChartText>
         )}
@@ -198,14 +221,26 @@ export function StreamChannelHe({ spec, calc }: { spec: StreamChannelHeSpec; cal
           strokeWidth={chart.strokeLight}
           fill="none"
         />
-        <ChartText x={sx1} y={bedAt(sx1) + 32} fontSize={chart.label} fontWeight="700" textAnchor="end">
+        <ChartText
+          x={sx1}
+          y={bedAt(sx1) + 32}
+          fontSize={chart.label}
+          fontWeight="700"
+          textAnchor="end"
+        >
           {lab(spec.slope, 'S') ?? ''}
         </ChartText>
-        <ChartText x={sx0} y={bedAt(sx0) + 26} fontSize={chart.label} fontWeight="700">
+        <ChartText x={sx0} y={bedAt(sx0) + 24} fontSize={chart.label} fontWeight="700">
           {lab(spec.n, 'n') ?? ''}
         </ChartText>
         {frLab && (
-          <ChartText x={sx0} y={bed + wall + 26} fontSize={chart.label} fontWeight="700" fill={Fr! > 1 ? c.chartHighlight : c.chartInk}>
+          <ChartText
+            x={sx0}
+            y={36}
+            fontSize={chart.label}
+            fontWeight="700"
+            fill={Fr! > 1 ? c.chartHighlight : c.chartInk}
+          >
             {`${frLab}: ${regime}`}
           </ChartText>
         )}
@@ -261,16 +296,25 @@ export function StreamChannelHe({ spec, calc }: { spec: StreamChannelHeSpec; cal
     const tY = ticks(ymax);
     const place = makePlacer(BW, py0 + 40);
     place.block({ x0: px0, y0: Y(ymax) - 4, x1: X(Emax), y1: Y(ymax) + 4 });
+    // The tick numbers and the axis names.
+    place.block({ x0: 0, y0: py0 + 3, x1: BW, y1: py0 + 40 });
+    place.block({ x0: 0, y0: 0, x1: px0 - 2, y1: py0 + 40 });
     const E = yy !== undefined ? specificEnergy(yy, qq, g) : undefined;
     const alt = yy !== undefined ? alternateDepth(yy, qq, g) : undefined;
     place.dot(X(Emin), Y(yc));
     if (E !== undefined && yy !== undefined) place.dot(X(E), Y(yy), 12);
     if (E !== undefined && alt !== undefined) place.dot(X(E), Y(alt));
-    const ycL = place.place(X(Emin), Y(yc), lab(spec.yc, 'y_c', lu) ?? `y_c = ${nf(yc)} ${lu}`, chart.label, [
-      [-10, 4, 'end'],
-      [10, 16, 'start'],
-      [10, -8, 'start'],
-    ]);
+    const ycL = place.place(
+      X(Emin),
+      Y(yc),
+      lab(spec.yc, 'y_c', lu) ?? `y_c = ${nf(yc)} ${lu}`,
+      chart.label,
+      [
+        [-10, 4, 'end'],
+        [10, 16, 'start'],
+        [10, -8, 'start'],
+      ],
+    );
     const yL =
       E !== undefined && yy !== undefined
         ? place.place(X(E), Y(yy), lab(spec.depth, 'y', lu) ?? '', chart.label, [
@@ -279,14 +323,28 @@ export function StreamChannelHe({ spec, calc }: { spec: StreamChannelHeSpec; cal
             [-12, 16, 'end'],
           ])
         : undefined;
-    const subL = place.place(X(Emin) + 0.35 * ymax * s, Y(yc + 0.62 * (ymax - yc)), 'subcritical', chart.label, [
-      [-14, 0, 'end'],
-      [14, 0, 'start'],
-    ]);
-    const supL = place.place(X(Emin) + 0.5 * (Emax - Emin) * s, Y(0.2 * yc), 'supercritical', chart.label, [
-      [0, -10, 'middle'],
-      [0, 20, 'middle'],
-    ]);
+    const subL = place.place(
+      X(Emin) + 0.35 * ymax * s,
+      Y(yc + 0.62 * (ymax - yc)),
+      'subcritical',
+      chart.label,
+      [
+        [-14, 0, 'end'],
+        [14, 0, 'start'],
+      ],
+    );
+    const supL = place.place(
+      X(Emin) + 0.5 * (Emax - Emin) * s,
+      Y(0.2 * yc),
+      'supercritical',
+      chart.label,
+      [
+        [0, -10, 'middle'],
+        [0, -24, 'middle'],
+        [30, -10, 'middle'],
+        [-30, -10, 'middle'],
+      ],
+    );
     BH = py0 + 40;
     body = (
       <G opacity={on ? 1 : 0.4}>
@@ -294,7 +352,13 @@ export function StreamChannelHe({ spec, calc }: { spec: StreamChannelHeSpec; cal
         {tE.map((t) => (
           <G key={`e${t}`}>
             <Line x1={X(t)} y1={py0} x2={X(t)} y2={Y(ymax)} stroke={c.chartGrid} strokeWidth={1} />
-            <ChartText x={X(t)} y={py0 + 16} fontSize={chart.label} textAnchor="middle" fill={c.chartMuted}>
+            <ChartText
+              x={X(t)}
+              y={py0 + 16}
+              fontSize={chart.label}
+              textAnchor="middle"
+              fill={c.chartMuted}
+            >
               {nf(t)}
             </ChartText>
           </G>
@@ -302,13 +366,30 @@ export function StreamChannelHe({ spec, calc }: { spec: StreamChannelHeSpec; cal
         {tY.map((t) => (
           <G key={`y${t}`}>
             <Line x1={px0} y1={Y(t)} x2={X(Emax)} y2={Y(t)} stroke={c.chartGrid} strokeWidth={1} />
-            <ChartText x={px0 - 6} y={Y(t) + 4} fontSize={chart.label} textAnchor="end" fill={c.chartMuted}>
+            <ChartText
+              x={px0 - 6}
+              y={Y(t) + 4}
+              fontSize={chart.label}
+              textAnchor="end"
+              fill={c.chartMuted}
+            >
               {nf(t)}
             </ChartText>
           </G>
         ))}
-        <Path d={`M ${px0} ${Y(ymax)} V ${py0} H ${X(Emax)}`} stroke={c.chartInk} strokeWidth={chart.strokeLight} fill="none" />
-        <ChartText x={X(Emax)} y={py0 + 32} fontSize={chart.label} textAnchor="end" fontWeight="700">
+        <Path
+          d={`M ${px0} ${Y(ymax)} V ${py0} H ${X(Emax)}`}
+          stroke={c.chartInk}
+          strokeWidth={chart.strokeLight}
+          fill="none"
+        />
+        <ChartText
+          x={X(Emax)}
+          y={py0 + 32}
+          fontSize={chart.label}
+          textAnchor="end"
+          fontWeight="700"
+        >
           {`Specific energy E (${lu})`}
         </ChartText>
         <ChartText x={8} y={Y(ymax) - 8} fontSize={chart.label} fontWeight="700">
@@ -334,22 +415,66 @@ export function StreamChannelHe({ spec, calc }: { spec: StreamChannelHeSpec; cal
           fill="none"
         />
         <Circle cx={X(Emin)} cy={Y(yc)} r={5} fill={c.chartHighlight} />
-        <ChartText x={ycL.x} y={ycL.y} textAnchor={ycL.textAnchor} fontSize={chart.label} fontWeight="700" fill={c.chartHighlight} halo>
+        <ChartText
+          x={ycL.x}
+          y={ycL.y}
+          textAnchor={ycL.textAnchor}
+          fontSize={chart.label}
+          fontWeight="700"
+          fill={c.chartHighlight}
+          halo
+        >
           {lab(spec.yc, 'y_c', lu) ?? `y_c = ${nf(yc)} ${lu}`}
         </ChartText>
-        <ChartText x={subL.x} y={subL.y} textAnchor={subL.textAnchor} fontSize={chart.label} fill={c.chartMuted} halo>
+        <ChartText
+          x={subL.x}
+          y={subL.y}
+          textAnchor={subL.textAnchor}
+          fontSize={chart.label}
+          fill={c.chartMuted}
+          halo
+        >
           subcritical
         </ChartText>
-        <ChartText x={supL.x} y={supL.y} textAnchor={supL.textAnchor} fontSize={chart.label} fill={c.chartMuted} halo>
+        <ChartText
+          x={supL.x}
+          y={supL.y}
+          textAnchor={supL.textAnchor}
+          fontSize={chart.label}
+          fill={c.chartMuted}
+          halo
+        >
           supercritical
         </ChartText>
         {E !== undefined && yy !== undefined && alt !== undefined && E <= Emax && (
           <G>
-            <Line x1={X(E)} y1={Y(Math.max(yy, alt))} x2={X(E)} y2={py0} stroke={c.chartInk} strokeWidth={1} strokeDasharray={chart.dashFine} />
-            <Circle cx={X(E)} cy={Y(alt)} r={4.5} fill={c.card} stroke={c.waterDeep} strokeWidth={2} />
+            <Line
+              x1={X(E)}
+              y1={Y(Math.max(yy, alt))}
+              x2={X(E)}
+              y2={py0}
+              stroke={c.chartInk}
+              strokeWidth={1}
+              strokeDasharray={chart.dashFine}
+            />
+            <Circle
+              cx={X(E)}
+              cy={Y(alt)}
+              r={4.5}
+              fill={c.card}
+              stroke={c.waterDeep}
+              strokeWidth={2}
+            />
             <Circle cx={X(E)} cy={Y(yy)} r={5.5} fill={c.waterDeep} />
             {yL && (
-              <ChartText x={yL.x} y={yL.y} textAnchor={yL.textAnchor} fontSize={chart.label} fontWeight="700" halo>
+              <ChartText
+                x={yL.x}
+                y={yL.y}
+                textAnchor={yL.textAnchor}
+                fontSize={chart.label}
+                fontWeight="700"
+                halo
+              >
                 {lab(spec.depth, 'y', lu) ?? ''}
               </ChartText>
             )}
@@ -383,8 +508,10 @@ export function StreamChannelHe({ spec, calc }: { spec: StreamChannelHeSpec; cal
     // ── A hydraulic jump: depths and the energy line to scale, the length shortened ──
     const y1 = get(spec.y1);
     const V1 = get(spec.V1);
-    const Fr1 = get(spec.Fr1) ?? (y1 !== undefined && V1 !== undefined ? froude(V1, y1, g) : undefined);
-    const y2 = get(spec.y2) ?? (y1 !== undefined && Fr1 !== undefined ? jumpDepth(y1, Fr1) : undefined);
+    const Fr1 =
+      get(spec.Fr1) ?? (y1 !== undefined && V1 !== undefined ? froude(V1, y1, g) : undefined);
+    const y2 =
+      get(spec.y2) ?? (y1 !== undefined && Fr1 !== undefined ? jumpDepth(y1, Fr1) : undefined);
     const known = y1 !== undefined && V1 !== undefined && y2 !== undefined && Fr1 !== undefined;
     const jumps = known && Fr1 > 1 && y2 > y1;
     const yy1 = y1 ?? 0.3;
@@ -432,9 +559,24 @@ export function StreamChannelHe({ spec, calc }: { spec: StreamChannelHeSpec; cal
           strokeDasharray={chart.dash}
           fill="none"
         />
-        <Line x1={end} y1={Yv(E1)} x2={end + 64} y2={Yv(E1)} stroke={c.fluidEgl} strokeWidth={1} strokeDasharray={chart.dashFine} />
-        <Dim x1={end + 54} y1={Yv(E1)} x2={end + 54} y2={Yv(E2)} color={c.fluidEgl} />
-        <ChartText x={end + 62} y={(Yv(E1) + Yv(E2)) / 2 + 5} fontSize={chart.label} fontWeight="700" fill={c.fluidEgl} halo>
+        <Line
+          x1={end}
+          y1={Yv(E1)}
+          x2={end + 26}
+          y2={Yv(E1)}
+          stroke={c.fluidEgl}
+          strokeWidth={1}
+          strokeDasharray={chart.dashFine}
+        />
+        <Dim x1={end + 18} y1={Yv(E1)} x2={end + 18} y2={Yv(E2)} color={c.fluidEgl} />
+        <ChartText
+          x={end + 28}
+          y={(Yv(E1) + Yv(E2)) / 2 + 5}
+          fontSize={chart.label}
+          fontWeight="700"
+          fill={c.fluidEgl}
+          halo
+        >
           {lab(spec.hL, 'h_L', lu) ?? `h_L = ${nf(hL)} ${lu}`}
         </ChartText>
         <ChartText x={8} y={Yv(E1) - 8} fontSize={chart.label} fontWeight="700" fill={c.fluidEgl}>
@@ -445,22 +587,50 @@ export function StreamChannelHe({ spec, calc }: { spec: StreamChannelHeSpec; cal
         <ChartText x={30} y={Yv(yy1) - 8} fontSize={chart.label} fontWeight="700" halo>
           {lab(spec.y1, 'y₁', lu) ?? ''}
         </ChartText>
-        <Arrow x1={40} y1={Yv(yy1 / 2)} x2={40 + VV1 * vs} y2={Yv(yy1 / 2)} color={c.waterDeep} width={2.5} />
+        <Arrow
+          x1={40}
+          y1={Yv(yy1 / 2)}
+          x2={40 + VV1 * vs}
+          y2={Yv(yy1 / 2)}
+          color={c.waterDeep}
+          width={2.5}
+        />
         {vLab && (
           <ChartText x={30} y={Yv(yy1) - 26} fontSize={chart.label} fontWeight="700" halo>
             {vLab}
           </ChartText>
         )}
         {frLab && (
-          <ChartText x={30} y={Yv(yy1) - 44} fontSize={chart.label} fontWeight="700" fill={c.chartHighlight} halo>
-            {`${frLab}: supercritical`}
+          <ChartText
+            x={30}
+            y={Yv(yy1) - 44}
+            fontSize={chart.label}
+            fontWeight="700"
+            fill={c.chartHighlight}
+            halo
+          >
+            {`${frLab}: ${Fr1 !== undefined && Fr1 > 1 ? 'supercritical' : 'subcritical'}`}
           </ChartText>
         )}
         <Dim x1={BW - 22} y1={Yv(yy2)} x2={BW - 22} y2={bedY} color={c.chartInk} tick={4} />
-        <ChartText x={BW - 30} y={Yv(yy2 / 2) + 5} fontSize={chart.label} fontWeight="700" textAnchor="end" halo>
+        <ChartText
+          x={BW - 30}
+          y={Yv(yy2 / 2) + 5}
+          fontSize={chart.label}
+          fontWeight="700"
+          textAnchor="end"
+          halo
+        >
           {lab(spec.y2, 'y₂', lu) ?? `y₂ = ${nf(yy2)} ${lu}`}
         </ChartText>
-        <Arrow x1={end + 20} y1={Yv(yy2 / 2) + 18} x2={end + 20 + V2 * vs} y2={Yv(yy2 / 2) + 18} color={c.waterDeep} width={2.5} />
+        <Arrow
+          x1={end + 20}
+          y1={Yv(yy2 / 2) + 18}
+          x2={end + 20 + V2 * vs}
+          y2={Yv(yy2 / 2) + 18}
+          color={c.waterDeep}
+          width={2.5}
+        />
       </G>
     );
     const parts: string[] = [];

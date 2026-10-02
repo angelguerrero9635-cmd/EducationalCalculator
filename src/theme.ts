@@ -609,6 +609,25 @@ const light = {
   fluidIce: '#DDF0FA',
   /** Marks drawn on a liquid (pressure arrows, a depth line). */
   fluidMark: '#FFFFFF',
+  /**
+   * College round 3, group J: a hydraulic jump's foam (HC88); the road's reaction and braking
+   * strips, lane paint and a car (HC60); a fillet weld's bead (HC61); rain, initial abstraction,
+   * infiltration, runoff and detention storage (HC89); a loop's disturbance and feedforward (HC90).
+   */
+  jumpFoam: '#F7FBFD',
+  roadReaction: '#E8A33D',
+  roadBraking: '#D8413A',
+  roadLine: '#F4F1E6',
+  carBody: '#2F6FB5',
+  carGlass: '#BFD9EE',
+  weldBead: '#8C7A6B',
+  hydroRain: '#3A7BD5',
+  hydroAbstract: '#7FAF6A',
+  hydroInfil: '#B98B4E',
+  hydroRunoff: '#2A8FB8',
+  hydroStorage: '#F2C14E',
+  blockDist: '#B5552E',
+  blockFf: '#2A9D7C',
   /** A soft shadow under objects, and the dark and light sides of the sheen. */
   shadow: 'rgba(16, 24, 40, 0.16)',
   shade: '#0B1020',
@@ -1069,6 +1088,25 @@ const dark: Palette = {
   fluidHull: '#C2484B',
   fluidIce: '#A9CCE0',
   fluidMark: '#E8F1FA',
+  /**
+   * College round 3, group J: a hydraulic jump's foam (HC88); the road's reaction and braking
+   * strips, lane paint and a car (HC60); a fillet weld's bead (HC61); rain, initial abstraction,
+   * infiltration, runoff and detention storage (HC89); a loop's disturbance and feedforward (HC90).
+   */
+  jumpFoam: '#DCEAF2',
+  roadReaction: '#E0A24A',
+  roadBraking: '#E2645D',
+  roadLine: '#CFCAB8',
+  carBody: '#5B8FD0',
+  carGlass: '#8FB3CF',
+  weldBead: '#A39282',
+  hydroRain: '#6FA3E8',
+  hydroAbstract: '#8FC07A',
+  hydroInfil: '#C9A06A',
+  hydroRunoff: '#4FB0D6',
+  hydroStorage: '#D9AE45',
+  blockDist: '#E07A50',
+  blockFf: '#45C29C',
   shadow: 'rgba(0, 0, 0, 0.45)',
   shade: '#000000',
   shine: '#FFFFFF',

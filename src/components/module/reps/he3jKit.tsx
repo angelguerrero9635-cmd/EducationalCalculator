@@ -34,7 +34,14 @@ export function useHe3j(calc: Calculator) {
   /** "y = 1.2 m": the variable's symbol and shown value, or a fixed number with `sym` and `unit`. */
   const lab = (x: NumOrVar | undefined, sym: string, unit = '') => {
     if (x === undefined) return undefined;
-    if (typeof x === 'string') return valueLabel(x);
+    if (typeof x === 'string') {
+      if (!rep.known(x)) return undefined;
+      if (rep.typed(x)) return valueLabel(x);
+      // A worked-out value reads to 3 figures in the picture.
+      const u = rep.unit(x);
+      const gap = u && ['%', '°'].includes(u) ? '' : ' ';
+      return `${rep.variable(x).symbol} = ${nf(rep.shown(x))}${u ? `${gap}${u}` : ''}`;
+    }
     return `${sym} = ${nf(x, 4)}${unit ? ` ${unit}` : ''}`;
   };
   /** The symbol a field is printed with (the variable's own, or `sym`). */
@@ -53,11 +60,7 @@ export function useHe3j(calc: Calculator) {
  * A drag that sets one value from where it started: `toValue(dx, dy, start)` in formula units.
  * The drawing's scale stays frozen while the finger is down.
  */
-export function useValueDrag<T>(
-  calc: Calculator,
-  scale: T,
-  keep: string[] | undefined,
-) {
+export function useValueDrag<T>(calc: Calculator, scale: T, keep: string[] | undefined) {
   const rep = useRep(calc);
   const frozen = useFrozen(scale);
   const start = useRef(0);

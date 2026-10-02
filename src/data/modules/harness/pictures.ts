@@ -84,6 +84,7 @@ import { he2eIssues, isHe2e } from './picturesHe2e';
 import { he2hIssues } from './picturesHe2h';
 import { fieldPlotIssues, he2gGraphIssues } from './picturesHe2g';
 import { he2cIssues } from './picturesHe2c';
+import { he3jIssues } from './picturesHe3j';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -2262,6 +2263,10 @@ export function repIssues(
       break;
     case 'streamChannel':
     case 'reserve':
+      if ('mode' in rep) {
+        out.push(...he3jIssues(rep, siOf(val, byId))); // HC88
+        break;
+      }
       out.push(...hs2fIssues(rep, (id) => (val(id) ?? NaN) * (byId.get(id)?.unitFactor ?? 1)));
       break;
     case 'geologicClock':
@@ -2353,6 +2358,12 @@ export function repIssues(
       break;
     case 'bode':
       out.push(...bodeIssues(rep, siOf(val, byId))); // HC22
+      break;
+    case 'roadCurve':
+    case 'connection':
+    case 'hydrograph':
+    case 'blockDiagram':
+      out.push(...he3jIssues(rep, siOf(val, byId))); // HC60, HC61, HC89, HC90
       break;
     case 'fieldPlot':
       out.push(...fieldPlotIssues(rep, val)); // HC21

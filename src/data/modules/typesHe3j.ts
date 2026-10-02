@@ -231,11 +231,7 @@ export interface BlockDiagramSpec {
 
 /** The group J picture kinds of their own (listed in `types.ts`). */
 export type He3jSpec =
-  | StreamChannelHeSpec
-  | RoadCurveSpec
-  | ConnectionSpec
-  | HydrographSpec
-  | BlockDiagramSpec;
+  StreamChannelHeSpec | RoadCurveSpec | ConnectionSpec | HydrographSpec | BlockDiagramSpec;
 
 /** The variable ids a group J picture reads (for the module tests). */
 export function he3jSpecVars(r: He3jSpec): string[] {
