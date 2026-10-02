@@ -186,6 +186,7 @@ import { FluidSystem } from './FluidSystem';
 import { ControlVolume } from './ControlVolume';
 import { VelocityProfile } from './VelocityProfile';
 import { StressStrain } from './StressStrain';
+import { StressElement } from './StressElement';
 import { MotionGraphHs } from './MotionGraphHs';
 import { HskView } from './HskView';
 import { Hs2cView } from './Hs2cView';
@@ -346,6 +347,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <VelocityProfile spec={spec} calc={calc} />;
     case 'stressStrain':
       return <StressStrain spec={spec} calc={calc} />;
+    case 'stressElement':
+      return <StressElement spec={spec} calc={calc} />;
     case 'linearFunction':
       return <LinearFunction spec={spec} calc={calc} />;
     case 'lineSystem':

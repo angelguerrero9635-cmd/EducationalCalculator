@@ -58,4 +58,36 @@ export const HE2J_REQUESTS: PictureRequest[] = [
       'g.he-stressStrain-implant',
     ],
   },
+  {
+    ...ask(
+      'HC33',
+      'stressElement',
+      'A plane-stress element and the element turned to θ_p, with Mohr’s circle (center, R, X and Y, σ₁, σ₂, 2θ_p, τ_max); three circles; failure loci in the σ_A–σ_B plane with the load and the n-scaled point; a soil’s circle under the Mohr–Coulomb line with the failure plane',
+      [
+        `${E}mechanics-of-materials#0~mohr`,
+        `${E}advanced-solid-mechanics#0`,
+        `${E}advanced-solid-mechanics#3~yield`,
+        `${E}machine-design#0`,
+        `${E}soil-mechanics#3`,
+        `${E}soil-mechanics#3~undrained`,
+      ],
+      [
+        'From HE-mechanical-P4 (`stressElement`) and HE-aero-civil-chemical-P18 (`mohrCircle`), one kind. Spec in typesHe2j.ts (`StressElementSpec`), the sums in reps/stressElementMath.ts. Fields are variable ids or fixed numbers; stresses are read in their own unit (MPa, kPa, psi, ksi), angles in degrees; a "?" value draws nothing for that value.',
+        "Modes by field: the default draws the element (`sx`, `sy`, `txy`), the element turned to `angle` (θ_p; worked out as ½ tan⁻¹(2τₓ_y ÷ (σₓ − σ_y)) when absent, its faces labelled σ₁ or σ₂ by the stress they carry) and Mohr’s circle with τ plotted positive down (`savg`, `R`, `s1`, `s2`, `tmax` label the page’s values). `three: true` with `s1`, `s2`, `s3` (any order) draws the three circles and τ_max = (σ₁ − σ₃) ÷ 2; with `strength`, Tresca’s line τ = σ_Y ÷ 2. `envelope: 'vonMises' | 'tresca' | 'coulombMohr'` (or a list) with `strength` (S_y or S_ut), `strengthC` (S_uc), `n` (one per envelope) and the load (σ₁, σ₂ of `sx`, `sy`, `txy`, or `s1`, `s2`, or `point: [a, b]`) draws the loci, the load and, along its ray, the point n times as far on each locus. `mohrCoulomb: { c, phi, theta? }` with `s1`, `s3` draws the sample with its failure plane at θ = 45° + φ ÷ 2, the upper half circle, the line τ = c + σ tan φ and 2θ to the touching point (φ = 0: undrained, flat at s_u).",
+        "Examples: MoM#0~mohr `{ kind: 'stressElement', sx: 'sx', sy: 'sy', txy: 'txy', savg: 'savg', R: 'R', s1: 's1', s2: 's2', angle: 'thp', tmax: 'tmax' }`; ASM#0 `{ three: true, s1: 's1', s2: 's2', s3: 'sz', tmax: 'tmax' }`; ASM#3~yield `{ three: true, s1: 's1', s2: 's2', s3: 's3', strength: 'sy' }`; machine-design#0 `{ sx: 'sx', sy: 'sy', txy: 'txy', s1: 's1', s2: 's2', envelope: ['vonMises', 'tresca'], strength: 'Sy', n: ['n', 'nT'] }` (~brittle: `{ envelope: 'coulombMohr', strength: 'Sut', strengthC: 'Suc', point: ['s1', 's3'], n: 'n' }`); soil-mechanics#3 `{ s1: 's1', s3: 's3', mohrCoulomb: { c: 'c', phi: 'phi', theta: 'theta' } }`; ~undrained `{ s1: 's1', s3: 's3', mohrCoulomb: { c: 'su', phi: 0 } }`. The soil demo uses c′ = 10 kPa (the plan’s c′ = 0 fails the module tests’ rule against a zero example value with a unit).",
+        'Checks (harness/picturesHe2j.ts): σ_avg and R from the inputs; σ₁, σ₂ = σ_avg ± R and τ_max = R; the element turned θ_p carries a principal stress and no shear; τ_max = (σ₁ − σ₃) ÷ 2 for three circles; each n matches the ray to its locus, and n > 1 exactly when the load is inside; θ = 45° + φ ÷ 2; the line’s distance from the center equals R within 0.5% at failure.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-stressElement-mohr',
+      'g.he-stressElement-mohr-flip',
+      'g.he-stressElement-three',
+      'g.he-stressElement-yield',
+      'g.he-stressElement-envelope',
+      'g.he-stressElement-brittle',
+      'g.he-stressElement-soil',
+      'g.he-stressElement-undrained',
+    ],
+  },
 ];

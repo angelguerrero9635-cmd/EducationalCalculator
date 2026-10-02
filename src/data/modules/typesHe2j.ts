@@ -94,12 +94,80 @@ export interface StressStrainSpec {
   };
 }
 
-export type He2jSpec = StressStrainSpec;
+// ─── HC33: a stress element and Mohr's circle ────────────────────────────────
+
+export type FailureCriterion = 'vonMises' | 'tresca' | 'coulombMohr';
+
+/**
+ * A plane-stress element and Mohr's circle, by what the page passes:
+ * - the default: the element with σₓ, σ_y, τₓ_y; the element turned to θ_p with σ₁ and σ₂; Mohr's
+ *   circle (τ plotted positive down, so the turn on the circle, 2θ_p, has the element's sense)
+ *   with its center, R, the points X (σₓ, τₓ_y) and Y (σ_y, −τₓ_y), σ₁, σ₂ and τ_max;
+ * - `three: true`: the three circles of σ₁, σ₂, σ₃ (sorted), τ_max = (σ₁ − σ₃) ÷ 2; with
+ *   `strength`, Tresca's line τ = σ_Y ÷ 2;
+ * - `envelope`: the failure locus in the σ_A–σ_B plane (von Mises' ellipse, Tresca's or
+ *   Coulomb–Mohr's hexagon) with the load point (σ₁, σ₂ of the plane stress, or `point`) and,
+ *   along the ray from the origin, the point n times as far that reaches the locus;
+ * - `mohrCoulomb`: a soil's circle from σ′₃ to σ′₁ (upper half), the line τ = c + σ tan φ
+ *   touching it, 2θ to the touching point, and the sample with its failure plane at
+ *   θ = 45° + φ ÷ 2 (φ = 0: a flat line at s_u, undrained).
+ *
+ * Stresses are read in their own unit (MPa, kPa, psi, ksi …); angles in degrees.
+ */
+export interface StressElementSpec {
+  kind: 'stressElement';
+  sx?: NumOrVar;
+  sy?: NumOrVar;
+  txy?: NumOrVar;
+  /** Principal stresses (worked out from σₓ, σ_y, τₓ_y when not given). */
+  s1?: NumOrVar;
+  s2?: NumOrVar;
+  s3?: NumOrVar;
+  /** θ_p in degrees, the center σ_avg, the radius R and τ_max, labelled as the page has them. */
+  angle?: NumOrVar;
+  savg?: NumOrVar;
+  R?: NumOrVar;
+  tmax?: NumOrVar;
+  three?: boolean;
+  envelope?: FailureCriterion | FailureCriterion[];
+  /** S_y (or S_ut for Coulomb–Mohr), S_uc, and the page's n for each envelope in order. */
+  strength?: NumOrVar;
+  strengthC?: NumOrVar;
+  n?: NumOrVar | NumOrVar[];
+  /** The load point (σ_A, σ_B) when it is not (σ₁, σ₂), e.g. (σ₁, σ₃) with σ₂ = 0. */
+  point?: [NumOrVar, NumOrVar];
+  /** A soil's strength line and the failure plane's angle θ (degrees). */
+  mohrCoulomb?: { c: NumOrVar; phi: NumOrVar; theta?: NumOrVar };
+}
+
+export type He2jSpec = StressStrainSpec | StressElementSpec;
 
 const ids = (xs: (NumOrVar | undefined)[]) => xs.filter((x): x is string => typeof x === 'string');
 
 /** The variable ids a group J picture reads (for the module tests). */
 export function he2jSpecVars(r: He2jSpec): string[] {
+  if (r.kind === 'stressElement') {
+    const ns = r.n === undefined ? [] : Array.isArray(r.n) ? r.n : [r.n];
+    return ids([
+      r.sx,
+      r.sy,
+      r.txy,
+      r.s1,
+      r.s2,
+      r.s3,
+      r.angle,
+      r.savg,
+      r.R,
+      r.tmax,
+      r.strength,
+      r.strengthC,
+      ...ns,
+      ...(r.point ?? []),
+      r.mohrCoulomb?.c,
+      r.mohrCoulomb?.phi,
+      r.mohrCoulomb?.theta,
+    ]);
+  }
   const { specimen: sp, section: se, parallel: pa } = r;
   return ids([
     r.E,

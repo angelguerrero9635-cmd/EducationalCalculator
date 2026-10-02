@@ -4,6 +4,9 @@
  *
  * HC28 `stressStrain` (ME-P5 in docs/plans/he.mechanical.md, B-P23 in docs/plans/he.biology.md):
  * the σ–ε curve, a specimen, a bone's section in bending and an implant sharing load with bone.
+ *
+ * HC33 `stressElement` (ME-P4 in he.mechanical.md, ACC-P18 in he.aero-civil-chemical.md): the
+ * element and Mohr's circle, three circles, failure loci, a soil's Mohr–Coulomb line.
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 import { getUnit } from '@/engine/units';
@@ -864,7 +867,660 @@ const implant = demo('g.he-stressStrain-implant', 'Load sharing: stress shieldin
   },
 });
 
+// ─── HC33 stressElement: plane stress and Mohr's circle (mechanics-of-materials#0~mohr) ──
+
+/** A stress: MPa (or kPa), either sign. */
+const stress = (
+  id: string,
+  symbol: string,
+  name: string,
+  unit = 'MPa',
+  more: Partial<VariableDef> = {},
+) => val(id, symbol, name, unit, 1e4, { min: -1e4, ...more });
+
+const MOHR_VARS: VariableDef[] = [
+  stress('sx', 'σₓ', 'Normal stress on x'),
+  stress('sy', 'σ_y', 'Normal stress on y'),
+  stress('txy', 'τₓ_y', 'Shear stress'),
+  stress('savg', 'σ_avg', 'Center of the circle'),
+  val('R', 'R', 'Radius of the circle', 'MPa', 1e4),
+  stress('s1', 'σ₁', 'Larger principal stress'),
+  stress('s2', 'σ₂', 'Smaller principal stress'),
+  val('thp', 'θ_p', 'Principal angle', '°', 45, { min: -45 }),
+  val('tmax', 'τ_max', 'Largest in-plane shear', 'MPa', 1e4),
+];
+
+const C_OF = (x: Values) => (x.sx! + x.sy!) / 2;
+const R_OF = (x: Values) => Math.hypot((x.sx! - x.sy!) / 2, x.txy!);
+
+function mohrDemo(id: string, use: string, sx: number, sy: number, txy: number) {
+  const C = (sx + sy) / 2;
+  const R = Math.hypot((sx - sy) / 2, txy);
+  return demo(id, 'Principal stresses and Mohr’s circle', {
+    use,
+    assumptions: [
+      'Plane stress: nothing acts on the z faces. Tension +; τₓ_y + up on the right face.',
+      'θ_p is counterclockwise from x; the circle plots τ positive down, so it turns the same way.',
+    ],
+    variables: MOHR_VARS,
+    relations: [
+      rel(
+        'σ_avg = (σₓ + σ_y) ÷ 2',
+        '{savg} = ({sx} + {sy}) ÷ 2',
+        ['savg', 'sx', 'sy'],
+        (x) => x.savg! - C_OF(x),
+        {
+          savg: [
+            C_OF,
+            '({sx} + {sy}) ÷ 2',
+            'The circle’s center is the mean of the two normal stresses.',
+          ],
+          sx: [(x) => 2 * x.savg! - x.sy!, '2 × {savg} − {sy}', 'Double the mean, take away σ_y.'],
+          sy: [(x) => 2 * x.savg! - x.sx!, '2 × {savg} − {sx}', 'Double the mean, take away σₓ.'],
+        },
+      ),
+      rel(
+        'R = √(((σₓ − σ_y) ÷ 2)² + τₓ_y²)',
+        '{R} = √((({sx} − {sy}) ÷ 2)² + {txy}²)',
+        ['R', 'sx', 'sy', 'txy'],
+        (x) => x.R! - R_OF(x),
+        {
+          R: [
+            R_OF,
+            '√((({sx} − {sy}) ÷ 2)² + {txy}²)',
+            'The radius reaches from the center to X: half the difference across, τₓ_y down.',
+          ],
+        },
+      ),
+      rel(
+        'σ₁ = σ_avg + R',
+        '{s1} = {savg} + {R}',
+        ['s1', 'savg', 'R'],
+        (x) => x.s1! - x.savg! - x.R!,
+        {
+          s1: [(x) => x.savg! + x.R!, '{savg} + {R}', 'The circle’s right end on the σ axis.'],
+          savg: [(x) => x.s1! - x.R!, '{s1} − {R}', 'Back from σ₁ by the radius.'],
+          R: [(x) => x.s1! - x.savg!, '{s1} − {savg}', 'From the center out to σ₁.'],
+        },
+      ),
+      rel(
+        'σ₂ = σ_avg − R',
+        '{s2} = {savg} − {R}',
+        ['s2', 'savg', 'R'],
+        (x) => x.s2! - x.savg! + x.R!,
+        {
+          s2: [(x) => x.savg! - x.R!, '{savg} − {R}', 'The circle’s left end on the σ axis.'],
+          savg: [(x) => x.s2! + x.R!, '{s2} + {R}', 'On from σ₂ by the radius.'],
+          R: [(x) => x.savg! - x.s2!, '{savg} − {s2}', 'From σ₂ in to the center.'],
+        },
+      ),
+      rel(
+        'tan 2θ_p = 2τₓ_y ÷ (σₓ − σ_y)',
+        '{thp} = 0.5 × tan⁻¹(2 × {txy} ÷ ({sx} − {sy}))',
+        ['thp', 'txy', 'sx', 'sy'],
+        (x) =>
+          x.sx! === x.sy!
+            ? Math.abs(Math.abs(x.thp!) - 45)
+            : Math.tan((2 * x.thp! * Math.PI) / 180) - (2 * x.txy!) / (x.sx! - x.sy!),
+        {
+          thp: [
+            (x) =>
+              x.sx! === x.sy!
+                ? undefined
+                : (Math.atan((2 * x.txy!) / (x.sx! - x.sy!)) * 90) / Math.PI,
+            '0.5 × tan⁻¹(2 × {txy} ÷ ({sx} − {sy}))',
+            'The angle on the circle from X to the σ axis is 2θ_p; halve it for the element.',
+          ],
+        },
+      ),
+      rel('τ_max = R', '{tmax} = {R}', ['tmax', 'R'], (x) => x.tmax! - x.R!, {
+        tmax: [
+          (x) => x.R!,
+          '{R}',
+          'The top of the circle: the largest in-plane shear is the radius.',
+        ],
+        R: [(x) => x.tmax!, '{tmax}', 'The radius is the largest shear.'],
+      }),
+    ],
+    example: {
+      sx,
+      sy,
+      txy,
+      savg: C,
+      R,
+      s1: C + R,
+      s2: C - R,
+      thp: (Math.atan((2 * txy) / (sx - sy)) * 90) / Math.PI,
+      tmax: R,
+    },
+    startWith: ['sx', 'sy', 'txy'],
+    representation: {
+      kind: 'stressElement',
+      sx: 'sx',
+      sy: 'sy',
+      txy: 'txy',
+      savg: 'savg',
+      R: 'R',
+      s1: 's1',
+      s2: 's2',
+      angle: 'thp',
+      tmax: 'tmax',
+    },
+  });
+}
+
+const mohrMain = mohrDemo(
+  'g.he-stressElement-mohr',
+  'Use this for “A point carries σₓ = 80 MPa, σ_y = −20 MPa and τₓ_y = 40 MPa. Find the principal stresses and θ_p.”',
+  80,
+  -20,
+  40,
+);
+const mohrTurned = mohrDemo(
+  'g.he-stressElement-mohr-flip',
+  'Use this for “σₓ = −40 MPa, σ_y = 60 MPa, τₓ_y = −30 MPa. Find σ₁, σ₂ and the angle to the principal planes.”',
+  -40,
+  60,
+  -30,
+);
+
+// ─── Three circles (advanced-solid-mechanics#0) ──────────────────────────────
+
+const inPlane = (sign: 1 | -1) => (x: Values) => C_OF(x) + sign * R_OF(x);
+
+const THREE_VARS: VariableDef[] = [
+  stress('sx', 'σₓ', 'Normal stress on x'),
+  stress('sy', 'σ_y', 'Normal stress on y'),
+  stress('sz', 'σ_z', 'Normal stress on z (principal)'),
+  stress('txy', 'τₓ_y', 'Shear stress in the xy plane'),
+  stress('s1', 'σ₁', 'Larger in-plane principal'),
+  stress('s2', 'σ₂', 'Smaller in-plane principal'),
+  val('tmax', 'τ_max', 'Largest shear stress', 'MPa', 1e4),
+];
+
+const threeDemo = demo('g.he-stressElement-three', 'Three Mohr circles and the largest shear', {
+  use: 'Use this for “σₓ = 60, σ_y = 20, σ_z = −30 and τₓ_y = 15 MPa, with no other shear. Find the principal stresses and τ_max.”',
+  assumptions: [
+    'τ_yz = τ_zx = 0, so σ_z is a principal stress; the other two come from the xy circle.',
+    'Here σ_z is the smallest, so σ₃ = σ_z and τ_max = (σ₁ − σ₃) ÷ 2.',
+  ],
+  variables: THREE_VARS,
+  relations: [
+    below('s2', 's1', '{s2} < {s1}', 'σ₁ is the larger in-plane principal: σ₂ < σ₁.'),
+    below('sz', 's2', '{sz} < {s2}', 'This page takes σ_z as the smallest principal: σ_z < σ₂.'),
+    rel(
+      'σ₁ = σ_avg + R',
+      '{s1} = ({sx} + {sy}) ÷ 2 + √((({sx} − {sy}) ÷ 2)² + {txy}²)',
+      ['s1', 'sx', 'sy', 'txy'],
+      (x) => x.s1! - inPlane(1)(x),
+      {
+        s1: [
+          inPlane(1),
+          '({sx} + {sy}) ÷ 2 + √((({sx} − {sy}) ÷ 2)² + {txy}²)',
+          'The in-plane circle’s center plus its radius.',
+        ],
+      },
+    ),
+    rel(
+      'σ₂ = σ_avg − R',
+      '{s2} = ({sx} + {sy}) ÷ 2 − √((({sx} − {sy}) ÷ 2)² + {txy}²)',
+      ['s2', 'sx', 'sy', 'txy'],
+      (x) => x.s2! - inPlane(-1)(x),
+      {
+        s2: [
+          inPlane(-1),
+          '({sx} + {sy}) ÷ 2 − √((({sx} − {sy}) ÷ 2)² + {txy}²)',
+          'The in-plane circle’s center less its radius.',
+        ],
+      },
+    ),
+    rel(
+      'τ_max = (σ₁ − σ₃) ÷ 2',
+      '{tmax} = ({s1} − {sz}) ÷ 2',
+      ['tmax', 's1', 'sz'],
+      (x) => x.tmax! - (x.s1! - x.sz!) / 2,
+      {
+        tmax: [
+          (x) => (x.s1! - x.sz!) / 2,
+          '({s1} − {sz}) ÷ 2',
+          'The radius of the biggest circle, from σ₃ to σ₁.',
+        ],
+        sz: [(x) => x.s1! - 2 * x.tmax!, '{s1} − 2 × {tmax}', 'σ₃ sits a diameter left of σ₁.'],
+      },
+    ),
+  ],
+  example: { sx: 60, sy: 20, sz: -30, txy: 15, s1: 65, s2: 15, tmax: 47.5 },
+  startWith: ['sx', 'sy', 'sz', 'txy'],
+  representation: {
+    kind: 'stressElement',
+    three: true,
+    s1: 's1',
+    s2: 's2',
+    s3: 'sz',
+    tmax: 'tmax',
+  },
+});
+
+// ─── Von Mises and Tresca from three principals (advanced-solid-mechanics#3~yield) ──
+
+const YIELD_VARS: VariableDef[] = [
+  stress('s1', 'σ₁', 'Largest principal stress'),
+  stress('s2', 'σ₂', 'Middle principal stress'),
+  stress('s3', 'σ₃', 'Smallest principal stress'),
+  val('sy', 'σ_Y', 'Yield strength', 'MPa', 1e4, { min: 0.1 }),
+  val('svm', 'σ_vm', 'Von Mises stress', 'MPa', 1e5),
+  val('str', 'σ_Tresca', 'Tresca stress, σ₁ − σ₃', 'MPa', 1e5),
+  val('nvm', 'n_vm', 'Safety factor, von Mises', undefined, 1e6, { min: 0.0001 }),
+  val('nT', 'n_T', 'Safety factor, Tresca', undefined, 1e6, { min: 0.0001 }),
+];
+
+const vm3 = (x: Values) =>
+  Math.sqrt(((x.s1! - x.s2!) ** 2 + (x.s2! - x.s3!) ** 2 + (x.s3! - x.s1!) ** 2) / 2);
+
+const yieldDemo = (() => {
+  const s = symbolsOf(YIELD_VARS);
+  return demo('g.he-stressElement-yield', 'Von Mises and Tresca from three principal stresses', {
+    use: 'Use this for “The principal stresses are 65, 15 and −30 MPa in steel that yields at 250 MPa. Find σ_vm, σ₁ − σ₃ and both safety factors.”',
+    assumptions: [
+      'σ₁ ≥ σ₂ ≥ σ₃. The material yields when σ_vm, or σ₁ − σ₃ for Tresca, reaches σ_Y.',
+      'Tresca in Mohr’s terms: the biggest circle touches τ = σ_Y ÷ 2.',
+    ],
+    variables: YIELD_VARS,
+    relations: [
+      below('s2', 's1', '{s2} < {s1}', 'Number the principals from the largest: σ₂ < σ₁.'),
+      below('s3', 's2', '{s3} < {s2}', 'Number the principals from the largest: σ₃ < σ₂.'),
+      rel(
+        'σ_vm = √(½ Σ(σᵢ − σⱼ)²)',
+        '{svm} = √((({s1} − {s2})² + ({s2} − {s3})² + ({s3} − {s1})²) ÷ 2)',
+        ['svm', 's1', 's2', 's3'],
+        (x) => x.svm! - vm3(x),
+        {
+          svm: [
+            vm3,
+            '√((({s1} − {s2})² + ({s2} − {s3})² + ({s3} − {s1})²) ÷ 2)',
+            'Square the three differences, add, halve, then take the root.',
+          ],
+        },
+      ),
+      rel(
+        'σ_Tresca = σ₁ − σ₃',
+        '{str} = {s1} − {s3}',
+        ['str', 's1', 's3'],
+        (x) => x.str! - (x.s1! - x.s3!),
+        {
+          str: [(x) => x.s1! - x.s3!, '{s1} − {s3}', 'The biggest circle’s diameter.'],
+          s1: [(x) => x.str! + x.s3!, '{str} + {s3}', 'Add σ₃ back.'],
+          s3: [(x) => x.s1! - x.str!, '{s1} − {str}', 'Take the diameter off σ₁.'],
+        },
+      ),
+      monomial(
+        'n_vm = σ_Y ÷ σ_vm',
+        'nvm',
+        [['sy', 1]],
+        [['svm', 1]],
+        'How many times σ_vm fits under σ_Y.',
+        s,
+      ),
+      monomial(
+        'n_T = σ_Y ÷ (σ₁ − σ₃)',
+        'nT',
+        [['sy', 1]],
+        [['str', 1]],
+        'How many times σ₁ − σ₃ fits under σ_Y.',
+        s,
+      ),
+    ],
+    example: {
+      s1: 65,
+      s2: 15,
+      s3: -30,
+      sy: 250,
+      svm: Math.sqrt(6775),
+      str: 95,
+      nvm: 250 / Math.sqrt(6775),
+      nT: 250 / 95,
+    },
+    startWith: ['s1', 's2', 's3', 'sy'],
+    representation: {
+      kind: 'stressElement',
+      three: true,
+      s1: 's1',
+      s2: 's2',
+      s3: 's3',
+      strength: 'sy',
+    },
+  });
+})();
+
+// ─── Failure theories: von Mises and Tresca envelopes (machine-design#0) ─────
+
+const ENV_VARS: VariableDef[] = [
+  stress('sx', 'σₓ', 'Normal stress on x'),
+  stress('sy', 'σ_y', 'Normal stress on y'),
+  stress('txy', 'τₓ_y', 'Shear stress'),
+  val('svm', 'σ′', 'Von Mises stress', 'MPa', 1e5),
+  val('Sy', 'S_y', 'Yield strength', 'MPa', 1e4, { min: 0.1 }),
+  val('n', 'n', 'Safety factor, von Mises', undefined, 1e6, { min: 0.0001 }),
+  val('s1', 'σ₁', 'Larger principal stress', 'MPa', 1e4, { min: 0.001 }),
+  val('s2', 'σ₂', 'Smaller principal stress', 'MPa', -0.001, { min: -1e4 }),
+  val('tmax', 'τ_max', 'Largest shear stress', 'MPa', 1e4, { min: 0.001 }),
+  val('nT', 'n_T', 'Safety factor, Tresca', undefined, 1e6, { min: 0.0001 }),
+];
+
+const sPrime = (x: Values) => Math.sqrt(x.sx! ** 2 - x.sx! * x.sy! + x.sy! ** 2 + 3 * x.txy! ** 2);
+
+const envelopeDemo = (() => {
+  const s = symbolsOf(ENV_VARS);
+  return demo('g.he-stressElement-envelope', 'Factor of safety by von Mises and Tresca', {
+    use: 'Use this for “A shaft point has σₓ = 120 MPa, σ_y = −40 MPa, τₓ_y = 50 MPa; S_y = 350 MPa. Find n by von Mises and by Tresca.”',
+    assumptions: [
+      'Plane stress (σ₃ = 0); a ductile material, the same strength in tension and compression.',
+      'Here σ₁ > 0 > σ₂, so τ_max = (σ₁ − σ₂) ÷ 2.',
+    ],
+    variables: ENV_VARS,
+    relations: [
+      rel(
+        'σ′ = √(σₓ² − σₓσ_y + σ_y² + 3τₓ_y²)',
+        '{svm} = √({sx}² − {sx} × {sy} + {sy}² + 3 × {txy}²)',
+        ['svm', 'sx', 'sy', 'txy'],
+        (x) => x.svm! - sPrime(x),
+        {
+          svm: [
+            sPrime,
+            '√({sx}² − {sx} × {sy} + {sy}² + 3 × {txy}²)',
+            'Von Mises for plane stress, straight from σₓ, σ_y and τₓ_y.',
+          ],
+        },
+      ),
+      rel(
+        'σ′ = √(σ₁² − σ₁σ₂ + σ₂²)',
+        '{svm} = √({s1}² − {s1} × {s2} + {s2}²)',
+        ['svm', 's1', 's2'],
+        (x) => x.svm! - Math.sqrt(x.s1! ** 2 - x.s1! * x.s2! + x.s2! ** 2),
+        {
+          svm: [
+            (x) => Math.sqrt(x.s1! ** 2 - x.s1! * x.s2! + x.s2! ** 2),
+            '√({s1}² − {s1} × {s2} + {s2}²)',
+            'The same σ′ from the principal stresses: the ellipse’s own form.',
+          ],
+        },
+      ),
+      monomial(
+        'n = S_y ÷ σ′',
+        'n',
+        [['Sy', 1]],
+        [['svm', 1]],
+        'How many times σ′ fits under S_y.',
+        s,
+      ),
+      rel(
+        'σ₁ = σ_avg + R',
+        '{s1} = ({sx} + {sy}) ÷ 2 + √((({sx} − {sy}) ÷ 2)² + {txy}²)',
+        ['s1', 'sx', 'sy', 'txy'],
+        (x) => x.s1! - inPlane(1)(x),
+        {
+          s1: [
+            inPlane(1),
+            '({sx} + {sy}) ÷ 2 + √((({sx} − {sy}) ÷ 2)² + {txy}²)',
+            'Center plus radius.',
+          ],
+        },
+      ),
+      rel(
+        'σ₂ = σ_avg − R',
+        '{s2} = ({sx} + {sy}) ÷ 2 − √((({sx} − {sy}) ÷ 2)² + {txy}²)',
+        ['s2', 'sx', 'sy', 'txy'],
+        (x) => x.s2! - inPlane(-1)(x),
+        {
+          s2: [
+            inPlane(-1),
+            '({sx} + {sy}) ÷ 2 − √((({sx} − {sy}) ÷ 2)² + {txy}²)',
+            'Center less radius.',
+          ],
+        },
+      ),
+      rel(
+        'τ_max = (σ₁ − σ₂) ÷ 2',
+        '{tmax} = ({s1} − {s2}) ÷ 2',
+        ['tmax', 's1', 's2'],
+        (x) => x.tmax! - (x.s1! - x.s2!) / 2,
+        {
+          tmax: [
+            (x) => (x.s1! - x.s2!) / 2,
+            '({s1} − {s2}) ÷ 2',
+            'With σ₃ = 0 between them, the biggest circle runs from σ₂ to σ₁.',
+          ],
+        },
+      ),
+      monomial(
+        'n_T = S_y ÷ 2τ_max',
+        'nT',
+        [['Sy', 1]],
+        [
+          ['2', 1],
+          ['tmax', 1],
+        ],
+        'Tresca: yield when τ_max reaches S_y ÷ 2.',
+        s,
+      ),
+    ],
+    example: {
+      sx: 120,
+      sy: -40,
+      txy: 50,
+      svm: Math.sqrt(28300),
+      Sy: 350,
+      n: 350 / Math.sqrt(28300),
+      s1: 40 + Math.sqrt(8900),
+      s2: 40 - Math.sqrt(8900),
+      tmax: Math.sqrt(8900),
+      nT: 350 / (2 * Math.sqrt(8900)),
+    },
+    startWith: ['sx', 'sy', 'txy', 'Sy'],
+    representation: {
+      kind: 'stressElement',
+      sx: 'sx',
+      sy: 'sy',
+      txy: 'txy',
+      s1: 's1',
+      s2: 's2',
+      envelope: ['vonMises', 'tresca'],
+      strength: 'Sy',
+      n: ['n', 'nT'],
+    },
+  });
+})();
+
+// ─── A brittle material: Coulomb–Mohr (machine-design#0~brittle) ─────────────
+
+const BRITTLE_VARS: VariableDef[] = [
+  val('Sut', 'S_ut', 'Tensile strength', 'MPa', 1e4, { min: 0.1 }),
+  val('Suc', 'S_uc', 'Compressive strength', 'MPa', 1e4, { min: 0.1 }),
+  val('s1', 'σ₁', 'Tensile principal stress', 'MPa', 1e4, { min: 0.001 }),
+  val('s3', 'σ₃', 'Compressive principal stress', 'MPa', -0.001, { min: -1e4 }),
+  val('n', 'n', 'Safety factor', undefined, 1e6, { min: 0.0001 }),
+];
+
+const cm = (x: Values) => 1 / (x.s1! / x.Sut! - x.s3! / x.Suc!);
+
+const brittleDemo = demo('g.he-stressElement-brittle', 'Brittle failure: Coulomb–Mohr', {
+  use: 'Use this for “Cast iron with S_ut = 200 MPa and S_uc = 750 MPa carries σ₁ = 60 MPa and σ₃ = −90 MPa. Find n.”',
+  assumptions: [
+    'Plane stress with σ₂ = 0 between the two: the load sits in the fourth quadrant.',
+    'Brittle: weaker in tension than compression, so the locus is lopsided.',
+  ],
+  variables: BRITTLE_VARS,
+  relations: [
+    rel(
+      'σ₁ ÷ S_ut − σ₃ ÷ S_uc = 1 ÷ n',
+      '{n} = 1 ÷ ({s1} ÷ {Sut} − {s3} ÷ {Suc})',
+      ['n', 's1', 'Sut', 's3', 'Suc'],
+      (x) => x.n! - cm(x),
+      {
+        n: [
+          cm,
+          '1 ÷ ({s1} ÷ {Sut} − {s3} ÷ {Suc})',
+          'Each stress over its own strength, added (σ₃ is negative), then turned over.',
+        ],
+        s1: [
+          (x) => x.Sut! * (1 / x.n! + x.s3! / x.Suc!),
+          '{Sut} × (1 ÷ {n} + {s3} ÷ {Suc})',
+          'Move the σ₃ term across, then multiply by S_ut.',
+        ],
+      },
+    ),
+  ],
+  example: { Sut: 200, Suc: 750, s1: 60, s3: -90, n: 1 / 0.42 },
+  startWith: ['Sut', 'Suc', 's1', 's3'],
+  representation: {
+    kind: 'stressElement',
+    envelope: 'coulombMohr',
+    strength: 'Sut',
+    strengthC: 'Suc',
+    point: ['s1', 's3'],
+    s1: 's1',
+    s3: 's3',
+    n: 'n',
+  },
+});
+
+// ─── A soil's triaxial test (soil-mechanics#3) ───────────────────────────────
+
+const SOIL_VARS: VariableDef[] = [
+  val('c', 'c′', 'Cohesion', 'kPa', 1000, { min: 0.001 }),
+  val('phi', 'φ′', 'Friction angle', '°', 50, { min: 0.1 }),
+  val('s3', 'σ′₃', 'Cell pressure (minor)', 'kPa', 1e4, { min: 0.001 }),
+  val('s1', 'σ′₁', 'Major stress at failure', 'kPa', 1e5, { min: 0.001 }),
+  val('dev', 'Δσ', 'Deviator stress', 'kPa', 1e5, { min: 0.001 }),
+  val('theta', 'θ', 'Failure plane angle', '°', 90, { min: 45 }),
+];
+
+const tanT = (x: Values) => Math.tan((x.theta! * Math.PI) / 180);
+
+const soilDemo = demo('g.he-stressElement-soil', 'Triaxial test: failure stress and plane', {
+  use: 'Use this for “A sand with c′ = 10 kPa and φ′ = 30° is tested at σ′₃ = 100 kPa. Find σ′₁ at failure and the failure plane’s angle.”',
+  assumptions: [
+    'Mohr–Coulomb failure; drained, so effective stresses.',
+    'θ is measured from the major principal plane (horizontal in the test).',
+  ],
+  variables: SOIL_VARS,
+  relations: [
+    rel(
+      'θ = 45° + φ′ ÷ 2',
+      '{theta} = 45 + {phi} ÷ 2',
+      ['theta', 'phi'],
+      (x) => x.theta! - 45 - x.phi! / 2,
+      {
+        theta: [
+          (x) => 45 + x.phi! / 2,
+          '45 + {phi} ÷ 2',
+          'The plane where the circle touches the line, halfway from 2θ = 90° + φ′.',
+        ],
+        phi: [(x) => 2 * (x.theta! - 45), '2 × ({theta} − 45)', 'Undo: take off 45°, then double.'],
+      },
+    ),
+    rel(
+      'σ′₁ = σ′₃ tan²θ + 2c′ tan θ',
+      '{s1} = {s3} × tan({theta}°) × tan({theta}°) + 2 × {c} × tan({theta}°)',
+      ['s1', 's3', 'theta', 'c'],
+      (x) => x.s1! - (x.s3! * tanT(x) ** 2 + 2 * x.c! * tanT(x)),
+      {
+        s1: [
+          (x) => x.s3! * tanT(x) ** 2 + 2 * x.c! * tanT(x),
+          '{s3} × tan({theta}°) × tan({theta}°) + 2 × {c} × tan({theta}°)',
+          'The largest circle the line allows: σ′₃ grown by tan²θ, plus cohesion’s part.',
+        ],
+        s3: [
+          (x) => (x.s1! - 2 * x.c! * tanT(x)) / tanT(x) ** 2,
+          '({s1} − 2 × {c} × tan({theta}°)) ÷ (tan({theta}°) × tan({theta}°))',
+          'Take off cohesion’s part, then divide by tan²θ.',
+        ],
+        c: [
+          (x) => (x.s1! - x.s3! * tanT(x) ** 2) / (2 * tanT(x)),
+          '({s1} − {s3} × tan({theta}°) × tan({theta}°)) ÷ (2 × tan({theta}°))',
+          'Take off the friction part, then divide by 2 tan θ.',
+        ],
+      },
+    ),
+    rel(
+      'Δσ = σ′₁ − σ′₃',
+      '{dev} = {s1} − {s3}',
+      ['dev', 's1', 's3'],
+      (x) => x.dev! - (x.s1! - x.s3!),
+      {
+        dev: [
+          (x) => x.s1! - x.s3!,
+          '{s1} − {s3}',
+          'The extra vertical stress the piston adds at failure.',
+        ],
+        s1: [(x) => x.s3! + x.dev!, '{s3} + {dev}', 'The cell pressure plus the deviator.'],
+        s3: [(x) => x.s1! - x.dev!, '{s1} − {dev}', 'Take the deviator off σ′₁.'],
+      },
+    ),
+  ],
+  example: {
+    c: 10,
+    phi: 30,
+    s3: 100,
+    s1: 300 + 20 * Math.sqrt(3),
+    dev: 200 + 20 * Math.sqrt(3),
+    theta: 60,
+  },
+  startWith: ['c', 'phi', 's3'],
+  representation: {
+    kind: 'stressElement',
+    s1: 's1',
+    s3: 's3',
+    mohrCoulomb: { c: 'c', phi: 'phi', theta: 'theta' },
+  },
+});
+
+// ─── An undrained test (soil-mechanics#3~undrained) ─────────────────────────
+
+const UU_VARS: VariableDef[] = [
+  val('s3', 'σ₃', 'Cell pressure', 'kPa', 1e4, { min: 0.001 }),
+  val('s1', 'σ₁', 'Major stress at failure', 'kPa', 1e5, { min: 0.001 }),
+  val('su', 's_u', 'Undrained shear strength', 'kPa', 1e5, { min: 0.0005 }),
+];
+
+const undrainedDemo = demo('g.he-stressElement-undrained', 'Undrained shear strength', {
+  use: 'Use this for “A clay fails in a UU test at σ₁ = 180 kPa with a cell pressure of 60 kPa. What is s_u?”',
+  assumptions: [
+    'Undrained (φ = 0): every circle at failure has the same radius, so the line is flat at s_u.',
+  ],
+  variables: UU_VARS,
+  relations: [
+    below('s3', 's1', '{s3} < {s1}', 'The major stress is the larger: σ₃ < σ₁.'),
+    rel(
+      's_u = (σ₁ − σ₃) ÷ 2',
+      '{su} = ({s1} − {s3}) ÷ 2',
+      ['su', 's1', 's3'],
+      (x) => x.su! - (x.s1! - x.s3!) / 2,
+      {
+        su: [
+          (x) => (x.s1! - x.s3!) / 2,
+          '({s1} − {s3}) ÷ 2',
+          'The circle’s radius: half the deviator stress.',
+        ],
+        s1: [(x) => x.s3! + 2 * x.su!, '{s3} + 2 × {su}', 'A diameter, 2s_u, right of σ₃.'],
+        s3: [(x) => x.s1! - 2 * x.su!, '{s1} − 2 × {su}', 'A diameter, 2s_u, left of σ₁.'],
+      },
+    ),
+  ],
+  example: { s3: 60, s1: 180, su: 60 },
+  startWith: ['s3', 's1'],
+  representation: { kind: 'stressElement', s1: 's1', s3: 's3', mohrCoulomb: { c: 'su', phi: 0 } },
+});
+
 export const HE2J_GALLERY_MODULES: ModuleDef[] = [
+  mohrMain,
+  mohrTurned,
+  threeDemo,
+  yieldDemo,
+  envelopeDemo,
+  brittleDemo,
+  soilDemo,
+  undrainedDemo,
   rod,
   tensile,
   trueDemo,

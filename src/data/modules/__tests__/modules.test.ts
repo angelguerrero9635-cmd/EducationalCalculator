@@ -591,6 +591,7 @@ function representationVars(r: Representation): string[] {
     case 'velocityProfile':
       return he1fSpecVars(r);
     case 'stressStrain':
+    case 'stressElement':
       return he2jSpecVars(r);
     case 'projectile':
     case 'induction':

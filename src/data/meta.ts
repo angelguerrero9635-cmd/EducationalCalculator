@@ -150,6 +150,7 @@ const PICTURE_NAMES: Record<string, string> = {
   velocityProfile: 'velocity or concentration profiles across a tube, gap or film',
   stressStrain:
     'a stress–strain curve, a test piece, a tube in bending or two members sharing a load',
+  stressElement: 'a stress element and Mohr’s circle, failure loci or a soil’s strength line',
   matrixGrid: 'matrices in brackets',
   membrane: 'cell membrane with particles on each side',
   dnaStrand: 'DNA ladder, mRNA and amino acids',

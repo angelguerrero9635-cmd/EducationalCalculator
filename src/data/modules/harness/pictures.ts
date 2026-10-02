@@ -2259,7 +2259,8 @@ export function repIssues(
       out.push(...he1fIssues(rep, (id) => (val(id) ?? NaN) * (byId.get(id)?.unitFactor ?? 1)));
       break;
     case 'stressStrain':
-      out.push(...he2jIssues(rep, siOf(val, byId), byId)); // HC28
+    case 'stressElement':
+      out.push(...he2jIssues(rep, siOf(val, byId), byId)); // HC28, HC33
       break;
     case 'projectile':
     case 'induction':
