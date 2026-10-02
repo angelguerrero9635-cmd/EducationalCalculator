@@ -431,6 +431,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `freeBody`         | `drum`, `banked`                         | rope round a drum, T₂ = T₁e^(μβ); a car on a bank, N's parts dashed (HC20)    |
 | `freeBody`         | `aircraft` `view: 'side'`, `'front'`     | L, W, T, D (T, D magnified), climb γ, α, δe inset; bank φ, L cos φ (HC25)     |
 | `freeBody`         | `aircraft` `view: 'stability'`           | AC, CG and neutral point on the mean chord, the static margin bracket (HC25)  |
+| `freeBody`         | `slab: { material, thickness, angle }`   | soil or ice slab on a slope: σ, τ, s on the base to scale; FS, slides (HC118) |
 | `gasPiston`        | `energy: { heat, work, change? }`        | first law: Q and W as bands, a Q, −W, ΔU waterfall (H102)                     |
 | `gasPiston`        | `mixture: { gases, total?, fraction? }`  | 24 particles shared by partial pressure, colored by gas; stacked P bar (H108) |
 | `charges`          | `mode: 'plates'`; `point`                | plates V, d: uniform E = V/d, F = qE; two charges: E₁, E₂, E at x (H102)      |

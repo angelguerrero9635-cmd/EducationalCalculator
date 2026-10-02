@@ -1,7 +1,7 @@
 /**
  * College pictures, round 4, group C (docs/RENDERINGS_HE.md): HC99 `motionGraph` `polynomial`,
  * HC101 `impulse` `shape`, HC103 `pendulum` `rod`, HC104 the new kind `spacetime`, HC105
- * `photoelectric` `mode: 'compton'`.
+ * `photoelectric` `mode: 'compton'`, HC118 `freeBody` `slab`.
  * Kept apart from `types.ts` so the union only names them.
  *
  * Every string is a variable id; a `NumOrVar` is a fixed number or one. A value is read in its
@@ -151,11 +151,50 @@ export interface PhotoelectricComptonSpec {
   fixed?: boolean;
 }
 
+// ─── HC118 freeBody slab ─────────────────────────────────────────────────────
+
+/**
+ * An infinite slope in section: a slab of soil (or a glacier's ice) on a slope of `angle` θ (or
+ * the ice surface's α, °), `thickness` z (vertical depth to the slip surface, or the ice
+ * thickness H, m), over a dashed slip surface (soil) or bedrock (ice). The stresses on the base
+ * as arrows to one scale: σ = γz cos²θ pressing on it, τ = γz sin θ cos θ driving it downslope
+ * and the strength s = c + σ tan φ against τ; FS = s ÷ τ, and "slides" exactly when FS < 1.
+ * Ice: the basal shear τ_b = ρgH sin α (kPa), with `g` from the page. The slope's angle is true;
+ * the depth is not to scale (the slab is long next to it). Drag the slope's foot for θ.
+ */
+export interface FreeBodySlab {
+  material: 'soil' | 'ice';
+  thickness: NumOrVar;
+  angle: NumOrVar;
+  /** Soil: unit weight γ (kN/m³), cohesion c (kPa), friction angle φ (°). */
+  unitWeight?: NumOrVar;
+  cohesion?: NumOrVar;
+  friction?: NumOrVar;
+  /** Ice: density ρ (kg/m³) and g (m/s²). */
+  density?: NumOrVar;
+  g?: NumOrVar;
+  /** σ, τ (τ_b for ice) and s (kPa); the factor of safety FS. */
+  normal?: string;
+  shear?: string;
+  strength?: string;
+  safety?: string;
+}
+
+export interface FreeBodySlabSpec {
+  kind: 'freeBody';
+  slab: FreeBodySlab;
+  fixed?: boolean;
+}
+
 // ─── The union ───────────────────────────────────────────────────────────────
 
 /** Group HE4C's options on kinds that exist (sent to He4cView before the kind's own picture). */
 export type He4cOptionSpec =
-  MotionGraphHe4cSpec | ImpulseShapeSpec | PendulumRodSpec | PhotoelectricComptonSpec;
+  | MotionGraphHe4cSpec
+  | ImpulseShapeSpec
+  | PendulumRodSpec
+  | PhotoelectricComptonSpec
+  | FreeBodySlabSpec;
 
 /** Every picture of group HE4C. */
 export type He4cSpec = He4cOptionSpec | SpacetimeSpec;
@@ -166,6 +205,7 @@ export function isHe4cOption(r: Representation): r is He4cOptionSpec {
   if (r.kind === 'impulse') return 'shape' in r;
   if (r.kind === 'pendulum') return 'rod' in r;
   if (r.kind === 'photoelectric') return 'mode' in r && r.mode === 'compton';
+  if (r.kind === 'freeBody') return 'slab' in r;
   return false;
 }
 
@@ -181,6 +221,22 @@ export function he4cSpecVars(r: He4cSpec): string[] {
     }
     case 'impulse':
       return ids(r.peak, r.time, r.impulse, r.average, r.mass, r.change);
+    case 'freeBody': {
+      const b = r.slab;
+      return ids(
+        b.thickness,
+        b.angle,
+        b.unitWeight,
+        b.cohesion,
+        b.friction,
+        b.density,
+        b.g,
+        b.normal,
+        b.shear,
+        b.strength,
+        b.safety,
+      );
+    }
     case 'photoelectric':
       return ids(
         r.wavelength,

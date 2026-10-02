@@ -123,4 +123,28 @@ export const HE4C_REQUESTS: PictureRequest[] = [
     status: 'drawn',
     gallery: ['g.he-photoelectric-compton', 'g.he-photoelectric-compton-backscatter'],
   },
+  {
+    ...ask(
+      'HC118',
+      'freeBody',
+      'An infinite slope in section: a slab of soil over a dashed slip surface (or a glacier’s ice on bedrock), σ, τ and the strength s on its base as arrows to one scale, FS and "slides" or "holds"; for ice the basal shear τ_b',
+      {
+        'he.earth-science.physical-geology#3': '"slab"',
+        'he.earth-science.physical-geology#3~glacier': '"slab"',
+      },
+      [
+        'From EG-P4. New option on freeBody (typesHe4c.ts FreeBodySlabSpec, reps/SlopeSlab.tsx, sums in reps/he4cMath.ts); the other free-body pictures and the round-2 college options are unchanged.',
+        "Fields: { kind: 'freeBody', slab: { material: 'soil' | 'ice', thickness (z, the vertical depth to the slip surface, or the ice thickness H, m), angle (θ, or the ice surface slope α, °), unitWeight? (γ, kN/m³), cohesion? (c, kPa), friction? (φ, °), density? (ρ, kg/m³, ice), g? (m/s², the page's: 9.81 on earth pages; an ice slab needs it), normal? (σ, kPa), shear? (τ, or τ_b for ice, kPa), strength? (s, kPa), safety? (FS) }, fixed? }.",
+        "Example (#3): { kind: 'freeBody', slab: { material: 'soil', thickness: 'z', angle: 'th', unitWeight: 'gam', cohesion: 'c', friction: 'phi', normal: 'sig', shear: 'tau', strength: 's', safety: 'FS' } }. Example (#3~glacier): { kind: 'freeBody', slab: { material: 'ice', thickness: 'H', angle: 'al', density: 'rho', g: 9.81, shear: 'tb' } }.",
+        'The slope at its true angle across the whole width (an infinite slope), the slab painted in soil with grains or ice with marks, the ground under the dashed slip surface darker (soil) or bedrock with joints (ice); θ against a level line; z (or H) bracketed straight down, not to scale (said in the caption); σ pressing on the base, τ (τ_b) downslope above it and s upslope below it, on one scale; the material’s values and "FS = …: slides" or "holds" listed top right. The caption works σ, τ, s and FS (ice: ρgH sin α ÷ 1000 against about 100 kPa). Drag the slope’s foot for the angle. A "?" draws nothing for that value.',
+        'Harness (harness/picturesHe4c.ts): σ = γz cos²θ, τ = γz sin θ cos θ, s = c + σ tan φ, FS = s ÷ τ, "slides" exactly when FS < 1; ice: τ_b = ρgH sin α with the page’s g.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-freeBody-slab-soil',
+      'g.he-freeBody-slab-soil-slides',
+      'g.he-freeBody-slab-ice',
+    ],
+  },
 ];

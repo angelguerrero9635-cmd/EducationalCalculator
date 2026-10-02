@@ -9,6 +9,7 @@ import { ImpulseShape } from './ImpulseShape';
 import { Compton } from './Compton';
 import { MotionPolynomial } from './MotionPolynomial';
 import { PendulumRod } from './PendulumRod';
+import { SlopeSlab } from './SlopeSlab';
 
 export function He4cView({ spec, calc }: { spec: He4cOptionSpec; calc: Calculator }) {
   switch (spec.kind) {
@@ -20,5 +21,7 @@ export function He4cView({ spec, calc }: { spec: He4cOptionSpec; calc: Calculato
       return <PendulumRod spec={spec} calc={calc} />; // HC103
     case 'photoelectric':
       return <Compton spec={spec} calc={calc} />; // HC105
+    case 'freeBody':
+      return <SlopeSlab spec={spec} calc={calc} />; // HC118
   }
 }

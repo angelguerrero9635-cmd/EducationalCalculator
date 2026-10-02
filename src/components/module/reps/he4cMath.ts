@@ -153,3 +153,32 @@ export function comptonOf(lam: number, thetaDeg: number, C = COMPTON_PM, hc = HC
     phi: Math.abs(pe.y) < 1e-12 * p ? 0 : (Math.atan2(-pe.y, pe.x) * 180) / Math.PI,
   };
 }
+
+// ─── HC118 an infinite slope ─────────────────────────────────────────────────
+
+/**
+ * A soil slab of unit weight γ (kN/m³) and vertical depth z (m) on a slope θ (°): σ = γz cos²θ,
+ * τ = γz sin θ cos θ (kPa); with cohesion c (kPa) and friction angle φ (°), s = c + σ tan φ
+ * and FS = s ÷ τ. It slides exactly when FS < 1.
+ */
+export function soilSlabOf(
+  gamma: number,
+  z: number,
+  thetaDeg: number,
+  c?: number,
+  phiDeg?: number,
+) {
+  const t = (thetaDeg * Math.PI) / 180;
+  const sigma = gamma * z * Math.cos(t) ** 2;
+  const tau = gamma * z * Math.sin(t) * Math.cos(t);
+  const s =
+    c !== undefined && phiDeg !== undefined
+      ? c + sigma * Math.tan((phiDeg * Math.PI) / 180)
+      : undefined;
+  const fs = s !== undefined && tau > 0 ? s / tau : undefined;
+  return { sigma, tau, s, fs, slides: fs !== undefined && fs < 1 };
+}
+
+/** A glacier's basal shear τ_b = ρgH sin α in kPa (ρ in kg/m³, g in m/s², H in m, α in °). */
+export const basalShear = (rho: number, g: number, H: number, alphaDeg: number) =>
+  (rho * g * H * Math.sin((alphaDeg * Math.PI) / 180)) / 1000;

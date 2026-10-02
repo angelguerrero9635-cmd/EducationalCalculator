@@ -929,6 +929,228 @@ const comptonBack = comptonDemo(
   [5, 180],
 );
 
+// ── HC118: an infinite slope, soil and ice (physical-geology#3, ~glacier) ──
+
+const D = Math.PI / 180;
+
+const soilSlabDemo = (
+  id: string,
+  title: string,
+  use: string,
+  [th, z, c, phi, gam]: [number, number, number, number, number],
+) => {
+  const sig = gam * z * Math.cos(th * D) ** 2;
+  const tau = gam * z * Math.sin(th * D) * Math.cos(th * D);
+  const sv = c + sig * Math.tan(phi * D);
+  return demo({
+    id,
+    title,
+    use,
+    assumptions: [
+      'The slab is long next to its depth, so its ends don’t matter (an infinite slope).',
+      'The soil is dry: water in it would cut σ and the strength.',
+      'FS below 1 means the slab slides.',
+    ],
+    variables: [
+      quantity('th', 'θ', 'Slope angle', '°', 1, 70, 0.1),
+      quantity('z', 'z', 'Depth to the slip surface', 'm', 0.1, 50, 0.01),
+      quantity('c', 'c', 'Cohesion', 'kPa', 0, 100, 0.1),
+      quantity('phi', 'φ', 'Friction angle', '°', 10, 50, 0.1),
+      quantity('gam', 'γ', 'Unit weight', 'kN/m³', 10, 25, 0.1),
+      quantity('sig', 'σ', 'Normal stress', 'kPa', 0.001, 1250, 0.01),
+      quantity('tau', 'τ', 'Driving shear stress', 'kPa', 0.001, 625, 0.01),
+      quantity('s', 's', 'Shear strength', 'kPa', 0.001, 1600, 0.01),
+      quantity('FS', 'FS', 'Factor of safety', undefined, 0, 1000, 0.001),
+    ],
+    ...rules(
+      {
+        relation: {
+          id: 'σ = γz cos²θ',
+          display: '{sig} = {gam} × {z} × cos({th}°)²',
+          vars: ['sig', 'gam', 'z', 'th'],
+          residual: (v) => v.sig! - v.gam! * v.z! * Math.cos(v.th! * D) ** 2,
+          solve: {
+            sig: (v) => v.gam! * v.z! * Math.cos(v.th! * D) ** 2,
+            gam: (v) => div(v.sig!, v.z! * Math.cos(v.th! * D) ** 2),
+            z: (v) => div(v.sig!, v.gam! * Math.cos(v.th! * D) ** 2),
+            th: (v) => {
+              const x = v.sig! / (v.gam! * v.z!);
+              return x < 0 || x > 1 ? undefined : Math.acos(Math.sqrt(x)) / D;
+            },
+          },
+        },
+        steps: {
+          sig: st(
+            '{gam} × {z} × cos({th}°)²',
+            'The column’s weight γz, spread over a base tilted by θ, pressing square onto it.',
+          ),
+          gam: st('{sig} ÷ ({z} × cos({th}°)²)', 'Divide σ by z cos²θ.'),
+          z: st('{sig} ÷ ({gam} × cos({th}°)²)', 'Divide σ by γ cos²θ.'),
+          th: st('cos⁻¹(√({sig} ÷ ({gam} × {z})))', 'σ ÷ γz is cos²θ: take the root, then cos⁻¹.'),
+        },
+      },
+      {
+        relation: {
+          id: 'τ = γz sin θ cos θ',
+          display: '{tau} = {gam} × {z} × sin({th}°) × cos({th}°)',
+          vars: ['tau', 'gam', 'z', 'th'],
+          residual: (v) => v.tau! - v.gam! * v.z! * Math.sin(v.th! * D) * Math.cos(v.th! * D),
+          solve: {
+            tau: (v) => v.gam! * v.z! * Math.sin(v.th! * D) * Math.cos(v.th! * D),
+            gam: (v) => div(v.tau!, v.z! * Math.sin(v.th! * D) * Math.cos(v.th! * D)),
+            z: (v) => div(v.tau!, v.gam! * Math.sin(v.th! * D) * Math.cos(v.th! * D)),
+          },
+        },
+        steps: {
+          tau: st(
+            '{gam} × {z} × sin({th}°) × cos({th}°)',
+            'The weight’s part along the slope, on the same tilted base.',
+          ),
+          gam: st('{tau} ÷ ({z} × sin({th}°) × cos({th}°))', 'Divide τ by z sin θ cos θ.'),
+          z: st('{tau} ÷ ({gam} × sin({th}°) × cos({th}°))', 'Divide τ by γ sin θ cos θ.'),
+        },
+      },
+      {
+        relation: {
+          id: 's = c + σ tan φ',
+          display: '{s} = {c} + {sig} × tan({phi}°)',
+          vars: ['s', 'c', 'sig', 'phi'],
+          residual: (v) => v.s! - (v.c! + v.sig! * Math.tan(v.phi! * D)),
+          solve: {
+            s: (v) => v.c! + v.sig! * Math.tan(v.phi! * D),
+            c: (v) => v.s! - v.sig! * Math.tan(v.phi! * D),
+            sig: (v) => div(v.s! - v.c!, Math.tan(v.phi! * D)),
+            phi: (v) => {
+              const x = div(v.s! - v.c!, v.sig!);
+              return x === undefined || x < 0 ? undefined : Math.atan(x) / D;
+            },
+          },
+        },
+        steps: {
+          s: st(
+            '{c} + {sig} × tan({phi}°)',
+            'Mohr–Coulomb: cohesion plus friction on the normal stress.',
+          ),
+          c: st('{s} − {sig} × tan({phi}°)', 'Take the friction part from the strength.'),
+          sig: st('({s} − {c}) ÷ tan({phi}°)', 'Take c from s, then divide by tan φ.'),
+          phi: st('tan⁻¹(({s} − {c}) ÷ {sig})', 'The friction part over σ is tan φ.'),
+        },
+      },
+      {
+        relation: {
+          id: 'FS = s ÷ τ',
+          display: '{FS} = {s} ÷ {tau}',
+          vars: ['FS', 's', 'tau'],
+          residual: (v) => v.FS! * v.tau! - v.s!,
+          solve: {
+            FS: (v) => div(v.s!, v.tau!),
+            s: (v) => v.FS! * v.tau!,
+            tau: (v) => div(v.s!, v.FS!),
+          },
+        },
+        steps: {
+          FS: st('{s} ÷ {tau}', 'How many times the strength covers the driving stress.'),
+          s: st('{FS} × {tau}', 'Multiply the driving stress by FS.'),
+          tau: st('{s} ÷ {FS}', 'Divide the strength by FS.'),
+        },
+      },
+    ),
+    example: { th, z, c, phi, gam, sig, tau, s: sv, FS: sv / tau },
+    startWith: ['th', 'z', 'c', 'phi', 'gam'],
+    representation: {
+      kind: 'freeBody',
+      slab: {
+        material: 'soil',
+        thickness: 'z',
+        angle: 'th',
+        unitWeight: 'gam',
+        cohesion: 'c',
+        friction: 'phi',
+        normal: 'sig',
+        shear: 'tau',
+        strength: 's',
+        safety: 'FS',
+      },
+    },
+  });
+};
+
+const slabSoil = soilSlabDemo(
+  'g.he-freeBody-slab-soil',
+  'A soil slope: the factor of safety of a slab',
+  'Use this for a 30° slope with a slip surface 2 m down (c = 5 kPa, φ = 35°, γ = 20 kN/m³): the stresses on it and its factor of safety.',
+  [30, 2, 5, 35, 20],
+);
+
+const slabSoilSlides = soilSlabDemo(
+  'g.he-freeBody-slab-soil-slides',
+  'A steeper, deeper slab: FS below 1, so it slides',
+  'Use this for a 40° slope with a slip surface 3 m down in weak soil (c = 2 kPa, φ = 30°, γ = 19 kN/m³): does it slide?',
+  [40, 3, 2, 30, 19],
+);
+
+const G_EARTH = 9.81;
+
+const slabIce = demo({
+  id: 'g.he-freeBody-slab-ice',
+  title: 'A glacier on its bed: the basal shear stress',
+  use: 'Use this for ice 300 m thick on a 3° surface slope: the shear stress at its bed, or the thickness that gives 100 kPa.',
+  assumptions: [
+    'The slope is the ice surface’s, not the bed’s; the ice is long next to its thickness.',
+    'g = 9.81 m/s²; ice flows when the basal shear nears about 100 kPa.',
+  ],
+  variables: [
+    quantity('rho', 'ρ', 'Ice density', 'kg/m³', 800, 1000, 1),
+    quantity('H', 'H', 'Ice thickness', 'm', 1, 4000, 1),
+    quantity('al', 'α', 'Surface slope', '°', 0.1, 30, 0.1),
+    quantity('tb', 'τ_b', 'Basal shear stress', 'kPa', 0.001, 20000, 0.01),
+  ],
+  ...rules({
+    relation: {
+      id: 'τ_b = ρgH sin α',
+      display: '{tb} = {rho} × 9.81 × {H} × sin({al}°) ÷ 1000',
+      vars: ['tb', 'rho', 'H', 'al'],
+      residual: (v) => v.tb! - (v.rho! * G_EARTH * v.H! * Math.sin(v.al! * D)) / 1000,
+      solve: {
+        tb: (v) => (v.rho! * G_EARTH * v.H! * Math.sin(v.al! * D)) / 1000,
+        rho: (v) => div(1000 * v.tb!, G_EARTH * v.H! * Math.sin(v.al! * D)),
+        H: (v) => div(1000 * v.tb!, v.rho! * G_EARTH * Math.sin(v.al! * D)),
+        al: (v) => {
+          const x = (1000 * v.tb!) / (v.rho! * G_EARTH * v.H!);
+          return x > 1 ? undefined : Math.asin(x) / D;
+        },
+      },
+    },
+    steps: {
+      tb: st(
+        '{rho} × 9.81 × {H} × sin({al}°) ÷ 1000',
+        'The ice column’s weight ρgH, its part along the slope, in kPa.',
+      ),
+      rho: st('1000 × {tb} ÷ (9.81 × {H} × sin({al}°))', 'Divide the shear (in Pa) by gH sin α.'),
+      H: st('1000 × {tb} ÷ ({rho} × 9.81 × sin({al}°))', 'Divide the shear (in Pa) by ρg sin α.'),
+      al: st('sin⁻¹(1000 × {tb} ÷ ({rho} × 9.81 × {H}))', 'The shear over ρgH is sin α.'),
+    },
+  }),
+  example: {
+    rho: 917,
+    H: 300,
+    al: 3,
+    tb: (917 * G_EARTH * 300 * Math.sin(3 * D)) / 1000,
+  },
+  startWith: ['rho', 'H', 'al'],
+  representation: {
+    kind: 'freeBody',
+    slab: {
+      material: 'ice',
+      thickness: 'H',
+      angle: 'al',
+      density: 'rho',
+      g: G_EARTH,
+      shear: 'tb',
+    },
+  },
+});
+
 export const HE4C_GALLERY_MODULES: ModuleDef[] = [
   polynomial,
   polynomialLong,
@@ -945,6 +1167,9 @@ export const HE4C_GALLERY_MODULES: ModuleDef[] = [
   additionNearC,
   compton,
   comptonBack,
+  slabSoil,
+  slabSoilSlides,
+  slabIce,
 ];
 
 export const HE4C_GALLERY_LAYOUTS: LayoutDef[] = [];

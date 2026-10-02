@@ -5,6 +5,7 @@
  */
 import {
   addVelocities,
+  basalShear,
   COMPTON_PM,
   comptonOf,
   cubicAt,
@@ -14,6 +15,7 @@ import {
   PULSE_SHARE,
   pulseForce,
   rodPendulum,
+  soilSlabOf,
   turnarounds,
   type Cubic,
 } from '@/components/module/reps/he4cMath';
@@ -80,6 +82,33 @@ export function he4cIssues(rep: He4cSpec, val: Val): string[] {
       if (avg !== undefined && !near(avg * dt, J))
         out.push(`impulse: F_avg·Δt ${avg * dt} ≠ J ${J}`);
       if (m !== undefined && m > 0) same(rep.change, J / m, 'Δv = J ÷ m');
+      break;
+    }
+    case 'freeBody': {
+      // HC118: σ = γz cos²θ, τ = γz sin θ cos θ, s = c + σ tan φ, FS = s ÷ τ ("slides" exactly
+      // when FS < 1); ice: τ_b = ρgH sin α.
+      const b = rep.slab;
+      const [z, th] = [read(b.thickness), read(b.angle)];
+      if (z !== undefined && z <= 0) out.push(`freeBody: slab thickness ${z} is not positive`);
+      if (th !== undefined && (th <= 0 || th >= 90))
+        out.push(`freeBody: slope ${th}° is not between 0° and 90°`);
+      if (z === undefined || th === undefined) break;
+      if (b.material === 'ice') {
+        const [rho, g] = [read(b.density), read(b.g)];
+        if (b.g === undefined) out.push('freeBody: an ice slab needs the page’s g');
+        if (rho !== undefined && g !== undefined)
+          same(b.shear, basalShear(rho, g, z, th), 'τ_b = ρgH sin α:');
+        break;
+      }
+      const gam = read(b.unitWeight);
+      if (gam === undefined) break;
+      const k = soilSlabOf(gam, z, th, read(b.cohesion), read(b.friction));
+      same(b.normal, k.sigma, 'σ = γz cos²θ:');
+      same(b.shear, k.tau, 'τ = γz sin θ cos θ:');
+      same(b.strength, k.s, 's = c + σ tan φ:');
+      same(b.safety, k.fs, 'FS = s ÷ τ:');
+      if (k.fs !== undefined && k.slides !== k.fs < 1)
+        out.push(`freeBody: FS = ${k.fs} but the caption says it ${k.slides ? 'slides' : 'holds'}`);
       break;
     }
     case 'photoelectric': {
