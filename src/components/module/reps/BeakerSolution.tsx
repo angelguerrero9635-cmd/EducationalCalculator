@@ -260,7 +260,7 @@ function Beakers({ spec, rep }: { spec: Exclude<Solution, { mode: 'solubility' }
       <Caption>
         {[
           spec.mode === 'molarity'
-            ? `Molarity is moles per liter: ${moles.known ? moles.text : '?'} mol in ${jars[0]!.volume.text} ${unit} is ${formatNumber(Number(concentration[0]!.toPrecision(6)))} mol/L.`
+            ? `Molarity is moles per liter: ${moles.known ? moles.text : '?'} mol in ${jars[0]!.volume.text} ${unit} is ${moles.known && jars[0]!.volume.known ? formatNumber(Number(concentration[0]!.toPrecision(6))) : '?'} mol/L.`
             : `Water spreads the same solute out: M₁V₁ = M₂V₂ = ${moles.text} mol of ${solute}. The paler tint is the weaker solution.`,
           `Each dot is ${formatNumber(per)} mol of ${solute}: ${count} dots${Math.abs(count * per - n) > 1e-9 * Math.max(1, n) ? ', about' : ''}.`,
         ].join(' · ')}
@@ -441,8 +441,8 @@ function SolubilityCurve({
       </Canvas>
       <Caption>
         {[
-          `At ${t.known ? t.text : '?'} °C, ${formatNumber(s)} g of ${name} dissolves in 100 g of water.`,
-          ...(verdict ? [verdict] : []),
+          `At ${t.known ? t.text : '?'} °C, ${t.known ? formatNumber(s) : '?'} g of ${name} dissolves in 100 g of water.`,
+          ...(verdict && t.known ? [verdict] : []),
         ].join(' · ')}
       </Caption>
     </View>

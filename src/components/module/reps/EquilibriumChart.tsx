@@ -167,7 +167,9 @@ export function EquilibriumChart({ spec, calc }: { spec: EquilibriumChartSpec; c
       </Canvas>
       <Caption>
         {[
-          `At equilibrium Q = K = ${fmt(K)}: ${spec.species.map((_, i) => `${name(i)} = ${fmt(st.eq1[i]!)} M`).join(', ')}.`,
+          known
+            ? `At equilibrium Q = K = ${fmt(K)}: ${spec.species.map((_, i) => `${name(i)} = ${fmt(st.eq1[i]!)} M`).join(', ')}.`
+            : 'At equilibrium Q = K: type the amounts to find them.',
           ...(stress && st.Q2 !== undefined && st.K2 !== undefined
             ? [
                 Math.abs(st.Q2 - st.K2) <= 1e-9 * Math.max(1, st.K2)
