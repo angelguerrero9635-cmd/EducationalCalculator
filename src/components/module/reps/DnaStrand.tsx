@@ -107,7 +107,10 @@ export function DnaStrand({ spec, calc }: { spec: DnaStrandSpec; calc: Calculato
   const from = readFrom(effect);
   const protein = effect === 'start-lost' ? [] : translate(mrna.slice(from));
   const before = mut ? translate(transcribe(template)) : undefined;
-  const bw = Math.min(26, (W - X0 - 8) / Math.max(1, shown.length + (gap >= 0 ? 1 : 0)));
+  // The columns: the mutated strand's bases, or the template's when a deletion left it longer
+  // (its "Before" codons are drawn at the same width).
+  const cols = Math.max(shown.length, template.length) + (gap >= 0 ? 1 : 0);
+  const bw = Math.min(26, (W - X0 - 8) / Math.max(1, cols));
   const x = (i: number) => X0 + (i + (gap >= 0 && i >= gap ? 1 : 0)) * bw;
   /** Where codon k's bases start on the drawing, from the read start. */
   const xr = (i: number) => x(i + from);
