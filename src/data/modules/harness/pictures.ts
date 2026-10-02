@@ -74,6 +74,8 @@ import { netIssues, oscillatorIssues } from './picturesHe1h';
 import { ampIssues, deviceIssues } from './picturesHe2d';
 import { he2fIssues } from './picturesHe2f';
 import { isHe2fSpec } from '../typesHe2f';
+import { he3lIssues } from './picturesHe3l';
+import { isHe3lSpec } from '../typesHe3l';
 import { skeletalIssues } from './picturesHe1c';
 import { phaseEnvelopeIssues, phaseSubstanceIssues } from './picturesHe1i';
 import { chemRateHe2kIssues, globeIssues } from './picturesHe2k';
@@ -1196,6 +1198,10 @@ export function repIssues(
       break;
     }
     case 'wave': {
+      if (isHe3lSpec(rep)) {
+        out.push(...he3lIssues(rep, siOf(val, byId), byId)); // HC93
+        break;
+      }
       out.push(...hsk.waveHsIssues(rep, (id) => hsk.mapSi(val(id), byId.get(id)?.unitFactor)));
       if (typeof rep.extent === 'string') count(rep.extent, 'waves drawn', 12);
       const [A, L] = [rep.amplitude ? val(rep.amplitude) : undefined, val(rep.wavelength)];
@@ -2324,6 +2330,10 @@ export function repIssues(
     case 'circularMotion':
     case 'freeBody':
       if (isHe2fSpec(rep)) return [...out, ...he2fIssues(rep, siOf(val, byId))]; // HC20, HC25, HC35
+      if (isHe3lSpec(rep)) {
+        out.push(...he3lIssues(rep, siOf(val, byId), byId)); // HC68
+        break;
+      }
       if (isHe2e(rep)) {
         out.push(...he2eIssues(rep, siOf(val, byId)));
         break;
@@ -2353,6 +2363,9 @@ export function repIssues(
       break;
     case 'bode':
       out.push(...bodeIssues(rep, siOf(val, byId))); // HC22
+      break;
+    case 'phaseSpace':
+      out.push(...he3lIssues(rep, siOf(val, byId), byId)); // HC69
       break;
     case 'fieldPlot':
       out.push(...fieldPlotIssues(rep, val)); // HC21

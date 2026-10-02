@@ -21,8 +21,9 @@ import type { NumOrVar } from './typesGraphs';
  *   bracketed, twice as wide as the side bands. Across is not to scale; along the screen the
  *   dark fringes are (at L tan θₘ). A slit no wider than λ has no dark fringe: faded, with the
  *   reason.
- * - `grating`: `lines` N per mm, d = 1 ÷ N; every order m with |mλ| < d drawn as a ray at its
- *   true angle (d sin θ = mλ), m_max the last one under 90°, `order` m lit with its θ arced.
+ * - `grating`: `lines` N per mm, d = 1 ÷ N (the page's `spacing` when known); every order to
+ *   m_max = ⌊d ÷ λ⌋ drawn as a ray at its true angle (d sin θ = mλ; one exactly at sin θ = 1
+ *   grazes at 90°), `order` m lit with its θ arced and written.
  *   An order past sin θ = 1 is named in the caption, never drawn.
  * - `thinFilm`: a film of index `index` n and `thickness` t (nm) in air (or on `below`, a
  *   substrate's index): the ray reflected at the top and the one reflected at the bottom, the
@@ -166,7 +167,9 @@ export interface WaveLine {
   share?: NumOrVar;
 }
 
-export type WaveHe3lSpec = { kind: 'wave'; fixed?: boolean } & ({ em: WaveEm } | { line: WaveLine });
+export type WaveHe3lSpec = { kind: 'wave'; fixed?: boolean } & (
+  { em: WaveEm } | { line: WaveLine }
+);
 
 /** The pictures of group HE3L. */
 export type He3lSpec = RayDiagramHe3lSpec | PhaseSpaceSpec | WaveHe3lSpec;

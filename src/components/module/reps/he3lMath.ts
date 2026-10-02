@@ -14,14 +14,14 @@ const DEG = Math.PI / 180;
 /** SI per unit for the units the group's pages use; undefined for one it doesn't know. */
 const UNITS: Record<string, number> = {
   nm: 1e-9,
-  'μm': 1e-6,
+  μm: 1e-6,
   mm: 1e-3,
   cm: 1e-2,
   m: 1,
   km: 1e3,
   T: 1,
   mT: 1e-3,
-  'μT': 1e-6,
+  μT: 1e-6,
   nT: 1e-9,
   'V/m': 1,
   'mV/m': 1e-3,
@@ -37,8 +37,8 @@ const UNITS: Record<string, number> = {
   kHz: 1e3,
   MHz: 1e6,
   GHz: 1e9,
-  'Ω': 1,
-  'kΩ': 1e3,
+  Ω: 1,
+  kΩ: 1e3,
   'lines/mm': 1e3,
   'lines/cm': 1e2,
   'lines/m': 1,
@@ -78,17 +78,17 @@ export function slitBrightness(lambda: number, a: number, thetaDeg: number) {
 }
 
 /**
- * A grating of N lines per m at λ (m): d = 1 ÷ N, the orders with |mλ| < d (strictly under 90°)
- * and their angles, and m_max.
+ * A grating of N lines per m at λ (m): d = 1 ÷ N, m_max = ⌊d ÷ λ⌋ and every order's angle (an
+ * order exactly at sin θ = 1 grazes along the grating, at 90°).
  */
 export function gratingOf(lambda: number, N: number) {
   const d = 1 / N;
   const ratio = d / lambda;
   // The last order strictly under 90° (an exact ratio puts its last order at grazing, unseen).
-  const highest = Math.max(0, Math.ceil(ratio - 1e-9) - 1);
+  const highest = Math.max(0, Math.floor(ratio + 1e-9));
   const orders = Array.from({ length: Math.min(highest, 200) + 1 }, (_, m) => ({
     m,
-    theta: Math.asin((m * lambda) / d) / DEG,
+    theta: Math.asin(Math.min(1, (m * lambda) / d)) / DEG,
   }));
   return { d, highest, orders };
 }
@@ -96,7 +96,8 @@ export function gratingOf(lambda: number, N: number) {
 /** The angle of order m (degrees), or undefined past sin θ = 1. */
 export function gratingAngle(lambda: number, d: number, m: number) {
   const s = (m * lambda) / d;
-  return Math.abs(s) >= 1 ? undefined : Math.asin(s) / DEG;
+  if (Math.abs(s) > 1 + 1e-9) return undefined;
+  return Math.asin(Math.max(-1, Math.min(1, s))) / DEG;
 }
 
 /**
@@ -131,7 +132,7 @@ export function pendulumOf(m: number, L: number, omega0: number, g: number) {
   const E = 0.5 * m * L * L * omega0 * omega0;
   const Es = 2 * m * g * L;
   const c = 1 - E / (m * g * L);
-  return { E, Es, thetaMax: E < Es ? Math.acos(Math.max(-1, c)) / DEG : undefined };
+  return { E, Es, thetaMax: E <= Es * (1 + 1e-9) ? Math.acos(Math.max(-1, c)) / DEG : undefined };
 }
 
 /** ω on the pendulum's curve of energy E at θ (degrees), or undefined where it can't reach. */

@@ -546,6 +546,13 @@ const light = {
   he2eField: '#0E8A7E',
   he2eSurface: '#B45309',
   he2eEnclosed: '#F2B8B8',
+  /** HC68, HC69, HC93 (round 3, group L): a soap film, a flip mark; E and B; phase curves. */
+  he3lFilm: '#CFE8F2',
+  he3lFlip: '#B42318',
+  he3lE: '#C2410C',
+  he3lB: '#1D4ED8',
+  he3lCurve: '#6D28D9',
+  he3lBead: '#B45309',
   satellitePanel: '#2B4C8C',
   /** HC2 skeletal structures: a lit functional group's band; O, N, S and halogen letters. */
   skeletalLit: '#FBBF24',
@@ -1019,6 +1026,13 @@ const dark: Palette = {
   he2eField: '#3CC3B4',
   he2eSurface: '#F0A04B',
   he2eEnclosed: '#6E2E2E',
+  /** HC68, HC69, HC93 (round 3, group L): a soap film, a flip mark; E and B; phase curves. */
+  he3lFilm: '#24414D',
+  he3lFlip: '#F87171',
+  he3lE: '#FB923C',
+  he3lB: '#60A5FA',
+  he3lCurve: '#A78BFA',
+  he3lBead: '#F59E0B',
   satellitePanel: '#3D5FA3',
   skeletalLit: '#F59E0B',
   skeletalO: '#FF8A80',

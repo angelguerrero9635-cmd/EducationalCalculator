@@ -42,6 +42,7 @@ import { fieldPlotVars } from '../typesHe2g';
 import { he2cSpecVars } from '../typesHe2c';
 import { hskOptionVars, hskSpecVars } from '../typesHsk';
 import { he2fSpecVars, isHe2fSpec } from '../typesHe2f';
+import { he3lSpecVars, isHe3lSpec } from '../typesHe3l';
 import { he1hSpecVars } from '../typesHe1h';
 import { he2dSpecVars } from '../typesHe2d';
 import { hs2cSpecVars } from '../typesHs2c';
@@ -301,6 +302,7 @@ function representationVars(r: Representation): string[] {
         ...(r.arms ? [r.arms.first, r.arms.second] : []),
       ];
     case 'wave':
+      if (isHe3lSpec(r)) return he3lSpecVars(r); // HC93
       return [
         ...(r.amplitude ? [r.amplitude] : []),
         ...(typeof r.extent === 'string' ? [r.extent] : []),
@@ -608,6 +610,8 @@ function representationVars(r: Representation): string[] {
     case 'potentialWell':
     case 'unitCell':
       return he2bSpecVars(r);
+    case 'phaseSpace':
+      return he3lSpecVars(r); // HC69
     case 'globe':
       return globeVars(r);
     case 'stressStrain':
@@ -627,6 +631,7 @@ function representationVars(r: Representation): string[] {
     case 'collision':
     case 'circularMotion':
     case 'freeBody':
+      if (isHe3lSpec(r)) return he3lSpecVars(r); // HC68
       return hskSpecVars(r);
     case 'impulse':
     case 'powerLift':
