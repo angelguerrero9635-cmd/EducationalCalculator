@@ -506,12 +506,25 @@ export function SkeletalView({
       const t = Math.max(0, Math.min(1, ((q[0] - a[0]) * dx + (q[1] - a[1]) * dy) / l2));
       return Math.hypot(q[0] - a[0] - t * dx, q[1] - a[1] - t * dy);
     };
+    // A written group (OH, NH₂) as the box its text fills, as drawn below: it reaches past its
+    // atom toward its H.
+    const boxes = pts.flatMap((p, a) => {
+      const l = atomLabel(lay, a, mirror);
+      if (!l) return [];
+      const ew = labelWidth(lay.mol.atoms[a]!.el, font);
+      const tw = labelWidth(l.text, font);
+      const x0 = l.hLeft ? p[0] + ew / 2 - tw : p[0] - ew / 2;
+      return [{ x0, x1: x0 + tw, y0: p[1] - font * 0.7, y1: p[1] + font * 0.36 }];
+    });
+    const toBox = (q: P, b: (typeof boxes)[number]) =>
+      Math.hypot(Math.max(b.x0 - q[0], 0, q[0] - b.x1), Math.max(b.y0 - q[1], 0, q[1] - b.y1));
     const placed: P[] = [];
     const clearance = (q: P) =>
       Math.min(
         ...discs.map((d) => Math.hypot(d.p[0] - q[0], d.p[1] - q[1]) - d.rad),
+        ...boxes.map((b) => toBox(q, b) - 1),
         ...segs.map((sg) => toSeg(q, sg)),
-        ...placed.map((b) => Math.hypot(b[0] - q[0], b[1] - q[1]) - r),
+        ...placed.map((b) => Math.hypot(b[0] - q[0], b[1] - q[1]) - r - 4),
       ) - r;
     marks.ranks?.forEach((rank, o) => {
       const target = o === -1 ? (hDrawn ? px(hDrawn.at) : undefined) : pts[o];
@@ -521,8 +534,8 @@ export function SkeletalView({
       // Beside the bond, past its middle, on the side with more room; where a small drawing
       // leaves no room there, further along the bond or further out, whichever is clearest.
       const options: P[] = [];
-      for (const t of [0.62, 0.5, 0.78])
-        for (const off of [r + 4, r + 8])
+      for (const t of [0.62, 0.5, 0.78, 0.4, 0.92])
+        for (const off of [r + 4, r + 8, r + 12])
           for (const sd of [1, -1])
             options.push([
               p0[0] + u[0] * len * t - u[1] * sd * off,

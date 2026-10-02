@@ -685,7 +685,7 @@ export function FunctionGraph({
       >
         {({ w, h }) => {
           const L0 = 34;
-          const top = legendH + (named ? 26 : 10);
+          const top = legendH + (named ? 29 : 10);
           const bottom = h - (named ? 40 : 24) - he1ePanel(spec, w); // HC12: the F(x) panel
           const pw0 = w - L0 - 14;
           const win = frozen.value ?? live(pw0, bottom - top);
@@ -1380,7 +1380,7 @@ export function FunctionGraph({
                     {spec.axes?.y ? (
                       <ChartText
                         x={Math.max(4, L - 20)}
-                        y={top - 9}
+                        y={top - 12}
                         fontSize={chart.label}
                         fontWeight="700"
                       >
