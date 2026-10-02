@@ -26,6 +26,7 @@ const ask = (
 
 const P = 'he.physics.';
 const C = 'he.chemistry.';
+const B = 'he.biology.';
 
 export const HE3G_REQUESTS: PictureRequest[] = [
   {
@@ -59,6 +60,37 @@ export const HE3G_REQUESTS: PictureRequest[] = [
       'g.he-gasPiston-pv-cycle',
       'g.he-gasPiston-real-co2',
       'g.he-gasPiston-real-h2',
+    ],
+  },
+  {
+    ...ask(
+      'HC44',
+      'energyProfile',
+      'Free energy (ΔG, ΔG°′) on the profile and the ladder, coupled steps with the ATP step and the net arrow; a mechanism of 2–3 humps with intermediates and the rate-determining step; a bomb calorimeter',
+      [
+        `${B}principles-1#2`,
+        `${B}principles-1#2~delta-g`,
+        `${C}organic-1#2~energy-diagram`,
+        `${C}gen-chem-1#3~bomb`,
+        `${C}biochemistry#3~coupled`,
+      ],
+      [
+        'From B-P2 and C-P15. Types in typesHe3g.ts; quantity is one field on the profile (typesHsj.ts) and the ladder (typesHs2d.ts), drawn by EnergyProfile.tsx and EnergyLadder.tsx; steps by reps/EnergySteps.tsx and the bomb by reps/EnergyBomb.tsx (sums in reps/energyHe3gMath.ts), routed in reps/hsjView.tsx.',
+        "Fields: quantity?: 'H' | 'G' | 'G°' | 'G°′' (profile or mode 'ladder': ΔG names, a G axis, 'runs forward on its own' for a drop; with G a \"?\" level or step draws nothing and chips leave the unit to the axis). steps?: { intermediates: [ids], barriers: [ids of steps 2…], tops?: [ids], highest?, names?: [intermediate names] } on the profile (activation is step 1's Eₐ). mode: 'bomb' with constant (C_cal, kJ/°C), change (ΔT), q?, sample?: { name?, mass?, moles?, molar? }, deltaU?, deltaH?, gas? (Δn_g), temperature?, R? (0.008314 kJ/(mol·K)).",
+        "Example (principles-1#2): { kind: 'energyProfile', mode: 'ladder', quantity: 'G', unit: 'kJ/mol', levels: [{ name: 'Glu + NH₃ + ATP', value: 0 }, { name: 'Gln + ATP' }, { name: 'Gln + ADP + Pᵢ' }], steps: [{ from: 0, to: 1, value: 'dG1', label: 'ΔG₁' }, { from: 1, to: 2, value: 'dGA', label: 'ATP' }], total: { from: 0, to: 2, value: 'dG', label: 'ΔG' } }. ~delta-g: the same ladder with steps ΔG°′ and 'RT ln Q'. biochemistry#3~coupled: quantity: 'G°′'. Example (organic-1#2~energy-diagram): { kind: 'energyProfile', reactants: 0, products: 'P', activation: 'Ea1', deltaH: 'dH', names: { reactants: 'R–Br', products: 'R–Nu' }, steps: { intermediates: ['I1'], barriers: ['Ea2'], tops: ['T1', 'T2'], highest: 'hi', names: ['R⁺'] } } (hi a derived value). Example (gen-chem-1#3~bomb): { kind: 'energyProfile', mode: 'bomb', constant: 'C', change: 'dT', q: 'q', sample: { name: 'naphthalene', mass: 'm', moles: 'n', molar: 'M' }, deltaU: 'dU', deltaH: 'dH', gas: 'dng', temperature: 'T' }.",
+        "Harness (harness/picturesHe3g.ts, plus the ladder's own sum check): each hump's top = the level before + its Eₐ, the tops and the highest as named, ΔH = products − reactants; the bomb's q = C_cal ΔT, ΔU = −q ÷ n, ΔH = ΔU + Δn_g RT, n = m ÷ M. Existing pages are unchanged (every option is off unless set).",
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-energyProfile-coupled',
+      'g.he-energyProfile-coupled-short',
+      'g.he-energyProfile-coupled-k',
+      'g.he-energyProfile-delta-g',
+      'g.he-energyProfile-steps-sn1',
+      'g.he-energyProfile-steps-three',
+      'g.he-energyProfile-bomb',
+      'g.he-energyProfile-bomb-octane',
     ],
   },
 ];

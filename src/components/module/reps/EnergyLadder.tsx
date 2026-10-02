@@ -32,14 +32,23 @@ export function EnergyLadder({ spec, calc }: { spec: EnergyLadderSpec; calc: Cal
   const anyVal = (x: NumOrVar) => (typeof x === 'number' ? x : rep.shown(x));
   const known = ladderLevels(spec, knownVal);
   const drawn = ladderLevels(spec, anyVal).map((v) => v ?? 0);
+  // HC44: free energy (ΔG, ΔG°, ΔG°′) instead of enthalpy; a "?" then draws nothing.
+  const quantity = spec.quantity ?? 'H';
+  const letter = quantity.charAt(0);
+  const mark = quantity.slice(1);
+  const free = letter === 'G';
   const steps = spec.steps.map((s, i) => ({
     ...s,
-    name: s.label ?? `ΔH${SUBS[i + 1] ?? ''}`,
+    name: s.label ?? `Δ${letter}${SUBS[i + 1] ?? ''}${mark}`,
     total: false,
   }));
-  const total = spec.total ? { ...spec.total, name: spec.total.label ?? 'ΔH', total: true } : null;
+  const total = spec.total
+    ? { ...spec.total, name: spec.total.label ?? `Δ${quantity}`, total: true }
+    : null;
   const arrows = [...steps, ...(total ? [total] : [])];
-  const signed = (x: number) => (x > 0 ? `+${formatNumber(x)}` : formatNumber(x));
+  // Free energy (HC44) reads worked values to 4 figures; enthalpy keeps the page's numbers.
+  const fig = (x: number) => (free ? Number(x.toPrecision(4)) : x);
+  const signed = (x: number) => (x > 0 ? `+${formatNumber(fig(x))}` : formatNumber(fig(x)));
   const stepValue = (s: LadderStep) => {
     const v = s.value === undefined ? undefined : knownVal(s.value);
     if (v !== undefined) return v;
@@ -76,6 +85,7 @@ export function EnergyLadder({ spec, calc }: { spec: EnergyLadderSpec; calc: Cal
     const parts: ReactNode[] = [];
     spec.levels.forEach((l, i) => {
       const k = known[i] !== undefined;
+      if (free && !k) return;
       const ly = y(drawn[i]!);
       parts.push(
         <G key={`l${i}`}>
@@ -113,6 +123,7 @@ export function EnergyLadder({ spec, calc }: { spec: EnergyLadderSpec; calc: Cal
       );
     });
     arrows.forEach((a, j) => {
+      if (free && (known[a.from] === undefined || known[a.to] === undefined)) return;
       const x = colX(j);
       const [ya, yb] = [y(drawn[a.from]!), y(drawn[a.to]!)];
       const v = stepValue(a);
@@ -152,7 +163,9 @@ export function EnergyLadder({ spec, calc }: { spec: EnergyLadderSpec; calc: Cal
         </G>,
       );
       // The step's name and ΔH on a chip: over the arrow's middle, or beside a short arrow.
-      const lines = [a.name, text(v), ...(a.flipped ? ['sign flipped'] : [])];
+      // Free energy: the unit is on the axis, so the chip fits its column.
+      const chip = free ? (v === undefined ? '?' : signed(v)) : text(v);
+      const lines = [a.name, chip, ...(a.flipped ? ['sign flipped'] : [])];
       const cw = Math.min(colW - 4, Math.max(...lines.map((t) => t.length)) * 7.2 + 8);
       const ch = lines.length * 14 + 4;
       const mid = (ya + yb) / 2;
@@ -194,7 +207,7 @@ export function EnergyLadder({ spec, calc }: { spec: EnergyLadderSpec; calc: Cal
         <Line x1={6} y1={h - 6} x2={6} y2={14} stroke={c.chartMuted} strokeWidth={1.5} />
         <Path d={arrowHead(6, 6, 0, -1, 8)} fill={c.chartMuted} />
         <ChartText x={16} y={14} fontSize={chart.label} fill={c.chartMuted}>
-          {`H (${unit})`}
+          {`${letter} (${unit})`}
         </ChartText>
         {parts}
       </Svg>
@@ -226,7 +239,9 @@ export function EnergyLadder({ spec, calc }: { spec: EnergyLadderSpec; calc: Cal
     if (at === total.to && chain.length > 1)
       lines.push(
         `${total.name} = ${chain.map((s) => s.name).join(' + ')} = ${vals
-          .map((x) => (x === undefined ? '?' : x < 0 ? `(${formatNumber(x)})` : formatNumber(x)))
+          .map((x) =>
+            x === undefined ? '?' : x < 0 ? `(${formatNumber(fig(x))})` : formatNumber(fig(x)),
+          )
           .join(' + ')} = ${text(v)}`,
       );
     else {
@@ -239,9 +254,13 @@ export function EnergyLadder({ spec, calc }: { spec: EnergyLadderSpec; calc: Cal
     }
     if (v !== undefined)
       lines.push(
-        v < 0
-          ? 'Down the ladder: heat is given off (exothermic).'
-          : 'Up the ladder: heat is taken in (endothermic).',
+        free
+          ? v < 0
+            ? `Down the ladder: Δ${quantity} < 0, so it runs forward on its own (exergonic).`
+            : `Up the ladder: Δ${quantity} > 0, so it does not run on its own (endergonic).`
+          : v < 0
+            ? 'Down the ladder: heat is given off (exothermic).'
+            : 'Up the ladder: heat is taken in (endothermic).',
       );
   }
   return (

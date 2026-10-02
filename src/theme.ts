@@ -413,6 +413,9 @@ const light = {
   gasPiston3gBand: '#C9D3E6',
   gasPiston3gHatch: '#5B6B8C',
   gasPiston3gPull: '#B4462F',
+  /** HC44 bomb calorimeter: the bomb's chamber and the sample pellet in its cup. */
+  bomb3gChamber: '#3A3F4A',
+  bomb3gSample: '#E8D9B0',
   thermalBrick: '#B9603F',
   thermalMortar: '#E9DFCF',
   thermalFoam: '#F2E2A4',
@@ -925,6 +928,8 @@ const dark: Palette = {
   gasPiston3gBand: '#3A4458',
   gasPiston3gHatch: '#9AA8C4',
   gasPiston3gPull: '#F08A6B',
+  bomb3gChamber: '#14171D',
+  bomb3gSample: '#B8A87E',
   thermalBrick: '#9A4E33',
   thermalMortar: '#5E554A',
   thermalFoam: '#8C7C3E',

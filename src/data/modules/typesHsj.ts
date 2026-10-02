@@ -7,7 +7,15 @@
 import type { NumOrVar } from './typesGraphs';
 import { ladderVars, type EnergyLadderSpec } from './typesHs2d';
 import { gasMixtureVars, type GasMixture } from './typesHs3e';
-import { gasHe3gVars, type GasPv, type GasReal } from './typesHe3g';
+import {
+  energyHe3gVars,
+  gasHe3gVars,
+  type EnergyBombSpec,
+  type EnergyQuantity,
+  type EnergySteps,
+  type GasPv,
+  type GasReal,
+} from './typesHe3g';
 
 // ─── H51 gasPiston ───────────────────────────────────────────────────────────
 
@@ -144,6 +152,9 @@ export type EnergyProfileSpec =
       names?: { reactants?: string; products?: string };
       keep?: string[];
       fixed?: boolean;
+      /** HC44: ΔG instead of ΔH, and a mechanism of 2–3 steps (`typesHe3g.ts`). */
+      quantity?: EnergyQuantity;
+      steps?: EnergySteps;
     }
   | {
       kind: 'energyProfile';
@@ -157,7 +168,9 @@ export type EnergyProfileSpec =
       metal?: { name: string; mass: NumOrVar; start: NumOrVar; heat?: NumOrVar };
     }
   /** Round 2: an enthalpy ladder, levels only (`typesHs2d.ts`, H101). */
-  | EnergyLadderSpec;
+  | EnergyLadderSpec
+  /** HC44: a bomb calorimeter (`typesHe3g.ts`). */
+  | EnergyBombSpec;
 
 // ─── H54 equilibriumChart ────────────────────────────────────────────────────
 
@@ -318,6 +331,7 @@ export function hsjSpecVars(r: HsjSpec): string[] {
       );
     case 'energyProfile':
       if (r.mode === 'ladder') return ladderVars(r);
+      if (r.mode === 'bomb') return energyHe3gVars(r); // HC44
       return r.mode === 'calorimeter'
         ? ids(
             r.mass,
@@ -330,7 +344,10 @@ export function hsjSpecVars(r: HsjSpec): string[] {
             r.metal?.start,
             r.metal?.heat,
           )
-        : ids(r.reactants, r.products, r.activation, r.deltaH, r.reverse, r.catalyst);
+        : [
+            ...ids(r.reactants, r.products, r.activation, r.deltaH, r.reverse, r.catalyst),
+            ...energyHe3gVars(r),
+          ];
     case 'equilibriumChart':
       return ids(
         ...r.species.flatMap((s) => [s.start, s.eq]),

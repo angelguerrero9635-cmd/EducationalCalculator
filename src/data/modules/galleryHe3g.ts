@@ -3,7 +3,8 @@
  * college page that waits, built from the plan's worked example. Spread into gallery.ts.
  *
  * HC43 `gasPiston` `pv` and `real`: the laws of thermodynamics (docs/plans/he.physics.md P27,
- * he.chemistry.md P11) and real gases (he.chemistry.md P10).
+ * he.chemistry.md P11) and real gases (he.chemistry.md P10). HC44 `energyProfile` free energy,
+ * mechanisms and the bomb calorimeter (he.biology.md P2, he.chemistry.md P15).
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
@@ -790,6 +791,511 @@ const realH2 = realDemo(
   [1, 0.1, 300, 0.244, 0.0266],
 );
 
+// ── HC44: energyProfile quantity G, steps, bomb ──
+
+const kjmol = (id: string, symbol: string, name: string, min = -10000, max = 10000) =>
+  quantity(id, symbol, name, 'kJ/mol', min, max, 0.01);
+
+/** a = b + c, solved for each. */
+const sum = (a: string, b: string, c: string, id: string, why: string): Rule => ({
+  relation: {
+    id,
+    display: `{${a}} = {${b}} + {${c}}`,
+    vars: [a, b, c],
+    residual: (x) => x[a]! - x[b]! - x[c]!,
+    solve: {
+      [a]: (x) => x[b]! + x[c]!,
+      [b]: (x) => x[a]! - x[c]!,
+      [c]: (x) => x[a]! - x[b]!,
+    },
+  },
+  steps: {
+    [a]: st(`{${b}} + {${c}}`, why),
+    [b]: st(`{${a}} − {${c}}`, 'Take the other part from the total.'),
+    [c]: st(`{${a}} − {${b}}`, 'Take the other part from the total.'),
+  },
+});
+
+const ATP = -30.5;
+
+/** A reaction pushed uphill by n ATP: ΔG = ΔG₁ + n × (−30.5) (principles-1#2). */
+const coupledDemo = (id: string, title: string, dG1: number, n: number): ModuleDef =>
+  demo({
+    id,
+    title,
+    use: 'Use this for whether a reaction coupled to ATP runs: add the free energy changes.',
+    assumptions: [
+      'Free energies add when the reactions share an intermediate; ΔG < 0 runs forward on its own.',
+      'Each ATP hydrolyzed to ADP + Pᵢ gives ΔG = −30.5 kJ/mol.',
+    ],
+    variables: [
+      kjmol('dG1', 'ΔG₁', 'Free energy change of the uphill reaction', -100, 100),
+      quantity('nA', 'n', 'ATP used', undefined, 1, 3, 1, { integer: true }),
+      kjmol('dGA', 'ΔG(ATP)', 'Free energy from the ATP'),
+      kjmol('dG', 'ΔG', 'Total free energy change'),
+    ],
+    ...rules(
+      {
+        relation: {
+          id: 'ΔG(ATP) = n × (−30.5)',
+          display: `{dGA} = {nA} × (${ATP})`,
+          vars: ['dGA', 'nA'],
+          residual: (x) => x.dGA! - x.nA! * ATP,
+          solve: { dGA: (x) => x.nA! * ATP, nA: (x) => x.dGA! / ATP },
+        },
+        steps: {
+          dGA: st(`{nA} × (${ATP})`, 'Each ATP gives −30.5 kJ/mol.'),
+          nA: st(`{dGA} ÷ (${ATP})`, 'Divide by −30.5 kJ/mol per ATP.'),
+        },
+      },
+      sum('dG', 'dG1', 'dGA', 'ΔG = ΔG₁ + ΔG(ATP)', 'The coupled reactions add.'),
+    ),
+    example: { dG1, nA: n, dGA: n * ATP, dG: dG1 + n * ATP },
+    startWith: ['dG1', 'nA'],
+    representation: {
+      kind: 'energyProfile',
+      mode: 'ladder',
+      quantity: 'G',
+      unit: 'kJ/mol',
+      levels: [
+        { name: 'Glu + NH₃ + ATP', value: 0 },
+        { name: 'Gln + ATP' },
+        { name: 'Gln + ADP + Pᵢ' },
+      ],
+      steps: [
+        { from: 0, to: 1, value: 'dG1', label: 'ΔG₁' },
+        { from: 1, to: 2, value: 'dGA', label: 'ATP' },
+      ],
+      total: { from: 0, to: 2, value: 'dG', label: 'ΔG' },
+    },
+  });
+
+const coupled = coupledDemo(
+  'g.he-energyProfile-coupled',
+  'Glutamine from glutamate, pushed by one ATP',
+  14.2,
+  1,
+);
+const coupledShort = coupledDemo(
+  'g.he-energyProfile-coupled-short',
+  'Too steep for one ATP: ΔG₁ = +45 kJ/mol',
+  45,
+  1,
+);
+
+/** biochemistry#3~coupled: ΔG°′ total and K′ = e^(−ΔG°′ ÷ RT). */
+const coupledK = (() => {
+  const [g1, g2, T] = [13.8, -30.5, 298.15];
+  const total = g1 + g2;
+  const K = Math.exp(-total / (0.008314 * T));
+  return demo({
+    id: 'g.he-energyProfile-coupled-k',
+    title: 'Glucose 6-phosphate from glucose and ATP: ΔG°′ and K′',
+    use: 'Use this for ΔG°′ and K′ of a reaction coupled to ATP hydrolysis.',
+    assumptions: [
+      '°′ means pH 7 and 1 M for everything else; coupled ΔG°′ values add.',
+      'K′ = e^(−ΔG°′ ÷ RT) with R = 0.008314 kJ/(mol·K).',
+    ],
+    variables: [
+      kjmol('g1', 'ΔG₁°′', 'Uphill step (glucose + Pᵢ)', -100, 100),
+      kjmol('g2', 'ΔG₂°′', 'ATP hydrolysis', -100, 100),
+      kjmol('g', 'ΔG°′', 'Coupled reaction'),
+      kelvin('T', 'T', 'Temperature'),
+      quantity('K', 'K′', 'Equilibrium constant', undefined, 1e-30, 1e30, 0.01, {
+        scientific: true,
+      }),
+    ],
+    ...rules(sum('g', 'g1', 'g2', 'ΔG°′ = ΔG₁°′ + ΔG₂°′', 'Coupled reactions add.'), {
+      relation: {
+        id: 'K′ = e^(−ΔG°′ ÷ RT)',
+        display: '{K} = e^(−{g} ÷ (0.008314 × {T}))',
+        vars: ['K', 'g', 'T'],
+        residual: (x) => Math.log(x.K!) + x.g! / (0.008314 * x.T!),
+        solve: {
+          K: (x) => Math.exp(-x.g! / (0.008314 * x.T!)),
+          g: (x) => (x.K! > 0 ? -0.008314 * x.T! * Math.log(x.K!) : undefined),
+        },
+      },
+      steps: {
+        K: st('e^(−{g} ÷ (0.008314 × {T}))', 'ΔG°′ = −RT ln K′, so K′ = e^(−ΔG°′ ÷ RT).'),
+        g: st('−0.008314 × {T} × ln({K})', 'ΔG°′ = −RT ln K′.'),
+      },
+    }),
+    example: { g1, g2, g: total, T, K },
+    startWith: ['g1', 'g2', 'T'],
+    representation: {
+      kind: 'energyProfile',
+      mode: 'ladder',
+      quantity: 'G°′',
+      unit: 'kJ/mol',
+      levels: [
+        { name: 'Glc + Pᵢ + ATP', value: 0 },
+        { name: 'G6P + ATP' },
+        { name: 'G6P + ADP + Pᵢ' },
+      ],
+      steps: [
+        { from: 0, to: 1, value: 'g1' },
+        { from: 1, to: 2, value: 'g2' },
+      ],
+      total: { from: 0, to: 2, value: 'g' },
+    },
+  });
+})();
+
+/** principles-1#2~delta-g: ΔG = ΔG°′ + RT ln Q, Q = [P] ÷ [R]. */
+const deltaG = (() => {
+  const [g0, T, P, Rc] = [7.5, 310, 1, 100];
+  const Q = P / Rc;
+  const rq = 0.008314 * T * Math.log(Q);
+  return demo({
+    id: 'g.he-energyProfile-delta-g',
+    title: 'ΔG in the cell: ΔG°′ = +7.5 kJ/mol with products at 1% of reactants',
+    use: "Use this for 'With ΔG°′ = +7.5 kJ/mol and products at 1% of reactants, does the reaction run forward at 37 °C?'.",
+    assumptions: [
+      'ΔG = ΔG°′ + RT ln Q with R = 0.008314 kJ/(mol·K); Q = [products] ÷ [reactants].',
+      'Q below 1 pulls ΔG down: a reaction uphill at 1 M can run in the cell.',
+    ],
+    variables: [
+      kjmol('g0', 'ΔG°′', 'Standard free energy change', -100, 100),
+      quantity('T', 'T', 'Temperature', 'K', 298, 310, 1, { allowed: [298, 310] }),
+      quantity('P', '[P]', 'Products', 'mM', 0.0001, 10000, 0.0001),
+      quantity('Rc', '[R]', 'Reactants', 'mM', 0.0001, 10000, 0.0001),
+      quantity('Q', 'Q', 'Reaction quotient', undefined, 1e-9, 1e9, 0.0001),
+      kjmol('rq', 'RT ln Q', 'Shift from the concentrations'),
+      kjmol('g', 'ΔG', 'Free energy change in the cell'),
+    ],
+    ...rules(
+      {
+        relation: {
+          id: 'Q = [P] ÷ [R]',
+          display: '{Q} = {P} ÷ {Rc}',
+          vars: ['Q', 'P', 'Rc'],
+          residual: (x) => x.Q! * x.Rc! - x.P!,
+          solve: { Q: (x) => div(x.P!, x.Rc!), P: (x) => x.Q! * x.Rc! },
+        },
+        steps: {
+          Q: st('{P} ÷ {Rc}', 'Products over reactants.'),
+          P: st('{Q} × {Rc}', 'Multiply Q by the reactants.'),
+        },
+      },
+      {
+        relation: {
+          id: 'RT ln Q',
+          display: '{rq} = 0.008314 × {T} × ln({Q})',
+          vars: ['rq', 'T', 'Q'],
+          residual: (x) => x.rq! - 0.008314 * x.T! * Math.log(x.Q!),
+          solve: {
+            rq: (x) => (x.Q! > 0 ? 0.008314 * x.T! * Math.log(x.Q!) : undefined),
+            Q: (x) => Math.exp(x.rq! / (0.008314 * x.T!)),
+          },
+        },
+        steps: {
+          rq: st('0.008314 × {T} × ln({Q})', 'RT in kJ/mol times ln Q.'),
+          Q: st('e^({rq} ÷ (0.008314 × {T}))', 'Undo the log.'),
+        },
+      },
+      sum('g', 'g0', 'rq', 'ΔG = ΔG°′ + RT ln Q', 'Add the concentrations’ shift to ΔG°′.'),
+    ),
+    example: { g0, T, P, Rc, Q, rq, g: g0 + rq },
+    startWith: ['g0', 'T', 'P', 'Rc'],
+    representation: {
+      kind: 'energyProfile',
+      mode: 'ladder',
+      quantity: 'G',
+      unit: 'kJ/mol',
+      levels: [
+        { name: 'Reactants', value: 0 },
+        { name: 'Products at 1 M' },
+        { name: 'Products in the cell' },
+      ],
+      steps: [
+        { from: 0, to: 1, value: 'g0', label: 'ΔG°′' },
+        { from: 1, to: 2, value: 'rq', label: 'RT ln Q' },
+      ],
+      total: { from: 0, to: 2, value: 'g', label: 'ΔG' },
+    },
+  });
+})();
+
+/** A mechanism of k steps from reactants at 0: T₁ = Eₐ₁, Tᵢ = Iᵢ₋₁ + Eₐᵢ, ΔH = P. */
+const stepsDemo = (
+  id: string,
+  title: string,
+  use: string,
+  ea: number[],
+  inter: number[],
+  P: number,
+  names: { reactants: string; products: string; intermediates: string[] },
+): ModuleDef => {
+  const k = ea.length;
+  const sub = (i: number) => '₀₁₂₃₄₅'[i] ?? '';
+  const Ea = ea.map((_, i) => `Ea${i + 1}`);
+  const I = inter.map((_, i) => `I${i + 1}`);
+  const T = ea.map((_, i) => `T${i + 1}`);
+  const levels = [0, ...inter, P];
+  const tops = ea.map((e, i) => levels[i]! + e);
+  const topRule = (i: number): Rule =>
+    i === 0
+      ? {
+          relation: {
+            id: 'T₁ = Eₐ₁',
+            display: '{T1} = {Ea1}',
+            vars: ['T1', 'Ea1'],
+            residual: (x) => x.T1! - x.Ea1!,
+            solve: { T1: (x) => x.Ea1!, Ea1: (x) => x.T1! },
+          },
+          steps: {
+            T1: st('{Ea1}', 'The reactants are at 0, so the first top is Eₐ₁.'),
+            Ea1: st('{T1}', 'The reactants are at 0.'),
+          },
+        }
+      : sum(
+          T[i]!,
+          I[i - 1]!,
+          Ea[i]!,
+          `T${sub(i + 1)} = I${sub(i)} + Eₐ${sub(i + 1)}`,
+          `Climb Eₐ${sub(i + 1)} from the intermediate.`,
+        );
+  return demo({
+    id,
+    title,
+    use,
+    assumptions: [
+      'Energies in kJ/mol with the reactants at 0; each step climbs its Eₐ from the level before it.',
+      'The step with the highest transition state is rate-determining.',
+    ],
+    variables: [
+      ...ea.flatMap((_, i) => [
+        kjmol(Ea[i]!, `Eₐ${sub(i + 1)}`, `Barrier of step ${i + 1}`, 0, 1000),
+        ...(i < k - 1
+          ? [kjmol(I[i]!, `I${sub(i + 1)}`, `Intermediate ${i + 1}`, -1000, 1000)]
+          : []),
+      ]),
+      kjmol('P', 'P', 'Products', -1000, 1000),
+      ...T.map((t, i) => kjmol(t, `T${sub(i + 1)}`, `Transition state ${i + 1}`, -1000, 2000)),
+      { ...kjmol('hi', 'T(max)', 'Highest transition state', -1000, 2000), derived: true },
+      kjmol('rev', 'Eₐ(rev)', 'Reverse barrier of the last step', 0, 3000),
+      kjmol('dH', 'ΔH', 'Enthalpy change', -1000, 1000),
+    ],
+    ...rules(
+      ...ea.map((_, i) => topRule(i)),
+      {
+        relation: {
+          id: 'T(max) = the highest top',
+          display: `{hi} = greatest of ${T.map((t) => `{${t}}`).join(', ')}`,
+          vars: ['hi', ...T],
+          residual: (x) => x.hi! - Math.max(...T.map((t) => x[t]!)),
+          solve: { hi: (x) => Math.max(...T.map((t) => x[t]!)) },
+        },
+        steps: {
+          hi: st(
+            `greatest of ${T.map((t) => `{${t}}`).join(', ')}`,
+            'The highest transition state sets the rate-determining step.',
+          ),
+        },
+      },
+      {
+        relation: {
+          id: 'Eₐ(rev) = T(last) − P',
+          display: `{rev} = {${T[k - 1]}} − {P}`,
+          vars: ['rev', T[k - 1]!, 'P'],
+          residual: (x) => x.rev! - x[T[k - 1]!]! + x.P!,
+          solve: {
+            rev: (x) => x[T[k - 1]!]! - x.P!,
+            P: (x) => x[T[k - 1]!]! - x.rev!,
+            [T[k - 1]!]: (x) => x.rev! + x.P!,
+          },
+        },
+        steps: {
+          rev: st(`{${T[k - 1]}} − {P}`, 'From the products back up to the last top.'),
+          P: st(`{${T[k - 1]}} − {rev}`, 'The last top less the reverse barrier.'),
+          [T[k - 1]!]: st('{rev} + {P}', 'The products plus the reverse barrier.'),
+        },
+      },
+      {
+        relation: {
+          id: 'ΔH = P',
+          display: '{dH} = {P}',
+          vars: ['dH', 'P'],
+          residual: (x) => x.dH! - x.P!,
+          solve: { dH: (x) => x.P!, P: (x) => x.dH! },
+        },
+        steps: {
+          dH: st('{P}', 'Products − reactants, with the reactants at 0.'),
+          P: st('{dH}', 'The products sit ΔH from the reactants at 0.'),
+        },
+      },
+    ),
+    example: {
+      ...Object.fromEntries(Ea.map((e, i) => [e, ea[i]!])),
+      ...Object.fromEntries(I.map((e, i) => [e, inter[i]!])),
+      P,
+      ...Object.fromEntries(T.map((t, i) => [t, tops[i]!])),
+      hi: Math.max(...tops),
+      rev: tops[k - 1]! - P,
+      dH: P,
+    },
+    startWith: [...ea.flatMap((_, i) => [Ea[i]!, ...(i < k - 1 ? [I[i]!] : [])]), 'P'],
+    representation: {
+      kind: 'energyProfile',
+      reactants: 0,
+      products: 'P',
+      activation: 'Ea1',
+      deltaH: 'dH',
+      names: { reactants: names.reactants, products: names.products },
+      steps: {
+        intermediates: I,
+        barriers: Ea.slice(1),
+        tops: T,
+        highest: 'hi',
+        names: names.intermediates,
+      },
+    },
+  });
+};
+
+const stepsSn1 = stepsDemo(
+  'g.he-energyProfile-steps-sn1',
+  'An SN1 energy diagram: ionization, then the nucleophile',
+  'Use this for reading a two-step energy diagram: the intermediate, each barrier and the rate-determining step.',
+  [90, 10],
+  [60],
+  -20,
+  { reactants: 'R–Br', products: 'R–Nu', intermediates: ['R⁺'] },
+);
+const stepsThree = stepsDemo(
+  'g.he-energyProfile-steps-three',
+  'Three steps, the middle one rate-determining',
+  'Use this for a three-step mechanism: which transition state is highest and the overall ΔH.',
+  [50, 80, 40],
+  [20, -10],
+  -60,
+  { reactants: 'A', products: 'D', intermediates: ['B', 'C'] },
+);
+
+/** gen-chem-1#3~bomb: q = C(cal)ΔT, ΔU = −q ÷ n, ΔH = ΔU + Δn(gas)RT. */
+const bombDemo = (
+  id: string,
+  title: string,
+  name: string,
+  [m, M, C, dT, dng, T]: number[],
+): ModuleDef => {
+  const n = m! / M!;
+  const q = C! * dT!;
+  const dU = -q / n;
+  const dH = dU + dng! * 0.008314 * T!;
+  return demo({
+    id,
+    title,
+    use: 'Use this for ΔU and ΔH of combustion from a bomb calorimeter’s temperature rise.',
+    assumptions: [
+      'Constant volume: no work is done, so the heat the calorimeter takes in is −ΔU of the burning.',
+      'Δn(gas) counts gas moles only (water as liquid); R = 0.008314 kJ/(mol·K).',
+    ],
+    variables: [
+      quantity('m', 'm', 'Sample mass', 'g', 0.0001, 100, 0.0001),
+      quantity('M', 'M', 'Molar mass', 'g/mol', 1, 1000, 0.01),
+      quantity('n', 'n', 'Moles burned', 'mol', 1e-7, 10, 0.000001),
+      quantity('C', 'C(cal)', 'Calorimeter constant', 'kJ/°C', 0.01, 100, 0.001),
+      quantity('dT', 'ΔT', 'Temperature rise', '°C', 0.001, 100, 0.001),
+      quantity('q', 'q', 'Heat taken in', 'kJ', 0.0001, 10000, 0.001),
+      kjmol('dU', 'ΔU', 'Energy change of combustion', -100000, 100000),
+      quantity('dng', 'Δn(gas)', 'Change in moles of gas', undefined, -20, 20, 0.5),
+      kelvin('T', 'T', 'Temperature'),
+      kjmol('dH', 'ΔH', 'Enthalpy of combustion', -100000, 100000),
+    ],
+    ...rules(
+      {
+        relation: {
+          id: 'n = m ÷ M',
+          display: '{n} = {m} ÷ {M}',
+          vars: ['n', 'm', 'M'],
+          residual: (x) => x.n! * x.M! - x.m!,
+          solve: {
+            n: (x) => div(x.m!, x.M!),
+            m: (x) => x.n! * x.M!,
+            M: (x) => div(x.m!, x.n!),
+          },
+        },
+        steps: {
+          n: st('{m} ÷ {M}', 'Moles from grams.'),
+          m: st('{n} × {M}', 'Grams from moles.'),
+          M: st('{m} ÷ {n}', 'Grams per mole.'),
+        },
+      },
+      product('q', 'C', 'dT', 'q = C(cal) × ΔT', {
+        q: 'The calorimeter (bomb, bucket and water) takes in C(cal) for each degree.',
+        C: 'Divide the heat by the rise.',
+        dT: 'Divide the heat by the calorimeter constant.',
+      }),
+      {
+        relation: {
+          id: 'ΔU = −q ÷ n',
+          display: '{dU} = −{q} ÷ {n}',
+          vars: ['dU', 'q', 'n'],
+          residual: (x) => x.dU! * x.n! + x.q!,
+          solve: {
+            dU: (x) => div(-x.q!, x.n!),
+            q: (x) => -x.dU! * x.n!,
+            n: (x) => div(-x.q!, x.dU!),
+          },
+        },
+        steps: {
+          dU: st('−{q} ÷ {n}', 'The heat came out of the burning sample: per mole, sign flipped.'),
+          q: st('−{dU} × {n}', 'Multiply by the moles and flip the sign.'),
+          n: st('−{q} ÷ {dU}', 'Divide the heat by −ΔU.'),
+        },
+      },
+      {
+        relation: {
+          id: 'ΔH = ΔU + Δn(gas)RT',
+          display: '{dH} = {dU} + {dng} × 0.008314 × {T}',
+          vars: ['dH', 'dU', 'dng', 'T'],
+          residual: (x) => x.dH! - x.dU! - x.dng! * 0.008314 * x.T!,
+          solve: {
+            dH: (x) => x.dU! + x.dng! * 0.008314 * x.T!,
+            dU: (x) => x.dH! - x.dng! * 0.008314 * x.T!,
+          },
+        },
+        steps: {
+          dH: st(
+            '{dU} + {dng} × 0.008314 × {T}',
+            'At constant pressure the gases would do work: add Δn(gas)RT.',
+          ),
+          dU: st('{dH} − {dng} × 0.008314 × {T}', 'Take Δn(gas)RT away.'),
+        },
+      },
+    ),
+    example: { m: m!, M: M!, n, C: C!, dT: dT!, q, dU, dng: dng!, T: T!, dH },
+    startWith: ['m', 'M', 'C', 'dT', 'dng', 'T'],
+    representation: {
+      kind: 'energyProfile',
+      mode: 'bomb',
+      constant: 'C',
+      change: 'dT',
+      q: 'q',
+      sample: { name, mass: 'm', moles: 'n', molar: 'M' },
+      deltaU: 'dU',
+      deltaH: 'dH',
+      gas: 'dng',
+      temperature: 'T',
+    },
+  });
+};
+
+const bombNaphthalene = bombDemo(
+  'g.he-energyProfile-bomb',
+  'Burning naphthalene in a bomb calorimeter: ΔU and ΔH',
+  'naphthalene',
+  [0.64, 128.17, 10, 2.57, -2, 298.15],
+);
+const bombOctane = bombDemo(
+  'g.he-energyProfile-bomb-octane',
+  'Octane in the bomb: a bigger rise, Δn(gas) = −4.5',
+  'octane',
+  [0.5, 114.23, 8, 3, -4.5, 298.15],
+);
+
 export const HE3G_GALLERY_MODULES: ModuleDef[] = [
   pvIsothermal,
   pvChemistry,
@@ -801,9 +1307,14 @@ export const HE3G_GALLERY_MODULES: ModuleDef[] = [
   cycle,
   realCo2,
   realH2,
+  coupled,
+  coupledShort,
+  coupledK,
+  deltaG,
+  stepsSn1,
+  stepsThree,
+  bombNaphthalene,
+  bombOctane,
 ];
 
 export const HE3G_GALLERY_LAYOUTS: LayoutDef[] = [];
-
-// Keep `product` for later demos in this file.
-void product;

@@ -93,3 +93,80 @@ export function gasHe3gVars(r: { pv?: GasPv; real?: GasReal }): string[] {
   if (r.real) out.push(...ids([r.real.a, r.real.b, r.real.ideal, r.real.pressure, r.real.z]));
   return out;
 }
+
+// ─── HC44: energyProfile `quantity`, `steps`, `bomb` ─────────────────────────
+
+/**
+ * What an energy profile or ladder measures: enthalpy (the default, ΔH) or free energy, as
+ * ΔG, ΔG° or ΔG°′ (pH 7, the biochemists' standard). It renames the levels, steps and axis and
+ * says "runs forward on its own" (exergonic) for a drop instead of "gives off heat".
+ */
+export type EnergyQuantity = 'H' | 'G' | 'G°' | 'G°′';
+
+/**
+ * HC44 `steps`: a mechanism of 2–3 steps on the profile. The first step's barrier is the
+ * profile's `activation`; `intermediates` are the levels between steps (one fewer than the
+ * steps), `barriers` each later step's Eₐ from the level before it. `tops` name each transition
+ * state's energy and `highest` the highest (checked); the highest hump is marked
+ * rate-determining. `names` label the intermediates ("R⁺ + Br⁻").
+ */
+export interface EnergySteps {
+  intermediates: NumOrVar[];
+  barriers: NumOrVar[];
+  tops?: NumOrVar[];
+  highest?: NumOrVar;
+  names?: string[];
+}
+
+/**
+ * HC44 `mode: 'bomb'`: a bomb calorimeter at constant volume. A steel bomb with the sample cup
+ * and its ignition wires, in a bucket of water with a stirrer and a thermometer, all in an
+ * insulated jacket. The thermometer rises by `change` (ΔT, °C); `constant` is the calorimeter
+ * constant C_cal (kJ/°C) and `q` (kJ) is checked as C_cal × ΔT. `sample` names what burns, its
+ * mass and moles; `deltaU` (kJ/mol) is checked as −q ÷ n and `deltaH` as ΔU + Δn_g RT with
+ * `gas` (Δn_g, gases only) and `temperature` (K), R = 0.008314 kJ/(mol·K) unless `R` is given.
+ */
+export interface EnergyBombSpec {
+  kind: 'energyProfile';
+  mode: 'bomb';
+  constant: NumOrVar;
+  change: NumOrVar;
+  q?: NumOrVar;
+  sample?: { name?: string; mass?: NumOrVar; moles?: NumOrVar; molar?: NumOrVar };
+  deltaU?: NumOrVar;
+  deltaH?: NumOrVar;
+  gas?: NumOrVar;
+  temperature?: NumOrVar;
+  R?: number;
+}
+
+/** The variable ids the HC44 options read (for the module tests). */
+export function energyHe3gVars(r: object): string[] {
+  const x = r as { steps?: EnergySteps; mode?: string } & Partial<EnergyBombSpec>;
+  const out: string[] = [];
+  if (x.steps)
+    out.push(
+      ...ids([
+        ...x.steps.intermediates,
+        ...x.steps.barriers,
+        ...(x.steps.tops ?? []),
+        x.steps.highest,
+      ]),
+    );
+  if (x.mode === 'bomb')
+    out.push(
+      ...ids([
+        x.constant,
+        x.change,
+        x.q,
+        x.sample?.mass,
+        x.sample?.moles,
+        x.sample?.molar,
+        x.deltaU,
+        x.deltaH,
+        x.gas,
+        x.temperature,
+      ]),
+    );
+  return out;
+}

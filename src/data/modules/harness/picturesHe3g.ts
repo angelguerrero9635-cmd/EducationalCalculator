@@ -11,9 +11,11 @@ import {
   solvePv,
   vdw,
 } from '@/components/module/reps/gasPvMath';
+import { bombSums, stepsAt, stepTops } from '@/components/module/reps/energyHe3gMath';
+import { profileAt } from '@/components/module/reps/energyModel';
 
 import type { NumOrVar } from '../typesGraphs';
-import type { GasPistonSpec } from '../typesHsj';
+import type { EnergyProfileSpec, GasPistonSpec } from '../typesHsj';
 
 type Val = (id: string) => number | undefined;
 
@@ -118,5 +120,55 @@ export function gasHe3gIssues(rep: GasPistonSpec, val: Val): string[] {
       }
     }
   }
+  return out;
+}
+
+/** HC44: each hump's top = level before + its Eₐ, the highest named; the bomb's q, ΔU and ΔH. */
+export function energyHe3gIssues(rep: EnergyProfileSpec, val: Val): string[] {
+  const out: string[] = [];
+  const num = reader(val);
+  if (rep.mode === 'bomb') {
+    const [C, dT] = [num(rep.constant), num(rep.change)];
+    if (C === undefined || dT === undefined) return out;
+    const m = num(rep.sample?.mass);
+    const M = num(rep.sample?.molar);
+    const n = num(rep.sample?.moles) ?? (m !== undefined && M ? m / M : undefined);
+    if (n !== undefined && m !== undefined && M !== undefined && !near(n, m / M, 1e-2))
+      out.push(`bomb: n ${n} is not m ÷ M = ${m / M}`);
+    const s = bombSums(C, dT, n, num(rep.gas), num(rep.temperature), rep.R);
+    const [q, dU, dH] = [num(rep.q), num(rep.deltaU), num(rep.deltaH)];
+    if (q !== undefined && !near(q, s.q, 1e-2)) out.push(`bomb: q ${q} is not C_cal ΔT = ${s.q}`);
+    if (dU !== undefined && s.dU !== undefined && !near(dU, s.dU, 1e-2))
+      out.push(`bomb: ΔU ${dU} is not −q ÷ n = ${s.dU}`);
+    if (dH !== undefined && s.dH !== undefined && !near(dH, s.dH, 1e-2))
+      out.push(`bomb: ΔH ${dH} is not ΔU + Δn RT = ${s.dH}`);
+    return out;
+  }
+  if (rep.mode === 'ladder' || rep.mode === 'calorimeter' || !rep.steps) return out;
+  const st = rep.steps;
+  if (st.intermediates.length !== st.barriers.length)
+    out.push('steps: one intermediate between each pair of steps');
+  if (st.barriers.length < 1 || st.barriers.length > 2) out.push('steps: 2 or 3 steps');
+  const levels = [rep.reactants, ...st.intermediates, rep.products].map(num);
+  const barriers = [rep.activation, ...st.barriers].map(num);
+  if (levels.some((x) => x === undefined) || barriers.some((x) => x === undefined)) return out;
+  const L = levels as number[];
+  const E = barriers as number[];
+  const tops = stepTops(L, E);
+  const k = E.length;
+  // The curve meets each level and each top where it is drawn.
+  for (let i = 0; i < k; i++) {
+    if (!near(stepsAt((i + 0.5) / k, L, E), tops[i]!, 1e-9))
+      out.push(`steps: hump ${i + 1} peaks at ${stepsAt((i + 0.5) / k, L, E)}, not ${tops[i]}`);
+    if (!near(profileAt(0, L[i]!, L[i + 1]!, E[i]!), L[i]!, 1e-9)) out.push('steps: level missed');
+  }
+  (st.tops ?? []).forEach((t, i) => {
+    const x = num(t);
+    if (x !== undefined && tops[i] !== undefined && !near(x, tops[i]!, 1e-2))
+      out.push(`steps: top ${i + 1} ${x} is not ${L[i]} + ${E[i]} = ${tops[i]}`);
+  });
+  const hi = num(st.highest);
+  if (hi !== undefined && !near(hi, Math.max(...tops), 1e-2))
+    out.push(`steps: highest ${hi} is not ${Math.max(...tops)}`);
   return out;
 }
