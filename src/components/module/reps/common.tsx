@@ -300,8 +300,16 @@ export function setPair(
   const both = { ...pins, ...updates };
   if (calc.fitsHeld(both)) return calc.set(both);
   for (const id of order.filter((x) => rep.typed(x))) {
-    const one = { ...pins, [id]: updates[id]! };
-    if (calc.fitsHeld(one)) return calc.set(one, rep.slide(id));
+    // The value itself, else the nearest that fits on past it, the way the pointer went (a
+    // typed area of 24 takes a length of 8 after 6: 7 leaves no whole width).
+    const now = calc.values[id];
+    const step = rep.slide(id)?.slide.step ?? 0;
+    const dir = now === undefined || updates[id]! >= now ? 1 : -1;
+    const moved = now === undefined || Math.abs(updates[id]! - now) > 1e-9;
+    for (let k = 0; k <= (moved && step > 0 ? 12 : 0); k++) {
+      const one = { ...pins, [id]: updates[id]! + dir * k * step };
+      if (calc.fitsHeld(one)) return calc.set(one, rep.slide(id));
+    }
   }
   const first = order.find((x) => rep.typed(x)) ?? order[0]!;
   calc.set({ ...pins, [first]: updates[first]! }, rep.slide(first));
