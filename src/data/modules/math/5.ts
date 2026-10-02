@@ -906,7 +906,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
           allowed: [10, 100, 1000],
         },
         { id: 'a', symbol: 'a', name: 'Bigger units', min: 0.001, max: 10000, step: 0.001 },
-        { id: 'c', symbol: 'c', name: 'Smaller units', min: 0.01, max: 20000000, step: 0.01 },
+        { id: 'c', symbol: 'c', name: 'Smaller units', min: 0.01, max: 10000000, step: 0.01 },
       ],
       relations: [
         {
@@ -1236,7 +1236,7 @@ const modules: (ModuleDef | ModuleDef[])[] = [
     variables: [
       { id: 'n', symbol: 'n', name: 'Decimal', min: 0.1, max: 99.9, step: 0.1 },
       whole('d', 'd', 'Shared among', 2, 9),
-      { id: 'q', symbol: 'q', name: 'Each share', min: 0.01, max: 49.95, step: 0.01 },
+      { id: 'q', symbol: 'q', name: 'Each share', min: 0.02, max: 49.95, step: 0.01 },
     ],
     relations: [
       {
@@ -1526,8 +1526,8 @@ const modules: (ModuleDef | ModuleDef[])[] = [
       { ...whole('p', 'p', 'First new numerator', 1, 120), derived: true },
       { ...whole('q', 'q', 'Second new numerator', 1, 120), derived: true },
       op === '+'
-        ? whole('s', 's', 'Numerator of the sum', 2, 240)
-        : whole('s', 's', 'Numerator of the difference', 0, 119),
+        ? whole('s', 's', 'Numerator of the sum', 2, 120)
+        : whole('s', 's', 'Numerator of the difference', 0, 59),
     ];
     const bars = (op: '+' | '−'): Representation => ({
       kind: 'fractionBars',

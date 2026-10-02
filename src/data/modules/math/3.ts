@@ -298,8 +298,24 @@ function pictureColumn(i: string, fruit: string) {
     },
     k: {
       expr: `{${n}} ÷ {${p}}`,
-      how: 'Divide the count by the pictures.',
-      work: (v) => (halfOf(v) ? [] : divideWork(v[n]!, v[p]!, 'second')),
+      how: (v) =>
+        halfOf(v)
+          ? 'Count the half pictures. Share the count among them, then put two halves together.'
+          : 'Divide the count by the pictures.',
+      // Grade 3 doesn't divide by 3 1/2: count halves, share, then double.
+      work: (v) => {
+        if (!halfOf(v)) return divideWork(v[n]!, v[p]!, 'second');
+        const halves = v[p]! * 2;
+        const each = v[n]! / halves;
+        const whole = Math.floor(v[p]!);
+        return [
+          whole === 0
+            ? '1/2 picture is 1 half picture'
+            : `${whole} 1/2 pictures is ${halves} half pictures`,
+          `${v[n]} ÷ ${halves} = ${each} in each half picture`,
+          `${each} + ${each} = ${v.k} in each picture`,
+        ];
+      },
     },
   };
   return { relation, steps };
@@ -504,7 +520,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
         // What is left beside and under the cut: at least 1, so the cut fits inside.
         { ...whole('p', 'p', 'Width left', 1, 9), unit: 'cm', derived: true },
         { ...whole('q', 'q', 'Height left', 1, 9), unit: 'cm', derived: true },
-        { ...whole('A', 'A', 'Area of the shape', 1, 99), unit: 'cm²' },
+        { ...whole('A', 'A', 'Area of the shape', 3, 99), unit: 'cm²' },
       ],
       relations: [
         wide.relation,
@@ -515,7 +531,13 @@ export const MATH_3_MODULES: ModuleDef[] = [
           words: 'Whole area − cut-out area = {A}',
           vars: ['A', 'x', 'y', 'u', 'z'],
           residual: (v: Values) => v.A! - (v.x! * v.y! - v.u! * v.z!),
-          solve: { A: (v: Values) => v.x! * v.y! - v.u! * v.z! },
+          solve: {
+            A: (v: Values) => v.x! * v.y! - v.u! * v.z!,
+            x: (v: Values) => div(v.A! + v.u! * v.z!, v.y!),
+            y: (v: Values) => div(v.A! + v.u! * v.z!, v.x!),
+            u: (v: Values) => div(v.x! * v.y! - v.A!, v.z!),
+            z: (v: Values) => div(v.x! * v.y! - v.A!, v.u!),
+          },
         },
       ],
       steps: {
@@ -531,6 +553,45 @@ export const MATH_3_MODULES: ModuleDef[] = [
               `${v.x! * v.y!} − ${v.u! * v.z!} = ${v.A}`,
             ],
           },
+          // A side of the whole or of the cut-out: find that rectangle's area, then divide.
+          ...Object.fromEntries(
+            (
+              [
+                ['x', 'y', 'whole height'],
+                ['y', 'x', 'whole width'],
+              ] as const
+            ).map(([id, other, name]) => [
+              id,
+              {
+                expr: `({A} + {u} × {z}) ÷ {${other}}`,
+                how: `Add the cut-out area back: that is the whole area. Divide it by the ${name}.`,
+                work: (v: Values) => [
+                  `Cut-out area: ${v.u} × ${v.z} = ${v.u! * v.z!}`,
+                  `Whole area: ${v.A} + ${v.u! * v.z!} = ${v.x! * v.y!}`,
+                  `${v.x! * v.y!} ÷ ${v[other]} = ${v[id]}`,
+                ],
+              },
+            ]),
+          ),
+          ...Object.fromEntries(
+            (
+              [
+                ['u', 'z', 'cut-out height'],
+                ['z', 'u', 'cut-out width'],
+              ] as const
+            ).map(([id, other, name]) => [
+              id,
+              {
+                expr: `({x} × {y} − {A}) ÷ {${other}}`,
+                how: `Take the area of the shape away from the whole area: that is the cut-out area. Divide it by the ${name}.`,
+                work: (v: Values) => [
+                  `Whole area: ${v.x} × ${v.y} = ${v.x! * v.y!}`,
+                  `Cut-out area: ${v.x! * v.y!} − ${v.A} = ${v.u! * v.z!}`,
+                  `${v.u! * v.z!} ÷ ${v[other]} = ${v[id]}`,
+                ],
+              },
+            ]),
+          ),
         },
       },
       example: { x: 6, y: 5, u: 2, z: 3, p: 4, q: 2, A: 24 },
@@ -694,9 +755,9 @@ export const MATH_3_MODULES: ModuleDef[] = [
       'Totals to 100, shared into 2 to 9 equal groups.',
     ],
     variables: [
-      whole('n', 'n', 'Total', 11, 100),
+      whole('n', 'n', 'Total', 12, 100),
       whole('g', 'g', 'Equal groups', 2, 9),
-      whole('q', 'q', 'In each group', 1, 50),
+      whole('q', 'q', 'In each group', 2, 50),
     ],
     relations: [
       {
@@ -706,6 +767,19 @@ export const MATH_3_MODULES: ModuleDef[] = [
         check: (v: Values) => `${v.g} × ${v.q} = ${v.n}`,
         vars: ['n', 'g', 'q'],
         residual: (v: Values) => v.n! - v.g! * v.q!,
+        // "These numbers can’t all be true together" says nothing to a Grade 3 student.
+        message: (v: Values) => {
+          if (v.n === undefined) return undefined;
+          if (v.g !== undefined && v.n % v.g !== 0)
+            return `${v.n} doesn’t share into ${v.g} equal groups: ${v.n % v.g} would be left over.`;
+          if (
+            v.g === undefined &&
+            v.q === undefined &&
+            ![2, 3, 4, 5, 6, 7, 8, 9].some((g) => v.n! % g === 0)
+          )
+            return `${v.n} doesn’t share into 2 to 9 equal groups with none left over.`;
+          return undefined;
+        },
         solve: {
           q: (v: Values) => div(v.n!, v.g!),
           n: (v: Values) => v.g! * v.q!,
@@ -732,8 +806,27 @@ export const MATH_3_MODULES: ModuleDef[] = [
             ];
           },
         },
-        n: { expr: '{g} × {q}', how: 'The groups times the number in each group.' },
-        g: { expr: '{n} ÷ {q}', how: 'Divide the total by the number in each group.' },
+        n: {
+          expr: '{g} × {q}',
+          how: 'Break the number in each group into tens and ones. Multiply each, then add.',
+          work: (v: Values) => {
+            const tens = Math.floor(v.q! / 10) * 10;
+            const ones = v.q! - tens;
+            if (tens === 0 || ones === 0) return [];
+            return [
+              `${v.g} × ${tens} = ${v.g! * tens}`,
+              `${v.g} × ${ones} = ${v.g! * ones}`,
+              `${v.g! * tens} + ${v.g! * ones} = ${v.n}`,
+            ];
+          },
+        },
+        g: {
+          expr: '{n} ÷ {q}',
+          how: 'Count by the number in each group until you reach the total.',
+          work: (v: Values) => [
+            `Count by ${v.q}s: ${Array.from({ length: v.g! }, (_, i) => (i + 1) * v.q!).join(', ')} → ${v.g} groups`,
+          ],
+        },
       },
     },
     example: { n: 85, g: 5, q: 17 },
@@ -901,7 +994,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
       variables: [
         whole('g', 'g', 'Packs', 1, 10),
         whole('k', 'k', 'In each pack', 1, 10),
-        whole('m', 'm', 'Total', 0, 100),
+        whole('m', 'm', 'Total', 1, 100),
         whole('t', 't', 'Taken away', 0, 100),
         whole('n', 'n', 'Left', 0, 100),
       ],
@@ -970,9 +1063,9 @@ export const MATH_3_MODULES: ModuleDef[] = [
       variables: [
         whole('g', 'g', 'Boxes', 1, 10),
         whole('k', 'k', 'In each box', 1, 12),
-        whole('m', 'm', 'In the boxes', 0, 120),
+        whole('m', 'm', 'In the boxes', 1, 120),
         whole('e', 'e', 'Extra', 0, 100),
-        whole('t', 't', 'Total', 0, 220),
+        whole('t', 't', 'Total', 1, 220),
       ],
       relations: [boxes.relation, all.relation],
       steps: { 'm = g × k': boxes.steps, 't = m + e': all.steps },
@@ -1006,7 +1099,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
       ],
       variables: [
         whole('s', 's', 'Start', 1, 100),
-        whole('a', 'a', 'Given away', 0, 100),
+        whole('a', 'a', 'Given away', 0, 99),
         whole('l', 'l', 'Left', 1, 100),
         whole('g', 'g', 'Groups', 1, 10),
         whole('e', 'e', 'In each group', 1, 100),
@@ -1034,7 +1127,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
     const more = plus(
       'b = m + d',
       ['m', 'd', 'b'],
-      ['number in the boxes', 'how many more', 'number Ben has'],
+      ['number in the boxes', 'difference', 'number Ben has'],
     );
     return {
       id: 'm.3.two-step-problems~compare',
@@ -1049,7 +1142,7 @@ export const MATH_3_MODULES: ModuleDef[] = [
         whole('g', 'g', 'Boxes', 1, 10),
         whole('k', 'k', 'In each box', 1, 12),
         whole('m', 'm', 'In the boxes', 1, 120),
-        whole('b', 'b', 'Ben has', 1, 120),
+        whole('b', 'b', 'Crayons Ben has', 1, 120),
         whole('d', 'd', 'How many more Ben has', 0, 100),
       ],
       relations: [boxes.relation, { ...more.relation, display: '{b} − {m} = {d}' }],
@@ -2291,8 +2384,8 @@ export const MATH_3_MODULES: ModuleDef[] = [
         'Add or subtract masses only when they use the same unit.',
       ],
       variables: [
-        { ...whole('a', 'a', 'First mass', 1, 1000), unit: 'g' },
-        { ...whole('b', 'b', 'Second mass', 1, 1000), unit: 'g' },
+        { ...whole('a', 'a', 'First mass', 1, 999), unit: 'g' },
+        { ...whole('b', 'b', 'Second mass', 1, 999), unit: 'g' },
         { ...whole('t', 't', 'Total mass', 2, 1000), unit: 'g' },
       ],
       relations: [total.relation],
@@ -2397,8 +2490,8 @@ export const MATH_3_MODULES: ModuleDef[] = [
       'Perimeter is a length, not square units.',
     ],
     variables: [
-      { ...whole('l', 'l', 'Length', 1, 500), unit: 'cm' },
-      { ...whole('w', 'w', 'Width', 1, 500), unit: 'cm' },
+      { ...whole('l', 'l', 'Length', 1, 499), unit: 'cm' },
+      { ...whole('w', 'w', 'Width', 1, 499), unit: 'cm' },
       { ...whole('P', 'P', 'Perimeter', 4, 1000), unit: 'cm' },
     ],
     relations: [
@@ -2907,8 +3000,9 @@ export const MATH_3_MODULES: ModuleDef[] = [
       'd',
       'n1',
       'n2',
-      ['apples', 'pears'],
-      ['more', 'fewer'],
+      // "The apple count is bigger", never "The apples is more".
+      ['apple count', 'pear count'],
+      ['bigger', 'smaller'],
       'Subtract the smaller count from the bigger one.',
       (aMore) => (aMore ? 'more apples' : 'more pears'),
     );

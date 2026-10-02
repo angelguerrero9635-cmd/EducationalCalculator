@@ -224,7 +224,7 @@ export const SCIENCE_4_MODULES: ModuleDef[] = [
       variables: [
         { ...whole('b', 'b', 'Mass before shaking', 10, 500), unit: 'g' },
         { ...whole('a', 'a', 'Mass after shaking', 1, 500), unit: 'g' },
-        { ...whole('w', 'w', 'Mass worn away', 0, 500), unit: 'g' },
+        { ...whole('w', 'w', 'Mass worn away', 0, 499), unit: 'g' },
       ],
       relations: [worn.relation],
       steps: { [worn.relation.id]: worn.steps },

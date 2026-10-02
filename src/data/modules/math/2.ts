@@ -490,8 +490,8 @@ export const MATH_2_MODULES: ModuleDef[] = [
     variables: [
       whole('a', 'a', 'How many Ana has', 1, 50),
       whole('d', 'd', 'How many more Ben has', 0, 50),
-      whole('b', 'b', 'How many Ben has', 0, 100),
-      whole('t', 't', 'Total', 0, 100),
+      whole('b', 'b', 'How many Ben has', 1, 75),
+      whole('t', 't', 'Total', 2, 100),
     ],
     relations: [
       {
@@ -960,6 +960,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
       solve: {
         [x]: (v: Values) => v.n! + sign * v.k!,
         n: (v: Values) => v[x]! - sign * v.k!,
+        k: (v: Values) => sign * (v[x]! - v.n!),
       },
     });
     const text = (x: string, sign: 1 | -1) => ({
@@ -978,6 +979,14 @@ export const MATH_2_MODULES: ModuleDef[] = [
       n: {
         expr: `{${x}} ${sign > 0 ? '−' : '+'} {k}`,
         how: 'Go back: change the digit by 1 the other way.',
+      },
+      // Not "Try numbers until both sides match": read which digit moved by 1.
+      k: {
+        expr: sign > 0 ? `{${x}} − {n}` : `{n} − {${x}}`,
+        how: 'Find the digit that changed by 1. The tens digit means 10; the hundreds digit means 100.',
+        work: (v: Values) => [
+          `${place(v.k!) === 'tens' ? 'Tens' : 'Hundreds'} digit: ${digit(v.n!, v.k!)} → ${digit(v[x]!, v.k!)}`,
+        ],
       },
     });
     return {
@@ -1078,10 +1087,10 @@ export const MATH_2_MODULES: ModuleDef[] = [
       'By 10s, the ones digit stays the same. By 100s, the last two digits stay the same.',
     ],
     variables: [
-      whole('a', 'a', 'Start', 0, 1000),
+      whole('a', 'a', 'Start', 0, 995),
       { ...whole('s', 's', 'Count by', 5, 100), allowed: [5, 10, 100], step: 5 },
       whole('k', 'k', 'Number of jumps', 1, 20),
-      whole('n', 'n', 'Number reached', 1, 1000),
+      whole('n', 'n', 'Number reached', 5, 1000),
     ],
     relations: [
       {
@@ -1162,6 +1171,7 @@ export const MATH_2_MODULES: ModuleDef[] = [
           n: (v) => v.a! + v.k! * v.s!,
           a: (v) => v.n! - v.k! * v.s!,
           k: (v) => div(v.n! - v.a!, v.s!),
+          s: (v) => (v.k! > 0 ? div(v.n! - v.a!, v.k!) : undefined),
         },
       },
     ],
@@ -1190,6 +1200,15 @@ export const MATH_2_MODULES: ModuleDef[] = [
           expr: '{n} − {k} jumps of {s}',
           how: 'Count back from the point to the start of the line.',
         },
+        // Not "Try numbers until both sides match": try 1s, 10s and 100s.
+        s: {
+          work: (v) => [
+            `${v.n} − ${v.a} = ${v.n! - v.a!}`,
+            `Try ticks of ${v.s}: ${countList(0, v.s!, v.k!)} is ${v.k} ${v.k === 1 ? 'tick' : 'ticks'} ✓`,
+          ],
+          expr: 'size of {k} equal jumps from {a} to {n}',
+          how: 'Find the tick size, 1, 10 or 100, that gets from the start to the point.',
+        },
       },
     },
     example: { a: 500, s: 10, k: 4, n: 540 },
@@ -1216,10 +1235,10 @@ export const MATH_2_MODULES: ModuleDef[] = [
       'Back by 10s from 560: 550, 540, 530. The ones digit stays the same.',
     ],
     variables: [
-      whole('a', 'a', 'Start', 0, 1000),
+      whole('a', 'a', 'Start', 5, 1000),
       { ...whole('s', 's', 'Count back by', 5, 100), multipleOf: 5, step: 5 },
       whole('k', 'k', 'Number of jumps', 1, 20),
-      whole('n', 'n', 'Number reached', 0, 1000),
+      whole('n', 'n', 'Number reached', 0, 995),
     ],
     relations: [
       {
@@ -1524,8 +1543,8 @@ export const MATH_2_MODULES: ModuleDef[] = [
       'Use the same unit for both lengths.',
     ],
     variables: [
-      { ...whole('a', 'a', 'First length', 1, 100), unit: 'cm' },
-      { ...whole('b', 'b', 'Second length', 1, 100), unit: 'cm' },
+      { ...whole('a', 'a', 'First length', 1, 99), unit: 'cm' },
+      { ...whole('b', 'b', 'Second length', 1, 99), unit: 'cm' },
       { ...whole('s', 's', 'Total length', 2, 100), unit: 'cm' },
     ],
     relations: [
@@ -1902,9 +1921,9 @@ export const MATH_2_MODULES: ModuleDef[] = [
       'Type the amount in cents: 125¢ is 1 dollar and 25 cents.',
     ],
     variables: [
-      { ...whole('T', 'T', 'Money you have', 0, 1000), unit: '¢' },
+      { ...whole('T', 'T', 'Money you have', 1, 1000), unit: '¢' },
       { ...whole('P', 'P', 'Price', 1, 1000), unit: '¢' },
-      { ...whole('L', 'L', 'Money left', 0, 1000), unit: '¢' },
+      { ...whole('L', 'L', 'Money left', 0, 999), unit: '¢' },
     ],
     relations: [
       {

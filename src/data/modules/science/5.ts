@@ -195,7 +195,7 @@ export const SCIENCE_5_MODULES: ModuleDef[] = [
         { ...whole('T', 'T', 'Soil at the start', 100, 5000), unit: 'g' },
         { ...whole('U', 'U', 'Soil at the end', 50, 5000), unit: 'g' },
         { ...whole('l', 'l', 'Soil lost', 0, 50), unit: 'g', derived: true },
-        { ...whole('r', 'r', 'Gain not from the soil', 0, 2000), unit: 'g' },
+        { ...whole('r', 'r', 'Gain not from the soil', 0, 1999), unit: 'g' },
       ],
       relations: [gain.relation, loss.relation, rest.relation],
       steps: { 'g = E − S': gain.steps, 'l = T − U': loss.steps, 'r = g − l': rest.steps },
@@ -333,7 +333,7 @@ export const SCIENCE_5_MODULES: ModuleDef[] = [
       variables: [
         { ...whole('n', 'n', 'Nearer flashlight', 10, 100), unit: 'cm' },
         whole('k', 'k', 'Times as far', 2, 10),
-        { ...whole('f', 'f', 'Farther flashlight', 10, 1000), unit: 'cm' },
+        { ...whole('f', 'f', 'Farther flashlight', 20, 1000), unit: 'cm' },
         { ...whole('a', 'a', 'Times as much wall lit', 4, 100), derived: true },
       ],
       relations: [

@@ -60,7 +60,7 @@ export const SCIENCE_2_MODULES: ModuleDef[] = [
       variables: [
         whole('a', 'a', 'Blocks in the tower', 1, 50),
         whole('b', 'b', 'Blocks in the new house', 1, 50),
-        whole('c', 'c', 'Blocks left over', 0, 50),
+        whole('c', 'c', 'Blocks left over', 0, 49),
       ],
       relations: [used.relation],
       steps: { 'a = b + c': used.steps },

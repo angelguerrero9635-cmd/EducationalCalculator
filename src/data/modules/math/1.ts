@@ -4,7 +4,7 @@
  * `../helpers.ts`; worked-line helpers in `../work.ts`. Rules: docs/MODULE_GUIDE.md.
  */
 import type { Values } from '@/engine/types';
-import { cmpShapes, difference, fractionNote, whole } from '../helpers';
+import { cmpShapes, difference, div, fractionNote, whole } from '../helpers';
 import { addSub } from '../shared/add-sub';
 import { compareNumbers, compareProblem } from '../shared/compare';
 import type { ModuleDef, StepText } from '../types';
@@ -256,11 +256,14 @@ export const MATH_1_MODULES: ModuleDef[] = [
         solve: { b: (v) => v.a! + 1, a: (v) => v.b! - 1 },
       },
       {
+        // A near double: the bigger number is one more, so the rule needs only the smaller.
+        // (With "In all" alone, the walkthrough used the bigger number before finding it.)
         id: 'c = a + b',
         display: '{a} + {b} = {c}',
-        vars: ['c', 'a', 'b'],
-        residual: (v) => v.c! - v.a! - v.b!,
-        solve: { c: (v) => v.a! + v.b!, a: (v) => v.c! - v.b!, b: (v) => v.c! - v.a! },
+        vars: ['c', 'a'],
+        shows: ['b'],
+        residual: (v) => v.c! - 2 * v.a! - 1,
+        solve: { c: (v) => 2 * v.a! + 1, a: (v) => div(v.c! - 1, 2) },
       },
     ],
     steps: {
@@ -270,12 +273,15 @@ export const MATH_1_MODULES: ModuleDef[] = [
       },
       'c = a + b': {
         c: {
-          expr: '{a} + {b}',
+          expr: '{a} + {a} + 1',
           how: 'Use the double you know. Then add 1 more.',
           work: (v: Values) => [`${v.a} + ${v.a} = ${2 * v.a!}`, `${2 * v.a!} + 1 = ${v.c}`],
         },
-        a: { expr: '{c} − {b}', how: 'Take the bigger number away from all of them.' },
-        b: { expr: '{c} − {a}', how: 'Take the smaller number away from all of them.' },
+        a: {
+          expr: 'half of ({c} − 1)',
+          how: 'Take away the 1 more: that leaves a double. The smaller number is half of it.',
+          work: (v: Values) => [`${v.c} − 1 = ${v.c! - 1}`, `${v.a} + ${v.a} = ${v.c! - 1}`],
+        },
       },
     },
     example: { a: 6, b: 7, c: 13 },

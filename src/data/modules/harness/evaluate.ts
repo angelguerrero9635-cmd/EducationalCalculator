@@ -322,6 +322,8 @@ export const PHRASES: [RegExp, (...xs: number[]) => number][] = [
   [new RegExp(`(${NUM}) hundredths`), (a) => a / 100],
   // Powers of ten (Grade 5): "zeros in 1000" is the exponent.
   [new RegExp(`zeros in (${NUM})`), (a) => Math.round(Math.log10(a))],
+  // A square's side from its area (Grade 4, no √ yet): "the number that times itself makes 81".
+  [new RegExp(`(?:the )?number that times itself makes (${NUM})`), (a) => Math.sqrt(a)],
   // Roots (Grade 8): the whole numbers on either side of a square root.
   [
     new RegExp(`whole number at or below the square root of (${NUM})`),

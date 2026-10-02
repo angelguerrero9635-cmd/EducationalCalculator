@@ -85,7 +85,7 @@ function multiplyPage(o: {
     variables: [
       whole('a', 'a', 'First factor', ...o.first),
       whole('b', 'b', 'Second factor', ...o.second),
-      whole('n', 'n', 'Product', 0, o.first[1] * o.second[1]),
+      whole('n', 'n', 'Product', o.first[0] * o.second[0], o.first[1] * o.second[1]),
     ],
     relations: [
       {
@@ -2817,7 +2817,10 @@ export const MATH_4_MODULES: ModuleDef[] = [
         words: 'Side × side = area',
         vars: ['A', 's'],
         residual: (v: Values) => v.A! - v.s! * v.s!,
-        solve: { A: (v: Values) => v.s! * v.s! },
+        solve: {
+          A: (v: Values) => v.s! * v.s!,
+          s: (v: Values) => (Number.isInteger(Math.sqrt(v.A!)) ? Math.sqrt(v.A!) : undefined),
+        },
       },
     ],
     steps: {
@@ -2838,6 +2841,15 @@ export const MATH_4_MODULES: ModuleDef[] = [
           expr: '{s} × {s}',
           how: 'Multiply the side by itself: rows of unit squares.',
           work: (v) => timesWork(v.s!, v.s!),
+        },
+        // Not "Try numbers until both sides match": the side times itself makes the area.
+        s: {
+          expr: 'the number that times itself makes {A}',
+          how: 'Find the number that times itself makes the area.',
+          work: (v) => [
+            ...(v.s! > 1 ? [`${v.s! - 1} × ${v.s! - 1} = ${(v.s! - 1) ** 2}, too small`] : []),
+            `${v.s} × ${v.s} = ${v.A}`,
+          ],
         },
       },
     },
@@ -3292,7 +3304,7 @@ export const MATH_4_MODULES: ModuleDef[] = [
     ],
     variables: [
       whole('t', 't', 'Tenths', 1, 9),
-      whole('h', 'h', 'Hundredths', 1, 99),
+      whole('h', 'h', 'Hundredths', 1, 89),
       {
         ...whole('k', 'k', 'The tenths as hundredths', 10, 90),
         step: 10,
