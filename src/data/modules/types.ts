@@ -1159,7 +1159,7 @@ export type Representation =
   | SkeletalSpec
   /** College round 1, group A: the `beam` (HC1; specs in `typesHe1a.ts`). */
   | BeamSpec
-  /** College round 2, group H: HC24 wing (`typesHe2h.ts`). */
+  /** College round 2, group H: HC24 wing, HC30 duct (`typesHe2h.ts`). */
   | He2hSpec
   /** Box plot: the five-number summary on a number line, each mark draggable. */
   | {

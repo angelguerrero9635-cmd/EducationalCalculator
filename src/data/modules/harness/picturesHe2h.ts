@@ -1,10 +1,23 @@
 /**
- * Picture checks for the college round 2 group H kinds (`typesHe2h.ts`): HC24 `wing`. What each
+ * Picture checks for the college round 2 group H kinds (`typesHe2h.ts`): HC24 `wing`, HC30 `duct`. What each
  * draws must agree with the values and the relations it shows. Called from `repIssues` in
  * `pictures.ts`. Test-only.
  */
 import {
+  areaRatio,
   camber,
+  contourAt,
+  ductArea,
+  ductShape,
+  jetThrust,
+  machFromArea,
+  normalShock,
+  nozzleState,
+  pRatio,
+  propulsiveEfficiency,
+  throatHalf,
+  tRatio,
+  type DuctShape,
   inducedAngle,
   inducedDrag,
   nacaOf,
@@ -14,7 +27,7 @@ import {
 } from '@/components/module/reps/aeroMath';
 
 import type { NumOrVar } from '../typesGraphs';
-import type { WingSpec } from '../typesHe2h';
+import type { DuctSpec, WingSpec } from '../typesHe2h';
 import type { Representation } from '../types';
 
 type Getter = (x: NumOrVar | undefined) => number | undefined;
@@ -30,6 +43,7 @@ export function he2hIssues(rep: Representation, val: (id: string) => number | un
     return y === undefined || Number.isNaN(y) ? undefined : y;
   };
   if (rep.kind === 'wing') return wingIssues(rep, get);
+  if (rep.kind === 'duct') return ductIssues(rep, get);
   return [];
 }
 
@@ -139,5 +153,123 @@ function wingIssues(spec: WingSpec, get: Getter): string[] {
   if (CL !== undefined && AR !== undefined && ai !== undefined && AR > 0)
     if (!near(ai, toDeg(inducedAngle(CL, AR))))
       out.push(`wing: α_i ${ai}°, but C_L ÷ (πAR) = ${toDeg(inducedAngle(CL, AR))}°`);
+  return out;
+}
+
+/** The throat is the narrowest section, and widths go as √(A ÷ A*). */
+function shapeIssues(sh: DuctShape, g: number): string[] {
+  const out: string[] = [];
+  const end = sh.form === 'converging' ? 1 : 1;
+  let minS = 0;
+  let minA = Infinity;
+  for (let k = 0; k <= 1000; k++) {
+    const s = (k / 1000) * end;
+    const A = ductArea(sh, s);
+    if (A < minA) {
+      minA = A;
+      minS = s;
+    }
+  }
+  if (Math.abs(minS - sh.throat) > 0.002 || !near(minA, 1))
+    out.push(`duct: the narrowest section is at ${minS} (A ÷ A* ${minA}), not the throat`);
+  const hs = throatHalf(sh);
+  const exitHalf = hs * Math.sqrt(ductArea(sh, 1));
+  if (sh.form === 'cd' && !near(exitHalf / hs, Math.sqrt(sh.exit)))
+    out.push(
+      `duct: exit ÷ throat width ${exitHalf / hs}, not √(A_e ÷ A_t) = ${Math.sqrt(sh.exit)}`,
+    );
+  // Subsonic before the throat, M = 1 at it.
+  const before = nozzleState(ductArea(sh, sh.throat / 2), 'sub', g);
+  if (before && before.M >= 1) out.push(`duct: M ${before.M} before the throat`);
+  const at = nozzleState(ductArea(sh, sh.throat), 'sub', g);
+  if (at && !near(at.M, 1)) out.push(`duct: M ${at.M} at the throat, not 1`);
+  return out;
+}
+
+function ductIssues(spec: DuctSpec, get: Getter): string[] {
+  const out: string[] = [];
+  const g = get(spec.gamma) ?? 1.4;
+  if (!(g > 1)) return out;
+  const mode = spec.mode ?? 'station';
+  if (mode === 'engine') {
+    const [m, V0, Ve, F] = [get(spec.mdot), get(spec.V0), get(spec.Ve), get(spec.thrust)];
+    if (m !== undefined && V0 !== undefined && Ve !== undefined && F !== undefined)
+      if (!near(F, jetThrust(m, V0, Ve)))
+        out.push(`duct: F ${F}, but ṁ(V_e − V₀) = ${jetThrust(m, V0, Ve)}`);
+    if (
+      V0 !== undefined &&
+      Ve !== undefined &&
+      V0 > 0 &&
+      !(propulsiveEfficiency(V0, Ve) <= 1 || Ve < V0)
+    )
+      out.push('duct: propulsive efficiency above 1');
+    return out;
+  }
+  const [M, A, Me, T, T0, p, p0, pe] = [
+    get(spec.M),
+    get(spec.areaRatio),
+    get(spec.Me),
+    get(spec.T),
+    get(spec.T0),
+    get(spec.p),
+    get(spec.p0),
+    get(spec.pe),
+  ];
+  if (mode === 'station') {
+    if (spec.choked || M === 1) out.push(...shapeIssues(ductShape(1, 'sonic'), g));
+    else if (M !== undefined && M > 0) {
+      const sh = ductShape(areaRatio(M, g), M > 1 ? 'super' : 'sub');
+      out.push(...shapeIssues(sh, g));
+      // The station's area on the drawing is the area–Mach relation's.
+      if (!near(ductArea(sh, sh.station), areaRatio(M, g)))
+        out.push(
+          `duct: station drawn at A ÷ A* ${ductArea(sh, sh.station)}, not ${areaRatio(M, g)}`,
+        );
+      if (A !== undefined && !near(A, areaRatio(M, g)))
+        out.push(`duct: A ÷ A* ${A}, but the relation gives ${areaRatio(M, g)} at M ${M}`);
+      if (T !== undefined && T0 !== undefined && T > 0 && !near(T0 / T, tRatio(M, g)))
+        out.push(`duct: T₀ ÷ T ${T0 / T}, but 1 + (γ − 1)M² ÷ 2 = ${tRatio(M, g)}`);
+      if (p !== undefined && p0 !== undefined && T !== undefined && T0 !== undefined && p > 0)
+        if (!near(p0 / p, (T0 / T) ** (g / (g - 1))))
+          out.push(
+            `duct: p₀ ÷ p ${p0 / p}, but (T₀ ÷ T)^(γ ÷ (γ − 1)) = ${(T0 / T) ** (g / (g - 1))}`,
+          );
+    }
+    return out;
+  }
+  // Nozzle: the exit from A_e ÷ A_t, M_e on the supersonic branch (no shock).
+  if (A !== undefined && A >= 1) {
+    const sh: DuctShape = {
+      inlet: spec.chamber ? 2.2 : 3,
+      exit: A,
+      throat: 0.38,
+      form: 'cd',
+      station: 1,
+    };
+    out.push(...shapeIssues(sh, g));
+    const shockAt = get(spec.shockAt);
+    if (shockAt !== undefined) {
+      if (shockAt <= 1 || shockAt >= A)
+        out.push(`duct: shock at ${shockAt} outside the diverging part`);
+      else {
+        if (contourAt(shockAt, sh.inlet, sh.exit, sh.throat, 'super') === undefined)
+          out.push('duct: the shock has no place on the drawing');
+        const M1 = machFromArea(shockAt, g, 'super')!;
+        const [m1, m2] = [get(spec.shockM1), get(spec.shockM2)];
+        if (m1 !== undefined && !near(m1, M1)) out.push(`duct: M₁ ${m1}, but the area gives ${M1}`);
+        if (m2 !== undefined && !near(m2, normalShock(M1, g).M2))
+          out.push(`duct: M₂ ${m2}, but the shock gives ${normalShock(M1, g).M2}`);
+        const exit = nozzleState(A, 'super', g, shockAt);
+        if (Me !== undefined && exit && !near(Me, exit.M))
+          out.push(`duct: M_e ${Me}, but ${exit.M} after the shock`);
+        if (exit && exit.M >= 1) out.push('duct: supersonic after a normal shock');
+      }
+    } else if (spec.shockAt === undefined) {
+      const Mx = machFromArea(A, g, 'super')!;
+      if (Me !== undefined && !near(Me, Mx)) out.push(`duct: M_e ${Me}, but A_e ÷ A_t gives ${Mx}`);
+      if (pe !== undefined && p0 !== undefined && p0 > 0 && !near(pe / p0, 1 / pRatio(Mx, g)))
+        out.push(`duct: p_e ÷ p₀ ${pe / p0}, not ${1 / pRatio(Mx, g)}`);
+    }
+  }
   return out;
 }

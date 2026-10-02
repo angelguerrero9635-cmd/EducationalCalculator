@@ -149,6 +149,7 @@ const PICTURE_NAMES: Record<string, string> = {
   controlVolume: 'a process unit or device with its streams balanced',
   velocityProfile: 'velocity or concentration profiles across a tube, gap or film',
   wing: 'an airfoil section against the wind, or a wing’s planform',
+  duct: 'a nozzle or stream tube drawn to scale by A ÷ A*, or a turbojet',
   matrixGrid: 'matrices in brackets',
   membrane: 'cell membrane with particles on each side',
   dnaStrand: 'DNA ladder, mRNA and amino acids',

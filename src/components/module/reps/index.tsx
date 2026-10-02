@@ -186,6 +186,7 @@ import { FluidSystem } from './FluidSystem';
 import { ControlVolume } from './ControlVolume';
 import { VelocityProfile } from './VelocityProfile';
 import { Wing } from './Wing';
+import { Duct } from './Duct';
 import { MotionGraphHs } from './MotionGraphHs';
 import { HskView } from './HskView';
 import { Hs2cView } from './Hs2cView';
@@ -346,6 +347,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <VelocityProfile spec={spec} calc={calc} />;
     case 'wing':
       return <Wing spec={spec} calc={calc} />;
+    case 'duct':
+      return <Duct spec={spec} calc={calc} />;
     case 'linearFunction':
       return <LinearFunction spec={spec} calc={calc} />;
     case 'lineSystem':

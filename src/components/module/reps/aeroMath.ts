@@ -318,3 +318,41 @@ export function planformBox(b: number, cr: number, ct: number, maxSpan = 300, ma
   const area = (span * (root + tip)) / 2;
   return { scale: s, span, root, tip, area, aspect: (span * span) / area };
 }
+
+// ─── HC30: the duct's shape (shared with the harness) ────────────────────────
+
+/** A duct's outline: inlet and exit A ÷ A*, where the throat is (0–1) and how it ends. */
+export interface DuctShape {
+  inlet: number;
+  exit: number;
+  throat: number;
+  /** `cd`: converging–diverging; `converging`: ends at its exit (A* dashed beyond a subsonic one). */
+  form: 'cd' | 'converging';
+  /** Where the station is along the duct (0–1). */
+  station: number;
+}
+
+/**
+ * The shape for a station at A ÷ A* = `A`: a supersonic station ends a converging–diverging
+ * duct at its exit; M = 1 ends a converging duct at the throat; a subsonic station sits at
+ * the place of a converging duct where A ÷ A* = `A`, its throat A* (s = 1) dashed beyond it.
+ */
+export function ductShape(A: number, side: 'sub' | 'super' | 'sonic'): DuctShape {
+  if (side === 'super') return { inlet: 3, exit: A, throat: 0.38, form: 'cd', station: 1 };
+  if (side === 'sonic') return { inlet: 3, exit: 1, throat: 1, form: 'converging', station: 1 };
+  const inlet = Math.max(3, A * 1.6);
+  const station = contourAt(A, inlet, 1, 1, 'sub') ?? 0.75;
+  return { inlet, exit: 1, throat: 1, form: 'converging', station };
+}
+
+/** A ÷ A* along a duct shape at s (0 inlet, 1 exit or the dashed A*). */
+export const ductArea = (shape: DuctShape, s: number) =>
+  contourArea(s, shape.inlet, shape.exit, shape.throat);
+
+/** The throat's half-height in px, so that the widest section is `maxHalf`. */
+export const throatHalf = (shape: DuctShape, maxHalf = 50) =>
+  maxHalf / Math.sqrt(Math.max(shape.inlet, shape.exit));
+
+/** Turbojet thrust and propulsive efficiency. */
+export const jetThrust = (mdot: number, V0: number, Ve: number) => mdot * (Ve - V0);
+export const propulsiveEfficiency = (V0: number, Ve: number) => 2 / (1 + Ve / V0);
