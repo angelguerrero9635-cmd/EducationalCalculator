@@ -35,7 +35,8 @@ export function MathLine({
   style?: StyleProp<TextStyle>;
 }) {
   const tex = toLatex(text, band, symbols, options);
-  // What a screen reader says: "Σ from k = 1 to 8 of …" reads "the sum from k = 1 to 8 of …".
+  // What a screen reader says: "Σ from k = 1 to 8 of …" reads "the sum from k = 1 to 8 of …",
+  // ∫ "the integral from", ṁ "m dot", T_wall "T sub wall" (`spokenMath`).
   const spoken = spokenMath(`${text}${after ?? ''}`);
   if (tex === undefined)
     return (
@@ -104,12 +105,14 @@ function MathNodes({
               <Text style={at(size)}>{n.block}</Text>
             </View>
           </View>
-        ) : n.t === 'sum' ? (
-          // Σ with its upper limit above and its lower limit below, then its body.
+        ) : n.t === 'sum' || n.t === 'int' ? (
+          // Σ (or ∫) with its upper limit above and its lower limit below, then its body.
           <View key={i} style={styles.row}>
             <View style={styles.sum}>
               <MathNodes nodes={n.upper} style={style} size={size * 0.65} />
-              <Text style={[at(size * 1.5), styles.sigma]}>Σ</Text>
+              <Text style={[at(size * (n.t === 'int' ? 1.7 : 1.5)), styles.sigma]}>
+                {n.t === 'int' ? '∫' : 'Σ'}
+              </Text>
               <MathNodes nodes={n.lower} style={style} size={size * 0.65} />
             </View>
             <MathNodes nodes={n.body} style={style} size={size} />

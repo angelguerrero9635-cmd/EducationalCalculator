@@ -13,6 +13,23 @@ describe('subscripts', () => {
       { s: 'N', sub: true },
     ]);
   });
+  it('college subscripts (HE-E7): several letters, Greek, marks and primes on the base, a comma', () => {
+    expect(withUnicodeSubscripts('σ_max, S_ut, ṁ_in, ΔT_lm')).toBe('σₘₐₓ, Sᵤₜ, ṁᵢₙ, ΔTₗₘ');
+    expect(subscriptRuns('T_h,in = 80, k_eff and f′_c')).toEqual([
+      { s: 'T' },
+      { s: 'h,in', sub: true },
+      { s: ' = 80, k' },
+      { s: 'eff', sub: true },
+      { s: ' and f′' },
+      { s: 'c', sub: true },
+    ]);
+    expect(subscriptRuns('Q̇_out and T_wall')).toEqual([
+      { s: 'Q̇ₒᵤₜ and T' },
+      { s: 'wall', sub: true },
+    ]);
+    // A list after a subscript keeps its space: "v_x, v_y".
+    expect(withUnicodeSubscripts('(v_x, v_y)')).toBe('(vₓ, vᵧ)');
+  });
   it('leaves names and plain underscores alone', () => {
     expect(subscriptRuns('MATH_12 and _x')).toEqual([{ s: 'MATH_12 and _x' }]);
     expect(subscriptRuns('no subscript')).toEqual([{ s: 'no subscript' }]);

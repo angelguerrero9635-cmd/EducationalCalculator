@@ -175,6 +175,85 @@ describe('toLatex', () => {
     expect(spokenMath('χ² = Σ (O − E)² ÷ E')).toBe('χ² = Σ (O − E)² ÷ E');
   });
 
+  it('college symbols (HE-E7): an integral with its limits, marks, ∂, subscripts kept whole', () => {
+    expect(both('∫ from 0 to 2 of (x² + 1) dx = 32/3', 'standard', ['x'])).toBe(
+      '$\\int_{0}^{2}{({\\mathit{x}}^{2} + 1) dx}$ = $\\frac{32}{3}$',
+    );
+    expect(both('W = ∫ from V₁ to V₂ of P dV', 'standard', ['W', 'P', 'V₁', 'V₂'])).toBe(
+      '$\\mathit{W}$ = $\\int_{\\mathit{V₁}}^{\\mathit{V₂}}{\\mathit{P} dV}$',
+    );
+    // The d and its variable over a bracket: one bracket deep inside.
+    expect(both('t = ∫ from 0 to X of dX ÷ (k(1 − X))', 'standard', ['t', 'X', 'k'])).toContain(
+      '\\int_{0}^{\\mathit{X}}{dX ÷ (\\mathit{k}(1 − \\mathit{X}))}',
+    );
+    const [int] = parseMath('\\int_{0}^{2}{x dx}');
+    expect(int).toEqual({
+      t: 'int',
+      lower: [{ t: 'text', s: '0' }],
+      upper: [{ t: 'text', s: '2' }],
+      body: [{ t: 'text', s: 'x dx' }],
+    });
+    // Dotted and hatted letters are symbols like any other, never split from their mark.
+    expect(both('Q̇ = ṁ × c_p × ΔT', 'standard', ['Q̇', 'ṁ', 'c_p', 'ΔT'])).toBe(
+      '$\\mathit{Q̇}$ = $\\mathit{ṁ}$ × c_p × ΔT',
+    );
+    expect(both('t = d̄ ÷ SE', 'standard', ['d̄', 't'])).toBe(
+      '$\\mathit{t}$ = $\\divfrac{\\mathit{d̄}}{SE}$',
+    );
+    expect(both('∂U ÷ ∂P = 4', 'standard', ['U', 'P'])).toBe(
+      '$\\divfrac{∂\\mathit{U}}{∂\\mathit{P}}$ = 4',
+    );
+    // Subscripts of several letters, Greek, or in two parts stay whole inside a division.
+    expect(both('q = k_eff × A × (T_wall − T_h,in) ÷ L', 'standard', ['q', 'A', 'L'])).toBe(
+      '$\\mathit{q}$ = k_eff × $\\mathit{A}$ × $\\divfrac{(T_wall − T_h,in)}{\\mathit{L}}$',
+    );
+    expect(both('σ_max = M × c ÷ I', 'standard', ['M', 'c', 'I'])).toBe(
+      'σ_max = $\\mathit{M}$ × $\\divfrac{\\mathit{c}}{\\mathit{I}}$',
+    );
+    // A fractional exponent with a bracket inside: (P₂ ÷ P₁)^((k − 1)/k).
+    expect(both('T₂ = 300 × (800 ÷ 100)^((1.4 − 1)/1.4)', 'standard')).toBe(
+      'T₂ = 300 × $\\pow{(\\divfrac{800}{100})}{((1.4 − 1)/1.4)}$',
+    );
+    expect(both('E = 10^(1.5 × (−4))', 'standard', ['E'])).toBe(
+      '$\\mathit{E}$ = $\\pow{10}{(1.5 × (−4))}$',
+    );
+    // A root's bracket raised keeps its root bar.
+    expect(both('ρ = √(0 + 64)^(1 ÷ 3)', 'standard', ['ρ'])).toContain('\\sqrt{(0 + 64)}');
+    // ⌈ ⌉, ⌊ ⌋, ħ, ∇ and bold or arrowed vectors pass through as text.
+    expect(both('n = ⌈12.5 ÷ 4⌉ = 4', 'standard', ['n'])).toBe(
+      '$\\mathit{n}$ = ⌈$\\divfrac{12.5}{4}$⌉ = 4',
+    );
+    expect(both('v⃗ = 3x̂ + 4ŷ; |𝐅| = 5', 'standard', ['v⃗'])).toBe(
+      '$\\mathit{v⃗}$ = 3x̂ + 4ŷ; |𝐅| = 5',
+    );
+    expect(parseMath('\\partial \\nabla \\hbar \\lfloor x \\rfloor')).toEqual([
+      { t: 'text', s: '∂ ∇ ħ ⌊ x ⌋' },
+    ]);
+  });
+
+  it('a function stays whole over or under a division bar', () => {
+    expect(both('b = 9 × sin(80°) ÷ sin(35°)', 'standard', ['b'])).toBe(
+      '$\\mathit{b}$ = 9 × $\\divfrac{sin(80°)}{sin(35°)}$',
+    );
+    expect(both('x = log₁₀ 12 ÷ log₁₀ 2', 'standard', ['x'])).toBe(
+      '$\\mathit{x}$ = $\\divfrac{log₁₀ 12}{log₁₀ 2}$',
+    );
+    expect(both('ΔT_lm = (ΔT₁ − ΔT₂) ÷ ln(ΔT₁ ÷ ΔT₂)', 'standard')).toBe(
+      'ΔT_lm = $\\divfrac{(ΔT₁ − ΔT₂)}{ln(ΔT₁ ÷ ΔT₂)}$',
+    );
+  });
+
+  it('says college symbols in words for a screen reader (HE-E7)', () => {
+    expect(spokenMath('W = ∫ from V₁ to V₂ of P dV')).toBe(
+      'W = the integral from V₁ to V₂ of P dV',
+    );
+    expect(spokenMath('Q̇ = ṁ × c_p × ΔT')).toBe('Q dot = m dot × c sub p × ΔT');
+    expect(spokenMath('∂U ÷ ∂P and ∇·E')).toBe('partial U ÷ partial P and del dot E');
+    expect(spokenMath('n = ⌈x⌉ + ⌊y⌋')).toBe('n = ceiling of x + floor of y');
+    expect(spokenMath('x̄ and p̂ and v⃗')).toBe('x bar and p hat and v vector');
+    expect(spokenMath('T_h,in − T_wall')).toBe('T sub h,in − T sub wall');
+  });
+
   it('parses the commands it draws, and refuses others', () => {
     expect(splitLine('$\\frac{1}{2}$ of 8').map((p) => p.t)).toEqual(['math', 'text']);
     expect(parseMath('3 \\times 4 \\le 12')).toEqual([{ t: 'text', s: '3 × 4 ≤ 12' }]);
