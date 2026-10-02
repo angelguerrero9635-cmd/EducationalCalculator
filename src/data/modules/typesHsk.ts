@@ -15,6 +15,16 @@ import {
   type PlateLaunch,
   type SeesawOption,
 } from './typesHs3a';
+import {
+  he2eChargesVars,
+  he2eInductionVars,
+  isHe2eCharges,
+  isHe2eInduction,
+  type ChargesDistribution,
+  type ChargesGauss,
+  type InductionField,
+  type InductionRails,
+} from './typesHe2e';
 
 const ids = (...xs: (NumOrVar | undefined)[]) =>
   xs.filter((x): x is string => typeof x === 'string');
@@ -501,6 +511,8 @@ export type InductionSpec = { kind: 'induction'; fixed?: boolean } & (
     }
   /** H107: a moving charge in the field (`typesHs3a.ts`). */
   | MovingCharge
+  | InductionField // HC19 (typesHe2e.ts)
+  | InductionRails
 );
 
 // ─── H70 spectrum options: spectral lines, redshift, photons ────────────────
@@ -550,6 +562,8 @@ export type HskSpec =
   | RayDiagramSpec
   | ChargesSpec
   | ChargePlatesSpec
+  | ChargesGauss // HC29 (typesHe2e.ts)
+  | ChargesDistribution
   | InductionSpec;
 
 /** Every variable id a group-HK picture reads (for modules.test.ts). */
@@ -621,6 +635,7 @@ export function hskSpecVars(r: HskSpec): string[] {
     case 'heatEngine':
       return ids(r.hotHeat, r.coldHeat, r.work, r.hot, r.cold, r.efficiency, r.carnot);
     case 'charges':
+      if (isHe2eCharges(r)) return he2eChargesVars(r); // HC29
       return r.mode === 'plates'
         ? [...ids(r.voltage, r.gap, r.field, r.charge, r.force), ...launchVars(r.launch)]
         : [
@@ -628,6 +643,7 @@ export function hskSpecVars(r: HskSpec): string[] {
             ...equipotentialVars(r.equipotentials),
           ];
     case 'induction':
+      if (isHe2eInduction(r)) return he2eInductionVars(r); // HC19
       switch (r.mode) {
         case 'coil':
           return ids(r.turns, r.flux, r.time, r.emf);

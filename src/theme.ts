@@ -518,6 +518,10 @@ const light = {
   physCartB: '#E5484D',
   physResistor: '#E6D3B0',
   physIron: '#8D949E',
+  /** HC19, HC29: magnetic field lines; a dashed Gaussian surface; the enclosed charge's shade. */
+  he2eField: '#0E8A7E',
+  he2eSurface: '#B45309',
+  he2eEnclosed: '#F2B8B8',
   satellitePanel: '#2B4C8C',
   /** HC2 skeletal structures: a lit functional group's band; O, N, S and halogen letters. */
   skeletalLit: '#FBBF24',
@@ -970,6 +974,10 @@ const dark: Palette = {
   physCartB: '#DD5357',
   physResistor: '#8A7A5C',
   physIron: '#626A75',
+  /** HC19, HC29: magnetic field lines; a dashed Gaussian surface; the enclosed charge's shade. */
+  he2eField: '#3CC3B4',
+  he2eSurface: '#F0A04B',
+  he2eEnclosed: '#6E2E2E',
   satellitePanel: '#3D5FA3',
   skeletalLit: '#F59E0B',
   skeletalO: '#FF8A80',

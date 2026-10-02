@@ -80,6 +80,7 @@ import { chemRateHe2kIssues, globeIssues } from './picturesHe2k';
 import { he1fIssues } from './picturesHe1f';
 import { he2bIssues } from './picturesHe2b';
 import { he2jIssues } from './picturesHe2j';
+import { he2eIssues, isHe2e } from './picturesHe2e';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -2310,6 +2311,10 @@ export function repIssues(
     case 'circularMotion':
     case 'freeBody':
       if (isHe2fSpec(rep)) return [...out, ...he2fIssues(rep, siOf(val, byId))]; // HC20, HC25, HC35
+      if (isHe2e(rep)) {
+        out.push(...he2eIssues(rep, siOf(val, byId)));
+        break;
+      } // HC19, HC29
       out.push(...hsk.hskIssues(rep, (id) => val(id), byId));
       out.push(...hs3aOptionIssues(rep, siOf(val, byId)));
       break;
