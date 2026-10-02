@@ -351,6 +351,7 @@ listed here once):
 
 ### Drawn parts placed
 
-| Page                                  | Entry | What it teaches                                                                                                            |
-| ------------------------------------- | ----- | -------------------------------------------------------------------------------------------------------------------------- |
-| `s.9.inheritance-patterns~codominant` | H35   | codominance in roan cattle: red, roan and white calves of 4 from the parents' Cᴿ counts, both colors showing (not a blend) |
+| Page                                  | Entry | What it teaches                                                                                                                                                   |
+| ------------------------------------- | ----- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `s.9.inheritance-patterns~codominant` | H35   | codominance in roan cattle: red, roan and white calves of 4 from the parents' Cᴿ counts, both colors showing (not a blend)                                        |
+| `s.9.biotechnology~deletion`          | H36   | a one-base deletion: the codon holding it and every codon after read in a shifted frame, L − 1 bases left and ⌊(L − 1) ÷ 3⌋ whole codons, so the end stop is lost |

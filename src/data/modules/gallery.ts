@@ -2152,6 +2152,7 @@ const RETIRED = new Set<string>([
   'g.s12-volcanoes-mountains-deformation',
   'g.s12-volcanoes-mountains-volcanoes',
   'g.s9-biomolecules-polymers',
+  'g.s9-biotechnology-deletion',
   'g.s9-biotechnology-gel',
   'g.s9-biotechnology-gel-map',
   'g.s9-biotechnology-gel-small',
