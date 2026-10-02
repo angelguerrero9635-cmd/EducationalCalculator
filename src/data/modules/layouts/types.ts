@@ -15,6 +15,7 @@ import type {
 import type { GalvanicScene } from '../typesHsj';
 import type { CondensedCard, HydrationScene } from '../typesHs2d';
 import type { SkeletalCard } from '../typesHe1c';
+import type { CodeTraceScene, He3dCard, He3dFigure } from '../typesHe3d';
 import type {
   CurrentsScene,
   GreenhouseScene,
@@ -199,6 +200,8 @@ export type CardFigure =
   | CondensedCard
   /** College HC2 (`typesHe1c.ts`): a line-angle structure, 112 × 76, a group lit. */
   | SkeletalCard
+  /** College round 3, group D (`typesHe3d.ts`): code on a code panel (HC48). */
+  | He3dCard
   /** One stage of DNA replication, old strands dark and new ones lit (H100, `typesHs2e.ts`). */
   | ReplicationCard
   /** Biology round 3 (H109, `typesHs3d.ts`): a reflex arc, one part lit. */
@@ -303,6 +306,8 @@ export type Figure =
   | Hs3cFigure
   /** Biology round 3, group H3D (`typesHs3d.ts`): a gel of fixed samples. */
   | Hs3dFigure
+  /** College round 3, group D (`typesHe3d.ts`): a code trace (HC48). */
+  | He3dFigure
   /**
    * A thing made of named parts, each with its job; a scene highlights one part. With a
    * `drawing` (`layouts/partsDrawings.tsx`), the thing is drawn, every part labeled and the
@@ -584,6 +589,8 @@ export interface Scene {
   gel?: GelScene;
   /** The part lit and the impulse so far (a `reflexArc` figure; `typesHs3d.ts`). */
   reflex?: ReflexScene;
+  /** The line lit, the variables table and the test (a `codeTrace` figure; `typesHe3d.ts`). */
+  trace?: CodeTraceScene;
   /** The flashes, as "● ● ●" with "—" for a long one (a `flashes` figure). */
   flashes?: string;
   /**

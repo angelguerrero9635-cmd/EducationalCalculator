@@ -44,6 +44,7 @@ import { MacroFigure } from './macroFigure';
 import { OrganelleFigure } from './organelleFigure';
 import { GelFigure } from './gelFigure';
 import { ReflexArcFigure } from './reflexArcFigure';
+import { CodeTraceFigureView } from './codeTraceFigure';
 
 /**
  * A picture with a few scenes to switch between: tap a scene, the figure changes, and the
@@ -224,6 +225,8 @@ function FigureView({
       return <GelFigure figure={figure} scene={scene.gel ?? {}} />;
     case 'reflexArc':
       return <ReflexArcFigure scene={scene.reflex ?? {}} />;
+    case 'codeTrace':
+      return <CodeTraceFigureView figure={figure} scene={scene.trace ?? { rows: [] }} />;
   }
 }
 

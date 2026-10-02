@@ -16,6 +16,7 @@ import { galvanicFigureIssues } from './layoutFiguresHsj';
 import { hslFigureIssues } from './layoutFiguresHsl';
 import { hs2dFigureIssues } from './layoutFiguresHs2d';
 import { skeletalCardIssues } from './picturesHe1c';
+import { he3dFigureIssues } from './picturesHe3d';
 import { hs2fFigureIssues } from './layoutFiguresHs2f';
 import { hs3cFigureIssues } from './layoutFiguresHs3c';
 
@@ -98,6 +99,7 @@ export function layoutFigureIssues(l: LayoutDef): string[] {
   out.push(...hslFigureIssues(l));
   out.push(...hs2dFigureIssues(l));
   out.push(...skeletalCardIssues(l));
+  out.push(...he3dFigureIssues(l));
   out.push(...hs2fFigureIssues(l));
   out.push(...hs3cFigureIssues(l));
   if (l.kind === 'sort' && l.header?.kind === 'offspring') {

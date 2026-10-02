@@ -68,6 +68,14 @@ const light = {
   bandFill: '#0EA5E9',
   /** An upright boundary x = k on a line system (H92), beside its two lines. */
   lineUpright: '#BE185D',
+  /** HC48–HC51 (group 3D): a code trace's lit line and its edge; four tasks' slices; a miss. */
+  codeLit: '#FEF3C7',
+  codeLitEdge: '#D97706',
+  schedTask1: '#C7D2FE',
+  schedTask2: '#FDE68A',
+  schedTask3: '#A7F3D0',
+  schedTask4: '#FBCFE8',
+  schedMiss: '#B42318',
   /** The sunlit half of a globe or moon (lighter than the night half in both themes). */
   chartDay: '#E4E7F0',
   /** The night half of a globe or moon. */
@@ -658,6 +666,13 @@ const dark: Palette = {
   tangentLine: '#22D3EE',
   bandFill: '#38BDF8',
   lineUpright: '#F472B6',
+  codeLit: '#4A3A10',
+  codeLitEdge: '#FBBF24',
+  schedTask1: '#3730A3',
+  schedTask2: '#78591A',
+  schedTask3: '#11664F',
+  schedTask4: '#7A2456',
+  schedMiss: '#FF8A80',
   chartDay: '#4A5068',
   chartNight: '#0B0C10',
   globeSea: '#1F3A55',
