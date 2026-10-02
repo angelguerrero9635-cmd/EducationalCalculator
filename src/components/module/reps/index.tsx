@@ -199,6 +199,7 @@ import { Wing } from './Wing';
 import { Duct } from './Duct';
 import { SupersonicFlow } from './SupersonicFlow';
 import { FieldPlot } from './FieldPlot';
+import { SurfacePlot } from './SurfacePlot';
 import { ThermalWall } from './ThermalWall';
 import { PropertyDiagram } from './PropertyDiagram';
 import { MotionGraphHs } from './MotionGraphHs';
@@ -383,6 +384,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <SupersonicFlow spec={spec} calc={calc} />;
     case 'fieldPlot':
       return <FieldPlot spec={spec} calc={calc} />;
+    case 'surfacePlot':
+      return <SurfacePlot spec={spec} calc={calc} />; // HC46
     case 'thermalWall':
       return <ThermalWall spec={spec} calc={calc} />;
     case 'propertyDiagram':

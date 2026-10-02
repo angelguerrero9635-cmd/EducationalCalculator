@@ -9,7 +9,9 @@ export function criticalOf(
   s: Surface,
   x0: number,
   y0: number,
-): { x: number; y: number; z: number; D: number; type: 'min' | 'max' | 'saddle' | 'flat' } | undefined {
+):
+  | { x: number; y: number; z: number; D: number; type: 'min' | 'max' | 'saddle' | 'flat' }
+  | undefined {
   let [x, y] = [x0, y0];
   for (let i = 0; i < 40; i++) {
     const [gx, gy] = [s.fx(x, y), s.fy(x, y)];
@@ -22,7 +24,8 @@ export function criticalOf(
     y -= dy;
     if (Math.hypot(dx, dy) < 1e-12 * Math.max(1, Math.hypot(x, y))) break;
   }
-  if (Math.hypot(s.fx(x, y), s.fy(x, y)) > 1e-7 * Math.max(1, Math.abs(s.f(x, y)))) return undefined;
+  if (Math.hypot(s.fx(x, y), s.fy(x, y)) > 1e-7 * Math.max(1, Math.abs(s.f(x, y))))
+    return undefined;
   const D = s.fxx(x, y) * s.fyy(x, y) - s.fxy(x, y) ** 2;
   const type = Math.abs(D) < 1e-12 ? 'flat' : D < 0 ? 'saddle' : s.fxx(x, y) > 0 ? 'min' : 'max';
   return { x, y, z: s.f(x, y), D, type };

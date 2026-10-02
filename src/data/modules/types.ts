@@ -38,6 +38,7 @@ import type { He2bSpec } from './typesHe2b';
 import type { GlobeSpec } from './typesHe2k';
 import type { He2jSpec } from './typesHe2j';
 import type { FieldPlotSpec } from './typesHe2g';
+import type { He3bSpec } from './typesHe3b';
 import type { CardIcon } from './layouts/types';
 import type { TreeChances, TwoWaySpec, VennChances } from './typesHse';
 import type { IntegerLineHs2a } from './typesHs2a';
@@ -1174,6 +1175,8 @@ export type Representation =
   | He2jSpec
   /** College round 2, group G (HC21): slope, vector and phase fields (`typesHe2g.ts`). */
   | FieldPlotSpec
+  /** College round 3, group B (HC46, HC65): surfaces and solids of revolution (`typesHe3b.ts`). */
+  | He3bSpec
   /** Grades 9–12 round 2 biology, group H2E (specs in `typesHs2e.ts`). */
   | Hs2eSpec
   | Hs3dSpec

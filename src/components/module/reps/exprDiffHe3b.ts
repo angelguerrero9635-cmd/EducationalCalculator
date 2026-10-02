@@ -59,11 +59,13 @@ const mul = (a: ExprNode, b: ExprNode): ExprNode =>
     ? num(0)
     : isNum(a, 1)
       ? b
-      : isNum(b, 1)
-        ? a
-        : a.t === 'num' && b.t === 'num'
-          ? num(a.v * b.v)
-          : { t: 'bin', op: '*', a, b };
+      : isNum(a, -1) && b.t !== 'num'
+        ? neg(b)
+        : isNum(b, 1)
+          ? a
+          : a.t === 'num' && b.t === 'num'
+            ? num(a.v * b.v)
+            : { t: 'bin', op: '*', a, b };
 const div = (a: ExprNode, b: ExprNode): ExprNode =>
   isNum(a, 0) ? num(0) : isNum(b, 1) ? a : { t: 'bin', op: '/', a, b };
 const pow = (a: ExprNode, b: ExprNode): ExprNode =>
@@ -263,5 +265,6 @@ export function formulaText(src: string, env: Record<string, number>, inputs: st
           : `^(${r.t})`
         : r.t,
     )
-    .join('');
+    .join('')
+    .replace(/(?<![A-Za-z])([a-z])·([a-z])(?![A-Za-z(])/g, '$1$2');
 }

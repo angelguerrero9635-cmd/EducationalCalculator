@@ -39,6 +39,7 @@ import { he2bSpecVars } from '../typesHe2b';
 import { globeVars } from '../typesHe2k';
 import { he2jSpecVars } from '../typesHe2j';
 import { fieldPlotVars } from '../typesHe2g';
+import { surfacePlotVars } from '../typesHe3b';
 import { he2cSpecVars } from '../typesHe2c';
 import { hskOptionVars, hskSpecVars } from '../typesHsk';
 import { he2fSpecVars, isHe2fSpec } from '../typesHe2f';
@@ -615,6 +616,8 @@ function representationVars(r: Representation): string[] {
       return he2jSpecVars(r);
     case 'fieldPlot':
       return fieldPlotVars(r); // HC21
+    case 'surfacePlot':
+      return surfacePlotVars(r); // HC46
     case 'propertyDiagram':
     case 'thermalWall':
       return he2cSpecVars(r);

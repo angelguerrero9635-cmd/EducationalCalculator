@@ -146,7 +146,14 @@ export function SubChip({
         fill={c.card}
         opacity={0.9}
       />
-      <ChartText x={left + tw / 2} y={y} textAnchor="middle" fontSize={size} fontWeight="700" fill={color}>
+      <ChartText
+        x={left + tw / 2}
+        y={y}
+        textAnchor="middle"
+        fontSize={size}
+        fontWeight="700"
+        fill={color}
+      >
         <Ital text={text} size={size} />
       </ChartText>
     </G>
@@ -209,7 +216,9 @@ export function labeler(W: number, H: number) {
       );
       const best = tries.reduce((a, b) => (b.score < a.score ? b : a));
       placed.push(best.box);
-      return <SubChip key={key} x={best.x} y={best.y} text={text} color={color} anchor={best.anchor} />;
+      return (
+        <SubChip key={key} x={best.x} y={best.y} text={text} color={color} anchor={best.anchor} />
+      );
     },
   };
 }
@@ -254,7 +263,9 @@ export function SpaceAxes({
   const O = P([0, 0, 0]);
   const seg = (a: V3, b: V3, key: string) => {
     const [p, q] = [P(a), P(b)];
-    return <Line key={key} x1={p.x} y1={p.y} x2={q.x} y2={q.y} stroke={c.chartGrid} strokeWidth={1} />;
+    return (
+      <Line key={key} x1={p.x} y1={p.y} x2={q.x} y2={q.y} stroke={c.chartGrid} strokeWidth={1} />
+    );
   };
   const floor: ReactElement[] = [];
   const [Lx, Ly] = [Ls[0]! - step, Ls[1]! - step];
@@ -279,13 +290,34 @@ export function SpaceAxes({
     last[i] = Ls[i]! - step;
     return (
       <G key={name}>
-        <Line x1={p.x} y1={p.y} x2={O.x} y2={O.y} stroke={c.chartMuted} strokeWidth={1} strokeDasharray={chart.dashFine} />
-        <Line x1={O.x} y1={O.y} x2={q.x} y2={q.y} stroke={c.chartInk} strokeWidth={chart.strokeLight} />
+        <Line
+          x1={p.x}
+          y1={p.y}
+          x2={O.x}
+          y2={O.y}
+          stroke={c.chartMuted}
+          strokeWidth={1}
+          strokeDasharray={chart.dashFine}
+        />
+        <Line
+          x1={O.x}
+          y1={O.y}
+          x2={q.x}
+          y2={q.y}
+          stroke={c.chartInk}
+          strokeWidth={chart.strokeLight}
+        />
         <Path d={arrowHead(q.x, q.y, q.x - O.x, q.y - O.y, 9)} fill={c.chartInk} />
         {ticks}
         {lab.label(q, tip, name, c.chartInk, `n${name}`)}
         {Ls[i]! - step > 0
-          ? lab.label(P(last), { x: tip.y, y: -tip.x }, short(Ls[i]! - step), c.chartMuted, `v${name}`)
+          ? lab.label(
+              P(last),
+              { x: tip.y, y: -tip.x },
+              short(Ls[i]! - step),
+              c.chartMuted,
+              `v${name}`,
+            )
           : null}
       </G>
     );

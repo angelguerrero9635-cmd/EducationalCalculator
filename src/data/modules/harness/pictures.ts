@@ -83,6 +83,7 @@ import { he2jIssues } from './picturesHe2j';
 import { he2eIssues, isHe2e } from './picturesHe2e';
 import { he2hIssues } from './picturesHe2h';
 import { fieldPlotIssues, he2gGraphIssues } from './picturesHe2g';
+import { surfacePlotIssues } from './picturesHe3b';
 import { he2cIssues } from './picturesHe2c';
 import type { ModuleDef, Representation } from '../types';
 
@@ -2356,6 +2357,9 @@ export function repIssues(
       break;
     case 'fieldPlot':
       out.push(...fieldPlotIssues(rep, val)); // HC21
+      break;
+    case 'surfacePlot':
+      out.push(...surfacePlotIssues(rep, val)); // HC46
       break;
     case 'bars':
       out.push(...barFlowIssues(rep, val));
