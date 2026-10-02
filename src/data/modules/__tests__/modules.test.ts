@@ -31,6 +31,7 @@ import { chemDiagramVars } from '../typesHs2d';
 import { hslSpecVars } from '../typesHsl';
 import { hs2fSpecVars } from '../typesHs2f';
 import { hs3cSpecVars } from '../typesHs3c';
+import { he1fSpecVars } from '../typesHe1f';
 import { hskOptionVars, hskSpecVars } from '../typesHsk';
 import { hs2cSpecVars } from '../typesHs2c';
 import { hs3aSpecVars } from '../typesHs3a';
@@ -571,6 +572,8 @@ function representationVars(r: Representation): string[] {
     case 'habitableZone':
     case 'parallax':
       return hs3cSpecVars(r);
+    case 'controlVolume':
+      return he1fSpecVars(r);
     case 'projectile':
     case 'induction':
     case 'charges':

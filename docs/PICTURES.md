@@ -116,6 +116,7 @@ search or the sitemap, but the module tests and the harness run over it):
 | `transit`          | a planet crossing its star to scale; the light curve dipping by δ     | Earth and space exoplanets (H110)   |
 | `habitableZone`    | a star's zone 0.95√L to 1.37√L AU, green; the planet at a with T      | Earth and space exoplanets (H110)   |
 | `parallax`         | Earth in January and July, a near star shifting on far stars; p, d    | Earth and space stars (H110)        |
+| `controlVolume`    | a unit or steel device in a control volume; streams, Q̇, Ẇ, in = out   | College balances, devices (HC5)     |
 | `projectile`       | a launch to scale: path, vₓ and v_y at three points, H and R; drag θ  | Physics 2D motion, parametric (H59) |
 | `freeBody`         | a block on a floor, ramp or rope; forces to scale, W sin θ; the net   | Physics forces, inclines (H60)      |
 | `circularMotion`   | v tangent, v²/r to the center; Gm₁m₂/r² pulls; Kepler ellipse, areas  | Physics circles, gravity (H61)      |

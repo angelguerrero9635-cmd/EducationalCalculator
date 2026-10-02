@@ -64,6 +64,7 @@ import * as hsk from './picturesHsk';
 import { gasEnergyIssues, hs2cIssues, siOf } from './picturesHs2c';
 import { hs3aIssues, hs3aOptionIssues } from './picturesHs3a';
 import { gasMixtureIssues } from './picturesHs3e';
+import { he1fIssues } from './picturesHe1f';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -2221,6 +2222,10 @@ export function repIssues(
     case 'habitableZone':
     case 'parallax':
       out.push(...hs3cIssues(rep, (id) => (val(id) ?? NaN) * (byId.get(id)?.unitFactor ?? 1)));
+      break;
+    case 'controlVolume':
+      // In formula units, as the picture draws them.
+      out.push(...he1fIssues(rep, (id) => (val(id) ?? NaN) * (byId.get(id)?.unitFactor ?? 1)));
       break;
     case 'projectile':
     case 'induction':

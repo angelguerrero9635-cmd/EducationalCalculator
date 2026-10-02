@@ -28,6 +28,7 @@ import type { Hs3cSpec } from './typesHs3c';
 import type { DopplerWave, HskSpec, StandingWave } from './typesHsk';
 import type { Hs2cSpec } from './typesHs2c';
 import type { Hs3aSpec } from './typesHs3a';
+import type { ControlVolumeSpec } from './typesHe1f';
 import type { CardIcon } from './layouts/types';
 import type { TreeChances, TwoWaySpec, VennChances } from './typesHse';
 import type { IntegerLineHs2a } from './typesHs2a';
@@ -1132,6 +1133,8 @@ export type Representation =
   | Hs2cSpec
   /** Grades 9–12 physics round 3, group H3A: torque, rotor, … (specs in typesHs3a.ts). */
   | Hs3aSpec
+  /** College round 1, group F: HC5 control volume (`typesHe1f.ts`). */
+  | ControlVolumeSpec
   /** Grades 9–12 round 2 biology, group H2E (specs in `typesHs2e.ts`). */
   | Hs2eSpec
   | Hs3dSpec

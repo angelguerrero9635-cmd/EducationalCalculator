@@ -428,6 +428,17 @@ const light = {
   h2eNerve: '#E8B923',
   h2eAntigenA: '#2E9E5B',
   h2eAntigenB: '#E08A1C',
+  /**
+   * College HC5 and HC13 (group F): a burner's flame and its core, activated sludge, a membrane
+   * sheet, an organic solvent layer; a blood vessel's wall and the blood in it.
+   */
+  cvFlame: '#F08A24',
+  cvFlameCore: '#FFD45C',
+  cvSludge: '#9C7A4E',
+  cvMembrane: '#3D8F7A',
+  cvSolvent: '#F3E3A0',
+  profileWall: '#E9A8A0',
+  profileBlood: '#C9393F',
   /** Chemistry (HS group I): a unit struck through when it cancels in a chain. */
   unitCancel: '#D9480F',
   /** Bohr models: protons, neutrons and electrons. */
@@ -793,6 +804,13 @@ const dark: Palette = {
   h2eNerve: '#F2CC4A',
   h2eAntigenA: '#4CC07A',
   h2eAntigenB: '#F2A64A',
+  cvFlame: '#F59A3C',
+  cvFlameCore: '#FFE08A',
+  cvSludge: '#7E6240',
+  cvMembrane: '#4FB39A',
+  cvSolvent: '#8C7C3A',
+  profileWall: '#9E5A55',
+  profileBlood: '#B83238',
   unitCancel: '#F08A4B',
   atomProton: '#D9573F',
   atomNeutron: '#7D8693',
