@@ -63,6 +63,7 @@ import { hs3bCenter, hs3bIssues, hs3bVal } from './picturesHs3b';
 import * as hsk from './picturesHsk';
 import { gasEnergyIssues, hs2cIssues, siOf } from './picturesHs2c';
 import { hs3aIssues, hs3aOptionIssues } from './picturesHs3a';
+import { sectionIssues } from './picturesHe1b';
 import { gasMixtureIssues } from './picturesHs3e';
 import type { ModuleDef, Representation } from '../types';
 
@@ -2246,6 +2247,9 @@ export function repIssues(
     case 'pendulum':
     case 'capacitor':
       out.push(...hs3aIssues(rep, siOf(val, byId)));
+      break;
+    case 'section':
+      out.push(...sectionIssues(rep, siOf(val, byId), byId));
       break;
     case 'bars':
       out.push(...barFlowIssues(rep, val));

@@ -180,6 +180,7 @@ import { MotionGraphHs } from './MotionGraphHs';
 import { HskView } from './HskView';
 import { Hs2cView } from './Hs2cView';
 import { Hs3aView } from './Hs3aView';
+import { Section } from './Section';
 import { EnergySpring } from './EnergySpring';
 import { WaveDoppler } from './WaveDoppler';
 import { CircuitMixed } from './CircuitMixed';
@@ -276,6 +277,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'pendulum':
     case 'capacitor':
       return <Hs3aView spec={spec} calc={calc} />;
+    case 'section':
+      return <Section spec={spec} calc={calc} />; // HC3
     case 'conicGraph':
       if (spec.conic === 'turned') return <ConicTurned spec={spec} calc={calc} />; // H106
       return <ConicGraph spec={spec} calc={calc} />;

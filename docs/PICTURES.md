@@ -129,6 +129,7 @@ search or the sitemap, but the module tests and the harness run over it):
 | `oscillator`       | spring and block by its x–t trace, ±A, v_max, ½kx² + ½mv²; hung       | Physics oscillations (H107)         |
 | `pendulum`         | a bob on L to a meter rule's scale, g named; T on a seconds strip     | Physics oscillations (H107)         |
 | `capacitor`        | plates ±Q on a battery, even field, κ slab; the Q–V line, ½CV²        | Physics potential (H107)            |
+| `section`          | a cross-section to scale: centroid, I; σ, τ blocks; RC bars, Whitney  | College mechanics, steel, RC (HC3)  |
 | `simpleMachine`    | lever, block and tackle or ramp to scale; load, effort and the MA     | Physics simple machines (H63)       |
 | `heatEngine`       | hot and cold reservoirs, Q_H = W + Q_L as bands; efficiency, Carnot   | Physics thermodynamics (H64)        |
 | `rayDiagram`       | lens, mirror: principal rays, image; Snell, total reflection; slits   | Physics optics, telescopes (H66)    |

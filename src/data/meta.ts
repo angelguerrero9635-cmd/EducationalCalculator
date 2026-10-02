@@ -169,6 +169,7 @@ const PICTURE_NAMES: Record<string, string> = {
   oscillator: 'a mass on a spring beside its x–t trace, or hung from one',
   pendulum: 'a pendulum of length L swinging: T = 2π√(L/g)',
   capacitor: 'a capacitor on a battery: ±Q, the field and ½CV²',
+  section: 'a cross-section to scale: centroid, axes and its stress block',
   conicGraph: 'circle, parabola, ellipse or hyperbola',
   polarGrid: 'polar grid with a point and a curve',
   complexPlane: 'complex number in the plane',
