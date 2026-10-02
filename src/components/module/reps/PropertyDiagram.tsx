@@ -275,6 +275,12 @@ function Plane({ spec, calc }: { spec: PropertyDiagramSpec; calc: Calculator }) 
       const cy = sy(spec.plane === 'Pv' ? WATER_CRIT.P / u.toMPa : K(WATER_CRIT.T, u.toK));
       parts.push(<Circle key="crit" cx={cx} cy={cy} r={4.5} fill={c.chartInk} />);
       place.dot(cx, cy, 5);
+      // Labels keep off the dome's lines too.
+      for (const [x, y] of [...domeLiquid, ...domeVapor]) {
+        if ((xa.log && x <= 0) || (ya.log && y <= 0)) continue;
+        const [px, py] = [sx(x), sy(y)];
+        if (inside(px, py)) place.dot(px, py, 2);
+      }
     }
 
     // Gas isobars across the plane.
@@ -360,6 +366,7 @@ function Plane({ spec, calc }: { spec: PropertyDiagramSpec; calc: Calculator }) 
       );
       place.dot(x0, y, 5);
       place.dot(x1, y, 5);
+      place.block({ x0, y0: y - 2, x1, y1: y + 2 });
     }
 
     // Steps: paths, then their q arrows.
@@ -502,13 +509,17 @@ function Plane({ spec, calc }: { spec: PropertyDiagramSpec; calc: Calculator }) 
         [4, -10, 'start'],
         [-8, -8, 'end'],
       ]);
-      const gl = place.place(sx(vg), y, gText, chart.label, [
-        [4, 20, 'start'],
-        [-4, 20, 'end'],
-        [6, -10, 'start'],
-        [8, 16, 'start'],
-        [-4, 36, 'end'],
-      ]);
+      // A state within a name's reach of v_g's end takes that room: the caption names v_g.
+      const gCrowded = short && dots.some((d) => Math.abs(d.y - y) < 4 && sx(vg) - d.x < 40);
+      const gl = gCrowded
+        ? undefined
+        : place.place(sx(vg), y, gText, chart.label, [
+            [4, 20, 'start'],
+            [-4, 20, 'end'],
+            [6, -10, 'start'],
+            [8, 16, 'start'],
+            [-4, 36, 'end'],
+          ]);
       parts.push(
         <G key="tieT">
           <ChartText {...lvl} fontSize={chart.label} fontWeight="700" halo>
@@ -517,9 +528,11 @@ function Plane({ spec, calc }: { spec: PropertyDiagramSpec; calc: Calculator }) 
           <ChartText {...fl} fontSize={chart.label} fill={c.chartHighlight} halo>
             {fText}
           </ChartText>
-          <ChartText {...gl} fontSize={chart.label} fill={c.chartHighlight} halo>
-            {gText}
-          </ChartText>
+          {gl ? (
+            <ChartText {...gl} fontSize={chart.label} fill={c.chartHighlight} halo>
+              {gText}
+            </ChartText>
+          ) : null}
         </G>,
       );
     }
@@ -552,6 +565,9 @@ function Plane({ spec, calc }: { spec: PropertyDiagramSpec; calc: Calculator }) 
         [8, -6, 'start'],
         [-8, -6, 'end'],
         [0, -10, 'middle'],
+        [8, -16, 'start'],
+        [-8, -16, 'end'],
+        [0, -22, 'middle'],
       ]);
       const mid = dome[Math.floor(dome.length * 0.35)]!;
       const yMid = spec.plane === 'Pv' ? mid.P / u.toMPa : K(mid.T, u.toK);
@@ -650,7 +666,8 @@ function Plane({ spec, calc }: { spec: PropertyDiagramSpec; calc: Calculator }) 
   const lines: string[] = [];
   const dir = (x: NumOrVar | undefined) =>
     typeof x === 'string' && rep.known(x) ? rep.value(x) : x === undefined ? '?' : read(x).text;
-  if (water) {
+  // A cycle's working fills the caption; the dome's own sentence is left to the plain pages.
+  if (water && !spec.cycle) {
     lines.push(
       `Water’s vapor dome on the ${spec.plane === 'Ts' ? 'T–s' : spec.plane === 'Tv' ? 'T–v' : 'P–v'} plane, from the IAPWS-IF97 saturation equations; it closes at the critical point, ${sig(K(WATER_CRIT.T, u.toK), 4)} ${u.T} and ${sig(WATER_CRIT.P / u.toMPa, 4)} ${u.P}.`,
     );
