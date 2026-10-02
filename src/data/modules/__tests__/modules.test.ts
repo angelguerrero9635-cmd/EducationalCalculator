@@ -620,7 +620,8 @@ function representationVars(r: Representation): string[] {
     case 'thermalWall':
       return he2cSpecVars(r);
     case 'heatExchanger':
-      return he3hSpecVars(r); // HC40
+    case 'shaft':
+      return he3hSpecVars(r); // HC40, HC59
     case 'projectile':
     case 'induction':
     case 'charges':

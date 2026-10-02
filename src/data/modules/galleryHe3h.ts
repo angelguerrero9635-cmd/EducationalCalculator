@@ -4,6 +4,9 @@
  *
  * HC40: `heatExchanger` (ME-P15, ACC-P35): counterflow and parallel flow by LMTD, the energy
  * balance, effectiveness–NTU, a process exchanger, and a close approach.
+ *
+ * HC59: `shaft` (ME-P6): a solid and a hollow shaft in torsion, sizing for power and speed,
+ * bending with torsion, and a long thin rod twisting tens of degrees.
  */
 import { formatNumber } from '@/engine/format';
 import type { Relation, Values, VariableDef } from '@/engine/types';
@@ -264,6 +267,7 @@ function lmtdDemo(o: {
     ),
     example: { Thi, Tho, Tci, Tco, dT1, dT2, lmtd, q: o.qkW, U: o.U, A },
     startWith: ['Thi', 'Tho', 'Tci', 'Tco', 'q', 'U'],
+    unitSystems: ['metric'],
     representation: {
       kind: 'heatExchanger',
       arrangement: o.arrangement,
@@ -411,6 +415,7 @@ const exchangerBalance: ModuleDef = {
     Tco: 50,
   },
   startWith: ['mh', 'cph', 'Thi', 'Tho', 'cpc', 'Tci', 'Tco'],
+  unitSystems: ['metric'],
   representation: {
     kind: 'heatExchanger',
     arrangement: 'counter',
@@ -536,6 +541,7 @@ const exchangerNtu: ModuleDef = {
     };
   })(),
   startWith: ['Thi', 'Tci', 'Cmin', 'Cr', 'UA'],
+  unitSystems: ['metric'],
   representation: {
     kind: 'heatExchanger',
     arrangement: 'counter',
@@ -553,6 +559,471 @@ const exchangerNtu: ModuleDef = {
   },
 };
 
+// ─── HC59: shafts in torsion and bending (mechanics-of-materials#2, machine-design#2) ──
+
+const SHAFT_ASSUMPTIONS = [
+  'A straight round shaft of one material, elastic (stresses under the yield strength).',
+  'Plane sections stay plane; the torque is the same all along the length.',
+];
+
+const torqueVar = (id = 'T', name = 'Torque') => q(id, 'T', name, 'N·m', 0.001, 1e7, 0.1);
+const mmVar = (id: string, symbol: string, name: string, min = 0.1) =>
+  q(id, symbol, name, 'mm', min, 1e5, 0.01);
+const mpaVar = (id: string, symbol: string, name: string) =>
+  q(id, symbol, name, 'MPa', 0.0001, 1e5, 0.01);
+
+/** J = π(d⁴ − d_i⁴) ÷ 32 (d_i left out when solid). */
+const polarRule = (d: string, di?: string) =>
+  di
+    ? rule(
+        'J = π(d⁴ − d_i⁴) ÷ 32',
+        `{J} = π × ({${d}}⁴ − {${di}}⁴) ÷ 32`,
+        ['J', d, di],
+        (v) => v.J! - (Math.PI * (v[d]! ** 4 - v[di]! ** 4)) / 32,
+        {
+          J: [
+            (v) => (Math.PI * (v[d]! ** 4 - v[di]! ** 4)) / 32,
+            `π × ({${d}}⁴ − {${di}}⁴) ÷ 32`,
+            'The polar moment of a ring: the whole disc’s less the bore’s.',
+          ],
+          [d]: [
+            (v) => fin(((32 * v.J!) / Math.PI + v[di]! ** 4) ** 0.25),
+            `(32 × {J} ÷ π + {${di}}⁴)^(1/4)`,
+            'Undo the ÷ 32 and the π, add the bore’s d_i⁴ back, then take the fourth root.',
+          ],
+          [di]: [
+            (v) => {
+              const x = v[d]! ** 4 - (32 * v.J!) / Math.PI;
+              return x > 0 ? x ** 0.25 : undefined;
+            },
+            `({${d}}⁴ − 32 × {J} ÷ π)^(1/4)`,
+            'Take the ring’s 32J ÷ π from d⁴, then the fourth root.',
+          ],
+        },
+      )
+    : rule(
+        'J = πd⁴ ÷ 32',
+        `{J} = π × {${d}}⁴ ÷ 32`,
+        ['J', d],
+        (v) => v.J! - (Math.PI * v[d]! ** 4) / 32,
+        {
+          J: [
+            (v) => (Math.PI * v[d]! ** 4) / 32,
+            `π × {${d}}⁴ ÷ 32`,
+            'The polar moment of a solid round section.',
+          ],
+          [d]: [
+            (v) => fin(((32 * v.J!) / Math.PI) ** 0.25),
+            '(32 × {J} ÷ π)^(1/4)',
+            'Undo the ÷ 32 and the π, then take the fourth root.',
+          ],
+        },
+      );
+
+/** τ = T(d ÷ 2) ÷ J, T in N·m (× 1,000 to N·mm), d in mm, J in mm⁴, τ in MPa. */
+const torsionRule = (tau: string, T: string, d: string) =>
+  rule(
+    'τ_max = Tc ÷ J',
+    `{${tau}} = {${T}} × 1,000 × ({${d}} ÷ 2) ÷ {J}`,
+    [tau, T, d, 'J'],
+    (v) => v[tau]! * v.J! - v[T]! * 1000 * (v[d]! / 2),
+    {
+      [tau]: [
+        (v) => div(v[T]! * 1000 * (v[d]! / 2), v.J!),
+        `{${T}} × 1,000 × ({${d}} ÷ 2) ÷ {J}`,
+        'Shear grows with the radius, so it is largest at the surface, c = d ÷ 2; × 1,000 turns N·m into N·mm, giving MPa.',
+      ],
+      [T]: [
+        (v) => div(v[tau]! * v.J!, 1000 * (v[d]! / 2)),
+        `{${tau}} × {J} ÷ (1,000 × ({${d}} ÷ 2))`,
+        'Turn the rule round: τJ ÷ c is the torque in N·mm; ÷ 1,000 gives N·m.',
+      ],
+      J: [
+        (v) => div(v[T]! * 1000 * (v[d]! / 2), v[tau]!),
+        `{${T}} × 1,000 × ({${d}} ÷ 2) ÷ {${tau}}`,
+        'Turn the rule round: J = Tc ÷ τ.',
+      ],
+    },
+  );
+
+/** φ = TL ÷ GJ: T × 1,000 (N·mm) and G × 1,000 (MPa) cancel. */
+const twistRule = (T: string) =>
+  rule(
+    'φ = TL ÷ GJ',
+    `{phi} = {${T}} × {L} ÷ ({G} × {J})`,
+    ['phi', T, 'L', 'G', 'J'],
+    (v) => v.phi! * v.G! * v.J! - v[T]! * v.L!,
+    {
+      phi: [
+        (v) => div(v[T]! * v.L!, v.G! * v.J!),
+        `{${T}} × {L} ÷ ({G} × {J})`,
+        'The twist grows with torque and length and falls with stiffness GJ; the × 1,000 for N·mm and the × 1,000 for GPa cancel.',
+      ],
+      [T]: [
+        (v) => div(v.phi! * v.G! * v.J!, v.L!),
+        '{phi} × {G} × {J} ÷ {L}',
+        'Turn the rule round: T = φGJ ÷ L.',
+      ],
+      L: [
+        (v) => div(v.phi! * v.G! * v.J!, v[T]!),
+        '{phi} × {G} × {J} ÷ {T}',
+        'Turn the rule round: L = φGJ ÷ T.',
+      ],
+      G: [
+        (v) => div(v[T]! * v.L!, v.phi! * v.J!),
+        '{T} × {L} ÷ ({phi} × {J})',
+        'Turn the rule round: G = TL ÷ φJ.',
+      ],
+      J: [
+        (v) => div(v[T]! * v.L!, v.phi! * v.G!),
+        '{T} × {L} ÷ ({phi} × {G})',
+        'Turn the rule round: J = TL ÷ φG.',
+      ],
+    },
+  );
+
+const degRule = rule(
+  'φ° = φ × 180 ÷ π',
+  '{phiDeg} = {phi} × 180 ÷ π',
+  ['phiDeg', 'phi'],
+  (v) => v.phiDeg! - (v.phi! * 180) / Math.PI,
+  {
+    phiDeg: [(v) => (v.phi! * 180) / Math.PI, '{phi} × 180 ÷ π', 'A radian is 180 ÷ π degrees.'],
+    phi: [(v) => (v.phiDeg! * Math.PI) / 180, '{phiDeg} × π ÷ 180', 'A degree is π ÷ 180 radians.'],
+  },
+);
+
+const twistVars = (): VariableDef[] => [
+  mmVar('L', 'L', 'Length'),
+  q('G', 'G', 'Shear modulus', 'GPa', 0.01, 1000, 0.1),
+  q('J', 'J', 'Polar moment of area', 'mm⁴', 0.0001, 1e14, 0.1),
+  mpaVar('tau', 'τ_max', 'Largest shear stress'),
+  q('phi', 'φ', 'Angle of twist', 'rad', 0.000001, 10, 0.0001),
+  q('phiDeg', 'φ°', 'Angle of twist in degrees', '°', 0.0001, 600, 0.01),
+];
+
+function solidShaft(o: {
+  id: string;
+  title: string;
+  use: string;
+  T: number;
+  d: number;
+  L: number;
+  G: number;
+}): ModuleDef {
+  const J = (Math.PI * o.d ** 4) / 32;
+  const tau = (o.T * 1000 * (o.d / 2)) / J;
+  const phi = (o.T * o.L) / (o.G * J);
+  return {
+    id: o.id,
+    title: o.title,
+    use: o.use,
+    assumptions: SHAFT_ASSUMPTIONS,
+    variables: [torqueVar(), mmVar('d', 'd', 'Diameter'), ...twistVars()],
+    ...rules(polarRule('d'), torsionRule('tau', 'T', 'd'), twistRule('T'), degRule),
+    example: { T: o.T, d: o.d, L: o.L, G: o.G, J, tau, phi, phiDeg: (phi * 180) / Math.PI },
+    startWith: ['T', 'd', 'L', 'G'],
+    unitSystems: ['metric'],
+    representation: {
+      kind: 'shaft',
+      d: 'd',
+      length: 'L',
+      torque: 'T',
+      G: 'G',
+      J: 'J',
+      tau: 'tau',
+      angle: 'phi',
+      more: ['phiDeg'],
+    },
+  };
+}
+
+const shaftSolid = solidShaft({
+  id: 'g.he-shaft-solid',
+  title: 'A solid steel shaft: the largest shear and the twist',
+  use: 'Use this for the largest shear stress and the angle of twist of a solid shaft under a torque.',
+  T: 2000,
+  d: 50,
+  L: 1500,
+  G: 77,
+});
+
+const shaftLong = solidShaft({
+  id: 'g.he-shaft-long',
+  title: 'A long thin rod: a twist big enough to see',
+  use: 'Use this for a long, slender torsion rod whose twist is tens of degrees.',
+  T: 20,
+  d: 10,
+  L: 2000,
+  G: 77,
+});
+
+const shaftHollow: ModuleDef = (() => {
+  const [T, d, di, L, G] = [2000, 60, 40, 1500, 77];
+  const J = (Math.PI * (d ** 4 - di ** 4)) / 32;
+  const tau = (T * 1000 * (d / 2)) / J;
+  const phi = (T * L) / (G * J);
+  return {
+    id: 'g.he-shaft-hollow',
+    title: 'A hollow shaft: less steel, nearly the same strength',
+    use: 'Use this for the shear stress and twist of a hollow (tube) shaft.',
+    assumptions: SHAFT_ASSUMPTIONS,
+    variables: [
+      torqueVar(),
+      mmVar('d', 'd_o', 'Outer diameter'),
+      mmVar('di', 'd_i', 'Inner diameter (the bore)', 0.01),
+      ...twistVars(),
+    ],
+    ...rules(
+      polarRule('d', 'di'),
+      torsionRule('tau', 'T', 'd'),
+      twistRule('T'),
+      degRule,
+      atMost('di', 'd', '{di} ≤ {d}', 'The bore must be narrower than the shaft.'),
+    ),
+    example: { T, d, di, L, G, J, tau, phi, phiDeg: (phi * 180) / Math.PI },
+    startWith: ['T', 'd', 'di', 'L', 'G'],
+    unitSystems: ['metric'],
+    representation: {
+      kind: 'shaft',
+      d: 'd',
+      di: 'di',
+      length: 'L',
+      torque: 'T',
+      G: 'G',
+      J: 'J',
+      tau: 'tau',
+      angle: 'phi',
+      more: ['phiDeg'],
+    },
+  };
+})();
+
+const shaftPower: ModuleDef = (() => {
+  const [P, n, tauA] = [30, 1200, 60];
+  const w = (2 * Math.PI * n) / 60;
+  const T = (P * 1000) / w;
+  const d = ((16 * T * 1000) / (Math.PI * tauA)) ** (1 / 3);
+  return {
+    id: 'g.he-shaft-power',
+    title: 'Sizing a shaft for a power and a speed',
+    use: 'Use this for “Size a solid shaft to carry 30 kW at 1200 rpm with 60 MPa allowed.”',
+    assumptions: [...SHAFT_ASSUMPTIONS, 'Steady power; the shaft is sized on shear alone.'],
+    variables: [
+      q('P', 'P', 'Power', 'kW', 0.0001, 1e6, 0.01),
+      q('n', 'n', 'Speed', 'rpm', 0.01, 1e6, 1),
+      q('w', 'ω', 'Angular speed', 'rad/s', 0.001, 1e6, 0.01),
+      torqueVar(),
+      mpaVar('tauA', 'τ_allow', 'Allowed shear stress'),
+      mmVar('d', 'd', 'Diameter needed', 0.01),
+    ],
+    ...rules(
+      rule(
+        'ω = 2πn ÷ 60',
+        '{w} = 2π × {n} ÷ 60',
+        ['w', 'n'],
+        (v) => v.w! - (2 * Math.PI * v.n!) / 60,
+        {
+          w: [
+            (v) => (2 * Math.PI * v.n!) / 60,
+            '2π × {n} ÷ 60',
+            'Each turn is 2π radians, and a minute is 60 s.',
+          ],
+          n: [
+            (v) => (v.w! * 60) / (2 * Math.PI),
+            '{w} × 60 ÷ (2π)',
+            'Turn radians per second into turns per minute.',
+          ],
+        },
+      ),
+      rule(
+        'T = P ÷ ω',
+        '{T} = {P} × 1,000 ÷ {w}',
+        ['T', 'P', 'w'],
+        (v) => v.T! * v.w! - v.P! * 1000,
+        {
+          T: [
+            (v) => div(v.P! * 1000, v.w!),
+            '{P} × 1,000 ÷ {w}',
+            'Power is torque times angular speed; × 1,000 turns kW into W.',
+          ],
+          P: [
+            (v) => (v.T! * v.w!) / 1000,
+            '{T} × {w} ÷ 1,000',
+            'Power is torque times angular speed; ÷ 1,000 gives kW.',
+          ],
+          w: [
+            (v) => div(v.P! * 1000, v.T!),
+            '{P} × 1,000 ÷ {T}',
+            'Divide the power in W by the torque.',
+          ],
+        },
+      ),
+      rule(
+        'd = (16T ÷ πτ_allow)^(1/3)',
+        '{d} = (16 × {T} × 1,000 ÷ (π × {tauA}))^(1/3)',
+        ['d', 'T', 'tauA'],
+        (v) => v.d! ** 3 * Math.PI * v.tauA! - 16 * v.T! * 1000,
+        {
+          d: [
+            (v) => fin(((16 * v.T! * 1000) / (Math.PI * v.tauA!)) ** (1 / 3)),
+            '(16 × {T} × 1,000 ÷ (π × {tauA}))^(1/3)',
+            'Set τ_max = 16T ÷ πd³ to the allowed stress and solve for d; × 1,000 turns N·m into N·mm.',
+          ],
+          T: [
+            (v) => (Math.PI * v.tauA! * v.d! ** 3) / 16000,
+            'π × {tauA} × {d}³ ÷ 16,000',
+            'The torque this shaft carries at the allowed stress, in N·m.',
+          ],
+          tauA: [
+            (v) => div(16 * v.T! * 1000, Math.PI * v.d! ** 3),
+            '16 × {T} × 1,000 ÷ (π × {d}³)',
+            'The largest shear stress in this shaft: 16T ÷ πd³.',
+          ],
+        },
+      ),
+    ),
+    example: { P, n, w, T, tauA, d },
+    startWith: ['P', 'n', 'tauA'],
+    unitSystems: ['metric'],
+    representation: {
+      kind: 'shaft',
+      d: 'd',
+      torque: 'T',
+      tau: 'tauA',
+      power: 'P',
+      speed: 'n',
+      more: ['w'],
+    },
+  };
+})();
+
+const shaftBending: ModuleDef = (() => {
+  const [d, M, T, Sy] = [40, 400, 600, 420];
+  const sigma = (32 * M * 1000) / (Math.PI * d ** 3);
+  const tau = (16 * T * 1000) / (Math.PI * d ** 3);
+  const sv = Math.sqrt(sigma ** 2 + 3 * tau ** 2);
+  return {
+    id: 'g.he-shaft-bending',
+    title: 'A shaft in bending and torsion: the factor of safety',
+    use: 'Use this for the von Mises factor of safety of a shaft carrying a bending moment and a torque.',
+    assumptions: [
+      ...SHAFT_ASSUMPTIONS,
+      'Static loads (no fatigue); the stress element at the surface.',
+    ],
+    variables: [
+      mmVar('d', 'd', 'Diameter'),
+      q('M', 'M', 'Bending moment', 'N·m', 0.001, 1e7, 0.1),
+      torqueVar(),
+      mpaVar('sigma', 'σ', 'Bending stress at the surface'),
+      mpaVar('tau', 'τ', 'Torsion shear stress at the surface'),
+      mpaVar('sv', 'σ′', 'Von Mises stress'),
+      mpaVar('Sy', 'S_y', 'Yield strength'),
+      q('n', 'n', 'Factor of safety', undefined, 0.0001, 1e6, 0.01),
+    ],
+    ...rules(
+      rule(
+        'σ = 32M ÷ πd³',
+        '{sigma} = 32 × {M} × 1,000 ÷ (π × {d}³)',
+        ['sigma', 'M', 'd'],
+        (v) => v.sigma! * Math.PI * v.d! ** 3 - 32000 * v.M!,
+        {
+          sigma: [
+            (v) => (32000 * v.M!) / (Math.PI * v.d! ** 3),
+            '32 × {M} × 1,000 ÷ (π × {d}³)',
+            'Bending stress at the surface, Mc ÷ I for a round section; × 1,000 turns N·m into N·mm.',
+          ],
+          M: [
+            (v) => (v.sigma! * Math.PI * v.d! ** 3) / 32000,
+            '{sigma} × π × {d}³ ÷ 32,000',
+            'Turn the rule round for the moment, in N·m.',
+          ],
+          d: [
+            (v) => fin(((32000 * v.M!) / (Math.PI * v.sigma!)) ** (1 / 3)),
+            '(32 × {M} × 1,000 ÷ (π × {sigma}))^(1/3)',
+            'Turn the rule round and take the cube root.',
+          ],
+        },
+      ),
+      rule(
+        'τ = 16T ÷ πd³',
+        '{tau} = 16 × {T} × 1,000 ÷ (π × {d}³)',
+        ['tau', 'T', 'd'],
+        (v) => v.tau! * Math.PI * v.d! ** 3 - 16000 * v.T!,
+        {
+          tau: [
+            (v) => (16000 * v.T!) / (Math.PI * v.d! ** 3),
+            '16 × {T} × 1,000 ÷ (π × {d}³)',
+            'Torsion shear at the surface; × 1,000 turns N·m into N·mm.',
+          ],
+          T: [
+            (v) => (v.tau! * Math.PI * v.d! ** 3) / 16000,
+            '{tau} × π × {d}³ ÷ 16,000',
+            'Turn the rule round for the torque, in N·m.',
+          ],
+          d: [
+            (v) => fin(((16000 * v.T!) / (Math.PI * v.tau!)) ** (1 / 3)),
+            '(16 × {T} × 1,000 ÷ (π × {tau}))^(1/3)',
+            'Turn the rule round and take the cube root.',
+          ],
+        },
+      ),
+      rule(
+        'σ′ = √(σ² + 3τ²)',
+        '{sv} = √({sigma}² + 3 × {tau}²)',
+        ['sv', 'sigma', 'tau'],
+        (v) => v.sv! ** 2 - v.sigma! ** 2 - 3 * v.tau! ** 2,
+        {
+          sv: [
+            (v) => Math.sqrt(v.sigma! ** 2 + 3 * v.tau! ** 2),
+            '√({sigma}² + 3 × {tau}²)',
+            'Von Mises joins the two stresses into one to compare with S_y.',
+          ],
+          sigma: [
+            (v) => {
+              const x = v.sv! ** 2 - 3 * v.tau! ** 2;
+              return x >= 0 ? Math.sqrt(x) : undefined;
+            },
+            '√({sv}² − 3 × {tau}²)',
+            'Take 3τ² from σ′², then the square root.',
+          ],
+          tau: [
+            (v) => {
+              const x = (v.sv! ** 2 - v.sigma! ** 2) / 3;
+              return x >= 0 ? Math.sqrt(x) : undefined;
+            },
+            '√(({sv}² − {sigma}²) ÷ 3)',
+            'Take σ² from σ′², divide by 3, then the square root.',
+          ],
+        },
+      ),
+      rule('n = S_y ÷ σ′', '{n} = {Sy} ÷ {sv}', ['n', 'Sy', 'sv'], (v) => v.n! * v.sv! - v.Sy!, {
+        n: [
+          (v) => div(v.Sy!, v.sv!),
+          '{Sy} ÷ {sv}',
+          'How many times the stress the material can take before it yields.',
+        ],
+        Sy: [(v) => v.n! * v.sv!, '{n} × {sv}', 'Multiply σ′ by n.'],
+        sv: [(v) => div(v.Sy!, v.n!), '{Sy} ÷ {n}', 'Divide S_y by n.'],
+      }),
+    ),
+    example: { d, M, T, sigma, tau, sv, Sy, n: Sy / sv },
+    startWith: ['d', 'M', 'T', 'Sy'],
+    unitSystems: ['metric'],
+    representation: {
+      kind: 'shaft',
+      d: 'd',
+      torque: 'T',
+      moment: 'M',
+      sigma: 'sigma',
+      tau: 'tau',
+      vonMises: 'sv',
+      n: 'n',
+      more: ['Sy'],
+    },
+  };
+})();
+
 export const HE3H_GALLERY_MODULES: ModuleDef[] = [
   exchangerCounter,
   exchangerParallel,
@@ -560,6 +1031,11 @@ export const HE3H_GALLERY_MODULES: ModuleDef[] = [
   exchangerNtu,
   exchangerProcess,
   exchangerClose,
+  shaftSolid,
+  shaftHollow,
+  shaftPower,
+  shaftBending,
+  shaftLong,
 ];
 
 export const HE3H_GALLERY_LAYOUTS: LayoutDef[] = [];

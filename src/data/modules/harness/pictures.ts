@@ -2316,7 +2316,8 @@ export function repIssues(
       out.push(...he2cIssues(rep, (id) => (val(id) ?? NaN) * (byId.get(id)?.unitFactor ?? 1)));
       break;
     case 'heatExchanger':
-      out.push(...he3hIssues(rep, val, byId)); // HC40
+    case 'shaft':
+      out.push(...he3hIssues(rep, val, byId)); // HC40, HC59
       break;
     case 'projectile':
     case 'induction':

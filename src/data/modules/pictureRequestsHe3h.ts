@@ -57,4 +57,32 @@ export const HE3H_REQUESTS: PictureRequest[] = [
       'g.he-heatExchanger-counter-close',
     ],
   },
+  {
+    ...ask(
+      'HC59',
+      'shaft',
+      'A painted steel shaft with T at both ends as curved arrows and a scribed line twisting by φ; the end face with τ growing from the centre (from the bore when hollow); the end view with φ to scale, the speed on a power page, or with bending the moment M and the stress element at the surface with σ and τ',
+      [
+        `${E}mechanics-of-materials#2`,
+        `${E}mechanics-of-materials#2~hollow`,
+        `${E}mechanics-of-materials#2~power`,
+        `${E}machine-design#2`,
+      ],
+      [
+        'From ME-P6. A new kind (typesHe3h.ts, reps/Shaft.tsx, the sums in reps/shaftMath.ts).',
+        "Fields: { kind: 'shaft', d, di? (mm; hollow when given), length? (mm), torque? (N·m), G? (GPa), J? (mm⁴), tau? (MPa), angle? (rad or ° by unit), moment? (N·m; draws bending and the element), sigma?, vonMises?, n?, power? (W or kW), speed? (rpm), tauAllow?, more? }. Each variable is read in its own unit (N·mm, kN·m, m, MPa, Pa … turned into N·m, mm, GPa, MPa); a fixed number is in those units.",
+        "Example (mechanics-of-materials#2): { kind: 'shaft', d: 'd', length: 'L', torque: 'T', G: 'G', J: 'J', tau: 'tau', angle: 'phi', more: ['phiDeg'] }. ~hollow: add di: 'di'. ~power: { d: 'd', torque: 'T', tau: 'tauA', power: 'P', speed: 'n', more: ['w'] }. machine-design#2: { d: 'd', torque: 'T', moment: 'M', sigma: 'sigma', tau: 'tau', vonMises: 'sv', n: 'n', more: ['Sy'] }.",
+        'Draws: diameter and length not to one scale (said); the scribed line turns by φ, drawn ×2, ×5, ×10 … on the side when φ is under 20° (said), the end view gives φ to scale with its arc; τ arrows along a radius in proportion to r, from τ_max (d_i ÷ d) at the bore when hollow; the bending element with σ arrows out and the shear pairs. The caption gives J, τ_max = 16T ÷ πd³ (or Tc ÷ J), φ = TL ÷ GJ in rad and degrees, ω = 2πn ÷ 60, σ and σ′.',
+        'The harness (harness/picturesHe3h.ts) checks: d_i under d; J of the section; τ_max = Tc ÷ J (16T ÷ πd³ solid); φ = TL ÷ GJ; σ = 32M ÷ πd³; σ′ = √(σ² + 3τ²); T = P ÷ ω.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-shaft-solid',
+      'g.he-shaft-hollow',
+      'g.he-shaft-power',
+      'g.he-shaft-bending',
+      'g.he-shaft-long',
+    ],
+  },
 ];

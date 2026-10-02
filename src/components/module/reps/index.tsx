@@ -201,6 +201,7 @@ import { SupersonicFlow } from './SupersonicFlow';
 import { FieldPlot } from './FieldPlot';
 import { ThermalWall } from './ThermalWall';
 import { HeatExchanger } from './HeatExchanger';
+import { Shaft } from './Shaft';
 import { PropertyDiagram } from './PropertyDiagram';
 import { MotionGraphHs } from './MotionGraphHs';
 import { HskView } from './HskView';
@@ -388,6 +389,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <ThermalWall spec={spec} calc={calc} />;
     case 'heatExchanger':
       return <HeatExchanger spec={spec} calc={calc} />; // HC40
+    case 'shaft':
+      return <Shaft spec={spec} calc={calc} />; // HC59
     case 'propertyDiagram':
       return <PropertyDiagram spec={spec} calc={calc} />;
     case 'linearFunction':

@@ -12,7 +12,16 @@ import {
   type Temps,
 } from '@/components/module/reps/heatExchangerMath';
 
-import type { HeatExchangerSpec, He3hSpec } from '../typesHe3h';
+import {
+  polarJ,
+  sigmaBend,
+  tauMax,
+  torqueOf,
+  twist,
+  vonMises,
+} from '@/components/module/reps/shaftMath';
+
+import type { HeatExchangerSpec, He3hSpec, ShaftSpec } from '../typesHe3h';
 
 type Val = (x: string | number) => number | undefined;
 type NumOrVar = number | string | undefined;
@@ -30,6 +39,8 @@ export function he3hIssues(rep: He3hSpec, val: Val, byId: Map<string, VariableDe
   switch (rep.kind) {
     case 'heatExchanger':
       return exchangerIssues(rep, get);
+    case 'shaft':
+      return shaftIssues(rep, get);
   }
   return [];
 }
@@ -76,5 +87,50 @@ function exchangerIssues(spec: HeatExchangerSpec, get: Get): string[] {
   }
   if (spec.arrangement === 'parallel' && Tco > Tho + 1e-9)
     out.push('the lines cross in parallel flow');
+  return out;
+}
+
+function shaftIssues(spec: ShaftSpec, get: Get): string[] {
+  const out: string[] = [];
+  const d = get(spec.d, 'length');
+  const di = get(spec.di, 'length') ?? 0;
+  if (d === undefined) return out;
+  if (di >= d) return [`the bore ${di} is not narrower than the shaft ${d}`];
+  const P = get(spec.power, 'power');
+  const rpm = get(spec.speed);
+  const T = get(spec.torque, 'torque');
+  const J = get(spec.J);
+  const tau = get(spec.tau, 'stress');
+  const phi = get(spec.angle, 'angle');
+  const [L, G, M] = [
+    get(spec.length, 'length'),
+    get(spec.G, 'modulus'),
+    get(spec.moment, 'torque'),
+  ];
+  const sigma = get(spec.sigma, 'stress');
+  if (J !== undefined && !near(J, polarJ(d, di)))
+    out.push(`J ${J} is not the ${polarJ(d, di)} of the section`);
+  if (T !== undefined && tau !== undefined && !near(tau, tauMax(T, d, di)))
+    out.push(`τ_max ${tau} is not 16T ÷ πd³ (Tc ÷ J) = ${tauMax(T, d, di)}`);
+  if (
+    T !== undefined &&
+    L !== undefined &&
+    G !== undefined &&
+    phi !== undefined &&
+    !near(phi, twist(T, L, G, d, di))
+  )
+    out.push(`φ ${phi} is not TL ÷ GJ = ${twist(T, L, G, d, di)}`);
+  if (M !== undefined && sigma !== undefined && !near(sigma, sigmaBend(M, d, di)))
+    out.push(`σ ${sigma} is not 32M ÷ πd³ = ${sigmaBend(M, d, di)}`);
+  const sv = get(spec.vonMises, 'stress');
+  if (
+    sv !== undefined &&
+    sigma !== undefined &&
+    tau !== undefined &&
+    !near(sv, vonMises(sigma, tau))
+  )
+    out.push(`σ′ ${sv} is not √(σ² + 3τ²)`);
+  if (P !== undefined && rpm !== undefined && T !== undefined && !near(T, torqueOf(P, rpm)))
+    out.push(`T ${T} is not P ÷ ω = ${torqueOf(P, rpm)}`);
   return out;
 }

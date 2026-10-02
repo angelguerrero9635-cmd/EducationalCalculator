@@ -1,5 +1,6 @@
 /**
- * College picture kinds of round 3, group H (docs/RENDERINGS_HE.md): HC40 `heatExchanger`.
+ * College picture kinds of round 3, group H (docs/RENDERINGS_HE.md): HC40 `heatExchanger`, HC59
+ * `shaft`.
  * Kept apart from `types.ts` so its union only names them. A `NumOrVar` is a fixed number or a
  * variable id; a variable is read in its own unit and turned into the kind's base unit
  * (`reps/he3hUnits.ts`: W for heat rates, W/K for capacity rates, m² for areas); a fixed number
@@ -56,13 +57,53 @@ export interface HeatExchangerSpec {
   more?: string[];
 }
 
-export type He3hSpec = HeatExchangerSpec;
+// ─── HC59: a round shaft in torsion (and bending) ────────────────────────────
+
+/**
+ * A steel shaft with T at both ends as curved arrows and a scribed line twisting by φ (drawn
+ * larger on the side, said, when φ is too small to see; the end view shows it to scale); the end
+ * face with τ growing linearly from the centre (from the bore when `di` is given, the ring to
+ * scale). With `moment` the shaft sags under M and the stress element at the surface carries σ
+ * and τ. A power page (`power`, `speed`) draws the end view turning at n. Units by each variable's
+ * unit: T and M in N·m (or N·mm, kN·m), d, d_i and L in mm (or m), G in GPa, stresses in MPa, φ in
+ * rad or °, P in W or kW; a fixed number in N·m, mm, GPa, MPa, rad and W.
+ */
+export interface ShaftSpec {
+  kind: 'shaft';
+  /** Outer diameter, and the bore (hollow) when given. */
+  d: NumOrVar;
+  di?: NumOrVar;
+  length?: NumOrVar;
+  torque?: NumOrVar;
+  G?: NumOrVar;
+  J?: NumOrVar;
+  /** τ_max at the surface and the angle of twist φ (worked out here when not given). */
+  tau?: NumOrVar;
+  angle?: NumOrVar;
+  /** Bending: the moment M, σ at the surface, von Mises σ′, yield S_y and the factor n. */
+  moment?: NumOrVar;
+  sigma?: NumOrVar;
+  vonMises?: NumOrVar;
+  n?: NumOrVar;
+  /** A power page: P, the speed n (rpm) and τ_allow. */
+  power?: NumOrVar;
+  speed?: NumOrVar;
+  tauAllow?: NumOrVar;
+  /** Further values said in the caption. */
+  more?: string[];
+}
+
+export type He3hSpec = HeatExchangerSpec | ShaftSpec;
 
 const ids = (xs: (NumOrVar | NumOrVar[] | undefined)[]) =>
   xs.flat().filter((x): x is string => typeof x === 'string');
 
 /** The variable ids a group H picture reads (for the module tests). */
 export function he3hSpecVars(r: He3hSpec): string[] {
+  if (r.kind === 'shaft') {
+    const { kind: _k, more, ...rest } = r;
+    return ids([...Object.values(rest), ...(more ?? [])]);
+  }
   const {
     kind: _k,
     arrangement: _a,
