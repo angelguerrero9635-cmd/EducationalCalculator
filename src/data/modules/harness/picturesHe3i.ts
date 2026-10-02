@@ -7,9 +7,10 @@
 import { HIP_SHARE, limbBalance } from '@/components/module/reps/limbMath';
 import { STEEL } from '@/components/module/reps/binaryPhaseMath';
 import { siFactor } from '@/components/module/reps/he3iUnits';
+import { cuttingSpeed, idealSurface, profile } from '@/components/module/reps/machiningMath';
 import type { VariableDef } from '@/engine/types';
 
-import type { BinaryPhaseSpec, He3iSpec } from '../typesHe3i';
+import type { BinaryPhaseSpec, He3iSpec, MachiningSpec } from '../typesHe3i';
 import type { SimpleMachineSpec } from '../typesHsk';
 
 type Val = (id: string) => number | undefined;
@@ -86,8 +87,10 @@ export function he3iIssues(rep: He3iSpec, val: Val, byId: Map<string, VariableDe
     case 'binaryPhase':
       out.push(...binaryPhaseIssues(rep, val));
       break;
+    case 'machining':
+      out.push(...machiningIssues(rep, si, val));
+      break;
     default:
-      void si;
       break;
   }
   return out;
@@ -133,5 +136,67 @@ function binaryPhaseIssues(rep: BinaryPhaseSpec, val: Val): string[] {
     out.push(`binaryPhase: W_α = ${wa}, the lever arms give ${1 - wOther}`);
   if (wl !== undefined && wa !== undefined && !near(wl + wa, 1, 1))
     out.push(`binaryPhase: the fractions add to ${wl + wa}, not 1`);
+  return out;
+}
+
+/** HC83: v = πDN; MRR, T_m and the table feed by their rules; the cusp height matches R_a. */
+function machiningIssues(
+  rep: MachiningSpec,
+  si: (x: X, unit: string) => number | undefined,
+  val: Val,
+): string[] {
+  const out: string[] = [];
+  const g = (x: X, unit: string) => si(x, unit);
+  const [D, v, N, f, d] = [
+    g(rep.diameter, 'mm'),
+    g(rep.speed, 'm/min'),
+    g(rep.rpm, 'rpm'),
+    g(rep.feed, 'mm/rev'),
+    g(rep.depth, 'mm'),
+  ];
+  const same = (got: number | undefined, want: number | undefined, what: string) => {
+    if (got !== undefined && want !== undefined && Number.isFinite(want) && !near(got, want))
+      out.push(`machining: ${what} = ${got} (SI), the picture draws ${want}`);
+  };
+  if (D !== undefined && N !== undefined) same(v, cuttingSpeed(D, N), 'v = πDN');
+  if (rep.mode === 'turning') {
+    if (v !== undefined && f !== undefined && d !== undefined)
+      same(g(rep.rate, 'cm³/min'), v * f * d, 'MRR = vfd');
+    const L = g(rep.length, 'mm');
+    if (L !== undefined && f !== undefined && N !== undefined && f * N > 0)
+      same(g(rep.time, 'min'), L / (f * N), 'T_m = L ÷ (fN)');
+  }
+  if (rep.mode === 'milling') {
+    const nt =
+      rep.teeth === undefined
+        ? undefined
+        : typeof rep.teeth === 'number'
+          ? rep.teeth
+          : val(rep.teeth);
+    const ft = g(rep.toothFeed, 'mm/tooth');
+    const fr = g(rep.tableFeed, 'mm/min');
+    if (nt !== undefined && (nt < 1 || Math.abs(nt - Math.round(nt)) > 1e-9))
+      out.push(`machining: ${nt} teeth (a whole number)`);
+    if (N !== undefined && nt !== undefined && ft !== undefined)
+      same(fr, N * nt * ft, 'f_r = Nn_tf_t');
+    const wd = g(rep.width, 'mm');
+    if (wd !== undefined && d !== undefined && fr !== undefined)
+      same(g(rep.rate, 'cm³/min'), wd * d * fr, 'MRR = wdf_r');
+  }
+  if (rep.mode === 'finish') {
+    const r = g(rep.radius, 'mm');
+    if (f !== undefined && r !== undefined && r > 0) {
+      const s = idealSurface(f, r);
+      same(g(rep.roughness, 'μm'), s.roughness, 'R_a = f² ÷ 32r');
+      same(g(rep.cusp, 'μm'), s.cusp, 'h = f² ÷ 8r');
+      // The drawn profile's own mean departure agrees with the rule to a few percent (the rule
+      // holds for a feed well under the nose radius).
+      const drawn = profile(f, r).ra;
+      if (f <= r / 2 && Math.abs(drawn - s.roughness) > 0.05 * s.roughness)
+        out.push(
+          `machining: the drawn profile's R_a ${drawn} is far from f² ÷ 32r = ${s.roughness}`,
+        );
+    }
+  }
   return out;
 }

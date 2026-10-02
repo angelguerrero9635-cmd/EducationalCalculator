@@ -77,4 +77,27 @@ export const HE3I_REQUESTS: PictureRequest[] = [
       'g.he-binaryPhase-steel-near-eutectoid',
     ],
   },
+  {
+    ...ask(
+      'HC83',
+      'machining',
+      'A cut in steel with a carbide tool: turning (bar, chuck, tool, end view with v = πDN, the cut enlarged), milling (cutter of n_t teeth over a block, table feed, one tooth’s bite enlarged), and the ideal finish (tool-nose cusps, mean line, R_a)',
+      [`${E}manufacturing#1`, `${E}manufacturing#1~milling`, `${E}manufacturing#1~finish`],
+      [
+        'From ME-P19. New kind (typesHe3i.ts MachiningSpec, reps/Machining.tsx, the sums in reps/machiningMath.ts; shop units in reps/he3iUnits.ts).',
+        "Fields: { kind: 'machining', mode: 'turning' | 'milling' | 'finish', diameter? (D), speed? (v), rpm? (N), feed? (f per turn), depth? (d), length? (L) and time? (T_m) for turning, rate? (MRR), teeth? (n_t), toothFeed? (f_t), tableFeed? (f_r) and width? (w) for milling, radius? (nose r), roughness? (R_a) and cusp? (h) for finish, more? }. Units are read from each variable: mm, cm, m, in, μm; m/min, m/s, ft/min; rpm; mm/rev, mm/tooth, mm/min; cm³/min; min.",
+        "Example (manufacturing#1): { kind: 'machining', mode: 'turning', diameter: 'D', speed: 'v', rpm: 'N', feed: 'f', depth: 'd', length: 'L', time: 'Tm', rate: 'MRR' }. Example (~milling): { kind: 'machining', mode: 'milling', diameter: 'D', teeth: 'nt', speed: 'v', rpm: 'N', toothFeed: 'ft', tableFeed: 'fr', width: 'w', depth: 'd', rate: 'MRR' }. Example (~finish): { kind: 'machining', mode: 'finish', feed: 'f', radius: 'r', roughness: 'Ra' }.",
+        'Turning: the chuck and bar painted in steel to scale (D against L), turned down behind the tool with feed marks, the carbide insert and a hot chip, f along the bar, N round its end, D and L dimensioned; an end view with v tangent at the tool; the cut enlarged with d and the feed marks. Milling: the cutter with its n_t carbide teeth, N, v at the rim, D; the block in oblique cut down by d, w on its edge, f_r under it; one tooth’s comma-shaped bite between two tooth paths f_t apart, enlarged. Finish: the exact tool-nose arcs f apart over four and a half feeds, the tool in a groove, the mean line dashed and the departures shaded (their mean is R_a), f and the cusp h ≈ 4 × R_a marked; heights enlarged, the factor in the picture. A "?" draws no arrow or label for it.',
+        'The harness (harness/picturesHe3i.ts) checks v = πDN, MRR = vfd and T_m = L ÷ (fN) (turning), f_r = Nn_tf_t and MRR = wdf_r with whole teeth (milling), R_a = f² ÷ 32r and h = f² ÷ 8r, and that the drawn profile’s own R_a agrees (finish), all in SI from each variable’s unit. A finish page keeps f below r (the rule’s range). The pages are not built yet.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-machining-turning',
+      'g.he-machining-turning-small-bar',
+      'g.he-machining-milling',
+      'g.he-machining-finish',
+      'g.he-machining-finish-fine',
+    ],
+  },
 ];

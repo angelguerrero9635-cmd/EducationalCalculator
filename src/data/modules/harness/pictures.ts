@@ -2292,6 +2292,7 @@ export function repIssues(
       );
       break;
     case 'binaryPhase':
+    case 'machining':
       out.push(...he3iIssues(rep, siOf(val, byId), byId)); // HC82–HC84
       break;
     case 'globe':

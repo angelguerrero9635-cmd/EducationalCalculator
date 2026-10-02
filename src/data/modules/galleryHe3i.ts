@@ -547,6 +547,254 @@ const binarySteelEdge = steelDemo(
   0.7,
 );
 
+// ── HC83: machining (manufacturing#1, ~milling, ~finish) ──
+
+/** A product rule a = k × b × c (k a fixed factor), solved for each of its values. */
+const product = (
+  id: string,
+  a: string,
+  bs: string[],
+  k: number,
+  kText: string,
+  how: string,
+): Rule => {
+  const prod = (v: Values, skip?: string) => bs.reduce((p, b) => (b === skip ? p : p * v[b]!), k);
+  const show = (skip?: string) =>
+    [kText, ...bs.filter((b) => b !== skip).map((b) => `{${b}}`)].filter(Boolean).join(' × ');
+  return {
+    relation: {
+      id,
+      display: `{${a}} = ${show()}`,
+      vars: [a, ...bs],
+      residual: (v) => v[a]! - prod(v),
+      solve: {
+        [a]: (v) => prod(v),
+        ...Object.fromEntries(bs.map((b) => [b, (v: Values) => div(v[a]!, prod(v, b))])),
+      },
+    },
+    steps: {
+      [a]: st(show(), how),
+      ...Object.fromEntries(
+        bs.map((b) => [b, st(`{${a}} ÷ (${show(b)})`, 'Divide by the other factors.')]),
+      ),
+    },
+  };
+};
+
+/** v = πDN ÷ 1000 (v in m/min, D in mm, N in rpm). */
+const speedRule = product(
+  'v = πDN',
+  'v',
+  ['D', 'N'],
+  Math.PI / 1000,
+  'π ÷ 1000',
+  'The surface speed: one circumference πD per turn, N turns a minute (mm to m).',
+);
+
+const turningDemo = (
+  id: string,
+  title: string,
+  ex: { D: number; v: number; f: number; d: number; L: number },
+) => {
+  const N = (1000 * ex.v) / (Math.PI * ex.D);
+  return demo({
+    id,
+    title,
+    use: 'Use this for the spindle speed, removal rate and time of a turning pass.',
+    assumptions: [
+      'v is the surface speed at the uncut diameter D.',
+      'One pass along L at constant feed; 1 cm³ = 1000 mm³.',
+    ],
+    variables: [
+      quantity('D', 'D', 'Bar diameter', 'mm', 1, 500, 0.1),
+      quantity('v', 'v', 'Cutting speed', 'm/min', 1, 1000, 0.1),
+      quantity('N', 'N', 'Spindle speed', 'rpm', 1, 20000, 0.1),
+      quantity('f', 'f', 'Feed', 'mm/rev', 0.01, 2, 0.01),
+      quantity('d', 'd', 'Depth of cut', 'mm', 0.05, 20, 0.01),
+      quantity('MRR', 'MRR', 'Removal rate', 'cm³/min', 0.01, 5000, 0.01),
+      quantity('L', 'L', 'Length of cut', 'mm', 1, 5000, 1),
+      quantity('Tm', 'T_m', 'Cutting time', 'min', 0.001, 1000, 0.001),
+    ],
+    ...rules(
+      speedRule,
+      product(
+        'MRR = vfd',
+        'MRR',
+        ['v', 'f', 'd'],
+        1,
+        '',
+        'Speed × feed × depth: m/min × mm × mm is cm³/min.',
+      ),
+      {
+        relation: {
+          id: 'T_m = L ÷ (fN)',
+          display: '{Tm} = {L} ÷ ({f} × {N})',
+          vars: ['Tm', 'L', 'f', 'N'],
+          residual: (x) => x.Tm! * x.f! * x.N! - x.L!,
+          solve: {
+            Tm: (x) => div(x.L!, x.f! * x.N!),
+            L: (x) => x.Tm! * x.f! * x.N!,
+            f: (x) => div(x.L!, x.Tm! * x.N!),
+            N: (x) => div(x.L!, x.Tm! * x.f!),
+          },
+        },
+        steps: {
+          Tm: st('{L} ÷ ({f} × {N})', 'The tool moves f each turn, N turns a minute.'),
+          L: st('{Tm} × {f} × {N}', 'The tool’s speed along the bar times the time.'),
+          f: st('{L} ÷ ({Tm} × {N})', 'The length over the turns made.'),
+          N: st('{L} ÷ ({Tm} × {f})', 'The turns a minute that cover L in T_m.'),
+        },
+      },
+    ),
+    example: {
+      ...ex,
+      N,
+      MRR: ex.v * ex.f * ex.d,
+      Tm: ex.L / (ex.f * N),
+    },
+    startWith: ['D', 'v', 'f', 'd', 'L'],
+    representation: {
+      kind: 'machining',
+      mode: 'turning',
+      diameter: 'D',
+      speed: 'v',
+      rpm: 'N',
+      feed: 'f',
+      depth: 'd',
+      length: 'L',
+      time: 'Tm',
+      rate: 'MRR',
+    },
+  });
+};
+
+const machTurning = turningDemo('g.he-machining-turning', 'A turning pass on a 50 mm bar', {
+  D: 50,
+  v: 150,
+  f: 0.25,
+  d: 2,
+  L: 200,
+});
+const machTurningSmall = turningDemo(
+  'g.he-machining-turning-small-bar',
+  'A small bar: the spindle has to turn fast',
+  { D: 12, v: 90, f: 0.1, d: 0.5, L: 40 },
+);
+
+const machMilling = (() => {
+  const [D, nt, v, ft, wd, d] = [80, 6, 120, 0.1, 40, 3];
+  const N = (1000 * v) / (Math.PI * D);
+  const fr = N * nt * ft;
+  return demo({
+    id: 'g.he-machining-milling',
+    title: 'Milling a slot: spindle speed, table feed and removal rate',
+    use: 'Use this for a milling cutter’s spindle speed, table feed and removal rate from its teeth and the feed per tooth.',
+    assumptions: ['Each of the n_t teeth bites f_t per turn.', '1 cm³ = 1000 mm³.'],
+    variables: [
+      quantity('D', 'D', 'Cutter diameter', 'mm', 1, 500, 0.1),
+      quantity('nt', 'n_t', 'Teeth', undefined, 1, 24, 1, { integer: true }),
+      quantity('v', 'v', 'Cutting speed', 'm/min', 1, 1000, 0.1),
+      quantity('ft', 'f_t', 'Feed per tooth', 'mm/tooth', 0.005, 1, 0.001),
+      quantity('w', 'w', 'Width of cut', 'mm', 0.5, 500, 0.1),
+      quantity('d', 'd', 'Depth of cut', 'mm', 0.05, 50, 0.01),
+      quantity('N', 'N', 'Spindle speed', 'rpm', 1, 30000, 0.1),
+      quantity('fr', 'f_r', 'Table feed', 'mm/min', 0.1, 20000, 0.1),
+      quantity('MRR', 'MRR', 'Removal rate', 'cm³/min', 0.01, 10000, 0.01),
+    ],
+    ...rules(
+      speedRule,
+      product(
+        'f_r = Nn_tf_t',
+        'fr',
+        ['N', 'nt', 'ft'],
+        1,
+        '',
+        'Every tooth bites f_t, n_t teeth a turn, N turns a minute.',
+      ),
+      product(
+        'MRR = wdf_r',
+        'MRR',
+        ['w', 'd', 'fr'],
+        0.001,
+        '0.001',
+        'Width × depth × table feed, mm³ to cm³.',
+      ),
+    ),
+    example: { D, nt, v, ft, w: wd, d, N, fr, MRR: (wd * d * fr) / 1000 },
+    startWith: ['D', 'nt', 'v', 'ft', 'w', 'd'],
+    representation: {
+      kind: 'machining',
+      mode: 'milling',
+      diameter: 'D',
+      teeth: 'nt',
+      speed: 'v',
+      rpm: 'N',
+      toothFeed: 'ft',
+      tableFeed: 'fr',
+      width: 'w',
+      depth: 'd',
+      rate: 'MRR',
+    },
+  });
+})();
+
+const finishDemo = (id: string, title: string, f: number, r: number) =>
+  demo({
+    id,
+    title,
+    use: 'Use this for the ideal roughness a round-nosed tool leaves at a feed.',
+    assumptions: [
+      'The ideal surface: tool-nose arcs f apart, no tool wear or chatter.',
+      'R_a ≈ f² ÷ (32r), in μm with f and r in mm.',
+      'The feed is smaller than the nose radius.',
+    ],
+    variables: [
+      quantity('f', 'f', 'Feed', 'mm/rev', 0.01, 2, 0.01),
+      quantity('r', 'r', 'Nose radius', 'mm', 0.1, 5, 0.1),
+      quantity('Ra', 'R_a', 'Roughness', 'μm', 0.001, 200, 0.001),
+    ],
+    ...rules(
+      {
+        relation: {
+          id: 'R_a = f² ÷ 32r',
+          display: '{Ra} = 1000 × {f}² ÷ (32 × {r})',
+          vars: ['Ra', 'f', 'r'],
+          residual: (x) => x.Ra! * 32 * x.r! - 1000 * x.f! ** 2,
+          solve: {
+            Ra: (x) => div(1000 * x.f! ** 2, 32 * x.r!),
+            f: (x) => Math.sqrt((x.Ra! * 32 * x.r!) / 1000),
+            r: (x) => div(1000 * x.f! ** 2, 32 * x.Ra!),
+          },
+        },
+        steps: {
+          Ra: st(
+            '1000 × {f}² ÷ (32 × {r})',
+            'The cusps stand f² ÷ 8r high and R_a is a quarter of that (mm to μm).',
+          ),
+          f: st('√({Ra} × 32 × {r} ÷ 1000)', 'Solve for f², then take the root.'),
+          r: st('1000 × {f}² ÷ (32 × {Ra})', 'Solve for the nose radius.'),
+        },
+      },
+      below('f', 'r', '{f} < {r}', 'The rule holds for a feed smaller than the nose radius.'),
+    ),
+    example: { f, r, Ra: (1000 * f * f) / (32 * r) },
+    startWith: ['f', 'r'],
+    representation: { kind: 'machining', mode: 'finish', feed: 'f', radius: 'r', roughness: 'Ra' },
+  });
+
+const machFinish = finishDemo(
+  'g.he-machining-finish',
+  'The ideal finish of a turned surface',
+  0.25,
+  0.8,
+);
+const machFinishFine = finishDemo(
+  'g.he-machining-finish-fine',
+  'A fine finishing feed with a large nose',
+  0.08,
+  1.2,
+);
+
 export const HE3I_GALLERY_MODULES: ModuleDef[] = [
   forearmLoad,
   forearmLevel,
@@ -557,6 +805,11 @@ export const HE3I_GALLERY_MODULES: ModuleDef[] = [
   binaryEutectic,
   binarySteel,
   binarySteelEdge,
+  machTurning,
+  machTurningSmall,
+  machMilling,
+  machFinish,
+  machFinishFine,
 ];
 
 export const HE3I_GALLERY_LAYOUTS: LayoutDef[] = [];

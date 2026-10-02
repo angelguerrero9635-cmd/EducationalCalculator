@@ -193,6 +193,7 @@ import { Bode } from './Bode';
 import { PotentialWell } from './PotentialWell';
 import { UnitCell } from './UnitCell';
 import { BinaryPhase } from './BinaryPhase';
+import { Machining } from './Machining';
 import { Globe } from './Globe';
 import { StressStrain } from './StressStrain';
 import { StressElement } from './StressElement';
@@ -372,6 +373,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <UnitCell spec={spec} calc={calc} />;
     case 'binaryPhase':
       return <BinaryPhase spec={spec} calc={calc} />;
+    case 'machining':
+      return <Machining spec={spec} calc={calc} />;
     case 'globe':
       return <Globe spec={spec} calc={calc} />;
     case 'stressStrain':

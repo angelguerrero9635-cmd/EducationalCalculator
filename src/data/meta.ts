@@ -152,6 +152,7 @@ const PICTURE_NAMES: Record<string, string> = {
   potentialWell: 'a potential well with its energy levels and wavefunctions',
   unitCell: 'a cubic unit cell, its lattice planes and Bragg reflection',
   binaryPhase: 'a binary phase diagram with a tie line and the lever rule',
+  machining: 'a turning or milling cut, or the surface a tool nose leaves',
   globe:
     'a globe: the Sun’s rays, a great-circle route, a turning plate, a dipole field or a ring of air',
   stressStrain:
