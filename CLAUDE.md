@@ -73,7 +73,7 @@ not a dependency. Chromium is at `/opt/pw-browsers/chromium`.
 - Testing: the heavy suites (modules, sampling) run once a day, on the nightly CI run. Before a
   push, `node scripts/ci-test.mjs` runs the cheap suites only. While building a new page, its
   own tests by id (`MODULE_IDS=<id>`) are fine; no broader or deep runs (the review evidence
-  alone samples deeply). No `--heavy` or `--full` runs outside the nightly, engine changes
+  alone samples deeply). No `--heavy` or `--full` runs outside the nightly unless the owner approves that run (ask first, saying why), engine changes
   included: test the ids a change is about by `MODULE_IDS`, and fix what the nightly run finds
   the next day.
 - Don't add dependencies without asking.
