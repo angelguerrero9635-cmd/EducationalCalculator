@@ -218,7 +218,7 @@ export function BeamSpan({ spec, calc }: { spec: BeamSpec; calc: Calculator }) {
     }
     if (table) {
       panels.T = y + 4;
-      y += 4 + ROW * (3 + table.rows.length) + 6;
+      y += 4 + ROW * (4 + table.rows.length) + 10;
     }
     return { sx, X: (x: number) => padL + x * sx, thick, y0, yB, yR, yDims, panels, H: y };
   };
