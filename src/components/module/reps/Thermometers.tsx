@@ -210,7 +210,11 @@ export function Thermometers({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       calc.set(
                         {
                           // The other typed readings hold still; one worked out from them (a mix) follows.
-                          ...rep.pinTyped(spec.items.filter((x) => x !== id)),
+                          // A worked-out reading (the mix) moves the typed one behind it instead:
+                          // with both held it could not move at all.
+                          ...(rep.typed(id)
+                            ? rep.pinTyped(spec.items.filter((x) => x !== id))
+                            : {}),
                           [id]: rep.snapTo(
                             id,
                             (start.current - (dy / (bottom - top)) * (hi - lo)) * rep.factor(id),

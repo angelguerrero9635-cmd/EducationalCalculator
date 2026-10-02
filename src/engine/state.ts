@@ -171,13 +171,9 @@ export function driveTyped(
     return undefined;
   };
   const land = (g: string, x: number) => nearestFit(g, x) ?? at(g, x);
-  /** Whether a state moved the handle's value from where it was. */
-  const y00 = state.result.values[id];
-  const moved = (next: CalcState) =>
-    y00 === undefined || !same(next.result.values[id], y00) ? next : undefined;
-  // A typed value that can only land where it was (the nearest fitting step is the old one)
-  // is kept as the fallback while the others are tried.
-  let still: CalcState | undefined;
+  // The first typed value that drives the handle is the one it moves, even when its nearest
+  // step is where it was: a handle never moves two typed values in one drag (passing the
+  // range of one, a vaccination share's e at 100%, it must not start on R₀).
   for (const g of candidates) {
     const step = stepOf(g);
     // Found by trying values of g near where it is (secant steps): each try is a quick solve
@@ -208,8 +204,7 @@ export function driveTyped(
         // On steps, the search ends when it lands where it was: the nearest step to the target.
         if (step && (x2 === x1 || x2 === x0)) {
           const near = nearestFit(g, x2);
-          if (near && moved(near)) return near;
-          still ??= near;
+          if (near) return near;
           break;
         }
         const next: CalcState | undefined = step ? nearestFit(g, x2) : at(g, x2);
@@ -217,11 +212,7 @@ export function driveTyped(
         if (reaches(next)) return next;
         const xn: number = next.result.values[g]!;
         // A stepped g that fits only back where it was: the nearest it can go.
-        if (step && (xn === x1 || xn === x0)) {
-          if (moved(next)) return next;
-          still ??= next;
-          break;
-        }
+        if (step && (xn === x1 || xn === x0)) return next;
         [x0, y0, x1, y1] = [x1, y1, xn, next.result.values[id]];
       }
     }
@@ -239,13 +230,9 @@ export function driveTyped(
     const x = trial.result.values[g];
     if (x !== undefined && !trial.result.rejected && !trial.result.cleared.length) {
       const next = land(g, x);
-      if (next && (step || reaches(next))) {
-        if (moved(next)) return next;
-        still ??= next;
-      }
+      if (next && (step || reaches(next))) return next;
     }
   }
-  if (still) return still;
   return undefined;
 }
 
