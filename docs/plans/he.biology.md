@@ -98,13 +98,14 @@ the research chat (part 4) confirms both.
   dilution arithmetic of the first labs.
 - **Tests ask:**
 
-  | Question type                                 | Page      | Mark   |
-  | --------------------------------------------- | --------- | ------ |
-  | grams of solute for a stock of given molarity | main      | Solves |
-  | volume of stock for a working dilution (C₁V₁) | ~dilution | Solves |
-  | [H⁺] from pH and how many times more acidic   | ~ph       | Solves |
-  | water molecules released building a polymer   | ~polymer  | Solves |
-  | mass of a protein from its length             | ~polymer  | Solves |
+  | Question type                                                                                                     | Page      | Mark   |
+  | ----------------------------------------------------------------------------------------------------------------- | --------- | ------ |
+  | grams of solute for a stock of given molarity                                                                     | main      | Solves |
+  | volume of stock for a working dilution (C₁V₁)                                                                     | ~dilution | Solves |
+  | [H⁺] from pH and how many times more acidic                                                                       | ~ph       | Solves |
+  | water molecules released building a polymer                                                                       | ~polymer  | Solves |
+  | mass of a protein from its length                                                                                 | ~polymer  | Solves |
+  | structures of biomolecules: implied atoms, functional groups, bonds and interactions, nucleotide parts [new-page] | -         | No     |
 
 - **Main — BUILD `he.biology.principles-1#0`:** `beaker` `solution: { mode: 'molarity', moles: 'n',
 volume: 'V', molarity: 'C', solute: 'NaCl' }`. Values: mass m (0.001–5000 g), molar mass M (1–10⁶
@@ -134,11 +135,12 @@ volume: 'V', molarity: 'C', solute: 'NaCl' }`. Values: mass m (0.001–5000 g), 
   organelles); the microscope lab.
 - **Tests ask:**
 
-  | Question type                                   | Page        | Mark   |
-  | ----------------------------------------------- | ----------- | ------ |
-  | why cells are small: surface area to volume     | main        | Solves |
-  | actual size from a micrograph and magnification | ~micrograph | Solves |
-  | which organelle is in plant, animal, prokaryote | ~organelles | Solves |
+  | Question type                                                 | Page        | Mark   |
+  | ------------------------------------------------------------- | ----------- | ------ |
+  | why cells are small: surface area to volume                   | main        | Solves |
+  | actual size from a micrograph and magnification               | ~micrograph | Solves |
+  | which organelle is in plant, animal, prokaryote               | ~organelles | Solves |
+  | protein targeting to the ER and the secretory path [new-page] | -           | No     |
 
 - **Main — BUILD:** `curvedSolid` sphere (radius r labeled; later P1 adds the SA ÷ V readout and a
   second, doubled cell beside it). Values: radius r (0.1–1000 μm), surface area A (μm²),
@@ -164,12 +166,14 @@ volume: 'V', molarity: 'C', solute: 'NaCl' }`. Values: mass m (0.001–5000 g), 
   (photosynthesis).
 - **Tests ask:**
 
-  | Question type                                  | Page         | Mark   |
-  | ---------------------------------------------- | ------------ | ------ |
-  | is a coupled reaction spontaneous (sum of ΔG)  | main         | Solves |
-  | ATP per glucose; efficiency of respiration     | ~atp-yield   | Solves |
-  | where each stage happens, what goes in and out | ~respiration | Solves |
-  | ΔG in the cell from ΔG°′ and concentrations    | ~delta-g     | Solves |
+  | Question type                                                                        | Page         | Mark   |
+  | ------------------------------------------------------------------------------------ | ------------ | ------ |
+  | is a coupled reaction spontaneous (sum of ΔG)                                        | main         | Solves |
+  | ATP per glucose; efficiency of respiration                                           | ~atp-yield   | Solves |
+  | where each stage happens, what goes in and out                                       | ~respiration | Solves |
+  | ΔG in the cell from ΔG°′ and concentrations                                          | ~delta-g     | Solves |
+  | enzyme inhibition: competitive, allosteric, irreversible; the active site [new-page] | -            | No     |
+  | light reactions: cyclic and noncyclic electron flow                                  | -            | No     |
 
 - **Main — BUILD:** `energyProfile` `mode: 'ladder'` with ⏳ P2 (`quantity: 'G'`, kJ/mol labels).
   Values: ΔG of the uphill reaction ΔG₁ (−100 to 100 kJ/mol), ATP used (1–3), ΔG of ATP hydrolysis
@@ -196,12 +200,14 @@ volume: 'V', molarity: 'C', solute: 'NaCl' }`. Values: mass m (0.001–5000 g), 
 - **Courses teach:** Biology 2e ch. 10 (cell cycle, mitosis), 11 (meiosis, independent assortment).
 - **Tests ask:**
 
-  | Question type                                     | Page           | Mark   |
-  | ------------------------------------------------- | -------------- | ------ |
-  | chromosomes, chromatids, DNA (c) at each stage    | main           | Solves |
-  | gametes possible from independent assortment (2ⁿ) | main           | Solves |
-  | length of mitosis from a mitotic index            | ~mitotic-index | Solves |
-  | order the stages of mitosis or meiosis            | ~stages        | Solves |
+  | Question type                                                                           | Page           | Mark   |
+  | --------------------------------------------------------------------------------------- | -------------- | ------ |
+  | chromosomes, chromatids, DNA (c) at each stage                                          | main           | Solves |
+  | gametes possible from independent assortment (2ⁿ)                                       | main           | Solves |
+  | length of mitosis from a mitotic index                                                  | ~mitotic-index | Solves |
+  | order the stages of mitosis or meiosis                                                  | ~stages        | Solves |
+  | segregation errors and their effects (nondisjunction, aneuploidy, triploidy) [new-page] | -              | No     |
+  | crossing over: when it happens and the recombinant chromatids it makes                  | genetics#1     | Partly |
 
 - **Main — BUILD:** `cellDivision` (2n, n; later P3 adds chromatids and the DNA content c a stage).
   Values: diploid number 2n (2–100, even), haploid n, chromatids in a G2 cell, DNA in G1 (2c),
@@ -224,11 +230,14 @@ volume: 'V', molarity: 'C', solute: 'NaCl' }`. Values: mass m (0.001–5000 g), 
 - **Courses teach:** Biology 2e ch. 12 (Mendel, monohybrid, dihybrid, test crosses, product rule).
 - **Tests ask:**
 
-  | Question type                                          | Page          | Mark   |
-  | ------------------------------------------------------ | ------------- | ------ |
-  | monohybrid and test-cross ratios                       | main          | Solves |
-  | dihybrid 9:3:3:1, chance of one phenotype              | main          | Solves |
-  | AaBbCc × AaBbCc: chance of one genotype (product rule) | ~product-rule | Solves |
+  | Question type                                                                   | Page          | Mark   |
+  | ------------------------------------------------------------------------------- | ------------- | ------ |
+  | monohybrid and test-cross ratios                                                | main          | Solves |
+  | dihybrid 9:3:3:1, chance of one phenotype                                       | main          | Solves |
+  | AaBbCc × AaBbCc: chance of one genotype (product rule)                          | ~product-rule | Solves |
+  | DNA replication: fork, leading and lagging strands, primers, enzymes [new-page] | -             | No     |
+  | transcribe and translate a sequence; effect of a base change                    | genetics#2    | Partly |
+  | test-cross classes for two linked genes from their distance                     | genetics#1    | Partly |
 
 - **Main — BUILD:** `punnettSquare` with `inheritance: { pattern: 'dihybrid', firstB, secondB,
 letterB: 'B' }`. Values: parent 1's dominant alleles for A (0–2) and B (0–2), parent 2's, boxes
@@ -277,11 +286,13 @@ Eukarya` (`figure` on each bin); cards: E. coli, methanogen in a cow's gut, a ha
 - **Courses teach:** Biology 2e ch. 30 (water potential, transpiration, stomata).
 - **Tests ask:**
 
-  | Question type                                    | Page           | Mark   |
-  | ------------------------------------------------ | -------------- | ------ |
-  | solute potential of a sucrose solution (AP item) | main           | Solves |
-  | which way water moves between cell and solution  | main           | Solves |
-  | transpiration rate from a potometer              | ~transpiration | Solves |
+  | Question type                                                   | Page           | Mark   |
+  | --------------------------------------------------------------- | -------------- | ------ |
+  | solute potential of a sucrose solution (AP item)                | main           | Solves |
+  | which way water moves between cell and solution                 | main           | Solves |
+  | transpiration rate from a potometer                             | ~transpiration | Solves |
+  | stomata: guard cells and the signals that close them [new-page] | -              | No     |
+  | plant growth and respiration under raised CO₂ (data)            | -              | No     |
 
 - **Main — BUILD:** `membrane` `transport: 'osmosis'` with ⏳ P5 (`psi`: Ψ written on each side,
   water's arrow toward the lower Ψ). Values: ionization constant i (allowed 1, 2, 3), molarity C
@@ -299,7 +310,7 @@ Eukarya` (`figure` on each bin); cards: E. coli, methanogen in a cow's gut, a ha
 
 - **Courses teach:** Biology 2e ch. 33 (body plans, metabolic rate and size, homeostasis).
 - **Tests ask:** metabolic rate from mass, per kilogram (main, Solves); a negative feedback loop
-  (~feedback, Solves); surface to volume (link to `principles-1#1`).
+  (~feedback, Solves); surface to volume (link to `principles-1#1`). Records add: animal behaviour and chemical signals (pheromones) (No); metabolic rate against temperature in ectotherms (main, Partly).
 - **Main — BUILD:** `functionGraph` `family: 'power'` (a = 70, p = 3, q = 4, the animal's point
   traced; later need 6 for log–log axes, linear meanwhile). Values: body mass M (0.002–5000 kg),
   basal rate B (kcal/day), rate per kilogram (kcal/(kg·day)). Relations: B = 70M^0.75; per kg =
@@ -333,12 +344,15 @@ Eukarya` (`figure` on each bin); cards: E. coli, methanogen in a cow's gut, a ha
   MIT 7.03 problem sets (pedigree probability).
 - **Tests ask:**
 
-  | Question type                                                 | Page        | Mark           |
-  | ------------------------------------------------------------- | ----------- | -------------- |
-  | chance a child is affected, unaffected sibling of an affected | main        | Solves         |
-  | chi-square: does 95:28:27:10 fit 9:3:3:1?                     | ~chi-square | Solves         |
-  | mode of inheritance from a pedigree                           | ~modes      | Solves (⏳ P7) |
-  | modified ratios (9:7, 9:3:4, 12:3:1, 15:1)                    | ~epistasis  | Solves         |
+  | Question type                                                                   | Page        | Mark           |
+  | ------------------------------------------------------------------------------- | ----------- | -------------- |
+  | chance a child is affected, unaffected sibling of an affected                   | main        | Solves         |
+  | chi-square: does 95:28:27:10 fit 9:3:3:1?                                       | ~chi-square | Solves         |
+  | mode of inheritance from a pedigree                                             | ~modes      | Solves (⏳ P7) |
+  | modified ratios (9:7, 9:3:4, 12:3:1, 15:1)                                      | ~epistasis  | Solves         |
+  | pedigree risk with two linked genes [new-page]                                  | -           | No             |
+  | complementation and two-gene tests (tetrad ratios, auxotroph groups) [new-page] | -           | No             |
+  | compare treatment means with ±2SE error bars (AP data)                          | -           | No             |
 
 - **Main — BUILD:** `treeDiagram` (interim) later P6 (a `pedigree` calculator picture: the family
   with 2/3 and the partner's chance written on the people). Values: chance the parent is a carrier
@@ -365,11 +379,13 @@ Eukarya` (`figure` on each bin); cards: E. coli, methanogen in a cow's gut, a ha
 - **Courses teach:** Online Open Genetics ch. 7 (linkage, recombination, mapping); MIT 7.03.
 - **Tests ask:**
 
-  | Question type                                     | Page         | Mark   |
-  | ------------------------------------------------- | ------------ | ------ |
-  | map distance from a test cross                    | main         | Solves |
-  | gene order and distances from a three-point cross | ~three-point | Solves |
-  | coefficient of coincidence and interference       | ~three-point | Solves |
+  | Question type                                      | Page         | Mark   |
+  | -------------------------------------------------- | ------------ | ------ |
+  | map distance from a test cross                     | main         | Solves |
+  | gene order and distances from a three-point cross  | ~three-point | Solves |
+  | coefficient of coincidence and interference        | ~three-point | Solves |
+  | map distance from tetrads (PD, NPD, TT) [new-page] | -            | No     |
+  | LOD score for linkage in a family [new-page]       | -            | No     |
 
 - **Main — BUILD:** ⏳ P8 `linkageMap` (two loci on a chromosome, cM to scale, recombinants drawn as
   crossed strands). Values: parental offspring, recombinant offspring, total, RF (%), distance (cM).
@@ -389,11 +405,13 @@ Eukarya` (`figure` on each bin); cards: E. coli, methanogen in a cow's gut, a ha
 - **Courses teach:** Biology 2e ch. 14–15 (replication, transcription, translation), 17 (PCR).
 - **Tests ask:**
 
-  | Question type                                 | Page       | Mark   |
-  | --------------------------------------------- | ---------- | ------ |
-  | codons and amino acids from a gene's length   | main       | Solves |
-  | copies after n PCR cycles, with an efficiency | ~pcr       | Solves |
-  | silent, missense, nonsense or frameshift      | ~mutations | Solves |
+  | Question type                                                                                              | Page       | Mark   |
+  | ---------------------------------------------------------------------------------------------------------- | ---------- | ------ |
+  | codons and amino acids from a gene's length                                                                | main       | Solves |
+  | copies after n PCR cycles, with an efficiency                                                              | ~pcr       | Solves |
+  | silent, missense, nonsense or frameshift                                                                   | ~mutations | Solves |
+  | cloning design: restriction enzymes, reading frame, libraries, primers, selection and screening [new-page] | -          | No     |
+  | genetic screens and engineered animals                                                                     | -          | No     |
 
 - **Main — BUILD:** `dnaStrand` `gene: { bases, stop: true }`. Values: coding bases (mRNA open
   reading frame, 6–30,000 nt), codons, amino acids, protein mass (kDa). Relations: codons = bases ÷
@@ -414,11 +432,12 @@ Eukarya` (`figure` on each bin); cards: E. coli, methanogen in a cow's gut, a ha
 - **Courses teach:** Biology 2e ch. 19; Online Open Genetics ch. 17.
 - **Tests ask:**
 
-  | Question type                                        | Page           | Mark   |
-  | ---------------------------------------------------- | -------------- | ------ |
-  | carriers from a disease's incidence (q² → 2pq)       | main           | Solves |
-  | allele frequency from genotype counts; is it in H–W? | ~genotype-test | Solves |
-  | X-linked: affected males vs females                  | ~x-linked      | Solves |
+  | Question type                                                               | Page           | Mark   |
+  | --------------------------------------------------------------------------- | -------------- | ------ |
+  | carriers from a disease's incidence (q² → 2pq)                              | main           | Solves |
+  | allele frequency from genotype counts; is it in H–W?                        | ~genotype-test | Solves |
+  | X-linked: affected males vs females                                         | ~x-linked      | Solves |
+  | inbreeding: coefficient F and the incidence of recessive disease [new-page] | -              | No     |
 
 - **Main — BUILD:** `alleleFrequencies` (`p`, `q`, `genotypes: ['P2', 'H', 'Q2']`). Values: p, q,
   p², 2pq, q² (each 0–1), plus "1 in" forms of q² and 2pq. Relations: p + q = 1; the three
@@ -446,11 +465,13 @@ Eukarya` (`figure` on each bin); cards: E. coli, methanogen in a cow's gut, a ha
 - **Courses teach:** Biology 2e ch. 5; A&P 2e 12.4 (resting potential); MIT 7.06 / 6.021J notes.
 - **Tests ask:**
 
-  | Question type                                        | Page     | Mark   |
-  | ---------------------------------------------------- | -------- | ------ |
-  | equilibrium potential of K⁺, Na⁺, Cl⁻, Ca²⁺ (Nernst) | main     | Solves |
-  | resting potential from three ions (Goldman)          | ~goldman | Solves |
-  | osmotic pressure of a solution                       | ~osmotic | Solves |
+  | Question type                                                          | Page     | Mark   |
+  | ---------------------------------------------------------------------- | -------- | ------ |
+  | equilibrium potential of K⁺, Na⁺, Cl⁻, Ca²⁺ (Nernst)                   | main     | Solves |
+  | resting potential from three ions (Goldman)                            | ~goldman | Solves |
+  | osmotic pressure of a solution                                         | ~osmotic | Solves |
+  | carrier-mediated transport (saturation, four-state carrier) [new-page] | -        | No     |
+  | single-channel conductance and gating                                  | -        | No     |
 
 - **Main — BUILD:** `membrane` `transport: 'facilitated'` with ⏳ P5 (`potential`: + and − charges
   lined along each face, a voltmeter reading V in mV). Values: charge z (allowed −1, 1, 2), outside
@@ -475,13 +496,15 @@ Eukarya` (`figure` on each bin); cards: E. coli, methanogen in a cow's gut, a ha
 - **Courses teach:** Biology 2e ch. 9; MIT 7.06 (receptor binding, amplification).
 - **Tests ask:**
 
-  | Question type                                 | Page           | Mark            |
-  | --------------------------------------------- | -------------- | --------------- |
-  | fraction of receptors bound at a ligand level | main           | Solves          |
-  | ligand needed for 90% occupancy               | main           | Solves          |
-  | cooperative binding (Hill)                    | ~hill          | Solves (⏳ P10) |
-  | molecules made by a cascade                   | ~amplification | Solves          |
-  | order of a G-protein pathway                  | ~pathway       | Solves          |
+  | Question type                                                  | Page           | Mark            |
+  | -------------------------------------------------------------- | -------------- | --------------- |
+  | fraction of receptors bound at a ligand level                  | main           | Solves          |
+  | ligand needed for 90% occupancy                                | main           | Solves          |
+  | cooperative binding (Hill)                                     | ~hill          | Solves (⏳ P10) |
+  | molecules made by a cascade                                    | ~amplification | Solves          |
+  | order of a G-protein pathway                                   | ~pathway       | Solves          |
+  | dose–response: EC50, potency, efficacy, partial agonists       | main           | Partly          |
+  | competitive antagonist: dose ratio and K_A (Schild) [new-page] | -              | No              |
 
 - **Main — BUILD:** `functionGraph` `family: 'rational'`, `p: 1, q: 0, r: 1, s: 'Kd'` (θ against
   [L], K_d marked at half). Values: ligand [L] (0–10⁶ nM), dissociation constant K_d (0.001–10⁶ nM),
@@ -505,7 +528,7 @@ Eukarya` (`figure` on each bin); cards: E. coli, methanogen in a cow's gut, a ha
 
 - **Courses teach:** Biology 2e ch. 16 (operons, eukaryotic control); qPCR in lab courses.
 - **Tests ask:** lac operon on or off with lactose and glucose (main, Solves); fold change by ΔΔCt
-  (~fold-change, Solves).
+  (~fold-change, Solves). Records add: development: induction, commitment, potency (No); regulatory mutants: constitutive or uninducible, dominance, cis or trans, pathway order [new-page] (main, Partly).
 - **Main — BUILD (explore, `geneExpression`):** scenes: lac with no lactose (repressor on), lactose
   (repressor off), glucose high (no activator; low expression), trp with tryptophan (repressor on
   with its corepressor; later the figure's `corepressor` signal, P11).
@@ -521,7 +544,7 @@ Eukarya` (`figure` on each bin); cards: E. coli, methanogen in a cow's gut, a ha
 
 - **Courses teach:** Biology 2e ch. 10.3 (checkpoints, cyclins, p53, cancer).
 - **Tests ask:** what each checkpoint checks (main, Solves); phase length from a cell count
-  (link to `principles-1#3~mitotic-index`).
+  (link to `principles-1#3~mitotic-index`). Records add: cancer: oncogenes, tumour suppressors, clonal growth, metastasis (No).
 - **Main — BUILD (sequence):** G1 (11 h; ends at the G1/S checkpoint: DNA undamaged, cell big
   enough, cyclin D–CDK4/6 frees E2F from Rb) → S (8 h) → G2 (4 h; ends at the G2/M checkpoint: DNA
   copied fully, cyclin B–CDK1 rises) → M (1 h; the spindle checkpoint holds anaphase until every
@@ -539,7 +562,7 @@ Eukarya` (`figure` on each bin); cards: E. coli, methanogen in a cow's gut, a ha
 
 - **Courses teach:** OpenStax Microbiology ch. 2 (microscopy), 3 (cell morphology, Gram stain).
 - **Tests ask:** Gram-positive or negative feature (main, Solves); resolution limit of a lens
-  (~resolution, Solves); total magnification (~resolution, Solves).
+  (~resolution, Solves); total magnification (~resolution, Solves). Records add: Reynolds number of a swimming cell (biotransport#1~reynolds, Solves); viruses: structure, lytic and lysogenic cycles [new-page] (No).
 - **Main — BUILD (sort, later P13 icons):** bins Gram-positive, Gram-negative, both; cards: thick
   peptidoglycan, teichoic acids, outer membrane with LPS, a thin peptidoglycan layer, stains purple,
   stains pink, ribosomes 70S, plasma membrane. Bin figures: the two cell walls in section. Ships
@@ -557,13 +580,16 @@ Eukarya` (`figure` on each bin); cards: E. coli, methanogen in a cow's gut, a ha
 - **Courses teach:** Microbiology ch. 9 (generation time, growth curve, plate counts), 13 (D-value).
 - **Tests ask:**
 
-  | Question type                                   | Page          | Mark            |
-  | ----------------------------------------------- | ------------- | --------------- |
-  | generations and generation time from two counts | main          | Solves          |
-  | cells after t hours from the generation time    | main          | Solves          |
-  | CFU/mL from a plate in a dilution series        | ~plate-count  | Solves (⏳ P14) |
-  | name the phases of the growth curve             | ~growth-curve | Solves          |
-  | time to kill to 10⁻⁶ with a D-value             | ~d-value      | Solves          |
+  | Question type                                                 | Page          | Mark            |
+  | ------------------------------------------------------------- | ------------- | --------------- |
+  | generations and generation time from two counts               | main          | Solves          |
+  | cells after t hours from the generation time                  | main          | Solves          |
+  | CFU/mL from a plate in a dilution series                      | ~plate-count  | Solves (⏳ P14) |
+  | name the phases of the growth curve                           | ~growth-curve | Solves          |
+  | time to kill to 10⁻⁶ with a D-value                           | ~d-value      | Solves          |
+  | energy yield of a redox pair: ΔG°′ = −nFΔE°′ [new-page]       | -             | No              |
+  | metabolic types by electron, carbon and energy source         | -             | No              |
+  | chemostat: dilution rate, steady state, cell quota [new-page] | -             | No              |
 
 - **Main — BUILD:** `functionGraph` `family: 'exponential'`, `a: 'N0', b: 2` over generations (later
   need 6 for the semi-log view). Values: starting cells N₀ (1–10¹²), final N, generations n, time t
@@ -587,7 +613,7 @@ Eukarya` (`figure` on each bin); cards: E. coli, methanogen in a cow's gut, a ha
 
 - **Courses teach:** Microbiology ch. 11 (transformation, transduction, conjugation, mutation rate).
 - **Tests ask:** transformation efficiency (main, Solves); which transfer route (~transfer,
-  Solves); mutation rate by fluctuation test (~mutation-rate, Solves).
+  Solves); mutation rate by fluctuation test (~mutation-rate, Solves). Records add: bacterial and phage mapping (cotransduction, Hfr entry times, phage crosses) [new-page] (No); genome sequencing coverage (No).
 - **Main — BUILD:** `dilutionSeries` plate (later P14), `bars` meanwhile. Values: colonies, volume
   plated (μL), recovery volume (μL), DNA used (ng), transformants, efficiency (per μg). Relations:
   transformants = colonies × recovery ÷ plated; efficiency = transformants ÷ (DNA ÷ 1000). Example:
@@ -607,12 +633,13 @@ Eukarya` (`figure` on each bin); cards: E. coli, methanogen in a cow's gut, a ha
 - **Courses teach:** Microbiology ch. 16 (epidemiology, R₀), 18–20 (adaptive immunity, titers).
 - **Tests ask:**
 
-  | Question type                                     | Page      | Mark   |
-  | ------------------------------------------------- | --------- | ------ |
-  | herd immunity threshold from R₀; vaccine coverage | main      | Solves |
-  | antibody titer from a two-fold dilution row       | ~titer    | Solves |
-  | primary vs secondary response                     | ~response | Solves |
-  | order of an adaptive response                     | ~stages   | Solves |
+  | Question type                                                       | Page      | Mark   |
+  | ------------------------------------------------------------------- | --------- | ------ |
+  | herd immunity threshold from R₀; vaccine coverage                   | main      | Solves |
+  | antibody titer from a two-fold dilution row                         | ~titer    | Solves |
+  | primary vs secondary response                                       | ~response | Solves |
+  | order of an adaptive response                                       | ~stages   | Solves |
+  | innate defences: leukocytes, phagocytosis, inflammation, complement | -         | No     |
 
 - **Main — BUILD:** ⏳ P15 (`sample` `herd` option: 100 people, immune shaded, one case's R
   contacts). Values: R₀ (1–20), threshold (%), vaccine effectiveness (%), coverage needed (%).
@@ -638,12 +665,13 @@ Eukarya` (`figure` on each bin); cards: E. coli, methanogen in a cow's gut, a ha
 - **Courses teach:** Biology 2e ch. 45 (exponential, logistic, life tables, mark–recapture).
 - **Tests ask:**
 
-  | Question type                             | Page        | Mark   |
-  | ----------------------------------------- | ----------- | ------ |
-  | logistic growth rate at N; fastest at K/2 | main        | Solves |
-  | population after t years (logistic)       | main        | Solves |
-  | R₀ and generation time from a life table  | ~life-table | Solves |
-  | population size by mark–recapture         | ~recapture  | Solves |
+  | Question type                                     | Page                  | Mark   |
+  | ------------------------------------------------- | --------------------- | ------ |
+  | logistic growth rate at N; fastest at K/2         | main                  | Solves |
+  | population after t years (logistic)               | main                  | Solves |
+  | R₀ and generation time from a life table          | ~life-table           | Solves |
+  | population size by mark–recapture                 | ~recapture            | Solves |
+  | Lotka–Volterra competition: isoclines and outcome | ecology#1~competition | Solves |
 
 - **Main — BUILD:** `functionGraph` `family: 'logistic'` (K dashed; the s.9 picture). Values: r
   (0–5 per yr), K (1–10⁹), N₀, t (yr), N, growth rate dN/dt (per yr). Relations: N = K ÷ (1 +
@@ -663,7 +691,7 @@ Eukarya` (`figure` on each bin); cards: E. coli, methanogen in a cow's gut, a ha
 - **Courses teach:** Biology 2e ch. 45.6 (competition, predation, diversity); ecology texts on
   Lotka–Volterra.
 - **Tests ask:** Shannon index and evenness (main, Solves); outcome of competition (~competition,
-  Solves ⏳); name the interaction (~interactions, Solves).
+  Solves ⏳); name the interaction (~interactions, Solves). Records add: food webs: trophic levels and the effect of removing a predator (ecology#2, Partly); succession after disturbance (No).
 - **Main — BUILD:** `pieChart` (each species' share). Values: counts of up to 4 species, shares,
   H′, evenness. Relations: pᵢ = nᵢ ÷ Σn; H′ = −Σ pᵢ ln pᵢ; J = H′ ÷ ln S. Example: 50, 30, 20 →
   H′ = 0.347 + 0.361 + 0.322 = 1.030, J = 0.937. Σ is written term by term.
@@ -679,7 +707,7 @@ Eukarya` (`figure` on each bin); cards: E. coli, methanogen in a cow's gut, a ha
 
 - **Courses teach:** Biology 2e ch. 46 (GPP, NPP, efficiencies, biogeochemical cycles).
 - **Tests ask:** NPP from GPP and respiration (main); assimilation, production and trophic
-  efficiency (main); residence time of carbon (~residence); a cycle's process (~cycles).
+  efficiency (main); residence time of carbon (~residence); a cycle's process (~cycles). Records add: energy yield of chemolithotrophic reactions (ΔG°′ from potentials) (No); history of the biosphere (oxygenation) (No); limiting nutrients and N:P (Redfield ratio) [new-page] (No).
 - **Main — BUILD:** `bars` `flows: { out: ['Ra', 'egested', 'Rh'] }`. Values: GPP, plant respiration
   Rₐ, NPP, ingested I, assimilated A, herbivore production P (all kJ/(m²·yr)), assimilation
   efficiency, production efficiency, trophic efficiency (10). Relations: NPP = GPP − Rₐ; A ÷ I;
@@ -696,7 +724,7 @@ Eukarya` (`figure` on each bin); cards: E. coli, methanogen in a cow's gut, a ha
 
 - **Courses teach:** Biology 2e ch. 47 (species–area, island biogeography, small populations).
 - **Tests ask:** species left after habitat loss (~species-area); effective population size
-  from the sex ratio (main); the 50/500 rule (main assumption).
+  from the sex ratio (main); the 50/500 rule (main assumption). Records add: nutrient pollution and eutrophication (No); keystone species and protected areas (data) (No).
 - **Main — BUILD:** `bars` (males, females, Nₑ). Values: breeding males N_m, females N_f, census
   N, Nₑ, Nₑ ÷ N. Relation: Nₑ = 4N_mN_f ÷ (N_m + N_f). Assumption: Nₑ is the size of an ideal
   population that would lose diversity as fast; heterozygosity loss is `evolution#1`. Example: 10
@@ -717,7 +745,7 @@ Eukarya` (`figure` on each bin); cards: E. coli, methanogen in a cow's gut, a ha
 
 - **Courses teach:** population genetics chapters of open evolution texts; MIT 7.03 (selection).
 - **Tests ask:** p after one generation of selection (main); response to selection R = h²S
-  (~breeders); relative fitness from survival (main).
+  (~breeders); relative fitness from survival (main). Records add: mutation–selection balance and heterozygote advantage [new-page] (No).
 - **Main — BUILD:** `alleleFrequencies` with ⏳ P17 (`after`: p′ beside p, Δp arrowed). Values: p, q,
   fitnesses w_AA, w_Aa, w_aa (0–1), mean fitness w̄, p′, Δp. Relations: w̄ = p²w_AA + 2pqw_Aa +
   q²w_aa; p′ = (p²w_AA + pqw_Aa) ÷ w̄. Example: p = 0.5, w = 1, 1, 0.5 → w̄ = 0.875, p′ = 0.571,
@@ -745,7 +773,7 @@ Eukarya` (`figure` on each bin); cards: E. coli, methanogen in a cow's gut, a ha
 
 - **Courses teach:** Biology 2e ch. 20 (cladistics, parsimony, molecular clocks).
 - **Tests ask:** read a cladogram (main, Solves); number of possible trees (~tree-count);
-  corrected distance and divergence time (~distance).
+  corrected distance and divergence time (~distance). Records add: parsimony score of a tree [new-page] (No).
 - **Main — BUILD (explore, `cladogram`):** six taxa (lamprey, shark, frog, lizard, mouse, human),
   traits jaws, lungs, amnion, hair; scenes light a clade, ring a sister pair, show that frog and
   lizard share lungs but not the amnion.
@@ -792,7 +820,7 @@ Eukarya` (`figure` on each bin); cards: E. coli, methanogen in a cow's gut, a ha
 
 - **Courses teach:** A&P 2e ch. 9–11 (joints, levers, sliding filaments).
 - **Tests ask:** muscle force for a load in the hand (main); class of lever (~lever-class); order
-  the cross-bridge cycle (~cross-bridge).
+  the cross-bridge cycle (~cross-bridge). Records add: bone tissue and bone cells; joint classes (No).
 - **Main — BUILD:** `simpleMachine` lever (later P21 `limb: 'forearm'` drawing). Values: load L (N),
   load arm d_L (cm), muscle arm d_M (cm), muscle force F_M (N), mechanical advantage. Relations: F_M
   d_M = L d_L; MA = d_M ÷ d_L. Assumptions: the elbow is the fulcrum, the forearm held level; its
@@ -808,7 +836,7 @@ Eukarya` (`figure` on each bin); cards: E. coli, methanogen in a cow's gut, a ha
 
 - **Courses teach:** A&P 2e ch. 12 (action potential, conduction, synapses).
 - **Tests ask:** reflex time from conduction and synapses (main); phases of an action potential
-  (~action-potential).
+  (~action-potential). Records add: synaptic transmission, drugs and light-gated channels (No); conduction velocity, cable properties and myelin [new-page] (main, Partly).
 - **Main — BUILD:** `neuron` (length, speed, time). Values: sensory length, motor length (m), speed
   (m/s), synapses, delay per synapse (ms), total time (ms). Relation: t = (L_s + L_m) ÷ v + k ×
   delay. Example: 1.0 m + 1.0 m at 60 m/s, two 0.5 ms synapses → 33.3 + 1.0 = 34.3 ms.
@@ -822,12 +850,16 @@ Eukarya` (`figure` on each bin); cards: E. coli, methanogen in a cow's gut, a ha
 - **Courses teach:** A&P 2e ch. 19.4 (cardiac output), 20.2 (MAP, resistance), 22.3 (ventilation).
 - **Tests ask:**
 
-  | Question type                                    | Page         | Mark   |
-  | ------------------------------------------------ | ------------ | ------ |
-  | cardiac output from heart rate and stroke volume | main         | Solves |
-  | mean arterial pressure from 120/80               | main         | Solves |
-  | ejection fraction                                | ~ejection    | Solves |
-  | minute and alveolar ventilation                  | ~ventilation | Solves |
+  | Question type                                                         | Page                     | Mark   |
+  | --------------------------------------------------------------------- | ------------------------ | ------ |
+  | cardiac output from heart rate and stroke volume                      | main                     | Solves |
+  | mean arterial pressure from 120/80                                    | main                     | Solves |
+  | ejection fraction                                                     | ~ejection                | Solves |
+  | minute and alveolar ventilation                                       | ~ventilation             | Solves |
+  | cardiac electrophysiology, ECG and reflex control                     | cell-molecular#0~goldman | Partly |
+  | airway flow and lung mechanics (resistance, compliance) [new-page]    | -                        | No     |
+  | gas exchange: alveolar gas equation, A–a difference, shunt [new-page] | -                        | No     |
+  | path of blood and the cardiac cycle                                   | -                        | No     |
 
 - **Main — BUILD:** later P22 `heartPump`; meanwhile `bars`. Values: HR (30–220 per min), SV (mL),
   CO (L/min), systolic, diastolic (mmHg), MAP, TPR (mmHg·min/L). Relations: CO = HR × SV;
@@ -853,12 +885,13 @@ Eukarya` (`figure` on each bin); cards: E. coli, methanogen in a cow's gut, a ha
   stress–strain chapters of biomechanics texts (tendon, ligament, cortical and trabecular bone).
 - **Tests ask:**
 
-  | Question type                                       | Page          | Mark   |
-  | --------------------------------------------------- | ------------- | ------ |
-  | stress, strain and stretch of a tendon under a load | main          | Solves |
-  | modulus from a test's force and stretch             | main          | Solves |
-  | bending stress in a hollow long bone                | ~bone-bending | Solves |
-  | why a hollow bone is nearly as stiff as a solid one | ~bone-bending | Solves |
+  | Question type                                                      | Page          | Mark   |
+  | ------------------------------------------------------------------ | ------------- | ------ |
+  | stress, strain and stretch of a tendon under a load                | main          | Solves |
+  | modulus from a test's force and stretch                            | main          | Solves |
+  | bending stress in a hollow long bone                               | ~bone-bending | Solves |
+  | why a hollow bone is nearly as stiff as a solid one                | ~bone-bending | Solves |
+  | molecular-scale forces and energies (kT, motors, chain elasticity) | -             | No     |
 
 - **Main — BUILD `he.engineering.biomechanics#0`:** later P23 `tensileTest` (the specimen gripped, F
   arrows, L and ΔL bracketed; beside it the σ–ε curve with its toe region and the point at ε);
@@ -884,12 +917,14 @@ Eukarya` (`figure` on each bin); cards: E. coli, methanogen in a cow's gut, a ha
   notes.
 - **Tests ask:**
 
-  | Question type                                                | Page | Mark                                 |
-  | ------------------------------------------------------------ | ---- | ------------------------------------ |
-  | biceps force holding a ball, forearm's weight included       | main | Solves                               |
-  | elbow joint reaction force                                   | main | Solves                               |
-  | hip force in single-leg stance, as a multiple of body weight | ~hip | Solves                               |
-  | muscle pulling at an angle (moment arm d sin θ)              | main | Partly (need the angle; see verdict) |
+  | Question type                                                | Page                             | Mark                                 |
+  | ------------------------------------------------------------ | -------------------------------- | ------------------------------------ |
+  | biceps force holding a ball, forearm's weight included       | main                             | Solves                               |
+  | elbow joint reaction force                                   | main                             | Solves                               |
+  | hip force in single-leg stance, as a multiple of body weight | ~hip                             | Solves                               |
+  | muscle pulling at an angle (moment arm d sin θ)              | main                             | Partly (need the angle; see verdict) |
+  | name the lever parts, classes and joint movements            | anatomy-physiology#1~lever-class | Partly                               |
+  | mechanical advantage and speed advantage of a limb lever     | main                             | Partly                               |
 
 - **Main — BUILD:** `simpleMachine` lever, ⏳ P21 `limb: 'forearm'` (upper arm, elbow, forearm and
   hand to scale; the biceps' line, W_f at the forearm's center, the load at the hand, F_J at the
@@ -937,7 +972,7 @@ Eukarya` (`figure` on each bin); cards: E. coli, methanogen in a cow's gut, a ha
 - **Courses teach:** Maxwell, Kelvin–Voigt and standard linear solid models; creep and relaxation
   tests of cartilage and ligament.
 - **Tests ask:** stress left after relaxation; creep strain at a time; time constant from E and η;
-  which model shows creep with no flow.
+  which model shows creep with no flow. Records add: dynamic modulus against frequency; poroelastic tissue (No).
 - **Main — BUILD:** `functionGraph` `family: 'exponential'` decay (later P25 the spring and dashpot
   drawn beside, in series). Values: modulus E (0.01–10⁵ MPa), viscosity η (MPa·s), time constant τ
   (s), held strain ε₀ (0–0.5), starting stress σ₀ (MPa), time t (s), stress σ (MPa). Relations: τ =
@@ -960,7 +995,7 @@ Eukarya` (`figure` on each bin); cards: E. coli, methanogen in a cow's gut, a ha
 - **Courses teach:** Ratner, Biomaterials Science (titles only) parts on host response; ISO 10993
   test families.
 - **Tests ask:** order the foreign-body response (main, Solves); pass or fail an extract
-  cytotoxicity test (~cytotoxicity, Solves).
+  cytotoxicity test (~cytotoxicity, Solves). Records add: surface wettability: contact angle, surface composition, work of adhesion [new-page] (No); fate of implanted materials; bulk vs surface erosion (biomaterials#2, Partly).
 - **Main — BUILD (sequence):** protein adsorption (seconds) → neutrophils arrive (hours) →
   macrophages (days) → foreign-body giant cells (1–2 weeks) → fibrous capsule (weeks to months).
   Spans in days (0.001, 0.1, 3, 10, 30); sentence: "Every implant is coated in protein before any
@@ -977,11 +1012,13 @@ Eukarya` (`figure` on each bin); cards: E. coli, methanogen in a cow's gut, a ha
 - **Courses teach:** the classes of biomaterials, their moduli and uses; polymer molecular weight.
 - **Tests ask:**
 
-  | Question type                                        | Page              | Mark   |
-  | ---------------------------------------------------- | ----------------- | ------ |
-  | share of load an implant carries (stress shielding)  | main              | Solves |
-  | Mn, Mw and dispersity of a polymer                   | ~molecular-weight | Solves |
-  | which class (and why) for a hip, a suture, a coating | ~classes          | Solves |
+  | Question type                                                | Page              | Mark   |
+  | ------------------------------------------------------------ | ----------------- | ------ |
+  | share of load an implant carries (stress shielding)          | main              | Solves |
+  | Mn, Mw and dispersity of a polymer                           | ~molecular-weight | Solves |
+  | which class (and why) for a hip, a suture, a coating         | ~classes          | Solves |
+  | surface analysis methods (XPS, SIMS, IR, XRD, microscopy)    | -                 | No     |
+  | hydrogel swelling (crosslink density, ionization) [new-page] | -                 | No     |
 
 - **Main — BUILD:** later P23 `tensileTest` `parallel` (implant and bone side by side under one
   load, each bar as wide as its share); meanwhile `percentBar`. Values: implant modulus E_i and area
@@ -1004,7 +1041,7 @@ Eukarya` (`figure` on each bin); cards: E. coli, methanogen in a cow's gut, a ha
 ### 41. he.engineering.biomaterials#2 — Degradation
 
 - **Tests ask:** molecular weight left after hydrolysis; half-life of a polyester; corrosion rate
-  from a weight-loss test.
+  from a weight-loss test. Records add: wear debris and osteolysis (biomaterials#3, Partly); release kinetics from a matrix (Higuchi, M_t = k tⁿ) [new-page] (No); erosion number: surface vs bulk erosion; degrading gels [new-page] (No).
 - **Main — BUILD:** `functionGraph` exponential decay. Values: starting Mn₀ (1–1000 kDa), rate
   constant k (0.001–1 per day), time t (days), Mn, half-life t½ (days). Relations: Mn = Mn₀e^(−kt);
   t½ = ln 2 ÷ k. Assumptions: bulk hydrolysis, first order in the ester bonds; mass loss starts
@@ -1020,7 +1057,7 @@ Eukarya` (`figure` on each bin); cards: E. coli, methanogen in a cow's gut, a ha
 ### 42. he.engineering.biomaterials#3 — Implant design
 
 - **Tests ask:** yearly wear of a polyethylene liner (Archard); fatigue safety factor; order of
-  design controls.
+  design controls. Records add: drug-delivery devices: osmotic pumps, reservoirs, encapsulation membranes [new-page] (No).
 - **Main — BUILD:** `bars` (wear per year, five years stacked). Values: wear factor k (10⁻⁸–10⁻⁴
   mm³/(N·m)), load F (N), sliding per step s (mm), steps per year n, wear V (mm³/yr). Relation:
   V = kFsn. Assumptions: Archard's law, wear grows with load and sliding distance; one step is one
@@ -1043,11 +1080,12 @@ Eukarya` (`figure` on each bin); cards: E. coli, methanogen in a cow's gut, a ha
   in Biological Systems (titles only).
 - **Tests ask:**
 
-  | Question type                                  | Page   | Mark   |
-  | ---------------------------------------------- | ------ | ------ |
-  | time to diffuse 100 μm vs 1 cm                 | main   | Solves |
-  | deepest tissue oxygen reaches from a capillary | ~krogh | Solves |
-  | flux across a layer (Fick's first law)         | ~fick  | Solves |
+  | Question type                                                   | Page   | Mark   |
+  | --------------------------------------------------------------- | ------ | ------ |
+  | time to diffuse 100 μm vs 1 cm                                  | main   | Solves |
+  | deepest tissue oxygen reaches from a capillary                  | ~krogh | Solves |
+  | flux across a layer (Fick's first law)                          | ~fick  | Solves |
+  | equilibration of two compartments through a membrane [new-page] | -      | No     |
 
 - **Main — BUILD:** later P27 `diffusionProfile` (a slab with the source at one face, the spreading
   profile at t, L marked); meanwhile `functionGraph` `family: 'root'` (L against t). Values:
@@ -1072,12 +1110,16 @@ Eukarya` (`figure` on each bin); cards: E. coli, methanogen in a cow's gut, a ha
 - **Courses teach:** 20.330J (Poiseuille flow); physiology texts on resistance and shear.
 - **Tests ask:**
 
-  | Question type                             | Page      | Mark   |
-  | ----------------------------------------- | --------- | ------ |
-  | flow through a vessel from ΔP, r, L, μ    | main      | Solves |
-  | flow change when the radius halves (1/16) | main      | Solves |
-  | wall shear stress on the endothelium      | ~shear    | Solves |
-  | is the flow laminar (Reynolds number)     | ~reynolds | Solves |
+  | Question type                                                                | Page      | Mark   |
+  | ---------------------------------------------------------------------------- | --------- | ------ |
+  | flow through a vessel from ΔP, r, L, μ                                       | main      | Solves |
+  | flow change when the radius halves (1/16)                                    | main      | Solves |
+  | wall shear stress on the endothelium                                         | ~shear    | Solves |
+  | is the flow laminar (Reynolds number)                                        | ~reynolds | Solves |
+  | Bernoulli and continuity (syringes, stenotic valves, viscometers) [new-page] | -         | No     |
+  | pulse-wave reflection at a branch                                            | -         | No     |
+  | flow kinematics and drag near walls                                          | -         | No     |
+  | Laplace pressure of drops and vessels [new-page]                             | -         | No     |
 
 - **Main — BUILD:** later P28 `vesselFlow` (a vessel cut lengthwise, P₁ and P₂ at its ends, the
   parabolic velocity arrows, r and L bracketed); meanwhile `functionGraph` power (Q against r).
@@ -1101,7 +1143,7 @@ Eukarya` (`figure` on each bin); cards: E. coli, methanogen in a cow's gut, a ha
 - **Courses teach:** dialysis and oxygenator chapters (clearance, Kt/V, mass-transfer
   coefficients).
 - **Tests ask:** dialyzer clearance from inlet and outlet; Kt/V and urea reduction ratio; flux
-  from a mass-transfer coefficient.
+  from a mass-transfer coefficient. Records add: compartments in series (linear ODEs) (No); diffusion against convection in a channel (Péclet) [new-page] (No); electroosmotic flow (No); drug release from matrices and osmotic pumps [new-page] (No).
 - **Main — BUILD:** later P29 `dialyzer` (blood one way, dialysate the other through a fiber bundle;
   inlet and outlet concentrations written); meanwhile `bars`. Values: blood flow Q_b (50–600
   mL/min), inlet C_in, outlet C_out (mg/dL), clearance K (mL/min), session t (min), body water V
@@ -1120,13 +1162,15 @@ Eukarya` (`figure` on each bin); cards: E. coli, methanogen in a cow's gut, a ha
   (principles of pharmacology).
 - **Tests ask:**
 
-  | Question type                                 | Page             | Mark            |
-  | --------------------------------------------- | ---------------- | --------------- |
-  | concentration t hours after an IV dose        | main             | Solves          |
-  | half-life from clearance and volume           | main             | Solves          |
-  | steady-state level on repeated doses          | ~multiple-dosing | Solves (⏳ P30) |
-  | infusion rate for a target level; time to 90% | ~infusion        | Solves          |
-  | peak time after an oral dose                  | ~oral            | Solves (⏳ P30) |
+  | Question type                                                 | Page             | Mark            |
+  | ------------------------------------------------------------- | ---------------- | --------------- |
+  | concentration t hours after an IV dose                        | main             | Solves          |
+  | half-life from clearance and volume                           | main             | Solves          |
+  | steady-state level on repeated doses                          | ~multiple-dosing | Solves (⏳ P30) |
+  | infusion rate for a target level; time to 90%                 | ~infusion        | Solves          |
+  | peak time after an oral dose                                  | ~oral            | Solves (⏳ P30) |
+  | renal clearance (GFR, renal plasma flow) [new-page]           | -                | No              |
+  | drug properties: distribution, binding, saturable elimination | -                | No              |
 
 - **Main — BUILD:** `functionGraph` exponential decay (later need 6 for semi-log). Values: dose D
   (0.01–10,000 mg), volume V (1–1000 L), clearance CL (0.01–100 L/h), rate constant k (h⁻¹), t½ (h),
@@ -1155,7 +1199,7 @@ Eukarya` (`figure` on each bin); cards: E. coli, methanogen in a cow's gut, a ha
 - **Courses teach:** Webster, Medical Instrumentation (titles only); open BME lab manuals
   (calibration, detection limit, strain gauges).
 - **Tests ask:** concentration from a calibration line; limit of detection; enzyme electrode
-  saturation; strain gauge bridge output.
+  saturation; strain gauge bridge output. Records add: mass spectrometry (ion cyclotron) (No).
 - **Main — BUILD:** `scatter` with `leastSquares` (five standards, the reading's point traced to
   its concentration). Values: sensitivity m (nA/mM), blank b (nA), blank noise σ (nA), reading S
   (nA), concentration C (mM), limit of detection (mM). Relations: C = (S − b) ÷ m; LOD = 3σ ÷ m.
@@ -1175,7 +1219,7 @@ Eukarya` (`figure` on each bin); cards: E. coli, methanogen in a cow's gut, a ha
 ### 48. he.engineering.bioinstrumentation#1 — Biopotential amplifiers
 
 - **Courses teach:** ECG and EMG front ends, differential and instrumentation amplifiers, CMRR.
-- **Tests ask:** output with common-mode hum; CMRR in dB; instrumentation amplifier gain from R_g.
+- **Tests ask:** output with common-mode hum; CMRR in dB; instrumentation amplifier gain from R_g. Records add: electromyography: motor units and surface signals (No).
 - **Main — BUILD:** later P31 `opAmp` (differential amplifier, the two electrodes, V_d and V_cm
   drawn as sources); meanwhile `bars` (signal and hum at input and output). Values: differential
   gain A_d (1–10⁶), CMRR (dB, 40–140), common-mode gain A_c, signal V_d (mV), common-mode V_cm (V),
@@ -1200,6 +1244,7 @@ Eukarya` (`figure` on each bin); cards: E. coli, methanogen in a cow's gut, a ha
   | share reflected at a fat–muscle boundary        | ~ultrasound | Solves |
   | Larmor frequency at 1.5 or 3 T                  | ~larmor     | Solves |
   | ionizing or not; anatomy or function            | ~modalities | Solves |
+  | image processing and measurement from images    | -           | No     |
 
 - **Main — BUILD:** later P32 `attenuation` (a beam through a slab, photons thinning, HVL marks);
   meanwhile `functionGraph` exponential decay. Values: attenuation coefficient μ (0.01–10 per cm),
@@ -1245,7 +1290,7 @@ Eukarya` (`figure` on each bin); cards: E. coli, methanogen in a cow's gut, a ha
 - **Courses teach:** scaffold porosity, pore size and stiffness (Gibson–Ashby foams); fabrication
   methods.
 - **Tests ask:** porosity from densities; scaffold stiffness from relative density; which method
-  makes aligned fibers.
+  makes aligned fibers. Records add: regeneration: unit cell processes and regulators (No).
 - **Main — BUILD:** later P33 `scaffold` (a porous cube cut open, struts to the relative density);
   meanwhile `percentBar` (solid vs pore). Values: material density ρ_s (g/cm³), scaffold density ρ*
   (g/cm³), relative density, porosity (%), material modulus E_s (MPa), scaffold modulus E* (MPa).
@@ -1261,7 +1306,7 @@ Eukarya` (`figure` on each bin); cards: E. coli, methanogen in a cow's gut, a ha
 
 - **Courses teach:** protein adsorption, integrins and RGD, focal adhesions; seeding efficiency.
 - **Tests ask:** ligand spacing from density, will adhesions form; seeding efficiency; order of
-  attachment events.
+  attachment events. Records add: forces on migrating cells; network models (No); protein adsorption (Langmuir isotherm) [new-page] (No); work of adhesion from contact angle (No); surface chemistry by XPS and SIMS (No); cell migration: speed and persistence time [new-page] (No).
 - **Main — BUILD:** later P34 `ligandGrid` (RGD dots on a square lattice at spacing d under a cell's
   edge, a 70 nm ring for one integrin cluster; adhesions drawn when d ≤ 70 nm); meanwhile `table`.
   Values: ligand density (1–10⁵ per μm²), spacing d (nm), threshold (70 nm). Relation: d = 1000 ÷
