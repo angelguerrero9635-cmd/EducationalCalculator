@@ -111,6 +111,13 @@ import { he3cIssues } from './picturesHe3c';
 import { he3dIssues } from './picturesHe3d';
 import { he3jIssues } from './picturesHe3j';
 import { he3kIssues, waterfallDecibelsIssues } from './picturesHe3k';
+import {
+  chainTreeIssues,
+  matrixGridHe4aIssues,
+  matrixMoveIssues,
+  scatterClassesIssues,
+  scatterPointsHe4a,
+} from './picturesHe4a';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -1533,6 +1540,10 @@ export function repIssues(
       break;
     }
     case 'treeDiagram': {
+      if ('chain' in rep) {
+        out.push(...chainTreeIssues(rep.chain, val)); // HC98
+        break;
+      }
       if ('chances' in rep) {
         out.push(...treeChanceIssues(rep.chances, val), ...hs2gIssues(rep, val));
         break;
@@ -1862,6 +1873,15 @@ export function repIssues(
       break;
     }
     case 'scatter': {
+      if ('classes' in rep) {
+        out.push(...scatterClassesIssues(rep, val)); // HC139
+        break;
+      }
+      if (rep.pointsFrom) {
+        const p = scatterPointsHe4a(rep, byId, val); // HC97: the points the values make
+        out.push(...p.issues, ...(p.rep.points.length ? repIssues(p.rep, shown, byId) : []));
+        break;
+      }
       // Every point is on the axes; clusters and the outlier name points that exist.
       const on = (v: number, a: { min: number; max: number }) => v >= a.min && v <= a.max;
       rep.points.forEach(([x, y], i) => {
@@ -1937,6 +1957,10 @@ export function repIssues(
       break;
     }
     case 'transformation': {
+      if (rep.move === 'matrix') {
+        out.push(...matrixMoveIssues(rep, val)); // HC95
+        break;
+      }
       if (rep.figure.length < 2 || rep.figure.length > 6)
         out.push(`figure with ${rep.figure.length} corners (2 to 6 are labelled A–F)`);
       const num = (x: string | number | undefined, d: number) => (x === undefined ? d : val(x));
@@ -2244,6 +2268,7 @@ export function repIssues(
     case 'matrixGrid':
       out.push(...hsdIssues(rep, (id) => val(id)), ...hs2gIssues(rep, val));
       if (rep.kind === 'complexPlane') out.push(...complexPlaneHe2aIssues(rep, siOf(val, byId))); // HC14
+      if (rep.kind === 'matrixGrid') out.push(...matrixGridHe4aIssues(rep, val)); // HC94, HC190
       out.push(...hs3bIssues(rep, val, byId)); // H106: space, polar conics, turned conics
       if (rep.kind === 'vectorDiagram') out.push(...spaceObjectsIssues(rep, val)); // HC47
       if (rep.kind === 'polarGrid' || rep.kind === 'conicGraph')

@@ -516,6 +516,8 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `termsChart`       | `lit`, `litTerm`, `powers`               | a second lit term (B1 beside B2); terms as powers, 2² = 4 (H93)               |
 | `scatter`          | `residuals`, `r`, `leastSquares`, …      | residual segments and plot, r, the least-squares line beside or given (H18)   |
 | `scatter`          | `residualOf: { point: k }`               | a value picks the point, counted from 1: its residual lit and worked (H105)   |
+| `scatter`          | `pointsFrom: '<group>'`                  | points typed as a value group x₁, y₁, …; axes grow to hold them (HC97)        |
+| `scatter`          | `classes`, `pixel`, `distances`          | class means as stars, the pixel's distance to each, the nearest lit (HC139)   |
 | `boxPlot`          | `fences`; `second`, `labels`             | 1.5 × IQR fences, outliers as open dots; two box plots on one scale (H19)     |
 | `dotPlot`          | `sd: { id, kind? }` (with `mean`)        | the mean as a line and a band one standard deviation either side (H19)        |
 | `table`            | `twoWay: { rows, cols, cells, … }`       | two-way table: totals, lit cell/row/column, segmented bars, chi-square (H20)  |
@@ -524,6 +526,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `venn`             | `chances.counts: { total, count? }`      | counts out of a total: regions as counts, neither outside, P = n/N (H97)      |
 | `treeDiagram`      | `chances.third`, `thirdNames`, `path3`   | a third stage: 8 leaves, each path's product; three stages multiplied (H97)   |
 | `treeDiagram`      | `namesBySize`                            | outcome names for a stage of each size: 2 H, T; 3 R, G, B; … (H105)           |
+| `treeDiagram`      | `chain: { partials, rates, total? }`     | chain rule: z, x and y, t; ∂z/∂x and dx/dt on branches, paths added (HC98)    |
 | `pascalTriangle`   | `fraction: { n, k, count?, chance? }`    | C(a, r) lit over C(n, r), drawn as a fraction: 10/84 = 5/42 (H97)             |
 | `unitCircle`       | `through: { x, y, r? }`                  | a point off the circle: r, the legs, the unit point (x/r, y/r) (H98)          |
 | `unitCircle`       | `pair: { a, b, op? }`                    | A, then B on (or back) to A ± B, arcs in turn; the formula worked (H98)       |
@@ -535,6 +538,9 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `complexPlane`     | `poles`, `zeros`, `locus`, `transfer`    | s-plane × and ○, root locus, σₐ, breakaway, poles at K (HC14)                 |
 | `matrixGrid`       | `mode: 'determinant'`, `cramer`          | D by its diagonals or the first-row expansion; D, Dx, Dy side by side (H99)   |
 | `matrixGrid`       | `steps: 'echelon' \| 'reduced'`          | row operations worked out from typed entries, a 0 row read out (H105)         |
+| `matrixGrid`       | `inverse: { values? }` (rowReduce)       | [A \| I] to [I \| A⁻¹], 3 × 6 or 4 × 8, A⁻¹ lit; columns fit (HC94)           |
+| `matrixGrid`       | `tally: { value? }` (rowReduce)          | det A = k × det of each stage; the diagonal product and det A under (HC94)    |
+| `matrixGrid`       | `mode: 'routh'`, `limit`                 | Routh array: first column lit, sign changes counted, tap a cell (HC190)       |
 | `histogram`        | `range: { from?, to?, total? }`          | bars k = from to to lit and added: P(X ≥ 4) = P(4) + P(5) (H99)               |
 | `histogram`        | `clt: { mean, n, samples, se? }`         | CLT: a skewed population, the means of m samples, the normal σ/√n (H99)       |
 | `histogram`        | `count` (with `data`)                    | a typed list's length: only its first n values are binned (H03)               |
@@ -551,6 +557,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `scale`            | `before`; `hanging`                      | two scales, before and after, gas bubbles labelled; a spring scale in N       |
 | `transformation`   | `then`, `image2`; `symmetry`             | a second move from A′ (dashed) to A″; lines of symmetry and the turn order    |
 | `transformation`   | `move: 'reflect'`, `slope`               | a value 1 or −1 picks the mirror y = x or y = −x (H105)                       |
+| `transformation`   | `move: 'matrix'`, `eigen`, `det`, `area` | unit square and circle under A; eigen lines, v and Av = λv; area (HC95)       |
 | `scaleCopy`        | `center`; `splitter`                     | a dilation from any center with rays; DE ∥ BC cutting a triangle's sides      |
 | `coordinatePlane`  | `midpoint`, `partition`; `polygon`       | M with equal halves ticked; P at m : n; side slopes, parallel and right marks |
 | `circle`           | `sector`; `views`: `sector`, `radian`    | a sector by its angle (° or radians), arc and area; radius-long arcs around   |

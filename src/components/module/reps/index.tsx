@@ -161,6 +161,12 @@ import { TermsChart } from './TermsChart';
 import { UnitCircle } from './UnitCircle';
 import { UnitCircleHs2g } from './UnitCircleHs2g';
 import { MatrixDeterminant } from './MatrixDeterminant';
+import { MatrixReduceHe4a } from './MatrixReduceHe4a'; // HC94
+import { MatrixRouthHe4a } from './MatrixRouthHe4a'; // HC190
+import { TransformationMatrixHe4a } from './TransformationMatrixHe4a'; // HC95
+import { ScatterPointsHe4a } from './ScatterPointsHe4a'; // HC97
+import { ScatterClassesHe4a } from './ScatterClassesHe4a'; // HC139
+import { ChainTreeHe4a } from './ChainTreeHe4a'; // HC98
 import { MatrixGrid } from './MatrixGrid';
 import { HsjView } from './hsjView';
 import { BeakerSolution } from './BeakerSolution';
@@ -306,6 +312,9 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
         <UnitCircle spec={spec} calc={calc} />
       );
     case 'matrixGrid':
+      if (spec.mode === 'routh') return <MatrixRouthHe4a spec={spec} calc={calc} />; // HC190
+      if (spec.mode === 'rowReduce' && (spec.inverse || spec.tally))
+        return <MatrixReduceHe4a spec={spec} calc={calc} />; // HC94
       return spec.mode === 'determinant' ? (
         <MatrixDeterminant spec={spec} calc={calc} />
       ) : (
@@ -534,6 +543,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'mapping':
       return <Mapping spec={spec} calc={calc} />;
     case 'transformation':
+      if (spec.move === 'matrix') return <TransformationMatrixHe4a spec={spec} calc={calc} />; // HC95
       return <Transformation spec={spec} calc={calc} />;
     case 'tape':
       return 'ratio' in spec ? (
@@ -589,6 +599,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'curvedSolid':
       return <CurvedSolid spec={spec} calc={calc} />;
     case 'scatter':
+      if ('classes' in spec) return <ScatterClassesHe4a spec={spec} calc={calc} />; // HC139
+      if (spec.pointsFrom) return <ScatterPointsHe4a spec={spec} calc={calc} />; // HC97
       return <Scatter spec={spec} calc={calc} />;
     case 'rootSquare':
       if (spec.solid === 'cube') return <CubeRoot spec={spec} calc={calc} />;
@@ -804,6 +816,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'diceGrid':
       return <DiceGrid spec={spec} calc={calc} />;
     case 'treeDiagram':
+      if ('chain' in spec) return <ChainTreeHe4a spec={spec.chain} calc={calc} />; // HC98
       return 'chances' in spec ? (
         spec.chances.third ? (
           <ChanceTree3 spec={spec.chances} calc={calc} />

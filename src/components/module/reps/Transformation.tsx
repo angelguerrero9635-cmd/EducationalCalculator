@@ -75,7 +75,13 @@ const mirrorName = (m: Mirror, line?: number) =>
  * A′) or a dilation (the center and the rays through each corner). Drag A′ to change the
  * move, or the mirror line.
  */
-export function Transformation({ spec, calc }: { spec: TransformationSpec; calc: Calculator }) {
+export function Transformation({
+  spec,
+  calc,
+}: {
+  spec: Exclude<TransformationSpec, { move: 'matrix' }>; // HC95: TransformationMatrixHe4a
+  calc: Calculator;
+}) {
   const c = usePalette();
   const rep = useRep(calc);
   const read = reader(rep);

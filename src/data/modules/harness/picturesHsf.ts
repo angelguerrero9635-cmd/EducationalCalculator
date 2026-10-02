@@ -63,7 +63,8 @@ export function transformationHsfIssues(rep: Of<'transformation'>, val: Val): st
   if (!rep.image2 || !first || !second || !a || a.some((x) => x === undefined)) return out;
   const [ix, iy] = [val(rep.image2.x), val(rep.image2.y)];
   if (ix === undefined || iy === undefined) return out;
-  const [ex, ey] = imageOf(imageOf(a as Pt, rep.move, first), rep.then.move, second);
+  const move = rep.move as SecondMove['move']; // HC95: 'matrix' is checked apart
+  const [ex, ey] = imageOf(imageOf(a as Pt, move, first), rep.then.move, second);
   if (far(ix, ex) || far(iy, ey))
     out.push(`A″ (${ix}, ${iy}) is not where the two moves take A (${ex}, ${ey})`);
   return out;

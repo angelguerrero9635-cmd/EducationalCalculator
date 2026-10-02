@@ -44,6 +44,7 @@ import type { He3mSpec, PlaneGis } from './typesHe3m';
 import type { He2jSpec } from './typesHe2j';
 import type { FieldPlotSpec } from './typesHe2g';
 import type { He3bSpec } from './typesHe3b';
+import type { ChainTreeHe4a, ScatterClassesSpec } from './typesHe4a'; // HC139, HC98
 import type { CardIcon } from './layouts/types';
 import type { TreeChances, TwoWaySpec, VennChances } from './typesHse';
 import type { IntegerLineHs2a } from './typesHs2a';
@@ -712,6 +713,8 @@ export type Representation =
       r?: string | true;
       leastSquares?: 'beside' | 'fit';
       residualOf?: { point: number | string; residual?: string };
+      /** HC97: the points from a value group, x₁, y₁, x₂, y₂ … (typesHe4a.ts ScatterHe4a). */
+      pointsFrom?: string;
     }
   /**
    * Graph of `y` against `x`. The curve is computed by the solver with `params` held at
@@ -1129,6 +1132,7 @@ export type Representation =
   | FunctionMachineSpec
   | MappingSpec
   | TransformationSpec
+  | ScatterClassesSpec // HC139: minimum distance in feature space (typesHe4a.ts)
   /** Grades 9–12: the graph of any function family (spec in `typesFunctionGraph.ts`). */
   | FunctionGraphSpec
   /** Grade 7 life science: energy pyramid, generations (specs in `typesLife.ts`). */
@@ -1618,6 +1622,8 @@ export type Representation =
     }
   /** Grades 9–12 (H21): a probability tree, a chance on every branch (spec in `typesHse.ts`). */
   | { kind: 'treeDiagram'; chances: TreeChances }
+  /** HC98: the multivariable chain rule as a tree (spec in `typesHe4a.ts`). */
+  | { kind: 'treeDiagram'; chain: ChainTreeHe4a }
   /**
    * A clear bag of marbles: `parts` are how many of each color (40 in all at most), in
    * `colors` and named by `names` (the color names by default). The event is color `pick`

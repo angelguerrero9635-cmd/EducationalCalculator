@@ -14,6 +14,7 @@ import type {
 import type { NumOrVar } from './typesGraphs';
 import type { ComplexPlaneHe2a } from './typesHe2a'; // HC14
 import type { VectorDiagramHe4b } from './typesHe4b'; // HC96, HC100, HC108, HC171
+import type { MatrixRouthHe4a, RowReduceHe4a } from './typesHe4a'; // HC94, HC190
 import type { ConicTurnedHs3b, PolarConicHs3b, VectorDiagramHs3b } from './typesHs3b';
 import type { ConicGraphHe3c, CycloidPathHe3c, ParametricHe3c, PolarGridHe3c } from './typesHe3c'; // HC53, HC67
 
@@ -273,14 +274,15 @@ export type MatrixGridSpec = { kind: 'matrixGrid' } & (
       /** The entry of C lit first, [row, column] from 1 (default [1, 1]). */
       entry?: [number, number];
     }
-  | {
+  | ({
       mode: 'rowReduce';
       system: NumOrVar[][];
       /** H105: 'echelon' or 'reduced' works the row operations out from the values. */
       steps: RowOp[] | 'echelon' | 'reduced';
       solution?: string[];
-    }
+    } & RowReduceHe4a) // HC94
   | MatrixDeterminant // H99
+  | MatrixRouthHe4a // HC190
 );
 
 export type HsdSpec =

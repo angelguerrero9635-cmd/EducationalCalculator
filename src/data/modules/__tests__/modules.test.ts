@@ -61,6 +61,7 @@ import { he1aSpecVars } from '../typesHe1a';
 import { bodeVars, complexPlaneHe2aVars } from '../typesHe2a';
 import { he3jSpecVars } from '../typesHe3j';
 import { he3kSpecVars, waterfallDecibelsVars } from '../typesHe3k';
+import { chainTreeVars, matrixGridHe4aVars, scatterClassesVars } from '../typesHe4a'; // group A, round 4
 import { he2hSpecVars } from '../typesHe2h';
 import {
   conicGraphHe3cVars,
@@ -391,6 +392,7 @@ function representationVars(r: Representation): string[] {
         ...[r.width, r.at, r.area, r.volume].filter((x): x is string => !!x),
       ];
     case 'treeDiagram':
+      if ('chain' in r) return chainTreeVars(r.chain); // HC98
       if ('chances' in r) return [...treeChanceVars(r.chances), ...hs2gSpecVars(r)];
       return [r.first, r.second, ...[r.third, r.total, r.chance].filter((x): x is string => !!x)];
     case 'diceGrid':
@@ -502,6 +504,7 @@ function representationVars(r: Representation): string[] {
     case 'leafCount':
       return [...r.items, ...(r.difference ? [r.difference] : [])];
     case 'scatter':
+      if ('classes' in r) return scatterClassesVars(r); // HC139
       return [
         ...[r.slope, r.intercept, r.r, r.residualOf?.residual, r.residualOf?.point].filter(
           (x): x is string => typeof x === 'string',
@@ -592,6 +595,7 @@ function representationVars(r: Representation): string[] {
         ...(r.kind === 'polarGrid' ? polarGridHe3cVars(r) : []), // HC53
         ...(r.kind === 'conicGraph' && r.conic === 'circle' ? conicGraphHe3cVars(r) : []), // HC67
         ...he4bSpecVars(r), // HC96, HC100, HC108, HC171
+        ...(r.kind === 'matrixGrid' ? matrixGridHe4aVars(r) : []), // HC94, HC190
       ];
     case 'membrane':
     case 'dnaStrand':
