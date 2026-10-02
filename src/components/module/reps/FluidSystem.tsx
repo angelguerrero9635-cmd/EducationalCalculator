@@ -9,6 +9,7 @@ import type { FluidSystemSpec } from '@/data/modules/typesHe1g';
 
 import type { Calculator } from '../useCalculator';
 import { FluidJet, FluidPitot, FluidVenturi } from './FluidFlow';
+import { FluidFull, FluidLoop, FluidParallel, FluidPipe } from './FluidPipes';
 import { FluidBuoyancy, FluidGate, FluidManometer, FluidTank } from './FluidStatics';
 
 export function FluidSystem({
@@ -33,6 +34,14 @@ export function FluidSystem({
       return <FluidPitot spec={spec} calc={calc} />;
     case 'jet':
       return <FluidJet spec={spec} calc={calc} />;
+    case 'pipe':
+      return <FluidPipe spec={spec} calc={calc} />;
+    case 'parallel':
+      return <FluidParallel spec={spec} calc={calc} />;
+    case 'loop':
+      return <FluidLoop spec={spec} calc={calc} />;
+    case 'full':
+      return <FluidFull spec={spec} calc={calc} />;
     default:
       return null;
   }

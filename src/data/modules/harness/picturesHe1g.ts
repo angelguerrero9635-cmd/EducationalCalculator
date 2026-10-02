@@ -14,6 +14,7 @@ import {
   hardyCross,
   hazenWilliams,
   jetForce,
+  laidSize,
   layerAt,
   manningFull,
   modelSpeed,
@@ -22,7 +23,7 @@ import { getUnit } from '@/engine/units';
 import type { VariableDef } from '@/engine/types';
 
 import type { NumOrVar } from '../typesGraphs';
-import type { He1gSpec } from '../typesHe1g';
+import type { FluidFullSpec, He1gSpec } from '../typesHe1g';
 
 type Val = (id: string) => number | undefined;
 
@@ -41,6 +42,10 @@ export function he1gIssues(rep: He1gSpec, val: Val, byId: Map<string, VariableDe
       : y * (getUnit(byId.get(x)?.unit)?.factor ?? 1);
   };
   const g = si(rep.g) ?? DEFAULT_G;
+  const laidSizeOf = (r: FluidFullSpec) => {
+    const D = si(r.diameter);
+    return D === undefined ? undefined : laidSize(D, r.sizes);
+  };
   const tag = `fluidSystem ${rep.mode}`;
   /** A named value must agree with what the picture works out. */
   const same = (x: NumOrVar | undefined, want: number | undefined, what: string) => {
@@ -147,8 +152,8 @@ export function he1gIssues(rep: He1gSpec, val: Val, byId: Map<string, VariableDe
     }
     case 'pipe': {
       const hL = si(rep.headLoss);
-      if (hL !== undefined && !(hL > 0))
-        out.push(`${tag}: the grade lines do not fall in the flow direction (h_L ≤ 0)`);
+      if (hL !== undefined && hL < 0)
+        out.push(`${tag}: the grade lines rise in the flow direction (h_L < 0)`);
       const [D, L, f, Q, rho] = [
         si(rep.diameter),
         si(rep.length),
@@ -209,7 +214,7 @@ export function he1gIssues(rep: He1gSpec, val: Val, byId: Map<string, VariableDe
         si(rep.manning),
         si(rep.slope),
         si(rep.diameter),
-        si(rep.size),
+        si(rep.size) ?? laidSizeOf(rep),
       ];
       if (Q !== undefined && n !== undefined && S !== undefined)
         same(rep.diameter, manningFull(Q, n, S), 'D (Manning, full)');

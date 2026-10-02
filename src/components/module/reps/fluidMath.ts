@@ -25,6 +25,12 @@ export function gateOf(rho: number, g: number, b: number, H: number, d: number) 
   return { hc, F, ycp };
 }
 
+/** The first size made (mm in `sizes`) at least D (m), in m; undefined past the largest. */
+export const laidSize = (D: number, sizes: number[] | undefined) => {
+  const mm = sizes?.find((x) => x >= D * 1000 * (1 - 1e-9));
+  return mm === undefined ? undefined : mm / 1000;
+};
+
 /** Pipe area from a diameter. */
 export const areaOf = (D: number) => (Math.PI * D * D) / 4;
 

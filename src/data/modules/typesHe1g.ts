@@ -199,7 +199,8 @@ export interface FluidLoopSpec extends FluidBase {
 
 /**
  * A storm sewer flowing full (`full`), in section: the pipe of the next standard size in
- * concrete, the required D = (3.208Qn ÷ √S)^(3/8) dashed inside it, and a side strip with the
+ * concrete (the page's `size`, or the first of its `sizes` at least D; else D itself), the
+ * required D = (3.208Qn ÷ √S)^(3/8) dashed inside it, and a side strip with the
  * slope S; the full velocity Q ÷ A, flagged under about 0.9 m/s (solids settle).
  */
 export interface FluidFullSpec extends FluidBase {
@@ -208,8 +209,10 @@ export interface FluidFullSpec extends FluidBase {
   manning: NumOrVar;
   slope: NumOrVar;
   diameter: NumOrVar;
-  /** The standard size laid. */
+  /** The standard size laid, when the page names it. */
   size?: NumOrVar;
+  /** The sizes made (mm), the page's list: the picture lays the first at least D. */
+  sizes?: number[];
 }
 
 /**

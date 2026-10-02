@@ -6,10 +6,19 @@
  * hydraulics pipe-network and storm-sewer pages (docs/plans/he.aero-civil-chemical.md, topic 9).
  * g = 9.81 m/s², as the engineering pages have it; the picture takes it from `g`.
  */
+import {
+  colebrook,
+  hardyCross,
+  hazenWilliams,
+  manningFull,
+  parallelShare,
+  swameeJain,
+} from '@/components/module/reps/fluidMath';
+
 import { atLeast } from './helpers';
 import type { LayoutDef } from './layouts';
 import type { ModuleDef, StepText } from './types';
-import type { FluidManometerSpec, FluidPitotSpec } from './typesHe1g';
+import type { FluidLoopSpec, FluidManometerSpec, FluidPitotSpec } from './typesHe1g';
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
 /** g on the engineering pages, m/s². */
@@ -36,7 +45,7 @@ const rule = (
   id: string,
   display: string,
   residual: (v: Values) => number,
-  parts: Record<string, [Solve, string, string] | null>,
+  parts: Record<string, [Solve, StepText['expr'], string] | null>,
 ): Rule => ({
   relation: {
     id,
@@ -823,6 +832,645 @@ const jetBucket = jetDemo(
   { rho: 1000, V: 30, A: 0.005, th: 165 },
 );
 
+// ── Pipe flow and networks (fluid-mechanics#2~pump, #4; hydraulics-hydrology#1, #3) ──
+
+/** ν of water at 20 °C, m²/s, as the hydraulics pages fix it. */
+const NU_WATER = 1.0e-6;
+
+/** A roughness kept in metres for the formulas and shown in mm. */
+const rough = () =>
+  q('eps', 'ε', 'Roughness', 'm', 1e-7, 0.01, 0.000001, { units: ['mm', 'm'], shownIn: 'mm' });
+
+const reynoldsRule = (nu: string | number) =>
+  rule(
+    'Re = VD ÷ ν',
+    typeof nu === 'string' ? `{Re} = {V} × {D} ÷ {${nu}}` : '{Re} = {V} × {D} ÷ 0.000001',
+    (v) => v.Re! - (v.V! * v.D!) / (typeof nu === 'string' ? v[nu]! : nu),
+    {
+      Re: [
+        (v) => div(v.V! * v.D!, typeof nu === 'string' ? v[nu]! : nu),
+        typeof nu === 'string' ? `{V} × {D} ÷ {${nu}}` : '{V} × {D} ÷ 0.000001',
+        'Reynolds number: inertia over viscosity, speed times diameter over ν.',
+      ],
+      V: [
+        (v) => div(v.Re! * (typeof nu === 'string' ? v[nu]! : nu), v.D!),
+        typeof nu === 'string' ? `{Re} × {${nu}} ÷ {D}` : '{Re} × 0.000001 ÷ {D}',
+        'Multiply Re by ν and divide by D.',
+      ],
+      D: [
+        (v) => div(v.Re! * (typeof nu === 'string' ? v[nu]! : nu), v.V!),
+        typeof nu === 'string' ? `{Re} × {${nu}} ÷ {V}` : '{Re} × 0.000001 ÷ {V}',
+        'Multiply Re by ν and divide by V.',
+      ],
+      ...(typeof nu === 'string'
+        ? {
+            [nu]: [
+              (v: Values) => div(v.V! * v.D!, v.Re!),
+              '{V} × {D} ÷ {Re}',
+              'Divide VD by Re.',
+            ] as [Solve, StepText['expr'], string],
+          }
+        : {}),
+    },
+  );
+
+const darcyRule = (hl: string) =>
+  rule(
+    'h_L = f(L ÷ D)V² ÷ 2g',
+    `{${hl}} = {f} × {L} ÷ {D} × {V}² ÷ (2 × 9.81)`,
+    (v) => v[hl]! - (v.f! * v.L! * v.V! ** 2) / (v.D! * 2 * G),
+    {
+      [hl]: [
+        (v) => (v.f! * v.L! * v.V! ** 2) / (v.D! * 2 * G),
+        '{f} × {L} ÷ {D} × {V}² ÷ (2 × 9.81)',
+        'Darcy–Weisbach: the friction factor times the pipe’s length in diameters times the velocity head V² ÷ 2g.',
+      ],
+      f: [
+        (v) => div(v[hl]! * v.D! * 2 * G, v.L! * v.V! ** 2),
+        `{${hl}} × {D} × 2 × 9.81 ÷ ({L} × {V}²)`,
+        'Solve Darcy–Weisbach for f.',
+      ],
+      L: [
+        (v) => div(v[hl]! * v.D! * 2 * G, v.f! * v.V! ** 2),
+        `{${hl}} × {D} × 2 × 9.81 ÷ ({f} × {V}²)`,
+        'Solve Darcy–Weisbach for L.',
+      ],
+      V: [
+        (v) => root(div(v[hl]! * v.D! * 2 * G, v.f! * v.L!) ?? NaN),
+        `√({${hl}} × {D} × 2 × 9.81 ÷ ({f} × {L}))`,
+        'Solve Darcy–Weisbach for V².',
+      ],
+      D: [
+        (v) => div(v.f! * v.L! * v.V! ** 2, v[hl]! * 2 * G),
+        `{f} × {L} × {V}² ÷ ({${hl}} × 2 × 9.81)`,
+        'Solve Darcy–Weisbach for D.',
+      ],
+    },
+  );
+
+const pipeLoss = (() => {
+  const [V, D, L, nu, eps] = [2, 0.1, 100, 1.0e-6, 0.000045];
+  const Re = (V * D) / nu;
+  const f = colebrook(Re, eps / D);
+  const hL = (f * L * V * V) / (D * 2 * G);
+  return demo(
+    'g.he-fluid-system-pipe',
+    'Head loss in a pipe: the grade lines fall',
+    'Use this for “Water at 2 m/s in 100 m of 0.1 m steel pipe (ε = 0.045 mm). Find h_L and ΔP.”',
+    {
+      assumptions: [
+        'Steady, fully developed turbulent flow (Re > 4000) of water, ρ = 1000 kg/m³.',
+        'g = 9.81 m/s²; minor losses are ignored.',
+      ],
+      variables: [
+        q('V', 'V', 'Mean speed', 'm/s', 0.01, 100, 0.01),
+        q('D', 'D', 'Diameter', 'm', 0.001, 10, 0.001),
+        q('L', 'L', 'Length', 'm', 0.1, 1e6, 1),
+        q('nu', 'ν', 'Kinematic viscosity', 'm²/s', 1e-8, 1e-2, 1e-8, { scientific: true }),
+        rough(),
+        q('Re', 'Re', 'Reynolds number', undefined, 4000, 1e9, 1),
+        q('f', 'f', 'Friction factor', undefined, 0.005, 0.1, 0.0001),
+        q('hL', 'h_L', 'Head loss', 'm', 0, 1e6, 0.01),
+        kPa('dP', 'ΔP', 'Pressure drop'),
+      ],
+      ...rules(
+        reynoldsRule('nu'),
+        rule(
+          'Colebrook',
+          '1 ÷ √{f} = −2 × log₁₀({eps} ÷ (3.7 × {D}) + 2.51 ÷ ({Re} × √{f}))',
+          (v) =>
+            1 / Math.sqrt(v.f!) +
+            2 * Math.log10(v.eps! / (3.7 * v.D!) + 2.51 / (v.Re! * Math.sqrt(v.f!))),
+          {
+            f: [
+              (v) => colebrook(v.Re!, v.eps! / v.D!),
+              // f is on both sides: the last round of the iteration, with the f it settles on.
+              (v: Values) =>
+                `(1 ÷ (−2 × log₁₀({eps} ÷ (3.7 × {D}) + 2.51 ÷ ({Re} × √${Number(colebrook(v.Re!, v.eps! / v.D!).toPrecision(8))}))))²`,
+              'Colebrook has f on both sides: guess f = 0.02, put it in on the right, and repeat until f stops changing. The last round is shown.',
+            ],
+            eps: null,
+            D: null,
+            Re: null,
+          },
+        ),
+        darcyRule('hL'),
+        rule('ΔP = ρgh_L', '{dP} = 1000 × 9.81 × {hL}', (v) => v.dP! - 1000 * G * v.hL!, {
+          dP: [
+            (v) => 1000 * G * v.hL!,
+            '1000 × 9.81 × {hL}',
+            'A head of h_L metres of water is a pressure of ρgh_L.',
+          ],
+          hL: [(v) => v.dP! / (1000 * G), '{dP} ÷ (1000 × 9.81)', 'Divide the pressure by ρg.'],
+        }),
+      ),
+      example: { V, D, L, nu, eps, Re, f, hL, dP: 1000 * G * hL },
+      startWith: ['V', 'D', 'L', 'nu', 'eps'],
+      pictureLabels: ['nu', 'eps'],
+      representation: {
+        kind: 'fluidSystem',
+        mode: 'pipe',
+        diameter: 'D',
+        length: 'L',
+        speed: 'V',
+        headLoss: 'hL',
+        drop: 'dP',
+        density: 1000,
+        friction: 'f',
+        reynolds: 'Re',
+        g: G,
+      },
+    },
+  );
+})();
+
+const pipeNetwork = (() => {
+  const [D, L, Q, eps] = [0.3, 500, 0.1, 0.000045];
+  const V = Q / ((Math.PI / 4) * D * D);
+  const Re = (V * D) / NU_WATER;
+  const f = swameeJain(Re, eps / D);
+  return demo(
+    'g.he-fluid-system-pipe-network',
+    'One pipe of a network: Swamee–Jain and Darcy',
+    'Use this for “0.1 m³/s flows in 500 m of 0.3 m steel pipe (ε = 0.045 mm). Find the head loss.”',
+    {
+      assumptions: [
+        'Turbulent flow (Re > 4000) of water at 20 °C, ν = 10⁻⁶ m²/s.',
+        'Minor losses are ignored; g = 9.81 m/s².',
+      ],
+      variables: [
+        q('D', 'D', 'Diameter', 'm', 0.01, 10, 0.01),
+        q('L', 'L', 'Length', 'm', 1, 1e6, 1),
+        q('Q', 'Q', 'Flow rate', 'm³/s', 1e-5, 1000, 0.001),
+        rough(),
+        q('V', 'V', 'Mean speed', 'm/s', 0, 100, 0.001),
+        q('Re', 'Re', 'Reynolds number', undefined, 4000, 1e9, 1),
+        q('f', 'f', 'Friction factor', undefined, 0.005, 0.1, 0.0001),
+        q('hf', 'h_f', 'Head loss', 'm', 0, 1e6, 0.01),
+      ],
+      ...rules(
+        rule(
+          'V = Q ÷ (πD² ÷ 4)',
+          '{V} = {Q} ÷ (π × {D}² ÷ 4)',
+          (v) => v.V! - v.Q! / ((Math.PI / 4) * v.D! ** 2),
+          {
+            V: [
+              (v) => v.Q! / ((Math.PI / 4) * v.D! ** 2),
+              '{Q} ÷ (π × {D}² ÷ 4)',
+              'The mean speed is the flow over the pipe’s area.',
+            ],
+            Q: [
+              (v) => v.V! * (Math.PI / 4) * v.D! ** 2,
+              '{V} × π × {D}² ÷ 4',
+              'Flow is speed times area.',
+            ],
+            D: [
+              (v) => (v.V! > 0 ? Math.sqrt((4 * v.Q!) / (Math.PI * v.V!)) : undefined),
+              '√(4 × {Q} ÷ (π × {V}))',
+              'The area is Q ÷ V; turn it into a diameter.',
+            ],
+          },
+        ),
+        reynoldsRule(NU_WATER),
+        rule(
+          'Swamee–Jain',
+          '{f} = 0.25 ÷ (log₁₀({eps} ÷ (3.7 × {D}) + 5.74 ÷ {Re}^0.9))²',
+          (v) => v.f! - swameeJain(v.Re!, v.eps! / v.D!),
+          {
+            f: [
+              (v) => swameeJain(v.Re!, v.eps! / v.D!),
+              '0.25 ÷ (log₁₀({eps} ÷ (3.7 × {D}) + 5.74 ÷ {Re}^0.9))²',
+              'Swamee–Jain gives f directly, within 1% of Colebrook: the roughness in diameters, and Re.',
+            ],
+            eps: null,
+            D: null,
+            Re: null,
+          },
+        ),
+        darcyRule('hf'),
+      ),
+      example: { D, L, Q, eps, V, Re, f, hf: (f * L * V * V) / (D * 2 * G) },
+      startWith: ['D', 'L', 'Q', 'eps'],
+      pictureLabels: ['eps'],
+      representation: {
+        kind: 'fluidSystem',
+        mode: 'pipe',
+        diameter: 'D',
+        length: 'L',
+        flow: 'Q',
+        speed: 'V',
+        headLoss: 'hf',
+        friction: 'f',
+        reynolds: 'Re',
+        g: G,
+      },
+    },
+  );
+})();
+
+/** h_f = 10.67LQ^1.852 ÷ (C^1.852D^4.87) for one pipe's values. */
+const hwRule = (id: string, hf: string, Q: string, L: string, D: string) =>
+  rule(
+    id,
+    `{${hf}} = 10.67 × {${L}} × {${Q}}^1.852 ÷ ({C}^1.852 × {${D}}^4.87)`,
+    (v) => v[hf]! - hazenWilliams(v[L]!, v[Q]!, v.C!, v[D]!),
+    {
+      [hf]: [
+        (v) => hazenWilliams(v[L]!, v[Q]!, v.C!, v[D]!),
+        `10.67 × {${L}} × {${Q}}^1.852 ÷ ({C}^1.852 × {${D}}^4.87)`,
+        'Hazen–Williams (SI): longer, faster and narrower pipes lose more head; a smoother pipe (larger C) loses less.',
+      ],
+      [Q]: [
+        (v) => ((v[hf]! * v.C! ** 1.852 * v[D]! ** 4.87) / (10.67 * v[L]!)) ** (1 / 1.852),
+        `({${hf}} × {C}^1.852 × {${D}}^4.87 ÷ (10.67 × {${L}}))^(1 ÷ 1.852)`,
+        'Solve for Q^1.852, then take the 1.852th root.',
+      ],
+      [L]: [
+        (v) => div(v[hf]! * v.C! ** 1.852 * v[D]! ** 4.87, 10.67 * v[Q]! ** 1.852),
+        `{${hf}} × {C}^1.852 × {${D}}^4.87 ÷ (10.67 × {${Q}}^1.852)`,
+        'Solve Hazen–Williams for L.',
+      ],
+      [D]: [
+        (v) => ((10.67 * v[L]! * v[Q]! ** 1.852) / (v[hf]! * v.C! ** 1.852)) ** (1 / 4.87),
+        `(10.67 × {${L}} × {${Q}}^1.852 ÷ ({${hf}} × {C}^1.852))^(1 ÷ 4.87)`,
+        'Solve for D^4.87, then take the 4.87th root.',
+      ],
+      C: [
+        (v) => ((10.67 * v[L]! * v[Q]! ** 1.852) / (v[hf]! * v[D]! ** 4.87)) ** (1 / 1.852),
+        `(10.67 × {${L}} × {${Q}}^1.852 ÷ ({${hf}} × {${D}}^4.87))^(1 ÷ 1.852)`,
+        'Solve for C^1.852, then take the 1.852th root.',
+      ],
+    },
+  );
+
+const ASSUME_HW = [
+  'Water in turbulent flow; Hazen–Williams in SI (Q in m³/s, D and L in m).',
+  'Minor losses are ignored.',
+];
+
+const pipeHazen = demo(
+  'g.he-fluid-system-pipe-hazen',
+  'Head loss by Hazen–Williams',
+  'Use this for “0.1 m³/s in 500 m of 0.3 m pipe with C = 130. What is h_f?”',
+  {
+    assumptions: ASSUME_HW,
+    variables: [
+      q('Q', 'Q', 'Flow rate', 'm³/s', 1e-5, 1000, 0.001),
+      q('D', 'D', 'Diameter', 'm', 0.01, 10, 0.01),
+      q('L', 'L', 'Length', 'm', 1, 1e6, 1),
+      q('C', 'C', 'Hazen–Williams C', undefined, 40, 160, 1),
+      q('hf', 'h_f', 'Head loss', 'm', 0, 1e6, 0.01),
+    ],
+    ...rules(hwRule('Hazen–Williams', 'hf', 'Q', 'L', 'D')),
+    example: { Q: 0.1, D: 0.3, L: 500, C: 130, hf: hazenWilliams(500, 0.1, 130, 0.3) },
+    startWith: ['Q', 'D', 'L', 'C'],
+    pictureLabels: ['C'],
+    representation: {
+      kind: 'fluidSystem',
+      mode: 'pipe',
+      diameter: 'D',
+      length: 'L',
+      flow: 'Q',
+      headLoss: 'hf',
+      g: G,
+    },
+  },
+);
+
+const pipePump = demo(
+  'g.he-fluid-system-pipe-pump',
+  'A pump lifting water between reservoirs',
+  'Use this for “A pump moves 0.01 m³/s up 20 m with 4 m of losses at 75% efficiency. What power?”',
+  {
+    assumptions: [
+      'Both reservoir surfaces are open to the air and still, so only the heights and losses count.',
+      'g = 9.81 m/s².',
+    ],
+    variables: [
+      q('Q', 'Q', 'Flow rate', 'm³/s', 1e-6, 100, 0.001),
+      q('dz', 'Δz', 'Rise between surfaces', 'm', 0.01, 2000, 0.1),
+      q('hL', 'h_L', 'Head loss', 'm', 0, 2000, 0.1),
+      q('hp', 'h_p', 'Pump head', 'm', 0.01, 4000, 0.1),
+      q('eta', 'η', 'Pump efficiency', undefined, 0.05, 1, 0.01),
+      q('rho', 'ρ', 'Density', 'kg/m³', 1, 20000, 1),
+      q('P', 'P', 'Shaft power', 'W', 0, 1e9, 1, { units: ['W', 'kW'], shownIn: 'kW' }),
+    ],
+    ...rules(
+      rule('h_p = Δz + h_L', '{hp} = {dz} + {hL}', (v) => v.hp! - v.dz! - v.hL!, {
+        hp: [
+          (v) => v.dz! + v.hL!,
+          '{dz} + {hL}',
+          'Energy from surface to surface: the pump lifts the water Δz and makes up the losses.',
+        ],
+        dz: [(v) => v.hp! - v.hL!, '{hp} − {hL}', 'Take the losses from the pump head.'],
+        hL: [(v) => v.hp! - v.dz!, '{hp} − {dz}', 'Take the rise from the pump head.'],
+      }),
+      rule(
+        'P = ρgQh_p ÷ η',
+        '{P} = {rho} × 9.81 × {Q} × {hp} ÷ {eta}',
+        (v) => v.P! - (v.rho! * G * v.Q! * v.hp!) / v.eta!,
+        {
+          P: [
+            (v) => div(v.rho! * G * v.Q! * v.hp!, v.eta!),
+            '{rho} × 9.81 × {Q} × {hp} ÷ {eta}',
+            'The water gains ρgQh_p each second; the shaft must give more, by 1 ÷ η.',
+          ],
+          eta: [
+            (v) => div(v.rho! * G * v.Q! * v.hp!, v.P!),
+            '{rho} × 9.81 × {Q} × {hp} ÷ {P}',
+            'Power into the water over the shaft power.',
+          ],
+          Q: [
+            (v) => div(v.P! * v.eta!, v.rho! * G * v.hp!),
+            '{P} × {eta} ÷ ({rho} × 9.81 × {hp})',
+            'Solve for Q.',
+          ],
+          hp: [
+            (v) => div(v.P! * v.eta!, v.rho! * G * v.Q!),
+            '{P} × {eta} ÷ ({rho} × 9.81 × {Q})',
+            'Solve for h_p.',
+          ],
+          rho: [
+            (v) => div(v.P! * v.eta!, G * v.Q! * v.hp!),
+            '{P} × {eta} ÷ (9.81 × {Q} × {hp})',
+            'Solve for ρ.',
+          ],
+        },
+      ),
+    ),
+    example: {
+      Q: 0.01,
+      dz: 20,
+      hL: 4,
+      hp: 24,
+      eta: 0.75,
+      rho: 1000,
+      P: (1000 * G * 0.01 * 24) / 0.75,
+    },
+    startWith: ['Q', 'dz', 'hL', 'eta', 'rho'],
+    representation: {
+      kind: 'fluidSystem',
+      mode: 'pipe',
+      pump: true,
+      flow: 'Q',
+      rise: 'dz',
+      headLoss: 'hL',
+      pumpHead: 'hp',
+      power: 'P',
+      efficiency: 'eta',
+      density: 'rho',
+      g: G,
+    },
+  },
+);
+
+function parallelDemo(
+  id: string,
+  title: string,
+  use: string,
+  values: { Q: number; D1: number; L1: number; D2: number; L2: number; C: number },
+): ModuleDef {
+  const { Q, D1, L1, D2, L2, C } = values;
+  const Q1 = Q * parallelShare(D1, L1, D2, L2);
+  return demo(id, title, use, {
+    assumptions: [...ASSUME_HW, 'Both pipes have the same C and join the same two nodes.'],
+    variables: [
+      q('Q', 'Q', 'Total flow', 'm³/s', 1e-5, 1000, 0.001),
+      q('D1', 'D₁', 'Diameter of pipe 1', 'm', 0.01, 10, 0.01),
+      q('L1', 'L₁', 'Length of pipe 1', 'm', 1, 1e6, 1),
+      q('D2', 'D₂', 'Diameter of pipe 2', 'm', 0.01, 10, 0.01),
+      q('L2', 'L₂', 'Length of pipe 2', 'm', 1, 1e6, 1),
+      q('C', 'C', 'Hazen–Williams C', undefined, 40, 160, 1),
+      q('Q1', 'Q₁', 'Flow in pipe 1', 'm³/s', 0, 1000, 0.0001),
+      q('Q2', 'Q₂', 'Flow in pipe 2', 'm³/s', 0, 1000, 0.0001),
+      q('hf', 'h_f', 'Head loss from A to B', 'm', 0, 1e6, 0.01),
+    ],
+    ...rules(
+      rule(
+        'Equal losses split the flow',
+        '{Q1} = {Q} ÷ (1 + ({L1} ÷ {L2} × ({D2} ÷ {D1})^4.87)^(1 ÷ 1.852))',
+        (v) => v.Q1! - v.Q! * parallelShare(v.D1!, v.L1!, v.D2!, v.L2!),
+        {
+          Q1: [
+            (v) => v.Q! * parallelShare(v.D1!, v.L1!, v.D2!, v.L2!),
+            '{Q} ÷ (1 + ({L1} ÷ {L2} × ({D2} ÷ {D1})^4.87)^(1 ÷ 1.852))',
+            'Set the two Hazen–Williams losses equal: Q₂ ÷ Q₁ = ((L₁ ÷ L₂)(D₂ ÷ D₁)^4.87)^(1 ÷ 1.852), and Q₁ + Q₂ = Q.',
+          ],
+          Q: [
+            (v) => div(v.Q1!, parallelShare(v.D1!, v.L1!, v.D2!, v.L2!)),
+            '{Q1} × (1 + ({L1} ÷ {L2} × ({D2} ÷ {D1})^4.87)^(1 ÷ 1.852))',
+            'Undo the split.',
+          ],
+          L1: null,
+          L2: null,
+          D1: null,
+          D2: null,
+        },
+      ),
+      rule('Q₁ + Q₂ = Q', '{Q1} + {Q2} = {Q}', (v) => v.Q1! + v.Q2! - v.Q!, {
+        Q2: [(v) => v.Q! - v.Q1!, '{Q} − {Q1}', 'What doesn’t take pipe 1 takes pipe 2.'],
+        Q1: [(v) => v.Q! - v.Q2!, '{Q} − {Q2}', 'What doesn’t take pipe 2 takes pipe 1.'],
+        Q: [(v) => v.Q1! + v.Q2!, '{Q1} + {Q2}', 'The two flows join again at B.'],
+      }),
+      hwRule('h_f in pipe 1', 'hf', 'Q1', 'L1', 'D1'),
+      hwRule('h_f in pipe 2', 'hf', 'Q2', 'L2', 'D2'),
+    ),
+    example: { Q, D1, L1, D2, L2, C, Q1, Q2: Q - Q1, hf: hazenWilliams(L1, Q1, C, D1) },
+    startWith: ['Q', 'D1', 'L1', 'D2', 'L2', 'C'],
+    representation: {
+      kind: 'fluidSystem',
+      mode: 'parallel',
+      flow: 'Q',
+      pipes: [
+        { diameter: 'D1', length: 'L1', flow: 'Q1' },
+        { diameter: 'D2', length: 'L2', flow: 'Q2' },
+      ],
+      headLoss: 'hf',
+      hazen: 'C',
+      g: G,
+    },
+  });
+}
+
+const parallel = parallelDemo(
+  'g.he-fluid-system-parallel',
+  'Two pipes in parallel share the flow',
+  'Use this for “0.15 m³/s splits between 0.3 m × 500 m and 0.2 m × 400 m pipes (C = 130). Find Q₁, Q₂ and h_f.”',
+  { Q: 0.15, D1: 0.3, L1: 500, D2: 0.2, L2: 400, C: 130 },
+);
+
+const parallelNarrow = parallelDemo(
+  'g.he-fluid-system-parallel-narrow',
+  'A narrow bypass takes little of the flow',
+  'Use this for “A 0.1 m bypass 300 m long runs beside 600 m of 0.4 m main carrying 0.2 m³/s. How much takes the bypass?”',
+  { Q: 0.2, D1: 0.4, L1: 600, D2: 0.1, L2: 300, C: 120 },
+);
+
+function loopDemo(
+  id: string,
+  title: string,
+  use: string,
+  K: [number, number, number, number],
+  Q: [number, number, number, number],
+): ModuleDef {
+  const hc = hardyCross(K.map((k, i) => ({ K: k, Q: Q[i]! })));
+  const n = [1, 2, 3, 4];
+  const sum = (f: (i: number) => string) => n.map(f).join(' + ');
+  const residual = (v: Values) =>
+    v.dQ! - hardyCross(n.map((i) => ({ K: v[`K${i}`]!, Q: v[`Q${i}`]! }))).dQ;
+  return demo(id, title, use, {
+    assumptions: [
+      'h_f = KQ|Q| in each pipe (Darcy with a fixed f); clockwise flows are +.',
+      'The assumed flows already balance at every node; one correction is the page.',
+    ],
+    variables: [
+      ...n.map((i) =>
+        q(`K${i}`, `K${'₁₂₃₄'[i - 1]}`, `Pipe ${i} constant`, undefined, 0.001, 1e7, 1),
+      ),
+      ...n.map((i) =>
+        q(`Q${i}`, `Q${'₁₂₃₄'[i - 1]}`, `Assumed flow in pipe ${i}`, 'm³/s', -100, 100, 0.001),
+      ),
+      q('dQ', 'ΔQ', 'Correction', 'm³/s', -100, 100, 0.00001),
+    ],
+    ...rules(
+      rule(
+        'ΔQ = −Σh_f ÷ Σ(2h_f ÷ Q)',
+        `{dQ} = −(${sum((i) => `{K${i}} × {Q${i}} × |{Q${i}}|`)}) ÷ (2 × (${sum((i) => `{K${i}} × |{Q${i}}|`)}))`,
+        residual,
+        {
+          dQ: [
+            (v) => -residual({ ...v, dQ: 0 }),
+            `−(${sum((i) => `{K${i}} × {Q${i}} × |{Q${i}}|`)}) ÷ (2 × (${sum((i) => `{K${i}} × |{Q${i}}|`)}))`,
+            'Round the loop the head losses must add to 0. Each h_f = KQ|Q| changes by 2K|Q| per unit of flow, so the correction is −Σh_f ÷ Σ2K|Q|.',
+          ],
+          ...Object.fromEntries(
+            n.flatMap((i) => [
+              [`K${i}`, null],
+              [`Q${i}`, null],
+            ]),
+          ),
+        },
+      ),
+    ),
+    example: {
+      ...Object.fromEntries(n.map((i) => [`K${i}`, K[i - 1]!])),
+      ...Object.fromEntries(n.map((i) => [`Q${i}`, Q[i - 1]!])),
+      dQ: hc.dQ,
+    },
+    startWith: [...n.map((i) => `K${i}`), ...n.map((i) => `Q${i}`)],
+    representation: {
+      kind: 'fluidSystem',
+      mode: 'loop',
+      pipes: [1, 2, 3, 4].map((i) => ({
+        constant: `K${i}`,
+        flow: `Q${i}`,
+      })) as FluidLoopSpec['pipes'],
+      correction: 'dQ',
+      g: G,
+    },
+  });
+}
+
+const loop = loopDemo(
+  'g.he-fluid-system-loop',
+  'One Hardy Cross correction round a loop',
+  'Use this for “K = 200, 300, 200, 400 and Q = +0.06, +0.03, −0.02, −0.04 m³/s round a loop. Find ΔQ.”',
+  [200, 300, 200, 400],
+  [0.06, 0.03, -0.02, -0.04],
+);
+
+const loopFlip = loopDemo(
+  'g.he-fluid-system-loop-flip',
+  'A correction that turns one pipe’s flow round',
+  'Use this for “Round a loop of four pipes with K = 100 the guesses are +0.05, +0.006, −0.03, −0.005 m³/s. Which flow reverses?”',
+  [100, 100, 100, 100],
+  [0.05, 0.006, -0.03, -0.005],
+);
+
+/** Pipe sizes made (mm): the page's list, the picture lays the next one up. */
+const SEWER_SIZES = [
+  300, 375, 450, 525, 600, 675, 750, 825, 900, 1050, 1200, 1350, 1500, 1650, 1800, 1950, 2100, 2250,
+  2400, 2700, 3000, 3300, 3600,
+];
+
+function fullDemo(
+  id: string,
+  title: string,
+  use: string,
+  values: { Q: number; n: number; S: number },
+): ModuleDef {
+  const { Q, n, S } = values;
+  const D = 1000 * manningFull(Q, n, S);
+  return demo(id, title, use, {
+    assumptions: [
+      'The pipe flows full but not under pressure (Manning, SI).',
+      'Round up to the next size made; full, the speed should stay above about 0.9 m/s so solids keep moving.',
+    ],
+    variables: [
+      q('Q', 'Q', 'Design flow', 'm³/s', 1e-6, 1e4, 0.001),
+      q('n', 'n', 'Manning n', undefined, 0.001, 1, 0.001),
+      q('S', 'S', 'Slope', undefined, 0.0001, 1, 0.0001),
+      q('D', 'D', 'Diameter needed', 'mm', 1, 1e5, 1, { units: ['mm'] }),
+    ],
+    ...rules(
+      rule(
+        'D = (3.208Qn ÷ √S)^(3/8)',
+        '{D} = 1000 × (3.208 × {Q} × {n} ÷ √({S}))^(3/8)',
+        (v) => v.D! - 1000 * manningFull(v.Q!, v.n!, v.S!),
+        {
+          D: [
+            (v) => 1000 * manningFull(v.Q!, v.n!, v.S!),
+            '1000 × (3.208 × {Q} × {n} ÷ √({S}))^(3/8)',
+            'Manning’s equation for a round pipe flowing full, solved for D (× 1000 for mm).',
+          ],
+          Q: [
+            (v) => ((v.D! / 1000) ** (8 / 3) * Math.sqrt(v.S!)) / (3.208 * v.n!),
+            '({D} ÷ 1000)^(8/3) × √({S}) ÷ (3.208 × {n})',
+            'Raise D to the 8/3 power and solve for Q.',
+          ],
+          n: [
+            (v) => ((v.D! / 1000) ** (8 / 3) * Math.sqrt(v.S!)) / (3.208 * v.Q!),
+            '({D} ÷ 1000)^(8/3) × √({S}) ÷ (3.208 × {Q})',
+            'Raise D to the 8/3 power and solve for n.',
+          ],
+          S: [
+            (v) => ((3.208 * v.Q! * v.n!) / (v.D! / 1000) ** (8 / 3)) ** 2,
+            '(3.208 × {Q} × {n} ÷ ({D} ÷ 1000)^(8/3))²',
+            'Raise D to the 8/3 power, solve for √S, then square.',
+          ],
+        },
+      ),
+    ),
+    example: { Q, n, S, D },
+    startWith: ['Q', 'n', 'S'],
+    unitSystems: ['metric'],
+    representation: {
+      kind: 'fluidSystem',
+      mode: 'full',
+      flow: 'Q',
+      manning: 'n',
+      slope: 'S',
+      diameter: 'D',
+      sizes: SEWER_SIZES,
+      g: G,
+    },
+  });
+}
+
+const full = fullDemo(
+  'g.he-fluid-system-full',
+  'Sizing a storm sewer flowing full',
+  'Use this for “Size a concrete sewer (n = 0.013) on a 0.005 slope for 1.667 m³/s.”',
+  { Q: 1.667, n: 0.013, S: 0.005 },
+);
+
+const fullSlow = fullDemo(
+  'g.he-fluid-system-full-slow',
+  'A small flow on a flat slope: too slow',
+  'Use this for “Size a sewer for 0.05 m³/s on a 0.001 slope (n = 0.013). Will it keep itself clean?”',
+  { Q: 0.05, n: 0.013, S: 0.001 },
+);
+
 export const HE1G_GALLERY_MODULES: ModuleDef[] = [
   tank,
   tankDeep,
@@ -838,6 +1486,16 @@ export const HE1G_GALLERY_MODULES: ModuleDef[] = [
   pitotWater,
   jet,
   jetBucket,
+  pipeLoss,
+  pipeNetwork,
+  pipeHazen,
+  pipePump,
+  parallel,
+  parallelNarrow,
+  loop,
+  loopFlip,
+  full,
+  fullSlow,
 ];
 
 export const HE1G_GALLERY_LAYOUTS: LayoutDef[] = [];
