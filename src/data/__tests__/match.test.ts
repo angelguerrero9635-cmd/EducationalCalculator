@@ -73,7 +73,7 @@ describe('released questions (research/questions)', () => {
     const misses: string[] = [];
     for (const r of usable) {
       const want = new Set([r.skillId, ...(r.alsoSkills ?? [])]);
-      const got = matchProblem(r.question, 3).map((m) => m.skill.id);
+      const got = matchProblem(r.question, 3).map((m) => m.owner.id);
       if (got[0] && want.has(got[0])) top1++;
       if (got.some((g) => want.has(g))) top3++;
       else misses.push(`${r.id} (${r.skillId}) → ${got.join(', ') || 'nothing'}`);

@@ -5,22 +5,45 @@
  * that takes decimals, fractions, percents, money or negatives, or whose ranges fit the
  * numbers, ranks higher; one whose ranges the numbers exceed ranks lower.
  */
-import { SKILLS, type Skill } from '@/data/taxonomy';
+import { SKILLS } from '@/data/taxonomy';
 
 import { LAYOUTS, type LayoutDef } from './modules/layouts';
 import { MODULES, moduleOwner } from './modules';
 import type { ModuleDef } from './modules/types';
-import { normalize, type RouteTarget, skillRoute } from './selectors';
+import {
+  divisionLabel,
+  nodeContext,
+  normalize,
+  pageRoute,
+  topicOf,
+  type RouteTarget,
+} from './selectors';
 import CORPUS from './matchCorpus.json';
 
-/** Word weights per skill from openly licensed practice problems (scripts/build-match-corpus.mjs). */
+/**
+ * Word weights per skill (or course topic, `<courseId>#<i>`) from openly licensed practice
+ * problems (scripts/build-match-corpus.mjs).
+ */
 const corpus = CORPUS as Record<string, Record<string, number>>;
 
-export interface MatchResult {
-  /** The page id: a skill's main page or one of its problem types. */
+/** What a page belongs to: a K–12 skill or a college course topic. */
+export interface MatchOwner {
+  /** The skill id or topic key (`<courseId>#<i>`). */
   id: string;
   title: string;
-  skill: Skill;
+  /** "Grade 4 · Math", or "Science · Human Geography" for a topic. */
+  context: string;
+  /** The skill's strand, or the topic's course title. */
+  strand: string;
+  /** K–12 only: the skill's grade. */
+  grade?: string;
+}
+
+export interface MatchResult {
+  /** The page id: a skill's or topic's main page, or one of its problem types. */
+  id: string;
+  title: string;
+  owner: MatchOwner;
   /** The page's "Use this for …" line, when it has one. */
   use?: string;
   route: RouteTarget;
@@ -29,7 +52,7 @@ export interface MatchResult {
 
 interface Doc {
   id: string;
-  skill: Skill;
+  owner: MatchOwner;
   title: string;
   use?: string;
   /** Term → weighted count. */
@@ -176,21 +199,21 @@ const unitFamilyOf = (unit?: string): string | undefined => {
   return UNIT_FAMILY[u];
 };
 
-function docFor(page: ModuleDef | LayoutDef, skill: Skill): Doc {
+function docFor(page: ModuleDef | LayoutDef, owner: MatchOwner): Doc {
   const tf = new Map<string, number>();
   const main = !page.id.includes('~');
-  const title = main ? skill.title : (page.title ?? page.id);
-  add(tf, skill.title, main ? 4 : 1.5);
+  const title = main ? owner.title : (page.title ?? page.id);
+  add(tf, owner.title, main ? 4 : 1.5);
   add(tf, page.title, 4);
   add(tf, page.use, 3);
   for (const a of page.assumptions) add(tf, a, 1);
-  add(tf, skill.strand, 0.5);
-  // What the skill's practice problems say, lighter on a problem type so its own words lead.
-  for (const [t, w] of Object.entries(corpus[skill.id] ?? {}))
+  add(tf, owner.strand, 0.5);
+  // What the owner's practice problems say, lighter on a problem type so its own words lead.
+  for (const [t, w] of Object.entries(corpus[owner.id] ?? {}))
     tf.set(t, (tf.get(t) ?? 0) + w * (main ? 2 : 1));
   const doc: Doc = {
     id: page.id,
-    skill,
+    owner,
     title,
     use: page.use,
     tf,
@@ -254,14 +277,33 @@ export interface MatchIndex {
 
 const SKILL_BY_ID = new Map(SKILLS.map((s) => [s.id, s]));
 
+/** The skill or course topic a page id belongs to, if it is a lesson page. */
+function ownerOf(pageId: string): MatchOwner | undefined {
+  const id = moduleOwner(pageId);
+  const skill = SKILL_BY_ID.get(id);
+  if (skill) {
+    const context = nodeContext(skill);
+    return { id, title: skill.title, context, strand: skill.strand, grade: skill.grade };
+  }
+  const topic = topicOf(id);
+  if (!topic) return undefined;
+  const { course } = topic;
+  return {
+    id,
+    title: topic.title,
+    context: `${divisionLabel(course.division)} · ${course.title}`,
+    strand: course.title,
+  };
+}
+
 export function buildMatchIndex(): MatchIndex {
   const pages: (ModuleDef | LayoutDef)[] = [...MODULES, ...LAYOUTS].filter(
-    (p) => p.id.startsWith('m.') || p.id.startsWith('s.'),
+    (p) => p.id.startsWith('m.') || p.id.startsWith('s.') || p.id.startsWith('he.'),
   );
   const docs: Doc[] = [];
   for (const p of pages) {
-    const skill = SKILL_BY_ID.get(moduleOwner(p.id));
-    if (skill) docs.push(docFor(p, skill));
+    const owner = ownerOf(p.id);
+    if (owner) docs.push(docFor(p, owner));
   }
   const df = new Map<string, number>();
   for (const d of docs) for (const t of d.tf.keys()) df.set(t, (df.get(t) ?? 0) + 1);
@@ -299,11 +341,11 @@ function score(doc: Doc, terms: Map<string, number>, f: NumberFeatures, ix: Matc
     if (f.max > doc.max * 1.05) s -= 2.5;
     else if (f.max > doc.max / 1000) s += 0.5;
   }
-  if (f.grade && doc.skill.grade === f.grade) s += 3;
+  if (f.grade && doc.owner.grade === f.grade) s += 3;
   return s;
 }
 
-/** The pages most likely to solve the problem, best first, at most one per skill. */
+/** The pages most likely to solve the problem, best first, at most one per skill or topic. */
 /** Words for what the symbols and numbers of a bare problem say: "0.7 × 0.4" → multiply decimal. */
 export function symbolWords(text: string, f: NumberFeatures): string[] {
   const t = text.replace(/\u2212/g, '-');
@@ -335,14 +377,14 @@ export function matchProblem(text: string, limit = 3, ix = getMatchIndex()): Mat
   const out: MatchResult[] = [];
   const seen = new Set<string>();
   for (const { d, s } of scored) {
-    if (seen.has(d.skill.id)) continue;
-    seen.add(d.skill.id);
+    if (seen.has(d.owner.id)) continue;
+    seen.add(d.owner.id);
     out.push({
       id: d.id,
       title: d.title,
-      skill: d.skill,
+      owner: d.owner,
       use: d.use,
-      route: skillRoute(d.id),
+      route: pageRoute(d.id)!,
       score: s,
     });
     if (out.length >= limit) break;

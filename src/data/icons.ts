@@ -1037,3 +1037,16 @@ export function topicIcons(course: Course): TopicIconName[] {
   const [own] = courseIcons([course]);
   return assignIcons(course.topics.map((title) => ({ title, context: [own!] })));
 }
+
+/** A course topic's lessons: the topic, then each problem type (as `lessonIcons` for a skill). */
+export function topicLessonIcons(
+  course: Course,
+  index: number,
+  typeTitles: string[],
+): TopicIconName[] {
+  const main = topicIcons(course)[index]!;
+  return assignIcons([
+    { title: course.topics[index] ?? '', context: [main] },
+    ...typeTitles.map((title) => ({ title, context: [main] })),
+  ]);
+}

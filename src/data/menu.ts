@@ -1,8 +1,9 @@
 /**
  * The side menu: a dropdown for each grade (and each higher-education division), opening to
  * indented rows. In a grade: the subject, its strands, each skill and, under a skill, its
- * problem types. In a division: its fields, their courses and each course's topics. Built from
- * the taxonomy and the modules, so a new page shows up without touching the menu.
+ * problem types. In a division: its fields, their courses, each course’s topics and, under a
+ * topic, its problem types. Built from the taxonomy and the modules, so a new page shows up
+ * without touching the menu.
  */
 import {
   DIVISIONS,
@@ -15,6 +16,8 @@ import {
   skillRoute,
   skipsFieldLevel,
   subjectLabel,
+  pageRoute,
+  topicKey,
   topicRoute,
   type RouteTarget,
 } from './selectors';
@@ -44,12 +47,21 @@ export const routePath = (route: RouteTarget) =>
 
 const courseRows = (course: Course, parent: string, depth: number): MenuRow[] => [
   { key: `${parent}:${course.id}`, label: course.title, depth, route: courseRoute(course.id) },
-  ...course.topics.map((topic, i) => ({
-    key: `${parent}:${course.id}#${i}`,
-    label: topic,
-    depth: depth + 1,
-    route: topicRoute(course.id, i),
-  })),
+  ...course.topics.flatMap((topic, i) => [
+    {
+      key: `${parent}:${course.id}#${i}`,
+      label: topic,
+      depth: depth + 1,
+      route: topicRoute(course.id, i),
+    },
+    // Under a topic, its problem types (as under a skill).
+    ...problemTypes(topicKey(course.id, i)).map((t) => ({
+      key: `${parent}:${t.id}`,
+      label: t.title,
+      depth: depth + 2,
+      route: pageRoute(t.id)!,
+    })),
+  ]),
 ];
 
 let groups: MenuGroup[] | undefined;
