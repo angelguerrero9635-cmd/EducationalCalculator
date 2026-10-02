@@ -1,4 +1,4 @@
-import { dollars, formatNumber } from './format';
+import { dollars, formatNumber, lowerFirst } from './format';
 import type { Relation, Values, VariableDef } from './types';
 
 export interface Given {
@@ -241,13 +241,8 @@ function shownWithUnit(v: VariableDef, x: number): string {
   return /^[¢%°]/.test(unit) ? `${n}${unit}` : `${n} ${unit}`;
 }
 
-/** A value's name inside a sentence: "the potassium-40 left", "the pH" (an acronym kept). */
-export function theName(v: Pick<VariableDef, 'name'>): string {
-  const name = /^[A-Z]{2}|^[A-Z][a-z]*[A-Z]/.test(v.name)
-    ? v.name
-    : `${v.name[0]!.toLowerCase()}${v.name.slice(1)}`;
-  return `the ${name}`;
-}
+/** A value's name inside a sentence: "the potassium-40 left", "the Carnot limit", "the IQR". */
+export const theName = (v: Pick<VariableDef, 'name'>) => `the ${lowerFirst(v.name)}`;
 
 /**
  * Why a value can't be `x`, in a sentence a student reads: "That would make the density
