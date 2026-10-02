@@ -8,18 +8,18 @@ per review; each line names the finding and what the engine now does about it.
 ## HE-E16, HE-E17: linear algebra and complex values in steps, read back by the harness
 
 - **About 50 college pages need matrix, vector and eigenvalue lines and 8 need complex
-    arithmetic, and the harness read none of them** (a work line was checked only when it was a
-    sum: "[[2, 1], [3, 4]] × ⟨5, −1⟩ = ⟨9, 11⟩" or "(30 + j40) ÷ (1 − j2) = −10 + j20" could have
-    been wrong unseen, and so could Grade 11's "(2 + 3i)(1 − 4i) = 2 − 8i + 3i − 12i²"). →
+  arithmetic, and the harness read none of them** (a work line was checked only when it was a
+  sum: `[[2, 1], [3, 4]] × ⟨5, −1⟩ = ⟨9, 11⟩` or "(30 + j40) ÷ (1 − j2) = −10 + j20" could have
+  been wrong unseen, and so could Grade 11's "(2 + 3i)(1 − 4i) = 2 − 8i + 3i − 12i²"). →
   `engine/linalg.ts` and `engine/complex.ts` write the lines (products, determinants, Cramer,
-    [A | I] and reduced echelon form one row operation a line, rank and nullity, eigenvalues and
-    eigenvectors, dot, cross, projection; complex sums, products, quotients by the conjugate,
-    polar products and quotients, polar ↔ rectangular), and `harness/algebraLines.ts` reads every
-    form back: each chain of equal sides must hold (exactly on a line of whole numbers and
-    fractions, within display rounding on one with decimals or angles), a λ polynomial at four
-    values of λ, ± as both signs, and each row operation against the matrix before it.
+  `[A | I]` and reduced echelon form one row operation a line, rank and nullity, eigenvalues and
+  eigenvectors, dot, cross, projection; complex sums, products, quotients by the conjugate,
+  polar products and quotients, polar ↔ rectangular), and `harness/algebraLines.ts` reads every
+  form back: each chain of equal sides must hold (exactly on a line of whole numbers and
+  fractions, within display rounding on one with decimals or angles), a λ polynomial at four
+  values of λ, ± as both signs, and each row operation against the matrix before it.
   `sampling.test.ts` runs it on every step's lines (one added loop); `evaluate` reads Re(…),
-    Im(…), |a + jb| and det [[…]] (one pre-pass line).
+  Im(…), `|a + jb|` and `det [[…]]` (one pre-pass line).
 - **The solver has numbers only, so a matrix or a phasor was nine or two unrelated values.** →
   `written.ts`: `matrixVariables`, `vectorVariables`, `complexVariables`, `polarVariables` give
   a group (counted once toward the 10 values), `cramerRules` solves A x = b with its lines, and
