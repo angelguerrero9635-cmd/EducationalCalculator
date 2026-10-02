@@ -590,13 +590,15 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
         's.9.biotechnology': '"type":"substitution"',
         's.9.biotechnology~frameshift': '"type":"insertion"',
         's.9.biotechnology~deletion': '"type":"deletion"',
+        's.9.biotechnology~substitution': '"dnaStrand"',
       },
     ),
     status: 'placed',
     gallery: ['g.s9-biotechnology-nonsense'],
     notes:
       'A mutation (substitution, insertion, deletion) lit in the sequence and its effect on the protein. Drawn (group HG, reps/DnaStrand.tsx, the standard codon table and rules in dnaMath.ts). Calculator picture { kind: "dnaStrand", sequence: the template strand, up to 12 of A T G C, drawn 3′ to 5′ ("TACCGGTTCATT"), length?: bases drawn (number or variable), show?: ["mrna", "protein"] (default both), mutation?: { type: "substitution" | "insertion" | "deletion", at: base number (number or variable), base?: the new base (a substitution defaults to the transition A↔G, C↔T; an insertion to A) }, codons?: a variable holding the complete codons (checked); or percentA: a variable and pairs?: 10 for Chargaff’s rule (a ladder of whole pairs, A = T, G = C; a percent that isn’t whole bases draws faded) }. The ladder shows both backbones, 2 hydrogen bonds per A–T rung and 3 per G–C; the mRNA (U for T) with codons bracketed; amino acid chips from the codon table, Stop in outline. With a mutation the changed base is ringed (a caret where a base was deleted), the protein is shown before and after with changed amino acids lit, and the caption names silent, missense, nonsense or frameshift. The harness checks the codon table (64 codons, 6 for Leu, Ser, Arg, 3 stops, AUG = Met), the transcription, the codon count, the mutation position and length, and Chargaff’s counts. Step text may say “the codon holding base {p}” (⌈p ÷ 3⌉, phrasesHsg.ts). Example: representation: { kind: "dnaStrand", sequence: "TACCGGTTCATT", mutation: { type: "substitution", at: "p" } }.' +
-      ' Placed (parts by page in `uses`): substitution and insertion on s.9.biotechnology and ~frameshift, the deletion on s.9.biotechnology~deletion (its demo retired). The nonsense demo stays: a substitution to a chosen base (`base`) is on no page.',
+      ' Placed (parts by page in `uses`): substitution and insertion on s.9.biotechnology and ~frameshift, the deletion on s.9.biotechnology~deletion (its demo retired). The nonsense demo stays: a substitution to a chosen base (`base`) is on no page.' +
+      ' s.9.biotechnology~substitution (p 4–9 and the new base as a choice, coded 1–4 for A, T, G, C) names silent, missense or nonsense in its steps; `mutation.base` takes only a fixed letter, so its picture draws the gene unmutated. Needed: `base` as a variable id (the code 1–4 read as A, T, G, C); the page then sets mutation: { type: "substitution", at: "p", base: "b" } and the nonsense demo can retire.',
   },
   {
     ...ask(

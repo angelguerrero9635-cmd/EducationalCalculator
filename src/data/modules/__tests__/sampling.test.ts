@@ -207,6 +207,11 @@ function resultNumber(result: string, exp = false): number {
   // "about $3.33": a price rounded to the cent.
   // A negative amount of money is written with its sign first (−$10).
   const rhs = (result.split(' = ')[1] ?? '').replace(/^about /, '').replace(/^[−-]\$/, '-');
+  // A coded value reads as its meaning ("e = nonsense"): the phrases read it back.
+  if (/^[A-Za-z]/.test(rhs)) {
+    const x = evaluate(rhs);
+    if (x !== undefined) return x;
+  }
   // A root written exactly says its decimal beside it (√2/2 ≈ 0.7071): read the decimal.
   const approx = / ≈ (-?[\d.,]+)/.exec(rhs.replace(/−/g, '-'));
   if (approx) return Number(approx[1]!.replace(/,/g, ''));

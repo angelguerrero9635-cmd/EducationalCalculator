@@ -281,6 +281,15 @@ export const PHRASES: [RegExp, (...xs: number[]) => number][] = [
     new RegExp(`greatest of ((?:${NUM}, )+${NUM})`),
     (...xs) => Math.max(...xs.filter((x) => !Number.isNaN(x))),
   ],
+  // Grades 9–12 dot plots: the tallest stack, the most times any one value appears.
+  [
+    new RegExp(`most dots at one value of ((?:${NUM}, )+${NUM})`),
+    (...xs) => {
+      const counts = new Map<number, number>();
+      for (const x of xs.filter((y) => !Number.isNaN(y))) counts.set(x, (counts.get(x) ?? 0) + 1);
+      return Math.max(...counts.values());
+    },
+  ],
   // Grades 9–12 box plots: a quartile is the median of the half below (or above) the median.
   [new RegExp(`first quartile of ((?:${NUM}, )+${NUM})`), (...xs) => quartile(xs, false)],
   [new RegExp(`third quartile of ((?:${NUM}, )+${NUM})`), (...xs) => quartile(xs, true)],

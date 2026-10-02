@@ -448,9 +448,11 @@ export function buildSteps(
           ? relation.sentence(knownHere)
           : renderTemplate(relation.display, lineVars, knownHere),
       ),
-      // A p-value under 0.0001 is written "P < 0.0001", never "P = 0".
-      result:
-        v.belowStep && v.step !== undefined && workValue(t.id) < v.step / 2
+      // A p-value under 0.0001 is written "P < 0.0001", never "P = 0"; a coded value reads as
+      // what it means ("e = nonsense"), never its code.
+      result: codeLabel(v, workValue(t.id))
+        ? `${v.symbol} = ${codeLabel(v, workValue(t.id))}`
+        : v.belowStep && v.step !== undefined && workValue(t.id) < v.step / 2
           ? `${v.symbol} < ${formatNumber(v.step)}`
           : `${v.symbol} = ${fmt(t.id, workValue(t.id), workUnit(t.id), direct || !needsConversion(t.id))}`,
     };

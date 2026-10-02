@@ -5,6 +5,7 @@
  * direction plan and build notes: docs/BUILD_HS.md.
  * The layout pages (explore, sort, sequence, observe) are in `../layouts/science9.ts`.
  */
+import { CODON_TABLE, transcribe } from '@/components/module/reps/dnaMath';
 import { formatNumber } from '@/engine/format';
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
@@ -1281,6 +1282,28 @@ const DNA: ModuleDef[] = [
   },
 ];
 
+/** Template bases a substitution can put in, coded 1 to 4 for a choice box. */
+const BASES = ['A', 'T', 'G', 'C'];
+/** The amino acids and Stop, coded 1 to 21 in this order. */
+const AMINO = [...new Set(Object.values(CODON_TABLE))].sort((x, y) =>
+  x === 'Stop' ? 1 : y === 'Stop' ? -1 : x.localeCompare(y),
+);
+const AMINO_LABELS = Object.fromEntries(AMINO.map((aa, i) => [i + 1, aa]));
+/** What a substitution does to its codon's amino acid, coded 1 to 3. */
+const EFFECTS = ['silent', 'missense', 'nonsense'];
+
+/** GENE with base p (from 1) swapped for template base b (coded 1 to 4). */
+const substituted = (v: Values) => GENE.slice(0, v.p! - 1) + BASES[v.b! - 1]! + GENE.slice(v.p!);
+/** Codon k (from 1) of a template strand's mRNA. */
+const codonAt = (template: string, k: number) => transcribe(template).slice(3 * k - 3, 3 * k);
+/** A rule whose check line is `check` (what the student reads to check the answer). */
+const checking = (r: Rule, check: (v: Values) => string): Rule => ({
+  ...r,
+  relation: { ...r.relation, check },
+});
+/** An amino acid's code (1 to 21), from its mRNA codon. */
+const aminoCode = (codon: string) => AMINO.indexOf(CODON_TABLE[codon] ?? '') + 1 || undefined;
+
 const BIOTECH: ModuleDef[] = [
   // ── Mutations, gene expression and biotechnology (HS-LS3-1, HS-LS3-2, HS-LS1-1) ──
   {
@@ -1446,6 +1469,119 @@ const BIOTECH: ModuleDef[] = [
       codons: 'c',
       mutation: { type: 'deletion', at: 'p' },
     },
+  },
+  {
+    id: 's.9.biotechnology~substitution',
+    title: 'A substitution changes one codon',
+    use: 'Use this for “Base 7 of the template strand TACCGGTTCATT changes from T to A. Is the mutation silent, missense or nonsense?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      `The template strand is ${GENE}; its mRNA AUG GCC AAG UAA codes Met–Ala–Lys, then stop. Base p (4 to 9) lies in codon 2 or 3.`,
+      'Silent: the new codon codes for the same amino acid. Missense: a different amino acid. Nonsense: the codon becomes a stop, so the protein is cut short.',
+      'Most amino acids have more than one codon, often differing only in the third base, so many substitutions there are silent.',
+    ],
+    variables: [
+      count('p', 'p', 'Base changed', 4, 9),
+      {
+        ...count('b', 'b', 'New base', 1, 4),
+        allowed: [1, 2, 3, 4],
+        labels: Object.fromEntries(BASES.map((x, i) => [i + 1, x])),
+      },
+      count('k', 'k', 'Codon holding it', 2, 3, true),
+      count('j', 'j', 'Its place in the codon', 1, 3, true),
+      { ...count('a', 'a', 'Amino acid before', 1, 21, true), labels: AMINO_LABELS },
+      { ...count('n', 'n', 'Amino acid after', 1, 21, true), labels: AMINO_LABELS },
+      {
+        ...count('e', 'e', 'Kind of mutation', 1, 3, true),
+        labels: Object.fromEntries(EFFECTS.map((x, i) => [i + 1, x])),
+      },
+    ],
+    ...rules(
+      codonOf('k', 'p'),
+      forward(
+        'j = p − 3(k − 1)',
+        '{j} = {p} − 3 × ({k} − 1)',
+        'j',
+        ['p', 'k'],
+        (v) => v.p! - 3 * (v.k! - 1),
+        '{p} − 3 × ({k} − 1)',
+        'The codons before it hold 3 × (k − 1) bases; the rest is its place in its own codon.',
+      ),
+      withStep(
+        checking(
+          forward(
+            'a = codon k before',
+            '{a} = amino acid of codon {k}',
+            'a',
+            ['k'],
+            (v) => aminoCode(codonAt(GENE, v.k!)),
+            'amino acid of codon {k}',
+            'Pair each template base with its mRNA base (A–U, T–A, G–C, C–G), then look the codon up in the codon table.',
+          ),
+          (v) => `${AMINO[v.a! - 1]} = amino acid of mRNA codon ${codonAt(GENE, v.k!)}`,
+        ),
+        'a',
+        {
+          expr: (v) => `amino acid of mRNA codon ${codonAt(GENE, v.k!)}`,
+          work: (v) => {
+            const t = GENE.slice(3 * v.k! - 3, 3 * v.k!);
+            const c = codonAt(GENE, v.k!);
+            return [`Template ${t} → mRNA ${c}`, `${c} codes for ${CODON_TABLE[c]}`];
+          },
+        },
+      ),
+      withStep(
+        checking(
+          forward(
+            'n = codon k after',
+            '{n} = amino acid of codon {k} with base {p} changed to {b}',
+            'n',
+            ['k', 'p', 'b'],
+            (v) => aminoCode(codonAt(substituted(v), v.k!)),
+            'amino acid of codon {k} with base {p} changed to {b}',
+            'Swap the base in the template, pair it again, and look the new codon up.',
+          ),
+          (v) => `${AMINO[v.n! - 1]} = amino acid of mRNA codon ${codonAt(substituted(v), v.k!)}`,
+        ),
+        'n',
+        {
+          expr: (v) => `amino acid of mRNA codon ${codonAt(substituted(v), v.k!)}`,
+          work: (v) => {
+            const t = substituted(v).slice(3 * v.k! - 3, 3 * v.k!);
+            const c = codonAt(substituted(v), v.k!);
+            return [`Template ${t} → mRNA ${c}`, `${c} codes for ${CODON_TABLE[c]}`];
+          },
+        },
+      ),
+      withStep(
+        forward(
+          'e = kind of mutation',
+          '{e} = kind of change from {a} to {n}',
+          'e',
+          ['a', 'n'],
+          (v) => (v.n === v.a ? 1 : AMINO[v.n! - 1] === 'Stop' ? 3 : 2),
+          'kind of change from {a} to {n}',
+          'The same amino acid is silent, a different one missense, and a stop nonsense: the protein ends there.',
+        ),
+        'e',
+        {
+          note: (v) =>
+            v.e === 3
+              ? `→ the protein stops after ${v.k! - 1} amino acid${v.k === 2 ? '' : 's'}`
+              : '',
+        },
+      ),
+      limit(
+        'b ≠ base p',
+        '{b} differs from base {p}',
+        ['b', 'p'],
+        (v) => BASES[v.b! - 1] !== GENE[v.p! - 1],
+        (v) => `Base ${v.p} is already ${GENE[v.p! - 1]}: pick one of the other three bases.`,
+      ),
+    ),
+    example: { p: 7, b: 1, k: 3, j: 1, a: 12, n: 21, e: 3 },
+    startWith: ['p', 'b'],
+    representation: { kind: 'dnaStrand', sequence: GENE },
   },
   {
     id: 's.9.biotechnology~gel',

@@ -5293,6 +5293,44 @@ const listRule = (
     },
   );
 
+/** x̄ = sum ÷ n over the first n values, the sum and the division as work lines. */
+const listMean = rule(
+  'x̄ = sum ÷ n',
+  '{mean} = sum of the {n} values ÷ {n}',
+  ['mean', 'n', ...LIST_IDS],
+  (v) => v.mean! * v.n! - sumList(firstValues(LIST_IDS, v)),
+  {
+    mean: [
+      (v) => div(sumList(firstValues(LIST_IDS, v)), v.n!),
+      (v) =>
+        `(${firstIds(LIST_IDS, v)
+          .map((x) => `{${x}}`)
+          .join(' + ')}) ÷ {n}`,
+      'Add the values, then divide by how many there are.',
+      {
+        work: (v) => {
+          const xs = firstValues(LIST_IDS, v);
+          const t = sumList(xs);
+          return [`${xs.map(fmt).join(' + ')} = ${fmt(t)}`, `${fmt(t)} ÷ ${v.n} = ${fmt(v.mean!)}`];
+        },
+        written: false,
+      },
+    ],
+  },
+  {
+    check: (v) => `(${firstValues(LIST_IDS, v).map(fmt).join(' + ')}) ÷ ${v.n} = ${fmt(v.mean!)}`,
+  },
+);
+
+/** Each value of a list in order with how many times it appears. */
+const tally = (xs: number[]) => {
+  const counts = new Map<number, number>();
+  for (const x of [...xs].sort((a, b) => a - b)) counts.set(x, (counts.get(x) ?? 0) + 1);
+  return [...counts];
+};
+/** The tallest stack of a dot plot: the most times any one value appears. */
+const tallest = (xs: number[]) => Math.max(...tally(xs).map(([, k]) => k));
+
 const DATA_DISPLAYS: ModuleDef[] = [
   page({
     id: 'm.9.data-displays',
@@ -5746,37 +5784,7 @@ const DATA_DISPLAYS: ModuleDef[] = [
         medianOf,
         'The middle value in order (halfway between the middle two); half the values lie on each side.',
       ),
-      rule(
-        'x̄ = sum ÷ n',
-        '{mean} = sum of the {n} values ÷ {n}',
-        ['mean', 'n', ...LIST_IDS],
-        (v) => v.mean! * v.n! - sumList(firstValues(LIST_IDS, v)),
-        {
-          mean: [
-            (v) => div(sumList(firstValues(LIST_IDS, v)), v.n!),
-            (v) =>
-              `(${firstIds(LIST_IDS, v)
-                .map((x) => `{${x}}`)
-                .join(' + ')}) ÷ {n}`,
-            'Add the values, then divide by how many there are.',
-            {
-              work: (v) => {
-                const xs = firstValues(LIST_IDS, v);
-                const t = sumList(xs);
-                return [
-                  `${xs.map(fmt).join(' + ')} = ${fmt(t)}`,
-                  `${fmt(t)} ÷ ${v.n} = ${fmt(v.mean!)}`,
-                ];
-              },
-              written: false,
-            },
-          ],
-        },
-        {
-          check: (v) =>
-            `(${firstValues(LIST_IDS, v).map(fmt).join(' + ')}) ÷ ${v.n} = ${fmt(v.mean!)}`,
-        },
-      ),
+      listMean,
     ],
     example: {
       n: 12,
@@ -5815,6 +5823,110 @@ const DATA_DISPLAYS: ModuleDef[] = [
       median: 'md',
       shape: true,
       axis: 'Minutes of homework',
+    },
+  }),
+  page({
+    id: 'm.9.data-displays~dot-plot',
+    title: 'Dot plot from a data list',
+    use: 'Use this for “Books read by 10 students: 3, 5, 2, 4, 5, 9, 5, 1, 4, 2. Make a dot plot and find the mode, median and mean.”',
+    assumptions: [
+      'Draw a number line from the least value to the greatest; each value gets a dot, stacked where values repeat.',
+      'The mode is the value under the tallest stack; a tie gives two modes, and no repeats means no mode.',
+      'The mean is the balance point of the dots; a long tail pulls it away from the median.',
+    ],
+    variables: [
+      int('n', 'n', 'Number of values', 5, 12),
+      ...LIST_IDS.map((id, i) => listValue(id, i, `Value ${i + 1}`, 50)),
+      num('lo', 'min', 'Least', 0, 50, { derived: true }),
+      num('hi', 'max', 'Greatest', 0, 50, { derived: true }),
+      num('R', 'R', 'Range', 0, 50, { derived: true }),
+      int('f', 'f', 'Tallest stack', 1, 12, { derived: true }),
+      num('md', 'M', 'Median', 0, 50, { derived: true }),
+      num('mean', 'x̄', 'Mean', 0, 50, { derived: true }),
+    ],
+    rules: [
+      listRule('lo', 'least', (xs) => Math.min(...xs), 'The smallest value, first in order.', true),
+      listRule('hi', 'greatest', (xs) => Math.max(...xs), 'The largest value, last in order.'),
+      derive(
+        'R = max − min',
+        'R',
+        ['hi', 'lo'],
+        '{R} = {hi} − {lo}',
+        (v) => v.hi! - v.lo!,
+        '{hi} − {lo}',
+        'The range is the width the dots cover: greatest minus least.',
+      ),
+      rule(
+        'f = tallest stack',
+        '{f} = the tallest stack of the {n} dots',
+        ['f', 'n', ...LIST_IDS],
+        (v) => v.f! - tallest(firstValues(LIST_IDS, v)),
+        {
+          f: [
+            (v) => tallest(firstValues(LIST_IDS, v)),
+            (v) =>
+              `most dots at one value of ${firstIds(LIST_IDS, v)
+                .map((x) => `{${x}}`)
+                .join(', ')}`,
+            'Count the dots at each value; the mode is the value with the most.',
+            {
+              work: (v) =>
+                tally(firstValues(LIST_IDS, v)).map(
+                  ([x, k]) => `${fmt(x)}: ${k} ${k === 1 ? 'dot' : 'dots'}`,
+                ),
+              note: (v) => {
+                const counts = tally(firstValues(LIST_IDS, v));
+                if (v.f === 1) return '→ no mode: every value appears once';
+                const modes = counts.filter(([, k]) => k === v.f).map(([x]) => fmt(x));
+                return modes.length === 1
+                  ? `→ mode: ${modes[0]}`
+                  : `→ modes: ${modes.slice(0, -1).join(', ')} and ${modes.at(-1)}`;
+              },
+              written: false,
+            },
+          ],
+        },
+        {
+          check: (v) =>
+            `${fmt(v.f!)} = most dots at one value of ${firstValues(LIST_IDS, v).map(fmt).join(', ')}`,
+        },
+      ),
+      listRule(
+        'md',
+        'median',
+        medianOf,
+        'The middle value in order (halfway between the middle two); half the dots lie on each side.',
+      ),
+      listMean,
+    ],
+    example: {
+      n: 10,
+      d1: 3,
+      d2: 5,
+      d3: 2,
+      d4: 4,
+      d5: 5,
+      d6: 9,
+      d7: 5,
+      d8: 1,
+      d9: 4,
+      d10: 2,
+      lo: 1,
+      hi: 9,
+      R: 8,
+      f: 3,
+      md: 4,
+      mean: 4,
+    },
+    startWith: ['n', ...LIST_IDS.slice(0, 10)],
+    representation: {
+      kind: 'dotPlot',
+      data: LIST_IDS,
+      count: 'n',
+      min: 0,
+      max: 10,
+      mean: 'mean',
+      median: 'md',
     },
   }),
 ];
