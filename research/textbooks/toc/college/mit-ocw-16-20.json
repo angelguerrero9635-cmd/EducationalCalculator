@@ -1,0 +1,116 @@
+{
+  "id": "mit-ocw-16-20",
+  "curriculum": "MIT OpenCourseWare 16.20 Structural Mechanics",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Fall 2002",
+  "subject": "aerospace",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Paul A. Lagace. 16.20 Structural Mechanics. Fall 2002. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu/courses/16-20-structural-mechanics-fall-2002/. License: CC BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Lecture block"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/16-20-structural-mechanics-fall-2002/",
+  "retrieved": "2026-10-02",
+  "sources": [
+    "https://ocw.mit.edu/courses/16-20-structural-mechanics-fall-2002/pages/syllabus/",
+    "https://ocw.mit.edu/courses/16-20-structural-mechanics-fall-2002/pages/calendar/"
+  ],
+  "notes": "Units, days and readings from the calendar (texts: Rivello; Megson; Timoshenko and Goodier; Jones for composites). Eleven home assignments read.",
+  "books": [
+    {
+      "course": null,
+      "title": "16.20 Structural Mechanics (Fall 2002)",
+      "url": "https://ocw.mit.edu/courses/16-20-structural-mechanics-fall-2002/",
+      "units": [
+        {
+          "n": "1–2",
+          "title": "Design overview; loads, limit and ultimate loads, factors of safety",
+          "url": "https://ocw.mit.edu/courses/16-20-structural-mechanics-fall-2002/pages/calendar/",
+          "topics": [
+            "he.engineering.aerospace-structures#3"
+          ],
+          "examples": [
+            "margin of safety after an overload"
+          ],
+          "notes": "Limit/ultimate load and margins are not a plan row."
+        },
+        {
+          "n": "3–7",
+          "title": "Elasticity review; engineering constants; plane stress and strain; transformations",
+          "topics": [
+            "he.engineering.aerospace-structures#1"
+          ],
+          "examples": [
+            "strains of a graphite/epoxy ply under biaxial stress",
+            "off-axis ply strain gauge"
+          ],
+          "ranges": "E₁₁ 130 GPa class, E₂₂ ≈ 10 GPa, G₁₂ ≈ 6 GPa, ν₁₂ ≈ 0.3",
+          "notation": "tensor (σ_mn, ε_mn) and engineering notation; microstrain"
+        },
+        {
+          "n": "8",
+          "title": "Solution procedures: Airy stress function",
+          "topics": [
+            "he.engineering.aerospace-structures#0"
+          ],
+          "examples": [
+            "hole in a plate",
+            "cantilever by stress function"
+          ]
+        },
+        {
+          "n": "9",
+          "title": "Thermal strains and stresses",
+          "topics": [
+            "he.engineering.aerospace-structures#0"
+          ],
+          "notes": "Thermal stress is not a plan row; examples: bar with a gap, two-material bar, sun-heated truss member."
+        },
+        {
+          "n": "10–12",
+          "title": "St. Venant torsion; membrane analogy; thin closed sections (Bredt)",
+          "topics": [
+            "he.engineering.aerospace-structures#0"
+          ],
+          "examples": [
+            "open channel vs I vs closed box under torque"
+          ],
+          "notation": "q shear flow; J torsion constant; 2A enclosed area"
+        },
+        {
+          "n": "13–15",
+          "title": "Beam theory; unsymmetric bending; shell beams with stringers and skins",
+          "topics": [
+            "he.engineering.aerospace-structures#0"
+          ],
+          "examples": [
+            "I_y, I_z, I_yz of thin sections",
+            "four-stringer fuselage shell under bending, shear, torque"
+          ]
+        },
+        {
+          "n": "16–18",
+          "title": "Bifurcation buckling; beam-columns; other instability issues",
+          "topics": [
+            "he.engineering.aerospace-structures#2"
+          ],
+          "examples": [
+            "column with rotational end springs",
+            "diamond-section column: yield vs buckling"
+          ]
+        },
+        {
+          "n": "19–23",
+          "title": "Structural dynamics: spring–mass, influence coefficients, MDOF and continuous systems",
+          "topics": [],
+          "notes": "No aerospace-structures topic; nearest he.engineering.vibrations."
+        }
+      ]
+    }
+  ]
+}
