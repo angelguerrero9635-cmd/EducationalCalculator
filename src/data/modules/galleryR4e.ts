@@ -40,7 +40,11 @@ function demo(
       id,
       title,
       example: example ?? page.example,
-      representation: { ...page.representation, ...picture } as Representation,
+      // Spread as plain objects: the union of every picture spec is too large to spread.
+      representation: {
+        ...(page.representation as object),
+        ...(picture as object),
+      } as Representation,
     },
   ];
 }
