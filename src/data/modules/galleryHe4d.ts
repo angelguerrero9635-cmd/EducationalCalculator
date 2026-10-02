@@ -700,6 +700,96 @@ const formalTriiodide = formalDemo(
   4,
 );
 
+// ── HC112: the cuvette (analytical#2) ──
+
+const cuvetteDemo = (id: string, title: string, eps: number, b: number, c: number): ModuleDef => {
+  const A = eps * b * c;
+  return demo({
+    id,
+    title,
+    use: 'Use this for absorbance, %T, ε or c from Beer’s law, A = εbc.',
+    assumptions: [
+      'One wavelength; dilute solution, so A stays on the line (up to about 1).',
+      'A has no unit; %T = 100 × 10^(−A).',
+    ],
+    variables: [
+      quantity('eps', 'ε', 'Molar absorptivity', 'L/(mol·cm)', 1, 1e6, 1, { scientific: true }),
+      quantity('b', 'b', 'Path length', 'cm', 0.01, 10, 0.01),
+      quantity('c', 'c', 'Concentration', 'M', 1e-9, 1, 1e-9, { scientific: true }),
+      quantity('A', 'A', 'Absorbance', undefined, 0.0001, 5, 0.0001),
+      quantity('T', '%T', 'Transmittance', '%', 0.001, 100, 0.01),
+    ],
+    ...rules(
+      {
+        relation: {
+          id: 'A = εbc',
+          display: '{A} = {eps} × {b} × {c}',
+          vars: ['A', 'eps', 'b', 'c'],
+          residual: (x) => x.A! - x.eps! * x.b! * x.c!,
+          solve: {
+            A: (x) => x.eps! * x.b! * x.c!,
+            eps: (x) => div(x.A!, x.b! * x.c!),
+            b: (x) => div(x.A!, x.eps! * x.c!),
+            c: (x) => div(x.A!, x.eps! * x.b!),
+          },
+        },
+        steps: {
+          A: st(
+            '{eps} × {b} × {c}',
+            'Beer’s law: absorbance grows with ε, the path and the concentration.',
+          ),
+          eps: st('{A} ÷ ({b} × {c})', 'Divide A by the path and the concentration.'),
+          b: st('{A} ÷ ({eps} × {c})', 'Divide A by ε and c.'),
+          c: st('{A} ÷ ({eps} × {b})', 'Divide A by ε and the path.'),
+        },
+      },
+      {
+        relation: {
+          id: 'A = −log(%T ÷ 100)',
+          display: '{A} = −log₁₀({T} ÷ 100)',
+          vars: ['A', 'T'],
+          residual: (x) => x.A! + Math.log10(x.T! / 100),
+          solve: {
+            A: (x) => (x.T! > 0 ? -Math.log10(x.T! / 100) : undefined),
+            T: (x) => 100 * 10 ** -x.A!,
+          },
+        },
+        steps: {
+          A: st('−log₁₀({T} ÷ 100)', 'A = −log(I ÷ I₀), and I ÷ I₀ is %T ÷ 100.'),
+          T: st('100 ÷ 10^{A}', 'Undo the log: I ÷ I₀ = 1 ÷ 10^A, as a percent.'),
+        },
+      },
+    ),
+    example: { eps, b, c, A, T: 100 * 10 ** -A },
+    startWith: ['eps', 'b', 'c'],
+    representation: {
+      kind: 'beaker',
+      cuvette: {
+        path: 'b',
+        absorbance: 'A',
+        transmittance: 'T',
+        absorptivity: 'eps',
+        concentration: 'c',
+      },
+    },
+  });
+};
+
+const cuvette = cuvetteDemo(
+  'g.he-beaker-cuvette',
+  'Beer’s law in a 1 cm cuvette: A and %T',
+  1.2e4,
+  1,
+  4e-5,
+);
+const cuvetteDark = cuvetteDemo(
+  'g.he-beaker-cuvette-dark',
+  'A 2 cm cell of a strong absorber: A near 1.5',
+  2.5e4,
+  2,
+  3e-5,
+);
+
 export const HE4D_GALLERY_MODULES: ModuleDef[] = [
   ladderHe,
   ladderHigh,
@@ -711,6 +801,8 @@ export const HE4D_GALLERY_MODULES: ModuleDef[] = [
   formalNitrate,
   formalOzone,
   formalTriiodide,
+  cuvette,
+  cuvetteDark,
 ];
 
 export const HE4D_GALLERY_LAYOUTS: LayoutDef[] = [];

@@ -142,3 +142,24 @@ export interface LewisHe4dSpec {
 export function lewisFormalVars(f: LewisFormal | undefined): string[] {
   return f ? ids(f.valence, f.nonbonding, f.bonding, f.charge) : [];
 }
+
+// ─── HC112: beaker `cuvette` ─────────────────────────────────────────────────
+
+/**
+ * A spectrophotometer's cuvette (HC112, C-P16): a lamp's beam I₀ through a glass cuvette of
+ * path b (drawn to scale, 56 px per cm up to 2.5 cm), its width falling as 10^(−A·x ÷ b) inside
+ * the solution, so the beam that reaches the detector is T times as wide; the solution tinted by
+ * εc (or A ÷ b). `path` in cm, `transmittance` in % (100 × 10^(−A)), `absorptivity` in
+ * L/(mol·cm), `concentration` in M. A, %T and A = εbc (when ε and c are given) are checked.
+ */
+export interface BeakerCuvette {
+  path: NumOrVar;
+  absorbance?: NumOrVar;
+  transmittance?: NumOrVar;
+  absorptivity?: NumOrVar;
+  concentration?: NumOrVar;
+}
+
+export function cuvetteVars(c: BeakerCuvette): string[] {
+  return ids(c.path, c.absorbance, c.transmittance, c.absorptivity, c.concentration);
+}

@@ -19,9 +19,20 @@ import {
 
 import { electronTotals, formalCharges, resonanceSet } from '@/components/module/reps/lewisHe4d';
 
-import type { LewisHe4dSpec, OrbitalHe4dSpec } from '../typesHe4d';
+import { beamHalf, cuvetteAbsorbance } from '@/components/module/reps/cuvetteMath';
+
+import type { BeakerCuvette, LewisHe4dSpec, OrbitalHe4dSpec } from '../typesHe4d';
 
 type Val = (x: string | number) => number | undefined;
+
+/** Values in their formula units (the sampler may show them in other units). */
+export const siHe4d =
+  (val: Val, byId: Map<string, { unitFactor?: number }>): Val =>
+  (x) => {
+    if (typeof x === 'number') return x;
+    const v = val(x);
+    return v === undefined ? v : v * (byId.get(x)?.unitFactor ?? 1);
+  };
 
 const near = (a: number, b: number, tol = 2e-3) =>
   Math.abs(a - b) <= tol * Math.max(1, Math.abs(a), Math.abs(b));
@@ -137,5 +148,26 @@ export function lewisHe4dIssues(rep: LewisHe4dSpec, val: Val): string[] {
       out.push(`FC = ${v} − ${N} − ${B} ÷ 2 = ${v - N - B / 2}, the value shows ${FC}`);
   }
   if (f.atom !== undefined && !set.atoms[f.atom]) out.push(`no atom ${f.atom} in ${rep.formula}`);
+  return out;
+}
+
+/** HC112: A = −log(%T ÷ 100) = εbc; the beam leaves T times as wide; b and c positive. */
+export function cuvetteIssues(rep: BeakerCuvette, val: Val): string[] {
+  const out: string[] = [];
+  const [b, A, T, eps, c] = [
+    rep.path,
+    rep.absorbance,
+    rep.transmittance,
+    rep.absorptivity,
+    rep.concentration,
+  ].map((x) => read(val, x));
+  if (b !== undefined && !(b > 0)) out.push(`path ${b} cm is not positive`);
+  if (T !== undefined && !(T > 0 && T <= 100)) out.push(`%T ${T} is not in (0, 100]`);
+  if (A !== undefined && T !== undefined) agree(out, T, 100 * 10 ** -A, '%T', 3e-3);
+  if (A !== undefined && eps !== undefined && b !== undefined && c !== undefined)
+    agree(out, A, eps * b * c, 'A = εbc', 3e-3);
+  const drawn = cuvetteAbsorbance(A, T, eps, b, c);
+  if (drawn !== undefined && Math.abs(beamHalf(16, drawn, 1) / 16 - 10 ** -drawn) > 1e-9)
+    out.push('the beam leaving is not T times as wide');
   return out;
 }

@@ -81,4 +81,19 @@ export const HE4D_REQUESTS: PictureRequest[] = [
       'g.he-lewisStructure-formal-expanded',
     ],
   },
+  {
+    ...ask(
+      'HC112',
+      'beaker',
+      'beaker cuvette: a lamp’s beam I₀ through a painted glass cuvette of path b (to scale up to 2.5 cm), narrowing inside the solution as 10^(−A·x ÷ b) so it reaches the detector T times as wide; the solution tinted by εc; A and %T over it, A = εbc and %T = 100 × 10^(−A) in the caption',
+      ['he.chemistry.analytical#2'],
+      [
+        'From C-P16. Type BeakerCuvette in typesHe4d.ts: { kind: "beaker", cuvette: { path (cm), absorbance?, transmittance? (%), absorptivity? (L/(mol·cm)), concentration? (M) } }. The jug and solution beakers are unchanged.',
+        'analytical#2 main (replacing the interim functionGraph, or beside it): { kind: "beaker", cuvette: { path: "b", absorbance: "A", transmittance: "T", absorptivity: "eps", concentration: "c" } } (1.20 × 10⁴, 1.00 cm, 4.00 × 10⁻⁵ M → A = 0.480, %T = 33.1%).',
+        'Checks (harness/picturesHe4d.ts): %T = 100 × 10^(−A); A = εbc; the beam leaving is T times as wide; b > 0, 0 < %T ≤ 100.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: ['g.he-beaker-cuvette', 'g.he-beaker-cuvette-dark'],
+  },
 ];

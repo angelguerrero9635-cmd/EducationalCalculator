@@ -19,6 +19,7 @@ import type { HscSpec } from './typesHsc';
 import type { HsbSpec } from './typesHsb';
 import type { HsdSpec } from './typesHsd';
 import type { BeakerSolution, HsjSpec } from './typesHsj';
+import type { BeakerCuvette } from './typesHe4d';
 import type { CircleSector, PlaneGeometry, SideSplitter } from './typesHsf';
 import type { HsgSpec, PunnettInheritance } from './typesHsg';
 import type { HshSpec } from './typesHsh';
@@ -855,6 +856,8 @@ export type Representation =
     }
   /** Grades 9–12 (H52): a solution's solute as dots, a dilution, a solubility curve. */
   | { kind: 'beaker'; solution: BeakerSolution }
+  /** College (HC112): a cuvette in a spectrophotometer's beam (`typesHe4d.ts`). */
+  | { kind: 'beaker'; cuvette: BeakerCuvette }
   /**
    * A quadrilateral with 2 pairs of equal sides (`first`, `second`), square corners when
    * `rightAngles` is 4; named square, rectangle, rhombus or parallelogram.

@@ -161,6 +161,7 @@ import { MatrixDeterminant } from './MatrixDeterminant';
 import { MatrixGrid } from './MatrixGrid';
 import { HsjView } from './hsjView';
 import { BeakerSolution } from './BeakerSolution';
+import { BeakerCuvette } from './BeakerCuvette';
 import { ConicGraph } from './ConicGraph';
 import { PolarGrid } from './PolarGrid';
 import { ComplexPlane } from './ComplexPlane';
@@ -462,6 +463,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <Scale spec={spec} calc={calc} />;
     case 'beaker':
       if ('solution' in spec) return <BeakerSolution spec={spec.solution} calc={calc} />;
+      if ('cuvette' in spec) return <BeakerCuvette spec={spec.cuvette} calc={calc} />; // HC112
       return <Beaker spec={spec} calc={calc} />;
     case 'quadrilateral':
       return <Quadrilateral spec={spec} calc={calc} />;
