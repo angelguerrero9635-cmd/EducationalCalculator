@@ -12,7 +12,11 @@
  * HC50: `graph` (discrete-math#3, data-structures#1, communication-systems#3~code-length,
  * networks#2) with an edge case each, and graph cards on a sequence (networks#2~dijkstra) and
  * a sort (discrete-math#3~euler).
+ *
+ * HC51: `scheduleChart` (embedded-systems#3, ~response-time, ~edf; operating-systems#1,
+ * ~round-robin) and a rate-monotonic set that misses a deadline at the edge.
  */
+import { jobOrder } from '@/components/module/reps/scheduleMath';
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
 import type { LayoutDef } from './layouts';
@@ -20,6 +24,8 @@ import type { ModuleDef } from './types';
 import type { GraphSpec, TimingDiagramSpec } from './typesHe3d';
 
 type Fn = (x: Values) => number | number[] | undefined;
+/** A rearrangement's right-hand side: a template, or one built from the values (a sorted order). */
+type Expr = string | ((x: Values) => string);
 
 /** A relation with its rearrangements, each [solve, expression, how] for the step text. */
 interface Rule {
@@ -27,7 +33,7 @@ interface Rule {
   display: string;
   vars: string[];
   residual: (x: Values) => number;
-  solve: Record<string, [Fn, string, string]>;
+  solve: Record<string, [Fn, Expr, string]>;
 }
 
 const rule = (
@@ -35,7 +41,7 @@ const rule = (
   display: string,
   vars: string[],
   residual: (x: Values) => number,
-  solve: Record<string, [Fn, string, string]>,
+  solve: Record<string, [Fn, Expr, string]>,
 ): Rule => ({ id, display, vars, residual, solve });
 
 type Demo = Omit<ModuleDef, 'relations' | 'steps'> & { rules: Rule[]; limits?: Relation[] };
@@ -57,7 +63,12 @@ function demo({ rules, limits = [], ...m }: Demo): ModuleDef {
     steps: Object.fromEntries([
       ...rules.map((r) => [
         r.id,
-        Object.fromEntries(Object.entries(r.solve).map(([k, [, expr, how]]) => [k, { expr, how }])),
+        // (a `() => undefined` rearrangement marks a value the relation can't give: no step)
+        Object.fromEntries(
+          Object.entries(r.solve)
+            .filter(([, [fn]]) => fn.length > 0)
+            .map(([k, [, expr, how]]) => [k, { expr, how }]),
+        ),
       ]),
       ...limits.map((l) => [l.id, {}]),
     ]),
@@ -96,7 +107,7 @@ const limit = (
 /** total = a + b + … with every rearrangement. */
 const sumRule = (id: string, total: string, parts: string[], how: string): Rule => {
   const braced = (xs: string[]) => xs.map((p) => `{${p}}`);
-  const solve: Record<string, [Fn, string, string]> = {
+  const solve: Record<string, [Fn, Expr, string]> = {
     [total]: [(x) => parts.reduce((s, p) => s + x[p]!, 0), braced(parts).join(' + '), how],
   };
   for (const p of parts) {
@@ -1312,6 +1323,368 @@ const eulerCards: LayoutDef = {
   ],
 };
 
+// ─── HC51: embedded-systems#3, rate-monotonic and EDF ─────────────────────────
+
+const msVar = (id: string, symbol: string, name: string, more: Partial<VariableDef> = {}) =>
+  vr(id, symbol, name, 'ms', 0.001, 100000, { step: 0.1, units: ['ms'], ...more });
+
+const SUB = '₁₂₃';
+const taskVars = (n: number) =>
+  Array.from({ length: n }, (_, i) => [
+    msVar(`C${i + 1}`, `C${SUB[i]}`, `Run time of task ${i + 1}`),
+    msVar(`T${i + 1}`, `T${SUB[i]}`, `Period of task ${i + 1}`),
+  ]).flat();
+
+/** U = Σ Cᵢ ÷ Tᵢ, solved for U or the last task's C. */
+const utilRule = (n: number): Rule => {
+  const idx = Array.from({ length: n }, (_, i) => i + 1);
+  const sum = (x: Values, skip = 0) =>
+    idx.filter((i) => i !== skip).reduce((a, i) => a + x[`C${i}`]! / x[`T${i}`]!, 0);
+  const terms = (skip = 0) =>
+    idx
+      .filter((i) => i !== skip)
+      .map((i) => `{C${i}} ÷ {T${i}}`)
+      .join(' + ');
+  return rule(
+    'U = Σ Cᵢ ÷ Tᵢ',
+    `{U} = ${terms()}`,
+    ['U', ...idx.flatMap((i) => [`C${i}`, `T${i}`])],
+    (x) => x.U! - sum(x),
+    {
+      U: [
+        (x) => sum(x),
+        terms(),
+        'Each task’s share of the processor: its run time over its period.',
+      ],
+      [`C${n}`]: [
+        (x) => (x.U! - sum(x, n)) * x[`T${n}`]!,
+        `({U} − ${terms(n)}) × {T${n}}`,
+        'What the other tasks leave of U, times the last period.',
+      ],
+    },
+  );
+};
+
+const runsInPeriod = (n: number) =>
+  limit(
+    'each task runs within its period',
+    Array.from({ length: n }, (_, i) => `{C${i + 1}} ≤ {T${i + 1}}`).join(', '),
+    Array.from({ length: n }, (_, i) => [`C${i + 1}`, `T${i + 1}`]).flat(),
+    (x) => Array.from({ length: n }, (_, i) => i + 1).every((i) => x[`C${i}`]! <= x[`T${i}`]!),
+    'A task can’t run longer than its period.',
+  );
+
+const tasksOf = (n: number) =>
+  Array.from({ length: n }, (_, i) => ({ name: `τ${SUB[i]}`, C: `C${i + 1}`, T: `T${i + 1}` }));
+
+const RM_ASSUME = [
+  'Independent periodic tasks; each deadline is the next release.',
+  'Rate-monotonic: the shorter period has the higher priority and preempts at once.',
+];
+
+const rm = demo({
+  id: 'g.he-schedule-chart-rm',
+  title: 'Schedule: rate-monotonic tasks',
+  use: 'Use this for “Can tasks (C, T) = (1, 4), (2, 8), (3, 12) ms be scheduled rate-monotonically?”',
+  assumptions: [
+    ...RM_ASSUME,
+    'U ≤ n(2^(1/n) − 1), 0.780 for 3 tasks, guarantees it; above that, try the response times.',
+  ],
+  variables: [...taskVars(3), vr('U', 'U', 'Utilization', undefined, 0, 3, { step: 0.001 })],
+  rules: [utilRule(3)],
+  limits: [runsInPeriod(3)],
+  example: { C1: 1, T1: 4, C2: 2, T2: 8, C3: 3, T3: 12, U: 0.75 },
+  startWith: ['C1', 'T1', 'C2', 'T2', 'C3', 'T3'],
+  representation: { kind: 'scheduleChart', policy: 'rm', tasks: tasksOf(3), U: 'U' },
+});
+
+// The edge: two tasks above the 2-task bound (0.828), where rate-monotonic misses a deadline.
+const rmMiss = demo({
+  id: 'g.he-schedule-chart-rm-miss',
+  title: 'Schedule: a rate-monotonic miss',
+  use: 'Use this for “Tasks (2, 5) and (4, 7) ms: does rate-monotonic meet every deadline?”',
+  assumptions: [
+    ...RM_ASSUME,
+    'U = 0.971 is above the 2-task bound 0.828, so nothing is promised: here τ₂ misses.',
+  ],
+  variables: [...taskVars(2), vr('U', 'U', 'Utilization', undefined, 0, 2, { step: 0.001 })],
+  rules: [utilRule(2)],
+  limits: [runsInPeriod(2)],
+  example: { C1: 2, T1: 5, C2: 4, T2: 7, U: 2 / 5 + 4 / 7 },
+  startWith: ['C1', 'T1', 'C2', 'T2'],
+  representation: {
+    kind: 'scheduleChart',
+    policy: 'rm',
+    tasks: tasksOf(2),
+    U: 'U',
+    misses: true,
+  },
+});
+
+// ─── HC51: embedded-systems#3~response-time ───────────────────────────────────
+
+/** k = ⌈R ÷ T⌉: how many of a higher task's jobs start within R. */
+const ceilRule = (k: string, T: string): Rule =>
+  rule(
+    `${k} = ⌈R₃ ÷ ${T}⌉`,
+    `{${k}} = ⌈{R3} ÷ {${T}}⌉`,
+    [k, 'R3', T],
+    (x) => x[k]! - Math.ceil(x.R3! / x[T]! - 1e-9),
+    {
+      [k]: [
+        (x) => Math.ceil(x.R3! / x[T]! - 1e-9),
+        `⌈{R3} ÷ {${T}}⌉`,
+        'Count the higher task’s releases from 0 up to R₃.',
+      ],
+      R3: [() => undefined, '', ''],
+      [T]: [() => undefined, '', ''],
+    },
+  );
+
+const response = demo({
+  id: 'g.he-schedule-chart-response',
+  title: 'Schedule: a worst-case response time',
+  use: 'Use this for “Find the worst-case response time of task 3 in (1, 4), (2, 8), (3, 12) ms.”',
+  assumptions: [
+    ...RM_ASSUME,
+    'All tasks are released together at 0, the worst case for task 3.',
+    'R = C₃ + Σ ⌈R ÷ Tⱼ⌉Cⱼ from R = ΣC = 6: ⌈6/4⌉ = 2, ⌈6/8⌉ = 1 give 7, and 7 gives 7 again.',
+  ],
+  variables: [
+    ...taskVars(3),
+    vr('k1', 'k₁', 'Runs of task 1 within R₃', undefined, 0, 1000, { integer: true }),
+    vr('k2', 'k₂', 'Runs of task 2 within R₃', undefined, 0, 1000, { integer: true }),
+    msVar('R3', 'R₃', 'Response time of task 3'),
+  ],
+  rules: [
+    rule(
+      'R₃ = C₃ + k₁C₁ + k₂C₂',
+      '{R3} = {C3} + {k1} × {C1} + {k2} × {C2}',
+      ['R3', 'C3', 'k1', 'C1', 'k2', 'C2'],
+      (x) => x.R3! - x.C3! - x.k1! * x.C1! - x.k2! * x.C2!,
+      {
+        R3: [
+          (x) => x.C3! + x.k1! * x.C1! + x.k2! * x.C2!,
+          '{C3} + {k1} × {C1} + {k2} × {C2}',
+          'Task 3’s own run plus every higher job that preempts it.',
+        ],
+        C3: [
+          (x) => x.R3! - x.k1! * x.C1! - x.k2! * x.C2!,
+          '{R3} − {k1} × {C1} − {k2} × {C2}',
+          'Take the higher tasks’ runs from the response time.',
+        ],
+      },
+    ),
+    ceilRule('k1', 'T1'),
+    ceilRule('k2', 'T2'),
+  ],
+  limits: [
+    limit(
+      'task 3 meets its deadline',
+      '{R3} ≤ {T3}',
+      ['R3', 'T3'],
+      (x) => x.R3! <= x.T3! + 1e-9,
+      'Task 3 ends after its deadline: the set is not schedulable.',
+    ),
+    limit(
+      'the tasks are listed by priority',
+      '{T1} ≤ {T2} ≤ {T3}',
+      ['T1', 'T2', 'T3'],
+      (x) => x.T1! <= x.T2! && x.T2! <= x.T3!,
+      'List the tasks shortest period first: task 3 must have the lowest priority.',
+    ),
+  ],
+  example: { C1: 1, T1: 4, C2: 2, T2: 8, C3: 3, T3: 12, k1: 2, k2: 1, R3: 7 },
+  startWith: ['C1', 'T1', 'C2', 'T2', 'C3', 'T3', 'k1', 'k2'],
+  representation: {
+    kind: 'scheduleChart',
+    policy: 'rm',
+    tasks: tasksOf(3),
+    response: { task: 2, value: 'R3' },
+  },
+});
+
+// ─── HC51: embedded-systems#3~edf ─────────────────────────────────────────────
+
+const edf = demo({
+  id: 'g.he-schedule-chart-edf',
+  title: 'Schedule: earliest deadline first',
+  use: 'Use this for “Tasks (2, 5), (2, 7), (1, 10) ms: can EDF schedule them? Can rate-monotonic promise to?”',
+  assumptions: [
+    'Independent periodic tasks; each deadline is the next release.',
+    'EDF runs the job whose deadline is nearest, so any set with U ≤ 1 is schedulable.',
+    'U = 0.786 is above the 3-task rate-monotonic bound 0.780: no promise there.',
+  ],
+  variables: [...taskVars(3), vr('U', 'U', 'Utilization', undefined, 0, 3, { step: 0.001 })],
+  rules: [utilRule(3)],
+  limits: [
+    runsInPeriod(3),
+    limit(
+      'U ≤ 1',
+      '{U} ≤ 1',
+      ['U'],
+      (x) => x.U! <= 1 + 1e-9,
+      'Above U = 1 no schedule meets every deadline.',
+    ),
+  ],
+  example: { C1: 2, T1: 5, C2: 2, T2: 7, C3: 1, T3: 10, U: 2 / 5 + 2 / 7 + 1 / 10 },
+  startWith: ['C1', 'T1', 'C2', 'T2', 'C3', 'T3'],
+  representation: { kind: 'scheduleChart', policy: 'edf', tasks: tasksOf(3), U: 'U' },
+});
+
+// ─── HC51: operating-systems#1, FCFS and SJF ──────────────────────────────────
+
+const B = ['b1', 'b2', 'b3', 'b4'];
+const fcfsWait = (x: Values) => (3 * x.b1! + 2 * x.b2! + x.b3!) / 4;
+/** The bursts' ids, shortest first (ties in arrival order). */
+const sjfOrder = (x: Values) => [...B].sort((a, b) => x[a]! - x[b]! || B.indexOf(a) - B.indexOf(b));
+const sjfWait = (x: Values) => {
+  const o = sjfOrder(x);
+  return (3 * x[o[0]!]! + 2 * x[o[1]!]! + x[o[2]!]!) / 4;
+};
+const meanBurst = '({b1} + {b2} + {b3} + {b4}) ÷ 4';
+
+const fcfsSjf = demo({
+  id: 'g.he-schedule-chart-fcfs-sjf',
+  title: 'Schedule: FCFS and SJF',
+  use: 'Use this for “Four jobs of 10, 4, 2 and 6 ms arrive together. Compare FCFS and SJF waiting times.”',
+  assumptions: [
+    'All four jobs arrive at 0, in the order 1, 2, 3, 4; no I/O.',
+    'A job waits for every job run before it; a tie in SJF keeps the arrival order.',
+    'Turnaround is the wait plus the job’s own burst.',
+  ],
+  variables: [
+    ...B.map((b, i) => msVar(b, `b${'₁₂₃₄'[i]}`, `Burst of job ${i + 1}`)),
+    msVar('Wf', 'W_FCFS', 'FCFS average wait', { derived: true, min: 0 }),
+    msVar('Tf', 'T_FCFS', 'FCFS average turnaround', { derived: true }),
+    msVar('Ws', 'W_SJF', 'SJF average wait', { derived: true, min: 0 }),
+    msVar('Ts', 'T_SJF', 'SJF average turnaround', { derived: true }),
+  ],
+  rules: [
+    rule(
+      'FCFS wait',
+      '{Wf} = (3 × {b1} + 2 × {b2} + {b3}) ÷ 4',
+      ['Wf', 'b1', 'b2', 'b3'],
+      (x) => x.Wf! - fcfsWait(x),
+      {
+        Wf: [
+          fcfsWait,
+          '(3 × {b1} + 2 × {b2} + {b3}) ÷ 4',
+          'Job 1 waits 0, job 2 waits b₁, job 3 b₁ + b₂, job 4 b₁ + b₂ + b₃: the average.',
+        ],
+      },
+    ),
+    rule(
+      'FCFS turnaround',
+      '{Tf} = {Wf} + ({b1} + {b2} + {b3} + {b4}) ÷ 4',
+      ['Tf', 'Wf', ...B],
+      (x) => x.Tf! - x.Wf! - (x.b1! + x.b2! + x.b3! + x.b4!) / 4,
+      {
+        Tf: [
+          (x) => x.Wf! + (x.b1! + x.b2! + x.b3! + x.b4!) / 4,
+          `{Wf} + ${meanBurst}`,
+          'Each turnaround is a wait plus a burst, so the averages add.',
+        ],
+      },
+    ),
+    rule(
+      'SJF wait',
+      '{Ws} = the SJF average wait of {b1}, {b2}, {b3}, {b4}',
+      ['Ws', ...B],
+      (x) => x.Ws! - sjfWait(x),
+      {
+        Ws: [
+          sjfWait,
+          (x: Values) => {
+            const o = sjfOrder(x);
+            return `(3 × {${o[0]}} + 2 × {${o[1]}} + {${o[2]}}) ÷ 4`;
+          },
+          'Shortest first: the shortest burst is waited for three times, the next twice, then once.',
+        ],
+      },
+    ),
+    rule(
+      'SJF turnaround',
+      '{Ts} = {Ws} + ({b1} + {b2} + {b3} + {b4}) ÷ 4',
+      ['Ts', 'Ws', ...B],
+      (x) => x.Ts! - x.Ws! - (x.b1! + x.b2! + x.b3! + x.b4!) / 4,
+      {
+        Ts: [
+          (x) => x.Ws! + (x.b1! + x.b2! + x.b3! + x.b4!) / 4,
+          `{Ws} + ${meanBurst}`,
+          'Each turnaround is a wait plus a burst, so the averages add.',
+        ],
+      },
+    ),
+  ],
+  example: { b1: 10, b2: 4, b3: 2, b4: 6, Wf: 10, Tf: 15.5, Ws: 5, Ts: 10.5 },
+  startWith: B,
+  representation: {
+    kind: 'scheduleChart',
+    policy: 'jobs',
+    tasks: B.map((b, i) => ({ name: `J${'₁₂₃₄'[i]}`, C: b })),
+    runs: [
+      { policy: 'fcfs', wait: 'Wf', turnaround: 'Tf' },
+      { policy: 'sjf', wait: 'Ws', turnaround: 'Ts' },
+    ],
+  },
+});
+
+// ─── HC51: operating-systems#1~round-robin ────────────────────────────────────
+
+const RR = ['bA', 'bB', 'bC'];
+const rrWaits = (x: Values) =>
+  jobOrder(
+    RR.map((b) => x[b]!),
+    'rr',
+    x.q!,
+  ).waits;
+
+const roundRobin = demo({
+  id: 'g.he-schedule-chart-round-robin',
+  title: 'Schedule: round robin',
+  use: 'Use this for “Jobs A, B, C of 5, 3 and 1 ms share the processor with a 2 ms quantum. Find the average wait.”',
+  assumptions: [
+    'All three jobs arrive at 0 in the order A, B, C.',
+    'Each runs at most one quantum, then goes to the back of the queue.',
+    'A job’s wait is its finish time less its burst.',
+  ],
+  variables: [
+    ...RR.map((b, i) =>
+      msVar(b, `b${'ABC'[i]}`, `Burst of job ${'ABC'[i]}`, { min: 0.1, max: 100 }),
+    ),
+    msVar('q', 'q', 'Quantum', { min: 0.5, max: 100 }),
+    msVar('W', 'W', 'Average wait', { derived: true, min: 0 }),
+  ],
+  rules: [
+    rule(
+      'round-robin wait',
+      '{W} = the round-robin average wait of {bA}, {bB}, {bC} with quantum {q}',
+      ['W', ...RR, 'q'],
+      (x) => x.W! - rrWaits(x).reduce((a, b) => a + b, 0) / 3,
+      {
+        W: [
+          (x) => rrWaits(x).reduce((a, b) => a + b, 0) / 3,
+          (x: Values) =>
+            `(${rrWaits(x)
+              .map((w) => Number(w.toFixed(4)))
+              .join(' + ')}) ÷ 3`,
+          'Run the queue a quantum at a time; each wait is the finish time less the burst.',
+        ],
+      },
+    ),
+  ],
+  example: { bA: 5, bB: 3, bC: 1, q: 2, W: 13 / 3 },
+  startWith: ['bA', 'bB', 'bC', 'q'],
+  representation: {
+    kind: 'scheduleChart',
+    policy: 'jobs',
+    tasks: RR.map((b, i) => ({ name: 'ABC'[i]!, C: b })),
+    quantum: 'q',
+    runs: [{ policy: 'rr', wait: 'W' }],
+  },
+});
+
 export const HE3D_GALLERY_MODULES: ModuleDef[] = [
   register,
   registerHold,
@@ -1329,6 +1702,12 @@ export const HE3D_GALLERY_MODULES: ModuleDef[] = [
   codeTree,
   codeTreeSpare,
   routing,
+  rm,
+  rmMiss,
+  response,
+  edf,
+  fcfsSjf,
+  roundRobin,
 ];
 
 export const HE3D_GALLERY_LAYOUTS: LayoutDef[] = [

@@ -29,6 +29,7 @@ const CODE = '"kind":"code"';
 const DL = 'he.engineering.digital-logic';
 const ES = 'he.engineering.embedded-systems';
 const NET = 'he.engineering.networks';
+const OS = 'he.engineering.operating-systems';
 
 export const HE3D_REQUESTS: PictureRequest[] = [
   {
@@ -114,6 +115,30 @@ export const HE3D_REQUESTS: PictureRequest[] = [
       'g.he-graph-routing',
       'g.he-graph-dijkstra',
       'g.he-graph-card-euler',
+    ],
+  },
+  {
+    ...ask(
+      'HC51',
+      'scheduleChart',
+      'Gantt charts: periodic tasks under rate-monotonic or EDF with releases, misses and a response time; FCFS, SJF and round-robin runs with each job’s wait',
+      [`${ES}#3`, `${ES}#3~response-time`, `${ES}#3~edf`, `${OS}#1`, `${OS}#1~round-robin`],
+      [
+        'From EC-P24. Drawn by reps/ScheduleChart.tsx (the simulation in reps/scheduleMath.ts, shared with the harness and the demos); types in typesHe3d.ts (ScheduleChartSpec).',
+        'Fields: policy "rm" | "edf" | "jobs"; tasks [{ name, C, T? }] (each C and T a variable id or number; up to 4 periodic tasks, names like "τ₁" or "J₁"); runs [{ policy: "fcfs" | "sjf" | "rr", wait?, turnaround? }] for jobs (one Gantt row each); quantum (rr); U; response { task (index), value } (brackets that task’s first response time under its row); misses (false: any miss is a harness error); unit (default "ms").',
+        'Periodic: preemptive, deadline = period; the hyperperiod is drawn when the shortest run is at least 1/100 of it, else twice the longest period, never past 60 of the shortest period (the caption says how much). A release arrow is also the last job’s deadline; a missed job is crossed, named and dropped. Jobs: all arrive at 0, ties in index order; each job’s waiting stretches are lines under the bar with “A waits 4”.',
+        'Harness (picturesHe3d.ts): each job’s slices add to its C or burst; U = Σ C ÷ T; a miss never drawn when U is within RM’s n(2^(1/n) − 1) or EDF’s 1, nor when misses is false; the bracket’s R = the page’s; average wait and turnaround = the page’s. Step phrases “the SJF average wait of …” and “the round-robin average wait of … with quantum …” are taught to the harness in harness/phrasesHe3d.ts.',
+        'Example (embedded-systems#3 main): { kind: "scheduleChart", policy: "rm", tasks: [{ name: "τ₁", C: "C1", T: "T1" }, { name: "τ₂", C: "C2", T: "T2" }, { name: "τ₃", C: "C3", T: "T3" }], U: "U" }; ~response-time adds response: { task: 2, value: "R3" } (the demo takes k₁ = ⌈R₃ ÷ T₁⌉ and k₂ typed, the last pass of the iteration, until HE-E5); operating-systems#1 main: { kind: "scheduleChart", policy: "jobs", tasks: [{ name: "J₁", C: "b1" }, …], runs: [{ policy: "fcfs", wait: "Wf", turnaround: "Tf" }, { policy: "sjf", wait: "Ws", turnaround: "Ts" }] } (its SJF step builds the sorted order from the values).',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-schedule-chart-rm',
+      'g.he-schedule-chart-rm-miss',
+      'g.he-schedule-chart-response',
+      'g.he-schedule-chart-edf',
+      'g.he-schedule-chart-fcfs-sjf',
+      'g.he-schedule-chart-round-robin',
     ],
   },
 ];

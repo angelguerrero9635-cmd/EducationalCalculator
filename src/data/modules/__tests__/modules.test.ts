@@ -621,6 +621,7 @@ function representationVars(r: Representation): string[] {
       return he2cSpecVars(r);
     case 'timingDiagram':
     case 'graph':
+    case 'scheduleChart':
       return he3dSpecVars(r);
     case 'projectile':
     case 'induction':

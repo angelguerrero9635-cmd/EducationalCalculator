@@ -1,7 +1,7 @@
 /**
  * College pictures, round 3, group D (docs/RENDERINGS_HE.md): the computing and signals
  * pictures. HC48 the `codeTrace` explore figure and the `code` card figure; HC49
- * `timingDiagram`; HC50 `graph` (and its card).
+ * `timingDiagram`; HC50 `graph` (and its card); HC51 `scheduleChart`.
  */
 import type { NumOrVar } from './typesGraphs';
 
@@ -199,9 +199,48 @@ export interface GraphCard {
 
 export const graphCardSize = (f: GraphCard): [number, number] => (f.wide ? [168, 104] : [96, 64]);
 
+// ─── HC51: schedules ─────────────────────────────────────────────────────────
+
+/** A periodic task (C every T) or a job (a burst C arriving at 0), with its name ("τ₁", "A"). */
+export interface ScheduleTask {
+  name: string;
+  C: NumOrVar;
+  T?: NumOrVar;
+}
+
+/**
+ * A Gantt chart from the page's values:
+ *
+ * - `rm` and `edf`: periodic tasks (up to 4), one row each, preemptive (rate-monotonic: the
+ *   shorter period first; EDF: the earlier deadline first), over the hyperperiod (or as much of
+ *   it as reads), each release an arrow (a release is the last job's deadline); a miss is
+ *   crossed and named; `response` brackets a task's first response time.
+ * - `jobs`: one row per run (FCFS, SJF, round robin with `quantum`) of jobs all arriving at 0,
+ *   each slice named, the times at its ends, and under it each job's wait as a line.
+ */
+export interface ScheduleChartSpec {
+  kind: 'scheduleChart';
+  policy: 'rm' | 'edf' | 'jobs';
+  tasks: ScheduleTask[];
+  /** `jobs`: the runs drawn, each with the page's average wait and turnaround. */
+  runs?: { policy: 'fcfs' | 'sjf' | 'rr'; wait?: NumOrVar; turnaround?: NumOrVar }[];
+  quantum?: NumOrVar;
+  /** The utilization U = Σ C ÷ T. */
+  U?: NumOrVar;
+  /** A task's first response time, bracketed on its row (index into `tasks`). */
+  response?: { task: number; value: NumOrVar };
+  /**
+   * The page says whether a deadline is missed: false makes any miss a harness error. A miss
+   * is always an error when U is within the bound that promises none (RM's, or 1 for EDF).
+   */
+  misses?: boolean;
+  /** The time unit written (default ms). */
+  unit?: string;
+}
+
 // ─── The group's calculator pictures ─────────────────────────────────────────
 
-export type He3dSpec = TimingDiagramSpec | GraphSpec;
+export type He3dSpec = TimingDiagramSpec | GraphSpec | ScheduleChartSpec;
 
 const ids = (xs: unknown[]): string[] =>
   xs.flat(4).filter((x): x is string => typeof x === 'string');
@@ -231,6 +270,14 @@ export function he3dSpecVars(r: He3dSpec): string[] {
         r.L,
         r.kraft,
         (r.edges ?? []).map((e) => e.cost),
+      ]);
+    case 'scheduleChart':
+      return ids([
+        r.tasks.map((t) => [t.C, t.T]),
+        (r.runs ?? []).map((x) => [x.wait, x.turnaround]),
+        r.quantum,
+        r.U,
+        r.response?.value,
       ]);
   }
 }

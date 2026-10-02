@@ -2317,6 +2317,7 @@ export function repIssues(
       break;
     case 'timingDiagram':
     case 'graph':
+    case 'scheduleChart':
       out.push(
         ...he3dIssues(
           rep,

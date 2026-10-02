@@ -1,6 +1,7 @@
 /**
  * Harness checks for the college round 3 group D pictures (docs/RENDERINGS_HE.md): HC48 code
- * traces and code cards, HC49 timing diagrams, HC50 graphs and graph cards. Test-only.
+ * traces and code cards, HC49 timing diagrams, HC50 graphs and graph cards, HC51
+ * schedules. Test-only.
  */
 import { TIME_UNITS } from '@/components/module/reps/he3dTime';
 import {
@@ -12,12 +13,19 @@ import {
   prefixCode,
   treeLevels,
 } from '@/components/module/reps/graphMath';
+import { chartSpan, jobOrder, periodic, rmBound } from '@/components/module/reps/scheduleMath';
 import { HERTZ, METRES, uartFrame } from '@/components/module/reps/timingMath';
 
 import type { CardFigure, LayoutDef } from '../layouts';
 import type { Representation } from '../types';
 import type { NumOrVar } from '../typesGraphs';
-import type { CodeTraceFigure, CodeTraceScene, GraphSpec, TimingDiagramSpec } from '../typesHe3d';
+import type {
+  CodeTraceFigure,
+  CodeTraceScene,
+  GraphSpec,
+  ScheduleChartSpec,
+  TimingDiagramSpec,
+} from '../typesHe3d';
 import { graphCardSize } from '../typesHe3d';
 
 type Get = (x: NumOrVar) => number | undefined;
@@ -50,6 +58,8 @@ export function he3dIssues(rep: Representation, get: Get, unitOf: UnitOf): strin
       return timingIssues(rep, get, unitOf);
     case 'graph':
       return graphIssues(rep, get, unitOf);
+    case 'scheduleChart':
+      return scheduleIssues(rep, get, unitOf);
     default:
       return [];
   }
@@ -329,6 +339,73 @@ export function graphCardIssues(f: CardFigure, where: string): string[] {
       const said = list[1]!.split(/,\s*/).map(Number).sort();
       const deg = [...degreesOf(names, f.edges).values()].sort();
       if (said.join() !== deg.join()) out.push(`${where}: drawn degrees ${deg.join(', ')}`);
+    }
+  }
+  return out;
+}
+
+/** HC51: each job's slices add to its C or burst; no miss unless the page says; U, R, waits. */
+function scheduleIssues(s: ScheduleChartSpec, get: Get, unitOf: UnitOf): string[] {
+  const out: string[] = [];
+  const { v } = reader(get, unitOf);
+  const C = s.tasks.map((t) => v(t.C));
+  if (C.some((x) => x === undefined || !(x > 0))) return out;
+  if (s.policy === 'jobs') {
+    const q = v(s.quantum);
+    for (const run of s.runs ?? []) {
+      if (run.policy === 'rr' && !(q !== undefined && q > 0)) continue;
+      const o = jobOrder(C as number[], run.policy, q);
+      C.forEach((b, i) => {
+        const ran = o.slices.filter((x) => x.task === i).reduce((a, x) => a + x.end - x.start, 0);
+        if (!near(ran, b!)) out.push(`${run.policy}: job ${i} runs ${ran}, its burst is ${b}`);
+      });
+      const w = v(run.wait);
+      if (w !== undefined && !near(w, o.avgWait)) {
+        out.push(`${run.policy}: the drawn average wait ${o.avgWait} ≠ the page's ${w}`);
+      }
+      const t = v(run.turnaround);
+      if (t !== undefined && !near(t, o.avgTurnaround)) {
+        out.push(
+          `${run.policy}: the drawn average turnaround ${o.avgTurnaround} ≠ the page's ${t}`,
+        );
+      }
+    }
+    return out;
+  }
+  const T = s.tasks.map((t) => v(t.T));
+  if (T.some((x) => x === undefined || !(x > 0))) return out;
+  const set = C.map((c, i) => ({ C: c!, T: T[i]! }));
+  const U = v(s.U);
+  const sum = set.reduce((a, t) => a + t.C / t.T, 0);
+  if (U !== undefined && !near(U, sum)) out.push(`schedule: U ${U} ≠ Σ C ÷ T = ${sum}`);
+  const { span } = chartSpan(set);
+  const sim = periodic(set, s.policy, span);
+  // A miss is drawn only where the values make one: never under a bound that promises none,
+  // and never on a page that says none happens.
+  if (sim.misses.length) {
+    const m = sim.misses[0]!;
+    if (s.misses === false)
+      out.push(`schedule: task ${m.task} misses at ${m.at}; the page says none does`);
+    const promise = s.policy === 'edf' ? 1 : rmBound(set.length);
+    if (sum <= promise + 1e-9) out.push(`schedule: a miss at ${m.at} with U = ${sum} ≤ ${promise}`);
+  }
+  // Every job done by the span ran exactly its C.
+  set.forEach((t, i) => {
+    const jobs = sim.done[i]!;
+    jobs.forEach((end, j) => {
+      if (end === undefined) return;
+      const [a, b] = [j * t.T, j * t.T + t.T];
+      const ran = sim.slices
+        .filter((x) => x.task === i)
+        .reduce((acc, x) => acc + Math.max(0, Math.min(x.end, b) - Math.max(x.start, a)), 0);
+      if (!near(ran, t.C)) out.push(`schedule: task ${i}'s job ${j} runs ${ran}, its C is ${t.C}`);
+    });
+  });
+  if (s.response) {
+    const R = v(s.response.value);
+    const drawn = sim.done[s.response.task]?.[0];
+    if (R !== undefined && drawn !== undefined && !near(R, drawn)) {
+      out.push(`schedule: the bracket ends at ${drawn}, the page's R is ${R}`);
     }
   }
   return out;

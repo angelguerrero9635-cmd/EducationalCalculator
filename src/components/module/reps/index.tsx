@@ -173,6 +173,7 @@ import { Neuron } from './Neuron';
 import { Skeletal } from './Skeletal';
 import { TimingDiagram } from './TimingDiagram';
 import { GraphDiagram } from './GraphDiagram';
+import { ScheduleChart } from './ScheduleChart';
 import { Hs2eView } from './Hs2eView';
 import { PunnettHs } from './PunnettHs';
 import { Gel } from './Gel';
@@ -391,6 +392,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <TimingDiagram spec={spec} calc={calc} />;
     case 'graph':
       return <GraphDiagram spec={spec} calc={calc} />;
+    case 'scheduleChart':
+      return <ScheduleChart spec={spec} calc={calc} />;
     case 'propertyDiagram':
       return <PropertyDiagram spec={spec} calc={calc} />;
     case 'linearFunction':
