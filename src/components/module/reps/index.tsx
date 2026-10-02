@@ -203,6 +203,7 @@ import { ThermalWall } from './ThermalWall';
 import { WaterfallDecibels } from './WaterfallDecibels';
 import { Lamina } from './Lamina';
 import { Rocket } from './Rocket';
+import { DeviceCurves } from './DeviceCurves';
 import { PropertyDiagram } from './PropertyDiagram';
 import { MotionGraphHs } from './MotionGraphHs';
 import { HskView } from './HskView';
@@ -392,6 +393,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <Lamina spec={spec} calc={calc} />; // HC86
     case 'rocket':
       return <Rocket spec={spec} calc={calc} />; // HC87
+    case 'deviceCurves':
+      return <DeviceCurves spec={spec} calc={calc} />; // HC62
     case 'propertyDiagram':
       return <PropertyDiagram spec={spec} calc={calc} />;
     case 'linearFunction':

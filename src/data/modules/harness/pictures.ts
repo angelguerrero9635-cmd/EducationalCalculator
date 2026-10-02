@@ -2320,7 +2320,8 @@ export function repIssues(
       break;
     case 'lamina':
     case 'rocket':
-      // In formula units, as the picture draws them (HC86, HC87).
+    case 'deviceCurves':
+      // In formula units, as the picture draws them (HC86, HC87, HC62).
       out.push(
         ...he3kIssues(rep, (x) =>
           ((v) =>

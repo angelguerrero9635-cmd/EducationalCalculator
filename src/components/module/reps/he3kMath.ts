@@ -103,3 +103,20 @@ export const thrustParts = (
   mv = 0.001,
   pA = 1,
 ) => ({ momentum: mdot * ve * mv, pressure: (pe - pa) * Ae * pA });
+
+// ─── HC62: device curves ─────────────────────────────────────────────────────
+
+/** Shockley's diode equation, I = I_S(e^(V ÷ nV_T) − 1). */
+export const shockley = (Is: number, n: number, VT: number, V: number) =>
+  Is * (Math.exp(V / (n * VT)) - 1);
+
+/** The constant-drop diode: no current below V_D; at V_D, whatever the circuit sets. */
+export const dropQ = (Vs: number, VD: number, R: number) =>
+  Vs > VD && R > 0 ? { V: VD, I: (Vs - VD) / R } : undefined;
+
+/** A MOSFET's drain current at overdrive V_OV and V_DS (triode below V_OV, flat above it). */
+export function mosfetId(kn: number, Vov: number, Vds: number) {
+  if (Vov <= 0) return 0;
+  const v = Math.max(0, Vds);
+  return v < Vov ? kn * (Vov * v - (v * v) / 2) : 0.5 * kn * Vov * Vov;
+}

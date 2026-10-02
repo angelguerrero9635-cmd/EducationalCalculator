@@ -102,4 +102,32 @@ export const HE3K_REQUESTS: PictureRequest[] = [
       'g.he-rocket-stages',
     ],
   },
+  {
+    ...ask(
+      'HC62',
+      'deviceCurves',
+      'Device curves, flat: a diode’s I–V curve (constant drop, or Shockley’s exponential) with the load line from (V_s, 0) to (0, V_s ÷ R) and the Q point where they cross, the ΔV for ten times the current marked; a MOSFET’s I_D–V_DS curves for V_GS and a family around it, the triode–saturation edge dashed, the regions named, and the Q point (at the edge when the page has no V_DS)',
+      [
+        'he.engineering.electronics#0',
+        'he.engineering.electronics#0~shockley',
+        'he.engineering.electronics#1~mosfet-sat',
+        'he.engineering.electronics#1~mosfet-triode',
+      ],
+      [
+        'From EC-P8. A new kind (typesHe3k.ts, reps/DeviceCurves.tsx, the models in reps/he3kMath.ts).',
+        'Fields: { kind: "deviceCurves", device: "diode" | "mosfet", model?: "drop" | "shockley", Vs?, VD?, R?, I?, Is?, n?, VT?, V?, decade? (ΔV for 10×I, checked), kn?, Vgs?, Vt?, Vds?, Id?, Vov?, family?: number[] (other V_GS values; default V_GS − 0.5, + 0.5, + 1 V above V_t), load?: { VDD, RD } }. Units consistent in the formula: V with kΩ and mA (or Ω and A), k_n in mA/V²; the axes take the current’s and voltage’s shown units.',
+        'electronics#0 main: { kind: "deviceCurves", device: "diode", model: "drop", Vs: "Vs", VD: "VD", R: "R", I: "I" }. ~shockley: { device: "diode", model: "shockley", Is: "Is", n: "n", VT: "VT", V: "V", I: "I", decade: "dV" } (I in A shown in mA, V_T in V shown in mV). #1~mosfet-sat: { device: "mosfet", kn: "kn", Vgs: "Vgs", Vt: "Vt", Vov: "Vov", Id: "Id" }. ~mosfet-triode: the same plus Vds: "Vds".',
+        'Check (harness/picturesHe3k.ts): Q lies on the device curve (I_S(e^(V ÷ nV_T) − 1), V_D upright, or the V_GS curve) and on the load line; ΔV = nV_T ln 10. Below the drop (V_s ≤ V_D) or V_GS ≤ V_t the caption says why nothing flows.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-deviceCurves-diode',
+      'g.he-deviceCurves-led',
+      'g.he-deviceCurves-shockley',
+      'g.he-deviceCurves-shockley-n2',
+      'g.he-deviceCurves-mosfet-sat',
+      'g.he-deviceCurves-mosfet-triode',
+    ],
+  },
 ];

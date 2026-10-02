@@ -9,15 +9,18 @@ import {
   HEX_MAX,
   dbLevels,
   drawnFiberShare,
+  dropQ,
   inverseRule,
   massBar,
+  mosfetId,
   rocketDv,
   ruleOfMixtures,
+  shockley,
   thrustParts,
 } from '@/components/module/reps/he3kMath';
 
 import type { Representation } from '../types';
-import type { He3kSpec, LaminaSpec, RocketSpec } from '../typesHe3k';
+import type { DeviceCurvesSpec, He3kSpec, LaminaSpec, RocketSpec } from '../typesHe3k';
 
 type Val = (x: string | number) => number | undefined;
 
@@ -155,11 +158,68 @@ export function rocketIssues(rep: RocketSpec, val: Val): string[] {
   return out;
 }
 
+// ─── HC62 ────────────────────────────────────────────────────────────────────
+
+/** Q lies on the device curve and on the load line; ΔV for a decade is nV_T ln 10. */
+export function deviceCurvesIssues(rep: DeviceCurvesSpec, val: Val): string[] {
+  const out: string[] = [];
+  const n = reader(val);
+  if (rep.device === 'diode') {
+    const [Vs, R, I] = [n(rep.Vs), n(rep.R), n(rep.I)];
+    if (rep.model === 'shockley') {
+      const [Is, nn, VT, V] = [n(rep.Is), n(rep.n), n(rep.VT), n(rep.V)];
+      if (Is === undefined || nn === undefined || VT === undefined) return out;
+      if (V !== undefined && I !== undefined && !near(I, shockley(Is, nn, VT, V)))
+        out.push(`Q is off the diode curve: I = ${I}, the curve gives ${shockley(Is, nn, VT, V)}`);
+      if (
+        V !== undefined &&
+        I !== undefined &&
+        Vs !== undefined &&
+        R !== undefined &&
+        !near(I, (Vs - V) / R)
+      )
+        out.push(`Q is off the load line: I = ${I}, (V_s − V) ÷ R = ${(Vs - V) / R}`);
+      const dV = n(rep.decade);
+      if (dV !== undefined && !near(dV, nn * VT * Math.log(10)))
+        out.push(`ΔV = ${dV} for ten times the current, nV_T ln 10 = ${nn * VT * Math.log(10)}`);
+    } else {
+      const VD = n(rep.VD);
+      if (Vs === undefined || R === undefined || VD === undefined) return out;
+      const Q = dropQ(Vs, VD, R);
+      if (Q && I !== undefined && !near(I, Q.I))
+        out.push(`Q is off the load line at V_D: I = ${I}, (V_s − V_D) ÷ R = ${Q.I}`);
+    }
+    return out;
+  }
+  const [kn, Vgs, Vt, Vds, Id, Vov] = [
+    n(rep.kn),
+    n(rep.Vgs),
+    n(rep.Vt),
+    n(rep.Vds),
+    n(rep.Id),
+    n(rep.Vov),
+  ];
+  if (kn === undefined || Vgs === undefined || Vt === undefined) return out;
+  // The overdrive the page worked out (V_GS − V_t), as the picture draws it.
+  const ov = Vov ?? Vgs - Vt;
+  const at = Vds ?? ov;
+  // A triode page past its V_DS < V_OV limit is refused by the page, not drawn as triode.
+  const pastEdge = rep.Vds !== undefined && (Vds === undefined || Vds > ov);
+  if (Id !== undefined && ov > 0 && !pastEdge && !near(Id, mosfetId(kn, ov, at)))
+    out.push(`Q is off the V_GS curve: I_D = ${Id}, the curve gives ${mosfetId(kn, ov, at)}`);
+  const [VDD, RD] = [n(rep.load?.VDD), n(rep.load?.RD)];
+  if (Id !== undefined && VDD !== undefined && RD !== undefined && !near(Id, (VDD - at) / RD))
+    out.push(`Q is off the load line: I_D = ${Id}, (V_DD − V_DS) ÷ R_D = ${(VDD - at) / RD}`);
+  return out;
+}
+
 export function he3kIssues(rep: He3kSpec, val: Val): string[] {
   switch (rep.kind) {
     case 'lamina':
       return laminaIssues(rep, val);
     case 'rocket':
       return rocketIssues(rep, val);
+    case 'deviceCurves':
+      return deviceCurvesIssues(rep, val);
   }
 }

@@ -653,7 +653,8 @@ function representationVars(r: Representation): string[] {
       return bodeVars(r); // HC22
     case 'lamina':
     case 'rocket':
-      return he3kSpecVars(r); // HC86, HC87
+    case 'deviceCurves':
+      return he3kSpecVars(r); // HC86, HC87, HC62
     case 'wing':
     case 'duct':
     case 'supersonicFlow':

@@ -897,6 +897,307 @@ const rocketStages: ModuleDef = {
   },
 };
 
+// ─── HC62: a diode and a resistor (electronics#0) ────────────────────────────
+
+const DIODE_DROP = [
+  sumRule(
+    'V_R = V_s − V_D',
+    'VR',
+    [
+      ['Vs', 1],
+      ['VD', -1],
+    ],
+    'The resistor takes what the source gives beyond the diode’s drop (KVL).',
+  ),
+  rule('I = V_R ÷ R', '{I} = {VR} ÷ {R}', ['I', 'VR', 'R'], (v) => v.I! * v.R! - v.VR!, {
+    I: [
+      (v) => div(v.VR!, v.R!),
+      '{VR} ÷ {R}',
+      'Ohm’s law on the resistor: volts over kΩ gives mA.',
+    ],
+    VR: [(v) => v.I! * v.R!, '{I} × {R}', 'Ohm’s law: mA times kΩ gives volts.'],
+    R: [(v) => div(v.VR!, v.I!), '{VR} ÷ {I}', 'Ohm’s law: volts over mA gives kΩ.'],
+  }),
+  rule('P_D = V_D I', '{PD} = {VD} × {I}', ['PD', 'VD', 'I'], (v) => v.PD! - v.VD! * v.I!, {
+    PD: [
+      (v) => v.VD! * v.I!,
+      '{VD} × {I}',
+      'The diode’s power: its drop times its current (V × mA = mW).',
+    ],
+    VD: [(v) => div(v.PD!, v.I!), '{PD} ÷ {I}', 'Divide the power by the current.'],
+    I: [(v) => div(v.PD!, v.VD!), '{PD} ÷ {VD}', 'Divide the power by the drop.'],
+  }),
+];
+
+function diodeDrop(id: string, title: string, Vs: number, VD: number, R: number): ModuleDef {
+  const I = (Vs - VD) / R;
+  return {
+    id,
+    title,
+    use: 'Use this for the current through a diode and resistor in series, constant-drop model.',
+    assumptions: [
+      'Constant-drop model: no current below V_D, then V_D whatever the current.',
+      'The diode points with the current.',
+    ],
+    variables: [
+      q('Vs', 'V_s', 'Source voltage', 'V', 0, 1000, 0.01),
+      q('VD', 'V_D', 'Diode drop', 'V', 0.2, 3.5, 0.01),
+      q('R', 'R', 'Resistance', 'kΩ', 0.001, 10000, 0.001),
+      q('VR', 'V_R', 'Resistor voltage', 'V', 0, 1000, 0.01),
+      q('I', 'I', 'Current', 'mA', 0, 1e6, 0.001),
+      q('PD', 'P_D', 'Diode power', 'mW', 0, 1e7, 0.001),
+    ],
+    ...withLimits(rules(...DIODE_DROP), [
+      below('VD', 'Vs', '{VD} is below {Vs}: below its drop the diode is off'),
+    ]),
+    example: { Vs, VD, R, VR: Vs - VD, I, PD: VD * I },
+    startWith: ['Vs', 'VD', 'R'],
+    representation: {
+      kind: 'deviceCurves',
+      device: 'diode',
+      model: 'drop',
+      Vs: 'Vs',
+      VD: 'VD',
+      R: 'R',
+      I: 'I',
+    },
+  };
+}
+
+const diodeMain = diodeDrop(
+  'g.he-deviceCurves-diode',
+  'A silicon diode and 1 kΩ on 5 V: the load line',
+  5,
+  0.7,
+  1,
+);
+
+const diodeLed = diodeDrop(
+  'g.he-deviceCurves-led',
+  'A blue LED on 3.3 V: just above its drop',
+  3.3,
+  3,
+  0.015,
+);
+
+// ─── HC62: Shockley's equation (electronics#0~shockley) ──────────────────────
+
+const SHOCKLEY = rule(
+  'I = I_S(e^(V ÷ nV_T) − 1)',
+  '{I} = {Is} × (e^({V} ÷ ({n} × {VT})) − 1)',
+  ['I', 'Is', 'V', 'n', 'VT'],
+  (v) => v.I! / v.Is! - (Math.exp(v.V! / (v.n! * v.VT!)) - 1),
+  {
+    I: [
+      (v) => v.Is! * (Math.exp(v.V! / (v.n! * v.VT!)) - 1),
+      '{Is} × (e^({V} ÷ ({n} × {VT})) − 1)',
+      'Shockley’s equation: the current grows tenfold every nV_T ln 10 volts.',
+    ],
+    Is: [
+      (v) => div(v.I!, Math.exp(v.V! / (v.n! * v.VT!)) - 1),
+      '{I} ÷ (e^({V} ÷ ({n} × {VT})) − 1)',
+      'Divide the current by the exponential part.',
+    ],
+    V: [
+      (v) => v.n! * v.VT! * Math.log(v.I! / v.Is! + 1),
+      '{n} × {VT} × ln({I} ÷ {Is} + 1)',
+      'Undo the exponential with a natural log.',
+    ],
+  },
+);
+
+const DECADE = rule(
+  'ΔV = nV_T ln 10',
+  '{dV} = {n} × {VT} × ln(10)',
+  ['dV', 'n', 'VT'],
+  (v) => v.dV! - v.n! * v.VT! * Math.log(10),
+  {
+    dV: [
+      (v) => v.n! * v.VT! * Math.log(10),
+      '{n} × {VT} × ln(10)',
+      'Ten times the current: ΔV = nV_T ln(I₂ ÷ I₁) with the ratio 10.',
+    ],
+    n: [
+      (v) => div(v.dV!, v.VT! * Math.log(10)),
+      '{dV} ÷ ({VT} × ln(10))',
+      'Divide ΔV by V_T ln 10.',
+    ],
+    VT: [(v) => div(v.dV!, v.n! * Math.log(10)), '{dV} ÷ ({n} × ln(10))', 'Divide ΔV by n ln 10.'],
+  },
+);
+
+function diodeShockley(id: string, title: string, Is: number, n: number, V: number): ModuleDef {
+  const VT = 0.02585;
+  return {
+    id,
+    title,
+    use: 'Use this for a diode’s current from Shockley’s equation, and the volts per decade of current.',
+    assumptions: [
+      'V_T = kT ÷ q = 25.85 mV at 300 K.',
+      'Forward bias well above V_T, so the −1 hardly matters.',
+    ],
+    variables: [
+      q('Is', 'I_S', 'Saturation current', 'A', 1e-18, 1e-6, 1e-18, { scientific: true }),
+      q('n', 'n', 'Ideality factor', undefined, 1, 2, 0.01),
+      q('VT', 'V_T', 'Thermal voltage', 'V', 0.001, 0.1, 0.00001, {
+        units: ['V', 'mV'],
+        shownIn: 'mV',
+      }),
+      q('V', 'V', 'Diode voltage', 'V', 0, 2, 0.001),
+      q('I', 'I', 'Diode current', 'A', 0, 100, 1e-9, { units: ['A', 'mA'], shownIn: 'mA' }),
+      q('dV', 'ΔV', 'Voltage for ten times the current', 'V', 0, 1, 0.0001, {
+        units: ['V', 'mV'],
+        shownIn: 'mV',
+      }),
+    ],
+    ...rules(SHOCKLEY, DECADE),
+    example: { Is, n, VT, V, I: Is * (Math.exp(V / (n * VT)) - 1), dV: n * VT * Math.log(10) },
+    startWith: ['Is', 'n', 'VT', 'V'],
+    representation: {
+      kind: 'deviceCurves',
+      device: 'diode',
+      model: 'shockley',
+      Is: 'Is',
+      n: 'n',
+      VT: 'VT',
+      V: 'V',
+      I: 'I',
+      decade: 'dV',
+    },
+  };
+}
+
+const diodeShockleyMain = diodeShockley(
+  'g.he-deviceCurves-shockley',
+  'Shockley’s equation: 0.65 V across a small silicon diode',
+  1e-14,
+  1,
+  0.65,
+);
+
+const diodeShockleyN2 = diodeShockley(
+  'g.he-deviceCurves-shockley-n2',
+  'An ideality factor of 2: twice the volts per decade',
+  1e-9,
+  2,
+  0.7,
+);
+
+// ─── HC62: MOSFET output curves (electronics#1~mosfet-sat, ~mosfet-triode) ───
+
+const OVERDRIVE = sumRule(
+  'V_OV = V_GS − V_t',
+  'Vov',
+  [
+    ['Vgs', 1],
+    ['Vt', -1],
+  ],
+  'The overdrive is how far V_GS stands above the threshold.',
+);
+
+const SATURATION = rule(
+  'I_D = ½k_nV_OV²',
+  '{Id} = ½ × {kn} × {Vov}²',
+  ['Id', 'kn', 'Vov'],
+  (v) => v.Id! - 0.5 * v.kn! * v.Vov! ** 2,
+  {
+    Id: [
+      (v) => 0.5 * v.kn! * v.Vov! ** 2,
+      '½ × {kn} × {Vov}²',
+      'In saturation the current depends on V_OV only (mA/V² × V² = mA).',
+    ],
+    kn: [
+      (v) => div(2 * v.Id!, v.Vov! ** 2),
+      '2 × {Id} ÷ {Vov}²',
+      'Double I_D, then divide by V_OV².',
+    ],
+    Vov: [(v) => pos(Math.sqrt((2 * v.Id!) / v.kn!)), '√(2 × {Id} ÷ {kn})', 'Undo the square.'],
+  },
+);
+
+const TRIODE = rule(
+  'I_D = k_n(V_OVV_DS − ½V_DS²)',
+  '{Id} = {kn} × ({Vov} × {Vds} − ½ × {Vds}²)',
+  ['Id', 'kn', 'Vov', 'Vds'],
+  (v) => v.Id! - v.kn! * (v.Vov! * v.Vds! - 0.5 * v.Vds! ** 2),
+  {
+    Id: [
+      (v) => v.kn! * (v.Vov! * v.Vds! - 0.5 * v.Vds! ** 2),
+      '{kn} × ({Vov} × {Vds} − ½ × {Vds}²)',
+      'Below V_OV the channel is open all along: the triode formula.',
+    ],
+    kn: [
+      (v) => div(v.Id!, v.Vov! * v.Vds! - 0.5 * v.Vds! ** 2),
+      '{Id} ÷ ({Vov} × {Vds} − ½ × {Vds}²)',
+      'Divide I_D by the bracket.',
+    ],
+    Vov: [
+      (v) => div(v.Id! / v.kn! + 0.5 * v.Vds! ** 2, v.Vds!),
+      '({Id} ÷ {kn} + ½ × {Vds}²) ÷ {Vds}',
+      'Undo the bracket: add ½V_DS², divide by V_DS.',
+    ],
+  },
+);
+
+const mosVars = (): VariableDef[] => [
+  q('kn', 'k_n', 'Process transconductance × W/L', 'mA/V²', 0.01, 100, 0.01),
+  q('Vgs', 'V_GS', 'Gate–source voltage', 'V', 0, 20, 0.01),
+  q('Vt', 'V_t', 'Threshold voltage', 'V', 0.1, 5, 0.01),
+  q('Vov', 'V_OV', 'Overdrive', 'V', 0.001, 20, 0.001),
+  q('Id', 'I_D', 'Drain current', 'mA', 0, 1e4, 0.001),
+];
+
+const MOS_ASSUMPTIONS = [
+  'k_n = μₙC_ox W/L (texts writing I_D = KV_OV² use K = k_n ÷ 2).',
+  'No channel-length modulation: the saturation curves are flat.',
+];
+
+const mosfetSat: ModuleDef = {
+  id: 'g.he-deviceCurves-mosfet-sat',
+  title: 'MOSFET in saturation: I_D from the overdrive',
+  use: 'Use this for an n-channel MOSFET’s drain current in saturation, and the least V_DS that keeps it there.',
+  assumptions: MOS_ASSUMPTIONS,
+  variables: mosVars(),
+  ...withLimits(rules(OVERDRIVE, SATURATION), [
+    below('Vt', 'Vgs', '{Vgs} is above {Vt}: a channel forms'),
+  ]),
+  example: { kn: 2, Vgs: 3, Vt: 1, Vov: 2, Id: 4 },
+  startWith: ['kn', 'Vgs', 'Vt'],
+  representation: {
+    kind: 'deviceCurves',
+    device: 'mosfet',
+    kn: 'kn',
+    Vgs: 'Vgs',
+    Vt: 'Vt',
+    Vov: 'Vov',
+    Id: 'Id',
+  },
+};
+
+const mosfetTriode: ModuleDef = {
+  id: 'g.he-deviceCurves-mosfet-triode',
+  title: 'MOSFET in triode: V_DS below the overdrive',
+  use: 'Use this for an n-channel MOSFET’s drain current when V_DS is below V_GS − V_t.',
+  assumptions: MOS_ASSUMPTIONS,
+  variables: [...mosVars(), q('Vds', 'V_DS', 'Drain–source voltage', 'V', 0.001, 50, 0.001)],
+  ...withLimits(rules(OVERDRIVE, TRIODE), [
+    below('Vt', 'Vgs', '{Vgs} is above {Vt}: a channel forms'),
+    below('Vds', 'Vov', '{Vds} is below {Vov}: still in triode'),
+  ]),
+  example: { kn: 2, Vgs: 3, Vt: 1, Vov: 2, Vds: 0.5, Id: 2 * (2 * 0.5 - 0.125) },
+  startWith: ['kn', 'Vgs', 'Vt', 'Vds'],
+  representation: {
+    kind: 'deviceCurves',
+    device: 'mosfet',
+    kn: 'kn',
+    Vgs: 'Vgs',
+    Vt: 'Vt',
+    Vov: 'Vov',
+    Vds: 'Vds',
+    Id: 'Id',
+  },
+};
+
 export const HE3K_GALLERY_MODULES: ModuleDef[] = [
   linkBudget,
   linkMargin,
@@ -912,6 +1213,12 @@ export const HE3K_GALLERY_MODULES: ModuleDef[] = [
   rocketThrustSea,
   rocketThrustVacuum,
   rocketStages,
+  diodeMain,
+  diodeLed,
+  diodeShockleyMain,
+  diodeShockleyN2,
+  mosfetSat,
+  mosfetTriode,
 ];
 
 export const HE3K_GALLERY_LAYOUTS: LayoutDef[] = [];
