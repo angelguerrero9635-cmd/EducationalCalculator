@@ -299,7 +299,7 @@ export function MatrixGrid({ spec, calc }: { spec: MatrixGridSpec; calc: Calcula
   }
 
   // H99: the determinant mode is MatrixDeterminant's (reps/index.tsx routes it there).
-  if (spec.mode === 'determinant') return null;
+  if (spec.mode === 'determinant' || spec.mode === 'routh') return null; // HC190: MatrixRouthHe4a
   // Row reduction: each matrix under the last, the operation beside the arrow between.
   const M = spec.system.map((r) => r.map(num));
   const known = spec.system.flat().every(isKnown);

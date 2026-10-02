@@ -50,6 +50,7 @@ import { hs3aSpecVars } from '../typesHs3a';
 import { he1bSpecVars } from '../typesHe1b';
 import { he1aSpecVars } from '../typesHe1a';
 import { bodeVars, complexPlaneHe2aVars } from '../typesHe2a';
+import { matrixGridHe4aVars } from '../typesHe4a'; // HC94, HC190
 import { he2hSpecVars } from '../typesHe2h';
 import { isStandIn, pages } from '../harness/scope';
 import { treeChanceVars, twoWayVars, vennChanceVars } from '../harness/picturesHse';
@@ -554,6 +555,7 @@ function representationVars(r: Representation): string[] {
         ...hs2gSpecVars(r),
         ...hs3bSpecVars(r),
         ...(r.kind === 'complexPlane' ? complexPlaneHe2aVars(r) : []), // HC14
+        ...(r.kind === 'matrixGrid' ? matrixGridHe4aVars(r) : []), // HC94, HC190
       ];
     case 'membrane':
     case 'dnaStrand':

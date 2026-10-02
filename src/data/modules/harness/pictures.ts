@@ -86,6 +86,7 @@ import { he2eIssues, isHe2e } from './picturesHe2e';
 import { he2hIssues } from './picturesHe2h';
 import { fieldPlotIssues, he2gGraphIssues } from './picturesHe2g';
 import { he2cIssues } from './picturesHe2c';
+import { matrixGridHe4aIssues } from './picturesHe4a';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -2200,6 +2201,7 @@ export function repIssues(
     case 'matrixGrid':
       out.push(...hsdIssues(rep, (id) => val(id)), ...hs2gIssues(rep, val));
       if (rep.kind === 'complexPlane') out.push(...complexPlaneHe2aIssues(rep, siOf(val, byId))); // HC14
+      if (rep.kind === 'matrixGrid') out.push(...matrixGridHe4aIssues(rep, val)); // HC94, HC190
       out.push(...hs3bIssues(rep, val, byId)); // H106: space, polar conics, turned conics
       break;
     case 'membrane':

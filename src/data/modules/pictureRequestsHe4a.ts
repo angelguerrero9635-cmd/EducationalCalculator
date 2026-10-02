@@ -4,4 +4,28 @@
  */
 import type { PictureRequest } from './pictureRequests';
 
-export const HE4A_REQUESTS: PictureRequest[] = [];
+const M = 'he.math.';
+
+export const HE4A_REQUESTS: PictureRequest[] = [
+  {
+    id: 'HC94',
+    kind: 'matrixGrid',
+    what: 'Row reduction of [A | I] to [I | A⁻¹] (3 × 6 and 4 × 8), and det A by row reduction with a running tally and the pivot product',
+    pages: [`${M}linear-algebra#0~inverse`, `${M}linear-algebra#2`],
+    status: 'drawn',
+    gallery: [
+      'g.he-matrix-grid-inverse',
+      'g.he-matrix-grid-inverse-4x4',
+      'g.he-matrix-grid-tally',
+      'g.he-matrix-grid-tally-4x4',
+    ],
+    notes: [
+      'From M-P11 (HE-math-P11). Options on `matrixGrid` `mode: "rowReduce"` (typesHe4a.ts RowReduceHe4a, drawn by MatrixReduceHe4a.tsx when one is set; every existing rowReduce page unchanged).',
+      'Fields: inverse?: { values?: string[][] } — `system` is the square A (2 × 2 to 4 × 4, values or numbers); the picture appends I and reduces [A | I] (3 × 6, 4 × 8), the bar after A, "A" and "I" over the blocks, "I" and "A⁻¹" under the last with the right block lit; a string `steps` pivots in A’s columns only; `values` names A⁻¹’s entries (checked: they times A make I); a singular A ends with a row of zeros and the caption says A has no inverse.',
+      'tally?: { value?: string } — `system` is the square A (no bar); beside each matrix "det A = k × det of this" (a swap flips k, scaling a row by c divides k by c), each arrow’s operation says "sign flips", "det × c" or "det kept", and under the last "Triangular: det = 1 × 2 × 2 = 4" and "det A = (−1) × 4 = −4"; with steps: "echelon" the pivots are not scaled to 1; `value` names det A (checked, and the tally against the cofactor det).',
+      'Columns are as wide as their widest entry so a 4 × 8 fits 358 px; more than three stages fold to the first and last behind "Show the n row operations", as rowReduce does. Any "?" entry shows "?" and nothing is reduced.',
+      'Example (linear-algebra#0~inverse): { kind: "matrixGrid", mode: "rowReduce", system: [["a11", "a12", "a13"], ["a21", "a22", "a23"], ["a31", "a32", "a33"]], steps: "reduced", inverse: { values: [["b11", "b12", "b13"], ["b21", "b22", "b23"], ["b31", "b32", "b33"]] } } (A = [[2, 1, 0], [1, 1, 0], [0, 0, 3]] → [[1, −1, 0], [−1, 2, 0], [0, 0, 1/3]]).',
+      'Example (linear-algebra#2): { kind: "matrixGrid", mode: "rowReduce", system: [["a11", "a12", "a13"], …], steps: "echelon", tally: { value: "D" } } ([[0, 2, 1], [1, 1, 1], [2, 0, 3]]: R₁ ↔ R₂, R₃ − 2R₁, R₃ + R₂, pivots 1, 2, 2, det = −4). A 4 × 4 works the same (the plan’s "P11 on 4 × 4 later").',
+    ].join(' '),
+  },
+];
