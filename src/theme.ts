@@ -720,6 +720,12 @@ const light = {
   he4cSigma: '#1D4ED8',
   he4cTau: '#C2410C',
   he4cStrength: '#0F7A55',
+  /** HC152 (round 4, group E): the offspring's curve moved by R. */
+  he4eOffspring: '#0F766E',
+  /** HC151: p′ after selection (its tray title, its mark and the Δp arrow). */
+  he4eAfter: '#B45309',
+  /** HC153: drift's expected heterozygosity (dashed) and its right-hand axis. */
+  he4eDrift: '#BE185D',
   satellitePanel: '#2B4C8C',
   /**
    * College HC81–HC84 (round 3, group I): a muscle and its tendon; a binary diagram's α, β and
@@ -1372,6 +1378,9 @@ const dark: Palette = {
   he4cSigma: '#60A5FA',
   he4cTau: '#FB923C',
   he4cStrength: '#34D399',
+  he4eOffspring: '#2DD4BF',
+  he4eAfter: '#FBBF24',
+  he4eDrift: '#F472B6',
   satellitePanel: '#3D5FA3',
   he3iMuscle: '#D45A50',
   he3iTendon: '#B9AC97',

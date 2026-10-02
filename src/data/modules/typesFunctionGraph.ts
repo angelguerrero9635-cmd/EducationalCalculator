@@ -40,6 +40,7 @@ import {
   type FamilyHe3a,
   type FunctionGraphHe3a,
 } from './typesHe3a';
+import { familyHe4eVars, isFamilyHe4e, type FamilyHe4e } from './typesHe4e';
 
 /** A number fixed by the picture, or the id of a variable that holds it. */
 export type NumOrVar = number | string;
@@ -84,7 +85,8 @@ export type FunctionFamily =
   | FamilyHs3b // H106: a·(x − h)^(p/q) + k and log_b(x) + log_b(x + c)
   | FamilyHe1e // HC10, HC12: expr, hill, bateman, a real power, erfc, levenspiel, equalArea
   | FamilyHe2g // HC38: linearOde, taylor
-  | FamilyHe3a; // HC42, HC45, HC92: distribution, lagrange, quantizer (typesHe3a.ts)
+  | FamilyHe3a // HC42, HC45, HC92: distribution, lagrange, quantizer (typesHe3a.ts)
+  | FamilyHe4e; // HC148, HC179: amplification, fourier (typesHe4e.ts)
 
 /** One piece of a piecewise function: a family over from … to (unbounded when left out). */
 export interface Piece {
@@ -176,6 +178,7 @@ export function familyVars(f: FunctionFamily): string[] {
   if (isFamilyHe1e(f)) return familyHe1eVars(f); // HC10, HC12
   if (isFamilyHe2g(f)) return familyHe2gVars(f); // HC38
   if (isFamilyHe3a(f)) return familyHe3aVars(f); // HC42, HC45, HC92
+  if (isFamilyHe4e(f)) return familyHe4eVars(f); // HC148, HC179
   switch (f.family) {
     case 'response':
     case 'gradation':

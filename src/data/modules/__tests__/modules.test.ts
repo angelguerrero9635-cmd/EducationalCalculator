@@ -17,6 +17,7 @@ import { mechanicsSpecVars } from '../typesMechanics';
 import { physics8SpecVars } from '../typesPhysics8';
 import { hscSpecVars } from '../typesHsc';
 import { hsbSpecVars } from '../typesHsb';
+import { alleleHe4eVars, driftPathsVars, normalCurveHe4eVars } from '../typesHe4e';
 import { hs2aSpecVars } from '../typesHs2a';
 import { hs2eSpecVars } from '../typesHs2e';
 import { hs3dSpecVars } from '../typesHs3d';
@@ -582,6 +583,7 @@ function representationVars(r: Representation): string[] {
         ...hs2gSpecVars(r),
         ...hs3bSpecVars(r),
         ...(r.kind === 'termsChart' ? termsChartHe3cVars(r) : []), // HC66
+        ...(r.kind === 'normalCurve' ? normalCurveHe4eVars(r) : []), // HC114, HC152
       ];
     case 'unitCircle':
     case 'algebraTiles':
@@ -620,6 +622,7 @@ function representationVars(r: Representation): string[] {
     case 'gel':
     case 'alleleFrequencies':
     case 'immuneResponse':
+      if (r.kind === 'alleleFrequencies') return [...hshSpecVars(r), ...alleleHe4eVars(r)]; // HC151
       return hshSpecVars(r);
     case 'unitChain':
     case 'atomModel':
@@ -687,6 +690,8 @@ function representationVars(r: Representation): string[] {
       return surfacePlotVars(r); // HC46
     case 'solidOfRevolution':
       return solidOfRevolutionVars(r); // HC65
+    case 'driftPaths':
+      return driftPathsVars(r); // HC153
     case 'propertyDiagram':
     case 'thermalWall':
       return he2cSpecVars(r);

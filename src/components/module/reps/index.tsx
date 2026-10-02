@@ -4,6 +4,7 @@ import { isHe2fSpec } from '@/data/modules/typesHe2f';
 import { isHe3lSpec } from '@/data/modules/typesHe3l';
 import { isVectorHe4b } from '@/data/modules/typesHe4b'; // HC96–HC171, group B
 import { isHe4cOption } from '@/data/modules/typesHe4c';
+import { isFamilyHe4e, isNormalHe4e } from '@/data/modules/typesHe4e';
 
 import type { Calculator } from '../useCalculator';
 import { Balance } from './Balance';
@@ -68,6 +69,10 @@ import { PolygonApothem } from './PolygonApothem';
 import { LinearFunction, LineSystem } from './Lines';
 import { FunctionGraph } from './FunctionGraph';
 import { FunctionGraphHe1d } from './FunctionGraphHe1d';
+import { NormalCurveHe4e } from './NormalCurveHe4e';
+import { DriftPaths } from './DriftPaths';
+import { FunctionGraphHe4e } from './FunctionGraphHe4e';
+import { AlleleFrequenciesAfterHe4e } from './AlleleFrequenciesAfterHe4e';
 import { BarsLogHe1d } from './BarsLogHe1d';
 import { FunctionMachine } from './FunctionMachine';
 import { Mapping } from './Mapping';
@@ -409,6 +414,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'gel':
       return <Gel spec={spec} calc={calc} />;
     case 'alleleFrequencies':
+      if (spec.after) return <AlleleFrequenciesAfterHe4e spec={spec} calc={calc} />; // HC151
       return <AlleleFrequencies spec={spec} calc={calc} />;
     case 'immuneResponse':
       return <ImmuneResponse spec={spec} calc={calc} />;
@@ -480,6 +486,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <FieldPlot spec={spec} calc={calc} />;
     case 'surfacePlot':
       return <SurfacePlot spec={spec} calc={calc} />; // HC46
+    case 'driftPaths':
+      return <DriftPaths spec={spec} calc={calc} />; // HC153
     case 'solidOfRevolution':
       return <SolidOfRevolution spec={spec} calc={calc} />; // HC65
     case 'thermalWall':
@@ -519,6 +527,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
         return <LineParabola spec={spec} calc={calc} />; // H106
       return <LineSystem spec={spec} calc={calc} />;
     case 'functionGraph':
+      if (isFamilyHe4e(spec)) return <FunctionGraphHe4e spec={spec} calc={calc} />; // HC148, HC179
       if (drawnByHe1d(spec)) return <FunctionGraphHe1d spec={spec} calc={calc} />; // HC4, HC9
       return <FunctionGraph spec={spec} calc={calc} />;
     case 'motionGraph':
@@ -529,6 +538,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <MotionGraph spec={spec} calc={calc} />;
     case 'normalCurve':
       if (spec.f) return <FCurve spec={spec} calc={calc} />; // H106
+      if (isNormalHe4e(spec)) return <NormalCurveHe4e spec={spec} calc={calc} />; // HC114, HC152
       return <NormalCurve spec={spec} calc={calc} />;
     case 'histogram':
       return spec.clt ? (

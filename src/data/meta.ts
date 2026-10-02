@@ -178,6 +178,7 @@ const PICTURE_NAMES: Record<string, string> = {
   fieldPlot: 'a slope or vector field, a phase portrait, or two species’ isoclines',
   surfacePlot: 'a surface z = f(x, y) with traces, a tangent plane, prisms or level curves',
   solidOfRevolution: 'a region turned about an axis, with one disk, washer or shell',
+  driftPaths: 'genetic drift: populations’ allele frequencies wandering, expected H falling',
   propertyDiagram: 'a T–v, P–v or T–s plane with the vapor dome, states and a cycle',
   elementChain: 'finite elements: springs or bars between nodes, loads, displacements; a mesh',
   fatigueDiagram: 'fatigue: a Goodman diagram, an S–N line on log axes, a Miner damage bar',

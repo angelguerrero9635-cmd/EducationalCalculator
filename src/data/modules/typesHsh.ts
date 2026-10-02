@@ -4,6 +4,7 @@
  * number or a variable id.
  */
 import type { NumOrVar } from './typesGraphs';
+import type { AlleleFrequenciesHe4e } from './typesHe4e';
 
 /** One lane of a gel: its name over the well and its fragments' sizes in base pairs. */
 export interface GelLane {
@@ -45,7 +46,7 @@ export interface GelSpec {
  * p), a p scale under the tray with a handle, and the genotype bars p², 2pq and q² on a 0–1
  * scale beside it (the heterozygote bar half one color, half the other).
  */
-export interface AlleleFrequenciesSpec {
+export interface AlleleFrequenciesSpec extends AlleleFrequenciesHe4e {
   kind: 'alleleFrequencies';
   /** The dominant allele's frequency p (0 to 1). */
   p: NumOrVar;

@@ -122,6 +122,12 @@ import {
 } from './picturesHe4a';
 import { he4cIssues } from './picturesHe4c';
 import { isHe4cOption } from '../typesHe4c';
+import {
+  driftPathsIssues,
+  he4eAlleleIssues,
+  he4eGraphIssues,
+  he4eNormalIssues,
+} from './picturesHe4e';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -1944,6 +1950,10 @@ export function repIssues(
     }
     case 'functionGraph': {
       const v = hs3bVal(rep, val, byId); // H106: `unitsOf` reads formula units
+      if (rep.family === 'amplification' || rep.family === 'fourier') {
+        out.push(...he4eGraphIssues(rep, v)); // HC148, HC179: drawn by FunctionGraphHe4e
+        break;
+      }
       if (rep.family === 'response' || rep.family === 'gradation') {
         out.push(...he1dIssues(rep, v, byId)); // HC4, HC9: drawn by FunctionGraphHe1d
         break;
@@ -2267,6 +2277,7 @@ export function repIssues(
       );
       out.push(...hs3bIssues(rep, val, byId)); // H106: the F curve
       if (rep.kind === 'termsChart') out.push(...he3cIssues(rep, val, byId)); // HC66
+      out.push(...he4eNormalIssues(rep, val, byId)); // HC114, HC152
       break;
     case 'unitCircle':
     case 'algebraTiles':
@@ -2313,6 +2324,7 @@ export function repIssues(
     case 'alleleFrequencies':
     case 'immuneResponse':
       out.push(...hshIssues(rep, (id) => val(id)));
+      out.push(...he4eAlleleIssues(rep, val)); // HC151
       break;
     case 'unitChain':
     case 'atomModel':
@@ -2545,6 +2557,9 @@ export function repIssues(
       break;
     case 'surfacePlot':
       out.push(...surfacePlotIssues(rep, val)); // HC46
+      break;
+    case 'driftPaths':
+      out.push(...driftPathsIssues(rep, val)); // HC153
       break;
     case 'solidOfRevolution':
       out.push(...solidIssues(rep, val)); // HC65
