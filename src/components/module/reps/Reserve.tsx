@@ -56,7 +56,9 @@ function ReserveSteady({ spec, calc }: { spec: ReserveSpec; calc: Calculator }) 
     (t) => X(y) - X(t) > 40 || t === 0,
   );
   const first = Math.min(X1, X0 + slice);
-  const endText = `empty after ${typeof spec.years === 'string' ? `${rep.variable(spec.years).symbol} = ` : ''}${formatNumber(round(y))} years`;
+  // While the years are "?" the end reads "?" (never the example's number).
+  const yearsKnown = typeof spec.years !== 'string' || rep.known(spec.years);
+  const endText = `empty after ${typeof spec.years === 'string' ? `${rep.variable(spec.years).symbol} = ` : ''}${yearsKnown ? formatNumber(round(y)) : '?'} years`;
   // The reserve's unit, for one year's slice ("12.5 billion barrels").
   const unit = typeof spec.reserve === 'string' ? rep.unit(spec.reserve) : undefined;
 

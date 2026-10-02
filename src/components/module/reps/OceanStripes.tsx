@@ -69,8 +69,10 @@ export function OceanStripes({ spec, calc }: { spec: StripesSpec; calc: Calculat
   const rx = A(age, 1);
   const lx = A(age, -1);
   const midY = (TOP + BOTTOM) / 2;
-  const rateText = formatNumber(round(v, 2));
-  const fullText = formatNumber(round(2 * v, 2));
+  // The rates read "?" until they are known (typed, or worked from a known distance and age).
+  const rateOk = (spec.rate !== undefined && known(spec.rate)) || on;
+  const rateText = rateOk ? formatNumber(round(v, 2)) : '?';
+  const fullText = rateOk ? formatNumber(round(2 * v, 2)) : '?';
   // The rift: a narrow zigzag down the ridge's crest.
   const rift = Array.from({ length: 14 }, (_, i) => {
     const y = TOP + (i * (BOTTOM - TOP)) / 13;
