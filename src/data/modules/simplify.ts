@@ -18,17 +18,28 @@ type Node =
   | { kind: 'bin'; op: '+' | '−' | '×' | '÷' | '/' | '^'; left: Node; right: Node }
   | { kind: 'pow'; base: Node; exp: 2 | 3 }
   | { kind: 'sqrt'; arg: Node }
-  /** sin(30°), cos, tan: an angle in degrees when it is written with °, else in radians. */
-  | { kind: 'fn'; name: Trig; arg: Node }
+  /**
+   * sin(30°), cos, tan: an angle in degrees when it is written with °, else in radians.
+   * ln(x); log(x), log₁₀(x) and log_10(x) (common), log₂(x), log_2(x) (`base`); |x| (abs).
+   * `text` is the function as written (log₁₀, log_2), `spaced` a log written without brackets
+   * round a lone number (log₁₀ 20).
+   */
+  | { kind: 'fn'; name: Fn; arg: Node; text?: string; base?: number; spaced?: boolean }
   | { kind: 'neg'; arg: Node };
 
 type Trig = 'sin' | 'cos' | 'tan';
+type Fn = Trig | 'ln' | 'log' | 'abs';
 const TRIG = /^(sin|cos|tan)(?=\()/;
+/** ln, log, log₁₀, log₂, log_10, log_2: before a bracket, a bar or a space (log₁₀ 20). */
+const LOG = /^(ln|log(?:([₀₁₂₃₄₅₆₇₈₉]+)|_(\d+))?)(?=[ (|])/;
+const subValue = (sub: string) => Number([...sub].map((c) => '₀₁₂₃₄₅₆₇₈₉'.indexOf(c)).join(''));
 
 type Token =
   | { t: 'num'; value: number; text?: string; pi?: boolean; deg?: boolean }
   | { t: 'op'; v: string }
-  | { t: 'fn'; v: Trig }
+  | { t: 'fn'; v: Fn; text?: string; base?: number }
+  /** An absolute-value bar: opening when nothing or an operator comes before it. */
+  | { t: '|'; open: boolean }
   | { t: '('; v?: undefined }
   | { t: ')'; v?: undefined };
 
@@ -106,6 +117,37 @@ function tokenize(
       i += trig[0].length;
       continue;
     }
+    const log = LOG.exec(s.slice(i));
+    if (log) {
+      const base = log[2] ? subValue(log[2]) : log[3] ? Number(log[3]) : undefined;
+      out.push({
+        t: 'fn',
+        v: log[1] === 'ln' ? 'ln' : 'log',
+        text: log[1],
+        ...(base !== undefined && base !== 10 ? { base } : {}),
+      });
+      i += log[0].length;
+      continue;
+    }
+    // e, the base of natural growth (e^(0.05 × 8), e³), is a number: alone, never in a word.
+    if (ch === 'e' && !/[a-zA-Z0-9.]/.test(s[i - 1] ?? '') && !/[a-zA-Z]/.test(s[i + 1] ?? '')) {
+      out.push({ t: 'num', value: Math.E, text: 'e' });
+      i++;
+      continue;
+    }
+    if (ch === '|') {
+      // |−4| opens after nothing, an operator, a bracket, a function or another opening bar.
+      const last = out[out.length - 1];
+      const open =
+        !last ||
+        (last.t === 'op' && last.v !== '²' && last.v !== '³') ||
+        last.t === '(' ||
+        last.t === 'fn' ||
+        (last.t === '|' && last.open);
+      out.push({ t: '|', open });
+      i++;
+      continue;
+    }
     if (ch === 'π') {
       // 2π is 2 × π when a line is checked (2π × r/v); the working writes it as one number.
       const last = out[out.length - 1];
@@ -143,12 +185,32 @@ function parse(tokens: Token[]): Node | undefined {
         ...(tok.deg ? { deg: true } : {}),
       };
     if (tok.t === 'fn') {
-      if (peek()?.t !== '(') fail.failed = true;
+      const extra = {
+        ...(tok.text ? { text: tok.text } : {}),
+        ...(tok.base !== undefined ? { base: tok.base } : {}),
+      };
+      const next = peek();
+      // A log written without brackets takes the one number after it: log₁₀ 20 ÷ log₁₀ 2.
+      if (tok.v !== 'sin' && tok.v !== 'cos' && tok.v !== 'tan' && next?.t !== '(') {
+        if (next?.t === '|' && next.open)
+          return { kind: 'fn', name: tok.v, arg: primary(), ...extra };
+        if (next?.t !== 'num') fail.failed = true;
+        return { kind: 'fn', name: tok.v, arg: unary(), ...extra, spaced: true };
+      }
+      if (next?.t !== '(') fail.failed = true;
       else take();
       const arg = sum();
       if (peek()?.t !== ')') fail.failed = true;
       else take();
-      return { kind: 'fn', name: tok.v, arg };
+      return { kind: 'fn', name: tok.v, arg, ...extra };
+    }
+    if (tok.t === '|') {
+      if (!tok.open) fail.failed = true;
+      const inner = sum();
+      const close = peek();
+      if (close?.t !== '|' || close.open) fail.failed = true;
+      else take();
+      return { kind: 'fn', name: 'abs', arg: inner };
     }
     if (tok.t === '(') {
       const inner = sum();
@@ -282,7 +344,15 @@ const compute = (n: Node): number => {
     case 'sqrt':
       return Math.sqrt(compute(n.arg));
     case 'fn': {
-      const angle = compute(n.arg) * (degOf(n.arg) ? Math.PI / 180 : 1);
+      const x = compute(n.arg);
+      if (n.name === 'abs') return Math.abs(x);
+      if (n.name === 'ln') return Math.log(x);
+      // log₁₀ 1000 is exactly 3 (Math.log(1000) / Math.log(10) is 2.9999…).
+      if (n.name === 'log') {
+        const value = n.base === undefined ? Math.log10(x) : Math.log(x) / Math.log(n.base);
+        return Number(value.toPrecision(14));
+      }
+      const angle = x * (degOf(n.arg) ? Math.PI / 180 : 1);
       const value = Math[n.name](angle);
       // cos 90° is 0, not 6 × 10⁻¹⁷; tan 90° has no value.
       if (n.name === 'tan' && Math.abs(Math.cos(angle)) < 1e-12) return NaN;
@@ -507,8 +577,13 @@ function print(n: Node, parentRank = 0, rightSide = false, afterSign = false): s
       // √(5.692 × 10⁷), √(3/4): a number with a space or bar in it is bracketed too.
       return isNum(n.arg) && n.arg.value >= 0 && !/[ /]/.test(inner) ? `√${inner}` : `√(${inner})`;
     }
-    case 'fn':
-      return `${n.name}(${print(n.arg, 0)})`;
+    case 'fn': {
+      const inner = print(n.arg, 0);
+      if (n.name === 'abs') return `|${inner}|`;
+      // A log written round a lone number keeps its form: log₁₀ 20, log₁₀(2 × 10⁻⁵).
+      const lone = isNum(n.arg) && n.arg.value >= 0 && !/[ /]/.test(inner);
+      return n.spaced && lone ? `${n.text ?? n.name} ${inner}` : `${n.text ?? n.name}(${inner})`;
+    }
     case 'pow': {
       const base = print(n.base, 4);
       const needs = !isNum(n.base) || n.base.value < 0;
