@@ -336,8 +336,8 @@ async function typeInto(id, text) {
   await el.click({ timeout: 3000 });
   // An example box empties on focus and comes back when left empty: clearing it is typing a
   // digit and deleting it.
-  if (!text) await el.fill('1');
-  await el.fill(text);
+  if (!text) await el.fill('1', { timeout: 3000 });
+  await el.fill(text, { timeout: 3000 });
   await el.evaluate((e) => e.blur());
   await page.waitForTimeout(250);
 }
@@ -508,6 +508,8 @@ const plain = (x) => {
  * or null when no other number was taken. Those are the texts that do not come from `u`.
  */
 async function textsWhenVaried(edited, how, u) {
+  // A worked-out box takes no typing (its stand-ins are varied instead).
+  if (u.status === 'derived') return null;
   const v = Math.abs(parseShown(u.value));
   const step = Math.max(v >= 1 || Number.isInteger(v) ? 1 : 0, 10 ** Math.floor(Math.log10(v)));
   const sign = parseShown(u.value) < 0 ? -1 : 1;
