@@ -39,6 +39,7 @@ import {
 import { convert, getUnit } from '@/engine/units';
 
 import { TESTED_MODULES } from '..';
+import { checkAlgebraLines } from '../harness/algebraLines';
 import {
   BAD_TEXT,
   PLURAL,
@@ -565,6 +566,12 @@ function checkSteps(c: Ctx, res: SolveResult, where: string) {
         c.f.add('error', `${c.label}work line doesn't add up: "${line}"`, where);
       }
     }
+  }
+  // Matrix, vector and complex lines (HE-E16, E17): each chain of equal sides holds, and each
+  // row operation gives the matrix it prints.
+  for (const s of w.steps) {
+    for (const p of checkAlgebraLines(s.lines))
+      c.f.add('error', `${c.label}line doesn't hold: ${p}`, where);
   }
   // A sum with its limits said equal to a number ("Σ from k = 1 to 8 of (3k − 1) = 100", in a
   // step's lines or its sentence) must add up to it, term by term.
