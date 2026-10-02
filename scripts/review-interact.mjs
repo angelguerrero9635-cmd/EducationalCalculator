@@ -122,6 +122,8 @@ function numbersIn(s) {
   for (let m = re.exec(s); m; m = re.exec(s)) {
     const prev = s[m.index - 1] ?? '';
     if (/[A-Za-z_\d.]/.test(prev)) continue;
+    // A DNA strand's ends (5′, 3′) are names, not numbers.
+    if (/^[′']/.test(s.slice(m.index + m[0].length))) continue;
     const mant = m[1] + (m[2] ?? '');
     const value = parseShown(m[0].replace(/\s+/g, ' '));
     if (Number.isFinite(value)) out.push({ text: m[0], mant, value: Math.abs(value), at: m.index });
