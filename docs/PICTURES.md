@@ -298,6 +298,14 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `rectangle`        | `bounds: { error, least?, greatest? }`   | (l ± e) by (w ± e) dashed, the band between shaded, a corner close-up (H106)  |
 | `vectorDiagram`    | `space`, `z`; `cross`, `w`, `points`     | x, y, z axes, turnable: u × v, θ, areas, the box of u, v, w; PQ, M (H106)     |
 | `polarGrid`        | `curve.shape: 'conic'`, `k, m, n, fn`    | r = k ÷ (m − n cos θ): focus at the pole, directrix, PF ÷ PD = e at P (H106)  |
+| `polarGrid`        | `area`, `region`, `tangent`              | ½∫ r² dθ swept from the pole; r₁ ≤ r ≤ r₂ sector; tangent at P, dy/dx (HC53)  |
+| `polarGrid`        | `family: 'cycloid'`, `radians`, `length` | the rolling circle at t; t as 3π/2; the traced length L summed (HC53)         |
+| `rightTriangle`    | `rates: { a?, b?, c? }`, `scene`         | rate arrows at the moving ends; a ladder or roads; a·a′ + b·b′ = c·c′ (HC54)  |
+| `curvedSolid`      | `fill` (cone), `slab` (cylinder)         | a cone tank on its apex filling, r = Rh/H; a slab lifted H + h − y; W (HC54)  |
+| `termsChart`       | `type: 'nr'`, `'factorial'`, `alternate` | n·rⁿ, cⁿ ÷ n!; signs alternating, the sums zig-zag about S (HC66)             |
+| `termsChart`       | `bounds`, `next`, `ratio`, `limit`       | a band low ≤ S ≤ high; aₙ₊₁ and aₙ₊₁ ÷ aₙ; the sum S worked out (HC66)        |
+| `rectangle`        | `grow: { du, dv, dt?, product? }`        | u × v growing by strips u′Δt × v and u × v′Δt; (uv)′ = u′v + uv′ (HC67)       |
+| `conicGraph`       | circle `under: { to, … }`, `tangent`     | the area under the arc as triangle + sector, θ; the tangent at P (HC67)       |
 | `conicGraph`       | `conic: 'turned'`, `A, B, C, F`; `angle` | Ax² + Bxy + Cy² = 1 with x′, y′ at θ, A′x′² + C′y′² = 1, its shape (H106)     |
 | `functionGraph`    | `riemann: { n, to, from?, side?, sum? }` | n rectangles of equal width under the curve, right, left or middle; S (H106)  |
 | `functionGraph`    | `family: 'rational'`, `top`, `poles`     | the top by coefficients over (x − p)… (x² + jx + k)…: a number on top (H106)  |

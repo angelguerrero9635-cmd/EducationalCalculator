@@ -3,6 +3,7 @@
  * from `types.ts` so that file's union only lists them). A `NumOrVar` field is a fixed number or
  * a variable id; every value is in the variable's shown units.
  */
+import type { TermsChartHe3c, TermsTypeHe3c } from './typesHe3c'; // HC66
 import type { NumOrVar } from './typesGraphs';
 import type { SignOf } from './typesHs2a';
 import type { NormalCurveHs3b } from './typesHs3b';
@@ -115,10 +116,10 @@ export interface PascalTriangleSpec extends PascalFraction {
  * dashed (when |r| < 1), the partial sums closing in on it. `term`, `sum` and `limit` (as a
  * variable id) are checked against the rule. No handles: the values have sliders.
  */
-export interface TermsChartSpec extends TermsChartHs2g {
+export interface TermsChartSpec extends TermsChartHs2g, TermsChartHe3c {
   kind: 'termsChart';
   /** H93: 'recursive', aₙ = step × aₙ₋₁ + plus (see `TermsChartHs2g`). */
-  type: 'arithmetic' | 'geometric' | 'recursive' | 'power'; // H106: 'power', aₙ = a₁ × nᵖ, p = step
+  type: 'arithmetic' | 'geometric' | 'recursive' | 'power' | TermsTypeHe3c; // H106: 'power', aₙ = a₁ × nᵖ, p = step; HC66
   first: NumOrVar;
   /** The common difference d, or the common ratio r. */
   step: NumOrVar;

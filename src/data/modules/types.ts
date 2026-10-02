@@ -54,6 +54,7 @@ import type { SoilProfileSpec, SurveySpec, TrussSpec } from './typesHe2i';
 import type { PhaseEnvelopeSpec } from './typesHe1i';
 import type { He2cSpec } from './typesHe2c';
 import type { He3hSpec } from './typesHe3h';
+import type { CurvedSolidHe3c, RectangleHe3c, RightTriangleHe3c } from './typesHe3c'; // HC54, HC67
 import type { BeamSpec } from './typesHe1a';
 import type { BodeSpec } from './typesHe2a';
 import type { He2hSpec } from './typesHe2h';
@@ -564,7 +565,8 @@ export type Representation =
       /** Draw it as a real roof in perspective: slate shingles, a gutter and rain falling. */
       roof?: boolean;
       extent: number;
-    } & RectangleHs3b)
+    } & RectangleHs3b &
+      RectangleHe3c) // HC67: grow
   /** 10 × 10 grid with `percent` squares shaded. Tap a square to set the percent. */
   | {
       kind: 'grid100';
@@ -636,7 +638,7 @@ export type Representation =
       sector?: CircleSector;
     } & CircleHs3b)
   /** Right triangle (vertical leg `a`, horizontal leg `b`, hypotenuse `c`) with side squares. */
-  | {
+  | ({
       kind: 'rightTriangle';
       a: string;
       b: string;
@@ -644,7 +646,7 @@ export type Representation =
       extent: number;
       /** Each square ruled in unit squares (sides up to 12), so the areas can be counted. */
       grid?: boolean;
-    }
+    } & RightTriangleHe3c) // HC54: rates
   /**
    * A glass cylinder, cone or sphere full of water, to scale, its radius (and height) marked
    * and draggable; the caption works V with the numbers. `compare` (cone or sphere) stands the
@@ -652,7 +654,7 @@ export type Representation =
    * water: 1/3 of it for a cone, 2/3 for a sphere. `extent` is the biggest diameter or height
    * drawn before the scale shrinks (shown units).
    */
-  | {
+  | ({
       kind: 'curvedSolid';
       shape: 'cylinder' | 'cone' | 'sphere';
       radius: string;
@@ -671,7 +673,7 @@ export type Representation =
       surface?: string;
       /** Grades 9–12 (a cylinder): Cavalieri's two stacks of coins, one straight, one leaning. */
       cavalieri?: boolean;
-    }
+    } & CurvedSolidHe3c) // HC54: a cone filling, a cylinder's slab
   /**
    * A scatter plot of fixed data `points` ([x, y], in the axes' numbers) with a line of fit
    * y = `slope` × x + `intercept` (two variables), dragged by a handle near each end; the

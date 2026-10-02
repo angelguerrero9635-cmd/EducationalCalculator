@@ -3,6 +3,7 @@
  * (`typesHsb.ts`): what each one draws must agree with the values. Called from `repIssues` in
  * `pictures.ts`. Test-only.
  */
+import { termHe3c } from '@/components/module/reps/termsSeriesHe3c';
 import { histDataIds, histModel } from '@/components/module/reps/histModel';
 import { normalModel, type Span } from '@/components/module/reps/normalModel';
 import { pascalRows, slotsOf } from '@/components/module/reps/pascal';
@@ -220,7 +221,7 @@ export function hsbIssues(rep: HsbSpec, val: (id: string) => number | undefined)
       }
       const tol = (x: number) => 1e-9 * Math.max(1, Math.abs(x));
       m.terms.forEach((t, i) => {
-        const want =
+        const rule =
           rep.type === 'power' // H106: a₁ × nᵖ
             ? a * (i + 1) ** d
             : rep.type === 'arithmetic'
@@ -230,6 +231,7 @@ export function hsbIssues(rep: HsbSpec, val: (id: string) => number | undefined)
                   ? d * m.terms[i - 1]! + (get(rep.plus) ?? 0)
                   : a
                 : a * d ** i;
+        const want = termHe3c(rep, a, d, i + 1) ?? rule; // HC66
         if (!near(t, want, tol(want))) out.push(`term ${i + 1} is ${t}, not ${want}`);
         const s = m.terms.slice(0, i + 1).reduce((x, y) => x + y, 0);
         if (!near(m.sums[i]!, s, tol(s))) out.push(`partial sum ${i + 1} is ${m.sums[i]}`);

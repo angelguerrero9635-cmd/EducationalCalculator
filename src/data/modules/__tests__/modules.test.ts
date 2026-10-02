@@ -56,6 +56,14 @@ import { he1bSpecVars } from '../typesHe1b';
 import { he1aSpecVars } from '../typesHe1a';
 import { bodeVars, complexPlaneHe2aVars } from '../typesHe2a';
 import { he2hSpecVars } from '../typesHe2h';
+import {
+  conicGraphHe3cVars,
+  curvedSolidHe3cVars,
+  polarGridHe3cVars,
+  rectangleHe3cVars,
+  rightTriangleHe3cVars,
+  termsChartHe3cVars,
+} from '../typesHe3c';
 import { isStandIn, pages } from '../harness/scope';
 import { treeChanceVars, twoWayVars, vennChanceVars } from '../harness/picturesHse';
 
@@ -431,6 +439,7 @@ function representationVars(r: Representation): string[] {
       return [
         ...[r.length, r.width, r.inside, r.around],
         ...[r.bounds?.error, r.bounds?.least, r.bounds?.greatest], // H106
+        ...rectangleHe3cVars(r), // HC67
       ].filter((x): x is string => !!x);
     case 'grid100':
       return [
@@ -459,7 +468,7 @@ function representationVars(r: Representation): string[] {
         ...scaleCopyHsfVars(r),
       ].filter((v): v is string => typeof v === 'string');
     case 'rightTriangle':
-      return [r.a, r.b, r.c];
+      return [r.a, r.b, r.c, ...rightTriangleHe3cVars(r)]; // HC54
     case 'plot':
       return [
         r.x.var,
@@ -492,6 +501,7 @@ function representationVars(r: Representation): string[] {
       return [
         r.radius,
         ...[r.height, r.volume, r.slant, r.surface].filter((x): x is string => !!x),
+        ...curvedSolidHe3cVars(r), // HC54
       ];
     case 'rootSquare':
       return [r.area, r.side, ...(r.between ?? [])];
@@ -548,7 +558,13 @@ function representationVars(r: Representation): string[] {
     case 'histogram':
     case 'pascalTriangle':
     case 'termsChart':
-      return [...hsbSpecVars(r), ...hs2aSpecVars(r), ...hs2gSpecVars(r), ...hs3bSpecVars(r)];
+      return [
+        ...hsbSpecVars(r),
+        ...hs2aSpecVars(r),
+        ...hs2gSpecVars(r),
+        ...hs3bSpecVars(r),
+        ...(r.kind === 'termsChart' ? termsChartHe3cVars(r) : []), // HC66
+      ];
     case 'unitCircle':
     case 'algebraTiles':
     case 'vectorDiagram':
@@ -562,6 +578,8 @@ function representationVars(r: Representation): string[] {
         ...hs3bSpecVars(r),
         ...(r.kind === 'complexPlane' ? complexPlaneHe2aVars(r) : []), // HC14
         ...(r.kind === 'vectorDiagram' ? spaceObjectsVars(r.space) : []), // HC47
+        ...(r.kind === 'polarGrid' ? polarGridHe3cVars(r) : []), // HC53
+        ...(r.kind === 'conicGraph' && r.conic === 'circle' ? conicGraphHe3cVars(r) : []), // HC67
       ];
     case 'membrane':
     case 'dnaStrand':

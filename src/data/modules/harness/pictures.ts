@@ -99,6 +99,7 @@ import {
   orbitalMoIssues,
   vseprHe3eIssues,
 } from './picturesHe3e';
+import { he3cIssues } from './picturesHe3c';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -1151,6 +1152,7 @@ export function repIssues(
     }
     case 'rectangle':
       out.push(...hs3bIssues(rep, val, byId)); // H106: bounds
+      out.push(...he3cIssues(rep, val, byId)); // HC67: grow
       break;
     case 'grid100': {
       // Tenths × tenths: columns and rows of one grid, the overlap the product (Grid100.tsx);
@@ -1882,6 +1884,7 @@ export function repIssues(
       if (h !== undefined && h < 0) out.push(`height ${h} is negative`);
       // The caption works V from the radius and height drawn (in the radius's unit), so a
       // volume shown in another unit (L) is not compared here; the relation holds it.
+      out.push(...he3cIssues(rep, val, byId)); // HC54: fill, slab
       break;
     }
     case 'rightTriangle': {
@@ -1891,6 +1894,7 @@ export function repIssues(
         if (Math.abs(a * a + b * b - c * c) > 1e-6 * (1 + c * c))
           out.push(`squares ${a}² + ${b}² don't make ${c}²`);
       }
+      out.push(...he3cIssues(rep, val, byId)); // HC54: rates
       break;
     }
     case 'quadrilateral': {
@@ -2218,6 +2222,7 @@ export function repIssues(
         ...hs2gIssues(rep, val),
       );
       out.push(...hs3bIssues(rep, val, byId)); // H106: the F curve
+      if (rep.kind === 'termsChart') out.push(...he3cIssues(rep, val, byId)); // HC66
       break;
     case 'unitCircle':
     case 'algebraTiles':
@@ -2230,6 +2235,8 @@ export function repIssues(
       if (rep.kind === 'complexPlane') out.push(...complexPlaneHe2aIssues(rep, siOf(val, byId))); // HC14
       out.push(...hs3bIssues(rep, val, byId)); // H106: space, polar conics, turned conics
       if (rep.kind === 'vectorDiagram') out.push(...spaceObjectsIssues(rep, val)); // HC47
+      if (rep.kind === 'polarGrid' || rep.kind === 'conicGraph')
+        out.push(...he3cIssues(rep, val, byId)); // HC53, HC67
       break;
     case 'membrane':
     case 'dnaStrand':

@@ -11,6 +11,7 @@ import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, DragHandle, useFrozen, useRep } from './common';
 import { makeFrame } from './graphKit';
 import { conicEquation, focalDistance, type ConicOf } from './conics';
+import { useConicCircleHe3c } from './ConicCircleHe3c';
 import { HsdGrid, handleBox, niceWindow } from './hsdGrid';
 import { short, sqrtText } from './hsdKit';
 import { MathChip } from './hsdText';
@@ -49,6 +50,7 @@ export function ConicGraph({
   const sizeIds =
     spec.conic === 'circle' ? [spec.r] : spec.conic === 'parabola' ? [spec.p] : [spec.a, spec.b];
   const known = [spec.h, spec.k, ...sizeIds].every(isKnown);
+  const he3c = useConicCircleHe3c(spec, num, isKnown, known); // HC67: under the arc, tangent
   const cF = focalDistance(q);
   const vertical = q.axis === 'vertical';
   // The shape's reach from its center, for the window.
@@ -135,6 +137,7 @@ export function ConicGraph({
     }
     if (pt) lines.push(`The point ${at(pt.x, pt.y)} is on the curve.`);
   }
+  lines.push(...he3c.lines);
 
   return (
     <View>
@@ -416,7 +419,7 @@ export function ConicGraph({
                         ) : null;
                       })()
                     : null}
-                  {q.conic === 'circle' ? (
+                  {q.conic === 'circle' && !he3c.on ? (
                     <G>
                       {/* The radius at 45°, off the axes and their numbers. */}
                       <Line
@@ -439,6 +442,7 @@ export function ConicGraph({
                       />
                     </G>
                   ) : null}
+                  {he3c.under(f, w, h)}
                   {/* The curve. */}
                   {shapes.map((s, i) => (
                     <Path
@@ -474,6 +478,7 @@ export function ConicGraph({
                       />
                     </G>
                   ))}
+                  {he3c.over(f)}
                   {pt && inside(pt) ? (
                     <G>
                       <Circle cx={f.sx(pt.x)} cy={f.sy(pt.y)} r={5} fill={c.vectorResultant} />

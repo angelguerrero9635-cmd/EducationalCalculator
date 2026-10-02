@@ -14,6 +14,7 @@ import type {
 import type { NumOrVar } from './typesGraphs';
 import type { ComplexPlaneHe2a } from './typesHe2a'; // HC14
 import type { ConicTurnedHs3b, PolarConicHs3b, VectorDiagramHs3b } from './typesHs3b';
+import type { ConicGraphHe3c, CycloidPathHe3c, ParametricHe3c, PolarGridHe3c } from './typesHe3c'; // HC53, HC67
 
 /** A trig function of the unit circle. */
 export type TrigFn = 'sin' | 'cos' | 'tan';
@@ -189,7 +190,8 @@ export type ParametricPath =
   /** x = h + a cos t, y = k + b sin t (a circle when a = b). */
   | { family: 'ellipse'; h: NumOrVar; k: NumOrVar; a: NumOrVar; b: NumOrVar }
   /** x = v cos α · t, y = y₀ + v sin α · t − ½gt² (g = 9.8 m/s²). */
-  | { family: 'projectile'; v: NumOrVar; angle: NumOrVar; y0: NumOrVar };
+  | { family: 'projectile'; v: NumOrVar; angle: NumOrVar; y0: NumOrVar }
+  | CycloidPathHe3c; // HC53: x = r(t − sin t), y = r(1 − cos t)
 
 /**
  * The polar grid: rings and rays every 30°, a point (r, θ) with its ray and angle (a negative r
@@ -197,17 +199,18 @@ export type ParametricPath =
  * with the point on it. `parametric` swaps the rings for an x-y grid and traces x(t), y(t) with
  * arrows showing the direction t runs and the point at t. Drag the point.
  */
-export interface PolarGridSpec {
+export interface PolarGridSpec extends PolarGridHe3c {
   kind: 'polarGrid';
   point?: { r: NumOrVar; theta: NumOrVar; x?: string; y?: string };
   curve?: PolarCurve;
-  parametric?: ParametricPath & {
-    t: NumOrVar;
-    /** The t values the path runs over. */
-    range: [number, number];
-    x?: string;
-    y?: string;
-  };
+  parametric?: ParametricPath &
+    ParametricHe3c & {
+      t: NumOrVar;
+      /** The t values the path runs over. */
+      range: [number, number];
+      x?: string;
+      y?: string;
+    };
   /** θ labels in degrees (default) or radians. */
   show?: 'degrees' | 'radians';
   keep?: string[];
@@ -235,7 +238,7 @@ export type ConicGraphSpec = {
   keep?: string[];
   fixed?: boolean;
 } & (
-  | { conic: 'circle'; r: NumOrVar }
+  | ({ conic: 'circle'; r: NumOrVar } & ConicGraphHe3c) // HC67: area under the arc, tangent
   | { conic: 'parabola'; p: NumOrVar; axis?: 'vertical' | 'horizontal' }
   | { conic: 'ellipse'; a: NumOrVar; b: NumOrVar }
   | { conic: 'hyperbola'; a: NumOrVar; b: NumOrVar; axis?: 'horizontal' | 'vertical' }
