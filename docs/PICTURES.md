@@ -326,6 +326,8 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `bars`             | `flows: { out: [ids] }`                  | start, flows in (+, green) and out (−, red) as steps, end; axis cut (H100)    |
 | `percentBar`       | `second: id`                             | a second percent on the bar: a band, a dashed line, its label (H104)          |
 | `normalCurve`      | `t: { df }`                              | a t curve over the dashed normal; areas, t⋆ and the p-value by t (H99)        |
+| `normalCurve`      | `family: 't'`, `bracket`, `observed`     | t over the normal, ±t⋆; x̄ ± t⋆s ÷ √n on a lined-up value axis, μ (HC114)      |
+| `normalCurve`      | `shift: { selected, response, h2? }`     | parents' selected tail, S; offspring moved by R = h²S below (HC152)           |
 | `normalCurve`      | `intervals.count` (a value)              | how many simulated intervals, 20 to 100, typed; none drawn while ? (H105)     |
 | `normalCurve`      | `meanName`                               | the mean's symbol when it is a number: μ_d for a mean difference              |
 | `membrane`         | `counter`                                | a pump's second particle the other way (K⁺ in as Na⁺ goes out), own arrow     |

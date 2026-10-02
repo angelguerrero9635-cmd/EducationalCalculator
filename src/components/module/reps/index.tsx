@@ -2,6 +2,7 @@ import type { Representation } from '@/data/modules';
 import { drawnByHe1d } from '@/data/modules/typesHe1d';
 import { isHe2fSpec } from '@/data/modules/typesHe2f';
 import { isHe3lSpec } from '@/data/modules/typesHe3l';
+import { isNormalHe4e } from '@/data/modules/typesHe4e';
 
 import type { Calculator } from '../useCalculator';
 import { Balance } from './Balance';
@@ -66,6 +67,7 @@ import { PolygonApothem } from './PolygonApothem';
 import { LinearFunction, LineSystem } from './Lines';
 import { FunctionGraph } from './FunctionGraph';
 import { FunctionGraphHe1d } from './FunctionGraphHe1d';
+import { NormalCurveHe4e } from './NormalCurveHe4e';
 import { BarsLogHe1d } from './BarsLogHe1d';
 import { FunctionMachine } from './FunctionMachine';
 import { Mapping } from './Mapping';
@@ -429,6 +431,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <MotionGraph spec={spec} calc={calc} />;
     case 'normalCurve':
       if (spec.f) return <FCurve spec={spec} calc={calc} />; // H106
+      if (isNormalHe4e(spec)) return <NormalCurveHe4e spec={spec} calc={calc} />; // HC114, HC152
       return <NormalCurve spec={spec} calc={calc} />;
     case 'histogram':
       return spec.clt ? (

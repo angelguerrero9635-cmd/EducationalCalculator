@@ -90,6 +90,7 @@ import { fieldPlotIssues, he2gGraphIssues } from './picturesHe2g';
 import { he3aGraphIssues } from './picturesHe3a';
 import { solidIssues, spaceObjectsIssues, surfacePlotIssues } from './picturesHe3b';
 import { he2cIssues } from './picturesHe2c';
+import { he4eNormalIssues } from './picturesHe4e';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -2199,6 +2200,7 @@ export function repIssues(
         ...hs2gIssues(rep, val),
       );
       out.push(...hs3bIssues(rep, val, byId)); // H106: the F curve
+      out.push(...he4eNormalIssues(rep, val, byId)); // HC114, HC152
       break;
     case 'unitCircle':
     case 'algebraTiles':

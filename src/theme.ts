@@ -610,6 +610,8 @@ const light = {
   he3lB: '#1D4ED8',
   he3lCurve: '#6D28D9',
   he3lBead: '#B45309',
+  /** HC152 (round 4, group E): the offspring's curve moved by R. */
+  he4eOffspring: '#0F766E',
   satellitePanel: '#2B4C8C',
   /** HC2 skeletal structures: a lit functional group's band; O, N, S and halogen letters. */
   skeletalLit: '#FBBF24',
@@ -1130,6 +1132,7 @@ const dark: Palette = {
   he3lB: '#60A5FA',
   he3lCurve: '#A78BFA',
   he3lBead: '#F59E0B',
+  he4eOffspring: '#2DD4BF',
   satellitePanel: '#3D5FA3',
   skeletalLit: '#F59E0B',
   skeletalO: '#FF8A80',

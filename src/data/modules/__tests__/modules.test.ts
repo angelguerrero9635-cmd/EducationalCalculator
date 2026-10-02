@@ -17,6 +17,7 @@ import { mechanicsSpecVars } from '../typesMechanics';
 import { physics8SpecVars } from '../typesPhysics8';
 import { hscSpecVars } from '../typesHsc';
 import { hsbSpecVars } from '../typesHsb';
+import { normalCurveHe4eVars } from '../typesHe4e';
 import { hs2aSpecVars } from '../typesHs2a';
 import { hs2eSpecVars } from '../typesHs2e';
 import { hs3dSpecVars } from '../typesHs3d';
@@ -544,7 +545,13 @@ function representationVars(r: Representation): string[] {
     case 'histogram':
     case 'pascalTriangle':
     case 'termsChart':
-      return [...hsbSpecVars(r), ...hs2aSpecVars(r), ...hs2gSpecVars(r), ...hs3bSpecVars(r)];
+      return [
+        ...hsbSpecVars(r),
+        ...hs2aSpecVars(r),
+        ...hs2gSpecVars(r),
+        ...hs3bSpecVars(r),
+        ...(r.kind === 'normalCurve' ? normalCurveHe4eVars(r) : []), // HC114, HC152
+      ];
     case 'unitCircle':
     case 'algebraTiles':
     case 'vectorDiagram':
