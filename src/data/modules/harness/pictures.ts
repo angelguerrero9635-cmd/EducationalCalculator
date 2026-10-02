@@ -2301,6 +2301,7 @@ export function repIssues(
     case 'stressStrain':
     case 'stressElement':
       out.push(...he2jIssues(rep, siOf(val, byId), byId)); // HC28, HC33
+      break;
     case 'wing':
     case 'duct':
     case 'supersonicFlow':
