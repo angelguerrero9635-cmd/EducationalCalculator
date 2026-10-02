@@ -375,7 +375,7 @@ export function Net({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     ))
                   : null}
                 {pyramid
-                  ? label({ x: slant, y: slant * 0.35, w: L, h: slant * 0.6 }, n(triangle))
+                  ? label({ x: slant, y: slant * 0.35, w: L, h: slant * 0.6 }, lab(triangle))
                   : null}
                 {prism3 ? null : pyramid ? (
                   <G>

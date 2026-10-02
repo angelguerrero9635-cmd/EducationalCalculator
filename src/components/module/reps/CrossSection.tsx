@@ -171,7 +171,7 @@ function CrossSectionFlat({ spec, calc }: { spec: FlatSpec; calc: Calculator }) 
                   .map((x) => x / section.length) as P3,
               )
             : undefined;
-          const label = section.length ? `${n(area, 2)}${sq}` : '';
+          const label = section.length ? (known ? `${n(area, 2)}${sq}` : '?') : '';
           // A cut too small for its label has it outside, to its left.
           const onCut = section.map(P);
           const minX = Math.min(...onCut.map((q) => q.x));

@@ -79,12 +79,20 @@ export function Spinner({ spec, calc }: { spec: Spec; calc: Calculator }) {
   };
 
   const pickName = names[pick] ?? `outcome ${pick + 1}`;
+  const chanceName = spec.chance
+    ? rep.words
+      ? rep.variable(spec.chance).name
+      : `${rep.variable(spec.chance).symbol}(${pickName})`
+    : '';
+  // A sector count "?": the chance reads "?" (never a fraction of the counts known so far).
   const chanceLine =
-    spec.chance && total > 0
-      ? `${rep.words ? rep.variable(spec.chance).name : `${rep.variable(spec.chance).symbol}(${pickName})`} = ${chanceText(counts[pick]!, total, rep.value(spec.chance), rep.shown(spec.chance))}`
-      : total > 0
-        ? `${counts[pick]} of ${total} sectors are ${pickName}.`
-        : 'Type how many sectors each color has.';
+    spec.chance && !known
+      ? `${chanceName} = ?`
+      : spec.chance && total > 0
+        ? `${chanceName} = ${chanceText(counts[pick]!, total, rep.value(spec.chance), rep.shown(spec.chance))}`
+        : total > 0
+          ? `${counts[pick]} of ${total} sectors are ${pickName}.`
+          : 'Type how many sectors each color has.';
 
   return (
     <View>

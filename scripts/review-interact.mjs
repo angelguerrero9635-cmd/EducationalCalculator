@@ -25,8 +25,8 @@
 // leaves no "?", the box cleared. The picture's text (svg text and caption) must not then
 // show the example's value of a box now "?" (**ERROR**, naming the value and the text it is
 // in). A number that is also a known box's value, or an axis tick (a bare number, percent,
-// degrees or imaginary tick in a run of evenly spaced ones, or two a round step apart on that
-// step), is not flagged; 0 is never matched.
+// degrees or imaginary tick in a run of evenly spaced ones, or two on a shared round step at
+// most 5 steps apart: 100 and 300), is not flagged; 0 is never matched.
 // Nor is a text that reads the same when the "?" box is typed with another number (the same
 // first edit, then the box moved a step of its own size, or doubled or halved, in its range): it
 // does not come from that box ("n = 2" on a ladder, the unit circle's π/4 family, "2V", the
@@ -256,7 +256,11 @@ function tickValues(texts) {
       const d = q - p;
       if (d === 0) return false;
       if (has(p + 2 * d) || has(p - d)) return true;
-      return round(Math.abs(d)) && onStep(p, Math.abs(d)) && onStep(q, Math.abs(d));
+      // A round step that both sit on, the gap at most 5 of it (100 and 300 on a step of 100).
+      const top = 10 ** Math.floor(Math.log10(Math.abs(d)) + 1e-9);
+      return [top, top / 2, top / 5, 2 * top, 5 * top].some(
+        (r) => round(r) && Math.abs(d) / r <= 5 + 1e-9 && onStep(p, r) && onStep(q, r) && r >= 1,
+      );
     }),
   );
 }
