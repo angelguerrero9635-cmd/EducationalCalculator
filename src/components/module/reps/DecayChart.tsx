@@ -230,7 +230,7 @@ function DecayView({ spec, rep, calc }: { spec: Decay; rep: Rep; calc: Calculato
                   <MathChip
                     x={p.sx(tx) + 12}
                     y={p.sy(amount) - 8}
-                    text={withUnit(big(amount), nUnit)}
+                    text={known ? withUnit(big(amount), nUnit) : '?'}
                     anchor="start"
                     w={w}
                     h={h}
