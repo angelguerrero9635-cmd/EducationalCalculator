@@ -40,6 +40,7 @@ import { convert, getUnit } from '@/engine/units';
 
 import { TESTED_MODULES } from '..';
 import { checkAlgebraLines } from '../harness/algebraLines';
+import { checkIntegerLines, formValueAt } from '../harness/integerLines';
 import {
   BAD_TEXT,
   PLURAL,
@@ -215,6 +216,9 @@ function resultNumber(result: string, exp = false): number {
     const x = evaluate(rhs);
     if (x !== undefined) return x;
   }
+  // A whole number in a base, a dotted quad or a prefix (HE-E21): 101101₂, 0x2D, /26.
+  const form = formValueAt(rhs);
+  if (form !== undefined) return form;
   // A root written exactly says its decimal beside it (√2/2 ≈ 0.7071): read the decimal.
   const approx = / ≈ (-?[\d.,]+)/.exec(rhs.replace(/−/g, '-'));
   if (approx) return Number(approx[1]!.replace(/,/g, ''));
@@ -571,6 +575,12 @@ function checkSteps(c: Ctx, res: SolveResult, where: string) {
   // row operation gives the matrix it prints.
   for (const s of w.steps) {
     for (const p of checkAlgebraLines(s.lines))
+      c.f.add('error', `${c.label}line doesn't hold: ${p}`, where);
+  }
+  // Whole-number lines (HE-E21): ⌊ ⌋, ⌈ ⌉, mod, log₂, gcd, bases, quads and big integers,
+  // read exactly; a division with its remainder and a flipped pattern must be true.
+  for (const s of w.steps) {
+    for (const p of checkIntegerLines(s.lines))
       c.f.add('error', `${c.label}line doesn't hold: ${p}`, where);
   }
   // A sum with its limits said equal to a number ("Σ from k = 1 to 8 of (3k − 1) = 100", in a

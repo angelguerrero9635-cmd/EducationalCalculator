@@ -1,4 +1,5 @@
 import { exactRoot } from './exact';
+import { formText, parseBased, parseIPv4, parseInForm } from './integers';
 import type { Values, VariableDef } from './types';
 
 /** Compact display: whole numbers as-is, up to 4 decimals, scientific for extremes. */
@@ -34,6 +35,7 @@ export function formatNumber(
     | 'exact'
     | 'decimals'
     | 'signed'
+    | 'base'
   > & {
     /**
      * A worked-out value's significant figures on a page that sets them (Grades 9–12 science:
@@ -49,6 +51,11 @@ export function formatNumber(
     values?: Values;
   },
 ): string {
+  // A whole number in a base, a dotted quad or a prefix (HE-E21): 101101₂, 0x2D, /26.
+  if (variable?.base) {
+    const t = formText(x, variable.base, variable.values);
+    if (t) return t;
+  }
   // A charge or signed change: +3, −1 (HE-E10).
   if (variable?.signed && x > 0 && Number.isFinite(x)) {
     const shown = formatNumber(x, { ...variable, signed: false });
@@ -407,6 +414,13 @@ export const plainDigits = (s: string) => s.replace(/(\d),(?=\d{3}(?!\d))/g, '$1
 export function parseNumber(text: string): number | undefined | 'invalid' {
   const cleaned = text.trim().replace(/,/g, '').replace(/−/g, '-');
   if (cleaned === '') return undefined;
+  // A whole number written in a base or as a dotted quad (HE-E21): 101101₂, 0x2D, 2D₁₆,
+  // 192.168.10.77.
+  if (/^(?:0[xbo][\dA-Fa-f_ ]+|[\dA-F ]+(?:₂|₈|₁₆))$/.test(cleaned)) {
+    const b = parseBased(cleaned);
+    return b === undefined || b > BigInt(Number.MAX_SAFE_INTEGER) ? 'invalid' : Number(b);
+  }
+  if (/^\d+\.\d+\.\d+\.\d+$/.test(cleaned)) return parseIPv4(cleaned) ?? 'invalid';
   // A multiple of π: "36π", "36 pi", "36*pi", "π", "-2.5π", and a fraction of it: "5π/2",
   // "π/6", "3pi/4".
   const pi = /^([-+]?)(\d+\.?\d*|\.\d+)?\s*\*?\s*(?:π|pi)(?:\s*\/\s*(\d+))?$/i.exec(cleaned);
@@ -458,6 +472,17 @@ export function parseNumber(text: string): number | undefined | 'invalid' {
   }
   if (!/^[-+]?(\d+\.?\d*|\.\d+)(e[-+]?\d+)?$/i.test(cleaned)) return 'invalid';
   return Number(cleaned);
+}
+
+/**
+ * A value typed into its box: in the variable's base, quad or prefix when it has one
+ * (`VariableDef.base`), else as any number (`parseNumber`).
+ */
+export function parseValue(
+  text: string,
+  variable?: Pick<VariableDef, 'base'>,
+): number | undefined | 'invalid' {
+  return variable?.base ? parseInForm(text, variable.base) : parseNumber(text);
 }
 
 /**
@@ -514,10 +539,11 @@ export function renderTemplate(
     if (meaning !== undefined) return meaning;
     // Zero padding is for clock times ("3:05"); in sums and words the minutes are plain (5 + 20).
     const clockPart = template[at - 1] === ':';
+    // (a prefix, /26, is its bare number in a rule: 32 − 26)
     const s = formatNumber(
       x,
       clockPart ? { ...variable, values } : { ...variable, digits: undefined, values },
-    );
+    ).replace(variable.base === 'prefix' ? /^\// : /^(?!)/, '');
     // A negative is bracketed only where its sign would meet another one ("3 × (−4)") or a
     // power; alone, first in a line or in an ordered pair it reads as itself: (−4, 3), |−4|.
     const before = template.slice(0, at).trimEnd();

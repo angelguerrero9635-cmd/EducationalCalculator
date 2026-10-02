@@ -1,3 +1,5 @@
+import type { BaseForm } from './integers';
+
 /** Values keyed by variable id. */
 export type Values = Record<string, number>;
 
@@ -94,6 +96,13 @@ export interface VariableDef {
    * 273.15 or 32 of a thermometer reading.
    */
   difference?: boolean;
+  /**
+   * A whole number shown and typed in a base (HE-E21): `{ radix: 2, bits: 8 }` shows 45 as
+   * 00101101₂ (`bits` may be the id of the value that is the width), `prefix` as 0x2D, `group`
+   * in fours (0010 1101₂); `'ipv4'` as a dotted quad (192.168.10.77) and `'prefix'` as /26. The
+   * box takes the digits in that base. A value that isn't a whole number from 0 shows as usual.
+   */
+  base?: BaseForm;
   /** Whole multiples of this number only (e.g. 100 for a hundreds part: 0, 100, 200, …). */
   multipleOf?: number;
   /** Only these values (shown units), when a lesson names them: count by 5s, 10s or 100s. */
