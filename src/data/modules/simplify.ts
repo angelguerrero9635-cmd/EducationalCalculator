@@ -17,7 +17,8 @@ type Node =
   | { kind: 'num'; value: number; text?: string; pi?: boolean; deg?: boolean }
   | { kind: 'bin'; op: '+' | '−' | '×' | '÷' | '/' | '^'; left: Node; right: Node }
   | { kind: 'pow'; base: Node; exp: 2 | 3 }
-  | { kind: 'sqrt'; arg: Node }
+  /** √, and ∛ or ∜ (`index` 3 or 4). */
+  | { kind: 'sqrt'; arg: Node; index?: 3 | 4 }
   /**
    * sin(30°), cos, tan: an angle in degrees when it is written with °, else in radians.
    * ln(x); log(x), log₁₀(x) and log_10(x) (common), log₂(x), log_2(x) (`base`); |x| (abs).
@@ -92,7 +93,7 @@ function tokenize(
     const frac = FRACTION.exec(s.slice(i));
     // Under a root a fraction is not one number: √3/2 is (√3)/2, as it is read.
     const before = out[out.length - 1];
-    const rooted = before?.t === 'op' && before.v === '√';
+    const rooted = before?.t === 'op' && (before.v === '√' || before.v === '∛' || before.v === '∜');
     if (frac && Number(frac[3]) !== 0 && !rooted) {
       const value = Number(frac[1] ?? 0) + Number(frac[2]) / Number(frac[3]);
       out.push({ t: 'num', value, text: frac[0] });
@@ -156,7 +157,7 @@ function tokenize(
     } else if (ch === '½') out.push({ t: 'num', value: 0.5, text: '½' });
     else if (ch === '(') out.push({ t: '(' });
     else if (ch === ')') out.push({ t: ')' });
-    else if ('+−×÷/^²³√-'.includes(ch)) out.push({ t: 'op', v: ch === '-' ? '−' : ch });
+    else if ('+−×÷/^²³√∛∜-'.includes(ch)) out.push({ t: 'op', v: ch === '-' ? '−' : ch });
     else return undefined;
     i++;
   }
@@ -220,6 +221,9 @@ function parse(tokens: Token[]): Node | undefined {
     }
     if (tok.t === 'op' && tok.v === '−') return { kind: 'neg', arg: unary() };
     if (tok.t === 'op' && tok.v === '√') return { kind: 'sqrt', arg: unary() };
+    // A cube or fourth root (HE-E18): ∛27, ∜(L ÷ R²).
+    if (tok.t === 'op' && (tok.v === '∛' || tok.v === '∜'))
+      return { kind: 'sqrt', arg: unary(), index: tok.v === '∛' ? 3 : 4 };
     fail.failed = true;
     return { kind: 'num', value: NaN };
   };
@@ -341,8 +345,16 @@ const compute = (n: Node): number => {
     }
     case 'pow':
       return compute(n.base) ** n.exp;
-    case 'sqrt':
-      return Math.sqrt(compute(n.arg));
+    case 'sqrt': {
+      const a = compute(n.arg);
+      return n.index === 3
+        ? Math.cbrt(a)
+        : n.index === 4
+          ? a < 0
+            ? NaN
+            : a ** 0.25
+          : Math.sqrt(a);
+    }
     case 'fn': {
       const x = compute(n.arg);
       if (n.name === 'abs') return Math.abs(x);
@@ -454,12 +466,61 @@ let fractionsAllowed = false;
 /** Whether the expression being worked is in scientific notation, so its results are too. */
 let scientificWork = false;
 
-const reduce = (n: Node, stage: Stage, depth = 0): Node => {
+/**
+ * Significant figures a stage with no exact value is written to (HE-E18: ln 1.5 = 0.4055,
+ * e^0.4 = 1.492, 1.176^0.286 = 1.047, ∜5 = 1.495), or undefined when such a stage ends the
+ * working (√98 and sin 40° still do).
+ */
+let roundTo: number | undefined;
+
+/** A stage whose value is written rounded: a log, a power of e, a power that isn't whole, ∛, ∜. */
+const rounded = (n: Node): boolean =>
+  (n.kind === 'fn' && (n.name === 'ln' || n.name === 'log')) ||
+  (n.kind === 'bin' &&
+    n.op === '^' &&
+    isNum(n.left) &&
+    isNum(n.right) &&
+    (n.left.text === 'e' || !Number.isInteger(n.right.value))) ||
+  (n.kind === 'pow' && isNum(n.base) && n.base.text === 'e') ||
+  (n.kind === 'sqrt' && n.index !== undefined);
+
+/** A value written to `figures` significant figures, as the chain prints it. */
+const roundedNum = (value: number, figures: number): Extract<Node, { kind: 'num' }> => {
+  const r = Number(value.toPrecision(figures));
+  const text =
+    scientificWork && r !== 0 && (Math.abs(r) >= 1e7 || Math.abs(r) < 1e-4)
+      ? scientific(r, figures)
+      : formatNumber(r, { figures, scientificFigures: figures });
+  return { kind: 'num', value: r, text: text.replace('-', '−') };
+};
+
+/**
+ * A log, a power of e, a power with an exponent still to work out or not whole, ∛ or ∜: the
+ * arithmetic inside one is written rounded too (log₁₀(1.1255), from 900.407 ÷ 800), as its
+ * value will be.
+ */
+const transcendental = (n: Node): boolean =>
+  (n.kind === 'fn' && (n.name === 'ln' || n.name === 'log')) ||
+  (n.kind === 'bin' &&
+    n.op === '^' &&
+    ((isNum(n.left) && n.left.text === 'e') ||
+      !(isNum(n.right) && Number.isInteger(n.right.value)))) ||
+  (n.kind === 'pow' && isNum(n.base) && n.base.text === 'e') ||
+  (n.kind === 'sqrt' && n.index !== undefined);
+
+const reduce = (n: Node, stage: Stage, depth = 0, inside = false): Node => {
   if (n.kind === 'num') return n;
   if (ready(n) && depth === stage.depth && rank(n) === stage.rank) {
     const value = compute(n);
     const pi = piOf(n);
     const text = pi === undefined ? undefined : exactText(value, pi, fractionsAllowed);
+    if (
+      text === undefined &&
+      roundTo !== undefined &&
+      Number.isFinite(value) &&
+      (rounded(n) || inside)
+    )
+      return roundedNum(value, roundTo);
     // NaN marks a value that can't be written exactly; the chain stops before it.
     if (text === undefined || Number.isNaN(value))
       return { kind: 'num', value: NaN, text: INEXACT };
@@ -467,8 +528,9 @@ const reduce = (n: Node, stage: Stage, depth = 0): Node => {
     if (degOf(n)) return { kind: 'num', value, text: `${text}°`, deg: true };
     return { kind: 'num', value, text, ...(pi ? { pi: true } : {}) };
   }
+  const within = inside || transcendental(n);
   const at = (child: Node, rightSide: boolean) =>
-    reduce(child, stage, depth + (grouped(n, child, rightSide) ? 1 : 0));
+    reduce(child, stage, depth + (grouped(n, child, rightSide) ? 1 : 0), within);
   switch (n.kind) {
     case 'bin':
       return { ...n, left: at(n.left, false), right: at(n.right, true) };
@@ -518,14 +580,15 @@ const signed = (n: Node): Node => {
  * Works out a stage in every bracket group at the stage's depth, each at its own strongest
  * operation: (2⁶ − 1) ÷ (2 − 1) → (64 − 1) ÷ 1, the top and bottom of a quotient side by side.
  */
-const reduceGroups = (n: Node, target: number, depth = 0): Node => {
+const reduceGroups = (n: Node, target: number, depth = 0, inside = false): Node => {
   if (n.kind === 'num') return n;
   if (depth === target) {
     const own = nextStage(n);
-    return own && own.depth === 0 ? reduce(n, own) : n;
+    return own && own.depth === 0 ? reduce(n, own, 0, inside) : n;
   }
+  const within = inside || transcendental(n);
   const at = (child: Node, rightSide: boolean) =>
-    reduceGroups(child, target, depth + (grouped(n, child, rightSide) ? 1 : 0));
+    reduceGroups(child, target, depth + (grouped(n, child, rightSide) ? 1 : 0), within);
   switch (n.kind) {
     case 'bin':
       return { ...n, left: at(n.left, false), right: at(n.right, true) };
@@ -574,8 +637,11 @@ function print(n: Node, parentRank = 0, rightSide = false, afterSign = false): s
     case 'sqrt': {
       // √25 and √(9 + 16): brackets only around an expression.
       const inner = print(n.arg, 0);
+      const mark = n.index === 3 ? '∛' : n.index === 4 ? '∜' : '√';
       // √(5.692 × 10⁷), √(3/4): a number with a space or bar in it is bracketed too.
-      return isNum(n.arg) && n.arg.value >= 0 && !/[ /]/.test(inner) ? `√${inner}` : `√(${inner})`;
+      return isNum(n.arg) && n.arg.value >= 0 && !/[ /]/.test(inner)
+        ? `${mark}${inner}`
+        : `${mark}(${inner})`;
     }
     case 'fn': {
       const inner = print(n.arg, 0);
@@ -676,10 +742,42 @@ const loose = (line: string) =>
  * doesn't come out to a number (a root of a negative, a division by zero).
  */
 export function simplifyChain(text: string, options: { scientific?: boolean } = {}): string[] {
+  // A log, a power of e or a fractional power is written to 4 significant figures, or more when
+  // 4 would leave the end of the chain off the value (HE-E18); without one, as before.
+  roundTo = undefined;
+  const exact = chainAt(text, options);
+  if (!exact.stopped || !/ln|log|e\^|\^\(|\^\d*\.|∛|∜|\be[²³]/.test(text)) return exact.lines;
+  for (const figures of [4, 5, 6, 7]) {
+    roundTo = figures;
+    const r = chainAt(text, options);
+    roundTo = undefined;
+    const want = evaluatePrinted(text);
+    // (true as printed: the last line within 2 × 10⁻⁴ of the value itself, so a 4-figure
+    // answer reads the same from it)
+    if (
+      r.lines.length > exact.lines.length &&
+      r.value !== undefined &&
+      want !== undefined &&
+      Math.abs(r.value - want) <= 2e-4 * Math.abs(want) + 1e-12
+    )
+      return r.lines;
+  }
+  return exact.lines;
+}
+
+/**
+ * The chain's lines, whether a stage that needs rounding stopped it, and the value its last
+ * line works out to.
+ */
+function chainAt(
+  text: string,
+  options: { scientific?: boolean },
+): { lines: string[]; stopped: boolean; value?: number } {
   scientificWork = !!options.scientific || SCI_WORK.test(text);
   const tokens = tokenize(text, scientificWork);
   const parsed = tokens && parse(tokens);
-  if (!parsed || (operationCount(text, scientificWork) ?? 0) < 2) return [];
+  if (!parsed || (operationCount(text, scientificWork) ?? 0) < 2)
+    return { lines: [], stopped: false };
   let tree = signed(parsed);
   fractionsAllowed = !!tokens?.some((t) => t.t === 'num' && t.text?.includes('/'));
   const lines: string[] = [];
@@ -690,12 +788,16 @@ export function simplifyChain(text: string, options: { scientific?: boolean } = 
     // "5 − (−3)" and "−(−3)" are one stage each; the reader sees the sign settle on the next line.
     const line = print(tree);
     // A stage that would need rounding ends the working: the answer line gives the value.
-    if (line.includes(INEXACT)) return lines;
+    if (line.includes(INEXACT)) {
+      const last = lines.length ? evaluatePrinted(lines[lines.length - 1]!) : undefined;
+      return { lines, stopped: true, value: last };
+    }
     // A stage that doesn't come out to a number (a root of a negative, ÷ 0): no working at all.
-    if (!Number.isFinite(compute(tree)) || /NaN|Infinity/.test(line)) return [];
+    if (!Number.isFinite(compute(tree)) || /NaN|Infinity/.test(line))
+      return { lines: [], stopped: false };
     // A line that differs from the one before only in brackets round a negative is not a stage.
     const last = lines[lines.length - 1] ?? text.trim();
     if (loose(line) !== loose(last) && loose(line) !== loose(text)) lines.push(line);
   }
-  return lines;
+  return { lines, stopped: false, value: compute(tree) };
 }

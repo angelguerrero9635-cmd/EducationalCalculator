@@ -161,6 +161,25 @@ export interface Branch {
 }
 
 /**
+ * How a step works out a value by trial (HE-E14), each try a line the harness checks:
+ *
+ * - `secant` (the default): "Try k = 0.02: … = 33.65 (want 29.39)" from two round guesses
+ *   (`start`, else the answer's one-figure neighbours), each next try where the line through
+ *   the last two meets the target, until the guess stops changing at the shown figures.
+ * - `bisection`: the same lines, each try the middle of the range where the sides cross.
+ * - `fixed-point`: `next` is the rule solved for the value with the value itself still in it
+ *   (Kepler's E = M + e sin E: '{M} + {e} × sin({E})'), repeated from `start`: "E₁ = … = 0.5959".
+ * - `newton`: `f` (zero at the answer) and its `slope` as templates in the value: "x₁ = 2 −
+ *   (2³ − 2 − 3) ÷ (3 × 2² − 1) = 1.7273".
+ *
+ * `start` reads the values the steps show; `{id}` in a template is the guess.
+ */
+export type Trial =
+  | { method: 'secant' | 'bisection'; start?: (v: Values) => [number, number] }
+  | { method: 'fixed-point'; next: string; start: (v: Values) => number }
+  | { method: 'newton'; f: string; slope: string; start: (v: Values) => number };
+
+/**
  * One equation linking some variables. `residual` is zero when the equation holds
  * (write it as left side − right side).
  */
@@ -202,6 +221,12 @@ export interface Relation {
    * Variables without a rearrangement are solved numerically within their [min, max].
    */
   solve?: Partial<Record<string, (v: Values) => number | number[] | undefined>>;
+  /**
+   * How the step shows a value no rearrangement gives (HE-E14), by the method the course names;
+   * left out, a value the root finder found is shown by trial from two round guesses, each next
+   * one by the secant method (`trialWork`, `src/data/modules/trials.ts`).
+   */
+  trials?: Partial<Record<string, Trial>>;
   /**
    * The check line as plain arithmetic (e.g. "4 + 4 + 4 = 12" for "12 = 3 rows of 4"), so the
    * step-by-step check really checks. Given the values in the units the steps show.
