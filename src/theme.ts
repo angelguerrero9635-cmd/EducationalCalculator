@@ -398,6 +398,10 @@ const light = {
   /** The brick wall a ladder leans on (triangleSolver's ladder scene) and its mortar lines. */
   ladderWall: '#B5654A',
   ladderWallDark: '#8A4632',
+  /** HC20 college free bodies: a hemp rope, and a road's asphalt in section. */
+  fbRope: '#B08D57',
+  fbRoad: '#5A5E66',
+  fbRoadDark: '#3E4148',
   /** Statistics pictures (HS group B): a rejection region, an interval that misses the mean. */
   normalReject: '#D93B3B',
   /** Biology pictures (HS group H): an agarose gel (slab, edge, stained band, well); a limb's
@@ -825,6 +829,9 @@ const dark: Palette = {
   gasMixD: '#3DB894',
   ladderWall: '#8C4B37',
   ladderWallDark: '#5E3023',
+  fbRope: '#9C7B4A',
+  fbRoad: '#4A4E56',
+  fbRoadDark: '#2E3036',
   normalReject: '#F0716B',
   gelSlab: '#243446',
   gelEdge: '#5A7590',

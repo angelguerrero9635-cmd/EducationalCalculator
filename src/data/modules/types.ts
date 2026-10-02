@@ -28,6 +28,7 @@ import type { Hs2fKindSpec } from './typesHs2f';
 import type { Hs3cSpec } from './typesHs3c';
 import type { He1gSpec } from './typesHe1g';
 import type { DopplerWave, HskSpec, StandingWave } from './typesHsk';
+import type { He2fSpec } from './typesHe2f';
 import type { Hs2cSpec } from './typesHs2c';
 import type { Hs3aSpec } from './typesHs3a';
 import type { He1bSpec } from './typesHe1b';
@@ -1143,6 +1144,8 @@ export type Representation =
   | PhaseEnvelopeSpec
   /** Grades 9–12 physics, group HK: projectile, free body, … (specs in typesHsk.ts). */
   | HskSpec
+  /** College round 2, group F: freeBody and circularMotion options (`typesHe2f.ts`). */
+  | He2fSpec
   /** Grades 9–12 physics round 2, group H2C: impulse, … (specs in typesHs2c.ts). */
   | Hs2cSpec
   /** Grades 9–12 physics round 3, group H3A: torque, rotor, … (specs in typesHs3a.ts). */
