@@ -50,4 +50,31 @@ export const HE3I_REQUESTS: PictureRequest[] = [
       'g.he-simpleMachine-limb-hip-short-arm',
     ],
   },
+  {
+    ...ask(
+      'HC82',
+      'binaryPhase',
+      'A binary phase diagram (isomorphous lens, eutectic, or the iron–carbon steel corner) with the alloy line, a tie line, the lever arms on the tie line enlarged, and two bars of the phase fractions',
+      [
+        `${E}materials-science#2`,
+        `${E}materials-science#2~eutectic`,
+        `${E}materials-science#2~steel`,
+      ],
+      [
+        'From ME-P8. New kind (typesHe3i.ts BinaryPhaseSpec, reps/BinaryPhase.tsx, the boundaries and the lever in reps/binaryPhaseMath.ts).',
+        "Fields: { kind: 'binaryPhase', system: 'isomorphous' | 'eutectic' | 'steel', names?: [A, B] ('Cu', 'Ni'; steel is Fe and C), c0 (C₀, wt% B), cl? (isomorphous: the liquid C_L), calpha? (the solid C_α; steel default 0.022), ce? (eutectic C_E; steel's eutectoid, default 0.76), cbeta? (eutectic's β end), temperature? (the tie line's T, a label; steel 727 °C), melts?: [T_A, T_B] (isomorphous: labelled, and with temperature they place the tie line in the lens), wl? (W_L), we? (W_e, or pearlite W_P on steel), walpha? (W_α, or W_α′) }. Fractions are shares from 0 to 1.",
+        "Example (materials-science#2): { kind: 'binaryPhase', system: 'isomorphous', names: ['Cu', 'Ni'], c0: 'C0', cl: 'CL', calpha: 'Ca', temperature: 1250, melts: [1085, 1455], wl: 'WL', walpha: 'Wa' }. Example (~eutectic): { kind: 'binaryPhase', system: 'eutectic', names: ['Pb', 'Sn'], c0: 'C0', calpha: 'Ca', ce: 'CE', cbeta: 97.8, we: 'We', walpha: 'Wa' }. Example (~steel): { kind: 'binaryPhase', system: 'steel', c0: 'C0', calpha: 0.022, ce: 0.76, we: 'WP', walpha: 'Wa' }.",
+        'Every boundary is computed in code, not traced: the lens is liquidus 100tᵖ over solidus 100t^q, shaped to pass through C_L and C_α at the tie line; the eutectic curves are Béziers through C_α, C_E and C_β; the steel corner draws A3 from 912 °C to the eutectoid, Acm toward 2.14 wt% at 1147 °C, and α to 0.022 wt%. Fields tinted and named (L, α, β, L + α, γ, α + γ, γ + Fe₃C, α + Fe₃C); C₀ dashed; the tie line with its ends; under the plot the tie line enlarged as a lever with the fulcrum at C₀, both arms labelled (C₀ − C_L, C_α − C₀), its ends named by phase; two fraction bars. A one-phase alloy, a lens the ends can’t make, a eutectic out of order or a hypereutectoid steel draws faded with the reason in the caption.',
+        'The harness (harness/picturesHe3i.ts) checks the fractions add to 1 and match the lever arms, the compositions lie on the axis and C_α lies below C_E. The pages are not built yet.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-binaryPhase-isomorphous',
+      'g.he-binaryPhase-isomorphous-near-liquidus',
+      'g.he-binaryPhase-eutectic',
+      'g.he-binaryPhase-steel',
+      'g.he-binaryPhase-steel-near-eutectoid',
+    ],
+  },
 ];

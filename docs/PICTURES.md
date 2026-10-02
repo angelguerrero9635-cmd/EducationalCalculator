@@ -123,6 +123,7 @@ search or the sitemap, but the module tests and the harness run over it):
 | `bode`             | gain (dB) over phase on log frequency; asymptotes, corners, PM, GM    | College filters, control (HC22)     |
 | `potentialWell`    | box, oscillator, step, barrier, bump: levels to scale, ψ, nodes, λ    | College quantum, chemistry (HC15)   |
 | `unitCell`         | cubic cell: atoms counted to Z, touching line; (hkl) and d; Bragg     | College solids, minerals (HC16)     |
+| `binaryPhase`      | lens, eutectic, steel corner: C₀, tie line, lever arms, fraction bars | College phase diagrams (HC82)       |
 | `globe`            | sun rays, noon angle, day dial; great circle; Euler pole; dipole; air | College earth and geography (HC36)  |
 | `stressStrain`     | σ–ε curve: E, 0.2% offset, UTS, necking; specimen; tube; two members  | College materials, biomech. (HC28)  |
 | `stressElement`    | element, turned to θ_p; Mohr's circle; 3 circles; loci, n; soil line  | College stress, soil (HC33)         |

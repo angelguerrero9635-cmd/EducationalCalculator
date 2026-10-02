@@ -5,10 +5,11 @@
  * checks that mix units convert with `siFactor`. Test-only.
  */
 import { HIP_SHARE, limbBalance } from '@/components/module/reps/limbMath';
+import { STEEL } from '@/components/module/reps/binaryPhaseMath';
 import { siFactor } from '@/components/module/reps/he3iUnits';
 import type { VariableDef } from '@/engine/types';
 
-import type { He3iSpec } from '../typesHe3i';
+import type { BinaryPhaseSpec, He3iSpec } from '../typesHe3i';
 import type { SimpleMachineSpec } from '../typesHsk';
 
 type Val = (id: string) => number | undefined;
@@ -80,10 +81,57 @@ export function limbIssues(
 /** HC82–HC84: the new kinds of group I. */
 export function he3iIssues(rep: He3iSpec, val: Val, byId: Map<string, VariableDef>): string[] {
   const out: string[] = [];
-  void reader(val, byId);
+  const si = reader(val, byId);
   switch (rep.kind) {
+    case 'binaryPhase':
+      out.push(...binaryPhaseIssues(rep, val));
+      break;
     default:
+      void si;
       break;
   }
+  return out;
+}
+
+/** HC82: the fractions add to 1 and match the lever arms; C₀ lies on the tie line. */
+function binaryPhaseIssues(rep: BinaryPhaseSpec, val: Val): string[] {
+  const out: string[] = [];
+  const v = (x: X, fallback?: number) =>
+    x === undefined ? fallback : typeof x === 'number' ? x : val(x);
+  const steel = rep.system === 'steel';
+  const c0 = v(rep.c0);
+  const ca = v(rep.calpha, steel ? STEEL.calpha : undefined);
+  const other = rep.system === 'isomorphous' ? v(rep.cl) : v(rep.ce, steel ? STEEL.ce : undefined);
+  if (rep.system === 'isomorphous' && rep.cl === undefined)
+    out.push('binaryPhase: an isomorphous diagram needs the liquid’s composition cl');
+  if (rep.system === 'eutectic' && rep.ce === undefined)
+    out.push('binaryPhase: a eutectic diagram needs the eutectic composition ce');
+  if (c0 === undefined || ca === undefined || other === undefined) return out;
+  for (const [x, what] of [
+    [c0, 'C₀'],
+    [ca, 'C_α'],
+    [other, 'the other end'],
+  ] as const)
+    if (x < 0 || x > (steel ? STEEL.xMax : 100))
+      out.push(`binaryPhase: ${what} = ${x} is off the composition axis`);
+  if (rep.system !== 'isomorphous' && !(ca < other))
+    out.push(
+      `binaryPhase: C_α ${ca} is not below the ${steel ? 'eutectoid' : 'eutectic'} ${other}`,
+    );
+  const [lo, hi] = [Math.min(ca, other), Math.max(ca, other)];
+  if (c0 < lo - 1e-9 || c0 > hi + 1e-9) return out; // a one-phase alloy draws faded
+  // The share of the phase at the `other` end (liquid, eutectic or pearlite) is the arm from
+  // C_α to C₀ over the tie line; the solid's is the rest.
+  const wOther = (c0 - ca) / (other - ca);
+  const wl = rep.system === 'isomorphous' ? v(rep.wl) : v(rep.we);
+  const wa = v(rep.walpha);
+  if (wl !== undefined && !near(wl, wOther, 1))
+    out.push(
+      `binaryPhase: ${rep.system === 'isomorphous' ? 'W_L' : 'W_e'} = ${wl}, the lever arms give ${wOther}`,
+    );
+  if (wa !== undefined && !near(wa, 1 - wOther, 1))
+    out.push(`binaryPhase: W_α = ${wa}, the lever arms give ${1 - wOther}`);
+  if (wl !== undefined && wa !== undefined && !near(wl + wa, 1, 1))
+    out.push(`binaryPhase: the fractions add to ${wl + wa}, not 1`);
   return out;
 }

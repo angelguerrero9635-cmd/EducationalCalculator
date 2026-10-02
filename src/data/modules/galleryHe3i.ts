@@ -51,6 +51,20 @@ const quantity = (
   ...more,
 });
 
+/** a < b, checked only (a page limit); `why` is the reason a conflict is refused. */
+const below = (a: string, b: string, display: string, why: string): Rule => ({
+  relation: {
+    id: `${a} < ${b}`,
+    constraint: true,
+    display,
+    vars: [a, b],
+    residual: (v: Values) => (v[a]! < v[b]! ? 0 : 1),
+    solve: {},
+    message: () => why,
+  },
+  steps: {},
+});
+
 // ── HC81: a limb as a lever (biomechanics#1, ~hip; anatomy-physiology#1) ──
 
 const force = (id: string, symbol: string, name: string, max = 5000) =>
@@ -325,6 +339,224 @@ const hipHeavy = hipDemo(
   11,
 );
 
-export const HE3I_GALLERY_MODULES: ModuleDef[] = [forearmLoad, forearmLevel, hipStance, hipHeavy];
+// ── HC82: phase diagrams and the lever rule (materials-science#2, ~eutectic, ~steel) ──
+
+const wtp = (id: string, symbol: string, name: string, max = 100) =>
+  quantity(id, symbol, name, 'wt%', 0, max, 0.001);
+const share = (id: string, symbol: string, name: string) =>
+  quantity(id, symbol, name, undefined, 0, 1, 0.0001);
+
+/**
+ * The lever rule on a tie line from `lo` to `hi` (ids, or a fixed number with its text): the
+ * share `w` of the phase at `hi` is (C₀ − C_lo) ÷ (C_hi − C_lo); `rest` is 1 minus it.
+ */
+const leverRules = (
+  c0: string,
+  lo: string | [number, string],
+  hi: string | [number, string],
+  w: string,
+  rest: string,
+  name: string,
+  restName: string,
+): Rule[] => {
+  const val = (x: string | [number, string], v: Values) => (typeof x === 'string' ? v[x]! : x[0]);
+  const txt = (x: string | [number, string]) => (typeof x === 'string' ? `{${x}}` : x[1]);
+  const ids = [c0, w, ...[lo, hi].filter((x): x is string => typeof x === 'string')];
+  const solve: Record<string, (v: Values) => number | undefined> = {
+    [w]: (v) => div(v[c0]! - val(lo, v), val(hi, v) - val(lo, v)),
+    [c0]: (v) => val(lo, v) + v[w]! * (val(hi, v) - val(lo, v)),
+  };
+  const steps: Record<string, StepText> = {
+    [w]: st(
+      `({${c0}} − ${txt(lo)}) ÷ (${txt(hi)} − ${txt(lo)})`,
+      `The lever rule: the ${name} share is the arm on the far side of C₀ over the tie line.`,
+    ),
+    [c0]: st(
+      `${txt(lo)} + {${w}} × (${txt(hi)} − ${txt(lo)})`,
+      'The alloy sits that share of the way along the tie line.',
+    ),
+  };
+  if (typeof lo === 'string') {
+    solve[lo] = (v) => div(v[c0]! - v[w]! * val(hi, v), 1 - v[w]!);
+    steps[lo] = st(
+      `({${c0}} − {${w}} × ${txt(hi)}) ÷ (1 − {${w}})`,
+      'Solve the lever rule for this end of the tie line.',
+    );
+  }
+  if (typeof hi === 'string') {
+    solve[hi] = (v) => div(v[c0]! - val(lo, v) * (1 - v[w]!), v[w]!);
+    steps[hi] = st(
+      `({${c0}} − ${txt(lo)} × (1 − {${w}})) ÷ {${w}}`,
+      'Solve the lever rule for this end of the tie line.',
+    );
+  }
+  return [
+    {
+      relation: {
+        id: `${w} by the lever rule`,
+        display: `{${w}} = ({${c0}} − ${txt(lo)}) ÷ (${txt(hi)} − ${txt(lo)})`,
+        vars: ids,
+        residual: (v) => v[w]! * (val(hi, v) - val(lo, v)) - (v[c0]! - val(lo, v)),
+        solve,
+      },
+      steps,
+    },
+    {
+      relation: {
+        id: `${rest} = 1 − ${w}`,
+        display: `{${rest}} = 1 − {${w}}`,
+        vars: [rest, w],
+        residual: (v) => v[rest]! + v[w]! - 1,
+        solve: { [rest]: (v) => 1 - v[w]!, [w]: (v) => 1 - v[rest]! },
+      },
+      steps: {
+        [rest]: st(`1 − {${w}}`, `The two shares add to 1: the ${restName} is the rest.`),
+        [w]: st(`1 − {${rest}}`, 'The two shares add to 1.'),
+      },
+    },
+  ];
+};
+
+const isoDemo = (id: string, title: string, C0: number) => {
+  const [CL, Ca] = [31.5, 42.5];
+  const WL = (Ca - C0) / (Ca - CL);
+  return demo({
+    id,
+    title,
+    use: 'Use this for the shares of liquid and solid in a two-phase alloy, read on the tie line at its temperature.',
+    assumptions: [
+      'The alloy is inside the two-phase region.',
+      'C_L and C_α are read on the tie line at T.',
+    ],
+    variables: [
+      wtp('C0', 'C_0', 'Alloy composition'),
+      wtp('CL', 'C_L', 'Liquid composition'),
+      wtp('Ca', 'C_α', 'Solid composition'),
+      share('WL', 'W_L', 'Liquid share'),
+      share('Wa', 'W_α', 'Solid share'),
+    ],
+    // The liquid's share is the arm from C₀ to C_α: the lever on the tie line from C_α to C_L.
+    ...rules(...leverRules('C0', 'Ca', 'CL', 'WL', 'Wa', 'liquid', 'solid')),
+    example: { C0, CL, Ca, WL, Wa: 1 - WL },
+    startWith: ['C0', 'CL', 'Ca'],
+    representation: {
+      kind: 'binaryPhase',
+      system: 'isomorphous',
+      names: ['Cu', 'Ni'],
+      c0: 'C0',
+      cl: 'CL',
+      calpha: 'Ca',
+      temperature: 1250,
+      melts: [1085, 1455],
+      wl: 'WL',
+      walpha: 'Wa',
+    },
+  });
+};
+
+const binaryIso = isoDemo('g.he-binaryPhase-isomorphous', 'Liquid and solid in a Cu–Ni alloy', 35);
+const binaryIsoEdge = isoDemo(
+  'g.he-binaryPhase-isomorphous-near-liquidus',
+  'Just inside the lens: nearly all liquid',
+  32,
+);
+
+const binaryEutectic = (() => {
+  const [Ca, CE, C0] = [18.3, 61.9, 40];
+  const We = (C0 - Ca) / (CE - Ca);
+  return demo({
+    id: 'g.he-binaryPhase-eutectic',
+    title: 'Eutectic and primary α in a Pb–Sn alloy',
+    use: 'Use this for how much of a hypoeutectic alloy ends up as eutectic and how much as primary α.',
+    assumptions: [
+      'Just above the eutectic temperature: α at C_α and liquid at C_E.',
+      'All of that liquid becomes eutectic as it cools through T_E.',
+    ],
+    variables: [
+      wtp('C0', 'C_0', 'Alloy composition'),
+      wtp('Ca', 'C_α', 'α composition'),
+      wtp('CE', 'C_E', 'Eutectic composition'),
+      share('We', 'W_e', 'Eutectic share'),
+      share('Wa', 'W_α′', 'Primary α share'),
+    ],
+    ...rules(
+      ...leverRules('C0', 'Ca', 'CE', 'We', 'Wa', 'eutectic', 'primary α'),
+      below(
+        'Ca',
+        'CE',
+        '{Ca} < {CE}',
+        'α’s end of the eutectic line lies below the eutectic composition.',
+      ),
+    ),
+    example: { C0, Ca, CE, We, Wa: 1 - We },
+    startWith: ['C0', 'Ca', 'CE'],
+    representation: {
+      kind: 'binaryPhase',
+      system: 'eutectic',
+      names: ['Pb', 'Sn'],
+      c0: 'C0',
+      calpha: 'Ca',
+      ce: 'CE',
+      cbeta: 97.8,
+      we: 'We',
+      walpha: 'Wa',
+    },
+  });
+})();
+
+const steelDemo = (id: string, title: string, C0: number) => {
+  const WP = (C0 - 0.022) / (0.76 - 0.022);
+  return demo({
+    id,
+    title,
+    use: 'Use this for the shares of pearlite and proeutectoid ferrite in a hypoeutectoid steel.',
+    assumptions: [
+      'The eutectoid is at 0.76 wt% C and 727 °C (some texts write 0.77 or 0.8).',
+      'Ferrite holds 0.022 wt% C at 727 °C; the austenite there becomes pearlite.',
+    ],
+    variables: [
+      wtp('C0', 'C_0', 'Carbon in the steel', 0.76),
+      share('WP', 'W_P', 'Pearlite share'),
+      share('Wa', 'W_α′', 'Proeutectoid ferrite share'),
+    ],
+    ...rules(
+      ...leverRules('C0', [0.022, '0.022'], [0.76, '0.76'], 'WP', 'Wa', 'pearlite', 'ferrite'),
+    ),
+    example: { C0, WP, Wa: 1 - WP },
+    startWith: ['C0'],
+    representation: {
+      kind: 'binaryPhase',
+      system: 'steel',
+      c0: 'C0',
+      calpha: 0.022,
+      ce: 0.76,
+      we: 'WP',
+      walpha: 'Wa',
+    },
+  });
+};
+
+const binarySteel = steelDemo(
+  'g.he-binaryPhase-steel',
+  'Pearlite and ferrite in a 0.40% carbon steel',
+  0.4,
+);
+const binarySteelEdge = steelDemo(
+  'g.he-binaryPhase-steel-near-eutectoid',
+  'A 0.70% carbon steel: nearly all pearlite',
+  0.7,
+);
+
+export const HE3I_GALLERY_MODULES: ModuleDef[] = [
+  forearmLoad,
+  forearmLevel,
+  hipStance,
+  hipHeavy,
+  binaryIso,
+  binaryIsoEdge,
+  binaryEutectic,
+  binarySteel,
+  binarySteelEdge,
+];
 
 export const HE3I_GALLERY_LAYOUTS: LayoutDef[] = [];

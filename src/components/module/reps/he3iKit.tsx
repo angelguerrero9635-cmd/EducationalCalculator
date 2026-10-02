@@ -4,6 +4,7 @@
  */
 import { G, Line } from 'react-native-svg';
 
+import { formatNumber } from '@/engine/format';
 import { usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
@@ -27,7 +28,9 @@ export function useHe3iReader(calc: Calculator) {
    * the unit shown ("493.75" reads 494), fixed numbers with `unit`.
    */
   const text = (x: X, value: number, unit = '') => {
-    if (typeof x !== 'string' || r.rep.typed(x) || !r.known(x)) return r.text(x, value, unit);
+    if (typeof x !== 'string')
+      return `${formatNumber(value)}${unit ? (unit === '°' ? '°' : ` ${unit}`) : ''}`;
+    if (r.rep.typed(x) || !r.known(x)) return r.text(x, value, unit);
     const shown = r.rep.unit(x) ?? r.rep.variable(x).unit;
     return `${fmt(r.rep.shown(x))}${shown ? ` ${shown}` : ''}`;
   };

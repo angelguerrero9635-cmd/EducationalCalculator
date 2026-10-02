@@ -36,6 +36,7 @@ import { hs3cSpecVars } from '../typesHs3c';
 import { he1gSpecVars } from '../typesHe1g';
 import { he1fSpecVars } from '../typesHe1f';
 import { he2bSpecVars } from '../typesHe2b';
+import { he3iSpecVars } from '../typesHe3i';
 import { globeVars } from '../typesHe2k';
 import { he2jSpecVars } from '../typesHe2j';
 import { fieldPlotVars } from '../typesHe2g';
@@ -608,6 +609,10 @@ function representationVars(r: Representation): string[] {
     case 'potentialWell':
     case 'unitCell':
       return he2bSpecVars(r);
+    case 'binaryPhase':
+    case 'machining':
+    case 'linkage':
+      return he3iSpecVars(r);
     case 'globe':
       return globeVars(r);
     case 'stressStrain':

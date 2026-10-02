@@ -79,7 +79,7 @@ import { phaseEnvelopeIssues, phaseSubstanceIssues } from './picturesHe1i';
 import { chemRateHe2kIssues, globeIssues } from './picturesHe2k';
 import { he1fIssues } from './picturesHe1f';
 import { he2bIssues } from './picturesHe2b';
-import { limbIssues } from './picturesHe3i';
+import { he3iIssues, limbIssues } from './picturesHe3i';
 import { he2jIssues } from './picturesHe2j';
 import { he2eIssues, isHe2e } from './picturesHe2e';
 import { he2hIssues } from './picturesHe2h';
@@ -2290,6 +2290,9 @@ export function repIssues(
           (id) => byId.get(id)?.unit,
         ),
       );
+      break;
+    case 'binaryPhase':
+      out.push(...he3iIssues(rep, siOf(val, byId), byId)); // HC82–HC84
       break;
     case 'globe':
       // In formula units (a distance in km, a speed in m/s), as the picture draws them.
