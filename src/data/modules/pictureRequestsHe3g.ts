@@ -145,4 +145,26 @@ export const HE3G_REQUESTS: PictureRequest[] = [
       'g.he-membrane-psi-out',
     ],
   },
+  {
+    ...ask(
+      'HC80',
+      'dilutionSeries',
+      'A row of dilution tubes (1:10 or two-fold, up to 10), the volume moved, one tube spread on an agar plate with its colonies (TNTC above 300) and CFU/mL; a titer’s positive tubes lit',
+      [`${B}microbiology#1~plate-count`, `${B}microbiology#2`, `${B}microbiology#3~titer`],
+      [
+        'From B-P14. New kind: type in typesHe3g.ts (DilutionSeriesSpec, in the Representation union as He3gSpec), drawn by reps/DilutionSeries.tsx (sums in reps/dilutionMath.ts), registered in reps/index.tsx, meta.ts, modules.test.ts and harness/pictures.ts.',
+        "Fields: { kind: 'dilutionSeries', factor (10 for 1:10, 2 for two-fold, 1 for a single tube), tubes? (≤ 10; default the plated tube, or 10 for a titer), first? (the first tube as 1:first; default factor), transfer? (volume moved, on the first arrow), dilution? (the plated tube's dilution as a fraction, 10⁻⁶) or plated? (its number), volume? (volume plated), colonies? (drawn up to 300, a TNTC lawn above), cfu? (CFU/mL), recovery? and total? (a single tube scaled up), positive? (tubes lit) and titer? }.",
+        "Example (microbiology#1~plate-count): { kind: 'dilutionSeries', factor: 10, transfer: 1, dilution: 'd', volume: 'v', colonies: 'n', cfu: 'cfu' }. Example (microbiology#2): { kind: 'dilutionSeries', factor: 1, tubes: 1, volume: 'plated', recovery: 'rec', colonies: 'col', total: 'tf' }. Example (microbiology#3~titer): { kind: 'dilutionSeries', factor: 2, first: 'first', tubes: 10, positive: 'k', titer: 'titer' }.",
+        'Harness (harness/picturesHe3g.ts): the dilution is a tube of the row (and the plated one), CFU/mL = colonies ÷ (dilution × volume), cells in the tube = colonies × recovery ÷ plated, titer = first × factor^(positive − 1) (the last lit tube), counts whole, at most 10 tubes.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-dilutionSeries-plate-count',
+      'g.he-dilutionSeries-plate-count-deep',
+      'g.he-dilutionSeries-transformation',
+      'g.he-dilutionSeries-titer',
+      'g.he-dilutionSeries-titer-all',
+    ],
+  },
 ];

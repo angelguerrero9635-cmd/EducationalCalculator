@@ -6,7 +6,7 @@
  * he.chemistry.md P11) and real gases (he.chemistry.md P10). HC44 `energyProfile` free energy,
  * mechanisms and the bomb calorimeter (he.biology.md P2, he.chemistry.md P15). HC57 the
  * pathway detail and stage cards of metabolism (he.chemistry.md P20). HC79 `membrane` potential
- * and water potential (he.biology.md P5).
+ * and water potential (he.biology.md P5). HC80 dilutionSeries: plate counts, transformation\n * and titers (he.biology.md P14).
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
@@ -1682,6 +1682,210 @@ const psiOutDemo = psiDemo(
   -0.5,
 );
 
+// ── HC80: dilutionSeries (microbiology#1~plate-count, #2, #3~titer) ──
+
+const POWERS = Array.from({ length: 10 }, (_, k) => 10 ** -(k + 1));
+
+/** CFU/mL = colonies ÷ (dilution × volume plated). */
+const plateDemo = (id: string, title: string, [n, d, v]: number[]): ModuleDef =>
+  demo({
+    id,
+    title,
+    use: "Use this for '156 colonies grow from 0.1 mL of the 10⁻⁶ dilution. How many CFU/mL were in the culture?'.",
+    assumptions: [
+      'Each colony grew from one cell (a colony-forming unit); count plates with 30 to 300 colonies.',
+      'Each tube is 1 mL into 9 mL of broth, a 1:10 dilution of the one before.',
+    ],
+    variables: [
+      quantity('n', 'colonies', 'Colonies counted', undefined, 30, 300, 1, { integer: true }),
+      quantity('d', 'dilution', 'Dilution plated', undefined, 1e-10, 0.1, 1e-10, {
+        allowed: POWERS,
+        scientific: true,
+      }),
+      quantity('v', 'V', 'Volume plated', 'mL', 0.01, 1, 0.01),
+      quantity('cfu', 'CFU/mL', 'Cells per mL of the culture', 'CFU/mL', 1, 1e15, 1, {
+        scientific: true,
+      }),
+    ],
+    ...rules({
+      relation: {
+        id: 'CFU/mL = colonies ÷ (dilution × V)',
+        display: '{cfu} = {n} ÷ ({d} × {v})',
+        vars: ['cfu', 'n', 'd', 'v'],
+        residual: (x) => x.cfu! * x.d! * x.v! - x.n!,
+        solve: {
+          cfu: (x) => div(x.n!, x.d! * x.v!),
+          n: (x) => x.cfu! * x.d! * x.v!,
+          v: (x) => div(x.n!, x.cfu! * x.d!),
+        },
+      },
+      steps: {
+        cfu: st(
+          '{n} ÷ ({d} × {v})',
+          'Each colony was one cell in the volume plated of that dilution.',
+        ),
+        n: st('{cfu} × {d} × {v}', 'Cells per mL times the dilution and the volume plated.'),
+        v: st('{n} ÷ ({cfu} × {d})', 'Divide the colonies by the cells per mL at that dilution.'),
+      },
+    }),
+    example: { n: n!, d: d!, v: v!, cfu: n! / (d! * v!) },
+    startWith: ['n', 'd', 'v'],
+    representation: {
+      kind: 'dilutionSeries',
+      factor: 10,
+      transfer: 1,
+      dilution: 'd',
+      volume: 'v',
+      colonies: 'n',
+      cfu: 'cfu',
+    },
+  });
+
+const plateCount = plateDemo(
+  'g.he-dilutionSeries-plate-count',
+  'A plate count: 156 colonies from 0.1 mL of the 10⁻⁶ tube',
+  [156, 1e-6, 0.1],
+);
+const plateDeep = plateDemo(
+  'g.he-dilutionSeries-plate-count-deep',
+  'Nine tubes deep: 300 colonies from the 10⁻⁹ tube',
+  [300, 1e-9, 0.1],
+);
+
+/** microbiology#2: transformants = colonies × recovery ÷ plated; per μg of DNA. */
+const transformation = (() => {
+  const [col, plated, rec, dna] = [120, 100, 1000, 10];
+  const tf = (col * rec) / plated;
+  return demo({
+    id: 'g.he-dilutionSeries-transformation',
+    title: 'Transformation efficiency: 120 colonies from 100 μL of 1000 μL',
+    use: 'Use this for transformation efficiency: transformants per microgram of DNA.',
+    assumptions: [
+      'Every colony on the selective plate is one transformed cell.',
+      'The cells were recovered in one tube; the plate holds only the share spread on it.',
+    ],
+    variables: [
+      quantity('col', 'colonies', 'Colonies on the plate', undefined, 1, 3000, 1, {
+        integer: true,
+      }),
+      quantity('plated', 'V(plated)', 'Volume plated', 'μL', 1, 10000, 1),
+      quantity('rec', 'V(tube)', 'Recovery volume', 'μL', 1, 100000, 1),
+      quantity('dna', 'DNA', 'DNA used', 'ng', 0.01, 100000, 0.01),
+      quantity('tf', 'transformants', 'Transformant estimate for the tube', undefined, 1, 1e9, 1),
+      quantity('eff', 'efficiency', 'Transformants per μg of DNA', 'per μg', 1, 1e12, 1, {
+        scientific: true,
+      }),
+    ],
+    ...rules(
+      {
+        relation: {
+          id: 'transformants = colonies × V(tube) ÷ V(plated)',
+          display: '{tf} = {col} × {rec} ÷ {plated}',
+          vars: ['tf', 'col', 'rec', 'plated'],
+          residual: (x) => x.tf! * x.plated! - x.col! * x.rec!,
+          solve: {
+            tf: (x) => div(x.col! * x.rec!, x.plated!),
+            col: (x) => div(x.tf! * x.plated!, x.rec!),
+            rec: (x) => div(x.tf! * x.plated!, x.col!),
+            plated: (x) => div(x.col! * x.rec!, x.tf!),
+          },
+        },
+        steps: {
+          tf: st('{col} × {rec} ÷ {plated}', 'Scale the plate up to the whole tube.'),
+          col: st('{tf} × {plated} ÷ {rec}', 'The plate holds the plated share of the tube.'),
+          rec: st('{tf} × {plated} ÷ {col}', 'Undo the scaling.'),
+          plated: st('{col} × {rec} ÷ {tf}', 'Undo the scaling.'),
+        },
+      },
+      {
+        relation: {
+          id: 'efficiency = transformants ÷ (DNA ÷ 1000)',
+          display: '{eff} = {tf} ÷ ({dna} ÷ 1000)',
+          vars: ['eff', 'tf', 'dna'],
+          residual: (x) => x.eff! * x.dna! - 1000 * x.tf!,
+          solve: {
+            eff: (x) => div(1000 * x.tf!, x.dna!),
+            tf: (x) => (x.eff! * x.dna!) / 1000,
+            dna: (x) => div(1000 * x.tf!, x.eff!),
+          },
+        },
+        steps: {
+          eff: st('{tf} ÷ ({dna} ÷ 1000)', 'Nanograms to micrograms (÷ 1000), then per microgram.'),
+          tf: st('{eff} × {dna} ÷ 1000', 'Efficiency times the micrograms used.'),
+          dna: st('1000 × {tf} ÷ {eff}', 'Micrograms used, in nanograms.'),
+        },
+      },
+    ),
+    example: { col, plated, rec, dna, tf, eff: (1000 * tf) / dna },
+    startWith: ['col', 'plated', 'rec', 'dna'],
+    representation: {
+      kind: 'dilutionSeries',
+      factor: 1,
+      tubes: 1,
+      volume: 'plated',
+      recovery: 'rec',
+      colonies: 'col',
+      total: 'tf',
+    },
+  });
+})();
+
+/** microbiology#3~titer: titer = first × 2^(k − 1). */
+const titerDemo = (id: string, title: string, k: number): ModuleDef =>
+  demo({
+    id,
+    title,
+    use: "Use this for 'Two-fold dilutions from 1:10 are positive through tube 6. What is the titer?'.",
+    assumptions: [
+      'Each tube halves the one before (two-fold); a tube is positive while it still clumps.',
+      'The titer is the reciprocal of the last positive tube’s dilution.',
+    ],
+    variables: [
+      quantity('first', 'first', 'First dilution (1:first)', undefined, 2, 100, 1, {
+        allowed: [2, 5, 10, 20],
+      }),
+      quantity('k', 'k', 'Positive tubes', undefined, 1, 10, 1, { integer: true }),
+      quantity('titer', 'titer', 'Titer', undefined, 1, 1e6, 1),
+    ],
+    ...rules({
+      relation: {
+        id: 'titer = first × 2^(k − 1)',
+        display: '{titer} = {first} × 2^({k} − 1)',
+        vars: ['titer', 'first', 'k'],
+        residual: (x) => x.titer! - x.first! * 2 ** (x.k! - 1),
+        solve: {
+          titer: (x) => x.first! * 2 ** (x.k! - 1),
+          k: (x) => 1 + Math.log2(x.titer! / x.first!),
+        },
+      },
+      steps: {
+        titer: st('{first} × 2^({k} − 1)', 'Each tube after the first doubles the dilution.'),
+        k: st('1 + log_2({titer} ÷ {first})', 'Count the doublings from the first tube.'),
+      },
+    }),
+    example: { first: 10, k, titer: 10 * 2 ** (k - 1) },
+    startWith: ['first', 'k'],
+    representation: {
+      kind: 'dilutionSeries',
+      factor: 2,
+      first: 'first',
+      tubes: 10,
+      positive: 'k',
+      titer: 'titer',
+    },
+  });
+
+const titer = titerDemo(
+  'g.he-dilutionSeries-titer',
+  'An antibody titer: two-fold from 1:10, positive through tube 6',
+  6,
+);
+const titerAll = titerDemo(
+  'g.he-dilutionSeries-titer-all',
+  'Every tube positive: the titer is at least 1:5120',
+  10,
+);
+
 export const HE3G_GALLERY_MODULES: ModuleDef[] = [
   pvIsothermal,
   pvChemistry,
@@ -1706,6 +1910,11 @@ export const HE3G_GALLERY_MODULES: ModuleDef[] = [
   goldman,
   psiIn,
   psiOutDemo,
+  plateCount,
+  plateDeep,
+  transformation,
+  titer,
+  titerAll,
 ];
 
 export const HE3G_GALLERY_LAYOUTS: LayoutDef[] = [

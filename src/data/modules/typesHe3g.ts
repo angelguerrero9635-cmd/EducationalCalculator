@@ -1,7 +1,7 @@
 /**
  * College pictures of round 3, group G (docs/RENDERINGS_HE.md): HC43 `gasPiston` options `pv`
  * and `real`, HC44 `energyProfile` options, HC57 the pathway detail and card,
- * HC79 `membrane` options `potential` and `psi`. Kept apart from the shared type files, which name these with one line each. A
+ * HC79 `membrane` options `potential` and `psi`, HC80 `dilutionSeries` (new kind). Kept apart from the shared type files, which name these with one line each. A
  * `NumOrVar` is a fixed number or a variable id; values are read in the variable's own unit.
  */
 import type { NumOrVar } from './typesGraphs';
@@ -394,3 +394,60 @@ export function membraneHe3gVars(r: {
     );
   return out;
 }
+
+// ─── HC80: dilutionSeries (new kind) ─────────────────────────────────────────
+
+/**
+ * HC80 `dilutionSeries`: a row of test tubes (up to 10), each diluting the one before by
+ * `factor` (10 for 1:10, 2 for two-fold), the culture's tint fading along the row, the volume
+ * moved between tubes (`transfer`, on the first arrow) and each tube's dilution under it (10⁻ᵏ
+ * for 1:10 from the first, else 1:n). `first` is the first tube's dilution as 1:first (default
+ * `factor`).
+ *
+ * - Plate count: `dilution` (the plated tube's dilution as a fraction, 10⁻⁶) or `plated` (its
+ *   number) picks the tube spread on a plate; `volume` is the volume plated and `colonies` are
+ *   drawn on the agar (up to 300; more is drawn as a lawn marked "TNTC"); `cfu` (CFU/mL) is
+ *   checked as colonies ÷ (dilution × volume).
+ * - Transformation: one tube (`tubes: 1`) of `recovery` volume with `volume` of it plated;
+ *   `total` (the cells in the tube) is checked as colonies × recovery ÷ volume.
+ * - Titer: `positive` tubes lit (clumped, ringed) from the first; `titer` is checked as the last
+ *   lit tube's dilution, first × factor^(positive − 1).
+ */
+export interface DilutionSeriesSpec {
+  kind: 'dilutionSeries';
+  factor: NumOrVar;
+  tubes?: NumOrVar;
+  first?: NumOrVar;
+  transfer?: NumOrVar;
+  dilution?: NumOrVar;
+  plated?: NumOrVar;
+  volume?: NumOrVar;
+  colonies?: NumOrVar;
+  cfu?: NumOrVar;
+  recovery?: NumOrVar;
+  total?: NumOrVar;
+  positive?: NumOrVar;
+  titer?: NumOrVar;
+}
+
+/** The variable ids a dilution series reads (for the module tests). */
+export function dilutionSeriesVars(r: DilutionSeriesSpec): string[] {
+  return ids([
+    r.factor,
+    r.tubes,
+    r.first,
+    r.transfer,
+    r.dilution,
+    r.plated,
+    r.volume,
+    r.colonies,
+    r.cfu,
+    r.recovery,
+    r.total,
+    r.positive,
+    r.titer,
+  ]);
+}
+
+/** Group G's new kinds (for the Representation union). */
+export type He3gSpec = DilutionSeriesSpec;

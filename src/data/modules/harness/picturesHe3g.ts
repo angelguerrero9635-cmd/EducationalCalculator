@@ -17,6 +17,8 @@ import { profileAt } from '@/components/module/reps/energyModel';
 import type { NumOrVar } from '../typesGraphs';
 import type { EnergyProfileSpec, GasPistonSpec } from '../typesHsj';
 import type { MembraneSpec } from '../typesHsg';
+import type { DilutionSeriesSpec } from '../typesHe3g';
+import { MAX_TUBES, cfuOf, tubeDilution, tubeOf } from '@/components/module/reps/dilutionMath';
 import {
   chargesFor,
   ionDots,
@@ -227,5 +229,56 @@ export function membraneHe3gIssues(rep: MembraneSpec, val: Val): string[] {
       if (s !== undefined && soluteDots(s) > 40) out.push(`membrane: Ψₛ ${where} past 40 dots`);
     }
   }
+  return out;
+}
+
+/** HC80: the plated tube's dilution, CFU/mL, the cells in a tube, the titer, the counts. */
+export function dilutionIssues(rep: DilutionSeriesSpec, val: Val): string[] {
+  const out: string[] = [];
+  const num = reader(val);
+  const whole = (x: number | undefined, what: string) => {
+    if (x !== undefined && (x < 0 || Math.abs(x - Math.round(x)) > 1e-9))
+      out.push(`dilutionSeries: ${what} ${x} is not a whole count`);
+  };
+  const factor = num(rep.factor);
+  const first = num(rep.first) ?? factor;
+  const tubes = num(rep.tubes);
+  whole(tubes, 'tubes');
+  whole(num(rep.colonies), 'colonies');
+  whole(num(rep.positive), 'positive tubes');
+  if (tubes !== undefined && tubes > MAX_TUBES) out.push(`dilutionSeries: ${tubes} tubes`);
+  if (factor !== undefined && factor < 1) out.push(`dilutionSeries: factor ${factor} below 1`);
+  const dilution = num(rep.dilution);
+  const plated = num(rep.plated);
+  if (dilution !== undefined && factor !== undefined && first !== undefined) {
+    const k = tubeOf(dilution, first, factor);
+    if (k === undefined) out.push(`dilutionSeries: no tube in the row is at ${dilution}`);
+    if (k !== undefined && plated !== undefined && k !== plated)
+      out.push(`dilutionSeries: tube ${plated} plated, but ${dilution} is tube ${k}`);
+    if (k !== undefined && tubes !== undefined && k > tubes)
+      out.push(`dilutionSeries: tube ${k} plated from a row of ${tubes}`);
+  }
+  const [colonies, volume] = [num(rep.colonies), num(rep.volume)];
+  const cfu = num(rep.cfu);
+  if (cfu !== undefined && colonies !== undefined && volume !== undefined && dilution !== undefined)
+    if (!near(cfu, cfuOf(colonies, dilution, volume), 1e-2))
+      out.push(`dilutionSeries: CFU/mL ${cfu} is not ${cfuOf(colonies, dilution, volume)}`);
+  const [recovery, total] = [num(rep.recovery), num(rep.total)];
+  if (
+    total !== undefined &&
+    colonies !== undefined &&
+    recovery !== undefined &&
+    volume !== undefined
+  )
+    if (!near(total, (colonies * recovery) / volume, 1e-2))
+      out.push(`dilutionSeries: ${total} cells, the plate gives ${(colonies * recovery) / volume}`);
+  const [positive, titer] = [num(rep.positive), num(rep.titer)];
+  if (positive !== undefined && tubes !== undefined && positive > tubes)
+    out.push(`dilutionSeries: ${positive} positive of ${tubes} tubes`);
+  if (titer !== undefined && positive !== undefined && first !== undefined && factor !== undefined)
+    if (!near(titer, tubeDilution(positive, first, factor), 1e-2))
+      out.push(
+        `dilutionSeries: titer ${titer}, the last lit tube is ${tubeDilution(positive, first, factor)}`,
+      );
   return out;
 }

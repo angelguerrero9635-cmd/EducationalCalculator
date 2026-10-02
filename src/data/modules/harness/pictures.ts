@@ -65,7 +65,12 @@ import { hs3bCenter, hs3bIssues, hs3bVal } from './picturesHs3b';
 import { he1dIssues, he1dScaleIssues } from './picturesHe1d';
 import * as hsk from './picturesHsk';
 import { gasEnergyIssues, hs2cIssues, siOf } from './picturesHs2c';
-import { energyHe3gIssues, gasHe3gIssues, membraneHe3gIssues } from './picturesHe3g';
+import {
+  dilutionIssues,
+  energyHe3gIssues,
+  gasHe3gIssues,
+  membraneHe3gIssues,
+} from './picturesHe3g';
 import { hs3aIssues, hs3aOptionIssues } from './picturesHs3a';
 import { sectionIssues } from './picturesHe1b';
 import { he1aIssues } from './picturesHe1a';
@@ -2317,6 +2322,9 @@ export function repIssues(
     case 'propertyDiagram':
     case 'thermalWall':
       out.push(...he2cIssues(rep, (id) => (val(id) ?? NaN) * (byId.get(id)?.unitFactor ?? 1)));
+      break;
+    case 'dilutionSeries':
+      out.push(...dilutionIssues(rep, siOf(val, byId))); // HC80
       break;
     case 'projectile':
     case 'induction':

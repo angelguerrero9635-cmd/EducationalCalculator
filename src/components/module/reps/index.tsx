@@ -201,6 +201,7 @@ import { Duct } from './Duct';
 import { SupersonicFlow } from './SupersonicFlow';
 import { FieldPlot } from './FieldPlot';
 import { ThermalWall } from './ThermalWall';
+import { DilutionSeries } from './DilutionSeries';
 import { PropertyDiagram } from './PropertyDiagram';
 import { MotionGraphHs } from './MotionGraphHs';
 import { HskView } from './HskView';
@@ -387,6 +388,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <FieldPlot spec={spec} calc={calc} />;
     case 'thermalWall':
       return <ThermalWall spec={spec} calc={calc} />;
+    case 'dilutionSeries':
+      return <DilutionSeries spec={spec} calc={calc} />; // HC80
     case 'propertyDiagram':
       return <PropertyDiagram spec={spec} calc={calc} />;
     case 'linearFunction':
