@@ -171,6 +171,7 @@ import { VectorDiagram } from './VectorDiagram';
 import { AlgebraTiles } from './AlgebraTiles';
 import { AlgebraTilesHs2g } from './AlgebraTilesHs2g';
 import { Membrane } from './Membrane';
+import { MembraneHe3g } from './MembraneHe3g';
 import { DnaStrand } from './DnaStrand';
 import { Neuron } from './Neuron';
 import { Skeletal } from './Skeletal';
@@ -224,6 +225,7 @@ import { HeatExchanger } from './HeatExchanger';
 import { Shaft } from './Shaft';
 import { FatigueDiagram } from './FatigueDiagram';
 import { ElementChain } from './ElementChain';
+import { DilutionSeries } from './DilutionSeries';
 import { PropertyDiagram } from './PropertyDiagram';
 import { MotionGraphHs } from './MotionGraphHs';
 import { HskView } from './HskView';
@@ -295,6 +297,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
         <MatrixGrid spec={spec} calc={calc} />
       );
     case 'membrane':
+      if (spec.potential || spec.psi) return <MembraneHe3g spec={spec} calc={calc} />; // HC79
       return <Membrane spec={spec} calc={calc} />;
     case 'dnaStrand':
       return <DnaStrand spec={spec} calc={calc} />;
@@ -450,6 +453,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <ScheduleChart spec={spec} calc={calc} />;
     case 'bitFields':
       return <BitFields spec={spec} calc={calc} />;
+    case 'dilutionSeries':
+      return <DilutionSeries spec={spec} calc={calc} />; // HC80
     case 'propertyDiagram':
       return <PropertyDiagram spec={spec} calc={calc} />;
     case 'linearFunction':

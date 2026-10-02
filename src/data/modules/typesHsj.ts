@@ -15,6 +15,14 @@ import {
   type PhPolyprotic,
   type PhScaleHe3fSpec,
 } from './typesHe3f';
+  energyHe3gVars,
+  gasHe3gVars,
+  type EnergyBombSpec,
+  type EnergyQuantity,
+  type EnergySteps,
+  type GasPv,
+  type GasReal,
+} from './typesHe3g';
 
 // ─── H51 gasPiston ───────────────────────────────────────────────────────────
 
@@ -57,6 +65,9 @@ export interface GasPistonSpec extends GasState {
   energy?: { heat: NumOrVar; work: NumOrVar; change?: string };
   /** Round 3: a gas mixture colored by gas (`typesHs3e.ts`, H108 part 6). */
   mixture?: GasMixture;
+  /** HC43: the P–V diagram beside the piston, and a van der Waals gas (`typesHe3g.ts`). */
+  pv?: GasPv;
+  real?: GasReal;
 }
 
 // ─── H52 beaker: solutions ───────────────────────────────────────────────────
@@ -148,6 +159,9 @@ export type EnergyProfileSpec =
       names?: { reactants?: string; products?: string };
       keep?: string[];
       fixed?: boolean;
+      /** HC44: ΔG instead of ΔH, and a mechanism of 2–3 steps (`typesHe3g.ts`). */
+      quantity?: EnergyQuantity;
+      steps?: EnergySteps;
     }
   | {
       kind: 'energyProfile';
@@ -161,7 +175,9 @@ export type EnergyProfileSpec =
       metal?: { name: string; mass: NumOrVar; start: NumOrVar; heat?: NumOrVar };
     }
   /** Round 2: an enthalpy ladder, levels only (`typesHs2d.ts`, H101). */
-  | EnergyLadderSpec;
+  | EnergyLadderSpec
+  /** HC44: a bomb calorimeter (`typesHe3g.ts`). */
+  | EnergyBombSpec;
 
 // ─── H54 equilibriumChart ────────────────────────────────────────────────────
 
@@ -328,9 +344,11 @@ export function hsjSpecVars(r: HsjSpec): string[] {
         r.energy?.work,
         r.energy?.change,
         ...gasMixtureVars(r.mixture),
+        ...gasHe3gVars(r),
       );
     case 'energyProfile':
       if (r.mode === 'ladder') return ladderVars(r);
+      if (r.mode === 'bomb') return energyHe3gVars(r); // HC44
       return r.mode === 'calorimeter'
         ? ids(
             r.mass,
@@ -343,7 +361,10 @@ export function hsjSpecVars(r: HsjSpec): string[] {
             r.metal?.start,
             r.metal?.heat,
           )
-        : ids(r.reactants, r.products, r.activation, r.deltaH, r.reverse, r.catalyst);
+        : [
+            ...ids(r.reactants, r.products, r.activation, r.deltaH, r.reverse, r.catalyst),
+            ...energyHe3gVars(r),
+          ];
     case 'equilibriumChart':
       if ('gibbs' in r) return gibbsVars(r);
       return ids(

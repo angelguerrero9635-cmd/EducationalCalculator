@@ -159,6 +159,14 @@ Card figure `replication` (H100, `layouts/replicationCard.tsx`, 112 × 76, for s
 pairing with each old strand), `join` (DNA polymerase and the new strand) or `copies` (two
 helices, each one old strand, dark, and one new, lit: semiconservative).
 
+College biochemistry (HC57, round 3 group G): an `organelleEnergy` scene with
+`energy: { detail: 'glycolysis' | 'krebs' | 'etc', step? }` draws the pathway step by step instead
+(`layouts/pathwayFigure.tsx`): each row the enzyme, substrate → product with its carbons and what
+it makes or uses, the tally under it (2 ATP and 2 NADH net per glucose; 3 NADH, 1 FADH₂, 1 GTP,
+2 CO₂ per turn; 10 and 6 H⁺ for 2.5 and 1.5 ATP); `step` lights a row and tallies to it. Card
+figure `pathwayStep` (`layouts/pathwayCard.tsx`, 112 × 76): `{ kind: 'pathwayStep', pathway,
+step }` draws the step's carbon chains (phosphates orange, CoA a tag) and chips for what it makes.
+
 Grade 11 physics (H102, group H2C): card figure `strobe` (`layouts/strobeCard.tsx`, 140 × 48):
 `{ kind: 'strobe', gaps, dir?, ramp? }` dots the object's place every second, the `gaps` (m)
 to scale (each at least 10 px, so 1 m beside 7 m stays apart) and the first dot open, an arrow

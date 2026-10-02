@@ -65,6 +65,12 @@ import { hs3bCenter, hs3bIssues, hs3bVal } from './picturesHs3b';
 import { he1dIssues, he1dScaleIssues } from './picturesHe1d';
 import * as hsk from './picturesHsk';
 import { gasEnergyIssues, hs2cIssues, siOf } from './picturesHs2c';
+import {
+  dilutionIssues,
+  energyHe3gIssues,
+  gasHe3gIssues,
+  membraneHe3gIssues,
+} from './picturesHe3g';
 import { hs3aIssues, hs3aOptionIssues } from './picturesHs3a';
 import { sectionIssues } from './picturesHe1b';
 import { he1aIssues } from './picturesHe1a';
@@ -2242,6 +2248,7 @@ export function repIssues(
     case 'membrane':
     case 'dnaStrand':
       out.push(...hsgIssues(rep, (id) => val(id)));
+      if (rep.kind === 'membrane') out.push(...membraneHe3gIssues(rep, siOf(val, byId))); // HC79
       break;
     case 'macromolecules':
     case 'cellDivision':
@@ -2291,6 +2298,8 @@ export function repIssues(
       if (rep.kind === 'gasPiston') out.push(...gasEnergyIssues(rep, siOf(val, byId)));
       if (rep.kind === 'gasPiston')
         out.push(...gasMixtureIssues(rep.mixture, (x) => (x === undefined ? undefined : val(x))));
+      if (rep.kind === 'gasPiston') out.push(...gasHe3gIssues(rep, siOf(val, byId))); // HC43
+      if (rep.kind === 'energyProfile') out.push(...energyHe3gIssues(rep, siOf(val, byId))); // HC44
       break;
     case 'chemDiagram':
       out.push(...chemDiagramIssues(rep, (id) => val(id)));
@@ -2401,6 +2410,9 @@ export function repIssues(
           (x) => (typeof x === 'string' ? byId.get(x)?.unit : undefined),
         ),
       );
+      break;
+    case 'dilutionSeries':
+      out.push(...dilutionIssues(rep, siOf(val, byId))); // HC80
       break;
     case 'projectile':
     case 'induction':

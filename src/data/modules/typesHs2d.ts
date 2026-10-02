@@ -7,6 +7,7 @@
 import { formulaVars } from '@/components/module/reps/chemHs2d';
 
 import type { NumOrVar } from './typesGraphs';
+import type { EnergyQuantity } from './typesHe3g';
 import { chemDiagramHs3eVars, type ChemDiagramHs3eSpec } from './typesHs3e';
 
 const ids = (...xs: (NumOrVar | undefined)[]) =>
@@ -123,6 +124,8 @@ export interface EnergyLadderSpec {
   total?: LadderStep;
   /** The unit (default kJ). */
   unit?: string;
+  /** HC44: free energy instead of enthalpy (ΔG, ΔG°, ΔG°′; `typesHe3g.ts`). */
+  quantity?: EnergyQuantity;
 }
 
 /** The variables an enthalpy ladder names. */

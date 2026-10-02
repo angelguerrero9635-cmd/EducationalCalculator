@@ -177,7 +177,7 @@ function captionOf(
 }
 
 /** Two rows of phospholipids: round heads facing the water, two tails each pointing in. */
-function Bilayer({ skip, head, c }: { skip?: [number, number]; head: string; c: Palette }) {
+export function Bilayer({ skip, head, c }: { skip?: [number, number]; head: string; c: Palette }) {
   const xs = Array.from({ length: 30 }, (_, k) => 6 + k * 12).filter(
     (x) => !skip || x < skip[0] || x > skip[1],
   );
@@ -221,7 +221,7 @@ function Bilayer({ skip, head, c }: { skip?: [number, number]; head: string; c: 
 }
 
 /** A channel (two halves round a pore), an aquaporin (a narrower pore) or a pump. */
-function Protein({
+export function Protein({
   x,
   transport,
   c,

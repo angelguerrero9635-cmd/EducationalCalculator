@@ -150,6 +150,7 @@ search or the sitemap, but the module tests and the harness run over it):
 | `graph`            | fixed or planar V, E graph: degrees, costs, cheapest path; trees      | College graphs and networks (HC50)  |
 | `scheduleChart`    | Gantt: RM or EDF tasks, releases, misses, response; FCFS, SJF, RR     | College real-time and OS (HC51)     |
 | `bitFields`        | a word's fields to scale, bit numbers, address and mask bits; headers | College computer, networks (HC64)   |
+| `dilutionSeries`   | tubes 1:10 or 1:2, a plate's colonies (TNTC), CFU/mL; titer tubes lit | College microbiology (HC80)         |
 | `projectile`       | a launch to scale: path, vₓ and v_y at three points, H and R; drag θ  | Physics 2D motion, parametric (H59) |
 | `freeBody`         | a block on a floor, ramp or rope; forces to scale, W sin θ; the net   | Physics forces, inclines (H60)      |
 | `circularMotion`   | v tangent, v²/r to the center; Gm₁m₂/r² pulls; Kepler ellipse, areas  | Physics circles, gravity (H61)      |
@@ -349,6 +350,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `normalCurve`      | `intervals.count` (a value)              | how many simulated intervals, 20 to 100, typed; none drawn while ? (H105)     |
 | `normalCurve`      | `meanName`                               | the mean's symbol when it is a number: μ_d for a mean difference              |
 | `membrane`         | `counter`                                | a pump's second particle the other way (K⁺ in as Na⁺ goes out), own arrow     |
+| `membrane`         | `potential: { value, ions? }`; `psi`     | ± charges ∝ V, voltmeter, ions on one scale; Ψ each side, water to lower Ψ    |
 | `termsChart`       | `far`                                    | past 30 terms: the first six, a break, the nth lit (a₁₀₀) (H93)               |
 | `termsChart`       | `type: 'recursive'`, `plus`              | aₙ = k × aₙ₋₁ + c from the one before, an arrow to each next (H93)            |
 | `termsChart`       | `lit`, `litTerm`, `powers`               | a second lit term (B1 beside B2); terms as powers, 2² = 4 (H93)               |
@@ -409,6 +411,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `reaction`         | `C{x}H{y}` terms, `most`, `ions`         | subscripts from values (a hydrocarbon chain), 32 a term, ions (H101)          |
 | `moleMap`          | `limiting: { reactants, coef }`          | two reactants’ grams → moles → product, the smaller lit (H101)                |
 | `energyProfile`    | `mode: 'ladder'`                         | enthalpy levels to scale, ΔH steps, a reversed one, the total (H101)          |
+| `energyProfile`    | `quantity: 'G'`, `steps`, `mode: 'bomb'` | ΔG (°′) labels; 2–3 humps, rate-determining lit; a bomb calorimeter (HC44)    |
 | `lewisStructure`   | hydrocarbon `branches: number[]`         | methyl groups on an alkane’s chain, named: 2,2-dimethylpropane (H101)         |
 | `lewisStructure`   | ionic `charges: { metal, nonmetal }`     | the ions from their charges 1–3: Na⁺ Mg²⁺ Al³⁺, Cl⁻ O²⁻ N³⁻ → Al₂O₃ (H108)    |
 | `chemDiagram`      | `mode: 'phase'`, `freezing`, `boiling`   | water's phase diagram, the solution's lines dashed at Tf and Tb (H108)        |
@@ -454,6 +457,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `freeBody`         | `aircraft` `view: 'stability'`           | AC, CG and neutral point on the mean chord, the static margin bracket (HC25)  |
 | `gasPiston`        | `energy: { heat, work, change? }`        | first law: Q and W as bands, a Q, −W, ΔU waterfall (H102)                     |
 | `gasPiston`        | `mixture: { gases, total?, fraction? }`  | 24 particles shared by partial pressure, colored by gas; stacked P bar (H108) |
+| `gasPiston`        | `pv: { path, v1, v2, … }`; `real`        | P–V path, W shaded and signed, isotherms; vdW nb band, two gauges (HC43)      |
 | `charges`          | `mode: 'plates'`; `point`                | plates V, d: uniform E = V/d, F = qE; two charges: E₁, E₂, E at x (H102)      |
 | `simpleMachine`    | `seesaw: { torque?, pivot? }`            | lever as a seesaw: F₁d₁ = F₂d₂ as curved arrows, Fₚ = F₁ + F₂ (H107)          |
 | `charges`          | `equipotentials: { potential, … }`       | dashed circles r/2, r, 2r with V = kq/r; q₀ on r with U = q₀V (H107)          |

@@ -46,6 +46,7 @@ import { solidOfRevolutionVars, spaceObjectsVars, surfacePlotVars } from '../typ
 import { he2cSpecVars } from '../typesHe2c';
 import { he3hSpecVars } from '../typesHe3h';
 import { he3dSpecVars } from '../typesHe3d';
+import { dilutionSeriesVars } from '../typesHe3g';
 import { hskOptionVars, hskSpecVars } from '../typesHsk';
 import { he2fSpecVars, isHe2fSpec } from '../typesHe2f';
 import { he3lSpecVars, isHe3lSpec } from '../typesHe3l';
@@ -674,6 +675,8 @@ function representationVars(r: Representation): string[] {
     case 'scheduleChart':
     case 'bitFields':
       return he3dSpecVars(r);
+    case 'dilutionSeries':
+      return dilutionSeriesVars(r); // HC80
     case 'projectile':
     case 'induction':
     case 'charges':

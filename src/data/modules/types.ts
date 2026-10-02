@@ -56,6 +56,7 @@ import type { PhaseEnvelopeSpec } from './typesHe1i';
 import type { He2cSpec } from './typesHe2c';
 import type { He3hSpec } from './typesHe3h';
 import type { CurvedSolidHe3c, RectangleHe3c, RightTriangleHe3c } from './typesHe3c'; // HC54, HC67
+import type { He3gSpec } from './typesHe3g';
 import type { BeamSpec } from './typesHe1a';
 import type { BodeSpec } from './typesHe2a';
 import type { He2hSpec } from './typesHe2h';
@@ -1170,6 +1171,8 @@ export type Representation =
   | He2cSpec
   /** College round 3, group H: HC40 heat exchanger, … (`typesHe3h.ts`). */
   | He3hSpec
+  /** College round 3, group G: HC80 dilution series (`typesHe3g.ts`). */
+  | He3gSpec
   /** Grades 9–12 physics, group HK: projectile, free body, … (specs in typesHsk.ts). */
   | HskSpec
   /** College round 2, group F: freeBody and circularMotion options (`typesHe2f.ts`). */

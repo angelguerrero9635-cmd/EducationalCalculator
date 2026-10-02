@@ -42,6 +42,7 @@ import { CellFigure, Particles } from './figuresR4h';
 import { ConeFigure } from './coneFigure';
 import { MacroFigure } from './macroFigure';
 import { OrganelleFigure } from './organelleFigure';
+import { PathwayDetail } from './pathwayFigure';
 import { GelFigure } from './gelFigure';
 import { ReflexArcFigure } from './reflexArcFigure';
 import { CodeTraceFigureView } from './codeTraceFigure';
@@ -206,6 +207,7 @@ function FigureView({
     case 'macromolecules':
       return <MacroFigure macro={scene.macro ?? { kind: 'carbohydrate' }} />;
     case 'organelleEnergy':
+      if (scene.energy?.detail) return <PathwayDetail energy={scene.energy} />; // HC57
       return <OrganelleFigure energy={scene.energy ?? {}} />;
     case 'cladogram':
       return <CladogramFigure figure={figure} clade={scene.clade ?? {}} />;

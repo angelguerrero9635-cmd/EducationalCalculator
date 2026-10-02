@@ -23,7 +23,7 @@ import { Deepen, Metal, Sheen, TopLight, url, usePaintIds } from './paint';
 
 type Rep = ReturnType<typeof useRep>;
 type Read = { value: number; known: boolean; text: string; id?: string };
-type Profile = Exclude<EnergyProfileSpec, { mode: 'calorimeter' | 'ladder' }>;
+type Profile = Exclude<EnergyProfileSpec, { mode: 'calorimeter' | 'ladder' | 'bomb' }>;
 type Calorimeter = Extract<EnergyProfileSpec, { mode: 'calorimeter' }>;
 
 const readOf =
@@ -41,7 +41,7 @@ export function EnergyProfile({
   spec,
   calc,
 }: {
-  spec: Exclude<EnergyProfileSpec, { mode: 'ladder' }>;
+  spec: Exclude<EnergyProfileSpec, { mode: 'ladder' | 'bomb' }>;
   calc: Calculator;
 }) {
   const rep = useRep(calc);
@@ -63,6 +63,9 @@ function ProfileView({ spec, rep, calc }: { spec: Profile; rep: Rep; calc: Calcu
       .map((x) => (typeof x === 'string' ? rep.unit(x) : undefined))
       .find(Boolean) ?? 'kJ';
   const problem = profileProblem(r.value, p.value, ea.value);
+  // HC44: free energy (ΔG, ΔG°, ΔG°′) in place of enthalpy.
+  const sym = `Δ${spec.quantity ?? 'H'}`;
+  const free = sym.startsWith('ΔG');
   const catProblem = cat ? profileProblem(r.value, p.value, cat.value) : undefined;
   const peak = r.value + ea.value;
   const levels = [r.value, p.value, peak, ...(cat ? [r.value + cat.value] : [])];
@@ -96,15 +99,15 @@ function ProfileView({ spec, rep, calc }: { spec: Profile; rep: Rep; calc: Calcu
             ) : null;
           const eaText = labelOf(rep, ea, 'Eₐ', unit);
           const dHText = spec.deltaH
-            ? labelOf(rep, read(spec.deltaH), 'ΔH', unit)
-            : `ΔH = ${formatNumber(Number(dH.toFixed(6)))} ${unit}`;
+            ? labelOf(rep, read(spec.deltaH), sym, unit)
+            : `${sym} = ${formatNumber(Number(dH.toFixed(6)))} ${unit}`;
           return (
             <>
               <Svg width={w} height={h}>
                 <PlotFrame
                   p={pl}
                   xName="Reaction progress"
-                  yName={`Energy (${unit})`}
+                  yName={free ? `Free energy (${unit})` : `Energy (${unit})`}
                   xNumbers={false}
                 />
                 <G opacity={known && !problem ? 1 : 0.35}>
@@ -246,13 +249,19 @@ function ProfileView({ spec, rep, calc }: { spec: Profile; rep: Rep; calc: Calcu
           problem ??
             (!(r.known && p.known)
               ? 'ΔH = products − reactants: type both to compare them.'
+            (free
+              ? dH < 0
+                ? `The products are lower: ${sym} < 0, so it runs forward on its own (exergonic).`
+                : dH > 0
+                  ? `The products are higher: ${sym} > 0, so it does not run on its own (endergonic).`
+                  : `The products are at the same level: ${sym} = 0.`
               : dH < 0
                 ? `The products are lower: the reaction gives off ${formatNumber(Number((-dH).toFixed(6)))} ${unit}. Exothermic.`
                 : dH > 0
                   ? `The products are higher: the reaction takes in ${formatNumber(Number(dH.toFixed(6)))} ${unit}. Endothermic.`
                   : 'The products are at the same level: ΔH = 0.'),
           ...(cat && !catProblem
-            ? ['A catalyst lowers the hump, not the levels: ΔH stays the same.']
+            ? [`A catalyst lowers the hump, not the levels: ${sym} stays the same.`]
             : []),
           ...(catProblem ? [`With the catalyst: ${catProblem}`] : []),
         ].join(' · ')}
