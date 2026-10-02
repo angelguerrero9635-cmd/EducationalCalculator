@@ -1,5 +1,6 @@
 /**
- * College picture kinds of round 2, group C (docs/RENDERINGS_HE.md): HC17 `propertyDiagram`.
+ * College picture kinds of round 2, group C (docs/RENDERINGS_HE.md): HC17 `propertyDiagram`
+ * and HC23 `thermalWall`.
  * Kept apart from `types.ts` so its union only names them. A `NumOrVar` is a fixed number or a
  * variable id; values are read in the variable's own unit.
  */
@@ -92,13 +93,96 @@ export interface PropertyDiagramSpec {
   units?: { T?: 'K' | '°C'; P?: 'kPa' | 'MPa' | 'bar'; V?: 'L/mol' | 'm³/mol' };
 }
 
-export type He2cSpec = PropertyDiagramSpec;
+// ─── HC23: heat through walls, pipes, fins, tubes, wires and to the surroundings ─
+
+/** One plane layer of a wall, in its material. */
+export interface ThermalLayer {
+  L: NumOrVar;
+  k: NumOrVar;
+  material: 'brick' | 'foam' | 'steel' | 'concrete' | 'wood' | 'glass';
+  /** Its name over the layer ("Brick"); default the material's. */
+  name?: string;
+}
+
+/**
+ * HC23 (ME-P14, ACC-P31 `temperature`). Modes:
+ * - `wall`: plane layers in their materials (to scale by L) between inside and outside air, the
+ *   temperature stepping straight through each layer and dropping across each film, the
+ *   resistance network beneath (1 ÷ h, L ÷ k), q″ along it. Per m² of wall.
+ * - `cylinder`: a pipe's insulation in section to scale (r₁, r₂), the log temperature profile
+ *   beside it, the outer film with h, R_cond and R_conv in series, the critical radius r_c = k ÷ h.
+ * - `fin`: a pin fin on a hot base, its temperature fading as cosh(m(L − x)) ÷ cosh(mL), θ(x)
+ *   plotted under it, the heat q leaving the base.
+ * - `tube`: flow in a tube cut lengthwise, heat into the water through the wall, h = Nu k ÷ D.
+ * - `radiation`: a surface in large surroundings, εσT_s⁴ out and εσT_surr⁴ in as arrows to scale.
+ * - `wire`: a wire with heat generation S, T(r) a parabola from T_s to T_center.
+ */
+export interface ThermalWallSpec {
+  kind: 'thermalWall';
+  mode: 'wall' | 'cylinder' | 'fin' | 'tube' | 'radiation' | 'wire';
+  /** `wall`: the layers, inside to outside. */
+  layers?: ThermalLayer[];
+  /** Inside and outside temperatures (fluid or surroundings) and their film coefficients. */
+  Tin?: NumOrVar;
+  Tout?: NumOrVar;
+  hIn?: NumOrVar;
+  hOut?: NumOrVar;
+  /** Total resistance (wall: R″ per m²; cylinder: per length or for the length). */
+  R?: NumOrVar;
+  /** The heat: flux q″, rate per length q′ or rate q, as the page has it. */
+  q?: NumOrVar;
+  /** `cylinder`: radii, conductivity, the outer h, the length, ΔT (when no T_in, T_out). */
+  r1?: NumOrVar;
+  r2?: NumOrVar;
+  k?: NumOrVar;
+  h?: NumOrVar;
+  length?: NumOrVar;
+  dT?: NumOrVar;
+  Rcond?: NumOrVar;
+  Rconv?: NumOrVar;
+  rc?: NumOrVar;
+  /** `fin` and `tube`: diameter D; `fin`: length L, m and the base excess θ_b. */
+  D?: NumOrVar;
+  L?: NumOrVar;
+  m?: NumOrVar;
+  thetaB?: NumOrVar;
+  /** `tube`: speed V, kinematic viscosity ν, Re, Pr, Nu. */
+  V?: NumOrVar;
+  nu?: NumOrVar;
+  Re?: NumOrVar;
+  Pr?: NumOrVar;
+  Nu?: NumOrVar;
+  /** `radiation`: emissivity, area, surface and surroundings temperatures, σ from the page. */
+  eps?: NumOrVar;
+  A?: NumOrVar;
+  Ts?: NumOrVar;
+  Tsurr?: NumOrVar;
+  sigma?: NumOrVar;
+  /** `wire`: generation S (W/m³), radius, T_s (Ts) and the centre's T_c. */
+  S?: NumOrVar;
+  radius?: NumOrVar;
+  Tc?: NumOrVar;
+  /** Lengths' unit factor to metres where the page types mm (r₁, r₂, D, L, radius). */
+  si?: number;
+  /** Further values said in the caption. */
+  more?: string[];
+}
+
+export type He2cSpec = PropertyDiagramSpec | ThermalWallSpec;
 
 const ids = (xs: (NumOrVar | NumOrVar[] | undefined)[]) =>
   xs.flat().filter((x): x is string => typeof x === 'string');
 
 /** The variable ids a group C picture reads (for the module tests). */
 export function he2cSpecVars(r: He2cSpec): string[] {
+  if (r.kind === 'thermalWall') {
+    const { kind: _k, mode: _m, si: _s, layers, more, ...rest } = r;
+    return ids([
+      ...Object.values(rest),
+      ...(layers ?? []).flatMap((l) => [l.L, l.k]),
+      ...(more ?? []),
+    ]);
+  }
   return ids([
     ...(r.states ?? []).flatMap((s) => [s.T, s.P, s.v, s.s, s.h, s.x]),
     ...(r.steps ?? []).map((s) => s.q),

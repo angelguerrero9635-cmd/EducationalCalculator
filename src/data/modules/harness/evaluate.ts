@@ -15,6 +15,7 @@ import { HSJ_PHRASES } from './phrasesHsj';
 import { HS2D_PHRASES } from './phrasesHs2d';
 import { HE1E_PHRASES } from './phrasesHe1e';
 import { HE1I_PHRASES } from './phrasesHe1i';
+import { HE2C_PHRASES } from './phrasesHe2c';
 import { M9_PHRASES } from './phrasesM9';
 import { M10_PHRASES } from './phrasesM10';
 import { M11_PHRASES } from './phrasesM11';
@@ -84,6 +85,7 @@ export const PHRASES: [RegExp, (...xs: number[]) => number][] = [
   ...HSJ_PHRASES,
   ...HS2D_PHRASES,
   ...HE1I_PHRASES,
+  ...HE2C_PHRASES,
   ...HSF_PHRASES,
   ...HSG_PHRASES,
   ...HSI_PHRASES,

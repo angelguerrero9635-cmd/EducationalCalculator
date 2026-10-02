@@ -397,6 +397,11 @@ const light = {
   gasMixD: '#2A9D7C',
   /** HC17 propertyDiagram: the liquid + vapor region under water's vapor dome. */
   propDome: '#E2EBF7',
+  /** HC23 thermalWall: a brick layer and its mortar, a foam layer and its cells. */
+  thermalBrick: '#B9603F',
+  thermalMortar: '#E9DFCF',
+  thermalFoam: '#F2E2A4',
+  thermalFoamCell: '#D6BF66',
   /** The brick wall a ladder leans on (triangleSolver's ladder scene) and its mortar lines. */
   ladderWall: '#B5654A',
   ladderWallDark: '#8A4632',
@@ -826,6 +831,10 @@ const dark: Palette = {
   gasMixC: '#5B86E0',
   gasMixD: '#3DB894',
   propDome: '#1C2A3D',
+  thermalBrick: '#9A4E33',
+  thermalMortar: '#5E554A',
+  thermalFoam: '#8C7C3E',
+  thermalFoamCell: '#B09C52',
   ladderWall: '#8C4B37',
   ladderWallDark: '#5E3023',
   normalReject: '#F0716B',

@@ -5,6 +5,9 @@
  * HC17: `propertyDiagram` (ME-P10, ACC-P10): water's vapor dome on T–v, P–v and T–s from the
  * IAPWS saturation equations, air on T–s (an entropy change, a compressor, the Brayton cycle),
  * the Rankine cycle, and a real gas's isotherm on P–v (virial, van der Waals).
+ *
+ * HC23: `thermalWall` (ME-P14, ACC-P31 `temperature`): layered walls, insulated pipes, a pin fin,
+ * a heated tube, radiation to the surroundings and a wire with heat generation.
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
@@ -1005,6 +1008,770 @@ const pvVdw: ModuleDef = {
   },
 };
 
+// ─── HC23: a layered wall (heat-transfer#0, transport-phenomena#1) ───────────
+
+/** A part of a series wall: a film (1 ÷ h) or a layer (L ÷ k). */
+type WallPart = { h: string } | { L: string; k: string };
+
+const partR = (p: WallPart, v: Values) => ('h' in p ? 1 / v[p.h]! : v[p.L]! / v[p.k]!);
+const partText = (p: WallPart) => ('h' in p ? `1 ÷ {${p.h}}` : `{${p.L}} ÷ {${p.k}}`);
+
+/** R″ = Σ(1 ÷ h) + Σ(L ÷ k), solved for any one of its values. */
+function seriesRule(R: string, parts: WallPart[]) {
+  const vars = [R, ...parts.flatMap((p) => ('h' in p ? [p.h] : [p.L, p.k]))];
+  const sum = parts.map(partText).join(' + ');
+  const others = (i: number) => (v: Values) =>
+    parts.reduce((s, p, j) => (j === i ? s : s + partR(p, v)), 0);
+  const othersText = (i: number) =>
+    parts
+      .filter((_, j) => j !== i)
+      .map(partText)
+      .join(' − ');
+  const solves: Record<string, [Solver, string, string]> = {
+    [R]: [
+      (v) => parts.reduce((s, p) => s + partR(p, v), 0),
+      sum,
+      'Resistances in series add, like resistors: each film is 1 ÷ h, each layer L ÷ k.',
+    ],
+  };
+  parts.forEach((p, i) => {
+    const rest = others(i);
+    if ('h' in p)
+      solves[p.h] = [
+        (v) => pos(1 / (v[R]! - rest(v))),
+        `1 ÷ ({${R}} − ${othersText(i)})`,
+        'Take the other resistances from R″: what is left is 1 ÷ h.',
+      ];
+    else {
+      solves[p.L] = [
+        (v) => pos(v[p.k]! * (v[R]! - rest(v))),
+        `{${p.k}} × ({${R}} − ${othersText(i)})`,
+        'Take the other resistances from R″, then multiply what is left by k.',
+      ];
+      solves[p.k] = [
+        (v) => pos(v[p.L]! / (v[R]! - rest(v))),
+        `{${p.L}} ÷ ({${R}} − ${othersText(i)})`,
+        'Take the other resistances from R″, then divide L by what is left.',
+      ];
+    }
+  });
+  return rule(
+    `R″ = ${parts.map((p) => ('h' in p ? `1 ÷ ${p.h}` : `${p.L} ÷ ${p.k}`)).join(' + ')}`,
+    `{${R}} = ${sum}`,
+    vars,
+    (v) => v[R]! - parts.reduce((s, p) => s + partR(p, v), 0),
+    solves,
+  );
+}
+
+/** q = ΔT ÷ R (a flux, a rate per length or a rate). */
+const fluxRule = (q: string, T1: string, T2: string, R: string, what: string) =>
+  rule(
+    `${q} = (${T1} − ${T2}) ÷ ${R}`,
+    `{${q}} = ({${T1}} − {${T2}}) ÷ {${R}}`,
+    [q, T1, T2, R],
+    (v) => v[q]! * v[R]! - (v[T1]! - v[T2]!),
+    {
+      [q]: [
+        (v) => div(v[T1]! - v[T2]!, v[R]!),
+        `({${T1}} − {${T2}}) ÷ {${R}}`,
+        `Heat flows like current: the temperature difference over the total resistance gives ${what}.`,
+      ],
+      [T1]: [
+        (v) => v[T2]! + v[q]! * v[R]!,
+        `{${T2}} + {${q}} × {${R}}`,
+        'Add the whole drop q × R to the cold side.',
+      ],
+      [T2]: [
+        (v) => v[T1]! - v[q]! * v[R]!,
+        `{${T1}} − {${q}} × {${R}}`,
+        'Take the whole drop q × R from the hot side.',
+      ],
+      [R]: [
+        (v) => div(v[T1]! - v[T2]!, v[q]!),
+        `({${T1}} − {${T2}}) ÷ {${q}}`,
+        'Divide the temperature difference by q.',
+      ],
+    },
+  );
+
+const WALL_ASSUMPTIONS = [
+  'Steady, one-dimensional conduction; perfect contact between layers.',
+  'Per square metre of wall: resistances in series like resistors.',
+];
+
+const tempVar = (id: string, symbol: string, name: string) =>
+  q(id, symbol, name, '°C', -273, 2000, 0.1);
+const hVar = (id: string, symbol: string, name: string) =>
+  q(id, symbol, name, 'W/(m²·K)', 0.1, 100000, 0.1);
+const LVar = (id: string, symbol: string, name: string) =>
+  q(id, symbol, name, 'm', 0.001, 2, 0.0001);
+/** A wall's air film: 0.5 to 1,000 W/(m²·K) (still air to a strong wind or water). */
+const wallFilm = (id: string, symbol: string, name: string) =>
+  q(id, symbol, name, 'W/(m²·K)', 0.5, 1000, 0.1);
+const kVar = (id: string, symbol: string, name: string) =>
+  q(id, symbol, name, 'W/(m·K)', 0.01, 500, 0.001);
+
+function wallExample(
+  Tin: number,
+  Tout: number,
+  hi: number,
+  ho: number,
+  layers: [number, number][],
+) {
+  const R = 1 / hi + layers.reduce((s, [L, k]) => s + L / k, 0) + 1 / ho;
+  const out: Values = { Tin, Tout, hi, ho, R, q: (Tin - Tout) / R };
+  layers.forEach(([L, k], i) => {
+    out[`L${i + 1}`] = L;
+    out[`k${i + 1}`] = k;
+  });
+  return out;
+}
+
+const WALL2 = rules(
+  seriesRule('R', [{ h: 'hi' }, { L: 'L1', k: 'k1' }, { L: 'L2', k: 'k2' }, { h: 'ho' }]),
+  fluxRule('q', 'Tin', 'Tout', 'R', 'the flux through every layer'),
+);
+
+const thermalWallLayers: ModuleDef = {
+  id: 'g.he-thermalWall-wall',
+  title: 'A brick wall with foam: the temperature through each layer',
+  use: 'Use this for the heat flux through a layered wall with air films on both sides.',
+  assumptions: WALL_ASSUMPTIONS,
+  variables: [
+    tempVar('Tin', 'T_in', 'Inside air temperature'),
+    tempVar('Tout', 'T_out', 'Outside air temperature'),
+    wallFilm('hi', 'h_i', 'Inside film coefficient'),
+    LVar('L1', 'L₁', 'Brick thickness'),
+    kVar('k1', 'k₁', 'Brick conductivity'),
+    LVar('L2', 'L₂', 'Foam thickness'),
+    kVar('k2', 'k₂', 'Foam conductivity'),
+    wallFilm('ho', 'h_o', 'Outside film coefficient'),
+    q('R', 'R″', 'Total resistance per m²', 'm²·K/W', 0.0001, 200, 0.000001),
+    q('q', 'q″', 'Heat flux', 'W/m²', -1e6, 1e6, 0.01),
+  ],
+  ...WALL2,
+  example: wallExample(20, -10, 10, 25, [
+    [0.2, 0.72],
+    [0.05, 0.04],
+  ]),
+  startWith: ['Tin', 'Tout', 'hi', 'L1', 'k1', 'L2', 'k2', 'ho'],
+  representation: {
+    kind: 'thermalWall',
+    mode: 'wall',
+    Tin: 'Tin',
+    Tout: 'Tout',
+    hIn: 'hi',
+    hOut: 'ho',
+    layers: [
+      { L: 'L1', k: 'k1', material: 'brick' },
+      { L: 'L2', k: 'k2', material: 'foam' },
+    ],
+    R: 'R',
+    q: 'q',
+  },
+};
+
+const WALL3 = rules(
+  seriesRule('R', [
+    { h: 'hi' },
+    { L: 'L1', k: 'k1' },
+    { L: 'L2', k: 'k2' },
+    { L: 'L3', k: 'k3' },
+    { h: 'ho' },
+  ]),
+  fluxRule('q', 'Tin', 'Tout', 'R', 'the flux through every layer'),
+);
+
+const thermalWallThree: ModuleDef = {
+  id: 'g.he-thermalWall-wall-steel',
+  title: 'A cold-store wall: brick, foam and a thin steel skin',
+  use: 'Use this for a wall of three layers, where a thin, conductive layer takes almost no drop.',
+  assumptions: WALL_ASSUMPTIONS,
+  variables: [
+    tempVar('Tin', 'T_in', 'Outside air temperature (warm side)'),
+    tempVar('Tout', 'T_out', 'Cold-store air temperature'),
+    wallFilm('hi', 'h_i', 'Warm-side film coefficient'),
+    LVar('L1', 'L₁', 'Brick thickness'),
+    kVar('k1', 'k₁', 'Brick conductivity'),
+    LVar('L2', 'L₂', 'Foam thickness'),
+    kVar('k2', 'k₂', 'Foam conductivity'),
+    LVar('L3', 'L₃', 'Steel thickness'),
+    kVar('k3', 'k₃', 'Steel conductivity'),
+    wallFilm('ho', 'h_o', 'Cold-side film coefficient'),
+    q('R', 'R″', 'Total resistance per m²', 'm²·K/W', 0.0001, 200, 0.000001),
+    q('q', 'q″', 'Heat flux', 'W/m²', -1e6, 1e6, 0.01),
+  ],
+  ...WALL3,
+  example: wallExample(30, -18, 8, 20, [
+    [0.1, 0.72],
+    [0.1, 0.03],
+    [0.002, 45],
+  ]),
+  startWith: ['Tin', 'Tout', 'hi', 'L1', 'k1', 'L2', 'k2', 'L3', 'k3', 'ho'],
+  representation: {
+    kind: 'thermalWall',
+    mode: 'wall',
+    Tin: 'Tin',
+    Tout: 'Tout',
+    hIn: 'hi',
+    hOut: 'ho',
+    layers: [
+      { L: 'L1', k: 'k1', material: 'brick' },
+      { L: 'L2', k: 'k2', material: 'foam' },
+      { L: 'L3', k: 'k3', material: 'steel' },
+    ],
+    R: 'R',
+    q: 'q',
+  },
+};
+
+// ─── HC23: an insulated pipe (heat-transfer#0~cylinder) ──────────────────────
+
+const LN_RULE = (R: string, k: string, L?: string) => {
+  const twoPi = L ? `2π × {${k}} × {${L}}` : `2π × {${k}}`;
+  const den = (v: Values) => 2 * Math.PI * v[k]! * (L ? v[L]! : 1);
+  const solves: Record<string, [Solver, string, string]> = {
+    [R]: [
+      (v) => div(Math.log(v.r2! / v.r1!), den(v)),
+      `ln({r2} ÷ {r1}) ÷ (${twoPi})`,
+      'Through a cylinder’s wall the area grows with r, so the resistance goes as ln(r₂ ÷ r₁), not as a thickness.',
+    ],
+    r2: [
+      (v) => v.r1! * Math.exp(v[R]! * den(v)),
+      `{r1} × e^({${R}} × ${twoPi})`,
+      'Multiply R by 2πk' + (L ? 'L' : '') + ', raise e to it, then multiply by r₁.',
+    ],
+    r1: [
+      (v) => v.r2! / Math.exp(v[R]! * den(v)),
+      `{r2} ÷ e^({${R}} × ${twoPi})`,
+      'Multiply R by 2πk' + (L ? 'L' : '') + ', raise e to it, then divide r₂ by it.',
+    ],
+    [k]: [
+      (v) => div(Math.log(v.r2! / v.r1!), 2 * Math.PI * v[R]! * (L ? v[L]! : 1)),
+      `ln({r2} ÷ {r1}) ÷ (2π × {${R}}${L ? ` × {${L}}` : ''})`,
+      'Divide ln(r₂ ÷ r₁) by 2πR' + (L ? 'L' : '') + '.',
+    ],
+  };
+  if (L)
+    solves[L] = [
+      (v) => div(Math.log(v.r2! / v.r1!), 2 * Math.PI * v[k]! * v[R]!),
+      `ln({r2} ÷ {r1}) ÷ (2π × {${k}} × {${R}})`,
+      'Divide ln(r₂ ÷ r₁) by 2πkR.',
+    ];
+  return rule(
+    `${R} = ln(r₂ ÷ r₁) ÷ 2πk${L ? 'L' : ''}`,
+    `{${R}} = ln({r2} ÷ {r1}) ÷ (${twoPi})`,
+    ['r2', 'r1', R, k, ...(L ? [L] : [])].sort((a, b) => (a === R ? -1 : b === R ? 1 : 0)),
+    (v) => v[R]! * den(v) - Math.log(v.r2! / v.r1!),
+    solves,
+  );
+};
+
+const PIPE = rules(
+  LN_RULE('R', 'k', 'Lp'),
+  rule('q = ΔT ÷ R', '{q} = {dT} ÷ {R}', ['q', 'dT', 'R'], (v) => v.q! * v.R! - v.dT!, {
+    q: [
+      (v) => div(v.dT!, v.R!),
+      '{dT} ÷ {R}',
+      'The temperature difference over the insulation’s resistance.',
+    ],
+    dT: [(v) => v.q! * v.R!, '{q} × {R}', 'Multiply q by R.'],
+    R: [(v) => div(v.dT!, v.q!), '{dT} ÷ {q}', 'Divide ΔT by q.'],
+  }),
+);
+
+const thermalPipe: ModuleDef = {
+  id: 'g.he-thermalWall-cylinder',
+  title: 'An insulated pipe: the heat lost through its insulation',
+  use: 'Use this for the conduction resistance of a cylindrical layer and the heat through it.',
+  assumptions: [
+    'Steady radial conduction; the insulation’s inner and outer surface temperatures differ by ΔT.',
+    'The pipe’s own wall is thin and conducts well: its resistance is left out.',
+  ],
+  variables: [
+    q('r1', 'r₁', 'Inner radius of the insulation', 'mm', 0.1, 10000, 0.1),
+    q('r2', 'r₂', 'Outer radius of the insulation', 'mm', 0.1, 10000, 0.1),
+    kVar('k', 'k', 'Insulation conductivity'),
+    q('Lp', 'L', 'Pipe length', 'm', 0.01, 10000, 0.01),
+    q('R', 'R', 'Conduction resistance', 'K/W', 0.00001, 1000, 0.00001),
+    q('dT', 'ΔT', 'Temperature difference across it', 'K', 0.01, 3000, 0.01),
+    q('q', 'q', 'Heat lost', 'W', 0.001, 1e7, 0.01),
+  ],
+  ...PIPE,
+  example: (() => {
+    const R = Math.log(80 / 50) / (2 * Math.PI * 0.05 * 10);
+    return { r1: 50, r2: 80, k: 0.05, Lp: 10, R, dT: 100, q: 100 / R };
+  })(),
+  startWith: ['r1', 'r2', 'k', 'Lp', 'dT'],
+  representation: {
+    kind: 'thermalWall',
+    mode: 'cylinder',
+    r1: 'r1',
+    r2: 'r2',
+    k: 'k',
+    length: 'Lp',
+    Rcond: 'R',
+    dT: 'dT',
+    q: 'q',
+    si: 0.001,
+  },
+};
+
+// ─── HC23: a pipe with an outside film (transport-phenomena#1~cylinder) ──────
+
+const PIPE_FILM = rules(
+  LN_RULE('Rcond', 'k'),
+  rule(
+    'R_conv = 1 ÷ 2πr₂h',
+    '{Rconv} = 1 ÷ (2π × {r2} × {h})',
+    ['Rconv', 'r2', 'h'],
+    (v) => v.Rconv! * 2 * Math.PI * v.r2! * v.h! - 1,
+    {
+      Rconv: [
+        (v) => div(1, 2 * Math.PI * v.r2! * v.h!),
+        '1 ÷ (2π × {r2} × {h})',
+        'The outside film: 1 ÷ h over the outer surface, 2πr₂ per metre.',
+      ],
+      h: [
+        (v) => div(1, 2 * Math.PI * v.r2! * v.Rconv!),
+        '1 ÷ (2π × {r2} × {Rconv})',
+        'Divide 1 by 2πr₂R_conv.',
+      ],
+      r2: [
+        (v) => div(1, 2 * Math.PI * v.h! * v.Rconv!),
+        '1 ÷ (2π × {h} × {Rconv})',
+        'Divide 1 by 2πhR_conv.',
+      ],
+    },
+  ),
+  rule(
+    'q′ = (T_i − T∞) ÷ (R_cond + R_conv)',
+    '{q} = ({Ti} − {To}) ÷ ({Rcond} + {Rconv})',
+    ['q', 'Ti', 'To', 'Rcond', 'Rconv'],
+    (v) => v.q! * (v.Rcond! + v.Rconv!) - (v.Ti! - v.To!),
+    {
+      q: [
+        (v) => div(v.Ti! - v.To!, v.Rcond! + v.Rconv!),
+        '({Ti} − {To}) ÷ ({Rcond} + {Rconv})',
+        'The two resistances are in series: add them, then divide the temperature difference by the sum.',
+      ],
+      Ti: [
+        (v) => v.To! + v.q! * (v.Rcond! + v.Rconv!),
+        '{To} + {q} × ({Rcond} + {Rconv})',
+        'Add the whole drop to T∞.',
+      ],
+      To: [
+        (v) => v.Ti! - v.q! * (v.Rcond! + v.Rconv!),
+        '{Ti} − {q} × ({Rcond} + {Rconv})',
+        'Take the whole drop from T_i.',
+      ],
+      Rcond: [
+        (v) => div(v.Ti! - v.To!, v.q!)! - v.Rconv!,
+        '({Ti} − {To}) ÷ {q} − {Rconv}',
+        'The total is ΔT ÷ q′; take R_conv from it.',
+      ],
+      Rconv: [
+        (v) => div(v.Ti! - v.To!, v.q!)! - v.Rcond!,
+        '({Ti} − {To}) ÷ {q} − {Rcond}',
+        'The total is ΔT ÷ q′; take R_cond from it.',
+      ],
+    },
+  ),
+  rule('r_c = k ÷ h', '{rc} = {k} ÷ {h}', ['rc', 'k', 'h'], (v) => v.rc! * v.h! - v.k!, {
+    rc: [
+      (v) => div(v.k!, v.h!),
+      '{k} ÷ {h}',
+      'The critical radius: below it, more insulation adds surface faster than resistance.',
+    ],
+    k: [(v) => v.rc! * v.h!, '{rc} × {h}', 'Multiply r_c by h.'],
+    h: [(v) => div(v.k!, v.rc!), '{k} ÷ {rc}', 'Divide k by r_c.'],
+  }),
+);
+
+const thermalPipeFilm: ModuleDef = {
+  id: 'g.he-thermalWall-cylinder-film',
+  title: 'An insulated pipe in air: conduction and the outside film',
+  use: 'Use this for the heat lost per metre of insulated pipe, with the outside film, and the critical radius.',
+  assumptions: [
+    'Steady radial conduction; the inside surface at T_i; air at T∞ outside with a film coefficient h.',
+    'Per metre of pipe.',
+  ],
+  variables: [
+    q('r1', 'r₁', 'Inner radius of the insulation', 'm', 0.0001, 10, 0.0001),
+    q('r2', 'r₂', 'Outer radius of the insulation', 'm', 0.0001, 10, 0.0001),
+    kVar('k', 'k', 'Insulation conductivity'),
+    hVar('h', 'h', 'Outside film coefficient'),
+    tempVar('Ti', 'T_i', 'Inside surface temperature'),
+    tempVar('To', 'T∞', 'Air temperature'),
+    q('Rcond', 'R_cond', 'Conduction resistance per metre', 'm·K/W', 0.00001, 1000, 0.0001),
+    q('Rconv', 'R_conv', 'Film resistance per metre', 'm·K/W', 0.00001, 1000, 0.0001),
+    q('q', 'q′', 'Heat lost per metre', 'W/m', -1e6, 1e6, 0.01),
+    q('rc', 'r_c', 'Critical radius', 'm', 0.000001, 100, 0.0001),
+  ],
+  ...PIPE_FILM,
+  example: (() => {
+    const Rcond = Math.log(0.08 / 0.05) / (2 * Math.PI * 0.04);
+    const Rconv = 1 / (2 * Math.PI * 0.08 * 10);
+    return {
+      r1: 0.05,
+      r2: 0.08,
+      k: 0.04,
+      h: 10,
+      Ti: 150,
+      To: 20,
+      Rcond,
+      Rconv,
+      q: 130 / (Rcond + Rconv),
+      rc: 0.004,
+    };
+  })(),
+  startWith: ['r1', 'r2', 'k', 'h', 'Ti', 'To'],
+  representation: {
+    kind: 'thermalWall',
+    mode: 'cylinder',
+    r1: 'r1',
+    r2: 'r2',
+    k: 'k',
+    h: 'h',
+    Tin: 'Ti',
+    Tout: 'To',
+    Rcond: 'Rcond',
+    Rconv: 'Rconv',
+    q: 'q',
+    rc: 'rc',
+  },
+};
+
+// ─── HC23: a pin fin (heat-transfer#0~fin) ────────────────────────────────────
+
+const finMM = (v: Values) => (Math.PI / 2) * Math.sqrt(v.h! * v.k! * v.D! ** 3);
+
+const FIN = rules(
+  rule(
+    'm = √(4h ÷ kD)',
+    '{m} = √(4 × {h} ÷ ({k} × {D}))',
+    ['m', 'h', 'k', 'D'],
+    (v) => v.m! ** 2 * v.k! * v.D! - 4 * v.h!,
+    {
+      m: [
+        (v) => Math.sqrt((4 * v.h!) / (v.k! * v.D!)),
+        '√(4 × {h} ÷ ({k} × {D}))',
+        'For a pin, P ÷ A_c = πD ÷ (πD² ÷ 4) = 4 ÷ D, so m = √(hP ÷ kA_c) = √(4h ÷ kD).',
+      ],
+      h: [
+        (v) => (v.m! ** 2 * v.k! * v.D!) / 4,
+        '{m}² × {k} × {D} ÷ 4',
+        'Square m, multiply by kD, divide by 4.',
+      ],
+      k: [(v) => div(4 * v.h!, v.m! ** 2 * v.D!), '4 × {h} ÷ ({m}² × {D})', 'Divide 4h by m²D.'],
+      D: [(v) => div(4 * v.h!, v.m! ** 2 * v.k!), '4 × {h} ÷ ({m}² × {k})', 'Divide 4h by m²k.'],
+    },
+  ),
+  rule(
+    'q = √(hPkA_c) θ_b tanh(mL)',
+    '{q} = (π ÷ 2) × √({h} × {k} × {D}³) × {thetaB} × tanh({m} × {L})',
+    ['q', 'h', 'k', 'D', 'thetaB', 'm', 'L'],
+    (v) => v.q! - finMM(v) * v.thetaB! * Math.tanh(v.m! * v.L!),
+    {
+      q: [
+        (v) => finMM(v) * v.thetaB! * Math.tanh(v.m! * v.L!),
+        '(π ÷ 2) × √({h} × {k} × {D}³) × {thetaB} × tanh({m} × {L})',
+        '√(hPkA_c) = (π ÷ 2)√(hkD³) for a pin; times θ_b, times tanh(mL) for the tip that loses nothing.',
+      ],
+      thetaB: [
+        (v) => div(v.q!, finMM(v) * Math.tanh(v.m! * v.L!)),
+        '{q} ÷ ((π ÷ 2) × √({h} × {k} × {D}³) × tanh({m} × {L}))',
+        'Divide q by √(hPkA_c) tanh(mL).',
+      ],
+    },
+  ),
+);
+
+const thermalFin: ModuleDef = {
+  id: 'g.he-thermalWall-fin',
+  title: 'An aluminum pin fin: how its temperature fades',
+  use: 'Use this for the heat from a pin fin with an insulated tip, and its fin parameter m.',
+  assumptions: [
+    'Steady, one-dimensional along the fin; adiabatic tip; h the same all along.',
+    'Aluminum, k = 200 W/(m·K); θ_b is the base’s temperature above the air.',
+  ],
+  variables: [
+    hVar('h', 'h', 'Film coefficient'),
+    kVar('k', 'k', 'Fin conductivity'),
+    q('D', 'D', 'Fin diameter', 'm', 0.0001, 1, 0.0001),
+    q('L', 'L', 'Fin length', 'm', 0.0001, 5, 0.0001),
+    q('m', 'm', 'Fin parameter', 'm⁻¹', 0.001, 10000, 0.001),
+    q('thetaB', 'θ_b', 'Base excess temperature T_b − T∞', 'K', 0.01, 3000, 0.01),
+    q('q', 'q', 'Heat from the fin', 'W', 0.00001, 1e6, 0.0001),
+  ],
+  ...FIN,
+  example: (() => {
+    const v: Values = { h: 20, k: 200, D: 0.005, L: 0.05, thetaB: 60 };
+    v.m = Math.sqrt((4 * v.h!) / (v.k! * v.D!));
+    v.q = finMM(v) * v.thetaB! * Math.tanh(v.m * v.L!);
+    return v;
+  })(),
+  startWith: ['h', 'k', 'D', 'L', 'thetaB'],
+  representation: {
+    kind: 'thermalWall',
+    mode: 'fin',
+    h: 'h',
+    k: 'k',
+    D: 'D',
+    L: 'L',
+    m: 'm',
+    thetaB: 'thetaB',
+    q: 'q',
+  },
+};
+
+// ─── HC23: flow in a heated tube (heat-transfer#1) ───────────────────────────
+
+const TUBE = rules(
+  rule(
+    'Re = VD ÷ ν',
+    '{Re} = {V} × {D} ÷ {nu}',
+    ['Re', 'V', 'D', 'nu'],
+    (v) => v.Re! * v.nu! - v.V! * v.D!,
+    {
+      Re: [
+        (v) => div(v.V! * v.D!, v.nu!),
+        '{V} × {D} ÷ {nu}',
+        'Speed times diameter over the kinematic viscosity.',
+      ],
+      V: [(v) => div(v.Re! * v.nu!, v.D!), '{Re} × {nu} ÷ {D}', 'Multiply Re by ν, divide by D.'],
+      D: [(v) => div(v.Re! * v.nu!, v.V!), '{Re} × {nu} ÷ {V}', 'Multiply Re by ν, divide by V.'],
+      nu: [(v) => div(v.V! * v.D!, v.Re!), '{V} × {D} ÷ {Re}', 'Divide VD by Re.'],
+    },
+  ),
+  rule(
+    'Nu = 0.023Re^0.8Pr^0.4',
+    '{Nu} = 0.023 × {Re}^0.8 × {Pr}^0.4',
+    ['Nu', 'Re', 'Pr'],
+    (v) => v.Nu! - 0.023 * v.Re! ** 0.8 * v.Pr! ** 0.4,
+    {
+      Nu: [
+        (v) => 0.023 * v.Re! ** 0.8 * v.Pr! ** 0.4,
+        '0.023 × {Re}^0.8 × {Pr}^0.4',
+        'Dittus–Boelter, the water being heated (Pr to the 0.4).',
+      ],
+      Re: [
+        (v) => pos((v.Nu! / (0.023 * v.Pr! ** 0.4)) ** 1.25),
+        '({Nu} ÷ (0.023 × {Pr}^0.4))^1.25',
+        'Divide Nu by 0.023Pr^0.4, then raise it to 1 ÷ 0.8.',
+      ],
+      Pr: [
+        (v) => pos((v.Nu! / (0.023 * v.Re! ** 0.8)) ** 2.5),
+        '({Nu} ÷ (0.023 × {Re}^0.8))^2.5',
+        'Divide Nu by 0.023Re^0.8, then raise it to 1 ÷ 0.4.',
+      ],
+    },
+  ),
+  rule(
+    'h = Nu k ÷ D',
+    '{h} = {Nu} × {k} ÷ {D}',
+    ['h', 'Nu', 'k', 'D'],
+    (v) => v.h! * v.D! - v.Nu! * v.k!,
+    {
+      h: [
+        (v) => div(v.Nu! * v.k!, v.D!),
+        '{Nu} × {k} ÷ {D}',
+        'Nu is hD ÷ k: multiply it by k, divide by D.',
+      ],
+      Nu: [(v) => div(v.h! * v.D!, v.k!), '{h} × {D} ÷ {k}', 'Multiply h by D, divide by k.'],
+      k: [(v) => div(v.h! * v.D!, v.Nu!), '{h} × {D} ÷ {Nu}', 'Multiply h by D, divide by Nu.'],
+    },
+  ),
+);
+
+const thermalTube: ModuleDef = {
+  id: 'g.he-thermalWall-tube',
+  title: 'Water heated in a tube: h by Dittus–Boelter',
+  use: 'Use this for the film coefficient of turbulent flow in a heated tube.',
+  assumptions: [
+    'Fully developed turbulent flow, Re > 10,000; the fluid is heated (Pr^0.4; 0.3 when cooled).',
+    'Water’s ν, Pr and k at its mean temperature, typed.',
+  ],
+  variables: [
+    q('V', 'V', 'Mean speed', 'm/s', 0.001, 100, 0.001),
+    q('D', 'D', 'Tube diameter', 'm', 0.0001, 5, 0.0001),
+    q('nu', 'ν', 'Kinematic viscosity', 'm²/s', 1e-8, 1e-3, 1e-9, { scientific: true }),
+    q('Re', 'Re', 'Reynolds number', undefined, 10000, 1e8, 1),
+    q('Pr', 'Pr', 'Prandtl number', undefined, 0.6, 160, 0.01),
+    q('Nu', 'Nu', 'Nusselt number', undefined, 1, 1e6, 0.1),
+    kVar('k', 'k', 'Water’s conductivity'),
+    hVar('h', 'h', 'Film coefficient'),
+  ],
+  ...TUBE,
+  example: (() => {
+    const v: Values = { V: 1, D: 0.025, nu: 0.8e-6, Pr: 5.4, k: 0.615 };
+    v.Re = (v.V! * v.D!) / v.nu!;
+    v.Nu = 0.023 * v.Re ** 0.8 * v.Pr! ** 0.4;
+    v.h = (v.Nu * v.k!) / v.D!;
+    return v;
+  })(),
+  startWith: ['V', 'D', 'nu', 'Pr', 'k'],
+  representation: {
+    kind: 'thermalWall',
+    mode: 'tube',
+    V: 'V',
+    D: 'D',
+    nu: 'nu',
+    Re: 'Re',
+    Pr: 'Pr',
+    Nu: 'Nu',
+    k: 'k',
+    h: 'h',
+  },
+};
+
+// ─── HC23: radiation to the surroundings (heat-transfer#2) ───────────────────
+
+const SIGMA = 5.67e-8;
+
+const RAD = rules(
+  rule(
+    'q = εσA(T_s⁴ − T_surr⁴)',
+    '{q} = {eps} × 5.67 × 10⁻⁸ × {A} × ({Ts}⁴ − {Tsu}⁴)',
+    ['q', 'eps', 'A', 'Ts', 'Tsu'],
+    (v) => v.q! - v.eps! * SIGMA * v.A! * (v.Ts! ** 4 - v.Tsu! ** 4),
+    {
+      q: [
+        (v) => v.eps! * SIGMA * v.A! * (v.Ts! ** 4 - v.Tsu! ** 4),
+        '{eps} × 5.67 × 10⁻⁸ × {A} × ({Ts}⁴ − {Tsu}⁴)',
+        'The surface sends out εσT_s⁴ and takes in εσT_surr⁴ per square metre; the net, times A. Kelvins only.',
+      ],
+      eps: [
+        (v) => div(v.q!, SIGMA * v.A! * (v.Ts! ** 4 - v.Tsu! ** 4)),
+        '{q} ÷ (5.67 × 10⁻⁸ × {A} × ({Ts}⁴ − {Tsu}⁴))',
+        'Divide q by σA(T_s⁴ − T_surr⁴).',
+      ],
+      A: [
+        (v) => div(v.q!, v.eps! * SIGMA * (v.Ts! ** 4 - v.Tsu! ** 4)),
+        '{q} ÷ ({eps} × 5.67 × 10⁻⁸ × ({Ts}⁴ − {Tsu}⁴))',
+        'Divide q by εσ(T_s⁴ − T_surr⁴).',
+      ],
+      Ts: [
+        (v) => {
+          const x = v.Tsu! ** 4 + v.q! / (v.eps! * SIGMA * v.A!);
+          return x > 0 ? x ** 0.25 : undefined;
+        },
+        '({Tsu}⁴ + {q} ÷ ({eps} × 5.67 × 10⁻⁸ × {A}))^0.25',
+        'Divide q by εσA, add T_surr⁴, then take the fourth root.',
+      ],
+      Tsu: [
+        (v) => {
+          const x = v.Ts! ** 4 - v.q! / (v.eps! * SIGMA * v.A!);
+          return x > 0 ? x ** 0.25 : undefined;
+        },
+        '({Ts}⁴ − {q} ÷ ({eps} × 5.67 × 10⁻⁸ × {A}))^0.25',
+        'Divide q by εσA, take it from T_s⁴, then take the fourth root.',
+      ],
+    },
+  ),
+);
+
+const thermalRadiation: ModuleDef = {
+  id: 'g.he-thermalWall-radiation',
+  title: 'A warm surface radiating to its surroundings',
+  use: 'Use this for the net radiation between a gray surface and large surroundings.',
+  assumptions: [
+    'A gray surface (absorbs what it emits, ε) in surroundings much larger than it.',
+    'σ = 5.67 × 10⁻⁸ W/(m²·K⁴); temperatures in kelvins.',
+  ],
+  variables: [
+    q('eps', 'ε', 'Emissivity', undefined, 0.01, 1, 0.01),
+    q('A', 'A', 'Area', 'm²', 0.0001, 10000, 0.01),
+    q('Ts', 'T_s', 'Surface temperature', 'K', 1, 5000, 0.1),
+    q('Tsu', 'T_surr', 'Surroundings temperature', 'K', 1, 5000, 0.1),
+    q('q', 'q', 'Net heat radiated', 'W', -1e9, 1e9, 0.1),
+  ],
+  ...RAD,
+  example: { eps: 0.8, A: 2, Ts: 400, Tsu: 300, q: 0.8 * SIGMA * 2 * (400 ** 4 - 300 ** 4) },
+  startWith: ['eps', 'A', 'Ts', 'Tsu'],
+  representation: {
+    kind: 'thermalWall',
+    mode: 'radiation',
+    eps: 'eps',
+    A: 'A',
+    Ts: 'Ts',
+    Tsurr: 'Tsu',
+    sigma: SIGMA,
+    q: 'q',
+  },
+};
+
+// ─── HC23: a wire with heat generation (transport-phenomena#1~heated-wire) ───
+
+const WIRE = rules(
+  rule(
+    'T_c = T_s + SR² ÷ 4k',
+    '{Tc} = {Ts} + {S} × {R}² ÷ (4 × {k})',
+    ['Tc', 'Ts', 'S', 'R', 'k'],
+    (v) => (v.Tc! - v.Ts!) * 4 * v.k! - v.S! * v.R! ** 2,
+    {
+      Tc: [
+        (v) => v.Ts! + (v.S! * v.R! ** 2) / (4 * v.k!),
+        '{Ts} + {S} × {R}² ÷ (4 × {k})',
+        'The heat made inside must flow out: the centre is SR² ÷ 4k above the surface.',
+      ],
+      Ts: [
+        (v) => v.Tc! - (v.S! * v.R! ** 2) / (4 * v.k!),
+        '{Tc} − {S} × {R}² ÷ (4 × {k})',
+        'Take the rise SR² ÷ 4k from T_c.',
+      ],
+      S: [
+        (v) => div(4 * v.k! * (v.Tc! - v.Ts!), v.R! ** 2),
+        '4 × {k} × ({Tc} − {Ts}) ÷ {R}²',
+        'Multiply the rise by 4k, divide by R².',
+      ],
+      k: [
+        (v) => div(v.S! * v.R! ** 2, 4 * (v.Tc! - v.Ts!)),
+        '{S} × {R}² ÷ (4 × ({Tc} − {Ts}))',
+        'Divide SR² by 4 times the rise.',
+      ],
+      R: [
+        (v) => {
+          const x = (4 * v.k! * (v.Tc! - v.Ts!)) / v.S!;
+          return x > 0 ? Math.sqrt(x) : undefined;
+        },
+        '√(4 × {k} × ({Tc} − {Ts}) ÷ {S})',
+        'Multiply the rise by 4k, divide by S, then take the square root.',
+      ],
+    },
+  ),
+);
+
+const thermalWire: ModuleDef = {
+  id: 'g.he-thermalWall-wire',
+  title: 'A current-carrying wire: how much hotter its centre runs',
+  use: 'Use this for the centre temperature of a wire or rod with uniform heat generation.',
+  assumptions: [
+    'Steady radial conduction with uniform generation S; constant k.',
+    'The surface is held at T_s.',
+  ],
+  variables: [
+    q('S', 'S', 'Heat generation', 'W/m³', 1, 1e12, 1, { scientific: true }),
+    q('R', 'R', 'Wire radius', 'm', 0.00001, 1, 0.00001),
+    kVar('k', 'k', 'Wire conductivity'),
+    tempVar('Ts', 'T_s', 'Surface temperature'),
+    tempVar('Tc', 'T_c', 'Centre temperature'),
+  ],
+  ...WIRE,
+  example: { S: 5e8, R: 0.001, k: 12, Ts: 60, Tc: 60 + (5e8 * 1e-6) / 48 },
+  startWith: ['S', 'R', 'k', 'Ts'],
+  representation: {
+    kind: 'thermalWall',
+    mode: 'wire',
+    S: 'S',
+    radius: 'R',
+    k: 'k',
+    Ts: 'Ts',
+    Tc: 'Tc',
+  },
+};
+
 export const HE2C_GALLERY_MODULES: ModuleDef[] = [
   tvMixture,
   pvHighPressure,
@@ -1015,6 +1782,14 @@ export const HE2C_GALLERY_MODULES: ModuleDef[] = [
   tsRankine,
   pvVirial,
   pvVdw,
+  thermalWallLayers,
+  thermalWallThree,
+  thermalPipe,
+  thermalPipeFilm,
+  thermalFin,
+  thermalTube,
+  thermalRadiation,
+  thermalWire,
 ];
 
 export const HE2C_GALLERY_LAYOUTS: LayoutDef[] = [];

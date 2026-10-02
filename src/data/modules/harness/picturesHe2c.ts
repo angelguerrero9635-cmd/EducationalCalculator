@@ -1,6 +1,6 @@
 /**
  * Picture checks for the college round 2 group C kinds (`typesHe2c.ts`): HC17
- * `propertyDiagram`. What each draws must agree with the values and the physics. Called from
+ * `propertyDiagram` and HC23 `thermalWall`. What each draws must agree with the values and the physics. Called from
  * `repIssues` in `pictures.ts`. Test-only.
  */
 import {
@@ -12,9 +12,20 @@ import {
   vdwP,
   type PdGetter,
 } from '@/components/module/reps/propertyDiagramMath';
+import {
+  cylinderR,
+  filmR,
+  finM,
+  finQ,
+  finTheta,
+  radiant,
+  seriesTemperatures,
+  wallResistances,
+  wireT,
+} from '@/components/module/reps/thermalWallMath';
 
 import type { NumOrVar } from '../typesGraphs';
-import type { PdState, PropertyDiagramSpec } from '../typesHe2c';
+import type { PdState, PropertyDiagramSpec, ThermalWallSpec } from '../typesHe2c';
 import type { Representation } from '../types';
 
 /** Equal to a relative tolerance (or 10⁻⁶ near zero). */
@@ -28,6 +39,7 @@ export function he2cIssues(rep: Representation, val: (id: string) => number | un
     return y === undefined || Number.isNaN(y) ? undefined : y;
   };
   if (rep.kind === 'propertyDiagram') return propertyIssues(rep, get);
+  if (rep.kind === 'thermalWall') return thermalIssues(rep, get);
   return [];
 }
 
@@ -152,6 +164,140 @@ function propertyIssues(spec: PropertyDiagramSpec, get: PdGetter): string[] {
       const [Z, P] = [get(it.Z), get(it.P)];
       if (Z !== undefined && !(Z > 0)) out.push(`virial Z = ${Z} not positive`);
       if (P !== undefined && !(P > 0)) out.push(`virial P = ${P} not positive`);
+    }
+  }
+  return out;
+}
+
+/** HC23: each drop is q × its R, and the drawn profiles meet the page's values. */
+function thermalIssues(spec: ThermalWallSpec, get: PdGetter): string[] {
+  const out: string[] = [];
+  const len = (x: NumOrVar | undefined) => {
+    const v = get(x);
+    return v === undefined ? undefined : v * (spec.si ?? 1);
+  };
+  const has = (...xs: (number | undefined)[]) => xs.every((x) => x !== undefined);
+  if (spec.mode === 'wall') {
+    const layers = (spec.layers ?? []).map((l) => ({ L: len(l.L), k: get(l.k) }));
+    const [Tin, Tout, hIn, hOut, q] = [
+      get(spec.Tin),
+      get(spec.Tout),
+      get(spec.hIn),
+      get(spec.hOut),
+      get(spec.q),
+    ];
+    const films =
+      (spec.hIn === undefined || hIn !== undefined) &&
+      (spec.hOut === undefined || hOut !== undefined);
+    if (!films || layers.some((l) => l.L === undefined || l.k === undefined)) return out;
+    const Rs = wallResistances(
+      spec.hIn !== undefined ? hIn : undefined,
+      layers.map((l) => ({ L: l.L!, k: l.k! })),
+      spec.hOut !== undefined ? hOut : undefined,
+    ).map((r) => r.R);
+    const total = Rs.reduce((a, b) => a + b, 0);
+    const R = get(spec.R);
+    if (R !== undefined && !near(R, total)) out.push(`wall: R = ${R}, the parts add to ${total}`);
+    if (Tin !== undefined && Tout !== undefined) {
+      // The drops, each q × R, add up to T_in − T_out: the profile ends at T_out.
+      const nodes = seriesTemperatures(Tin, q ?? (Tin - Tout) / total, Rs);
+      const end = nodes[nodes.length - 1]!;
+      if (Math.abs(end - Tout) > 2e-3 * Math.max(1, Math.abs(Tin - Tout)))
+        out.push(`wall: the profile ends at ${end}, not T_out = ${Tout}`);
+    }
+  } else if (spec.mode === 'cylinder') {
+    const [r1, r2, k, h, Lc] = [
+      len(spec.r1),
+      len(spec.r2),
+      get(spec.k),
+      get(spec.h),
+      get(spec.length),
+    ];
+    const [Rcond, Rconv, q, rc] = [
+      get(spec.Rcond) ?? get(spec.R),
+      get(spec.Rconv),
+      get(spec.q),
+      len(spec.rc),
+    ];
+    if (r1 !== undefined && r2 !== undefined && k !== undefined && Rcond !== undefined && r2 > r1) {
+      const want = cylinderR(r1, r2, k, Lc ?? 1);
+      if (!near(Rcond, want)) out.push(`cylinder: R_cond = ${Rcond}, ln(r₂ ÷ r₁) ÷ 2πkL = ${want}`);
+    }
+    if (r2 !== undefined && h !== undefined && Rconv !== undefined) {
+      const want = filmR(r2, h, Lc ?? 1);
+      if (!near(Rconv, want)) out.push(`cylinder: R_conv = ${Rconv}, 1 ÷ 2πr₂h = ${want}`);
+    }
+    if (k !== undefined && h !== undefined && rc !== undefined && !near(rc, k / h))
+      out.push(`cylinder: r_c = ${rc}, k ÷ h = ${k / h}`);
+    const [Ti, To] = [get(spec.Tin), get(spec.Tout)];
+    const dT = get(spec.dT) ?? (Ti !== undefined && To !== undefined ? Ti - To : undefined);
+    const Rt =
+      Rcond !== undefined ? Rcond + (spec.h !== undefined ? (Rconv ?? NaN) : 0) : undefined;
+    if (dT !== undefined && q !== undefined && Rt !== undefined && Number.isFinite(Rt))
+      if (!near(q, dT / Rt)) out.push(`cylinder: q = ${q}, ΔT ÷ ΣR = ${dT / Rt}`);
+  } else if (spec.mode === 'fin') {
+    const [h, k, D, L, th, m, q] = [
+      get(spec.h),
+      get(spec.k),
+      len(spec.D),
+      len(spec.L),
+      get(spec.thetaB),
+      get(spec.m),
+      get(spec.q),
+    ];
+    if (h !== undefined && k !== undefined && D !== undefined && h > 0 && k > 0 && D > 0) {
+      const mm = finM(h, k, D);
+      if (m !== undefined && !near(m, mm)) out.push(`fin: m = ${m}, √(4h ÷ kD) = ${mm}`);
+      if (L !== undefined && th !== undefined && q !== undefined) {
+        const want = finQ(h, k, D, L, th);
+        if (!near(q, want)) out.push(`fin: q = ${q}, drawn ${want}`);
+      }
+      if (L !== undefined && L > 0 && !(finTheta(L, mm, L) <= 1))
+        out.push('fin: the tip is hotter than the base');
+    }
+  } else if (spec.mode === 'tube') {
+    const [D, h, k, Nu, V, nu, Re] = [
+      len(spec.D),
+      get(spec.h),
+      get(spec.k),
+      get(spec.Nu),
+      get(spec.V),
+      get(spec.nu),
+      get(spec.Re),
+    ];
+    if (has(D, h, k, Nu) && !near(h!, (Nu! * k!) / D!))
+      out.push(`tube: h = ${h}, Nu k ÷ D = ${(Nu! * k!) / D!}`);
+    if (has(D, V, nu, Re) && !near(Re!, (V! * D!) / nu!))
+      out.push(`tube: Re = ${Re}, VD ÷ ν = ${(V! * D!) / nu!}`);
+  } else if (spec.mode === 'radiation') {
+    const [eps, sigma, Ts, Tsu, A, q] = [
+      get(spec.eps),
+      get(spec.sigma),
+      get(spec.Ts),
+      get(spec.Tsurr),
+      get(spec.A),
+      get(spec.q),
+    ];
+    if (Ts !== undefined && !(Ts > 0)) out.push(`radiation: T_s = ${Ts} K is not above 0 K`);
+    if (has(eps, sigma, Ts, Tsu)) {
+      const [o, i] = [radiant(eps!, sigma!, Ts!), radiant(eps!, sigma!, Tsu!)];
+      if (i > 0 && !near(o / i, (Ts! / Tsu!) ** 4))
+        out.push('radiation: arrows not in the ratio (T_s ÷ T_surr)⁴');
+      if (has(A, q) && Math.abs(q! - A! * (o - i)) > 1e-3 * A! * Math.max(o, i))
+        out.push(`radiation: q = ${q}, εσA(T_s⁴ − T_surr⁴) = ${A! * (o - i)}`);
+    }
+  } else if (spec.mode === 'wire') {
+    const [S, R, k, Ts, Tc] = [
+      get(spec.S),
+      len(spec.radius),
+      get(spec.k),
+      get(spec.Ts),
+      get(spec.Tc),
+    ];
+    if (has(S, R, k, Ts, Tc) && k! > 0) {
+      const rise = wireT(0, R!, S!, k!, Ts!) - Ts!;
+      if (!near(Tc! - Ts!, rise, 2e-3))
+        out.push(`wire: T_c − T_s = ${Tc! - Ts!}, SR² ÷ 4k = ${rise}`);
     }
   }
   return out;

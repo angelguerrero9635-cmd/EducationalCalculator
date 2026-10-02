@@ -121,6 +121,7 @@ search or the sitemap, but the module tests and the harness run over it):
 | `controlVolume`    | a unit or steel device in a control volume; streams, Q̇, Ẇ, in = out   | College balances, devices (HC5)     |
 | `velocityProfile`  | tube, vessel, plates or film: v arrows, v_max = 2v_avg, τ_w; c lines  | College transport, blood (HC13)     |
 | `propertyDiagram`  | T–v, P–v, T–s: IAPWS vapor dome, tie line, states, cycles; vdW P–v    | College thermodynamics (HC17)       |
+| `thermalWall`      | layered wall, pipe, fin, tube, wire: T profile, R network; εσT⁴       | College heat transfer (HC23)        |
 | `projectile`       | a launch to scale: path, vₓ and v_y at three points, H and R; drag θ  | Physics 2D motion, parametric (H59) |
 | `freeBody`         | a block on a floor, ramp or rope; forces to scale, W sin θ; the net   | Physics forces, inclines (H60)      |
 | `circularMotion`   | v tangent, v²/r to the center; Gm₁m₂/r² pulls; Kepler ellipse, areas  | Physics circles, gravity (H61)      |

@@ -185,6 +185,7 @@ import { Hs3cPicture } from './Hs3cPicture';
 import { FluidSystem } from './FluidSystem';
 import { ControlVolume } from './ControlVolume';
 import { VelocityProfile } from './VelocityProfile';
+import { ThermalWall } from './ThermalWall';
 import { PropertyDiagram } from './PropertyDiagram';
 import { MotionGraphHs } from './MotionGraphHs';
 import { HskView } from './HskView';
@@ -344,6 +345,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <ControlVolume spec={spec} calc={calc} />;
     case 'velocityProfile':
       return <VelocityProfile spec={spec} calc={calc} />;
+    case 'thermalWall':
+      return <ThermalWall spec={spec} calc={calc} />;
     case 'propertyDiagram':
       return <PropertyDiagram spec={spec} calc={calc} />;
     case 'linearFunction':

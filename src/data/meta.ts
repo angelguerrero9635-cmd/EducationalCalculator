@@ -149,6 +149,7 @@ const PICTURE_NAMES: Record<string, string> = {
   controlVolume: 'a process unit or device with its streams balanced',
   velocityProfile: 'velocity or concentration profiles across a tube, gap or film',
   propertyDiagram: 'a T–v, P–v or T–s plane with the vapor dome, states and a cycle',
+  thermalWall: 'heat through a layered wall, a pipe, a fin, a tube or a wire, or radiated away',
   matrixGrid: 'matrices in brackets',
   membrane: 'cell membrane with particles on each side',
   dnaStrand: 'DNA ladder, mRNA and amino acids',
