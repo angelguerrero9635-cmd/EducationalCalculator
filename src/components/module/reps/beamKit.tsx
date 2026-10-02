@@ -17,6 +17,7 @@ import {
   TSpan,
 } from 'react-native-svg';
 
+import { subscriptRuns } from '@/engine/subscripts';
 import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
@@ -94,6 +95,15 @@ export function HeLabel({
   let left = anchor === 'start' ? x : anchor === 'end' ? x - width : x - width / 2;
   if (w !== undefined) left = Math.min(w - width - 4, Math.max(4, left));
   const drop = size * 0.3;
+  // The symbol's runs, then the rest, whose own subscripts ("…, σ′_p = 120 kPa") are lowered
+  // too, never shown as a raw "_".
+  const spans: { s: string; sub: boolean; italic: boolean }[] = [
+    ...parts.map((p) => {
+      const sub = p.startsWith('_');
+      return { s: sub ? p.slice(1) : p, sub, italic: !sub && LETTER.test(p) };
+    }),
+    ...subscriptRuns(tail).map((r) => ({ s: r.s, sub: !!r.sub, italic: false })),
+  ];
   return (
     <G>
       {chip ? (
@@ -108,23 +118,19 @@ export function HeLabel({
         />
       ) : null}
       <ChartText x={left} y={y} fontSize={size} fontWeight="700" fill={color ?? c.chartInk}>
-        {parts.map((p, i) => {
-          const sub = p.startsWith('_');
-          const prevSub = i > 0 && parts[i - 1]!.startsWith('_');
+        {spans.map((p, i) => {
+          const prevSub = i > 0 && spans[i - 1]!.sub;
           return (
             <TSpan
               key={i}
-              dy={sub ? drop : prevSub ? -drop : 0}
-              fontSize={sub ? size * 0.78 : size}
-              fontStyle={!sub && LETTER.test(p) ? 'italic' : 'normal'}
+              dy={(p.sub ? drop : 0) - (prevSub ? drop : 0)}
+              fontSize={p.sub ? size * 0.78 : size}
+              fontStyle={p.italic ? 'italic' : 'normal'}
             >
-              {sub ? p.slice(1) : p}
+              {p.s}
             </TSpan>
           );
         })}
-        <TSpan dy={parts.length && parts[parts.length - 1]!.startsWith('_') ? -drop : 0}>
-          {tail}
-        </TSpan>
       </ChartText>
     </G>
   );

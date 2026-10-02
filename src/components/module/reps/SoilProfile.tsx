@@ -403,19 +403,25 @@ export function SoilProfile({ spec, calc }: { spec: SoilProfileSpec; calc: Calcu
           col,
         );
       }
-      // The marked depth.
+      // The marked depth: its line broken where its depth is named on the axis.
       const y = Y(z);
+      const gap = labelW(`${fmt(z)} m`) / 2 + 2;
       body.push(
-        <Line
-          key="z"
-          x1={colX}
-          x2={cx0 + cw}
-          y1={y}
-          y2={y}
-          stroke={c.chartHighlight}
-          strokeWidth={1.2}
-          strokeDasharray={chart.dashFine}
-        />,
+        ...[
+          [colX, cx0 - 22 - gap],
+          [cx0 - 22 + gap, cx0 + cw],
+        ].map(([xa, xb], k) => (
+          <Line
+            key={`z${k}`}
+            x1={xa}
+            x2={xb}
+            y1={y}
+            y2={y}
+            stroke={c.chartHighlight}
+            strokeWidth={1.2}
+            strokeDasharray={chart.dashFine}
+          />
+        )),
       );
       for (const [v, col] of [
         [at.sigma, c.soilSigma],
@@ -645,7 +651,7 @@ export function SoilProfile({ spec, calc }: { spec: SoilProfileSpec; calc: Calcu
       caption.push(
         oc && end > sp
           ? `S = H ÷ (1 + e₀) × (C_s log(σ′_p ÷ σ′₀) + C_c log((σ′₀ + Δσ) ÷ σ′_p)) = ${fmt(H)} ÷ ${fmt(1 + e0!)} × (${fmt(Cs)} log(${fmt(sp)} ÷ ${fmt(s0!)}) + ${fmt(Cc!)} log(${fmt(end)} ÷ ${fmt(sp)})) = ${fmt(S)} m.`
-          : `S = ${oc ? 'C_s' : 'C_c'}H ÷ (1 + e₀) × log((σ′₀ + Δσ) ÷ σ′₀) = ${fmt(oc ? Cs : Cc!)} × ${fmt(H)} ÷ ${fmt(1 + e0!)} × log(${fmt(end)} ÷ ${fmt(s0!)}) = ${fmt(S)} m.`,
+          : `S = ${oc ? 'C_s' : 'C_c'}·H ÷ (1 + e₀) × log((σ′₀ + Δσ) ÷ σ′₀) = ${fmt(oc ? Cs : Cc!)} × ${fmt(H)} ÷ ${fmt(1 + e0!)} × log(${fmt(end)} ÷ ${fmt(s0!)}) = ${fmt(S)} m.`,
       );
       caption.push('The dashed line is the surface after settling, drawn to the same scale as H.');
     }
@@ -853,8 +859,8 @@ export function SoilProfile({ spec, calc }: { spec: SoilProfileSpec; calc: Calcu
       );
       caption.push(
         sq
-          ? 'A square footing: q_u = 1.3c′N_c + γD_fN_q + 0.4γBN_γ.'
-          : 'A strip footing: q_u = c′N_c + γD_fN_q + ½γBN_γ.',
+          ? 'A square footing: q_u = 1.3c′N_c + γD_f·N_q + 0.4γB·N_γ.'
+          : 'A strip footing: q_u = c′N_c + γD_f·N_q + ½γB·N_γ.',
       );
       caption.push(
         `Drawn to scale: D_f ÷ B = ${fmt(Df / B)}. The wedges push the soil out and up beside the footing.`,
@@ -963,10 +969,14 @@ export function SoilProfile({ spec, calc }: { spec: SoilProfileSpec; calc: Calcu
       const row = [lab(spec.c, 'c', cc, uc), lab(spec.d, 'd', d, uc)].filter(Boolean).join('    ');
       L.place('cd', [[cx, by + 38]], row, undefined, false);
       BH = by + 46;
-      if (d !== undefined)
+      if (d !== undefined) {
+        // In the units the page shows (a page in inches read in metric shows cm here too).
+        const shown = (x: NumOrVar | undefined, v: number) =>
+          typeof x === 'string' && rep.known(x) ? rep.value(x) : `${fmt(v)} ${uc}`;
         caption.push(
-          `b₀ = 4(c + d) = 4 × (${fmt(cc)} + ${fmt(d)}) = ${fmt(4 * (cc + d))} ${uc}, d ÷ 2 out from each face of the column.`,
+          `b₀ = 4(c + d) = 4 × (${shown(spec.c, cc)} + ${shown(spec.d, d)}) = ${shown(spec.b0, 4 * (cc + d))}, d ÷ 2 out from each face of the column.`,
         );
+      }
       caption.push(
         'The shaded soil pressure outside the perimeter is the shear V_u the slab must carry.',
       );
