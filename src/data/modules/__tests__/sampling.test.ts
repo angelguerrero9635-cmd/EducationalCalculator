@@ -50,6 +50,7 @@ import {
   shownClose,
   withinRounding,
 } from '../harness/evaluate';
+import { caseIssues } from '../harness/cases';
 import { pictureCoverage, repIssues } from '../harness/pictures';
 import {
   asValues,
@@ -434,6 +435,15 @@ function checkSteps(c: Ctx, res: SolveResult, where: string) {
     if (/ = less than 1 cent/.test(s.result)) continue;
     // (nor does a p-value under its step: "P < 0.0001")
     if (/^\S+ < /.test(s.result)) continue;
+    // A relation that switches names its case, and a category answer is its word (HE-E11/12).
+    const from = res.trace.find((t) => t.id === s.id)?.relation;
+    const switching = c.module.relations.find((r) => r.id === from && r.branches);
+    if (switching) {
+      const shown = w.steps.flatMap((x) => x.lines);
+      for (const issue of caseIssues(s, c.byId.get(s.id)!, switching, res.values, shown))
+        c.f.add('error', `${c.label}${issue}`, where);
+      if (c.byId.get(s.id)!.labels) continue;
+    }
     // The answer's leading number ("536¢ ($5.36)" → 536).
     const value = resultNumber(s.result, true);
     // The substituted line is left out when it would only repeat the rearranged line (numbers
