@@ -32,7 +32,7 @@ const SIZE = chart.label;
 const SUB = ['₁', '₂', '₃', '₄', '₅'];
 
 type Box = { x1: number; y1: number; x2: number; y2: number };
-const labelW = (t: string) => t.replace(/_/g, '').length * SIZE * 0.58 + 6;
+export const labelW = (t: string) => t.replace(/_/g, '').length * SIZE * 0.58 + 6;
 const boxAt = (x: number, y: number, t: string): Box => {
   const w = labelW(t);
   return { x1: x - w / 2, y1: y - SIZE, x2: x + w / 2, y2: y + 5 };
@@ -45,10 +45,11 @@ const jitter = (i: number) => {
   return s - Math.floor(s);
 };
 
-type Material = 'sand' | 'clay' | 'silt' | 'gravel' | 'asphalt' | 'base' | 'subgrade' | 'concrete';
+export type Material =
+  'sand' | 'clay' | 'silt' | 'gravel' | 'asphalt' | 'base' | 'subgrade' | 'concrete';
 
 /** A patch of a material from (x, y), w × h: its colour, its grains or stones, lit from above. */
-function Patch({
+export function Patch({
   x,
   y,
   w,
@@ -139,7 +140,7 @@ function Patch({
 }
 
 /** Labels kept apart: `place` puts one at the first clear spot inside the canvas. */
-function useLabels() {
+export function useLabels() {
   const placed: Box[] = [];
   const els: ReactNode[] = [];
   const place = (

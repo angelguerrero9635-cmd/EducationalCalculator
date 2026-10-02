@@ -1,8 +1,8 @@
 /**
  * College gallery demos, round 2, group I (docs/RENDERINGS_HE.md): HC27 `truss` and its card
- * figure, HC26 `soilProfile`. Each stands in for the college page that waits, built from the
- * plan's worked example (docs/plans/he.mechanical.md, he.aero-civil-chemical.md). Spread into
- * gallery.ts.
+ * figure, HC26 `soilProfile`, HC32 `survey`. Each stands in for the college page that waits,
+ * built from the plan's worked example (docs/plans/he.mechanical.md, he.aero-civil-chemical.md).
+ * Spread into gallery.ts.
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
@@ -1422,6 +1422,462 @@ const paveThin = pavement(
   80,
 );
 
+// ─── HC32 survey ─────────────────────────────────────────────────────────────
+
+const cosD = (x: number) => Math.cos(x * D);
+
+/** One course's latitude and departure (surveying#2). */
+function course(id: string, title: string, use: string, az: number, L: number): ModuleDef {
+  return demo(id, title, {
+    use,
+    assumptions: [
+      'The azimuth is measured clockwise from north, 0° to 360°.',
+      'North and east are +, south and west −; the latitude is the north part, the departure the east part.',
+    ],
+    variables: [
+      v('az', 'Az', 'Azimuth', '°', 0, 360),
+      v('L', 'L', 'Course length', 'm', 0.01, 1e5),
+      v('lat', 'lat', 'Latitude', 'm', -1e5, 1e5),
+      v('dep', 'dep', 'Departure', 'm', -1e5, 1e5),
+    ],
+    relations: [
+      rel(
+        'lat = L cos(Az)',
+        '{lat} = {L} × cos({az})',
+        ['lat', 'L', 'az'],
+        (x) => x.lat! - x.L! * cosD(x.az!),
+        {
+          lat: [(x) => x.L! * cosD(x.az!), '{L} × cos({az})', 'The north part of the course.'],
+        },
+      ),
+      rel(
+        'dep = L sin(Az)',
+        '{dep} = {L} × sin({az})',
+        ['dep', 'L', 'az'],
+        (x) => x.dep! - x.L! * sinD(x.az!),
+        {
+          dep: [(x) => x.L! * sinD(x.az!), '{L} × sin({az})', 'The east part of the course.'],
+        },
+      ),
+    ],
+    example: { az, L, lat: L * cosD(az), dep: L * sinD(az) },
+    startWith: ['az', 'L'],
+    representation: {
+      kind: 'survey',
+      mode: 'traverse',
+      courses: [{ azimuth: 'az', length: 'L' }],
+      lit: 0,
+      lat: 'lat',
+      dep: 'dep',
+    },
+  });
+}
+
+const surveyCourse = course(
+  'g.he-survey-course',
+  'Latitude and departure of a course',
+  'Use this for “A course runs 120.00 m at an azimuth of 52°00′. Find its latitude and departure.”',
+  52,
+  120,
+);
+
+const surveyCourseSW = course(
+  'g.he-survey-course-southwest',
+  'A course to the southwest: both parts negative',
+  'Use this for “A course runs 85 m at an azimuth of 230°. Which way are its latitude and departure?”',
+  230,
+  85,
+);
+
+/** A closed traverse of four courses, 850 m round (a rectangle turned 20° from north). */
+const TRAVERSE = [
+  { azimuth: 20, length: 120 },
+  { azimuth: 110, length: 305 },
+  { azimuth: 200, length: 120 },
+  { azimuth: 290, length: 305 },
+];
+
+const closure = demo('g.he-survey-closure', 'Linear misclosure and relative precision', {
+  use: 'Use this for “A traverse 850 m round closes with Σlat = +0.08 m and Σdep = −0.06 m. Find e and the precision.”',
+  assumptions: [
+    'Σlat and Σdep are what the measured courses add to; a perfect closed traverse adds to 0 both ways.',
+    'The precision is one part in P ÷ e.',
+  ],
+  variables: [
+    v('sLat', 'Σlat', 'Sum of latitudes', 'm', -100, 100),
+    v('sDep', 'Σdep', 'Sum of departures', 'm', -100, 100),
+    v('P', 'P', 'Perimeter', 'm', 1, 1e6),
+    v('e', 'e', 'Linear misclosure', 'm', 0, 200),
+    v('x', 'x', 'Precision (one part in x)', undefined, 0, 1e9),
+  ],
+  relations: [
+    rel(
+      'e = √(Σlat² + Σdep²)',
+      '{e} = √({sLat}² + {sDep}²)',
+      ['e', 'sLat', 'sDep'],
+      (x) => x.e! - Math.hypot(x.sLat!, x.sDep!),
+      {
+        e: [
+          (x) => Math.hypot(x.sLat!, x.sDep!),
+          '√({sLat}² + {sDep}²)',
+          'The gap’s two parts make a right triangle.',
+        ],
+      },
+    ),
+    rel('x = P ÷ e', '{x} = {P} ÷ {e}', ['x', 'P', 'e'], (x) => x.x! - x.P! / x.e!, {
+      x: [
+        (x) => fin(x.P! / x.e!),
+        '{P} ÷ {e}',
+        'How many metres of traverse for each metre of gap.',
+      ],
+      P: [(x) => x.x! * x.e!, '{x} × {e}', 'Undo the division.'],
+    }),
+  ],
+  example: { sLat: 0.08, sDep: -0.06, P: 850, e: 0.1, x: 8500 },
+  startWith: ['sLat', 'sDep', 'P'],
+  representation: {
+    kind: 'survey',
+    mode: 'traverse',
+    courses: TRAVERSE,
+    closure: { sumLat: 'sLat', sumDep: 'sDep', e: 'e', P: 'P', precision: 'x' },
+  },
+});
+
+const compass = demo('g.he-survey-compass', 'Compass-rule correction of one course', {
+  use: 'Use this for “Σlat = +0.08 m, Σdep = −0.06 m round 850 m. Correct the 120 m course by the compass rule.”',
+  assumptions: [
+    'The compass (Bowditch) rule shares the misclosure out in proportion to each course’s length.',
+    'The correction has the opposite sign to the misclosure.',
+  ],
+  variables: [
+    v('sLat', 'Σlat', 'Sum of latitudes', 'm', -100, 100),
+    v('sDep', 'Σdep', 'Sum of departures', 'm', -100, 100),
+    v('L', 'L', 'Course length', 'm', 1, 1e5),
+    v('P', 'P', 'Perimeter', 'm', 1, 1e6),
+    v('cLat', 'c_lat', 'Latitude correction', 'm', -100, 100),
+    v('cDep', 'c_dep', 'Departure correction', 'm', -100, 100),
+  ],
+  relations: [
+    atMost('L', 'P', '{L} ≤ {P}', 'One course can’t be longer than the whole traverse.'),
+    rel(
+      'c_lat = −Σlat × L ÷ P',
+      '{cLat} = −{sLat} × {L} ÷ {P}',
+      ['cLat', 'sLat', 'L', 'P'],
+      (x) => x.cLat! + (x.sLat! * x.L!) / x.P!,
+      {
+        cLat: [
+          (x) => fin((-x.sLat! * x.L!) / x.P!),
+          '−{sLat} × {L} ÷ {P}',
+          'The course’s share L ÷ P of the north gap, the other way.',
+        ],
+      },
+    ),
+    rel(
+      'c_dep = −Σdep × L ÷ P',
+      '{cDep} = −{sDep} × {L} ÷ {P}',
+      ['cDep', 'sDep', 'L', 'P'],
+      (x) => x.cDep! + (x.sDep! * x.L!) / x.P!,
+      {
+        cDep: [
+          (x) => fin((-x.sDep! * x.L!) / x.P!),
+          '−{sDep} × {L} ÷ {P}',
+          'The course’s share L ÷ P of the east gap, the other way.',
+        ],
+      },
+    ),
+  ],
+  example: {
+    sLat: 0.08,
+    sDep: -0.06,
+    L: 120,
+    P: 850,
+    cLat: (-0.08 * 120) / 850,
+    cDep: (0.06 * 120) / 850,
+  },
+  startWith: ['sLat', 'sDep', 'L', 'P'],
+  representation: {
+    kind: 'survey',
+    mode: 'traverse',
+    courses: [{ azimuth: 20, length: 'L' }, ...TRAVERSE.slice(1)],
+    lit: 0,
+    closure: { sumLat: 'sLat', sumDep: 'sDep', P: 'P' },
+    compass: { cLat: 'cLat', cDep: 'cDep' },
+  },
+});
+
+/** The interior angles of a closed traverse (surveying#0~angle-closure). */
+function angleClosure(
+  id: string,
+  title: string,
+  use: string,
+  n: number,
+  misSec: number,
+): ModuleDef {
+  const req = (n - 2) * 180;
+  return demo(id, title, {
+    use,
+    assumptions: [
+      'The interior angles of a closed polygon of n sides add to (n − 2) × 180°.',
+      'The misclosure is shared equally, the same correction (in seconds) to every angle.',
+    ],
+    variables: [
+      v('n', 'n', 'Sides', undefined, 3, 10, { integer: true }),
+      v('meas', 'S_m', 'Sum of the measured angles', '°', 1, 1800),
+      v('req', 'S_r', 'Sum they should make', '°', 1, 1800),
+      v('mis', 'E', 'Misclosure', '″', -3600, 3600),
+      v('corr', 'c', 'Correction per angle', '″', -3600, 3600),
+    ],
+    relations: [
+      rel(
+        'required = (n − 2) × 180°',
+        '{req} = ({n} − 2) × 180',
+        ['req', 'n'],
+        (x) => x.req! - (x.n! - 2) * 180,
+        {
+          req: [
+            (x) => (x.n! - 2) * 180,
+            '({n} − 2) × 180',
+            'A polygon splits into n − 2 triangles of 180° each.',
+          ],
+          n: [(x) => x.req! / 180 + 2, '{req} ÷ 180 + 2', 'Undo the rule.'],
+        },
+      ),
+      rel(
+        'misclosure = (measured − required) × 3600',
+        '{mis} = ({meas} − {req}) × 3600',
+        ['mis', 'meas', 'req'],
+        (x) => x.mis! - (x.meas! - x.req!) * 3600,
+        {
+          mis: [
+            (x) => (x.meas! - x.req!) * 3600,
+            '({meas} − {req}) × 3600',
+            'The extra, in seconds (3600″ to a degree).',
+          ],
+          meas: [
+            (x) => x.req! + x.mis! / 3600,
+            '{req} + {mis} ÷ 3600',
+            'Add the extra back in degrees.',
+          ],
+        },
+      ),
+      rel(
+        'correction = −misclosure ÷ n',
+        '{corr} = −{mis} ÷ {n}',
+        ['corr', 'mis', 'n'],
+        (x) => x.corr! + x.mis! / x.n!,
+        {
+          corr: [
+            (x) => fin(-x.mis! / x.n!),
+            '−{mis} ÷ {n}',
+            'Each angle gives back an equal share.',
+          ],
+          mis: [(x) => -x.corr! * x.n!, '−{corr} × {n}', 'Undo the share.'],
+        },
+      ),
+    ],
+    example: { n, meas: req + misSec / 3600, req, mis: misSec, corr: -misSec / n },
+    startWith: ['n', 'meas'],
+    representation: {
+      kind: 'survey',
+      mode: 'angles',
+      n: 'n',
+      measured: 'meas',
+      required: 'req',
+      misclosure: 'mis',
+      correction: 'corr',
+    },
+  });
+}
+
+const angles = angleClosure(
+  'g.he-survey-angles',
+  'Interior angle sum and misclosure of a closed traverse',
+  'Use this for “The five interior angles of a traverse add to 540°00′25″. What should they add to, and how much is each corrected?”',
+  5,
+  25,
+);
+
+const anglesTriangle = angleClosure(
+  'g.he-survey-angles-triangle',
+  'A three-sided traverse that falls short',
+  'Use this for “A triangle’s measured angles add to 179°59′48″. Correct each angle.”',
+  3,
+  -12,
+);
+
+/** Differential leveling with two setups (surveying#1). */
+function leveling(id: string, title: string, use: string, r: number[]): ModuleDef {
+  const [BM, BS1, FS1, BS2, FS2] = r as [number, number, number, number, number];
+  const HI1 = BM + BS1;
+  const TP = HI1 - FS1;
+  const HI2 = TP + BS2;
+  const B = HI2 - FS2;
+  const vars = [
+    v('BM', 'BM', 'Benchmark elevation', 'm', -500, 9000),
+    v('BS1', 'BS₁', 'Backsight on BM', 'm', 0, 5),
+    v('HI1', 'HI₁', 'Height of the first setup', 'm', -500, 9000),
+    v('FS1', 'FS₁', 'Foresight on TP1', 'm', 0, 5),
+    v('TP', 'TP1', 'Turning point elevation', 'm', -500, 9000),
+    v('BS2', 'BS₂', 'Backsight on TP1', 'm', 0, 5),
+    v('HI2', 'HI₂', 'Height of the second setup', 'm', -500, 9000),
+    v('FS2', 'FS₂', 'Foresight on B', 'm', 0, 5),
+    v('B', 'B', 'Elevation of B', 'm', -500, 9000),
+  ];
+  const add = (y: string, a: string, b: string, how: string) =>
+    rel(
+      `${y} = ${a} + ${b}`,
+      `{${y}} = {${a}} + {${b}}`,
+      [y, a, b],
+      (x) => x[y]! - (x[a]! + x[b]!),
+      {
+        [y]: [(x) => x[a]! + x[b]!, `{${a}} + {${b}}`, how],
+        [a]: [(x) => x[y]! - x[b]!, `{${y}} − {${b}}`, 'Take the reading off.'],
+      },
+    );
+  const sub = (y: string, a: string, b: string, how: string) =>
+    rel(
+      `${y} = ${a} − ${b}`,
+      `{${y}} = {${a}} − {${b}}`,
+      [y, a, b],
+      (x) => x[y]! - (x[a]! - x[b]!),
+      {
+        [y]: [(x) => x[a]! - x[b]!, `{${a}} − {${b}}`, how],
+        [b]: [
+          (x) => x[a]! - x[y]!,
+          `{${a}} − {${y}}`,
+          'The rod read what the line of sight stood above the point.',
+        ],
+      },
+    );
+  return demo(id, title, {
+    use,
+    assumptions: [
+      'Backsight and foresight distances are balanced, so curvature, refraction and collimation errors cancel.',
+      'HI = elevation + BS; elevation = HI − FS.',
+    ],
+    variables: vars,
+    relations: [
+      add('HI1', 'BM', 'BS1', 'The line of sight stands BS above the benchmark.'),
+      sub('TP', 'HI1', 'FS1', 'The turning point is FS below the line of sight.'),
+      add('HI2', 'TP', 'BS2', 'The second setup sights back on TP1.'),
+      sub('B', 'HI2', 'FS2', 'B is FS below the second line of sight.'),
+    ],
+    example: { BM, BS1, HI1, FS1, TP, BS2, HI2, FS2, B },
+    startWith: ['BM', 'BS1', 'FS1', 'BS2', 'FS2'],
+    representation: {
+      kind: 'survey',
+      mode: 'level',
+      BM: 'BM',
+      BS1: 'BS1',
+      FS1: 'FS1',
+      BS2: 'BS2',
+      FS2: 'FS2',
+      HI1: 'HI1',
+      HI2: 'HI2',
+      TP: 'TP',
+      B: 'B',
+    },
+  });
+}
+
+const level = leveling(
+  'g.he-survey-level',
+  'Elevations by differential leveling',
+  'Use this for “From BM 100.000 m: BS 1.245, FS 2.110 on TP1; BS 0.876, FS 1.532 on B. Find B’s elevation.”',
+  [100, 1.245, 2.11, 0.876, 1.532],
+);
+
+const levelUphill = leveling(
+  'g.he-survey-level-uphill',
+  'Leveling uphill: the foresights are short',
+  'Use this for “From BM 250.000 m: BS 3.410, FS 0.620; BS 3.105, FS 0.415. How much higher is B?”',
+  [250, 3.41, 0.62, 3.105, 0.415],
+);
+
+/** Curvature and refraction over a long sight (surveying#1~curvature). */
+function curvature(id: string, title: string, use: string, K: number): ModuleDef {
+  return demo(id, title, {
+    use,
+    assumptions: [
+      'h = 0.0675K² with K in km and h in m: the earth’s curve, less about a seventh for refraction.',
+      'The level line is horizontal at the instrument; the ground falls away from it.',
+    ],
+    variables: [
+      v('K', 'K', 'Sight distance', 'km', 0.01, 100),
+      v('h', 'h', 'Combined correction', 'm', 0, 1e4),
+    ],
+    relations: [
+      rel('h = 0.0675K²', '{h} = 0.0675 × {K}²', ['h', 'K'], (x) => x.h! - 0.0675 * x.K! ** 2, {
+        h: [
+          (x) => 0.0675 * x.K! ** 2,
+          '0.0675 × {K}²',
+          'The drop grows with the square of the distance.',
+        ],
+        K: [(x) => Math.sqrt(x.h! / 0.0675), '√({h} ÷ 0.0675)', 'Undo the square.'],
+      }),
+    ],
+    example: { K, h: 0.0675 * K * K },
+    startWith: ['K'],
+    representation: { kind: 'survey', mode: 'curvature', K: 'K', h: 'h' },
+  });
+}
+
+const curv = curvature(
+  'g.he-survey-curvature',
+  'Curvature and refraction over a long sight',
+  'Use this for “How far below a level line is the ground 2 km away?”',
+  2,
+);
+
+const curvFar = curvature(
+  'g.he-survey-curvature-far',
+  'Curvature over 10 km',
+  'Use this for “A sight across a 10 km lake: how big is the curvature and refraction correction?”',
+  10,
+);
+
+/** Orthometric height from GNSS (surveying#3). */
+function heights(id: string, title: string, use: string, h: number, N: number): ModuleDef {
+  return demo(id, title, {
+    use,
+    assumptions: [
+      'h is what GNSS measures: height above the ellipsoid.',
+      'N comes from a geoid model (negative across most of the US); H is the height above mean sea level surveyors use.',
+    ],
+    variables: [
+      v('h', 'h', 'Ellipsoid height', 'm', -1000, 9000),
+      v('N', 'N', 'Geoid height', 'm', -110, 90),
+      v('H', 'H', 'Orthometric height', 'm', -1000, 9000),
+    ],
+    relations: [
+      rel('H = h − N', '{H} = {h} − {N}', ['H', 'h', 'N'], (x) => x.H! - (x.h! - x.N!), {
+        H: [(x) => x.h! - x.N!, '{h} − {N}', 'Measure from the geoid instead of the ellipsoid.'],
+        h: [(x) => x.H! + x.N!, '{H} + {N}', 'Add the geoid’s height back.'],
+        N: [(x) => x.h! - x.H!, '{h} − {H}', 'The difference between the two heights.'],
+      }),
+    ],
+    example: { h, N, H: h - N },
+    startWith: ['h', 'N'],
+    representation: { kind: 'survey', mode: 'heights', h: 'h', N: 'N', H: 'H' },
+  });
+}
+
+const gnss = heights(
+  'g.he-survey-heights',
+  'Orthometric height from a GNSS height and the geoid',
+  'Use this for “GNSS gives h = 45.320 m where N = −28.750 m. What is the orthometric height?”',
+  45.32,
+  -28.75,
+);
+
+const gnssAbove = heights(
+  'g.he-survey-heights-geoid-above',
+  'Where the geoid lies above the ellipsoid',
+  'Use this for “h = 150.20 m and N = +12.50 m. Is H more or less than h?”',
+  150.2,
+  12.5,
+);
+
 export const HE2I_GALLERY_MODULES: ModuleDef[] = [
   triangle,
   sections,
@@ -1442,6 +1898,18 @@ export const HE2I_GALLERY_MODULES: ModuleDef[] = [
   punching,
   pave,
   paveThin,
+  surveyCourse,
+  surveyCourseSW,
+  closure,
+  compass,
+  angles,
+  anglesTriangle,
+  level,
+  levelUphill,
+  curv,
+  curvFar,
+  gnss,
+  gnssAbove,
 ];
 
 export const HE2I_GALLERY_LAYOUTS: LayoutDef[] = [zeroForce];

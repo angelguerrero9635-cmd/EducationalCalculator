@@ -71,7 +71,7 @@ import { he1aIssues } from './picturesHe1a';
 import { gasMixtureIssues } from './picturesHs3e';
 import { netIssues, oscillatorIssues } from './picturesHe1h';
 import { skeletalIssues } from './picturesHe1c';
-import { soilProfileIssues, trussIssues } from './picturesHe2i';
+import { soilProfileIssues, surveyIssues, trussIssues } from './picturesHe2i';
 import { phaseEnvelopeIssues, phaseSubstanceIssues } from './picturesHe1i';
 import { he1fIssues } from './picturesHe1f';
 import type { ModuleDef, Representation } from '../types';
@@ -2205,6 +2205,9 @@ export function repIssues(
       break;
     case 'soilProfile':
       out.push(...soilProfileIssues(rep, siOf(val, byId)));
+      break;
+    case 'survey':
+      out.push(...surveyIssues(rep, siOf(val, byId)));
       break;
     case 'gel':
     case 'alleleFrequencies':

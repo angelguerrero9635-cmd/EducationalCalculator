@@ -157,6 +157,7 @@ const PICTURE_NAMES: Record<string, string> = {
   skeletal: 'a line-angle structure: wedges, CIP ranks, rings and π bonds, the chair',
   truss: 'a truss: member forces with T or C, a section cut, a bar element',
   soilProfile: 'soil to scale: σ, u and σ′ with depth, settlement, a footing, a pavement',
+  survey: 'a traverse with latitude and departure, leveling, h, N and H',
   projectile: 'projectile path with its velocity components',
   induction: 'induction: coil and magnet, force on a wire, transformer',
   charges: 'point charges with field lines and forces',

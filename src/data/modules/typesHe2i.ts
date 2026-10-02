@@ -1,8 +1,8 @@
 /**
  * Picture specs for college pictures, round 2, group I (docs/RENDERINGS_HE.md): HC27 `truss`,
- * its card figure `trussJoint` and HC26 `soilProfile`. Kept apart from `types.ts` so its union
- * only names them. A `NumOrVar` field is a fixed number or a variable id, in the page's own
- * units (the spec names them).
+ * its card figure `trussJoint`, HC26 `soilProfile` and HC32 `survey`. Kept apart from `types.ts`
+ * so its union only names them. A `NumOrVar` field is a fixed number or a variable id, in the
+ * page’s own units (the spec names them).
  */
 import type { NumOrVar } from './typesGraphs';
 
@@ -217,5 +217,98 @@ export function soilProfileVars(r: SoilProfileSpec): string[] {
       return ids(r.B, r.c, r.d, r.b0);
     case 'pavement':
       return [...r.layers.flatMap((l) => ids(l.a, l.D, l.m)), ...ids(r.SN, r.load)];
+  }
+}
+
+/**
+ * Surveying (HC32; ACC-P27, P28, P29), drawn flat on a plan or a section, the level, rods and
+ * ground painted. Lengths in m, angles in degrees (azimuths clockwise from north), north up.
+ *
+ * - `traverse`: courses laid end to end from station A by azimuth and length. `lit` draws one
+ *   course's latitude (north part) and departure (east part) with its azimuth from north;
+ *   `closure` draws the misclosure gap (Σlat, Σdep, magnified) with e and P ÷ e; `compass` the
+ *   lit course's correction −Σ × L ÷ P; `angles` instead draws a closed polygon of n sides with
+ *   its interior angles, the required sum (n − 2) × 180° and the misclosure shared out.
+ * - `level`: differential leveling with two setups: rods on BM, TP1 and B, a level between each
+ *   pair, the backsight and foresight read where the line of sight meets each rod, HI = elevation
+ *   + BS and elevation = HI − FS. Or `curvature`: one long sight over the curved earth, the
+ *   level line leaving the surface by h = coef × K² (K in km, h in m) at distance K.
+ * - `heights`: the terrain, the geoid and the ellipsoid at a point: h (ellipsoid to terrain),
+ *   N (ellipsoid to geoid, the geoid below the ellipsoid when N < 0) and H = h − N.
+ */
+export type SurveySpec =
+  | {
+      kind: 'survey';
+      mode: 'traverse';
+      courses: { azimuth: NumOrVar; length: NumOrVar }[];
+      lit?: number;
+      lat?: NumOrVar;
+      dep?: NumOrVar;
+      closure?: {
+        sumLat: NumOrVar;
+        sumDep: NumOrVar;
+        e?: NumOrVar;
+        P?: NumOrVar;
+        precision?: NumOrVar;
+      };
+      compass?: { cLat?: NumOrVar; cDep?: NumOrVar };
+    }
+  | {
+      kind: 'survey';
+      mode: 'angles';
+      n: NumOrVar;
+      measured?: NumOrVar;
+      required?: NumOrVar;
+      /** In seconds of arc. */
+      misclosure?: NumOrVar;
+      correction?: NumOrVar;
+    }
+  | {
+      kind: 'survey';
+      mode: 'level';
+      BM: NumOrVar;
+      BS1: NumOrVar;
+      FS1: NumOrVar;
+      BS2: NumOrVar;
+      FS2: NumOrVar;
+      HI1?: NumOrVar;
+      HI2?: NumOrVar;
+      TP?: NumOrVar;
+      B?: NumOrVar;
+    }
+  | {
+      kind: 'survey';
+      mode: 'curvature';
+      K: NumOrVar;
+      h: NumOrVar;
+      coef?: number;
+    }
+  | {
+      kind: 'survey';
+      mode: 'heights';
+      h: NumOrVar;
+      N: NumOrVar;
+      H?: NumOrVar;
+    };
+
+export function surveyVars(r: SurveySpec): string[] {
+  switch (r.mode) {
+    case 'traverse':
+      return [
+        ...r.courses.flatMap((c) => ids(c.azimuth, c.length)),
+        ...ids(r.lat, r.dep),
+        ...(r.closure
+          ? ids(r.closure.sumLat, r.closure.sumDep, r.closure.e, r.closure.P, r.closure.precision)
+          : []),
+        ...(r.compass ? ids(r.compass.cLat, r.compass.cDep) : []),
+      ];
+    case 'angles':
+      return ids(r.n, r.measured, r.required, r.misclosure, r.correction);
+    case 'level':
+      return ids(r.BM, r.BS1, r.FS1, r.BS2, r.FS2, r.HI1, r.HI2, r.TP, r.B);
+    case 'curvature':
+      return ids(r.K, r.h);
+    case 'heights':
+      return ids(r.h, r.N, r.H);
   }
 }

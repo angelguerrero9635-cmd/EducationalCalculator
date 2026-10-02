@@ -94,6 +94,7 @@ search or the sitemap, but the module tests and the harness run over it):
 | `skeletal`         | line-angle structure: wedges, CIP ranks, R/S, IHD marks; the chair    | College organic chemistry (HC2)     |
 | `truss`            | truss to scale: forces with T or C, a section cut, m + r − 2j, a bar  | College statics, structures (HC27)  |
 | `soilProfile`      | soil to scale: σ, u, σ′ with depth; settlement; footing; pavement     | College soils, foundations (HC26)   |
+| `survey`           | traverse lat, dep, gap; polygon angles; leveling; curvature; h, N, H  | College surveying (HC32)            |
 | `gel`              | a gel: ladder and lanes, bands by log size; PCR copies per cycle      | Biology biotechnology (H37)         |
 | `immuneResponse`   | antibody level by day: a slow low first response, a fast high second  | Biology immune system (H42)         |
 | `unitChain`        | factors with cancelled units struck; a ruler read; accuracy target    | Chemistry measurement (H43)         |

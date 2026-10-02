@@ -170,6 +170,7 @@ import { Neuron } from './Neuron';
 import { Skeletal } from './Skeletal';
 import { Truss } from './Truss';
 import { SoilProfile } from './SoilProfile';
+import { Survey } from './Survey';
 import { Hs2eView } from './Hs2eView';
 import { PunnettHs } from './PunnettHs';
 import { Gel } from './Gel';
@@ -266,6 +267,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <Truss spec={spec} calc={calc} />;
     case 'soilProfile':
       return <SoilProfile spec={spec} calc={calc} />;
+    case 'survey':
+      return <Survey spec={spec} calc={calc} />;
     case 'gasPiston':
     case 'energyProfile':
     case 'equilibriumChart':

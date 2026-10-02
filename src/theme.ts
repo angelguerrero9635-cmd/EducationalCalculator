@@ -349,6 +349,17 @@ const light = {
   soilBase: '#BDB7AA',
   soilTire: '#27272A',
   soilTireTread: '#52525B',
+  /**
+   * HC32 survey (college): a rod's red blocks, the level's body, latitude and departure legs,
+   * the misclosure gap, a traverse's field and the geoid.
+   */
+  surveyRodRed: '#DC2626',
+  surveyInstrument: '#C2850C',
+  surveyLat: '#0E7490',
+  surveyDep: '#B45309',
+  surveyGap: '#BE185D',
+  surveyField: 'rgba(140, 194, 107, 0.18)',
+  surveyGeoid: '#2563EB',
   /** The ocean (H75): warm and cold currents on the map, and seafloor sediment. */
   currentWarm: '#D93A3A',
   currentCold: '#2F6FD0',
@@ -810,6 +821,13 @@ const dark: Palette = {
   soilBase: '#6B665D',
   soilTire: '#3F3F46',
   soilTireTread: '#71717A',
+  surveyRodRed: '#F87171',
+  surveyInstrument: '#E0A93A',
+  surveyLat: '#22D3EE',
+  surveyDep: '#FBBF24',
+  surveyGap: '#F472B6',
+  surveyField: 'rgba(94, 140, 69, 0.25)',
+  surveyGeoid: '#7BA7FF',
   currentWarm: '#F0625A',
   currentCold: '#5B9BFF',
   seafloor: '#6B5D50',

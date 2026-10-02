@@ -21,7 +21,7 @@ import { hs2aSpecVars } from '../typesHs2a';
 import { hs2eSpecVars } from '../typesHs2e';
 import { hs3dSpecVars } from '../typesHs3d';
 import { skeletalVars } from '../typesHe1c';
-import { soilProfileVars, trussVars } from '../typesHe2i';
+import { soilProfileVars, surveyVars, trussVars } from '../typesHe2i';
 import { hs2gSpecVars } from '../typesHs2g';
 import { hs3bSpecVars } from '../typesHs3b';
 import { hsdSpecVars } from '../typesHsd';
@@ -553,6 +553,8 @@ function representationVars(r: Representation): string[] {
       return trussVars(r);
     case 'soilProfile':
       return soilProfileVars(r);
+    case 'survey':
+      return surveyVars(r);
     case 'gel':
     case 'alleleFrequencies':
     case 'immuneResponse':

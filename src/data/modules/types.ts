@@ -39,7 +39,7 @@ import type { CircleHs3b, PolygonHs3b, RectangleHs3b, TableHs3b } from './typesH
 import type { BarFlows, Hs2eSpec } from './typesHs2e';
 import type { Hs3dSpec, PieStage } from './typesHs3d';
 import type { SkeletalSpec } from './typesHe1c';
-import type { SoilProfileSpec, TrussSpec } from './typesHe2i';
+import type { SoilProfileSpec, SurveySpec, TrussSpec } from './typesHe2i';
 import type { PhaseEnvelopeSpec } from './typesHe1i';
 import type { BeamSpec } from './typesHe1a';
 
@@ -1161,6 +1161,8 @@ export type Representation =
   | TrussSpec
   /** College round 2, group I (HC26): soil to scale, stresses, a footing, a pavement. */
   | SoilProfileSpec
+  /** College round 2, group I (HC32): a traverse, leveling, curvature, heights. */
+  | SurveySpec
   /** College round 1, group A: the `beam` (HC1; specs in `typesHe1a.ts`). */
   | BeamSpec
   /** Box plot: the five-number summary on a number line, each mark draggable. */

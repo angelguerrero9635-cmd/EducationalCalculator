@@ -19,10 +19,11 @@ import {
   stressAt,
   structuralNumber,
 } from '@/components/module/reps/soilMath';
+import { compassCorrection, latDep, levelRun } from '@/components/module/reps/surveyMath';
 
 import type { LayoutDef } from '../layouts';
 import type { NumOrVar } from '../typesGraphs';
-import type { SoilProfileSpec, TrussJointCard, TrussSpec } from '../typesHe2i';
+import type { SoilProfileSpec, SurveySpec, TrussJointCard, TrussSpec } from '../typesHe2i';
 
 type Val = (id: string) => number | undefined;
 
@@ -311,6 +312,85 @@ export function soilProfileIssues(rep: SoilProfileSpec, val: Val): string[] {
         structuralNumber(ls.map((l) => ({ a: l.a!, D: l.D!, m: l.m! }))),
         'SN = Σ a·D·m',
       );
+      return out;
+    }
+  }
+}
+
+/** HC32 `survey`. */
+export function surveyIssues(rep: SurveySpec, val: Val): string[] {
+  const out: string[] = [];
+  const get = reader(val);
+  const same = (x: NumOrVar | undefined, want: number | undefined, what: string) => {
+    const v = get(x);
+    if (v === undefined || want === undefined || !Number.isFinite(want)) return;
+    if (!near(v, want, 2e-3, 1e-6)) out.push(`survey: ${what} is ${v}, the picture draws ${want}`);
+  };
+  switch (rep.mode) {
+    case 'traverse': {
+      const cs = rep.courses.map((c) => ({ azimuth: get(c.azimuth), length: get(c.length) }));
+      const lit = rep.lit === undefined ? undefined : cs[rep.lit];
+      if (lit && lit.azimuth !== undefined && lit.length !== undefined) {
+        const ld = latDep(lit.azimuth, lit.length);
+        same(rep.lat, ld.lat, 'lat = L cos Az');
+        same(rep.dep, ld.dep, 'dep = L sin Az');
+        // lat² + dep² = L², north up.
+        const [la, de] = [get(rep.lat), get(rep.dep)];
+        if (la !== undefined && de !== undefined && !near(la * la + de * de, lit.length ** 2, 4e-3))
+          out.push(`survey: lat² + dep² = ${la * la + de * de}, not L² = ${lit.length ** 2}`);
+      }
+      const cl = rep.closure;
+      if (cl) {
+        const [sl, sd] = [get(cl.sumLat), get(cl.sumDep)];
+        const all = cs.every((c) => c.length !== undefined);
+        const drawnP = all ? cs.reduce((s, c) => s + c.length!, 0) : undefined;
+        const P = cl.P === undefined ? drawnP : get(cl.P);
+        if (sl !== undefined && sd !== undefined) {
+          const e = Math.hypot(sl, sd);
+          same(cl.e, e, 'e = √(Σlat² + Σdep²)');
+          if (P !== undefined && e > 0) same(cl.precision, P / e, 'precision P ÷ e');
+          if (rep.compass && lit?.length !== undefined && P !== undefined) {
+            const cc = compassCorrection(sl, sd, lit.length, P);
+            same(rep.compass.cLat, cc.cLat, 'c_lat = −Σlat × L ÷ P');
+            same(rep.compass.cDep, cc.cDep, 'c_dep = −Σdep × L ÷ P');
+          }
+        }
+      }
+      return out;
+    }
+    case 'angles': {
+      const n = get(rep.n);
+      if (n === undefined) return out;
+      if (!Number.isInteger(n) || n < 3 || n > 10) return [`survey: ${n} sides can't be drawn`];
+      const req = (n - 2) * 180;
+      same(rep.required, req, 'the required sum (n − 2) × 180°');
+      const m = get(rep.measured);
+      if (m !== undefined) {
+        same(rep.misclosure, (m - req) * 3600, 'the misclosure (″)');
+        same(rep.correction, (-(m - req) * 3600) / n, 'the correction per angle (″)');
+      }
+      return out;
+    }
+    case 'level': {
+      const v = [rep.BM, rep.BS1, rep.FS1, rep.BS2, rep.FS2].map(get);
+      if (v.some((x) => x === undefined)) return out;
+      const [BM, BS1, FS1, BS2, FS2] = v as [number, number, number, number, number];
+      const r = levelRun(BM, BS1, FS1, BS2, FS2);
+      // Each elevation is the HI − FS shown.
+      same(rep.HI1, r.HI1, 'HI₁ = BM + BS₁');
+      same(rep.TP, r.TP, 'TP1 = HI₁ − FS₁');
+      same(rep.HI2, r.HI2, 'HI₂ = TP1 + BS₂');
+      same(rep.B, r.B, 'B = HI₂ − FS₂');
+      return out;
+    }
+    case 'curvature': {
+      const K = get(rep.K);
+      if (K !== undefined) same(rep.h, (rep.coef ?? 0.0675) * K * K, 'h = coef × K²');
+      return out;
+    }
+    case 'heights': {
+      const [h, N] = [get(rep.h), get(rep.N)];
+      if (h !== undefined && N !== undefined) same(rep.H, h - N, 'H = h − N');
       return out;
     }
   }
