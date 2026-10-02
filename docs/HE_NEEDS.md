@@ -1,0 +1,445 @@
+# College: engine needs
+
+What the eight college direction plans (`docs/plans/he.*.md`) need from the engine before their
+pages can be built, merged into one list. Each plan numbered its own needs (math, physics,
+chemistry, earth and geography, mechanical, electrical and computer: `E1`…; aero, civil and
+chemical: `N1`…; biology: `1`…); **HE-E** items here merge them. Group tags: **M** math, **P**
+physics, **C** chemistry, **EG** earth and geography, **B** biology and bioengineering, **ME**
+mechanical, **ACC** aero, civil and chemical, **EC** electrical and computer. "From" names the
+plan items merged (`ME-E1` is the mechanical plan's E1). Pictures are in
+`docs/RENDERINGS_HE.md` (`HC1`–`HC191`); the biology plan's need 6 (log axes) is a picture
+there (HC9), not an engine item.
+
+The plans total **1,460 pages** (1,243 calculators, 217 layouts; 1,033 of them problem types),
+522 marked ⏳. The plans listed **91** engine needs; merged, they are **32**.
+
+## The four that block every college page
+
+None of the 1,456 new pages (the four pilots aside) can ship before these.
+
+### HE-E1 Topic problem types (`<course>#<i>~<slug>`)
+
+`problemTypes()` (`src/data/selectors.ts`) takes a K–12 skill id only. It, `moduleOwner`, the
+topic route (`/course/<id>/topic/<i>`), search and the problem matcher corpus
+(`scripts/build-match-corpus.mjs`) must take `<courseId>#<i>~<slug>`, with the topic page as
+the owner of its types.
+
+- **From:** M-E1 (every other plan's "Ids" decision assumes it).
+- **Waiting:** every problem-type page: M 93, P 83, C 111, EG 119, B 87, ME 180, ACC 169,
+  EC 191 (**1,033**).
+
+### HE-E2 College layouts
+
+There is no `layouts/college*.ts`, and `getLayout`/`getPage` don't look up `#` ids. Add college
+layout files read for `he.*` ids and the Grades 9–12 reading rules for courses in
+`layouts.test.ts`.
+
+- **From:** M-E2, P-E1; the chemistry plan's `layouts/collegeChemistry.ts`.
+- **Waiting:** every sort, sequence, explore and observe page: M 13, P 4, C 36, EG 45, B 36,
+  ME 26, ACC 24, EC 33 (**217**).
+
+### HE-E3 College standards
+
+`valueLimit()` in `standards.test.ts` returns `undefined` for a course id, so no college page
+is held to a value cap, and the sentence limits key on grade. Map `he.` ids to the Grade 12
+rules every plan adopted: sentences ≤ 35 words, ≤ 10 values a page (a matrix, point or vector
+typed as one group counts once), the name first on every value, 2–4 assumptions (ME and ACC add
+"≤ 20 words each").
+
+- **From:** M-E3; the "Word rules" decision of all eight plans.
+- **Waiting:** the tests of every page (**1,460**). No plan asks to relax a rule; pages that
+  would pass 10 values are split into problem types instead.
+
+### HE-E4 Splitting `college.ts`, and college ids in the scripts
+
+`src/data/modules/college.ts` (690 lines, four pilots) can't hold 1,456 more pages. Decide the
+split (see "Decisions for the owner") and build it: `src/data/modules/college/<field>.ts` and
+`layouts/college<Field>.ts`, all spread into `COLLEGE_MODULES`. `scripts/new-module.mjs` and
+`scripts/promote-demo.mjs` accept K–12 ids only (`<m|s>.<grade>.<skill>`); extend both to
+college ids so builders scaffold pages and promote the pictures chat's demos.
+
+- **From:** the "Ids" decision of every plan (math and physics: split at about 2,000 lines;
+  biology and mechanical: at about 3,000; chemistry and aero-civil-chemical: before building).
+- **Waiting:** no page by itself, but every page lands in the new files.
+
+## The other needs
+
+### HE-E5 Units (with a temperature-difference dimension)
+
+Add the units each group uses (fixed labels until then). Mechanical: MPa, GPa, ksi, N·m, kN·m,
+lbf·ft, N/m, mm⁴, kJ/kg, kJ/(kg·K), W/(m·K), W/(m²·K), Pa·s, m²/s, kg/s, m³/s, rpm, Hz, μm,
+microstrain, MPa√m, and **a ΔT dimension** (K = °C, °F = °R, converted without offset). Civil
+and chemical: ksf, psf, kip·ft, kN/m³, in⁴, MGD, kmol/h, mol/s, J/(mol·K), mg/L, μg/m³, ppm,
+veh/h, pc/mi/ln, bar, km³/s², L/(mol·min), $/yr. Electrical: H, mH, Hz–GHz, rad/s, ns, VA, var,
+S, T, Wb, V/m, A/m, nH/m, pF/m, S/m, dB, dBm, dBi (logarithmic, never converted with the
+others), pu, bits and bytes (KiB and kB), b/s. Physics: nm, pm, mT, N/C, kg·m², kg·m/s, N·s,
+J·s, J/K, keV, MeV, u, Bq, W/m², A·m². Chemistry: M, mM, μM, g/mol, kJ/mol, kcal/mol, s⁻¹,
+M⁻¹s⁻¹, cm⁻¹, Da, L/(mol·cm), Å. Earth: Sv, m/day, mm/h, mm/yr, mW/m², °C/km, mGal, nT, Ω·m,
+dpm/g; Myr and years to seconds inside one relation. Biology: mmHg, mL/min, L/h, cP, cm²/s,
+day⁻¹, kDa, MRayl (CFU/mL, cM, bp stay fixed labels).
+
+- **From:** M-E10, P-E3, C-E1, EG-E1, EG-E8, B-1, ME-E1, ACC-N1, EC-E1.
+- **Waiting (blocked):** ME 18 (the ΔT unit: mechanics-of-materials#1~thermal and all 17
+  heat-transfer pages), EC 19, EG 2 (Sv; long-time conversions). **Upgraded** (fixed labels
+  until then): most pages in every group.
+
+### HE-E6 Calculus lines and notation
+
+A step line that states the integral, derivative or ODE result and its closed form ("∫ from a
+to b of (x² + 1) dx = 32/3", "W = ∫P dV = (P₂V₂ − P₁V₁) ÷ (1 − n)"), typeset by `toLatex` (∫
+with limits like Σ, d/dx, ∂/∂T, ∇, D_u f, lim as h → 0, ⟨ ⟩, ħ), checked by the harness by
+quadrature or a finite difference at the page's values, never solved symbolically. A **form
+line** with the free variable ("V′(x) = 12x² − 240x + 900") checked at sample points.
+
+- **From:** M-E4, M-E5, P-E2, C-E10, ME-E3 (calculus part), ACC-N10.
+- **Waiting:** M every calc-1–3 and diff-eq page (100); P 13 (a `how` sentence until then:
+  university-1#0~calculus, #2, ~power-law-force, university-2#0, electromagnetism#0, #1,
+  quantum#0, #3, thermal-statistical#0, #1, classical-mechanics#0~atwood, #1); ME the
+  thermodynamics#2–3, numerical-methods#0, #3 and ASM#2 topics; ACC reaction-engineering#1,
+  propulsion#1, process-control#0, flight-mechanics#0~range; C none (assumptions and `how` only).
+
+### HE-E7 Symbols and typesetting
+
+Dotted symbols (ṁ, ṅ, Q̇, ξ̇), multi-letter subscripts (C_L, C_D0, S_ut, ΔT_lm, Re_L, Nu_D,
+h_fg, T_h,in, f′_c, σ′₃, K_c,u) in `subscripts.ts` and `toLatex`; ⌊ ⌋ and ⌈ ⌉; roots of sums;
+fractional exponents ((k − 1)/k).
+
+- **From:** ME-E3 (rest), ACC-N14.
+- **Waiting:** ME and ACC almost every page reads better; none blocked.
+
+### HE-E8 Harness phrases
+
+Teach `harness/evaluate.ts` (PHRASES) each group's words as pages are built: tension,
+compression, sagging, quality, isentropic, film temperature, found numerically, Colebrook, by
+trial, branch, governs, case, for a first-order, Routh, LMTD, compass rule; dB, dBm, ∠, j, log₂,
+⌈ ⌉, mod, Σ; `(2n − 3)!!`, base-10 log, fractional powers (64^0.75), 10^(−t ÷ D), primes and
+bars in names (p′, w̄). A sign-convention check (tension +, heat in +, work out +) on pages that
+state one.
+
+- **From:** ME-E10, ACC-N13, EC-E11, B-2 (phrases), EG-E3 (phrases).
+- **Waiting:** every page, as it is built.
+
+### HE-E9 Constants registry and g per page
+
+One registry (R in J/(mol·K) and L·atm/(mol·K), F, N_A, h, c, k_B, R_H, a₀, e, ε₀, μ₀, mₑ, u,
+K_w, 0.05916 V, σ, G, GM, Earth radius, γ and R of air), step lines that print "R = 8.314
+J/(mol·K)", the harness reading it; **g per page**, so a picture never hard-codes 9.8 (the
+owner's decision below).
+
+- **From:** C-E2, EG-E10; the "Constants" decision of every plan.
+- **Waiting:** EG meteorology#1, oceanography, geophysics#1 pictures; every page reads its
+  constants from one place.
+
+### HE-E10 Number display and range
+
+Display and harness tolerance from 10⁻³⁵ to 10³¹ (relative, 4 significant figures);
+scientific notation kept with its number in steps; exponents beyond ±30 (K = 1.5 × 10³⁷); 3–4
+significant figures by page; pH decimals from the concentration's figures; signed charges (+3,
+−1) and °′.
+
+- **From:** P-E7, C-E14.
+- **Waiting:** P university-3, quantum and thermal-statistical pages (about 45); C pages with
+  large K or pH answers.
+
+### HE-E11 Category answers
+
+A derived answer that is a word or a letter from thresholds, with its own choice box and a
+harness check: converges or diverges, the damping regime, one, none or many solutions, the
+equilibrium type, QAP field, Köppen class, ENSO phase, burn severity, FS stable or not, the
+nearest class, LOS A–F, USCS group, tension-controlled, short or slender, which combination
+governs, underdamped, Θ(n log n), stable. Until then the class goes in the picture's caption.
+
+- **From:** M-E6 (answer part), EG-E5, ACC-N5, EC-E10.
+- **Waiting:** M 7 (calc-1#0, calc-2#1, calc-2#3, calc-2#4~radius, diff-eq#1, diff-eq#3,
+  linear-algebra#0); EG about 10; ACC about 7 (soil-mechanics#0, transportation#3,
+  steel-design#0, concrete-design#0, #2, process-control#3, process-design#3); EC 4
+  (circuits-1#4~rlc-damping, control#1~step-error, data-structures#3~master, networks#2).
+
+### HE-E12 Piecewise and choice-switched relations
+
+A relation whose formula switches by a case or a choice value (order 0/1/2, inhibitor type,
+lattice type, Euler or inelastic buckling, NC or OC clay, S < L or S > L, A_s,min), with min,
+max and floor (`derived`) and a rejection for an empty result; solved forward and, where single
+valued, backward; the step names the case and why; the harness samples each choice.
+
+- **From:** M-E6 (relation part), C-E11, EG-E6, ACC-N9.
+- **Waiting:** C gen-chem-2#0, biochemistry#0, #1~inhibition, inorganic#3; EG
+  historical-geology#2, mineralogy#2, cartography#2; ACC aerospace-structures#2,
+  steel-design#1–3, soil-mechanics#2, transportation#1, concrete-design#0, #2.
+
+### HE-E13 Named choices and data rows
+
+An `allowed` choice shown by name (electron, proton, alpha; hoop, disk; monatomic; Earth, Sun)
+that sets one or several values: an acid's Kₐ, a half-reaction's E°, bond enthalpies, Madelung
+constants, Δₒ and P; W-shapes (A, r, Z, I, d, t_w), bar sizes #3–#11, compounds (T_c, P_c, ω,
+Antoine A, B, C), standard pipe sizes, slab cases. Rows are facts entered by hand, never a copied
+table.
+
+- **From:** P-E8, C-E3, ACC-N4.
+- **Waiting:** P about 15; C gen-chem-1#3~bond-enthalpy (⏳; improves gen-chem-2#2, #4,
+  inorganic#2, #3~born-lande); ACC steel-design#1–2, concrete-design#0, #2–3,
+  chemical-thermodynamics#0, #2, hydraulics-hydrology#3, material-energy-balances#3.
+
+### HE-E14 Iteration and trial steps
+
+The solver's root finder already solves implicit relations; the walkthrough must show it: two
+or three trial values and the converged one ("Try M = 2.2: A/A\* = 2.005; …"), or a table of
+iterations (n, xₙ, f(xₙ), error) with the stopping rule, read by the harness. One-variable root
+finding with a bracket for transcendental equations (finite well, Kepler's equation).
+
+- **From:** ACC-N2, EG-E7, ME-E6, EC-E5, P-E10.
+- **Waiting:** ACC compressible-flow#0–3, orbital-mechanics#1~kepler, hydraulics-hydrology#0,
+  #1~parallel, chemical-thermodynamics#0, #2, concrete-design#0; EG hydrology#1,
+  physical-geography#0~declination; ME 5 (numerical-methods#0, ~bisection, #1~gauss-seidel, #4,
+  ~rk4); EC 4 (embedded#3~response-time, OS#1~round-robin, OS#2~replacement, power#0~load-flow);
+  P none now (proposed quantum#1~finite-well and a Kepler-time page).
+
+### HE-E15 Branches and ordered roots
+
+Where a relation has two or three physical roots: a value the student picks (subsonic or
+supersonic, weak or strong shock, the alternate depth, vapor or liquid volume) that the solver
+keeps to; roots filled in order (σ₁ ≥ σ₂ ≥ σ₃, ω₁ < ω₂); the quadratic formula's lines with the
+negative-concentration root rejected in one line and the small-x check.
+
+- **From:** ACC-N3, ME-E4 (ordered roots), C-E4.
+- **Waiting:** ACC compressible-flow#0–2, hydraulics-hydrology#0, chemical-thermodynamics#0,
+  concrete-design#0; ME ASM#0, ~invariants, vibrations#3; C gen-chem-2#1, #2, ~weak-base,
+  ~common-ion.
+
+### HE-E16 Linear algebra in steps
+
+⟨a, b, c⟩ arithmetic (dot, cross, scale, sums), matrix products and A − λI lines evaluated by
+the harness, 3 × 4 groups and 4-vectors; 2 × 2 (later 3 × 3 and 4 × 4) systems solved together
+as one relation whose steps are `matrixGrid`'s Cramer or row-operation lines (K u = F);
+symmetric 2 × 2 and 3 × 3 eigenvalues (stress tensor, K − ω²M); λ² − (trace)λ + det = 0.
+
+- **From:** M-E9, P-E5, ME-E8, ME-E4 (eigenvalues), EC-E8.
+- **Waiting:** M calc-3, diff-eq#3, linear-algebra (about 40); P 4 (university-2#2,
+  classical-mechanics#4, ~chain, quantum#3~two-level); ME FEA#0, #2~beam,
+  numerical-methods#1, vibrations#3; EC 3 (circuits-1#1, ~mesh, ~supernode; closed form until
+  then).
+
+### HE-E17 Complex values
+
+A value that is a + jb (or A∠θ), with product, quotient, conjugate and polar ↔ rectangular
+lines, and the picture reading both parts; a value pair α ± βi from one relation ("r = −1 ± 3i").
+
+- **From:** EC-E2, M-E7.
+- **Waiting:** EC 4 (electromagnetics#0~input-impedance, power#0~load-flow,
+  power#1~sync-generator, power#2~sym-components; later parallel impedances in circuits-2#0); M 4
+  (diff-eq#1, ~characteristic, diff-eq#3, linear-algebra#3~complex).
+
+### HE-E18 Exponentials, logs and powers in solves and the simplifying chain
+
+Solving t from 1 − e^(−t/τ) and r from 10 log(I ÷ I₀) with "Take ln of both sides"; ln, log₁₀,
+eˣ, 10ˣ, a power of a quotient ((1,000 ÷ p)^0.286), fractional powers and ∜ worked one stage a
+line; solver inverses (θ → [L] for Hill, t from H_t, p from the Jukes–Cantor distance).
+
+- **From:** P-E4, EG-E3, B-2 (step text), B-5.
+- **Waiting:** P 6 (university-1#1~drag, #3~rocket, university-2#2~rc-charging,
+  #3~rl-circuit, university-3#0~intensity-db, #4~decay-law); EG meteorology#0–2,
+  historical-geology#1, hydrology#1, climatology, physical-geography#3; B evolution#2~tree-count.
+
+### HE-E19 Angles: units, atan2, bearings, DMS
+
+Calculus pages in radians, polar and parametric pictures in degrees with a derived radian value;
+"rad" as a label; atan2 with the quadrant named; inverse trig in degrees; a compass bearing
+0–360°; input and display of 4°30′00″ and N 52°10′ E, with arithmetic on them in steps.
+
+- **From:** M-E12, P-E6, EG-E4, ACC-N6, EC-E7 (atan2).
+- **Waiting:** M calc-1#1~trig, calc-2#5, diff-eq#1; P 3 (university-1#5, #0~projectile-at-t,
+  #3); EG geophysics#0, #1~paleolatitude, mineralogy#0, cartography#1, physical-geography#0,
+  #2, gis#2; ACC surveying#0–2; EC every phasor page.
+
+### HE-E20 Special functions
+
+erf, erfc and their inverse; sinh, cosh, tanh, coth; Q(x) (from the normal tail already
+drawn); sinc; each in relations, `toLatex` and the harness ("erf(0.329) = 0.359, from the error
+function").
+
+- **From:** ME-E7, ACC-N8, EC-E7.
+- **Waiting:** ME materials-science#1, heat-transfer#0~fin, engineering-programming#0, #3,
+  numerical-methods#0~bisection; ACC reaction-engineering#3~effectiveness; EC 2
+  (comm#1~bpsk-ber, signals#2~pulse-spectrum).
+
+### HE-E21 Integer functions, bases and big integers
+
+⌊ ⌋, ⌈ ⌉, mod, round, exact log₂ of a power of 2, min and sort of a short list as step lines;
+whole numbers shown and typed in base 2, 8 or 16 at a width (two's complement) and IPv4 dotted
+quads; exact integers past 2⁵³ (n!, C(n, r), 2⁶⁴); C(n, k) past row 12 with ln Ω by Stirling.
+
+- **From:** EC-E3, EC-E4, EC-E9, P-E9, ME-E7 (floor and ceiling).
+- **Waiting:** EC 25 (integer functions) + 6 (bases) + discrete#2 at large n; P 2
+  (thermal-statistical#1~einstein-solid, ~two-state).
+
+### HE-E22 Sums, series and recurrences
+
+`partialSum(term, N)` up to N = 1,000, a recurrence table (aₙ from a₀, a₁), n! in the harness;
+confirm `expandSums` reads fixed-count sums with names ("Σ (O − E)² ÷ E = 0.278 + 0.133 + …").
+
+- **From:** M-E8, B-3.
+- **Waiting:** M calc-2#3, calc-2#4, diff-eq#4 (about 13); B none (a check).
+
+### HE-E23 Data lists
+
+A typed list with its length (1–8 numbers, or replicate readings and calibration standards):
+mean, s, least-squares slope, intercept and r²; x[n] and h[n] with Σ over an index; a table of
+ordinates; a whole number read off a picture's construction (McCabe–Thiele stages).
+
+- **From:** EG-E2, C-E13, ACC-N7, EC-E6.
+- **Waiting:** EG climatology#2~trend; C analytical#0, #2~calibration; ACC
+  separations#0~mccabe-thiele; EC signals#1.
+
+### HE-E24 Limits with reasons, inequality answers, out-of-domain messages
+
+Page limits written as limits, never relations, each with a reason a student reads (N₀ < K,
+p < 0.75, RF ≤ 50%, C_out ≤ C_in, r_i < r_o, 0 ≤ x ≤ 1, σ_cr below σ_Y, Re below 5 × 10⁵);
+limits comparing two values; answers that are a least value ("Δp ≥ …", printed "at least");
+out-of-domain messages ("midnight sun" when |tan φ tan δ| > 1; no runoff when P ≤ I_a; no head
+wave when v₂ ≤ v₁).
+
+- **From:** B-4, ME-E9, P-E11, EG-E9.
+- **Waiting:** ME mechanics-of-materials#5~slenderness, fluid-mechanics#5, thermodynamics#0,
+  cad-graphics#1~virtual; P university-3#3~uncertainty, university-1#4~ladder; EG
+  physical-geography#0, hydrology#1, geophysics#0; B none (the reasons are new text).
+
+### HE-E25 Layout text and sequences
+
+Sort cards and sequence stages that hold chemistry text (subscripts, charges, arrows,
+(2R,3S)-stereodescriptors, Greek letters; the reading checks count a formula as one word) and
+code in a code font with straight quotes; sequences with no time spans (or spans hidden);
+signed sequence spans (ATP per glycolysis step, net +2).
+
+- **From:** C-E15, C-E12, ME-E11, ACC-N11.
+- **Waiting:** C 36 layouts (the chemistry plan puts this first); ME 5 (programming sorts and
+  the trace page); ACC 7 sequences; C biochemistry#2 (spans).
+
+### HE-E26 Formula unit sets
+
+A page names its working set ("N–mm–MPa", "SI base", "kJ–kg–K") and the steps convert into it
+first, so they read like the textbook (σ = 50,000 N ÷ 314.2 mm²).
+
+- **From:** ME-E2.
+- **Waiting:** ME every solid-mechanics page (mechanics-of-materials 24, advanced-solid-mechanics
+  14, FEA 14, machine-design 15: about 67).
+
+### HE-E27 Water and steam properties
+
+A routine from the public IAPWS-IF97 equations: saturation by T or P (P_sat, T_sat, v_f, v_g,
+h_f, h_fg, s_f, s_fg) and superheated v, h, s; later R-134a and air's c_p(T). Pages keep typed
+table values until then (fully usable).
+
+- **From:** ME-E5, ACC-N4 (steam rows).
+- **Waiting (for automatic look-ups):** ME thermodynamics#0, #1~steady-flow, #3~rankine,
+  ~refrigeration; ACC material-energy-balances#3; the vapor dome of HC17.
+
+### HE-E28 Statistics critical values
+
+t (two-sided, by df and confidence), Dixon's Q and Grubbs' G by n, with harness phrases ("t for
+4 degrees of freedom at 95%").
+
+- **From:** C-E5.
+- **Waiting:** C analytical#0 and its types.
+
+### HE-E29 Chemistry structure models
+
+Whole-number ratios (multiply by 2–6 until all are within 0.05 of a whole); diatomic MO filling
+(the N₂ and O₂ orders), bonding and antibonding counts, unpaired electrons; Hückel cyclic levels
+(Frost); d-orbital filling by geometry and spin with CFSE; character tables (C₂ᵥ now; C₃ᵥ, D₃ₕ,
+T_d, D₄ₕ, O_h as data) with the reduction formula's lines.
+
+- **From:** C-E6, C-E7, C-E8, C-E9.
+- **Waiting:** C gen-chem-1#1, ~hydrate; gen-chem-1#4~bond-order (⏳), physical-2#3~huckel
+  (⏳); inorganic#2 (⏳); inorganic#0~reduce beyond C₂ᵥ.
+
+### HE-E30 Money
+
+$ values with thousands separators and a money unit in relations (annuity factor, NPV); the
+`dollars` formatter exists, the unit does not.
+
+- **From:** ACC-N12.
+- **Waiting:** ACC process-design#0, #2.
+
+### HE-E31 Integral templates in equation inputs
+
+`∫_{a}^{b} ({p}x² + {q}x + {r}) dx = {I}` with boxed limits.
+
+- **From:** M-E11.
+- **Waiting:** M calc-1#3, calc-1#4, calc-2#0 (rows until then).
+
+### HE-E32 Typed functions (later)
+
+A small parser for a student's own f(x) with a symbolic derivative and antiderivative
+(polynomials, exp, ln, sin, cos, products, compositions). Lifts the math plan's "Partly (E13)"
+marks; no page waits.
+
+- **From:** M-E13.
+
+## Suggested order
+
+| Step | Needs                                                  | Why                                                                                      |
+| ---- | ------------------------------------------------------ | ---------------------------------------------------------------------------------------- |
+| 1    | HE-E4 (decide the split), HE-E1, HE-E2, HE-E3          | Nothing ships without them; decide the split first so E1–E3 are written against it       |
+| 2    | HE-E5, HE-E9, HE-E7, HE-E8 (ongoing), HE-E25           | Every page reads right; the ΔT unit unblocks 18 mechanical pages; chemistry's 36 layouts |
+| 3    | HE-E6, HE-E10, HE-E16, HE-E26                          | Calculus lines gate math and physics; linear algebra and unit sets gate solid mechanics  |
+| 4    | HE-E11, HE-E12, HE-E14, HE-E15, HE-E19, HE-E18, HE-E21 | The bulk of the ⏳ engine waits (categories, cases, trials, branches, angles, integers)  |
+| 5    | HE-E13, HE-E17, HE-E20, HE-E22, HE-E23, HE-E24         | Smaller groups of pages; each page ships with a typed value or a closed form until then  |
+| 6    | HE-E27, HE-E28, HE-E29, HE-E30, HE-E31, then HE-E32    | One course each, or a convenience over typed values                                      |
+
+Pictures run alongside: `docs/RENDERINGS_HE.md` round 1 (HC1–HC13) unblocks about 220 pages.
+Each engine change is tested by the ids it is about (`MODULE_IDS=…`), never by a heavy run
+without the owner's approval.
+
+## Decisions for the owner
+
+The plans' open questions, collected. Each needs a yes, a no or a choice before the pages it
+names are built.
+
+1. **g on college pages.** Engineering, earth and the aero-civil-chemical pages use g = 9.81 m/s²
+   (the textbooks and the FE handbook); physics uses 9.80; math and biology 9.8; Grade 11 uses
+   9.8. One value for all college pages (9.81 recommended by four plans), or per course? A page
+   option for tests that round to 10 is the HS plan's need 13. (Related: Earth radius 6,371 km
+   (physics, earth) vs 6,378 km (aero, equatorial); both are right for their use; name it.)
+2. **⏳ pages with no stand-in picture.** The mechanical plan has 76 such pages (the other plans
+   name an interim for most): ship them on `none` (values, relations and walkthrough, no picture)
+   or wait for the picture?
+3. **Design-code editions.** AISC 360-22 (LRFD), ACI 318-19, ASCE 7-22, AASHTO Green Book 2018,
+   AASHTO 1993 pavements, HCM 7th edition, each named in one assumption; code data (W-shapes, bar
+   areas) as hand-entered facts, never copied tables. Confirm the editions, and that US
+   customary leads on steel, concrete, pavement and capacity pages.
+4. **OpenStax: titles only.** The research brief (`docs/RESEARCH_HE.md`) keeps OpenStax to
+   chapter and section titles, with no exercises, because of its no-LLM statement. The physics
+   plan proposed 240 OpenStax problem records, the math and chemistry plans "if the owner
+   allows". Confirm titles only. Also: the ACS-published US National Chemistry Olympiad papers
+   (chemistry plan, 30 records) are held off limits with the ACS exams unless you allow them.
+5. **The split of `college.ts`** (HE-E4): one file per field (`college/<field>.ts`, 14 fields),
+   per group of plans, or per course? Thresholds proposed: 2,000 lines (math, physics), 3,000
+   (biology, mechanical), split before building (chemistry, aero-civil-chemical).
+6. **Pilot changes the plans propose:**
+   - `he.engineering.circuits-1#0`: rename "Resistor 1" to **"Resistance 1 (R₁)"** (and R₂); the
+     voltages "Voltage across R₁ (V₁)" stay.
+   - `he.geography.human-geography#0`: 12 values is over the cap of 10. Trim the main to the
+     components of change (**9 values**, waterfall unchanged) and add **`~rates`** (CBR, CDR, RNI,
+     T₂ with P₀, B, D: 7 values); the example still works (CBR 12, CDR 8 → RNI 0.4%, T₂ = 175
+     years).
+   - `he.math.calc-1#1`: move its picture from `plot` `tangentSlope` to **`functionGraph`
+     `family: 'power'` with `tangent`** once HC37 is drawn, so every derivative page looks alike.
+   - `he.physics.university-1#0`: move its picture from `plot` to **`motionGraph` `kinematics:
+{ view: 'velocity' }`** (the area as Δx) and rename `d` to "Displacement (Δx)" to match
+     Grade 11.
+7. **The value cap.** Every plan keeps ≤ 10 values a page and splits a page rather than raising
+   it (HE-E3). Confirm for college.
+8. **Notation choices.** j for the imaginary unit on electrical pages (i on math pages); KiB for
+   memory sizes and decimal prefixes on network pages; the thermal voltage 25.85 mV at 300 K
+   (Sedra–Smith's 25 mV accepted as rounding); biology's 61.5 mV at 37 °C.
+9. **Typed property tables.** Steam, refrigerant, ISO 286 fits, Marin and Lewis factors and K_t
+   charts are typed by the student from their own table, with the page naming the entries, until
+   HE-E27 (water only). Confirm, and confirm that a built-in IAPWS-IF97 routine is wanted.
+10. **NCEES FE Reference Handbook.** Two plans used it for notation ("symbols only"); the
+    research brief allows only its table of contents. Confirm.
+11. **Question records from non-commercial sources.** The research brief records question text
+    only from public-domain, CC BY and CC BY-SA sources, and the type only from CC BY-NC, ND,
+    custom and all-rights-reserved ones (MIT OCW among them). Confirm.
+12. **Taxonomy gaps.** `docs/HE_TAXONOMY_GAPS.md` lists what the textbooks teach that the topics
+    lack, and the courses the plans propose; nothing there changes `taxonomy.ts` until you
+    decide.

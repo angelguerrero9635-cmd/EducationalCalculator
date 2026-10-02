@@ -13,16 +13,16 @@ into it.
 The lesson chat has written eight college direction plans, one per group of courses in
 `src/data/taxonomy.ts` (`COURSES`):
 
-| Group               | Plan                                | Courses | Pages | Picture requests in the plan        |
-| ------------------- | ----------------------------------- | ------- | ----- | ----------------------------------- |
-| Mathematics         | `docs/plans/he.math.md`             | 5       | 119   | 19 (`HE-math-P1`–`P19`)             |
-| Physics             | `docs/plans/he.physics.md`          | 7       | 120   | 28 (`HE-physics-P1`–`P28`)          |
-| Chemistry           | `docs/plans/he.chemistry.md`        | 9       | 153   | 24 (`HE-chemistry-P1`–`P24`)        |
-| Earth and geography | `docs/plans/he.earth-geography.md`  | 13      | 170   | 33 (`HE-earth-geography-P1`–`P33`)  |
-| Biology and bioeng. | `docs/plans/he.biology.md`          | 13      | 140   | 36 (`HE-biology-P1`–`P36`)          |
-| Mechanical          | `docs/plans/he.mechanical.md`       | 15      | 248   | 31 (`HE-mechanical-P1`–`P31`)       |
-| Aero, civil, chem.  | `docs/plans/he.aero-civil-chemical.md` | 21   | 254   | 37 (`HE-aero-civil-chemical-P1`–`P37`) |
-| Electrical, comp.   | `docs/plans/he.electrical-computer.md` | 15   | 256   | 32 (`HE-electrical-computer-P1`–`P32`) |
+| Group               | Plan                                   | Courses | Pages | Picture requests in the plan           |
+| ------------------- | -------------------------------------- | ------- | ----- | -------------------------------------- |
+| Mathematics         | `docs/plans/he.math.md`                | 5       | 119   | 19 (`HE-math-P1`–`P19`)                |
+| Physics             | `docs/plans/he.physics.md`             | 7       | 120   | 28 (`HE-physics-P1`–`P28`)             |
+| Chemistry           | `docs/plans/he.chemistry.md`           | 9       | 153   | 24 (`HE-chemistry-P1`–`P24`)           |
+| Earth and geography | `docs/plans/he.earth-geography.md`     | 13      | 170   | 33 (`HE-earth-geography-P1`–`P33`)     |
+| Biology and bioeng. | `docs/plans/he.biology.md`             | 13      | 140   | 36 (`HE-biology-P1`–`P36`)             |
+| Mechanical          | `docs/plans/he.mechanical.md`          | 15      | 248   | 31 (`HE-mechanical-P1`–`P31`)          |
+| Aero, civil, chem.  | `docs/plans/he.aero-civil-chemical.md` | 21      | 254   | 37 (`HE-aero-civil-chemical-P1`–`P37`) |
+| Electrical, comp.   | `docs/plans/he.electrical-computer.md` | 15      | 256   | 32 (`HE-electrical-computer-P1`–`P32`) |
 
 That is 1,460 planned pages and 240 picture requests. Many ask for the same drawing (a beam, a
 cross-section, Mohr's circle, a schematic, log axes, a step response). This brief merges them
@@ -130,7 +130,7 @@ Each serves 12 or more pages or three or more groups. Draw these first, in this 
   a restrained bar). `column`: end symbols (pin, fixed, free), the buckled half-waves over KL, P;
   `panel`: a skin panel between stringers buckling. `plate`: a circular plate's section under p.
 - **Fields.** `length`, `supports: [{ at, kind }]`, `loads: [{ kind: 'point' | 'uniform' |
-  'triangle', at, from?, to?, size }]`, `reactions?`, `at?`, `shear?`, `moment?`, `deflection?`,
+'triangle', at, from?, to?, size }]`, `reactions?`, `at?`, `shear?`, `moment?`, `deflection?`,
   `slope?`, `mode?`, `segments?`, `k?` (column), `pcr?`, `plate?`.
 - **Check.** ΣF = 0 and ΣM = 0 with the drawn reactions; V jumps by each point load; the area
   under V between two points equals the change in M; M peaks where V crosses zero; the deflected
@@ -178,7 +178,7 @@ Each serves 12 or more pages or three or more groups. Draw these first, in this 
   e^(−(t − θ)/τ), the final value dashed, τ to 5τ ticks, the 63.2% point at θ + τ, the point at
   `time`, the input step above it on its own axis; a ramp when `tau` is absent (integrator);
   `points` marks the 28.3% and 63.2% times (fitting). `stepResponse: { zeta, wn, gain?, overshoot?,
-  peak?, settling? }`: the second-order step response with the ±2% band, the peak at (T_p,
+peak?, settling? }`: the second-order step response with the ±2% band, the peak at (T_p,
   1 + %OS), T_s where it enters the band, the decay ratio; over- and critically damped curves for
   ζ ≥ 1; `oscillation` (free decay inside the e^(−ζω_n t) envelope, t½ marked).
 - **Check.** The marked point equals the page's value; the curve passes 63.2% of the change at
@@ -246,7 +246,7 @@ Each serves 12 or more pages or three or more groups. Draw these first, in this 
 - **Draws.** `Pxy`/`Txy`: bubble and dew curves of an ideal (or constant-α) binary, a tie line at
   x. `xy`: the equilibrium curve, the 45° line, operating lines, the q-line and the
   McCabe–Thiele staircase (`steps`). One-component `substance: { triple, critical,
-  normalBoiling?, meltSlope? }` with the vapor curve through two (T, P) points by
+normalBoiling?, meltSlope? }` with the vapor curve through two (T, P) points by
   Clausius–Clapeyron; F = C − P + 2 at a marked point.
 - **Check.** The bubble curve lies above the dew curve in Pxy; y_A ≥ x_A for the more volatile
   A; the step count shown equals the stairs drawn; operating lines cross on the q-line; the
@@ -289,13 +289,13 @@ Each serves 12 or more pages or three or more groups. Draw these first, in this 
   classical-mechanics#4, ~chain. ME: vibrations#0~springs, #1, #1~transmissibility, #2,
   #2~log-dec, #3. EC: control#0~mass-spring.
 - **Draws.** `damping: { c, zeta? }` (a dashpot labelled b or c; the x–t trace e^(αt)(C₁ cos βt
-  + C₂ sin βt) inside the dashed ±Xe^(−ζω_n t) envelope, over- and critically damped forms, peaks
-  marked for the log decrement); `phase: φ` (the trace starts at x₀ with slope v₀, φ as the shift
-  of the first crest); `forcing: { amplitude, frequency }` (F₀ sin ωt on the block, the
-  steady response, and the X ÷ δ_st curve against r with the point and the phase); `transmit`
-  (TR against r with √2 marked); `coupled: { m, k, kc, mode }` (two blocks and three springs,
-  each mode's shape as arrows, x–t traces showing the energy hand-off; the chain);
-  `springs: { k1, k2, layout }` (series or parallel).
+  - C₂ sin βt) inside the dashed ±Xe^(−ζω_n t) envelope, over- and critically damped forms, peaks
+    marked for the log decrement); `phase: φ` (the trace starts at x₀ with slope v₀, φ as the shift
+    of the first crest); `forcing: { amplitude, frequency }` (F₀ sin ωt on the block, the
+    steady response, and the X ÷ δ_st curve against r with the point and the phase); `transmit`
+    (TR against r with √2 marked); `coupled: { m, k, kc, mode }` (two blocks and three springs,
+    each mode's shape as arrows, x–t traces showing the energy hand-off; the chain);
+    `springs: { k1, k2, layout }` (series or parallel).
 - **Check.** ω_d < ω_n; ω_n and ζ in the caption equal the page's; x(0) = A cos φ; crest heights
   follow the envelope; peak ratio matches δ; the point lies on the response curve; each mode's ω²
   is an eigenvalue of the drawn spring matrix.
@@ -370,23 +370,23 @@ Each serves 12 or more pages or three or more groups. Draw these first, in this 
   ideal one at large V. Spec: ME-P10, ACC-P10.
 - **HC18 op-amp circuits: `seriesCircuit` option `amp` (9 pages).** EC: circuits-1#3 (4 pages);
   electronics#3~integrator, ~active-lowpass, ~schmitt. B: bioinstrumentation#1, ~inamp. `amp:
-  'inverting' | 'nonInverting' | 'summing' | 'difference' | 'integrator' | 'activeLowPass' |
-  'schmitt' | 'instrumentation'` with `vin` (one or two; V_d and V_cm sources for the
+'inverting' | 'nonInverting' | 'summing' | 'difference' | 'integrator' | 'activeLowPass' |
+'schmitt' | 'instrumentation'` with `vin` (one or two; V_d and V_cm sources for the
   instrumentation amplifier), `rin`, `rf`, `rg`, `c`, `vout`, `rail`; the Schmitt loop beside it.
   Check: v₊ = v₋ within 1 mV unless at a rail; |v_out| never past the rail; G as written. Spec:
   EC-P2, B-P31 (op-amp part). Uses HC7's renderer.
 - **HC19 `induction` field sources and rails (9 pages).** P: university-2#3~wire-field,
   ~solenoid, ~moving-rod; electromagnetism#1, ~ampere-wire, ~toroid, ~loop-torque;
   electromagnetism#2~displacement-current. EC: electromagnetics#1. `mode: 'field'` with `source:
-  'wire' | 'loop' | 'solenoid' | 'toroid' | 'plates'` (B lines, an Amperian loop at r, the loop's μ
+'wire' | 'loop' | 'solenoid' | 'toroid' | 'plates'` (B lines, an Amperian loop at r, the loop's μ
   and θ in a uniform B); `rails: { B, L, v, R }` (a sliding rod, I round the loop, the BIL force
   against v). Check: the field at r matches the source's formula; B even inside a solenoid; ε =
   BLv; F opposes v. Spec: P-P13, P-P14, EC-P31 (wire).
 - **HC20 `freeBody` mechanics options (9 pages).** P: university-1#1, ~atwood, ~banked,
   university-1#4~ladder; classical-mechanics#0~atwood. ME: statics#4~tip, #4~belt; dynamics#1,
   #1~banked. `g` from the page; `pulley: { layout: 'table' | 'atwood', m1, m2, mu?, a, T, T2?,
-  pulleyMass? }` (each block's diagram to one scale; T₁ ≠ T₂ with a massive pulley); `ladder: {
-  angle, weight, wall?, floor? }` (lever arms dashed); `tip` (push height h, the tipping edge,
+pulleyMass? }` (each block's diagram to one scale; T₁ ≠ T₂ with a massive pulley); `ladder: {
+angle, weight, wall?, floor? }` (lever arms dashed); `tip` (push height h, the tipping edge,
   P_tip and P_slip); `drum` (rope round a drum, wrap β, T₁, T₂); `banked: θ` (a car in section, N
   and mg, N's level part to the center). Check: each block's net force = m × a; T₂ − T₁ =
   ½ m_p a; forces and torques about the foot sum to 0; T₂ = T₁e^(μβ); the smaller force governs;
@@ -442,7 +442,7 @@ Each serves 12 or more pages or three or more groups. Draw these first, in this 
   Spec: ME-P5, B-P23 (`tensileTest`).
 - **HC29 `charges` Gauss surfaces and continuous distributions (7 pages).** P: university-2#0,
   ~line, ~plane; electromagnetism#0, ~disk, ~images. EC: electromagnetics#1~gauss-line. `gauss: {
-  shape: 'sphere' | 'line' | 'plane', R?, r, Q }` (the charge, the dashed Gaussian surface, E
+shape: 'sphere' | 'line' | 'plane', R?, r, Q }` (the charge, the dashed Gaussian surface, E
   arrows, Q_enc shaded); `distribution: 'ring' | 'disk' | 'image'` (dE from two opposite pieces,
   sideways parts cancelling; the image charge dashed below a grounded plane, σ shaded). Check:
   E·area = Q_enc ÷ ε₀; E_z from the formula; image charge −q at −d. Spec: P-P10, P-P24, EC-P31
@@ -463,7 +463,7 @@ Each serves 12 or more pages or three or more groups. Draw these first, in this 
 - **HC33 `stressElement` with Mohr's circle (6 pages).** ME: MoM#0~mohr; ASM#0, #3~yield;
   machine-design#0. ACC: soil-mechanics#3, ~undrained. The element with σₓ, σ_y, τₓ_y; turned to
   θ_p; Mohr's circle (center, R, the two points, 2θ_p); `three` (three circles); `envelope:
-  'vonMises' | 'tresca' | 'coulombMohr'` in the σ₁–σ₂ plane with the load and n-scaled points;
+'vonMises' | 'tresca' | 'coulombMohr'` in the σ₁–σ₂ plane with the load and n-scaled points;
   `mohrCoulomb: { c, phi }` (the line tangent to the circle, the failure plane at 45° + φ ÷ 2; a
   flat envelope for undrained tests). Check: center and radius from the inputs; principal points
   on the axis; load inside the envelope when n > 1; the line's distance from the center = R
@@ -497,7 +497,7 @@ Each serves 12 or more pages or three or more groups. Draw these first, in this 
   polynomial is Σ cₖ(x − a)ᵏ; the bracket equals the page's error. Spec: M-P4.
 - **HC39 semiconductor circuits: `seriesCircuit` option `device` (6 pages).** EC:
   electronics#0, ~zener, ~rectifier; electronics#1; electronics#2, ~cs-mosfet. `device:
-  'diodeR' | 'zener' | 'bridge' | 'bjtDivider' | 'mosfetCS' | 'hybridPi'`; `bridge` draws the
+'diodeR' | 'zener' | 'bridge' | 'bjtDivider' | 'mosfetCS' | 'hybridPi'`; `bridge` draws the
   rectified wave with ripple. Check: node voltages match the page's relations; the BJT drawn
   active only when V_CE > 0.2 V. Spec: EC-P3. Uses HC7's renderer.
 
@@ -538,7 +538,7 @@ what it adds, the check and the spec.
   sum of steps; arrows down when ΔG < 0; each hump's top = level before + Eₐ. Spec: B-P2, C-P15.
 - **HC45 `functionGraph` numerical methods (5).** ME: numerical-methods#0, #0~bisection, #2, #3,
   #4. `newton: { x0, steps }`, `bisect: { a, b, steps }`, `riemann.side: 'trapezoid' |
-  'simpson'`, `steps: { method: 'euler' | 'heun' | 'rk4', h, n, y0 }` over the exact curve,
+'simpson'`, `steps: { method: 'euler' | 'heun' | 'rk4', h, n, y0 }` over the exact curve,
   `through: [points]` (interpolation nodes). Check: each drawn iterate equals the walkthrough's;
   the trapezoid sum equals T. Spec: ME-P9 (methods).
 - **HC46 `surfacePlot` (new kind) (5).** M: calc-3#1, ~extrema; calc-3#2; later ~directional,
@@ -604,7 +604,7 @@ what it adds, the check and the spec.
 - **HC65 `solidOfRevolution` (new kind) (3).** M: calc-2#2, ~washer, ~shells. Check: V equals
   the method's integral; the slice radius equals f(at). Spec: M-P6.
 - **HC66 `termsChart` series options (3).** M: calc-2#3, ~ratio, ~alternating. `type: 'nr' |
-  'factorial'`, `alternate`, `bounds`. Check: terms and sums by rule; the band contains the
+'factorial'`, `alternate`, `bounds`. Check: terms and sums by rule; the band contains the
   limit. Spec: M-P17.
 - **HC67 `rectangle` `grow` and `conicGraph` circle `under` and `tangent` (3).** M:
   calc-1#1~product-quotient, ~implicit; calc-2#0~trig-sub. Check: strip areas add to first
@@ -792,196 +792,196 @@ authorizes any other heavy run. The lesson chat checks the pages when it places 
 Every merged request, with the number of planned pages it serves (across groups) and its round.
 "From" names the plan requests merged into it.
 
-| Id    | Kind or figure                                      | From                               | Pages | Round |
-| ----- | --------------------------------------------------- | ---------------------------------- | ----- | ----- |
-| HC1   | `beam` (new)                                        | ME-P1, ACC-P14, ACC-P7             | 31    | 1     |
-| HC2   | `skeletal` (new) + card                             | C-P14                              | 22    | 1     |
-| HC3   | `section` (new)                                     | ME-P3, ACC-P6                      | 21    | 1     |
-| HC4   | `functionGraph` `transient`, `stepResponse`         | EC-P4, EC-P5, ACC-P5               | 18    | 1     |
-| HC5   | `controlVolume` (new)                               | ACC-P9, ME-P11                     | 17    | 1     |
-| HC6   | `fluidSystem` (new)                                 | ME-P12, ACC-P20                    | 16    | 1     |
-| HC7   | `seriesCircuit`/`circuit` schematic `net`           | EC-P1, P-P11, P-P12, B-P31         | 15    | 1     |
-| HC8   | `phaseEnvelope` (new) + `chemDiagram` phase         | ACC-P30, C-P8                      | 14    | 1     |
-| HC9   | `functionGraph` log and flipped axes                | EG-P19, ACC-P37, ME-P9, B need 6   | 14    | 1     |
-| HC10  | `functionGraph` families                            | M-P3, B-P10, B-P30, B-P36, ME-P9   | 14    | 1     |
-| HC11  | `oscillator` damping, forcing, phase, coupled       | M-P10, P-P8, P-P23, ME-P16, EC-P30 | 13    | 1     |
-| HC12  | `functionGraph` regions                             | M-P2, M-P5, P-P18, ACC-P33, EC-P14 | 12    | 1     |
-| HC13  | `velocityProfile` (new)                             | ACC-P31, B-P28                     | 12    | 1     |
-| HC14  | `complexPlane` phasors, poles, locus                | EC-P6                              | 9     | 2     |
-| HC15  | `potentialWell` (new)                               | P-P19, C-P1                        | 9     | 2     |
-| HC16  | `unitCell` (new)                                    | C-P17, ME-P7, EG-P7, EG-P8         | 9     | 2     |
-| HC17  | `propertyDiagram` (new)                             | ME-P10, ACC-P10                    | 9     | 2     |
-| HC18  | `seriesCircuit` `amp`                               | EC-P2, B-P31                       | 9     | 2     |
-| HC19  | `induction` field sources, rails                    | P-P13, P-P14, EC-P31               | 9     | 2     |
-| HC20  | `freeBody` pulley, ladder, tip, drum, banked        | P-P2, P-P7, P-P3, ME-P27           | 9     | 2     |
-| HC21  | `fieldPlot` (new)                                   | M-P9, B-P16                        | 8     | 2     |
-| HC22  | `bode` (new)                                        | EC-P7                              | 8     | 2     |
-| HC23  | `thermalWall` (new)                                 | ME-P14, ACC-P31                    | 8     | 2     |
-| HC24  | `wing` (new)                                        | ACC-P1                             | 8     | 2     |
-| HC25  | `freeBody` aircraft                                 | ACC-P4                             | 8     | 2     |
-| HC26  | `soilProfile` (new)                                 | ACC-P17                            | 8     | 2     |
-| HC27  | `truss` (new) + card                                | ME-P2, ACC-P15                     | 7     | 2     |
-| HC28  | `stressStrain` (new)                                | ME-P5, B-P23                       | 7     | 2     |
-| HC29  | `charges` Gauss, ring, disk, image                  | P-P10, P-P24, EC-P31               | 7     | 2     |
-| HC30  | `duct` (new)                                        | ACC-P2                             | 7     | 2     |
-| HC31  | `supersonicFlow` (new)                              | ACC-P3                             | 7     | 2     |
-| HC32  | `survey` (new)                                      | ACC-P27, ACC-P28, ACC-P29          | 7     | 2     |
-| HC33  | `stressElement` (new) with Mohr's circle            | ME-P4, ACC-P18                     | 6     | 2     |
-| HC34  | `chemDiagram` rate, consecutive                     | C-P7, ACC-P32                      | 6     | 2     |
-| HC35  | `circularMotion` orbits, n–t                        | P-P3, ACC-P12, ME-P28              | 6     | 2     |
-| HC36  | `globe` (new)                                       | EG-P3                              | 6     | 2     |
-| HC37  | `functionGraph` `tangent`, `band`                   | M-P1                               | 6     | 2     |
-| HC38  | `functionGraph` `series`                            | M-P4                               | 6     | 2     |
-| HC39  | `seriesCircuit` `device`                            | EC-P3                              | 6     | 2     |
-| HC40  | `heatExchanger` (new)                               | ME-P15, ACC-P35                    | 5     | 3     |
-| HC41  | `elementChain` (new)                                | ME-P25, ACC-P14                    | 5     | 3     |
-| HC42  | `functionGraph` `distribution`                      | P-P28, C-P10, ME-P14               | 5     | 3     |
-| HC43  | `gasPiston` `pv`, `real`                            | P-P27, C-P11, C-P10                | 5     | 3     |
-| HC44  | `energyProfile` `G`, `steps`, `bomb`                | B-P2, C-P15                        | 5     | 3     |
-| HC45  | `functionGraph` numerical methods                   | ME-P9                              | 5     | 3     |
-| HC46  | `surfacePlot` (new)                                 | M-P7                               | 5     | 3     |
-| HC47  | `vectorDiagram` `space` objects                     | M-P8                               | 5     | 3     |
-| HC48  | explore `codeTrace` + card `code`                   | ME-P24                             | 5     | 3     |
-| HC49  | `timingDiagram` (new)                               | EC-P20                             | 5     | 3     |
-| HC50  | `graph` (new) + card                                | EC-P22                             | 5     | 3     |
-| HC51  | `scheduleChart` (new)                               | EC-P24                             | 5     | 3     |
-| HC52  | `fatigueDiagram` (new)                              | ME-P17, ACC-P37                    | 4     | 3     |
-| HC53  | `polarGrid` options                                 | M-P15                              | 4     | 3     |
-| HC54  | `rightTriangle` `rates`, `curvedSolid` fill/slab    | M-P16                              | 4     | 3     |
-| HC55  | `instrumentTrace` (new) + card                      | C-P5                               | 4     | 3     |
-| HC56  | `chemDiagram` `cell`                                | C-P9                               | 4     | 3     |
-| HC57  | `organelleEnergy` `detail` + card                   | C-P20                              | 4     | 3     |
-| HC58  | `equilibriumChart` `gibbs`                          | C-P23                              | 4     | 3     |
-| HC59  | `shaft` (new)                                       | ME-P6                              | 4     | 3     |
-| HC60  | `roadCurve` (new)                                   | ACC-P22                            | 4     | 3     |
-| HC61  | `connection` (new)                                  | ACC-P24                            | 4     | 3     |
-| HC62  | `deviceCurves` (new)                                | EC-P8                              | 4     | 3     |
-| HC63  | `stemPlot` (new)                                    | EC-P9                              | 4     | 3     |
-| HC64  | `bitFields` (new)                                   | EC-P18                             | 4     | 3     |
-| HC65  | `solidOfRevolution` (new)                           | M-P6                               | 3     | 3     |
-| HC66  | `termsChart` series                                 | M-P17                              | 3     | 3     |
-| HC67  | `rectangle` `grow`, `conicGraph` `under`            | M-P18                              | 3     | 3     |
-| HC68  | `rayDiagram` slit, grating, thin film               | P-P15                              | 3     | 3     |
-| HC69  | `phaseSpace` (new)                                  | P-P20                              | 3     | 3     |
-| HC70  | `orbitalDiagram` `mo`                               | C-P3                               | 3     | 3     |
-| HC71  | `phScale` titration                                 | C-P6                               | 3     | 3     |
-| HC72  | `vsepr` 5–6 domains, `complex`                      | C-P13                              | 3     | 3     |
-| HC73  | `phScale` `pka`                                     | C-P22                              | 3     | 3     |
-| HC74  | `moleMap` boxes, `reaction` CₓHᵧO_z                 | C-P24                              | 3     | 3     |
-| HC75  | `aquifer` (new)                                     | EG-P17                             | 3     | 3     |
-| HC76  | `refraction` (new)                                  | EG-P20                             | 3     | 3     |
-| HC77  | `coordinatePlane` polygon, buffer, center           | EG-P26                             | 3     | 3     |
-| HC78  | `projection` (new) + card                           | EG-P28                             | 3     | 3     |
-| HC79  | `membrane` `potential`, `psi`                       | B-P5                               | 3     | 3     |
-| HC80  | `dilutionSeries` (new)                              | B-P14                              | 3     | 3     |
-| HC81  | `simpleMachine` `limb`                              | B-P21                              | 3     | 3     |
-| HC82  | `binaryPhase` (new)                                 | ME-P8                              | 3     | 3     |
-| HC83  | `machining` (new)                                   | ME-P19                             | 3     | 3     |
-| HC84  | `linkage` (new)                                     | ME-P29                             | 3     | 3     |
-| HC85  | card icons: defects, process families               | ME-P31                             | 3     | 3     |
-| HC86  | `lamina` (new)                                      | ACC-P8                             | 3     | 3     |
-| HC87  | `rocket` (new)                                      | ACC-P11                            | 3     | 3     |
-| HC88  | `streamChannel` options                             | ACC-P19                            | 3     | 3     |
-| HC89  | `hydrograph` (new)                                  | ACC-P21                            | 3     | 3     |
-| HC90  | `blockDiagram` (new)                                | ACC-P34                            | 3     | 3     |
-| HC91  | `waterfall` `decibels`                              | EC-P12                             | 3     | 3     |
-| HC92  | `functionGraph` `quantizer`                         | EC-P26                             | 3     | 3     |
-| HC93  | `wave` `em`, `line`                                 | P-P25, EC-P11                      | 3     | 3     |
-| HC94  | `matrixGrid` wide rows, `tally`                     | M-P11                              | 2     | 4     |
-| HC95  | `transformation` matrix, `eigen`                    | M-P12                              | 2     | 4     |
-| HC96  | `vectorDiagram` `project`                           | M-P14                              | 2     | 4     |
-| HC97  | `scatter` `pointsFrom`                              | M-P13                              | 1     | 4     |
-| HC98  | `treeDiagram` `chain`                               | M-P19                              | 1     | 4     |
-| HC99  | `motionGraph` `polynomial`                          | P-P1                               | 1     | 4     |
-| HC100 | `vectorDiagram` `masses`                            | P-P4                               | 1     | 4     |
-| HC101 | `impulse` shapes                                    | P-P5                               | 1     | 4     |
-| HC102 | `rotor` `rolling`, `rod`                            | P-P6                               | 2     | 4     |
-| HC103 | `pendulum` `rod`                                    | P-P9                               | 1     | 4     |
-| HC104 | `spacetime` (new)                                   | P-P16                              | 2     | 4     |
-| HC105 | `photoelectric` `compton`                           | P-P17                              | 1     | 4     |
-| HC106 | `rotor` `precession`                                | P-P21                              | 1     | 4     |
-| HC107 | `rotor` `plate`                                     | P-P22                              | 1     | 4     |
-| HC108 | `vectorDiagram` `cone`                              | P-P26                              | 1     | 4     |
-| HC109 | `orbitalDiagram` `Z`, `radial`                      | C-P2                               | 2     | 4     |
-| HC110 | `orbitalDiagram` `crystalField`                     | C-P4                               | 2     | 4     |
-| HC111 | `lewisStructure` formal, resonance                  | C-P12                              | 1     | 4     |
-| HC112 | `beaker` `cuvette`                                  | C-P16                              | 1     | 4     |
-| HC113 | explore `symmetryElements` + card                   | C-P18                              | 1     | 4     |
-| HC114 | `normalCurve` `t`                                   | C-P19                              | 2     | 4     |
-| HC115 | `macromolecules` `level`                            | C-P21                              | 1     | 4     |
-| HC116 | `ternary` (new)                                     | EG-P1                              | 2     | 4     |
-| HC117 | `silicateChain` (new)                               | EG-P2                              | 1     | 4     |
-| HC118 | `freeBody` `slab`                                   | EG-P4                              | 2     | 4     |
-| HC119 | `earthLayers` `rupture`                             | EG-P5                              | 1     | 4     |
-| HC120 | `rockLayers` ranges, header figure                  | EG-P6                              | 2     | 4     |
-| HC121 | `michelLevy` (new)                                  | EG-P9                              | 1     | 4     |
-| HC122 | `atmosphereLayers` `thickness`                      | EG-P10                             | 2     | 4     |
-| HC123 | `atmosphereLayers` `adiabat`, `saturation`          | EG-P11                             | 2     | 4     |
-| HC124 | `atmosphereLayers` parcel lapse rates               | EG-P12                             | 1     | 4     |
-| HC125 | `atmosphereLayers` balance `layer`                  | EG-P13                             | 1     | 4     |
-| HC126 | `oceanProfile` `slope`                              | EG-P14                             | 1     | 4     |
-| HC127 | `tsDiagram` (new)                                   | EG-P15                             | 1     | 4     |
-| HC128 | `wave` `depth`                                      | EG-P16                             | 2     | 4     |
-| HC129 | `catchment` (new)                                   | EG-P18                             | 1     | 4     |
-| HC130 | `rayDiagram` Snell `speeds`                         | EG-P21                             | 1     | 4     |
-| HC131 | `gravityProfile` (new)                              | EG-P22                             | 2     | 4     |
-| HC132 | `electrodeArray` (new)                              | EG-P23                             | 1     | 4     |
-| HC133 | `contourMap` (new)                                  | EG-P24                             | 1     | 4     |
-| HC134 | `rasterGrid` (new)                                  | EG-P25                             | 2     | 4     |
-| HC135 | `sample` `pattern`                                  | EG-P27                             | 1     | 4     |
-| HC136 | `populationPyramid` (new)                           | EG-P29                             | 1     | 4     |
-| HC137 | `sensorGeometry` (new)                              | EG-P30                             | 1     | 4     |
-| HC138 | `spectralCurve` (new)                               | EG-P31                             | 2     | 4     |
-| HC139 | `scatter` `classes`                                 | EG-P32                             | 1     | 4     |
-| HC140 | explore `circulationCells`                          | EG-P33                             | 1     | 4     |
-| HC141 | `curvedSolid` `ratio`                               | B-P1                               | 1     | 4     |
-| HC142 | `cellDivision` `content`                            | B-P3                               | 1     | 4     |
-| HC143 | card icons, evidence for evolution                  | B-P4                               | 1     | 4     |
-| HC144 | `pedigree` calculator picture + card                | B-P6, B-P7                         | 2     | 4     |
-| HC145 | `linkageMap` (new)                                  | B-P8                               | 2     | 4     |
-| HC146 | card `codons`                                       | B-P9                               | 1     | 4     |
-| HC147 | `geneExpression` `corepressor`                      | B-P11                              | 1     | 4     |
-| HC148 | `functionGraph` `threshold`                         | B-P12                              | 1     | 4     |
-| HC149 | Gram icons, `fieldOfView` `resolution`              | B-P13                              | 2     | 4     |
-| HC150 | `sample` `herd`                                     | B-P15                              | 1     | 4     |
-| HC151 | `alleleFrequencies` `after`                         | B-P17                              | 1     | 4     |
-| HC152 | `normalCurve` `shift`                               | B-P18                              | 1     | 4     |
-| HC153 | `driftPaths` (new)                                  | B-P19                              | 1     | 4     |
-| HC154 | card icons, tissues                                 | B-P20                              | 2     | 4     |
-| HC155 | `heartPump` (new)                                   | B-P22                              | 2     | 4     |
-| HC156 | `footprints` (new) + card `gait`                    | B-P24                              | 2     | 4     |
-| HC157 | `springDashpot` (new)                               | B-P25                              | 2     | 4     |
-| HC158 | card icons, biomaterials and imaging                | B-P26                              | 2     | 4     |
-| HC159 | `diffusionProfile` (new)                            | B-P27                              | 1     | 4     |
-| HC160 | `dialyzer` (new)                                    | B-P29                              | 1     | 4     |
-| HC161 | `attenuation` (new)                                 | B-P32                              | 2     | 4     |
-| HC162 | `scaffold` (new)                                    | B-P33                              | 1     | 4     |
-| HC163 | `ligandGrid` (new)                                  | B-P34                              | 1     | 4     |
-| HC164 | `bioreactor` (new)                                  | B-P35                              | 1     | 4     |
-| HC165 | `moodyChart` (new)                                  | ME-P13                             | 1     | 4     |
-| HC166 | `gearPair` (new)                                    | ME-P18                             | 2     | 4     |
-| HC167 | `printLayers` (new)                                 | ME-P20                             | 2     | 4     |
-| HC168 | `fitDiagram` (new)                                  | ME-P21                             | 2     | 4     |
-| HC169 | explore `orthographic` + line-type cards            | ME-P22                             | 1     | 4     |
-| HC170 | card icons, GD&T                                    | ME-P23                             | 1     | 4     |
-| HC171 | `vectorDiagram` `forces`                            | ME-P26                             | 2     | 4     |
-| HC172 | `casting` (new)                                     | ME-P30                             | 2     | 4     |
-| HC173 | explore `orbitElements`                             | ACC-P13                            | 1     | 4     |
-| HC174 | `soilPhases` (new)                                  | ACC-P16                            | 2     | 4     |
-| HC175 | `losScale` (new)                                    | ACC-P23                            | 1     | 4     |
-| HC176 | `settlingTank` (new)                                | ACC-P25                            | 1     | 4     |
-| HC177 | `plume` (new)                                       | ACC-P26                            | 1     | 4     |
-| HC178 | card `pfdSymbol`                                    | ACC-P36                            | 1     | 4     |
-| HC179 | `functionGraph` `fourier`                           | EC-P10                             | 1     | 4     |
-| HC180 | `oneLine` (new)                                     | EC-P13                             | 2     | 4     |
-| HC181 | `rfSpectrum` (new)                                  | EC-P15                             | 2     | 4     |
-| HC182 | `complexPlane` `constellation`                      | EC-P16                             | 1     | 4     |
-| HC183 | `placeValueChart` `base`                            | EC-P17                             | 1     | 4     |
-| HC184 | `karnaugh` (new) + explore                          | EC-P19                             | 2     | 4     |
-| HC185 | explore `stateDiagram`                              | EC-P21                             | 1     | 4     |
-| HC186 | `pipelineDiagram` (new)                             | EC-P23                             | 1     | 4     |
-| HC187 | explore `dataStructure`                             | EC-P25                             | 2     | 4     |
-| HC188 | `venn` `three`                                      | EC-P27                             | 1     | 4     |
-| HC189 | `memoryMap` (new)                                   | EC-P28                             | 2     | 4     |
-| HC190 | `matrixGrid` `routh`                                | EC-P29                             | 2     | 4     |
-| HC191 | `datapath` (new)                                    | EC-P32                             | 2     | 4     |
+| Id    | Kind or figure                                   | From                               | Pages | Round |
+| ----- | ------------------------------------------------ | ---------------------------------- | ----- | ----- |
+| HC1   | `beam` (new)                                     | ME-P1, ACC-P14, ACC-P7             | 31    | 1     |
+| HC2   | `skeletal` (new) + card                          | C-P14                              | 22    | 1     |
+| HC3   | `section` (new)                                  | ME-P3, ACC-P6                      | 21    | 1     |
+| HC4   | `functionGraph` `transient`, `stepResponse`      | EC-P4, EC-P5, ACC-P5               | 18    | 1     |
+| HC5   | `controlVolume` (new)                            | ACC-P9, ME-P11                     | 17    | 1     |
+| HC6   | `fluidSystem` (new)                              | ME-P12, ACC-P20                    | 16    | 1     |
+| HC7   | `seriesCircuit`/`circuit` schematic `net`        | EC-P1, P-P11, P-P12, B-P31         | 15    | 1     |
+| HC8   | `phaseEnvelope` (new) + `chemDiagram` phase      | ACC-P30, C-P8                      | 14    | 1     |
+| HC9   | `functionGraph` log and flipped axes             | EG-P19, ACC-P37, ME-P9, B need 6   | 14    | 1     |
+| HC10  | `functionGraph` families                         | M-P3, B-P10, B-P30, B-P36, ME-P9   | 14    | 1     |
+| HC11  | `oscillator` damping, forcing, phase, coupled    | M-P10, P-P8, P-P23, ME-P16, EC-P30 | 13    | 1     |
+| HC12  | `functionGraph` regions                          | M-P2, M-P5, P-P18, ACC-P33, EC-P14 | 12    | 1     |
+| HC13  | `velocityProfile` (new)                          | ACC-P31, B-P28                     | 12    | 1     |
+| HC14  | `complexPlane` phasors, poles, locus             | EC-P6                              | 9     | 2     |
+| HC15  | `potentialWell` (new)                            | P-P19, C-P1                        | 9     | 2     |
+| HC16  | `unitCell` (new)                                 | C-P17, ME-P7, EG-P7, EG-P8         | 9     | 2     |
+| HC17  | `propertyDiagram` (new)                          | ME-P10, ACC-P10                    | 9     | 2     |
+| HC18  | `seriesCircuit` `amp`                            | EC-P2, B-P31                       | 9     | 2     |
+| HC19  | `induction` field sources, rails                 | P-P13, P-P14, EC-P31               | 9     | 2     |
+| HC20  | `freeBody` pulley, ladder, tip, drum, banked     | P-P2, P-P7, P-P3, ME-P27           | 9     | 2     |
+| HC21  | `fieldPlot` (new)                                | M-P9, B-P16                        | 8     | 2     |
+| HC22  | `bode` (new)                                     | EC-P7                              | 8     | 2     |
+| HC23  | `thermalWall` (new)                              | ME-P14, ACC-P31                    | 8     | 2     |
+| HC24  | `wing` (new)                                     | ACC-P1                             | 8     | 2     |
+| HC25  | `freeBody` aircraft                              | ACC-P4                             | 8     | 2     |
+| HC26  | `soilProfile` (new)                              | ACC-P17                            | 8     | 2     |
+| HC27  | `truss` (new) + card                             | ME-P2, ACC-P15                     | 7     | 2     |
+| HC28  | `stressStrain` (new)                             | ME-P5, B-P23                       | 7     | 2     |
+| HC29  | `charges` Gauss, ring, disk, image               | P-P10, P-P24, EC-P31               | 7     | 2     |
+| HC30  | `duct` (new)                                     | ACC-P2                             | 7     | 2     |
+| HC31  | `supersonicFlow` (new)                           | ACC-P3                             | 7     | 2     |
+| HC32  | `survey` (new)                                   | ACC-P27, ACC-P28, ACC-P29          | 7     | 2     |
+| HC33  | `stressElement` (new) with Mohr's circle         | ME-P4, ACC-P18                     | 6     | 2     |
+| HC34  | `chemDiagram` rate, consecutive                  | C-P7, ACC-P32                      | 6     | 2     |
+| HC35  | `circularMotion` orbits, n–t                     | P-P3, ACC-P12, ME-P28              | 6     | 2     |
+| HC36  | `globe` (new)                                    | EG-P3                              | 6     | 2     |
+| HC37  | `functionGraph` `tangent`, `band`                | M-P1                               | 6     | 2     |
+| HC38  | `functionGraph` `series`                         | M-P4                               | 6     | 2     |
+| HC39  | `seriesCircuit` `device`                         | EC-P3                              | 6     | 2     |
+| HC40  | `heatExchanger` (new)                            | ME-P15, ACC-P35                    | 5     | 3     |
+| HC41  | `elementChain` (new)                             | ME-P25, ACC-P14                    | 5     | 3     |
+| HC42  | `functionGraph` `distribution`                   | P-P28, C-P10, ME-P14               | 5     | 3     |
+| HC43  | `gasPiston` `pv`, `real`                         | P-P27, C-P11, C-P10                | 5     | 3     |
+| HC44  | `energyProfile` `G`, `steps`, `bomb`             | B-P2, C-P15                        | 5     | 3     |
+| HC45  | `functionGraph` numerical methods                | ME-P9                              | 5     | 3     |
+| HC46  | `surfacePlot` (new)                              | M-P7                               | 5     | 3     |
+| HC47  | `vectorDiagram` `space` objects                  | M-P8                               | 5     | 3     |
+| HC48  | explore `codeTrace` + card `code`                | ME-P24                             | 5     | 3     |
+| HC49  | `timingDiagram` (new)                            | EC-P20                             | 5     | 3     |
+| HC50  | `graph` (new) + card                             | EC-P22                             | 5     | 3     |
+| HC51  | `scheduleChart` (new)                            | EC-P24                             | 5     | 3     |
+| HC52  | `fatigueDiagram` (new)                           | ME-P17, ACC-P37                    | 4     | 3     |
+| HC53  | `polarGrid` options                              | M-P15                              | 4     | 3     |
+| HC54  | `rightTriangle` `rates`, `curvedSolid` fill/slab | M-P16                              | 4     | 3     |
+| HC55  | `instrumentTrace` (new) + card                   | C-P5                               | 4     | 3     |
+| HC56  | `chemDiagram` `cell`                             | C-P9                               | 4     | 3     |
+| HC57  | `organelleEnergy` `detail` + card                | C-P20                              | 4     | 3     |
+| HC58  | `equilibriumChart` `gibbs`                       | C-P23                              | 4     | 3     |
+| HC59  | `shaft` (new)                                    | ME-P6                              | 4     | 3     |
+| HC60  | `roadCurve` (new)                                | ACC-P22                            | 4     | 3     |
+| HC61  | `connection` (new)                               | ACC-P24                            | 4     | 3     |
+| HC62  | `deviceCurves` (new)                             | EC-P8                              | 4     | 3     |
+| HC63  | `stemPlot` (new)                                 | EC-P9                              | 4     | 3     |
+| HC64  | `bitFields` (new)                                | EC-P18                             | 4     | 3     |
+| HC65  | `solidOfRevolution` (new)                        | M-P6                               | 3     | 3     |
+| HC66  | `termsChart` series                              | M-P17                              | 3     | 3     |
+| HC67  | `rectangle` `grow`, `conicGraph` `under`         | M-P18                              | 3     | 3     |
+| HC68  | `rayDiagram` slit, grating, thin film            | P-P15                              | 3     | 3     |
+| HC69  | `phaseSpace` (new)                               | P-P20                              | 3     | 3     |
+| HC70  | `orbitalDiagram` `mo`                            | C-P3                               | 3     | 3     |
+| HC71  | `phScale` titration                              | C-P6                               | 3     | 3     |
+| HC72  | `vsepr` 5–6 domains, `complex`                   | C-P13                              | 3     | 3     |
+| HC73  | `phScale` `pka`                                  | C-P22                              | 3     | 3     |
+| HC74  | `moleMap` boxes, `reaction` CₓHᵧO_z              | C-P24                              | 3     | 3     |
+| HC75  | `aquifer` (new)                                  | EG-P17                             | 3     | 3     |
+| HC76  | `refraction` (new)                               | EG-P20                             | 3     | 3     |
+| HC77  | `coordinatePlane` polygon, buffer, center        | EG-P26                             | 3     | 3     |
+| HC78  | `projection` (new) + card                        | EG-P28                             | 3     | 3     |
+| HC79  | `membrane` `potential`, `psi`                    | B-P5                               | 3     | 3     |
+| HC80  | `dilutionSeries` (new)                           | B-P14                              | 3     | 3     |
+| HC81  | `simpleMachine` `limb`                           | B-P21                              | 3     | 3     |
+| HC82  | `binaryPhase` (new)                              | ME-P8                              | 3     | 3     |
+| HC83  | `machining` (new)                                | ME-P19                             | 3     | 3     |
+| HC84  | `linkage` (new)                                  | ME-P29                             | 3     | 3     |
+| HC85  | card icons: defects, process families            | ME-P31                             | 3     | 3     |
+| HC86  | `lamina` (new)                                   | ACC-P8                             | 3     | 3     |
+| HC87  | `rocket` (new)                                   | ACC-P11                            | 3     | 3     |
+| HC88  | `streamChannel` options                          | ACC-P19                            | 3     | 3     |
+| HC89  | `hydrograph` (new)                               | ACC-P21                            | 3     | 3     |
+| HC90  | `blockDiagram` (new)                             | ACC-P34                            | 3     | 3     |
+| HC91  | `waterfall` `decibels`                           | EC-P12                             | 3     | 3     |
+| HC92  | `functionGraph` `quantizer`                      | EC-P26                             | 3     | 3     |
+| HC93  | `wave` `em`, `line`                              | P-P25, EC-P11                      | 3     | 3     |
+| HC94  | `matrixGrid` wide rows, `tally`                  | M-P11                              | 2     | 4     |
+| HC95  | `transformation` matrix, `eigen`                 | M-P12                              | 2     | 4     |
+| HC96  | `vectorDiagram` `project`                        | M-P14                              | 2     | 4     |
+| HC97  | `scatter` `pointsFrom`                           | M-P13                              | 1     | 4     |
+| HC98  | `treeDiagram` `chain`                            | M-P19                              | 1     | 4     |
+| HC99  | `motionGraph` `polynomial`                       | P-P1                               | 1     | 4     |
+| HC100 | `vectorDiagram` `masses`                         | P-P4                               | 1     | 4     |
+| HC101 | `impulse` shapes                                 | P-P5                               | 1     | 4     |
+| HC102 | `rotor` `rolling`, `rod`                         | P-P6                               | 2     | 4     |
+| HC103 | `pendulum` `rod`                                 | P-P9                               | 1     | 4     |
+| HC104 | `spacetime` (new)                                | P-P16                              | 2     | 4     |
+| HC105 | `photoelectric` `compton`                        | P-P17                              | 1     | 4     |
+| HC106 | `rotor` `precession`                             | P-P21                              | 1     | 4     |
+| HC107 | `rotor` `plate`                                  | P-P22                              | 1     | 4     |
+| HC108 | `vectorDiagram` `cone`                           | P-P26                              | 1     | 4     |
+| HC109 | `orbitalDiagram` `Z`, `radial`                   | C-P2                               | 2     | 4     |
+| HC110 | `orbitalDiagram` `crystalField`                  | C-P4                               | 2     | 4     |
+| HC111 | `lewisStructure` formal, resonance               | C-P12                              | 1     | 4     |
+| HC112 | `beaker` `cuvette`                               | C-P16                              | 1     | 4     |
+| HC113 | explore `symmetryElements` + card                | C-P18                              | 1     | 4     |
+| HC114 | `normalCurve` `t`                                | C-P19                              | 2     | 4     |
+| HC115 | `macromolecules` `level`                         | C-P21                              | 1     | 4     |
+| HC116 | `ternary` (new)                                  | EG-P1                              | 2     | 4     |
+| HC117 | `silicateChain` (new)                            | EG-P2                              | 1     | 4     |
+| HC118 | `freeBody` `slab`                                | EG-P4                              | 2     | 4     |
+| HC119 | `earthLayers` `rupture`                          | EG-P5                              | 1     | 4     |
+| HC120 | `rockLayers` ranges, header figure               | EG-P6                              | 2     | 4     |
+| HC121 | `michelLevy` (new)                               | EG-P9                              | 1     | 4     |
+| HC122 | `atmosphereLayers` `thickness`                   | EG-P10                             | 2     | 4     |
+| HC123 | `atmosphereLayers` `adiabat`, `saturation`       | EG-P11                             | 2     | 4     |
+| HC124 | `atmosphereLayers` parcel lapse rates            | EG-P12                             | 1     | 4     |
+| HC125 | `atmosphereLayers` balance `layer`               | EG-P13                             | 1     | 4     |
+| HC126 | `oceanProfile` `slope`                           | EG-P14                             | 1     | 4     |
+| HC127 | `tsDiagram` (new)                                | EG-P15                             | 1     | 4     |
+| HC128 | `wave` `depth`                                   | EG-P16                             | 2     | 4     |
+| HC129 | `catchment` (new)                                | EG-P18                             | 1     | 4     |
+| HC130 | `rayDiagram` Snell `speeds`                      | EG-P21                             | 1     | 4     |
+| HC131 | `gravityProfile` (new)                           | EG-P22                             | 2     | 4     |
+| HC132 | `electrodeArray` (new)                           | EG-P23                             | 1     | 4     |
+| HC133 | `contourMap` (new)                               | EG-P24                             | 1     | 4     |
+| HC134 | `rasterGrid` (new)                               | EG-P25                             | 2     | 4     |
+| HC135 | `sample` `pattern`                               | EG-P27                             | 1     | 4     |
+| HC136 | `populationPyramid` (new)                        | EG-P29                             | 1     | 4     |
+| HC137 | `sensorGeometry` (new)                           | EG-P30                             | 1     | 4     |
+| HC138 | `spectralCurve` (new)                            | EG-P31                             | 2     | 4     |
+| HC139 | `scatter` `classes`                              | EG-P32                             | 1     | 4     |
+| HC140 | explore `circulationCells`                       | EG-P33                             | 1     | 4     |
+| HC141 | `curvedSolid` `ratio`                            | B-P1                               | 1     | 4     |
+| HC142 | `cellDivision` `content`                         | B-P3                               | 1     | 4     |
+| HC143 | card icons, evidence for evolution               | B-P4                               | 1     | 4     |
+| HC144 | `pedigree` calculator picture + card             | B-P6, B-P7                         | 2     | 4     |
+| HC145 | `linkageMap` (new)                               | B-P8                               | 2     | 4     |
+| HC146 | card `codons`                                    | B-P9                               | 1     | 4     |
+| HC147 | `geneExpression` `corepressor`                   | B-P11                              | 1     | 4     |
+| HC148 | `functionGraph` `threshold`                      | B-P12                              | 1     | 4     |
+| HC149 | Gram icons, `fieldOfView` `resolution`           | B-P13                              | 2     | 4     |
+| HC150 | `sample` `herd`                                  | B-P15                              | 1     | 4     |
+| HC151 | `alleleFrequencies` `after`                      | B-P17                              | 1     | 4     |
+| HC152 | `normalCurve` `shift`                            | B-P18                              | 1     | 4     |
+| HC153 | `driftPaths` (new)                               | B-P19                              | 1     | 4     |
+| HC154 | card icons, tissues                              | B-P20                              | 2     | 4     |
+| HC155 | `heartPump` (new)                                | B-P22                              | 2     | 4     |
+| HC156 | `footprints` (new) + card `gait`                 | B-P24                              | 2     | 4     |
+| HC157 | `springDashpot` (new)                            | B-P25                              | 2     | 4     |
+| HC158 | card icons, biomaterials and imaging             | B-P26                              | 2     | 4     |
+| HC159 | `diffusionProfile` (new)                         | B-P27                              | 1     | 4     |
+| HC160 | `dialyzer` (new)                                 | B-P29                              | 1     | 4     |
+| HC161 | `attenuation` (new)                              | B-P32                              | 2     | 4     |
+| HC162 | `scaffold` (new)                                 | B-P33                              | 1     | 4     |
+| HC163 | `ligandGrid` (new)                               | B-P34                              | 1     | 4     |
+| HC164 | `bioreactor` (new)                               | B-P35                              | 1     | 4     |
+| HC165 | `moodyChart` (new)                               | ME-P13                             | 1     | 4     |
+| HC166 | `gearPair` (new)                                 | ME-P18                             | 2     | 4     |
+| HC167 | `printLayers` (new)                              | ME-P20                             | 2     | 4     |
+| HC168 | `fitDiagram` (new)                               | ME-P21                             | 2     | 4     |
+| HC169 | explore `orthographic` + line-type cards         | ME-P22                             | 1     | 4     |
+| HC170 | card icons, GD&T                                 | ME-P23                             | 1     | 4     |
+| HC171 | `vectorDiagram` `forces`                         | ME-P26                             | 2     | 4     |
+| HC172 | `casting` (new)                                  | ME-P30                             | 2     | 4     |
+| HC173 | explore `orbitElements`                          | ACC-P13                            | 1     | 4     |
+| HC174 | `soilPhases` (new)                               | ACC-P16                            | 2     | 4     |
+| HC175 | `losScale` (new)                                 | ACC-P23                            | 1     | 4     |
+| HC176 | `settlingTank` (new)                             | ACC-P25                            | 1     | 4     |
+| HC177 | `plume` (new)                                    | ACC-P26                            | 1     | 4     |
+| HC178 | card `pfdSymbol`                                 | ACC-P36                            | 1     | 4     |
+| HC179 | `functionGraph` `fourier`                        | EC-P10                             | 1     | 4     |
+| HC180 | `oneLine` (new)                                  | EC-P13                             | 2     | 4     |
+| HC181 | `rfSpectrum` (new)                               | EC-P15                             | 2     | 4     |
+| HC182 | `complexPlane` `constellation`                   | EC-P16                             | 1     | 4     |
+| HC183 | `placeValueChart` `base`                         | EC-P17                             | 1     | 4     |
+| HC184 | `karnaugh` (new) + explore                       | EC-P19                             | 2     | 4     |
+| HC185 | explore `stateDiagram`                           | EC-P21                             | 1     | 4     |
+| HC186 | `pipelineDiagram` (new)                          | EC-P23                             | 1     | 4     |
+| HC187 | explore `dataStructure`                          | EC-P25                             | 2     | 4     |
+| HC188 | `venn` `three`                                   | EC-P27                             | 1     | 4     |
+| HC189 | `memoryMap` (new)                                | EC-P28                             | 2     | 4     |
+| HC190 | `matrixGrid` `routh`                             | EC-P29                             | 2     | 4     |
+| HC191 | `datapath` (new)                                 | EC-P32                             | 2     | 4     |
