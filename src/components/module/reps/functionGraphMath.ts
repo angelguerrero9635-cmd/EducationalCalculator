@@ -469,6 +469,9 @@ export function buildCurve(
     return Number.isFinite(v) ? v : f(c + s * 1e-9);
   };
   switch (fam.family) {
+    case 'response': // HC4, HC9: drawn by FunctionGraphHe1d, never as a family curve
+    case 'gradation':
+      throw new Error(`functionGraph family '${fam.family}' is drawn by FunctionGraphHe1d`);
     case 'linear': {
       const [m, b] = [get(fam.m, 1), get(fam.b, 0)];
       const f = (t: number) => m * t + b;

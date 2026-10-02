@@ -1,4 +1,5 @@
 import type { Representation } from '@/data/modules';
+import { drawnByHe1d } from '@/data/modules/typesHe1d';
 
 import type { Calculator } from '../useCalculator';
 import { Balance } from './Balance';
@@ -62,6 +63,7 @@ import { LineParabola } from './LineParabola';
 import { PolygonApothem } from './PolygonApothem';
 import { LinearFunction, LineSystem } from './Lines';
 import { FunctionGraph } from './FunctionGraph';
+import { FunctionGraphHe1d } from './FunctionGraphHe1d';
 import { FunctionMachine } from './FunctionMachine';
 import { Mapping } from './Mapping';
 import { Transformation } from './Transformation';
@@ -325,6 +327,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
         return <LineParabola spec={spec} calc={calc} />; // H106
       return <LineSystem spec={spec} calc={calc} />;
     case 'functionGraph':
+      if (drawnByHe1d(spec)) return <FunctionGraphHe1d spec={spec} calc={calc} />; // HC4, HC9
       return <FunctionGraph spec={spec} calc={calc} />;
     case 'motionGraph':
       if (spec.graph === 'speed' && (spec.kinematics || typeof spec.acceleration === 'number'))
