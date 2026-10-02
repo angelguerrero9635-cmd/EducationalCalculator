@@ -341,3 +341,9 @@ From `.review/hs-page2-s/page-report2-science.md` (the shared parts are in s.9.m
   whole, and a value with its own display (`figures`, `sigFigs`, `integer`, a fraction) keeps
   it; the working lines and the check keep their extra figures, as a worked answer is rounded
   only at the end.
+
+### Drawn parts placed
+
+| Page                                  | Entry | What it teaches                                                                                                                                  |
+| ------------------------------------- | ----- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `s.10.molecular-shape~hydrogen-bonds` | H48   | hydrogen bonds between water molecules: k = n − 1 bonds to the middle molecule, 4 − k places left (2 H to give, 2 lone pairs to take), 4 at most |

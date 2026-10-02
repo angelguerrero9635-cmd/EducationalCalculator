@@ -1374,6 +1374,61 @@ const SHAPES: ModuleDef[] = [
     sliders: true,
     representation: { kind: 'vsepr', bonded: 'b', lone: 'l', angle: 'a', polar: true },
   },
+  {
+    id: 's.10.molecular-shape~hydrogen-bonds',
+    title: 'Hydrogen bonds around a water molecule',
+    use: 'Use this for “How many hydrogen bonds can one water molecule make, and why four at most?”',
+    assumptions: [
+      'Water is bent and polar: its O is partly negative (δ−) and its two H atoms partly positive (δ+).',
+      'A hydrogen bond pulls an H of one molecule to a lone pair on another; it is an attraction between molecules, much weaker than a covalent bond.',
+      'One water molecule can give its 2 H and take 2 more on its 2 lone pairs: at most 4 hydrogen bonds.',
+    ],
+    variables: [
+      whole('n', 'n', 'Water molecules', 2, 5),
+      whole('k', 'k', 'Hydrogen bonds to the middle molecule', 1, 4),
+      { ...whole('f', 'f', 'Places left for more bonds', 0, 3), derived: true },
+    ],
+    ...rules(
+      {
+        relation: {
+          id: 'k = n − 1',
+          display: '{k} = {n} − 1',
+          vars: ['k', 'n'],
+          residual: (v) => v.k! - (v.n! - 1),
+          solve: { k: (v) => v.n! - 1, n: (v) => v.k! + 1 },
+        },
+        steps: {
+          k: {
+            expr: '{n} − 1',
+            how: 'Each molecule around the middle one is held to it by one hydrogen bond.',
+          },
+          n: {
+            expr: '{k} + 1',
+            how: 'One molecule for each hydrogen bond, and the one in the middle.',
+          },
+        },
+      },
+      {
+        relation: {
+          id: 'f = 4 − k',
+          display: '{f} = 4 − {k}',
+          vars: ['f', 'k'],
+          residual: (v) => v.f! - (4 - v.k!),
+          solve: { f: (v) => 4 - v.k!, k: () => undefined },
+        },
+        steps: {
+          f: {
+            expr: '4 − {k}',
+            how: 'The middle molecule has 4 places, 2 H and 2 lone pairs; each hydrogen bond fills one.',
+          },
+        },
+      },
+    ),
+    example: { n: 3, k: 2, f: 2 },
+    startWith: ['n'],
+    sliders: true,
+    representation: { kind: 'vsepr', mode: 'hbonds', molecules: 'n', bonds: 'k' },
+  },
 ];
 
 // ─── Reaction types: balancing ───────────────────────────────────────────────

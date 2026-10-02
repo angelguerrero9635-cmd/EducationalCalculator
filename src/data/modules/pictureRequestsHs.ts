@@ -751,13 +751,16 @@ export const HS_PICTURE_REQUESTS: PictureRequest[] = [
       'H48',
       'vsepr',
       'Ball-and-stick shapes with bond angles and dipole arrows; hydrogen bonds between water molecules',
-      ['s.10.molecular-shape'],
+      {
+        's.10.molecular-shape': '"polar":true',
+        's.10.molecular-shape~hydrogen-bonds': '"mode":"hbonds"',
+      },
     ),
-    status: 'drawn',
-    gallery: ['g.s10-molecular-shape-hydrogen-bonds', 'g.s10-molecular-shape-hydrogen-bonds-four'],
+    status: 'placed',
+    gallery: [],
     notes:
       "Drawn (group HI): kind vsepr (typesHsi.ts, reps/Vsepr.tsx, geometry in reps/vseprGeo.ts). mode 'shape' (default) { bonded (2–4), lone (0–2; 2 to 4 domains in all), angle? (checked), polar? }: a ball-and-stick example molecule for the shape (linear CO₂ 180°, trigonal planar BF₃ 120°, bent SO₂ 119°, tetrahedral CH₄ 109.5°, trigonal pyramidal NH₃ 107°, bent H₂O 104.5°), lone pairs as lobes with their two dots, the angle as a true 3-D arc between two bonds, four-domain shapes turned a little so no atom hides another; with polar, crossed bond-dipole arrows toward the more electronegative atom and the net dipole beside the molecule (none when the dipoles cancel; the caption says polar or nonpolar). mode 'hbonds' { molecules (2–5), bonds? (checked, molecules − 1) }: water molecules around a middle one, dotted hydrogen bonds from an H to an O's lone pair (two accepted, two donated), δ− and δ+ on the middle molecule. The step phrase \"bond angle with {b} bonded atoms and {l} lone pairs\" is taught to the harness. No handles: give the page `sliders: true`. Examples: { kind: 'vsepr', bonded: 'b', lone: 'l', angle: 'a', polar: true } with d = b + l; { kind: 'vsepr', mode: 'hbonds', molecules: 'n', bonds: 'k' }." +
-      ' Tracker: still drawn. The shapes, angles and dipoles are placed; hydrogen bonds between molecules (`mode: "hbonds"`) are on no page.',
+      ' Placed (parts by page in `uses`): the shapes, angles and dipoles on s.10.molecular-shape; hydrogen bonds between water molecules (`mode: "hbonds"`, 1 to 4 around the middle one) on s.10.molecular-shape~hydrogen-bonds, and both demos are retired.',
   },
   {
     ...ask(

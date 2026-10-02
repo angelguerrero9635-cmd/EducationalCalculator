@@ -2011,6 +2011,8 @@ const RETIRED = new Set<string>([
   'g.s10-mole-map-large',
   'g.s10-molecular-shape-ammonia',
   'g.s10-molecular-shape-bent-three-domains',
+  'g.s10-molecular-shape-hydrogen-bonds',
+  'g.s10-molecular-shape-hydrogen-bonds-four',
   'g.s10-molecular-shape-linear',
   'g.s10-molecular-shape-methane',
   'g.s10-molecular-shape-trigonal-planar',
