@@ -15,7 +15,9 @@ The plans total **1,460 pages** (1,243 calculators, 217 layouts; 1,033 of them p
 
 ## The four that block every college page
 
-None of the 1,456 new pages (the four pilots aside) can ship before these.
+None of the 1,456 new pages (the four pilots aside) can ship before these. **All four are done
+(2026-10-02)**; the pilots are redone to their plans (decision 6), with `~rates` and
+`~transition` as the first topic problem types.
 
 ### HE-E1 Topic problem types (`<course>#<i>~<slug>`)
 
@@ -27,6 +29,10 @@ the owner of its types.
 - **From:** M-E1 (every other plan's "Ids" decision assumes it).
 - **Waiting:** every problem-type page: M 93, P 83, C 111, EG 119, B 87, ME 180, ACC 169,
   EC 191 (**1,033**).
+- **Done:** `problemTypes`/`getProblemType` take a topic key (`ProblemType.topic`), routed by
+  `topicRoute(course, i, slug)` to `/course/<id>/topic/<i>~<slug>` (`pageRoute`, `topicOf`,
+  `topicPageId`, `TOPIC_TYPE_IDS`); the topic page, side menu, search, recents, nav bar, meta,
+  matcher (`MatchResult.owner`) and corpus script (`topicKey`) list them as skills' types.
 
 ### HE-E2 College layouts
 
@@ -37,6 +43,9 @@ layout files read for `he.*` ids and the Grades 9–12 reading rules for courses
 - **From:** M-E2, P-E1; the chemistry plan's `layouts/collegeChemistry.ts`.
 - **Waiting:** every sort, sequence, explore and observe page: M 13, P 4, C 36, EG 45, B 36,
   ME 26, ACC 24, EC 33 (**217**).
+- **Done:** `layouts/college<Field>.ts` spread into `COLLEGE_LAYOUTS` and `LAYOUTS`, found by
+  `getLayout`/`getPage` under `#` ids; `layouts.test.ts` takes a topic as owner, reads college
+  pages at 35 words and checks each lookup (first page: `human-geography#0~transition`).
 
 ### HE-E3 College standards
 
@@ -49,6 +58,8 @@ typed as one group counts once), the name first on every value, 2–4 assumption
 - **From:** M-E3; the "Word rules" decision of all eight plans.
 - **Waiting:** the tests of every page (**1,460**). No plan asks to relax a rule; pages that
   would pass 10 values are split into problem types instead.
+- **Done:** `standards.test.ts` reads `he.` pages at Grade 12 (`rulesGrade`): sentences ≤ 35
+  words, ≤ 10 values (a group once), 2–4 assumptions; human-geography#0 split to 9 + `~rates`.
 
 ### HE-E4 Splitting `college.ts`, and college ids in the scripts
 
@@ -61,6 +72,9 @@ college ids so builders scaffold pages and promote the pictures chat's demos.
 - **From:** the "Ids" decision of every plan (math and physics: split at about 2,000 lines;
   biology and mechanical: at about 3,000; chemistry and aero-civil-chemical: before building).
 - **Waiting:** no page by itself, but every page lands in the new files.
+- **Done:** `college/<field>.ts` (the course's home field: its id's field, or an engineering
+  course's first) spread into `COLLEGE_MODULES`; `pnpm new-module` and `promote-demo.mjs` take
+  `he.<field>.<course>#<i>[~slug]` and create a missing field file (`scripts/college-files.mjs`).
 
 ## The other needs
 
@@ -411,6 +425,8 @@ can be revisited.
 6. **Pilot pages are redone to match their plans** (owner): circuits-1#0 labels "Resistance 1
    (R₁)"; human-geography#0 trimmed to 9 values with `~rates`; university-1#0 on `motionGraph`
    velocity with "Displacement (Δx)"; calc-1#1 on `functionGraph` tangent once HC37 is drawn.
+   Done 2026-10-02 but for calc-1#1, which keeps its `plot` (and gains its use line) until
+   **HC37** is drawn; move it then (a comment on its picture says so).
 7. **Licence mismatch on Chemistry 2e and Biology 2e** (owner asked what it means): with titles
    only, nothing. Only chapter and section titles are recorded from any OpenStax book, and
    titles carry no licence terms. The mismatch would matter only if their text or exercises
