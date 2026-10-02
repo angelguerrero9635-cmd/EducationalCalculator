@@ -40,6 +40,7 @@ import { he2bSpecVars } from '../typesHe2b';
 import { globeVars } from '../typesHe2k';
 import { he2jSpecVars } from '../typesHe2j';
 import { fieldPlotVars } from '../typesHe2g';
+import { solidOfRevolutionVars, spaceObjectsVars, surfacePlotVars } from '../typesHe3b';
 import { he2cSpecVars } from '../typesHe2c';
 import { hskOptionVars, hskSpecVars } from '../typesHsk';
 import { he2fSpecVars, isHe2fSpec } from '../typesHe2f';
@@ -556,6 +557,7 @@ function representationVars(r: Representation): string[] {
         ...hs2gSpecVars(r),
         ...hs3bSpecVars(r),
         ...(r.kind === 'complexPlane' ? complexPlaneHe2aVars(r) : []), // HC14
+        ...(r.kind === 'vectorDiagram' ? spaceObjectsVars(r.space) : []), // HC47
       ];
     case 'membrane':
     case 'dnaStrand':
@@ -626,6 +628,10 @@ function representationVars(r: Representation): string[] {
       return he2jSpecVars(r);
     case 'fieldPlot':
       return fieldPlotVars(r); // HC21
+    case 'surfacePlot':
+      return surfacePlotVars(r); // HC46
+    case 'solidOfRevolution':
+      return solidOfRevolutionVars(r); // HC65
     case 'propertyDiagram':
     case 'thermalWall':
       return he2cSpecVars(r);

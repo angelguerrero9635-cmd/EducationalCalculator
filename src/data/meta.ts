@@ -161,6 +161,8 @@ const PICTURE_NAMES: Record<string, string> = {
   duct: 'a nozzle or stream tube drawn to scale by A ÷ A∗, or a turbojet',
   supersonicFlow: 'shocks, expansion fans and Mach cones in supersonic flow',
   fieldPlot: 'a slope or vector field, a phase portrait, or two species’ isoclines',
+  surfacePlot: 'a surface z = f(x, y) with traces, a tangent plane, prisms or level curves',
+  solidOfRevolution: 'a region turned about an axis, with one disk, washer or shell',
   propertyDiagram: 'a T–v, P–v or T–s plane with the vapor dome, states and a cycle',
   thermalWall: 'heat through a layered wall, a pipe, a fin, a tube or a wire, or radiated away',
   matrixGrid: 'matrices in brackets',

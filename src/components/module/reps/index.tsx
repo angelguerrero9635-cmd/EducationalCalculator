@@ -203,6 +203,10 @@ import { Wing } from './Wing';
 import { Duct } from './Duct';
 import { SupersonicFlow } from './SupersonicFlow';
 import { FieldPlot } from './FieldPlot';
+import { SurfacePlot } from './SurfacePlot';
+import { SolidOfRevolution } from './SolidOfRevolution';
+import { SpaceObjects } from './SpaceObjects';
+import { hasSpaceObjects } from '@/data/modules/typesHe3b';
 import { ThermalWall } from './ThermalWall';
 import { PropertyDiagram } from './PropertyDiagram';
 import { MotionGraphHs } from './MotionGraphHs';
@@ -342,6 +346,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
         <ComplexPlane spec={spec} calc={calc} />
       );
     case 'vectorDiagram':
+      if (hasSpaceObjects(spec.space)) return <SpaceObjects spec={spec} calc={calc} />; // HC47
       if (spec.space) return <VectorSpace spec={spec} calc={calc} />; // H106
       return <VectorDiagram spec={spec} calc={calc} />;
     case 'algebraTiles':
@@ -399,6 +404,10 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <SupersonicFlow spec={spec} calc={calc} />;
     case 'fieldPlot':
       return <FieldPlot spec={spec} calc={calc} />;
+    case 'surfacePlot':
+      return <SurfacePlot spec={spec} calc={calc} />; // HC46
+    case 'solidOfRevolution':
+      return <SolidOfRevolution spec={spec} calc={calc} />; // HC65
     case 'thermalWall':
       return <ThermalWall spec={spec} calc={calc} />;
     case 'propertyDiagram':
