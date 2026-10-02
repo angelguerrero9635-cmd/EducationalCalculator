@@ -7,6 +7,7 @@
 import type { NumOrVar } from './typesGraphs';
 import { ionicChargeVars, type IonicCharges } from './typesHs3e';
 import { moleMapHs2dVars, type MoleMapLimiting } from './typesHs2d';
+import { orbitalMoVars, type OrbitalMoSpec } from './typesHe3e';
 
 /** One conversion factor in a chain: `top` `topUnit` over `bottom` `bottomUnit` (1000 m / 1 km). */
 export interface ChainFactor {
@@ -115,7 +116,9 @@ export type OrbitalDiagramSpec =
       energy?: string;
       wavelength?: string;
       levels?: number;
-    };
+    }
+  /** College HC70: molecular orbitals (`typesHe3e.ts`). */
+  | OrbitalMoSpec;
 
 /**
  * `limiting` on `reaction` (H49): the particles each reactant starts with (`amounts`, in the
@@ -259,6 +262,7 @@ export function hsiSpecVars(r: HsiSpec): string[] {
     case 'atomModel':
       return ids(r.protons, r.neutrons, r.electrons, r.mass, r.charge, r.valence);
     case 'orbitalDiagram':
+      if (r.mode === 'mo') return orbitalMoVars(r); // HC70
       return r.mode === 'boxes'
         ? ids(r.element, r.electrons, r.unpaired)
         : ids(r.upper, r.lower, r.energy, r.wavelength);

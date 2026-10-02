@@ -130,6 +130,7 @@ export function hsiIssues(rep: HsiSpec, val: (id: string) => number | undefined)
       break;
     }
     case 'orbitalDiagram': {
+      if (rep.mode === 'mo') break; // HC70: picturesHe3e.ts
       if (rep.mode === 'boxes') {
         if (rep.element === undefined && rep.electrons === undefined)
           out.push('boxes need an element or a number of electrons');

@@ -4,7 +4,9 @@
  *
  * HC55: `instrumentTrace` (C-P5): ¹H NMR, a chromatogram, a rotational spectrum, and the IR
  * sort's `ir` cards.
+ * HC70: `orbitalDiagram` mode `mo` (C-P3): diatomic MOs, a heteronuclear pair, Frost circles.
  */
+import { diatomicMOs, frost, heteronuclear } from '@/components/module/reps/orbitalMoMath';
 import type { Relation, VariableDef } from '@/engine/types';
 
 import type { LayoutDef } from './layouts';
@@ -97,6 +99,25 @@ const quotient = (
     [b]: st(`{${a}} × {${c}}`, how[1]),
     [c]: st(`{${b}} ÷ {${a}}`, how[2]),
   },
+});
+
+/** A page limit, checked only: `ok` must hold, else `why` is the reason. */
+const limit = (
+  id: string,
+  display: string,
+  ok: (v: Record<string, number>) => boolean,
+  why: string,
+): Rule => ({
+  relation: {
+    id,
+    display,
+    constraint: true,
+    vars: [...new Set([...display.matchAll(/\{(\w+)\}/g)].map((m) => m[1]!))],
+    residual: (v) => (ok(v) ? 0 : 1),
+    solve: {},
+    message: (v) => (ok(v) ? undefined : why),
+  },
+  steps: {},
 });
 
 // ─── HC55 NMR (organic-1#4) ─────────────────────────────────────────────────
@@ -643,6 +664,323 @@ const HC55_DEMOS: ModuleDef[] = [
   rotCO,
 ];
 
-export const HE3E_GALLERY_MODULES: ModuleDef[] = [...HC55_DEMOS];
+// ─── HC70 orbitalDiagram mode `mo` (gen-chem-1#4~bond-order, physical-2#3, ~huckel) ──
+
+/** The electrons a filled diagram holds in its bonding (or antibonding) MOs, as a sum. */
+const moCount = (id: string, of: 'bonding' | 'antibonding' | 'unpaired'): Rule => {
+  const count = (e: number) => {
+    const mo = diatomicMOs(e);
+    return of === 'bonding' ? mo.bonding : of === 'antibonding' ? mo.antibonding : mo.unpaired;
+  };
+  const parts = (e: number) => {
+    const mo = diatomicMOs(e);
+    if (of === 'unpaired') return [];
+    return mo.levels
+      .filter((l) => l.bonding === (of === 'bonding'))
+      .map((l) => l.fill.reduce((a, x) => a + x, 0))
+      .filter((x) => x > 0);
+  };
+  const phrase = of === 'unpaired' ? 'unpaired MO electrons of' : `${of} electrons of`;
+  const how = {
+    bonding: 'Fill σ2s, σ∗2s, then the 2p MOs in order; add the electrons in σ2s, π2p and σ2p.',
+    antibonding: 'Add the electrons that land in σ∗2s, π∗2p and σ∗2p.',
+    unpaired: 'Count the single arrows: a π pair takes one electron in each before any pairs.',
+  }[of];
+  return {
+    relation: {
+      id: `${id} from the filled MOs`,
+      display: `{${id}} = ${phrase} {e}`,
+      vars: [id, 'e'],
+      residual: (v) => v[id]! - count(v.e!),
+      solve: { [id]: (v) => count(v.e!), e: () => undefined },
+    },
+    steps: {
+      [id]: {
+        expr: `${phrase} {e}`,
+        how,
+        work: (v) => (parts(v.e!).length > 1 ? [parts(v.e!).join(' + ')] : []),
+      },
+    },
+  };
+};
+
+const bondOrderRule: Rule = {
+  relation: {
+    id: 'bond order = (b − a) ÷ 2',
+    display: '{BO} = ({b} − {a}) ÷ 2',
+    vars: ['BO', 'b', 'a'],
+    residual: (v) => v.BO! - (v.b! - v.a!) / 2,
+    solve: {
+      BO: (v) => (v.b! - v.a!) / 2,
+      b: (v) => 2 * v.BO! + v.a!,
+      a: (v) => v.b! - 2 * v.BO!,
+    },
+  },
+  steps: {
+    BO: st('({b} − {a}) ÷ 2', 'Bonding minus antibonding electrons, halved.'),
+    b: st('2 × {BO} + {a}', 'Twice the bond order plus the antibonding electrons.'),
+    a: st('{b} − 2 × {BO}', 'Bonding electrons less twice the bond order.'),
+  },
+};
+
+const whole = (id: string, symbol: string, name: string, max: number) =>
+  quantity(id, symbol, name, undefined, 0, max, 1, { integer: true });
+
+const diatomicDemo = (
+  id: string,
+  title: string,
+  formula: string,
+  e: number,
+  use: string,
+): ModuleDef => {
+  const mo = diatomicMOs(e);
+  return {
+    id,
+    title,
+    use,
+    assumptions: [
+      'Valence electrons only (2s and 2p); MOs fill from the lowest, one electron in each orbital of a π pair before any pairs.',
+      'Through N₂ (10 valence electrons) s–p mixing puts π2p below σ2p; from O₂ on, σ2p is lower.',
+    ],
+    variables: [
+      quantity('e', 'e', 'Valence electrons', undefined, 2, 16, 1, { integer: true }),
+      whole('b', 'b', 'Bonding electrons', 16),
+      whole('a', 'a', 'Antibonding electrons', 16),
+      quantity('BO', 'BO', 'Bond order', undefined, -1, 4, 0.5),
+      whole('u', 'u', 'Unpaired electrons', 4),
+    ],
+    ...rules(
+      moCount('b', 'bonding'),
+      moCount('a', 'antibonding'),
+      bondOrderRule,
+      moCount('u', 'unpaired'),
+    ),
+    example: { e, b: mo.bonding, a: mo.antibonding, BO: mo.bondOrder, u: mo.unpaired },
+    startWith: ['e'],
+    representation: {
+      kind: 'orbitalDiagram',
+      mode: 'mo',
+      view: 'diatomic',
+      formula,
+      electrons: 'e',
+      bonding: 'b',
+      antibonding: 'a',
+      bondOrder: 'BO',
+      unpaired: 'u',
+    },
+  };
+};
+
+/** E± = (α_A + α_B) ÷ 2 ∓ √(((α_A − α_B) ÷ 2)² + β²). */
+const eRoot = (id: 'Ep' | 'Em', sign: -1 | 1): Rule => {
+  const op = sign < 0 ? '−' : '+';
+  return {
+    relation: {
+      id: `${id === 'Ep' ? 'E₊' : 'E₋'} from the secular determinant`,
+      display: `{${id}} = ({aA} + {aB}) ÷ 2 ${op} √((({aA} − {aB}) ÷ 2)² + {beta}²)`,
+      vars: [id, 'aA', 'aB', 'beta'],
+      residual: (v) => v[id]! - heteronuclear(v.aA!, v.aB!, v.beta!)[sign < 0 ? 'plus' : 'minus'],
+      solve: { [id]: (v) => heteronuclear(v.aA!, v.aB!, v.beta!)[sign < 0 ? 'plus' : 'minus'] },
+    },
+    steps: {
+      [id]: st(
+        `({aA} + {aB}) ÷ 2 ${op} √((({aA} − {aB}) ÷ 2)² + {beta}²)`,
+        sign < 0
+          ? 'The lower root of the determinant: the bonding MO.'
+          : 'The upper root: the antibonding MO.',
+      ),
+    },
+  };
+};
+
+const eV = (id: string, symbol: string, name: string) =>
+  quantity(id, symbol, name, 'eV', -100, 100, 0.01, { figures: 4 });
+
+const heteroDemo: ModuleDef = {
+  id: 'g.he-orbitalDiagram-mo-heteronuclear',
+  title: 'Two AOs make two MOs: E± from the 2 × 2 determinant',
+  use: 'Use this for “α_A = −10 eV, α_B = −14 eV, β = −3 eV. Find the bonding and antibonding energies.”',
+  assumptions: [
+    'The secular determinant |α_A − E, β; β, α_B − E| = 0, the overlap S neglected.',
+    'β is negative, so E₊ (bonding) is the lower root; equal α gives α ± β.',
+  ],
+  variables: [
+    eV('aA', 'α_A', 'Coulomb integral of A'),
+    eV('aB', 'α_B', 'Coulomb integral of B'),
+    quantity('beta', 'β', 'Resonance integral', 'eV', -20, -0.01, 0.01),
+    eV('Ep', 'E₊', 'Bonding energy'),
+    eV('Em', 'E₋', 'Antibonding energy'),
+    quantity('dE', 'ΔE', 'Splitting', 'eV', 0, 200, 0.01, { figures: 4 }),
+  ],
+  ...rules(eRoot('Ep', -1), eRoot('Em', 1), {
+    relation: {
+      id: 'splitting = E₋ − E₊',
+      display: '{dE} = {Em} − {Ep}',
+      vars: ['dE', 'Em', 'Ep'],
+      residual: (v) => v.dE! - (v.Em! - v.Ep!),
+      solve: { dE: (v) => v.Em! - v.Ep! },
+    },
+    steps: { dE: st('{Em} − {Ep}', 'The antibonding level less the bonding one.') },
+  }),
+  example: (() => {
+    const mo = heteronuclear(-10, -14, -3);
+    return { aA: -10, aB: -14, beta: -3, Ep: mo.plus, Em: mo.minus, dE: mo.splitting };
+  })(),
+  startWith: ['aA', 'aB', 'beta'],
+  representation: {
+    kind: 'orbitalDiagram',
+    mode: 'mo',
+    view: 'heteronuclear',
+    alphaA: 'aA',
+    alphaB: 'aB',
+    beta: 'beta',
+    plus: 'Ep',
+    minus: 'Em',
+    splitting: 'dE',
+  },
+};
+
+/** π energy beyond Nα: Σ electrons × 2cos(2πk ÷ N), in β. */
+const frostSum = (of: 'energy' | 'unpaired'): Rule => {
+  const id = of === 'energy' ? 'Epi' : 'u';
+  const total = (v: Record<string, number>) =>
+    of === 'energy' ? frost(v.N!, v.e!).energy : frost(v.N!, v.e!).unpaired;
+  const parts = (N: number, e: number) =>
+    frost(N, e)
+      .levels.map((l) => [l.fill.reduce((a, x) => a + x, 0), Number(l.coef.toFixed(3))] as const)
+      .filter(([n]) => n > 0)
+      .map(([n, c]) => `${n} × ${c < 0 ? `(${c})` : c}`);
+  const phrase =
+    of === 'energy'
+      ? 'Hückel energy of {e} electrons in a ring of {N}'
+      : 'unpaired ring electrons of {e} in a ring of {N}';
+  return {
+    relation: {
+      id: of === 'energy' ? 'π energy from the Frost levels' : 'unpaired from the Frost levels',
+      display: `{${id}} = ${phrase}`,
+      vars: [id, 'N', 'e'],
+      residual: (v) => v[id]! - total(v),
+      solve: { [id]: (v) => total(v), N: () => undefined, e: () => undefined },
+    },
+    steps: {
+      [id]: {
+        expr: phrase,
+        how:
+          of === 'energy'
+            ? 'Fill the levels from α + 2β up; add each electron’s 2cos(2πk ÷ N).'
+            : 'Count the single electrons in a half-filled pair.',
+        work: (v) =>
+          of === 'energy' && parts(v.N!, v.e!).length ? [parts(v.N!, v.e!).join(' + ')] : [],
+      },
+    },
+  };
+};
+
+const frostDemo = (id: string, title: string, N: number, use: string): ModuleDef => {
+  const f = frost(N, N);
+  return {
+    id,
+    title,
+    use,
+    assumptions: [
+      'Hückel theory: each ring carbon gives one p orbital; levels α + 2β cos(2πk ÷ N), β negative.',
+      'Isolated double bonds hold each pair at α + β, so N electrons give Nβ; the difference is the delocalization energy.',
+    ],
+    variables: [
+      quantity('N', 'N', 'Ring carbons', undefined, 3, 8, 1, { integer: true }),
+      quantity('e', 'e', 'π electrons', undefined, 0, 16, 1, { integer: true }),
+      quantity('Epi', 'E_π', 'π energy (in β)', undefined, -20, 20, 0.001),
+      quantity('iso', 'E_iso', 'Isolated double bonds (in β)', undefined, 0, 20, 1),
+      quantity('deloc', 'E_deloc', 'Delocalization (in β)', undefined, -10, 10, 0.001),
+      whole('u', 'u', 'Unpaired electrons', 4),
+    ],
+    ...rules(
+      frostSum('energy'),
+      {
+        relation: {
+          id: 'isolated = e',
+          display: '{iso} = {e} × 1',
+          vars: ['iso', 'e'],
+          residual: (v) => v.iso! - v.e!,
+          solve: { iso: (v) => v.e!, e: (v) => v.iso! },
+        },
+        steps: {
+          iso: st('{e} × 1', 'Each electron in an isolated C=C adds one β.'),
+          e: st('{iso} ÷ 1', 'One electron per β.'),
+        },
+      },
+      {
+        relation: {
+          id: 'delocalization = E_π − E_iso',
+          display: '{deloc} = {Epi} − {iso}',
+          vars: ['deloc', 'Epi', 'iso'],
+          residual: (v) => v.deloc! - (v.Epi! - v.iso!),
+          solve: {
+            deloc: (v) => v.Epi! - v.iso!,
+            Epi: (v) => v.deloc! + v.iso!,
+            iso: (v) => v.Epi! - v.deloc!,
+          },
+        },
+        steps: {
+          deloc: st('{Epi} − {iso}', 'What the ring gains over isolated double bonds.'),
+          Epi: st('{deloc} + {iso}', 'Isolated double bonds plus the delocalization.'),
+          iso: st('{Epi} − {deloc}', 'The ring’s π energy less the delocalization.'),
+        },
+      },
+      frostSum('unpaired'),
+      limit(
+        'π electrons in pairs, at most 2N',
+        '{e} ≤ 2 × {N}',
+        (v) => v.e! <= 2 * v.N! && Math.round(v.e!) % 2 === 0,
+        'Type an even number of π electrons, at most two per ring carbon.',
+      ),
+    ),
+    example: { N, e: N, Epi: f.energy, iso: f.isolated, deloc: f.delocalization, u: f.unpaired },
+    startWith: ['N', 'e'],
+    representation: {
+      kind: 'orbitalDiagram',
+      mode: 'mo',
+      view: 'frost',
+      ring: 'N',
+      electrons: 'e',
+      energy: 'Epi',
+      isolated: 'iso',
+      delocalization: 'deloc',
+      unpaired: 'u',
+    },
+  };
+};
+
+const HC70_DEMOS: ModuleDef[] = [
+  diatomicDemo(
+    'g.he-orbitalDiagram-mo-diatomic',
+    'O₂’s MO diagram: bond order 2, two unpaired electrons',
+    'O2',
+    12,
+    'Use this for “Find the bond order of O₂ and say whether it is paramagnetic.”',
+  ),
+  diatomicDemo(
+    'g.he-orbitalDiagram-mo-diatomic-ion',
+    'N₂⁺: s–p mixing, bond order 2.5',
+    'N2+',
+    9,
+    'Use this for “Find the bond order of N₂⁺ and its unpaired electrons.”',
+  ),
+  heteroDemo,
+  frostDemo(
+    'g.he-orbitalDiagram-mo-frost',
+    'Benzene’s Frost circle: 2β of delocalization',
+    6,
+    'Use this for “Find benzene’s π energy and delocalization energy by Hückel theory.”',
+  ),
+  frostDemo(
+    'g.he-orbitalDiagram-mo-frost-antiaromatic',
+    'Cyclobutadiene: no delocalization, two unpaired electrons',
+    4,
+    'Use this for “Why is cyclobutadiene antiaromatic? Find its π energy by Hückel theory.”',
+  ),
+];
+
+export const HE3E_GALLERY_MODULES: ModuleDef[] = [...HC55_DEMOS, ...HC70_DEMOS];
 
 export const HE3E_GALLERY_LAYOUTS: LayoutDef[] = [irBands];

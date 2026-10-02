@@ -57,4 +57,31 @@ export const HE3E_REQUESTS: PictureRequest[] = [
       'g.he-instrumentTrace-ir-cards',
     ],
   },
+  {
+    ...ask(
+      'HC70',
+      'orbitalDiagram',
+      'Molecular orbitals: a second-period diatomic’s MO diagram filled (bond order, magnetism), a heteronuclear pair’s E± from the 2 × 2 determinant, and a Hückel ring’s Frost circle',
+      {
+        [`${C}gen-chem-1#4~bond-order`]: "mode mo, view 'diatomic'",
+        [`${C}physical-2#3`]: "mode mo, view 'heteronuclear' (replaces the interim matrixGrid)",
+        [`${C}physical-2#3~huckel`]: "mode mo, view 'frost'",
+      },
+      [
+        'From C-P3 (typesHe3e.ts OrbitalMoSpec, reps/OrbitalMo.tsx, the sums in reps/orbitalMoMath.ts; one hook line in OrbitalDiagram.tsx). Off unless a page sets mode: mo; boxes and ladder are unchanged.',
+        "Fields: { kind: 'orbitalDiagram', mode: 'mo', view: 'diatomic' | 'heteronuclear' | 'frost', electrons? (valence electrons 2–16 for diatomic; electrons in the pair, default 2, for heteronuclear; π electrons for frost), formula? ('O2', 'N2+'; default the neutral molecule), bonding?, antibonding?, bondOrder?, unpaired?, alphaA?, alphaB?, beta? (eV, β < 0), plus? (E₊), minus? (E₋), splitting?, atoms? (['A', 'B'] names), ring? (N, 3–8), energy? (π energy beyond Nα, in β), isolated? (in β), delocalization? }.",
+        "Example (gen-chem-1#4~bond-order): { kind: 'orbitalDiagram', mode: 'mo', view: 'diatomic', formula: 'O2', electrons: 'e', bonding: 'b', antibonding: 'a', bondOrder: 'BO', unpaired: 'u' }. Example (physical-2#3): { kind: 'orbitalDiagram', mode: 'mo', view: 'heteronuclear', alphaA: 'aA', alphaB: 'aB', beta: 'beta', plus: 'Ep', minus: 'Em', splitting: 'dE' }. Example (physical-2#3~huckel): { kind: 'orbitalDiagram', mode: 'mo', view: 'frost', ring: 'N', electrons: 'e', energy: 'Epi', isolated: 'iso', delocalization: 'deloc', unpaired: 'u' }.",
+        'Diatomic: s–p mixing (π2p below σ2p) through 10 electrons, the other order from 11 (O₂⁺ on); the atoms’ own 2s and 2p electrons drawn only for the neutral molecule. Step phrases for the lookups (harness/phrasesHe3e.ts): “bonding electrons of 12”, “antibonding electrons of 12”, “unpaired MO electrons of 12”, “Hückel energy of 6 electrons in a ring of 6”, “unpaired ring electrons of 4 in a ring of 4”.',
+        'Checks (harness/picturesHe3e.ts): electrons drawn = electrons, at most two an orbital; bonding, antibonding, bond order and unpaired from the filling; E± roots of the determinant, E₊ below both AOs and E₋ above, splitting; Frost levels 2β cos(2πk ÷ N), the π energy, isolated, delocalization and unpaired.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-orbitalDiagram-mo-diatomic',
+      'g.he-orbitalDiagram-mo-diatomic-ion',
+      'g.he-orbitalDiagram-mo-heteronuclear',
+      'g.he-orbitalDiagram-mo-frost',
+      'g.he-orbitalDiagram-mo-frost-antiaromatic',
+    ],
+  },
 ];
