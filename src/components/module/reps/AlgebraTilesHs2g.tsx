@@ -70,12 +70,35 @@ function AreaBox({ spec, calc }: { spec: BoxSpec; calc: Calculator }) {
     const t = polyTextN(cs);
     return cs.filter((x) => x !== 0).length > 1 ? `(${t})` : t;
   };
-  const whole = `${factor(side)}${factor(top)}`;
-  const answer = polyTextN(product);
+  // A "?" term reads "?x²", and every product it makes reads "?": never the example's
+  // numbers behind a "?".
+  const isKnown = (v: number | string) => typeof v === 'number' || rep.known(v);
+  const unknownTerm = (d: number) => (d === 0 ? '?' : `?${termText(1, d)}`);
+  const topText = spec.top.map((v, i) =>
+    isKnown(v) ? termText(top[i]!, dt - i) : unknownTerm(dt - i),
+  );
+  const sideText = spec.side.map((v, i) =>
+    isKnown(v) ? termText(side[i]!, ds - i) : unknownTerm(ds - i),
+  );
+  const cellText = (k: (typeof cells)[number]) =>
+    isKnown(spec.side[k.row]!) && isKnown(spec.top[k.col]!)
+      ? termText(k.coef, k.degree)
+      : unknownTerm(k.degree);
+  const factorText = (ts: string[]) => {
+    const kept = ts.filter((t) => t !== '0');
+    const joined = kept
+      .map((t, i) => (i === 0 ? t : t.startsWith(MINUS) ? ` − ${t.slice(1)}` : ` + ${t}`))
+      .join('');
+    return kept.length > 1 ? `(${joined})` : joined;
+  };
+  const whole = known
+    ? `${factor(side)}${factor(top)}`
+    : `${factorText(sideText)}${factorText(topText)}`;
+  const answer = known ? polyTextN(product) : '?';
   const degrees = Array.from({ length: maxDeg + 1 }, (_, i) => maxDeg - i);
   const keyText = (d: number) => {
-    const parts = cells.filter((k) => k.degree === d).map((k) => termText(k.coef, k.degree));
-    const sum = termText(product[maxDeg - d]!, d);
+    const parts = cells.filter((k) => k.degree === d).map(cellText);
+    const sum = known ? termText(product[maxDeg - d]!, d) : unknownTerm(d);
     const joined = parts
       .map((p, i) => (i === 0 ? p : p.startsWith(MINUS) ? ` − ${p.slice(1)}` : ` + ${p}`))
       .join('');
@@ -118,7 +141,7 @@ function AreaBox({ spec, calc }: { spec: BoxSpec; calc: Calculator }) {
                         strokeWidth={chart.strokeLight}
                       />
                       <MathText
-                        text={termText(k.coef, k.degree)}
+                        text={cellText(k)}
                         x={x + cw / 2}
                         y={y + CH / 2 + 5}
                         textAnchor="middle"
@@ -129,10 +152,10 @@ function AreaBox({ spec, calc }: { spec: BoxSpec; calc: Calculator }) {
                     </G>
                   );
                 })}
-                {top.map((t, i) => (
+                {topText.map((t, i) => (
                   <MathText
                     key={`t${i}`}
-                    text={termText(t, dt - i)}
+                    text={t}
                     x={x0 + (i + 0.5) * cw}
                     y={y0 - 10}
                     textAnchor="middle"
@@ -141,10 +164,10 @@ function AreaBox({ spec, calc }: { spec: BoxSpec; calc: Calculator }) {
                     fill={c.chartHighlight}
                   />
                 ))}
-                {side.map((t, i) => (
+                {sideText.map((t, i) => (
                   <MathText
                     key={`s${i}`}
-                    text={termText(t, ds - i)}
+                    text={t}
                     x={x0 - 8}
                     y={y0 + (i + 0.5) * CH + 5}
                     textAnchor="end"

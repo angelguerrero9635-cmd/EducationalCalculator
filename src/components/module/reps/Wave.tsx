@@ -203,6 +203,7 @@ export function Wave({ spec, calc }: { spec: Spec; calc: Calculator }) {
               {known ? (
                 <DragHandle
                   testID={`drag-${spec.amplitude ?? spec.wavelength}`}
+                  drives={spec.amplitude ? [spec.amplitude, spec.wavelength] : undefined}
                   x={troughX}
                   y={troughY}
                   label={
@@ -242,28 +243,40 @@ export function Wave({ spec, calc }: { spec: Spec; calc: Calculator }) {
                       );
                       return;
                     }
-                    calc.set({
-                      // The rope's length (the waves along it) stays as typed while the waves are
-                      // stretched or squeezed.
-                      ...rep.pin([
-                        ...(spec.frequency ? [spec.frequency] : []),
-                        ...(typeof spec.extent === 'string' ? [spec.extent] : []),
-                      ]),
+                    // The rope's length (the waves along it) stays as typed while the waves are
+                    // stretched or squeezed.
+                    const pins = rep.pin([
+                      ...(spec.frequency ? [spec.frequency] : []),
+                      ...(typeof spec.extent === 'string' ? [spec.extent] : []),
+                    ]);
+                    const sends: [string, number][] = [
                       ...(spec.amplitude
-                        ? {
-                            // The trough moves down as far as the crest moves up.
-                            [spec.amplitude]: rep.snapTo(
+                        ? ([
+                            [
+                              // The trough moves down as far as the crest moves up.
                               spec.amplitude,
-                              Math.max(0, start.current.A + dy / perY) * rep.factor(spec.amplitude),
-                            ),
-                          }
-                        : {}),
+                              rep.snapTo(
+                                spec.amplitude,
+                                Math.max(0, start.current.A + dy / perY) *
+                                  rep.factor(spec.amplitude),
+                              ),
+                            ],
+                          ] as [string, number][])
+                        : []),
                       // The first trough is ¾ of a wavelength along.
-                      [spec.wavelength]: rep.snapTo(
+                      [
                         spec.wavelength,
-                        Lnew * rep.factor(spec.wavelength),
-                      ),
-                    });
+                        rep.snapTo(spec.wavelength, Lnew * rep.factor(spec.wavelength)),
+                      ],
+                    ];
+                    const typedSends = Object.fromEntries(sends.filter(([id]) => rep.typed(id)));
+                    const worked = sends.filter(([id]) => !rep.typed(id));
+                    if (!worked.length || Object.keys(typedSends).length)
+                      calc.set({ ...pins, ...typedSends });
+                    // A worked-out amplitude or wavelength (from a typed crest-to-trough, from v
+                    // and f) moves the typed value behind it, which stays typed.
+                    for (const [id, value] of worked)
+                      calc.set({ ...pins, ...typedSends, [id]: value }, rep.slide(id));
                   }}
                   onEnd={scale.release}
                 />

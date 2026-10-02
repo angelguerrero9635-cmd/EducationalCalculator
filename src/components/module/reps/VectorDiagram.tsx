@@ -7,6 +7,7 @@ import type { Values } from '@/engine/types';
 import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
+import { angleDrag, wrap360 } from './angleDrag';
 import { Canvas, Caption, DragHandle, useFrozen, useRep } from './common';
 import { Arrow, makeFrame } from './graphKit';
 import { HsdGrid, handleBox, niceWindow } from './hsdGrid';
@@ -84,6 +85,7 @@ export function VectorDiagram({ spec, calc }: { spec: VectorDiagramSpec; calc: C
   })();
   const win = useFrozen(live);
   const drag = useRef({ x: 0, y: 0 });
+  const turn = useRef<(dx: number, dy: number) => number>(() => 0);
   const colors = [c.chartHighlight, c.hopBack];
   const resultName =
     spec.result?.name ?? `${spec.vectors[0].name} + ${spec.vectors[1]?.name ?? ''}`;
@@ -102,7 +104,13 @@ export function VectorDiagram({ spec, calc }: { spec: VectorDiagramSpec; calc: C
       `${how}: ${resultName} = ${bracket(sum.x, sum.y)} · |${resultName}| = ${magnitudeText(sum.x, sum.y)}${unit} at ${short(heading(sum.x, sum.y))}°.`,
     );
   }
-  if (kv && k !== undefined && a.known) {
+  // A "?" k reads as its letter ("ku"), never the example's −2.
+  const kKnown = spec.scalar ? isKnown(spec.scalar.k) : true;
+  const kName =
+    spec.scalar && !kKnown && typeof spec.scalar.k === 'string'
+      ? rep.variable(spec.scalar.k).symbol
+      : short(k ?? 0);
+  if (kv && k !== undefined && a.known && kKnown) {
     const name = `${short(k)}${spec.vectors[0].name}`;
     lines.push(
       k === 0
@@ -489,7 +497,7 @@ export function VectorDiagram({ spec, calc }: { spec: VectorDiagramSpec; calc: C
                       sum.x,
                       sum.y,
                       spec.result?.name
-                        ? `${spec.result.name} = ${short(Math.hypot(sum.x, sum.y))}${unit}`
+                        ? `${spec.result.name} = ${a.known && b.known ? short(Math.hypot(sum.x, sum.y)) : '?'}${unit}`
                         : resultName,
                       c.vectorResultant,
                       spec.sum === 'tipToTail' ? heading(sum.x, sum.y) > heading(a.x, a.y) : true,
@@ -501,7 +509,7 @@ export function VectorDiagram({ spec, calc }: { spec: VectorDiagramSpec; calc: C
                       0,
                       kv.x,
                       kv.y,
-                      `${short(k)}${spec.vectors[0].name}`,
+                      `${kName}${spec.vectors[0].name}`,
                       c.vectorResultant,
                       true,
                     )
@@ -525,6 +533,11 @@ export function VectorDiagram({ spec, calc }: { spec: VectorDiagramSpec; calc: C
                         label={`the tip of ${v.name}`}
                         onStart={() => {
                           drag.current = { x: r.x, y: r.y };
+                          const tail = P(t.x, t.y);
+                          turn.current = angleDrag(
+                            { x: tip.x - tail.x, y: tip.y - tail.y },
+                            heading(r.x, r.y),
+                          );
                           win.freeze();
                         }}
                         onMove={(dx, dy) => {
@@ -543,20 +556,15 @@ export function VectorDiagram({ spec, calc }: { spec: VectorDiagramSpec; calc: C
                             put(v.x, nx);
                             put(v.y, ny);
                           } else if (typeof v.direction === 'string') {
-                            // The tip never crosses the tail: dragged back toward it, it stops
-                            // a handle's width short, so the length stays positive and the
-                            // direction turns with the finger instead of flipping by 180°
-                            // (51° → 203° on the components page) as the tip passed through
-                            // the origin.
-                            const d0 = Math.hypot(drag.current.x, drag.current.y);
-                            const [ux, uy] =
-                              d0 > 1e-9 ? [drag.current.x / d0, drag.current.y / d0] : [1, 0];
-                            const minLen = 24 / f.ux;
-                            const along = nx * ux + ny * uy;
-                            const back = along < minLen ? minLen - along : 0;
-                            const [cx, cy] = [nx + back * ux, ny + back * uy];
-                            put(v.magnitude, Math.hypot(cx, cy));
-                            put(v.direction, heading(cx, cy));
+                            // The direction turns with the finger and on as it passes the
+                            // tail, never 180° at once (51° → 203° on the components page) or
+                            // fast near it (15.87° → 342° on the vectors page): angleDrag.
+                            // The length is the finger's reach along that direction, at least a
+                            // handle's width, so the tip never crosses the tail.
+                            const d = turn.current(dx, dy);
+                            const along = nx * Math.cos(d * RAD) + ny * Math.sin(d * RAD);
+                            put(v.magnitude, Math.max(24 / f.ux, along));
+                            put(v.direction, wrap360(d));
                           } else {
                             const d = num(v.direction ?? 0) * RAD;
                             put(v.magnitude, Math.max(0, nx * Math.cos(d) + ny * Math.sin(d)));

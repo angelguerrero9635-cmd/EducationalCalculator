@@ -69,6 +69,7 @@ export function DragHandle({
   onMove,
   onEnd,
   testID,
+  drives,
 }: {
   x: number;
   y: number;
@@ -77,6 +78,12 @@ export function DragHandle({
   onMove: (dx: number, dy: number) => void;
   onEnd?: () => void;
   testID?: string;
+  /**
+   * The values a handle moving two ways sends (a wave's crest: its amplitude and wavelength;
+   * a point worked out from two typed moves), written as data-drives for the review scripts:
+   * a typed value each worked-out one stands for may change with them.
+   */
+  drives?: string[];
 }) {
   const c = usePalette();
   const size = useContext(CanvasSize);
@@ -109,6 +116,7 @@ export function DragHandle({
           .replace(/^-|-$/g, '')}`
       }
       accessibilityLabel={`Drag to change ${label}`}
+      {...(drives ? ({ dataSet: { drives: drives.join(' ') } } as object) : {})}
       ref={ref}
       onStartShouldSetResponder={RESPONDER ? () => true : undefined}
       onStartShouldSetResponderCapture={RESPONDER ? () => true : undefined}
@@ -387,6 +395,14 @@ export function useRep(calc: Calculator) {
   };
   return {
     variable: (id: string) => byId.get(id)!,
+    /**
+     * Whether a handle can ever move this value: not when it can take one number only (a fact
+     * to read, `allowed: [69]`, or min = max). Such a handle is not drawn.
+     */
+    movable: (id: string) => {
+      const v = byId.get(id)!;
+      return !(v.allowed?.length === 1 || (v.min !== undefined && v.min === v.max));
+    },
     known: (id: string) => values[id] !== undefined,
     /** Current value in formula units (a "?" box draws its fallback, see above). */
     val: (id: string) => values[id] ?? fallback(id),

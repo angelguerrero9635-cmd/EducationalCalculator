@@ -46,6 +46,8 @@ export function VectorSpace({ spec, calc }: { spec: VectorDiagramSpec; calc: Cal
     name: v.name,
     p: [num(v.x), num(v.y), num(v.z)] as V3,
     known: known(v.x) && known(v.y) && known(v.z),
+    // Each coordinate reads "?" while its box is "?": "P(1, ?, ?)".
+    text: `(${[v.x, v.y, v.z].map((x) => (known(x) ? short(num(x)) : '?')).join(', ')})`,
   }));
   const [u, v, w] = vecs;
   const both = !!(u && v && u.known && v.known);
@@ -78,7 +80,7 @@ export function VectorSpace({ spec, calc }: { spec: VectorDiagramSpec; calc: Cal
   // Caption.
   const lines: string[] = [];
   if (points && u && v) {
-    if (!both) lines.push(`${u.name}${point3(u.p)} and ${v.name}${point3(v.p)}: ?`);
+    if (!both) lines.push(`${u.name}${u.text} and ${v.name}${v.text}: ?`);
     else {
       const d = sub3(v.p, u.p);
       const m = scale3(add3(u.p, v.p), 0.5);
@@ -441,9 +443,9 @@ export function VectorSpace({ spec, calc }: { spec: VectorDiagramSpec; calc: Cal
             const m = scale3(add3(a, b), 0.5);
             const d = sub3(b, a);
             const legs: [V3, V3, string, string][] = [
-              [a, k1, `Δx = ${short(d[0])}`, c.chartHighlight],
-              [k1, k2, `Δy = ${short(d[1])}`, c.hopBack],
-              [k2, b, `Δz = ${short(d[2])}`, c.lineUpright],
+              [a, k1, `Δx = ${both ? short(d[0]) : '?'}`, c.chartHighlight],
+              [k1, k2, `Δy = ${both ? short(d[1]) : '?'}`, c.hopBack],
+              [k2, b, `Δz = ${both ? short(d[2]) : '?'}`, c.lineUpright],
             ];
             const PM = P(m);
             segment = (
@@ -486,21 +488,21 @@ export function VectorSpace({ spec, calc }: { spec: VectorDiagramSpec; calc: Cal
               label(
                 P(a),
                 { x: P(a).x - PM.x, y: P(a).y - PM.y },
-                `${u.name}${point3(a)}`,
+                `${u.name}${u.text}`,
                 colors[0]!,
                 'P',
               ),
               label(
                 P(b),
                 { x: P(b).x - PM.x, y: P(b).y - PM.y },
-                `${v.name}${point3(b)}`,
+                `${v.name}${v.text}`,
                 colors[1]!,
                 'Q',
               ),
               label(
                 PM,
                 { x: P(b).y - P(a).y, y: P(a).x - P(b).x },
-                `M${point3(m)}`,
+                both ? `M${point3(m)}` : 'M(?, ?, ?)',
                 c.vectorResultant,
                 'M',
               ),

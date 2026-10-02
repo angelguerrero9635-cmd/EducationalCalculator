@@ -619,6 +619,7 @@ export function CoordinatePlane({ spec, calc }: { spec: Spec; calc: Calculator }
                   <DragHandle
                     key={pt.testID}
                     testID={pt.testID}
+                    drives={[pt.x, pt.y]}
                     x={sx(pt.px)}
                     y={sy(pt.py)}
                     label={`the point (${rep.words ? rep.variable(pt.x).name : rep.variable(pt.x).symbol}, ${rep.words ? rep.variable(pt.y).name : rep.variable(pt.y).symbol})`}
@@ -626,16 +627,24 @@ export function CoordinatePlane({ spec, calc }: { spec: Spec; calc: Calculator }
                       start.current = { x: pt.px, y: pt.py };
                       ext.freeze();
                     }}
-                    onMove={(mx, my) =>
-                      calc.set({
-                        // The other points' typed coordinates hold still; a point worked out
-                        // from typed moves (r right, u up) follows them instead of turning
-                        // them into new numbers.
-                        ...rep.pinTyped(pts.filter((o) => o !== pt).flatMap((o) => [o.x, o.y])),
-                        [pt.x]: rep.snapTo(pt.x, (start.current.x + mx / unit) * rep.factor(pt.x)),
-                        [pt.y]: rep.snapTo(pt.y, (start.current.y - my / unit) * rep.factor(pt.y)),
-                      })
-                    }
+                    onMove={(mx, my) => {
+                      // The other points' typed coordinates hold still; a point worked out
+                      // from typed moves (r right, u up) follows them instead of turning
+                      // them into new numbers.
+                      const pins = rep.pinTyped(
+                        pts.filter((o) => o !== pt).flatMap((o) => [o.x, o.y]),
+                      );
+                      const nx = rep.snapTo(pt.x, (start.current.x + mx / unit) * rep.factor(pt.x));
+                      const ny = rep.snapTo(pt.y, (start.current.y - my / unit) * rep.factor(pt.y));
+                      if (rep.typed(pt.x) || rep.typed(pt.y))
+                        return calc.set({ ...pins, [pt.x]: nx, [pt.y]: ny });
+                      // A point worked out from typed values (the end of r right and u up, the
+                      // pattern's t × s and t × u): each coordinate moves the typed value behind
+                      // it, which stays typed (sent as x and y, the moves would become worked
+                      // out from the point).
+                      calc.set({ ...pins, [pt.x]: nx }, rep.slide(pt.x));
+                      calc.set({ ...pins, [pt.y]: ny }, rep.slide(pt.y));
+                    }}
                     onEnd={ext.release}
                   />
                 ))}
