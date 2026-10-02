@@ -145,6 +145,7 @@ const PICTURE_NAMES: Record<string, string> = {
   transit: 'a planet crossing its star, and the dip in its light',
   habitableZone: 'a star’s habitable zone and a planet’s orbit',
   parallax: 'a near star’s parallax against far stars',
+  fluidSystem: 'a fluid system: a tank, gauge, gate, meter, jet, pipe or plate',
   matrixGrid: 'matrices in brackets',
   membrane: 'cell membrane with particles on each side',
   dnaStrand: 'DNA ladder, mRNA and amino acids',

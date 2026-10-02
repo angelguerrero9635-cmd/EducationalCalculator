@@ -179,6 +179,7 @@ import { ReactionMany } from './ReactionMany';
 import { HslPicture } from './HslPicture';
 import { Hs2fPicture } from './Hs2fPicture';
 import { Hs3cPicture } from './Hs3cPicture';
+import { FluidSystem } from './FluidSystem';
 import { MotionGraphHs } from './MotionGraphHs';
 import { HskView } from './HskView';
 import { Hs2cView } from './Hs2cView';
@@ -324,6 +325,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'habitableZone':
     case 'parallax':
       return <Hs3cPicture spec={spec} calc={calc} />;
+    case 'fluidSystem':
+      return <FluidSystem spec={spec} calc={calc} />;
     case 'linearFunction':
       return <LinearFunction spec={spec} calc={calc} />;
     case 'lineSystem':
