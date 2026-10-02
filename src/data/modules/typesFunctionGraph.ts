@@ -26,6 +26,13 @@ import {
   type FamilyHe1e,
   type FunctionGraphHe1e,
 } from './typesHe1e';
+import {
+  familyHe2gVars,
+  functionGraphHe2gVars,
+  isFamilyHe2g,
+  type FamilyHe2g,
+  type FunctionGraphHe2g,
+} from './typesHe2g';
 
 /** A number fixed by the picture, or the id of a variable that holds it. */
 export type NumOrVar = number | string;
@@ -68,7 +75,8 @@ export type FunctionFamily =
   // H105: `degrees` reads the angle in degrees (sin⁻¹ from −90° to 90°), not radians.
   | { family: 'arcsin' | 'arccos' | 'arctan'; a?: NumOrVar; k?: NumOrVar; degrees?: boolean }
   | FamilyHs3b // H106: a·(x − h)^(p/q) + k and log_b(x) + log_b(x + c)
-  | FamilyHe1e; // HC10, HC12: expr, hill, bateman, a real power, erfc, levenspiel, equalArea
+  | FamilyHe1e // HC10, HC12: expr, hill, bateman, a real power, erfc, levenspiel, equalArea
+  | FamilyHe2g; // HC38: linearOde, taylor
 
 /** One piece of a piecewise function: a family over from … to (unbounded when left out). */
 export interface Piece {
@@ -148,7 +156,8 @@ export type FunctionGraphSpec = FunctionFamily & {
   FunctionGraphHe1e &
   FunctionGraphHs2g &
   FunctionGraphHs3b &
-  FunctionGraphHe1d;
+  FunctionGraphHe1d &
+  FunctionGraphHe2g;
 
 const ids = (...xs: (NumOrVar | undefined)[]) =>
   xs.filter((x): x is string => typeof x === 'string');
@@ -156,6 +165,7 @@ const ids = (...xs: (NumOrVar | undefined)[]) =>
 /** The variable ids a family names. */
 export function familyVars(f: FunctionFamily): string[] {
   if (isFamilyHe1e(f)) return familyHe1eVars(f); // HC10, HC12
+  if (isFamilyHe2g(f)) return familyHe2gVars(f); // HC38
   switch (f.family) {
     case 'response':
     case 'gradation':
@@ -210,5 +220,6 @@ export function functionGraphVars(r: FunctionGraphSpec): string[] {
     ...functionGraphHs3bVars(r),
     ...functionGraphHe1dVars(r),
     ...functionGraphHe1eVars(r), // HC10, HC12
+    ...functionGraphHe2gVars(r), // HC37, HC38
   ];
 }

@@ -73,7 +73,7 @@ import { netIssues, oscillatorIssues } from './picturesHe1h';
 import { skeletalIssues } from './picturesHe1c';
 import { phaseEnvelopeIssues, phaseSubstanceIssues } from './picturesHe1i';
 import { he1fIssues } from './picturesHe1f';
-import { fieldPlotIssues } from './picturesHe2g';
+import { fieldPlotIssues, he2gGraphIssues } from './picturesHe2g';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -1869,6 +1869,7 @@ export function repIssues(
       }
       out.push(...functionGraphIssues(rep, v), ...hs2aIssues(rep, v), ...hs2gIssues(rep, v));
       out.push(...he1eIssues(rep, v)); // HC10, HC12
+      out.push(...he2gGraphIssues(rep, v)); // HC37, HC38
       out.push(...hs3bIssues(rep, val, byId), ...he1dScaleIssues(rep, v)); // HC9: log axes
       break;
     }

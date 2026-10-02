@@ -234,11 +234,7 @@ export function buildHe2g(fam: FamilyHe2g, get: Get, say: SayField, x: string): 
       f,
       side: side(f),
       key: { x: 0, y: a0, what: 'point' },
-      text: [
-        {
-          t: `the solution of y″ = ${rhs}, y(0) = ${say(fam.a0, 1)}, y′(0) = ${say(fam.a1, 0)}`,
-        },
-      ],
+      text: [{ t: `solution of y″ = ${rhs}` }],
     };
   }
   const a = get(fam.center, 0);
@@ -287,7 +283,12 @@ export function tangentOf(spec: FunctionGraphSpec, main: Curve, get: Get) {
 export function bandOf(spec: FunctionGraphSpec, get: Get) {
   const b = spec.band;
   if (!b) return undefined;
-  return { x: get(b.x, 0), y: get(b.y, 0), dx: Math.abs(get(b.dx, 0.1)), dy: Math.abs(get(b.dy, 0.1)) };
+  return {
+    x: get(b.x, 0),
+    y: get(b.y, 0),
+    dx: Math.abs(get(b.dx, 0.1)),
+    dy: Math.abs(get(b.dy, 0.1)),
+  };
 }
 
 /** The series' numbers at its x: P(x), f(x), the error; and the shaded integral. */
@@ -307,7 +308,8 @@ export function seriesNumbers(spec: FunctionGraphSpec, main: Curve, get: Get) {
     fx: x === undefined ? undefined : main.f(x),
     from,
     to,
-    integral: from !== undefined && to !== undefined ? polyIntegral(s.cs, s.a, from, to) : undefined,
+    integral:
+      from !== undefined && to !== undefined ? polyIntegral(s.cs, s.a, from, to) : undefined,
   };
 }
 
@@ -363,6 +365,10 @@ export function he2gCaption(
   fName: string,
 ): string[] {
   const out: string[] = [];
+  if (spec.family === 'linearOde')
+    out.push(
+      `Starting from y(0) = ${fig4(get(spec.a0, 1))}, y′(0) = ${fig4(get(spec.a1, 0))}; solid: worked out numerically`,
+    );
   const t = tangentOf(spec, main, get);
   if (t) {
     const b = t.y - t.m * t.x;

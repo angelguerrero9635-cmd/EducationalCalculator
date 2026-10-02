@@ -31,8 +31,24 @@ export function he2gLayer(p: He1eLayerProps): { under: ReactNode; over: ReactNod
     const [yLo, yHi] = [sy(b.y + b.dy), sy(b.y - b.dy)];
     const [xLo, xHi] = [sx(b.x - b.dx), sx(b.x + b.dx)];
     under.push(
-      <Rect key="bandY" x={L} y={yLo} width={pw} height={yHi - yLo} fill={c.bandFill} opacity={0.14} />,
-      <Rect key="bandX" x={xLo} y={top} width={xHi - xLo} height={bottom - top} fill={c.bandFill} opacity={0.14} />,
+      <Rect
+        key="bandY"
+        x={L}
+        y={yLo}
+        width={pw}
+        height={yHi - yLo}
+        fill={c.bandFill}
+        opacity={0.14}
+      />,
+      <Rect
+        key="bandX"
+        x={xLo}
+        y={top}
+        width={xHi - xLo}
+        height={bottom - top}
+        fill={c.bandFill}
+        opacity={0.14}
+      />,
       <Path
         key="bandEdges"
         d={`M ${L} ${yLo} H ${L + pw} M ${L} ${yHi} H ${L + pw} M ${xLo} ${top} V ${bottom} M ${xHi} ${top} V ${bottom}`}
@@ -50,13 +66,24 @@ export function he2gLayer(p: He1eLayerProps): { under: ReactNode; over: ReactNod
       if (Number.isFinite(y)) d += `${d ? 'L' : 'M'} ${sx(x).toFixed(2)} ${sy(y).toFixed(2)} `;
     }
     over.push(
-      <Path key="bandCurve" d={d} stroke={c.tangentLine} strokeWidth={chart.strokeHeavy + 1.5} fill="none" />,
+      <Path
+        key="bandCurve"
+        d={d}
+        stroke={c.tangentLine}
+        strokeWidth={chart.strokeHeavy + 1.5}
+        fill="none"
+      />,
     );
     p.dots.push({ x: b.x, y: b.y, color: c.chartInk, open: !Number.isFinite(main.f(b.x)) });
     const band = spec.band!;
     p.label(x0 + (x1 - x0) * 0.82, b.y + b.dy, `${fig4(b.y)} + ε`, c.tangentLine);
     p.label(x0 + (x1 - x0) * 0.82, b.y - b.dy, `${fig4(b.y)} − ε`, c.tangentLine);
-    p.label(b.x + b.dx, y0 + (y1 - y0) * 0.1, `δ = ${said(typeof band.dx === 'string' ? band.dx : undefined, b.dx)}`, c.tangentLine);
+    p.label(
+      b.x + b.dx,
+      y0 + (y1 - y0) * 0.1,
+      `δ = ${said(typeof band.dx === 'string' ? band.dx : undefined, b.dx)}`,
+      c.tangentLine,
+    );
     p.label(b.x, b.y, `(${fig4(b.x)}, ${fig4(b.y)})`);
   }
 
@@ -76,7 +103,8 @@ export function he2gLayer(p: He1eLayerProps): { under: ReactNode; over: ReactNod
     // The triangle: one grid step across (to the right when it fits), m × that up.
     const run = win.xStep * (t.x + win.xStep <= x1 ? 1 : -1);
     const [qx, qy] = [t.x + run, at(t.x + run)];
-    if (inWin(qx, t.y) && inWin(qx, qy)) {
+    const triangle = inWin(qx, t.y) && inWin(qx, qy);
+    if (triangle) {
       over.push(
         <Path
           key="slopeTri"
@@ -92,8 +120,15 @@ export function he2gLayer(p: He1eLayerProps): { under: ReactNode; over: ReactNod
     }
     p.dots.push({ x: t.x, y: t.y, color: c.tangentLine, r: 5 });
     const tan = spec.tangent!;
-    p.label(t.x, t.y, `slope ${said(tan.slope, t.m)}`, c.tangentLine);
-    if (t.at !== undefined && t.L !== undefined && inWin(t.at, t.L)) {
+    // The slope by name when the triangle can't show it.
+    if (!triangle) p.label(t.x, t.y, `slope ${said(tan.slope, t.m)}`, c.tangentLine);
+    // L(at) beside the tangent point only when it stands apart (else the caption says it).
+    if (
+      t.at !== undefined &&
+      t.L !== undefined &&
+      inWin(t.at, t.L) &&
+      Math.hypot(sx(t.at) - sx(t.x), sy(t.L) - sy(t.y)) > 30
+    ) {
       p.dots.push({ x: t.at, y: t.L, color: c.tangentLine, open: true });
       p.label(t.at, t.L, `L = ${said(tan.value, t.L, fig6)}`, c.tangentLine);
     }
@@ -110,7 +145,9 @@ export function he2gLayer(p: He1eLayerProps): { under: ReactNode; over: ReactNod
         const y = Math.max(y0 - 1, Math.min(y1 + 1, s.P(x)));
         d += `L ${sx(x).toFixed(2)} ${sy(y).toFixed(2)} `;
       }
-      under.push(<Path key="intP" d={`${d}L ${sx(z)} ${sy(0)} Z`} fill={c.fnSecond} opacity={0.16} />);
+      under.push(
+        <Path key="intP" d={`${d}L ${sx(z)} ${sy(0)} Z`} fill={c.fnSecond} opacity={0.16} />,
+      );
       const I = spec.series!.integral!;
       const mid = (a + z) / 2;
       p.label(mid, s.P(mid) / 2, `∫P = ${said(I.value, s.integral!, fig6)}`, c.fnSecond);
@@ -131,7 +168,14 @@ export function he2gLayer(p: He1eLayerProps): { under: ReactNode; over: ReactNod
       pen = true;
     }
     over.push(
-      <Path key="poly" d={d} stroke={c.fnSecond} strokeWidth={chart.strokeHeavy} strokeDasharray={chart.dash} fill="none" />,
+      <Path
+        key="poly"
+        d={d}
+        stroke={c.fnSecond}
+        strokeWidth={chart.strokeHeavy}
+        strokeDasharray={chart.dash}
+        fill="none"
+      />,
     );
     const ser = spec.series!;
     if (inWin(s.a, s.P(s.a))) p.dots.push({ x: s.a, y: s.P(s.a), color: c.fnSecond });
@@ -153,10 +197,13 @@ export function he2gLayer(p: He1eLayerProps): { under: ReactNode; over: ReactNod
       p.dots.push({ x: s.x, y: yb, color: c.chartHighlight, r: 4 });
       const err = Math.abs(yb - ya);
       const text = `error ${said(ser.error, err, fig4)}`;
-      // Beside the bracket's middle; a gap too small to see still gets its number.
+      // Beside the bracket's middle; with a gap too small to part them, the error alone (the
+      // caption gives P and f).
       p.label(s.x, (ya + yb) / 2, text, c.chartInk);
-      p.label(s.x, ya, `P = ${said(ser.value, ya, fig6)}`, c.fnSecond);
-      p.label(s.x, yb, `${fName} = ${fig6(yb)}`, c.chartHighlight);
+      if (Math.abs(sy(ya) - sy(yb)) > 36) {
+        p.label(s.x, ya, `P = ${said(ser.value, ya, fig6)}`, c.fnSecond);
+        p.label(s.x, yb, `${fName} = ${fig6(yb)}`, c.chartHighlight);
+      }
     }
   }
   return { under: under.length ? under : null, over: over.length ? over : null };

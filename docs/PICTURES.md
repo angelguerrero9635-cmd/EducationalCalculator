@@ -281,6 +281,10 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `functionGraph`    | `stepInput`, `error`, `second`           | the step above on its own axis; eₛₛ bracketed; a dashed open loop (HC4)       |
 | `functionGraph`    | `scale: { x?, y? }`, `invertY`, `swap`   | log axes (decades, minor ticks); depth down; input on the vertical (HC9)      |
 | `functionGraph`    | `family: 'gradation'`, `reads`           | % finer against log grain size, D₁₀, D₃₀, D₆₀; values dropped (HC9)           |
+| `functionGraph`    | `tangent: { x, slope?, at?, value? }`    | the tangent with its slope triangle; L(at), the linear approximation (HC37)   |
+| `functionGraph`    | `band: { x, y, dx, dy }`                 | ε–δ: y ± ε across, x ± δ up, the window zoomed to them (HC37)                 |
+| `functionGraph`    | `series: { of / derivatives, degree }`   | a Taylor polynomial dashed over f, the gap at x bracketed; ∫P shaded (HC38)   |
+| `functionGraph`    | `family: 'linearOde'`, `'taylor'`        | y″ = (cx − ω²)y solved numerically; a polynomial from f(a), f′(a), … (HC38)   |
 | `bars`             | `log`                                    | bars on a log scale, decade grid lines; a value ≤ 0 refused (HC9)             |
 | `termsChart`       | `type: 'power'`, `step` (p)              | aₙ = a₁ × nᵖ: the squares 1, 4, 9 …, nᵖ labels, sums of squares, cubes (H106) |
 | `normalCurve`      | `f: { df1, df2, stat, alpha, tails }`    | the F curve: P past F (or both tails), the critical value, decision (H106)    |

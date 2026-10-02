@@ -3,7 +3,11 @@
  * college page that waits, built from the plan's worked example. Spread into gallery.ts.
  * HC21: `fieldPlot` slope fields with Euler's method, vector fields with work along a path,
  * phase portraits of x′ = Ax and of predator and prey, and two species' isoclines.
+ * HC37: `functionGraph` `tangent` (the power rule, a linear approximation) and `band` (ε–δ).
+ * HC38: `functionGraph` `series` (Maclaurin polynomials, a series solution, term-by-term ∫) and
+ * the families `taylor` and `linearOde`.
  */
+import { odeSolution } from '@/components/module/reps/functionGraphHe2g';
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
 import type { LayoutDef } from './layouts';
@@ -22,10 +26,19 @@ const num = (
   more: Partial<VariableDef> = {},
 ): VariableDef => ({ id, symbol, name, min, max, ...more });
 
-/** A number written into step text: up to 10 figures, a negative one bracketed. */
+/** A number written into step text: up to 7 figures, a negative one bracketed. */
 const lit = (x: number) => {
-  const s = String(Number(x.toPrecision(10))).replace('-', '−');
+  const s = String(Number(x.toPrecision(7))).replace('-', '−');
   return x < 0 ? `(${s})` : s;
+};
+/** A result as a box shows it: × 10ⁿ when very small or large (4.167 × 10⁻⁶). */
+const shown = (x: number) => {
+  const ax = Math.abs(x);
+  if (ax === 0 || (ax >= 1e-4 && ax < 1e7)) return lit(x);
+  const e = Math.floor(Math.log10(ax));
+  const m = Number((x / 10 ** e).toPrecision(4));
+  const sup = [...String(e)].map((ch) => (ch === '-' ? '⁻' : '⁰¹²³⁴⁵⁶⁷⁸⁹'[Number(ch)])).join('');
+  return `${String(m).replace('-', '−')} × 10${sup}`;
 };
 /** A template with each {id} replaced by its value. */
 const fill = (t: string, v: Values) => t.replace(/\{(\w+)\}/g, (_, id: string) => lit(v[id]!));
@@ -72,7 +85,7 @@ const derive = (
   });
   if (checked)
     r.relation.check = (v) =>
-      `${fill(typeof expr === 'string' ? expr : expr(v), v)} = ${lit(v[x]!)}`;
+      `${fill(typeof expr === 'string' ? expr : expr(v), v)} = ${shown(v[x]!)}`;
   return r;
 };
 
@@ -963,6 +976,674 @@ const ISOCLINES_WINNER = competition(
   { K1: 500, K2: 200, al: 0.5, be: 0.6 },
 );
 
+// ── HC37: tangent lines and ε–δ bands ──
+
+const powerF = (v: Values) => v.c! * v.x! ** Math.round(v.n!);
+const powerD = (v: Values) =>
+  Math.round(v.n!) === 0 ? 0 : v.c! * v.n! * v.x! ** (Math.round(v.n!) - 1);
+
+const TANGENT = page({
+  id: 'g.he-functionGraph-tangent',
+  title: 'The power rule and the tangent line',
+  use: 'Use this for “Find the slope of the tangent to f(x) = x² at x = 1.5.”',
+  assumptions: [
+    'The power rule: the derivative of cxⁿ is cnxⁿ⁻¹ for a whole n.',
+    'The constant multiple c carries through the derivative.',
+    'The tangent touches the curve at x with the slope f′(x).',
+  ],
+  variables: [
+    num('c', 'c', 'Constant multiple', -5, 5, { step: 0.5 }),
+    num('n', 'n', 'Power', 1, 5, { integer: true }),
+    num('x', 'x', 'Point', -3, 3, { step: 0.1 }),
+    out('f', 'f(x)', 'Value'),
+    out('fp', 'f′(x)', 'Slope of the tangent'),
+  ],
+  rules: [
+    derive(
+      'value',
+      'f',
+      ['c', 'x', 'n'],
+      '{f} = {c} × {x}^{n}',
+      powerF,
+      '{c} × {x}^{n}',
+      'Put x into cxⁿ.',
+    ),
+    derive(
+      'slope',
+      'fp',
+      ['c', 'n', 'x'],
+      '{fp} = {c} × {n} × {x}^({n} − 1)',
+      powerD,
+      (v) => (Math.round(v.n!) === 0 ? '{c} × {n}' : '{c} × {n} × {x}^({n} − 1)'),
+      'The power rule: bring the power down and lower it by one.',
+    ),
+  ],
+  example: example({ c: 1, n: 2, x: 1.5 }, ['f', powerF], ['fp', powerD]),
+  startWith: ['c', 'n', 'x'],
+  representation: {
+    kind: 'functionGraph',
+    family: 'power',
+    a: 'c',
+    p: 'n',
+    at: { x: 'x', y: 'f' },
+    tangent: { x: 'x', slope: 'fp', y: 'f' },
+  },
+});
+
+const linApprox = (v: Values) => {
+  const fa = Math.sqrt(v.a!);
+  const d = 1 / (2 * fa);
+  return { fa, d, L: fa + d * (v.X! - v.a!), tv: Math.sqrt(v.X!) };
+};
+
+const LINEAR_APPROX = page({
+  id: 'g.he-functionGraph-tangent-linear-approx',
+  title: 'Linear approximation of √x',
+  use: 'Use this for “Use the tangent line at x = 4 to estimate √4.1.”',
+  assumptions: [
+    'L(x) = f(a) + f′(a)(x − a): the tangent line at a stands in for f near a.',
+    'For f(x) = √x, f′(x) = 1 ÷ (2√x).',
+    'The nearer x is to a, the smaller the error |f(x) − L(x)|.',
+  ],
+  variables: [
+    num('a', 'a', 'Point of tangency', 0.01, 100, { step: 0.5 }),
+    num('X', 'x', 'Point to estimate', 0, 100, { step: 0.1 }),
+    out('fa', 'f(a)', 'Value at a'),
+    out('fpa', 'f′(a)', 'Slope at a'),
+    out('L', 'L(x)', 'Linear approximation'),
+    out('tv', '√x', 'True value'),
+    out('err', 'E', 'Error', { min: 0 }),
+  ],
+  rules: [
+    derive(
+      'fa',
+      'fa',
+      ['a'],
+      '{fa} = √{a}',
+      (v) => Math.sqrt(v.a!),
+      '√({a})',
+      'The value at the point of tangency.',
+    ),
+    derive(
+      'slope',
+      'fpa',
+      ['fa'],
+      '{fpa} = 1 ÷ (2 × {fa})',
+      (v) => 1 / (2 * v.fa!),
+      '1 ÷ (2 × {fa})',
+      'The derivative of √x is 1 ÷ (2√x).',
+    ),
+    derive(
+      'L',
+      'L',
+      ['fa', 'fpa', 'X', 'a'],
+      '{L} = {fa} + {fpa} × ({X} − {a})',
+      (v) => v.fa! + v.fpa! * (v.X! - v.a!),
+      '{fa} + {fpa} × ({X} − {a})',
+      'Follow the tangent from a to x.',
+    ),
+    derive(
+      'true',
+      'tv',
+      ['X'],
+      '{tv} = √{X}',
+      (v) => Math.sqrt(v.X!),
+      '√({X})',
+      'The true value, for comparison.',
+    ),
+    derive(
+      'err',
+      'err',
+      ['tv', 'L'],
+      '{err} = |{tv} − {L}|',
+      (v) => Math.abs(v.tv! - v.L!),
+      '|{tv} − {L}|',
+      'How far the tangent is from the curve at x.',
+    ),
+  ],
+  example: example(
+    { a: 4, X: 4.1 },
+    ['fa', (v) => linApprox(v).fa],
+    ['fpa', (v) => linApprox(v).d],
+    ['L', (v) => linApprox(v).L],
+    ['tv', (v) => linApprox(v).tv],
+    ['err', (v) => Math.abs(v.tv! - v.L!)],
+  ),
+  startWith: ['a', 'X'],
+  representation: {
+    kind: 'functionGraph',
+    family: 'root',
+    index: 2,
+    tangent: { x: 'a', slope: 'fpa', y: 'fa', at: 'X', value: 'L' },
+  },
+});
+
+/** lim (mx + b) at a: L = ma + b, δ = ε ÷ |m|. */
+const band = (id: string, title: string, use: string, typed: Values) =>
+  page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'The limit of mx + b at a is L = ma + b.',
+      'Within δ of a, the line moves at most |m|δ: so δ = ε ÷ |m| keeps it within ε of L.',
+      'm is not 0 (a flat line stays at L for every δ).',
+    ],
+    variables: [
+      num('m', 'm', 'Slope', -50, 50, { step: 0.5 }),
+      num('b', 'b', 'Intercept', -100, 100, { step: 0.5 }),
+      num('a', 'a', 'Point approached', -100, 100, { step: 0.5 }),
+      num('eps', 'ε', 'Tolerance on y', 0.0001, 10, { step: 0.01 }),
+      out('L', 'L', 'Limit'),
+      out('delta', 'δ', 'Tolerance on x', { min: 0 }),
+    ],
+    rules: [
+      limit('m', '{m} ≠ 0', (v) => v.m !== 0, 'm = 0: the line is flat, so every δ works.'),
+      derive(
+        'limit',
+        'L',
+        ['m', 'a', 'b'],
+        '{L} = {m} × {a} + {b}',
+        (v) => v.m! * v.a! + v.b!,
+        '{m} × {a} + {b}',
+        'A line is continuous: put a in.',
+      ),
+      derive(
+        'delta',
+        'delta',
+        ['eps', 'm'],
+        '{delta} = {eps} ÷ |{m}|',
+        (v) => (v.m ? v.eps! / Math.abs(v.m) : undefined),
+        '{eps} ÷ |{m}|',
+        'y changes |m| times as fast as x.',
+      ),
+    ],
+    example: example(
+      typed,
+      ['L', (v) => v.m! * v.a! + v.b!],
+      ['delta', (v) => v.eps! / Math.abs(v.m!)],
+    ),
+    startWith: ['m', 'b', 'a', 'eps'],
+    representation: {
+      kind: 'functionGraph',
+      family: 'linear',
+      m: 'm',
+      b: 'b',
+      band: { x: 'a', y: 'L', dx: 'delta', dy: 'eps' },
+      fixed: true,
+    },
+  });
+
+const BAND = band(
+  'g.he-functionGraph-band',
+  'ε and δ for the limit of a line',
+  'Use this for “For lim (3x − 1) as x → 2 = 5, find δ for ε = 0.06.”',
+  { m: 3, b: -1, a: 2, eps: 0.06 },
+);
+const BAND_SHALLOW = band(
+  'g.he-functionGraph-band-shallow',
+  'ε and δ for a shallow falling line',
+  'Use this for “For lim (−0.5x + 4) as x → −3, find δ for ε = 0.5.”',
+  { m: -0.5, b: 4, a: -3, eps: 0.5 },
+);
+
+// ── HC38: Taylor polynomials ──
+
+const fact = (k: number): number => (k <= 1 ? 1 : k * fact(k - 1));
+
+/** eˣ by its Maclaurin polynomial of degree n, with the Lagrange bound. */
+const expSeries = (v: Values) => {
+  const n = Math.round(v.n!);
+  let P = 0;
+  for (let k = 0; k <= n; k++) P += v.x! ** k / fact(k);
+  const M = Math.exp(Math.max(v.x!, 0));
+  return { P, M, bound: (M * Math.abs(v.x!) ** (n + 1)) / fact(n + 1) };
+};
+const expTerms = (v: Values) =>
+  Array.from({ length: Math.round(v.n!) + 1 }, (_, k) =>
+    k === 0 ? '1' : k === 1 ? '{x}' : `{x}^${k} ÷ ${fact(k)}`,
+  ).join(' + ');
+
+const expPage = (id: string, title: string, use: string, typed: Values) =>
+  page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'Pₙ(x) = Σ from k = 0 to n of xᵏ ÷ k!: every derivative of eˣ at 0 is 1.',
+      'Lagrange: the error is at most M|x|ⁿ⁺¹ ÷ (n + 1)!, M the largest eˣ between 0 and x.',
+      'The polynomial hugs eˣ near 0 and falls away from it farther out.',
+    ],
+    variables: [
+      num('x', 'x', 'Input', -5, 5, { step: 0.1 }),
+      num('n', 'n', 'Degree', 0, 12, { integer: true }),
+      out('P', 'Pₙ(x)', 'Taylor polynomial'),
+      out('ex', 'eˣ', 'True value'),
+      out('err', 'E', 'Error', { min: 0 }),
+      out('bound', 'B', 'Lagrange bound', { min: 0 }),
+    ],
+    rules: [
+      derive(
+        'P',
+        'P',
+        ['x', 'n'],
+        '{P} = Pₙ({x}) with n = {n}',
+        (v) => expSeries(v).P,
+        expTerms,
+        'Add the terms xᵏ ÷ k! up to the degree.',
+        true,
+      ),
+      derive(
+        'ex',
+        'ex',
+        ['x'],
+        '{ex} = e^{x}',
+        (v) => Math.exp(v.x!),
+        'e^({x})',
+        'The true value.',
+      ),
+      derive(
+        'err',
+        'err',
+        ['ex', 'P'],
+        '{err} = |{ex} − {P}|',
+        (v) => Math.abs(v.ex! - v.P!),
+        '|{ex} − {P}|',
+        'The gap between eˣ and the polynomial.',
+      ),
+      derive(
+        'bound',
+        'bound',
+        ['x', 'n'],
+        '{bound} = M × |{x}|^({n} + 1) ÷ ({n} + 1)!',
+        (v) => expSeries(v).bound,
+        (v) => `${v.x! > 0 ? 'e^({x})' : '1'} × |{x}|^({n} + 1) ÷ ${fact(Math.round(v.n!) + 1)}`,
+        'M is e^x for x > 0 and 1 for x ≤ 0, the largest eˣ on the way.',
+        true,
+      ),
+    ],
+    example: example(
+      typed,
+      ['P', (v) => expSeries(v).P],
+      ['ex', (v) => Math.exp(v.x!)],
+      ['err', (v) => Math.abs(v.ex! - v.P!)],
+      ['bound', (v) => expSeries(v).bound],
+    ),
+    startWith: ['x', 'n'],
+    representation: {
+      kind: 'functionGraph',
+      family: 'exponential',
+      r: 1,
+      series: { of: 'exp', degree: 'n', x: 'x', value: 'P', error: 'err' },
+    },
+  });
+
+const SERIES = expPage(
+  'g.he-functionGraph-series',
+  'eˣ by its Maclaurin polynomial',
+  'Use this for “Estimate e^0.5 with a third-degree Taylor polynomial and bound the error.”',
+  { x: 0.5, n: 3 },
+);
+const SERIES_FAR = expPage(
+  'g.he-functionGraph-series-far',
+  'A Maclaurin polynomial far from its center',
+  'Use this for “How well does 1 + x + x²/2 + x³/6 estimate e³?”',
+  { x: 3, n: 3 },
+);
+
+/** sin x by its Maclaurin polynomial; the bound is the next term, |x|ᵏ ÷ k!. */
+const sinSeries = (v: Values) => {
+  const n = Math.round(v.n!);
+  let P = 0;
+  for (let k = 1; k <= n; k += 2) P += ((-1) ** ((k - 1) / 2) * v.x! ** k) / fact(k);
+  const next = n % 2 ? n + 2 : n + 1;
+  return { P, next, bound: Math.abs(v.x!) ** next / fact(next) };
+};
+
+const SERIES_SIN = page({
+  id: 'g.he-functionGraph-series-sin',
+  title: 'sin x by its Maclaurin polynomial',
+  use: 'Use this for “Approximate sin 1 with a fifth-degree Taylor polynomial; how large can the error be?”',
+  assumptions: [
+    'sin x = x − x³/3! + x⁵/5! − …: only odd powers, signs alternating.',
+    'x is in radians.',
+    'The terms shrink and alternate, so the error is at most the first term left out.',
+  ],
+  variables: [
+    num('x', 'x', 'Input (radians)', -6, 6, { step: 0.1 }),
+    num('n', 'n', 'Degree', 1, 15, { integer: true }),
+    out('P', 'Pₙ(x)', 'Taylor polynomial'),
+    out('sx', 'sin x', 'True value'),
+    out('err', 'E', 'Error', { min: 0 }),
+    out('bound', 'B', 'Next term', { min: 0 }),
+  ],
+  rules: [
+    derive(
+      'P',
+      'P',
+      ['x', 'n'],
+      '{P} = Pₙ({x}) with n = {n}',
+      (v) => sinSeries(v).P,
+      (v) => {
+        const parts: string[] = [];
+        for (let k = 1; k <= Math.round(v.n!); k += 2)
+          parts.push(
+            `${parts.length ? (((k - 1) / 2) % 2 ? ' − ' : ' + ') : ''}${k === 1 ? '{x}' : `{x}^${k} ÷ ${fact(k)}`}`,
+          );
+        return parts.join('');
+      },
+      'Add the odd terms up to the degree, signs alternating.',
+      true,
+    ),
+    derive(
+      'sx',
+      'sx',
+      ['x'],
+      '{sx} = sin({x})',
+      (v) => Math.sin(v.x!),
+      'sin({x})',
+      'The true value.',
+    ),
+    derive(
+      'err',
+      'err',
+      ['sx', 'P'],
+      '{err} = |{sx} − {P}|',
+      (v) => Math.abs(v.sx! - v.P!),
+      '|{sx} − {P}|',
+      'The gap between sin x and the polynomial.',
+    ),
+    derive(
+      'bound',
+      'bound',
+      ['x', 'n'],
+      '{bound} = |{x}|ᵏ ÷ k!, the first term left out after degree {n}',
+      (v) => sinSeries(v).bound,
+      (v) => `|{x}|^${sinSeries(v).next} ÷ ${fact(sinSeries(v).next)}`,
+      'The first odd term past the degree bounds an alternating series’ error.',
+      true,
+    ),
+  ],
+  example: example(
+    { x: 1, n: 5 },
+    ['P', (v) => sinSeries(v).P],
+    ['sx', (v) => Math.sin(v.x!)],
+    ['err', (v) => Math.abs(v.sx! - v.P!)],
+    ['bound', (v) => sinSeries(v).bound],
+  ),
+  startWith: ['x', 'n'],
+  representation: {
+    kind: 'functionGraph',
+    family: 'sin',
+    series: { of: 'sin', degree: 'n', x: 'x', value: 'P', error: 'err' },
+  },
+});
+
+const fromDerivs = (v: Values) => {
+  const d = v.x! - v.a!;
+  return v.f0! + v.f1! * d + (v.f2! / 2) * d * d + (v.f3! / 6) * d ** 3;
+};
+
+const SERIES_DERIVATIVES = page({
+  id: 'g.he-functionGraph-series-derivatives',
+  title: 'A Taylor polynomial from given derivatives',
+  use: 'Use this for “f(1) = 2, f′(1) = −1, f″(1) = 4, f‴(1) = 6. Use P₃ about 1 to estimate f(1.2).”',
+  assumptions: [
+    'P₃(x) = f(a) + f′(a)(x − a) + f″(a)(x − a)²/2! + f‴(a)(x − a)³/3!.',
+    'Each term matches one more derivative of f at a.',
+    'Only the values at a are known, so the polynomial is drawn alone.',
+  ],
+  variables: [
+    num('a', 'a', 'Center', -10, 10, { step: 0.5 }),
+    num('f0', 'f(a)', 'Value at a', -100, 100, { step: 0.5 }),
+    num('f1', 'f′(a)', 'First derivative at a', -100, 100, { step: 0.5 }),
+    num('f2', 'f″(a)', 'Second derivative at a', -100, 100, { step: 0.5 }),
+    num('f3', 'f‴(a)', 'Third derivative at a', -100, 100, { step: 0.5 }),
+    num('x', 'x', 'Input', -10, 10, { step: 0.1 }),
+    out('P', 'P₃(x)', 'Estimate'),
+  ],
+  rules: [
+    derive(
+      'P',
+      'P',
+      ['f0', 'f1', 'f2', 'f3', 'x', 'a'],
+      '{P} = {f0} + {f1} × ({x} − {a}) + {f2} ÷ 2 × ({x} − {a})^2 + {f3} ÷ 6 × ({x} − {a})^3',
+      fromDerivs,
+      '{f0} + {f1} × ({x} − {a}) + {f2} ÷ 2 × ({x} − {a})^2 + {f3} ÷ 6 × ({x} − {a})^3',
+      'Each derivative divided by its factorial, times the matching power of x − a.',
+    ),
+  ],
+  example: example({ a: 1, f0: 2, f1: -1, f2: 4, f3: 6, x: 1.2 }, ['P', fromDerivs]),
+  startWith: ['a', 'f0', 'f1', 'f2', 'f3', 'x'],
+  representation: {
+    kind: 'functionGraph',
+    family: 'taylor',
+    center: 'a',
+    derivatives: ['f0', 'f1', 'f2', 'f3'],
+    name: 'P₃',
+    at: { x: 'x', y: 'P' },
+  },
+});
+
+/** The series coefficients of y″ = (cx − ω²)y: a(n+2) = (c·a(n−1) − ω²a(n)) ÷ ((n + 2)(n + 1)). */
+const odeCoefs = (v: Values, w: number, c: number) => {
+  const cs = [v.a0!, v.a1!];
+  for (let n = 0; cs.length <= Math.round(v.N!); n++)
+    cs.push(((n >= 1 ? c * cs[n - 1]! : 0) - w * w * cs[n]!) / ((n + 2) * (n + 1)));
+  return cs.slice(0, Math.round(v.N!) + 1);
+};
+const odeSum = (cs: number[], x: number) => cs.reduce((s, a, k) => s + a * x ** k, 0);
+const odeTerms = (cs: number[]) =>
+  cs
+    .map((a, k) => ({ a, k }))
+    .filter((t) => t.a !== 0)
+    .map((t) => `${lit(t.a)}${t.k === 0 ? '' : t.k === 1 ? ' × {x}' : ` × {x}^${t.k}`}`)
+    .join(' + ') || '0';
+
+const cosExact = (v: Values) =>
+  v.a0! * Math.cos(v.w! * v.x!) + (v.a1! / v.w!) * Math.sin(v.w! * v.x!);
+
+const SERIES_ODE = page({
+  id: 'g.he-functionGraph-series-ode',
+  title: 'A power-series solution of y″ + ω²y = 0',
+  use: 'Use this for “Find the series solution of y″ + y = 0 with y(0) = 1, y′(0) = 0.”',
+  assumptions: [
+    'y = Σ aₙxⁿ; matching powers gives a₍ₙ₊₂₎ = −ω²aₙ ÷ ((n + 2)(n + 1)).',
+    'a₀ = y(0) and a₁ = y′(0) start the two chains: even terms build cos, odd ones sin.',
+    'The exact solution is a₀ cos ωx + (a₁ ÷ ω) sin ωx.',
+  ],
+  variables: [
+    num('w', 'ω', 'Angular frequency', 0.1, 10, { step: 0.1 }),
+    num('a0', 'a₀', 'y(0)', -10, 10, { step: 0.5 }),
+    num('a1', 'a₁', 'y′(0)', -10, 10, { step: 0.5 }),
+    num('N', 'N', 'Degree', 2, 10, { integer: true }),
+    num('x', 'x', 'Input', -5, 5, { step: 0.1 }),
+    out('S', 'Sₙ', 'Partial sum'),
+    out('Y', 'y', 'Exact value'),
+    out('err', 'E', 'Error', { min: 0 }),
+  ],
+  rules: [
+    derive(
+      'S',
+      'S',
+      ['w', 'a0', 'a1', 'N', 'x'],
+      '{S} = the series of y″ + {w}²y = 0 from {a0}, {a1} to degree {N} at {x}',
+      (v) => odeSum(odeCoefs(v, v.w!, 0), v.x!),
+      (v) => odeTerms(odeCoefs(v, v.w!, 0)),
+      'The coefficients from the recurrence, each times its power of x.',
+      true,
+    ),
+    derive(
+      'Y',
+      'Y',
+      ['a0', 'w', 'x', 'a1'],
+      '{Y} = {a0} × cos({w} × {x}) + {a1} ÷ {w} × sin({w} × {x})',
+      cosExact,
+      '{a0} × cos({w} × {x}) + {a1} ÷ {w} × sin({w} × {x})',
+      'The exact solution, for comparison.',
+    ),
+    derive(
+      'err',
+      'err',
+      ['Y', 'S'],
+      '{err} = |{Y} − {S}|',
+      (v) => Math.abs(v.Y! - v.S!),
+      '|{Y} − {S}|',
+      'How far the partial sum is from the solution.',
+    ),
+  ],
+  example: example(
+    { w: 1, a0: 1, a1: 0, N: 6, x: 1 },
+    ['S', (v) => odeSum(odeCoefs(v, v.w!, 0), v.x!)],
+    ['Y', cosExact],
+    ['err', (v) => Math.abs(v.Y! - v.S!)],
+  ),
+  startWith: ['w', 'a0', 'a1', 'N', 'x'],
+  representation: {
+    kind: 'functionGraph',
+    family: 'linearOde',
+    a0: 'a0',
+    a1: 'a1',
+    omega: 'w',
+    name: 'y',
+    series: { of: 'ode', degree: 'N', x: 'x', value: 'S', error: 'err' },
+  },
+});
+
+const airyAt = (v: Values) => odeSolution(v.a0!, v.a1!, 0, 1)(v.x!);
+
+const SERIES_AIRY = page({
+  id: 'g.he-functionGraph-series-airy',
+  title: 'Airy’s equation by a power series',
+  use: 'Use this for “Find the first terms of the series solution of y″ = xy with y(0) = 1, y′(0) = 0.”',
+  assumptions: [
+    'y = Σ aₙxⁿ in y″ = xy gives a₂ = 0 and a₍ₙ₊₂₎ = a₍ₙ₋₁₎ ÷ ((n + 2)(n + 1)).',
+    'Each a₀ term steps by three powers: 1 + x³/6 + x⁶/180 + …',
+    'No elementary formula solves it: the solid curve is a careful numerical solution.',
+  ],
+  variables: [
+    num('a0', 'a₀', 'y(0)', -10, 10, { step: 0.5 }),
+    num('a1', 'a₁', 'y′(0)', -10, 10, { step: 0.5 }),
+    num('N', 'N', 'Degree', 2, 10, { integer: true }),
+    num('x', 'x', 'Input', -4, 3, { step: 0.1 }),
+    out('S', 'Sₙ', 'Partial sum'),
+    out('Y', 'y', 'Numerical solution'),
+    out('err', 'E', 'Error', { min: 0 }),
+  ],
+  rules: [
+    derive(
+      'S',
+      'S',
+      ['a0', 'a1', 'N', 'x'],
+      '{S} = the series of y″ = xy from {a0}, {a1} to degree {N} at {x}',
+      (v) => odeSum(odeCoefs(v, 0, 1), v.x!),
+      (v) => odeTerms(odeCoefs(v, 0, 1)),
+      'The coefficients from the recurrence, each times its power of x.',
+      true,
+    ),
+    derive(
+      'Y',
+      'Y',
+      ['a0', 'a1', 'x'],
+      '{Y} = y({x}) for y″ = xy, y(0) = {a0}, y′(0) = {a1}',
+      airyAt,
+      (v) => lit(airyAt(v)),
+      'Worked out numerically, in steps of 0.005 from x = 0.',
+      true,
+    ),
+    derive(
+      'err',
+      'err',
+      ['Y', 'S'],
+      '{err} = |{Y} − {S}|',
+      (v) => Math.abs(v.Y! - v.S!),
+      '|{Y} − {S}|',
+      'How far the partial sum is from the solution.',
+    ),
+  ],
+  example: example(
+    { a0: 1, a1: 0, N: 6, x: 1 },
+    ['S', (v) => odeSum(odeCoefs(v, 0, 1), v.x!)],
+    ['Y', airyAt],
+    ['err', (v) => Math.abs(v.Y! - v.S!)],
+  ),
+  startWith: ['a0', 'a1', 'N', 'x'],
+  representation: {
+    kind: 'functionGraph',
+    family: 'linearOde',
+    a0: 'a0',
+    a1: 'a1',
+    c: 1,
+    name: 'y',
+    series: { of: 'ode', degree: 'N', x: 'x', value: 'S', error: 'err' },
+  },
+});
+
+/** ∫ from 0 to b of e^(−x²), term by term: Σ (−1)ᵏ b^(2k+1) ÷ ((2k + 1)k!). */
+const gaussTerms = (v: Values) =>
+  Array.from(
+    { length: Math.round(v.m!) },
+    (_, k) => ((-1) ** k * v.b! ** (2 * k + 1)) / ((2 * k + 1) * fact(k)),
+  );
+
+const SERIES_INTEGRATE = page({
+  id: 'g.he-functionGraph-series-integrate',
+  title: 'Integrating e^(−x²) term by term',
+  use: 'Use this for “Estimate ∫ from 0 to 1 of e^(−x²) dx with the first five terms of its series.”',
+  assumptions: [
+    'e^(−x²) = 1 − x² + x⁴/2! − x⁶/3! + …: eˣ’s series with −x² put in.',
+    'Each term integrates to (−1)ᵏ b^(2k+1) ÷ ((2k + 1)k!).',
+    'The series alternates, so the first term left out bounds the error.',
+  ],
+  variables: [
+    num('b', 'b', 'Upper limit', 0.1, 3, { step: 0.1 }),
+    num('m', 'm', 'Number of terms', 1, 10, { integer: true }),
+    out('I', 'I', 'Integral estimate'),
+    out('next', 'B', 'Next term', { min: 0 }),
+  ],
+  rules: [
+    derive(
+      'I',
+      'I',
+      ['b', 'm'],
+      '{I} = the first {m} terms of ∫ from 0 to {b} of e^(−x²) dx',
+      (v) => gaussTerms(v).reduce((s, t) => s + t, 0),
+      (v) =>
+        Array.from(
+          { length: Math.round(v.m!) },
+          (_, k) =>
+            `${k === 0 ? '' : k % 2 ? ' − ' : ' + '}${k === 0 ? '{b}' : `{b}^${2 * k + 1} ÷ ${(2 * k + 1) * fact(k)}`}`,
+        ).join(''),
+      'Integrate each term of the series from 0 to b.',
+      true,
+    ),
+    derive(
+      'next',
+      'next',
+      ['b', 'm'],
+      '{next} = the term after the first {m}, at {b}',
+      (v) =>
+        v.b! ** (2 * Math.round(v.m!) + 1) / ((2 * Math.round(v.m!) + 1) * fact(Math.round(v.m!))),
+      (v) =>
+        `{b}^${2 * Math.round(v.m!) + 1} ÷ ${(2 * Math.round(v.m!) + 1) * fact(Math.round(v.m!))}`,
+      'The first term left out bounds the error of an alternating series.',
+      true,
+    ),
+  ],
+  example: example(
+    { b: 1, m: 5 },
+    ['I', (v) => gaussTerms(v).reduce((s, t) => s + t, 0)],
+    ['next', (v) => v.b! ** (2 * v.m! + 1) / ((2 * v.m! + 1) * fact(v.m!))],
+  ),
+  startWith: ['b', 'm'],
+  representation: {
+    kind: 'functionGraph',
+    family: 'expr',
+    expr: 'exp(-x^2)',
+    series: { of: 'expNegSq', terms: 'm', integral: { from: 0, to: 'b', value: 'I' } },
+  },
+});
+
 export const HE2G_GALLERY_MODULES: ModuleDef[] = [
   SLOPE,
   SLOPE_LOGISTIC,
@@ -975,6 +1656,17 @@ export const HE2G_GALLERY_MODULES: ModuleDef[] = [
   PREDATOR,
   ISOCLINES,
   ISOCLINES_WINNER,
+  TANGENT,
+  LINEAR_APPROX,
+  BAND,
+  BAND_SHALLOW,
+  SERIES,
+  SERIES_FAR,
+  SERIES_SIN,
+  SERIES_DERIVATIVES,
+  SERIES_ODE,
+  SERIES_AIRY,
+  SERIES_INTEGRATE,
 ];
 
 export const HE2G_GALLERY_LAYOUTS: LayoutDef[] = [];
