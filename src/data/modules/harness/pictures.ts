@@ -60,7 +60,7 @@ import { hs3cIssues } from './picturesHs3c';
 import { hs2gIssues } from './picturesHs2g';
 import { hs2hIssues } from './picturesHs2h';
 import { hs3bCenter, hs3bIssues, hs3bVal } from './picturesHs3b';
-import { he1dIssues } from './picturesHe1d';
+import { he1dIssues, he1dScaleIssues } from './picturesHe1d';
 import * as hsk from './picturesHsk';
 import { gasEnergyIssues, hs2cIssues, siOf } from './picturesHs2c';
 import { hs3aIssues, hs3aOptionIssues } from './picturesHs3a';
@@ -1859,7 +1859,7 @@ export function repIssues(
         break;
       }
       out.push(...functionGraphIssues(rep, v), ...hs2aIssues(rep, v), ...hs2gIssues(rep, v));
-      out.push(...hs3bIssues(rep, val, byId));
+      out.push(...hs3bIssues(rep, val, byId), ...he1dScaleIssues(rep, v)); // HC9: log axes
       break;
     }
     case 'linearFunction': {

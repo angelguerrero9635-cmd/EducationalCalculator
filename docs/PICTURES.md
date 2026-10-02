@@ -252,6 +252,9 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `functionGraph`    | `family: 'response'`, `transient`        | x(t) = x_f + (x₀ − x_f)e^(−(t − θ)/τ): τ…5τ, 63.2%, 28.3%, a ramp (HC4)       |
 | `functionGraph`    | `stepResponse: { wn, zeta, mode? }`      | 2nd-order step: ±2% band, peak, Tₛ, decay ratio; free decay, t½ (HC4)         |
 | `functionGraph`    | `stepInput`, `error`, `second`           | the step above on its own axis; eₛₛ bracketed; a dashed open loop (HC4)       |
+| `functionGraph`    | `scale: { x?, y? }`, `invertY`, `swap`   | log axes (decades, minor ticks); depth down; input on the vertical (HC9)      |
+| `functionGraph`    | `family: 'gradation'`, `reads`           | % finer against log grain size, D₁₀, D₃₀, D₆₀; values dropped (HC9)           |
+| `bars`             | `log`                                    | bars on a log scale, decade grid lines; a value ≤ 0 refused (HC9)             |
 | `termsChart`       | `type: 'power'`, `step` (p)              | aₙ = a₁ × nᵖ: the squares 1, 4, 9 …, nᵖ labels, sums of squares, cubes (H106) |
 | `normalCurve`      | `f: { df1, df2, stat, alpha, tails }`    | the F curve: P past F (or both tails), the critical value, decision (H106)    |
 | `algebraTiles`     | `mode: 'box'`, `side`, `top`, `product`  | area box: row × column terms, like-term diagonals tinted, collected (H95)     |

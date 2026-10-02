@@ -1,7 +1,8 @@
 /**
  * College gallery demos, round 1, group D (docs/RENDERINGS_HE.md). Each stands in for the
  * college page that waits, built from the plan's worked example. Spread into gallery.ts.
- * HC4: `functionGraph` time responses (`transient`, `stepResponse`).
+ * HC4: `functionGraph` time responses (`transient`, `stepResponse`). HC9: log and flipped
+ * axes (`scale`, `invertY`, `swap`), the grain-size curve (`gradation`) and `bars` `log`.
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
@@ -685,6 +686,380 @@ const phugoid = page({
   },
 });
 
+// ── HC9: log axes and flipped axes (`scale`, `invertY`, `swap`, `gradation`, bars `log`) ──
+
+/** principles-2#3 main: Kleiber's law on log–log axes, a straight line. */
+const kleiber = page({
+  id: 'g.he-function-graph-log-log',
+  title: 'Kleiber’s law on log–log axes: a straight line',
+  use: 'Use this for “Kleiber’s law gives B = 70M^0.75 kcal/day. What is the basal rate of a 64 kg person, per kilogram too?”',
+  assumptions: [
+    'Kleiber’s law fits mammals at rest: B = 70M^(3/4), M in kg, B in kcal/day.',
+    'Small animals burn more per kilogram: B ÷ M = 70M^(−1/4).',
+    'On log–log axes a power law is a straight line with slope 3/4.',
+  ],
+  variables: [
+    num('M', 'M', 'Body mass', 'kg', 0.002, 5000, { step: 0.001 }),
+    num('B', 'B', 'Basal metabolic rate', 'kcal/day', 0, 1e6),
+    num('b', 'B/M', 'Rate per kilogram', 'kcal/(kg·day)', 0, 1e6),
+  ],
+  rules: [
+    rule('B = 70M^0.75', '{B} = 70 × {M}^0.75', ['B', 'M'], (v) => v.B! - 70 * v.M! ** 0.75, {
+      B: [(v) => 70 * v.M! ** 0.75, '70 × {M}^0.75', 'Raise the mass to the 3/4 power, times 70.'],
+      M: [
+        (v) => (v.B! > 0 ? (v.B! / 70) ** (4 / 3) : undefined),
+        '({B} ÷ 70)^(4 ÷ 3)',
+        'Undo the 3/4 power with the 4/3 power.',
+      ],
+    }),
+    derive(
+      'B/M = B ÷ M',
+      'b',
+      ['B', 'M'],
+      '{b} = {B} ÷ {M}',
+      (v) => div(v.B!, v.M!),
+      '{B} ÷ {M}',
+      'Share the rate among the kilograms.',
+    ),
+  ],
+  example: { M: 64, B: 70 * 64 ** 0.75, b: 70 * 64 ** -0.25 },
+  startWith: ['M'],
+  representation: {
+    kind: 'functionGraph',
+    family: 'power',
+    a: 70,
+    p: 3,
+    q: 4,
+    name: 'B',
+    at: { x: 'M', y: 'B' },
+    unitsOf: { x: 'M', y: 'B' },
+    scale: { x: 'log', y: 'log' },
+    axes: { x: 'Body mass M', y: 'Basal rate B' },
+  },
+});
+
+/** microbiology#1 main: doubling on a semi-log axis, a straight line. */
+const growth = page({
+  id: 'g.he-function-graph-semilog',
+  title: 'Bacterial growth on a log axis: doubling draws straight',
+  use: 'Use this for “A culture grows from 1 × 10³ to 1.024 × 10⁶ cells/mL in 5 h. How many generations, and what is the generation time?”',
+  assumptions: [
+    'Log phase: every cell divides in two each generation, N = N₀ × 2ⁿ.',
+    'g = t ÷ n is the doubling time.',
+    'On a log axis each doubling climbs the same height.',
+  ],
+  variables: [
+    num('N0', 'N₀', 'Starting density', 'cells/mL', 1, 1e12, { scientific: true }),
+    num('N', 'N', 'Final density', 'cells/mL', 1, 1e15, { scientific: true }),
+    num('n', 'n', 'Generations', undefined, 0.001, 100, { step: 0.1 }),
+    num('t', 't', 'Time', 'min', 0, 100000, { step: 1 }),
+    num('g', 'g', 'Generation time', 'min', 0, 100000),
+  ],
+  rules: [
+    rule(
+      'N = N₀ × 2ⁿ',
+      '{N} = {N0} × 2^{n}',
+      ['N', 'N0', 'n'],
+      (v) => Math.log2(v.N! / v.N0!) - v.n!,
+      {
+        N: [(v) => fin(v.N0! * 2 ** v.n!), '{N0} × 2^{n}', 'Double the start n times.'],
+        n: [
+          (v) => (v.N! > 0 && v.N0! > 0 ? Math.log2(v.N! / v.N0!) : undefined),
+          'ln({N} ÷ {N0}) ÷ ln(2)',
+          'How many doublings take N₀ to N: the log of the ratio over the log of 2.',
+        ],
+        N0: [(v) => fin(v.N! / 2 ** v.n!), '{N} ÷ 2^{n}', 'Halve the final count n times.'],
+      },
+    ),
+    rule('g = t/n', '{g} = {t} ÷ {n}', ['g', 't', 'n'], (v) => v.g! * v.n! - v.t!, {
+      g: [(v) => div(v.t!, v.n!), '{t} ÷ {n}', 'Share the time among the generations.'],
+      t: [(v) => v.g! * v.n!, '{g} × {n}', 'Each generation takes g.'],
+    }),
+  ],
+  example: { N0: 1000, N: 1024000, n: 10, t: 300, g: 30 },
+  startWith: ['N0', 'N', 't'],
+  representation: {
+    kind: 'functionGraph',
+    family: 'exponential',
+    a: 'N0',
+    b: 2,
+    name: 'N',
+    at: { x: 'n', y: 'N' },
+    scale: { y: 'log' },
+    axes: { x: 'Generations n', y: 'Density N (cells/mL)' },
+  },
+});
+
+/** microbiology#1~d-value at the edge: twelve decades of kill on a log axis. */
+const dValue = page({
+  id: 'g.he-function-graph-d-value',
+  title: 'A 12D cook: twelve log reductions on a log axis',
+  use: 'Use this for “With D₁₂₁ = 0.2 min, how long does a 12D cook take, and how many of 10⁶ spores survive?”',
+  assumptions: [
+    'Each D minutes at the temperature kills 90% of the spores: N = N₀ × 10^(−t/D).',
+    'A count below 1 is a chance: 10⁻⁶ is one survivor in a million cans.',
+    'On a log axis the kill is a straight line falling one decade every D.',
+  ],
+  variables: [
+    num('N0', 'N₀', 'Starting spores', undefined, 1, 1e12, { scientific: true }),
+    num('D', 'D', 'D-value', 'min', 0.001, 1000, { step: 0.001 }),
+    num('t', 't', 'Time', 'min', 0, 10000, { step: 0.1 }),
+    num('LR', 'LR', 'Log reductions', undefined, 0, 100),
+    num('r', 'r', 'Rate in e-folds', 'min⁻¹', -10000, -1e-6),
+    num('N', 'N', 'Survivors', undefined, 0, 1e12, { scientific: true }),
+  ],
+  rules: [
+    rule('LR = t/D', '{LR} = {t} ÷ {D}', ['LR', 't', 'D'], (v) => v.LR! * v.D! - v.t!, {
+      LR: [(v) => div(v.t!, v.D!), '{t} ÷ {D}', 'One decade for each D minutes.'],
+      t: [(v) => v.LR! * v.D!, '{LR} × {D}', 'D minutes for each decade.'],
+      D: [(v) => div(v.t!, v.LR!), '{t} ÷ {LR}', 'The time for one decade.'],
+    }),
+    rule('r = −ln 10/D', '{r} = −ln(10) ÷ {D}', ['r', 'D'], (v) => v.r! * v.D! + Math.LN10, {
+      r: [
+        (v) => div(-Math.LN10, v.D!),
+        '−ln(10) ÷ {D}',
+        'One decade is ln 10 e-folds, spread over D minutes.',
+      ],
+      D: [(v) => div(-Math.LN10, v.r!), '−ln(10) ÷ {r}', 'The time for ln 10 e-folds.'],
+    }),
+    rule(
+      'N = N₀ × 10^(−LR)',
+      '{N} = {N0} × 10^(−{LR})',
+      ['N', 'N0', 'LR'],
+      (v) => Math.log10(v.N! / v.N0!) + v.LR!,
+      {
+        N: [
+          (v) => fin(v.N0! * 10 ** -v.LR!),
+          '{N0} × 10^(−{LR})',
+          'Each log reduction leaves a tenth.',
+        ],
+        N0: [(v) => fin(v.N! * 10 ** v.LR!), '{N} × 10^({LR})', 'Undo the tenths.'],
+        LR: [
+          (v) => (v.N! > 0 && v.N0! > 0 ? Math.log10(v.N0! / v.N!) : undefined),
+          'log₁₀({N0} ÷ {N})',
+          'How many tenths take N₀ to N.',
+        ],
+      },
+    ),
+  ],
+  example: { N0: 1e6, D: 0.2, t: 2.4, LR: 12, r: -Math.LN10 / 0.2, N: 1e-6 },
+  startWith: ['N0', 'D', 't'],
+  representation: {
+    kind: 'functionGraph',
+    family: 'exponential',
+    a: 'N0',
+    r: 'r',
+    name: 'N',
+    at: { x: 't', y: 'N' },
+    unitsOf: { x: 't' },
+    scale: { y: 'log' },
+    axes: { x: 'Time t', y: 'Survivors N' },
+  },
+});
+
+/** oceanography#0~age-depth: depth grows downward, d = 2,500 + 350√t. */
+const ageDepth = page({
+  id: 'g.he-function-graph-depth-down',
+  title: 'Seafloor depth against age, depth down',
+  use: 'Use this for “Seafloor 1,225 km from the ridge spreads at 25 mm/yr. How old and how deep is it?”',
+  assumptions: [
+    'The plate cools and shrinks as it ages: d = 2,500 + 350√t, t in Myr, d in m.',
+    'The square-root fit holds to about 80 Myr; older floor flattens near 5,500–6,000 m.',
+    'km ÷ (mm/yr) gives millions of years.',
+  ],
+  variables: [
+    num('x', 'x', 'Distance from the ridge', 'km', 0, 4000, { step: 1 }),
+    num('u', 'u', 'Half spreading rate', 'mm/yr', 5, 100, { step: 0.5 }),
+    num('t', 't', 'Age', 'Myr', 0, 80, { step: 0.1 }),
+    num('d', 'd', 'Depth', 'm', 2500, 6000),
+  ],
+  rules: [
+    rule('t = x/u', '{t} = {x} ÷ {u}', ['t', 'x', 'u'], (v) => v.t! * v.u! - v.x!, {
+      t: [(v) => div(v.x!, v.u!), '{x} ÷ {u}', 'Distance over speed: km ÷ (mm/yr) is Myr.'],
+      x: [(v) => v.t! * v.u!, '{t} × {u}', 'Speed times age.'],
+      u: [
+        // Floor at the ridge (t = 0) away from it has no spreading rate: say so, not "?".
+        (v) => (v.t === 0 ? (v.x === 0 ? undefined : NaN) : v.x! / v.t!),
+        '{x} ÷ {t}',
+        'Distance over age.',
+      ],
+    }),
+    rule(
+      'd = 2,500 + 350√t',
+      '{d} = 2500 + 350 × √{t}',
+      ['d', 't'],
+      (v) => v.d! - 2500 - 350 * Math.sqrt(v.t!),
+      {
+        d: [
+          (v) => (v.t! >= 0 ? 2500 + 350 * Math.sqrt(v.t!) : undefined),
+          '2500 + 350 × √({t})',
+          'Start at the ridge’s 2,500 m and add 350 m for each √Myr.',
+        ],
+        t: [
+          (v) => (v.d! >= 2500 ? ((v.d! - 2500) / 350) ** 2 : undefined),
+          '(({d} − 2500) ÷ 350)²',
+          'Undo the square root by squaring.',
+        ],
+      },
+    ),
+  ],
+  example: { x: 1225, u: 25, t: 49, d: 4950 },
+  startWith: ['x', 'u'],
+  representation: {
+    kind: 'functionGraph',
+    family: 'root',
+    index: 2,
+    a: 350,
+    k: 2500,
+    name: 'd',
+    at: { x: 't', y: 'd' },
+    unitsOf: { x: 't', y: 'd' },
+    invertY: true,
+    axes: { x: 'Age t', y: 'Depth d' },
+  },
+});
+
+/** geophysics#2 main: temperature across, depth down. */
+const geotherm = page({
+  id: 'g.he-function-graph-geotherm',
+  title: 'A geotherm: temperature against depth, depth down',
+  use: 'Use this for “Rock with k = 2.5 W/(m·K) has a gradient of 25 °C/km. Find the heat flow and the temperature at 10 km if the surface is 10 °C.”',
+  assumptions: [
+    'Steady conduction with no heat made in the layer: T = T₀ + Gz.',
+    'Heat flows up, from hot to cold: q = kG, and W/(m·K) × °C/km is mW/m².',
+  ],
+  variables: [
+    num('k', 'k', 'Conductivity', 'W/(m·K)', 0.5, 6, { step: 0.1 }),
+    num('G', 'G', 'Gradient', '°C/km', 5, 100, { step: 0.5 }),
+    num('q', 'q', 'Heat flow', 'mW/m²', 0, 1000),
+    num('T0', 'T₀', 'Surface temperature', '°C', -40, 50, { step: 0.5 }),
+    num('z', 'z', 'Depth', 'km', 0, 50, { step: 0.1 }),
+    num('T', 'T', 'Temperature', '°C', -40, 5100),
+  ],
+  rules: [
+    rule('q = kG', '{q} = {k} × {G}', ['q', 'k', 'G'], (v) => v.q! - v.k! * v.G!, {
+      q: [(v) => v.k! * v.G!, '{k} × {G}', 'Conductivity times gradient.'],
+      G: [(v) => div(v.q!, v.k!), '{q} ÷ {k}', 'Heat flow over conductivity.'],
+      k: [(v) => div(v.q!, v.G!), '{q} ÷ {G}', 'Heat flow over gradient.'],
+    }),
+    rule(
+      'T = T₀ + Gz',
+      '{T} = {T0} + {G} × {z}',
+      ['T', 'T0', 'G', 'z'],
+      (v) => v.T! - v.T0! - v.G! * v.z!,
+      {
+        T: [(v) => v.T0! + v.G! * v.z!, '{T0} + {G} × {z}', 'Add G degrees for each km down.'],
+        z: [(v) => div(v.T! - v.T0!, v.G!), '({T} − {T0}) ÷ {G}', 'The warming over the gradient.'],
+        T0: [(v) => v.T! - v.G! * v.z!, '{T} − {G} × {z}', 'Take away the warming.'],
+      },
+    ),
+  ],
+  example: { k: 2.5, G: 25, q: 62.5, T0: 10, z: 10, T: 260 },
+  startWith: ['k', 'G', 'T0', 'z'],
+  representation: {
+    kind: 'functionGraph',
+    family: 'linear',
+    m: 'G',
+    b: 'T0',
+    name: 'T',
+    at: { x: 'z', y: 'T' },
+    unitsOf: { x: 'z', y: 'T' },
+    swap: true,
+    invertY: true,
+    axes: { x: 'Depth z', y: 'Temperature T' },
+  },
+});
+
+/** soil-mechanics#0~gradation: percent passing against grain size, D₁₀, D₃₀, D₆₀ marked. */
+const gradation = page({
+  id: 'g.he-function-graph-gradation',
+  title: 'A grain-size curve on a log axis: D₁₀, D₃₀, D₆₀',
+  use: 'Use this for “A sand has D₁₀ = 0.15 mm, D₃₀ = 0.45 mm and D₆₀ = 1.2 mm. Find C_u and C_c. Is it well graded?”',
+  assumptions: [
+    'D₁₀ is the size 10% of the soil (by weight) is finer than; likewise D₃₀ and D₆₀.',
+    'A sand is well graded when C_u ≥ 6 and 1 ≤ C_c ≤ 3 (a gravel: C_u ≥ 4).',
+    'The curve between the three sizes is drawn smooth; only the marked points are data.',
+  ],
+  variables: [
+    num('D10', 'D₁₀', 'Size 10% finer', 'mm', 0.0001, 100, { step: 0.001 }),
+    num('D30', 'D₃₀', 'Size 30% finer', 'mm', 0.0001, 100, { step: 0.001 }),
+    num('D60', 'D₆₀', 'Size 60% finer', 'mm', 0.0001, 100, { step: 0.001 }),
+    num('Cu', 'C_u', 'Uniformity coefficient', undefined, 1, 1e6),
+    num('Cc', 'C_c', 'Coefficient of curvature', undefined, 0, 1e6),
+  ],
+  rules: [
+    rule(
+      'C_u = D₆₀/D₁₀',
+      '{Cu} = {D60} ÷ {D10}',
+      ['Cu', 'D60', 'D10'],
+      (v) => v.Cu! * v.D10! - v.D60!,
+      {
+        Cu: [
+          (v) => div(v.D60!, v.D10!),
+          '{D60} ÷ {D10}',
+          'How many times the fine size the 60% size is.',
+        ],
+        D60: [(v) => v.Cu! * v.D10!, '{Cu} × {D10}', 'C_u times D₁₀.'],
+        D10: [(v) => div(v.D60!, v.Cu!), '{D60} ÷ {Cu}', 'D₆₀ over C_u.'],
+      },
+    ),
+    derive(
+      'C_c = D₃₀²/(D₁₀D₆₀)',
+      'Cc',
+      ['D30', 'D10', 'D60'],
+      '{Cc} = {D30}² ÷ ({D10} × {D60})',
+      (v) => div(v.D30! ** 2, v.D10! * v.D60!),
+      '{D30}² ÷ ({D10} × {D60})',
+      'Compare the middle size with the ends: 1 to 3 means no size is missing.',
+    ),
+  ],
+  example: { D10: 0.15, D30: 0.45, D60: 1.2, Cu: 8, Cc: 1.125 },
+  startWith: ['D10', 'D30', 'D60'],
+  representation: {
+    kind: 'functionGraph',
+    family: 'gradation',
+    d10: 'D10',
+    d30: 'D30',
+    d60: 'D60',
+    axes: { x: 'Grain size D (mm)', y: 'Percent finer (%)' },
+  },
+});
+
+/** cell-molecular#1~amplification: a signal multiplied stage by stage, bars on a log scale. */
+const amplification = page({
+  id: 'g.he-bars-log',
+  title: 'Signal amplification, stage by stage on a log scale',
+  use: 'Use this for “One receptor activates 20 G proteins, each enzyme makes 1000 cAMP a second. How many cAMP a second?”',
+  assumptions: [
+    'Each active G protein switches on one adenylyl cyclase.',
+    'Each stage multiplies the one before it, so a log scale climbs one step per factor of 10.',
+  ],
+  variables: [
+    num('R', 'R', 'Active receptors', undefined, 1, 1000, { integer: true }),
+    num('g', 'g', 'G proteins per receptor', undefined, 0, 1000, { integer: true }),
+    num('c', 'c', 'cAMP per enzyme per second', '1/s', 0, 1000, { integer: true }),
+    num('G', 'G', 'Active G proteins', undefined, 0, 1e6),
+    num('A', 'A', 'cAMP per second', '1/s', 0, 1e9),
+  ],
+  rules: [
+    rule('G = Rg', '{G} = {R} × {g}', ['G', 'R', 'g'], (v) => v.G! - v.R! * v.g!, {
+      G: [(v) => v.R! * v.g!, '{R} × {g}', 'Each receptor switches on g G proteins.'],
+    }),
+    rule('A = Gc', '{A} = {G} × {c}', ['A', 'G', 'c'], (v) => v.A! - v.G! * v.c!, {
+      A: [(v) => v.G! * v.c!, '{G} × {c}', 'Each enzyme makes c cAMP a second.'],
+    }),
+  ],
+  example: { R: 1, g: 20, c: 1000, G: 20, A: 20000 },
+  startWith: ['R', 'g', 'c'],
+  representation: {
+    kind: 'bars',
+    bars: [{ var: 'R' }, { var: 'G' }, { var: 'A' }],
+    min: 0,
+    max: 10,
+    log: true,
+  },
+});
+
 export const HE1D_GALLERY_MODULES: ModuleDef[] = [
   rcCharge,
   general,
@@ -695,6 +1070,13 @@ export const HE1D_GALLERY_MODULES: ModuleDef[] = [
   decayRatio,
   overdamped,
   phugoid,
+  kleiber,
+  growth,
+  dValue,
+  ageDepth,
+  geotherm,
+  gradation,
+  amplification,
 ];
 
 export const HE1D_GALLERY_LAYOUTS: LayoutDef[] = [];

@@ -496,6 +496,8 @@ export type Representation =
       readScale?: boolean;
       /** Grade 9 (H100): the bars between the first and last are flows in or out (`typesHs2e.ts`). */
       flows?: BarFlows;
+      /** HC9: a log scale, decade grid lines; a value ≤ 0 isn't drawn (`BarsLogHe1d`). */
+      log?: boolean;
     }
   /** Picture graph: one column of icons per category; tap a cell to set that count. */
   | {

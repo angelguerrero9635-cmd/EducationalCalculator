@@ -7,12 +7,15 @@ import {
   firstOrder,
   fitTimes,
   freeDecay,
+  gradationCurve,
   osFraction,
   peaksOf,
   secondOrder,
 } from '@/components/module/reps/functionGraphHe1dMath';
+import { curveOf } from '@/components/module/reps/functionGraphMath';
 import type { VariableDef } from '@/engine/types';
 
+import { familyVars } from '../typesFunctionGraph';
 import type { NumOrVar } from '../typesGraphs';
 import type { Representation } from '../types';
 
@@ -34,6 +37,7 @@ export function he1dIssues(rep: Spec, shown: Val, byId: Map<string, VariableDef>
   const num = (v: NumOrVar | undefined) => (v === undefined ? undefined : val(v));
   if (rep.transient) transientIssues(rep, num, out);
   if (rep.stepResponse) stepIssues(rep, num, byId, out);
+  if (rep.family === 'gradation') out.push(...he1dScaleIssues(rep, shown));
   return out;
 }
 
@@ -169,4 +173,51 @@ function stepIssues(
     const y = s.mode === 'oscillation' ? freeDecay(so, k)(time) : k * so.step(time);
     if (!near(y, value, 1e-6)) out.push(`point (${time}, ${value}) is off the response (${y})`);
   }
+}
+
+/**
+ * HC9: on log axes a value ≤ 0 has no place (the point is refused, never drawn at an edge);
+ * each read-off sits on the curve; a gradation's sizes rise; a power law is straight on log–log
+ * axes (its slope between any two decades is the same).
+ */
+export function he1dScaleIssues(rep: Spec, val: Val): string[] {
+  const out: string[] = [];
+  const num = (v: NumOrVar | undefined) => (v === undefined ? undefined : val(v));
+  const xLog = rep.scale?.x === 'log';
+  const yLog = rep.scale?.y === 'log';
+  if (rep.family === 'gradation') {
+    const [a, b, d] = [rep.d10, rep.d30, rep.d60].map(num);
+    if (a === undefined || b === undefined || d === undefined) return out;
+    // Sizes that don't rise from above 0 draw no curve (the caption says why).
+    if (a > 0 && a < b && b < d) {
+      const g = gradationCurve(a, b, d);
+      for (const [x, p] of [
+        [a, 10],
+        [b, 30],
+        [d, 60],
+      ] as const)
+        if (Math.abs(g.f(x) - p) > 1e-6) out.push(`the curve is at ${g.f(x)}%, not ${p}%, at ${x}`);
+    }
+    return out;
+  }
+  if (!xLog && !yLog && !rep.reads?.length) return out;
+  const ids = familyVars(rep);
+  if (ids.some((id) => val(id) === undefined)) return out;
+  const f = curveOf(rep, val).f;
+  const ax = num(rep.at?.x);
+  if (xLog && ax !== undefined && !(ax > 0)) out.push(`~x = ${ax} has no place on a log axis`);
+  if (yLog && ax !== undefined && ax > 0 && !(f(ax) > 0))
+    out.push(`~y = ${f(ax)} at x = ${ax} has no place on a log axis`);
+  for (const r of rep.reads ?? []) {
+    const [x, y] = [num(r.x), num(r.y)];
+    if (x !== undefined && y !== undefined && Math.abs(f(x) - y) > 1e-6 * Math.max(1, Math.abs(y)))
+      out.push(`read-off (${x}, ${y}) is off the curve (${f(x)})`);
+  }
+  if (xLog && yLog && rep.family === 'power') {
+    // Straight on log–log axes: the same slope over each decade (h = k = 0).
+    const s = (x: number) => Math.log10(f(10 * x)) - Math.log10(f(x));
+    if ([0.1, 1, 10].some((x) => Number.isFinite(s(x)) && Math.abs(s(x) - s(1)) > 1e-9))
+      out.push(`the power law isn't straight on log–log axes`);
+  }
+  return out;
 }

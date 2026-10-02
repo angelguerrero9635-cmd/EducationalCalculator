@@ -64,6 +64,7 @@ import { PolygonApothem } from './PolygonApothem';
 import { LinearFunction, LineSystem } from './Lines';
 import { FunctionGraph } from './FunctionGraph';
 import { FunctionGraphHe1d } from './FunctionGraphHe1d';
+import { BarsLogHe1d } from './BarsLogHe1d';
 import { FunctionMachine } from './FunctionMachine';
 import { Mapping } from './Mapping';
 import { Transformation } from './Transformation';
@@ -472,6 +473,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'partnerList':
       return <PartnerList spec={spec} calc={calc} />;
     case 'bars':
+      if (spec.log) return <BarsLogHe1d spec={spec} calc={calc} />; // HC9
       return spec.flows ? <BarsFlows spec={spec} calc={calc} /> : <Bars spec={spec} calc={calc} />;
     case 'rectangle':
       if (spec.bounds) return <RectangleBounds spec={spec} calc={calc} />; // H106
