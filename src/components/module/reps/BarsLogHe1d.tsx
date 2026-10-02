@@ -40,12 +40,12 @@ export function BarsLogHe1d({ spec, calc }: { spec: Spec; calc: Calculator }) {
 
   return (
     <View>
-      <Canvas aspect={(w) => (w * 0.6 + 56) / w}>
+      <Canvas aspect={(w) => (w * 0.6 + 70) / w}>
         {({ w, h }) => {
           const labels = ticks.major.map(decadeText);
           const L = Math.max(34, Math.max(...labels.map((s) => textW(s, chart.label))) + 12);
           const top = 16;
-          const bottom = h - 44;
+          const bottom = h - 58;
           const ph = bottom - top;
           const pw = w - L - 12;
           const y = (v: number) => bottom - (map(v) ?? 0) * ph;
@@ -142,18 +142,20 @@ export function BarsLogHe1d({ spec, calc }: { spec: Spec; calc: Calculator }) {
                   >
                     {b.symbol}
                   </ChartText>,
-                  <ChartText
-                    key={`t${i}`}
-                    x={cx}
-                    y={bottom + 32}
-                    fontSize={chart.label}
-                    fill={c.chartMuted}
-                    textAnchor="middle"
-                  >
-                    {b.name.length * chart.label * 0.56 > slot - 4
-                      ? `${b.name.slice(0, Math.max(3, Math.floor((slot - 4) / (chart.label * 0.56)) - 1))}…`
-                      : b.name}
-                  </ChartText>,
+                  ...nameLines(b.name, Math.floor((slot - 4) / (chart.label * 0.56))).map(
+                    (line, k) => (
+                      <ChartText
+                        key={`t${i}-${k}`}
+                        x={cx}
+                        y={bottom + 32 + 14 * k}
+                        fontSize={chart.label}
+                        fill={c.chartMuted}
+                        textAnchor="middle"
+                      >
+                        {line}
+                      </ChartText>
+                    ),
+                  ),
                 ];
               })}
             </Svg>
@@ -163,4 +165,18 @@ export function BarsLogHe1d({ spec, calc }: { spec: Spec; calc: Calculator }) {
       <Caption>{captions.join(' · ')}</Caption>
     </View>
   );
+}
+
+/** A bar's name in at most two lines of `max` characters, broken between words. */
+function nameLines(name: string, max: number): string[] {
+  const lines: string[] = [];
+  for (const word of name.split(' ')) {
+    const last = lines[lines.length - 1];
+    if (last !== undefined && `${last} ${word}`.length <= max)
+      lines[lines.length - 1] = `${last} ${word}`;
+    else lines.push(word);
+  }
+  if (lines.length <= 2) return lines.map((l) => (l.length > max ? `${l.slice(0, max - 1)}…` : l));
+  const second = lines.slice(1).join(' ');
+  return [lines[0]!, `${second.slice(0, Math.max(3, max - 1))}…`];
 }
