@@ -103,14 +103,24 @@ export function engineeringCurve(c: CurveInput): Curve {
   }
   if (c.model === 'linear' || c.sy === undefined) {
     const end = c.reach ?? 0.001;
-    return { pts: [[0, 0], [end, E * end]], shift: 0 };
+    return {
+      pts: [
+        [0, 0],
+        [end, E * end],
+      ],
+      shift: 0,
+    };
   }
   const sy = c.sy;
   if (c.model === 'epp') {
     const ey = sy / E;
     const end = Math.max(c.ef ?? 4 * ey, 1.5 * ey, c.reach ?? 0);
     return {
-      pts: [[0, 0], [ey, sy], [end, sy]],
+      pts: [
+        [0, 0],
+        [ey, sy],
+        [end, sy],
+      ],
       yieldAt: [ey, sy],
       shift: 0,
       ...(c.ef !== undefined ? { fracAt: [end, sy] as Pt } : {}),

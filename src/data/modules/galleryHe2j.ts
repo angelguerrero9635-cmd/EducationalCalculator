@@ -365,7 +365,6 @@ const TRUE_VARS: VariableDef[] = [
 ];
 
 const trueDemo = (() => {
-  const s = symbolsOf(TRUE_VARS);
   return demo('g.he-stressStrain-true', 'True stress and true strain', {
     use: 'Use this for “At the UTS a bar carries 400 MPa at a strain of 0.10. What are the true stress and true strain?”',
     assumptions: [
@@ -374,22 +373,32 @@ const trueDemo = (() => {
     ],
     variables: TRUE_VARS,
     relations: [
-      rel('σ_T = σ(1 + ε)', '{sT} = {s} × (1 + {e})', ['sT', 's', 'e'], (x) => x.sT! - x.s! * (1 + x.e!), {
-        sT: [
-          (x) => x.s! * (1 + x.e!),
-          '{s} × (1 + {e})',
-          'The true stress is the load over the shrunk area: σ times 1 + ε.',
-        ],
-        s: [(x) => x.sT! / (1 + x.e!), '{sT} ÷ (1 + {e})', 'Divide the true stress by 1 + ε.'],
-        e: [(x) => x.sT! / x.s! - 1, '{sT} ÷ {s} − 1', 'Divide the stresses, then take away 1.'],
-      }),
+      rel(
+        'σ_T = σ(1 + ε)',
+        '{sT} = {s} × (1 + {e})',
+        ['sT', 's', 'e'],
+        (x) => x.sT! - x.s! * (1 + x.e!),
+        {
+          sT: [
+            (x) => x.s! * (1 + x.e!),
+            '{s} × (1 + {e})',
+            'The true stress is the load over the shrunk area: σ times 1 + ε.',
+          ],
+          s: [(x) => x.sT! / (1 + x.e!), '{sT} ÷ (1 + {e})', 'Divide the true stress by 1 + ε.'],
+          e: [(x) => x.sT! / x.s! - 1, '{sT} ÷ {s} − 1', 'Divide the stresses, then take away 1.'],
+        },
+      ),
       rel('ε_T = ln(1 + ε)', '{eT} = ln(1 + {e})', ['eT', 'e'], (x) => x.eT! - Math.log(1 + x.e!), {
         eT: [
           (x) => (x.e! <= -1 ? undefined : Math.log(1 + x.e!)),
           'ln(1 + {e})',
           'True strain adds up each small stretch over the length it had then: ln of 1 + ε.',
         ],
-        e: [(x) => Math.exp(x.eT!) - 1, 'e^({eT}) − 1', 'Undo the log: e to the true strain, less 1.'],
+        e: [
+          (x) => Math.exp(x.eT!) - 1,
+          'e^({eT}) − 1',
+          'Undo the log: e to the true strain, less 1.',
+        ],
       }),
     ],
     example: { s: 400, e: 0.1, sT: 440, eT: Math.log(1.1) },
@@ -635,7 +644,14 @@ const tendon = (() => {
     ],
     variables: TENDON_VARS,
     relations: [
-      monomial('σ = F ÷ A', 's', [['F', 1]], [['A', 1]], 'Stress is force over area (N/mm² is MPa).', s),
+      monomial(
+        'σ = F ÷ A',
+        's',
+        [['F', 1]],
+        [['A', 1]],
+        'Stress is force over area (N/mm² is MPa).',
+        s,
+      ),
       monomial(
         'ε = σ ÷ E',
         'eps',
@@ -793,14 +809,12 @@ const implant = demo('g.he-stressStrain-implant', 'Load sharing: stress shieldin
           'The implant’s stiffness EA over the two together, as a percent.',
         ],
         Ab: [
-          (x) =>
-            x.share! <= 0 ? undefined : (x.Ei! * x.Ai! * (100 / x.share! - 1)) / x.Eb!,
+          (x) => (x.share! <= 0 ? undefined : (x.Ei! * x.Ai! * (100 / x.share! - 1)) / x.Eb!),
           '{Ei} × {Ai} × (100 ÷ {share} − 1) ÷ {Eb}',
           'The bone’s EA is the implant’s times (100 ÷ share − 1); divide by E_b.',
         ],
         Ai: [
-          (x) =>
-            x.share! >= 100 ? undefined : (x.Eb! * x.Ab!) / (x.Ei! * (100 / x.share! - 1)),
+          (x) => (x.share! >= 100 ? undefined : (x.Eb! * x.Ab!) / (x.Ei! * (100 / x.share! - 1))),
           '{Eb} × {Ab} ÷ ({Ei} × (100 ÷ {share} − 1))',
           'The implant’s EA is the bone’s divided by (100 ÷ share − 1); divide by E_i.',
         ],

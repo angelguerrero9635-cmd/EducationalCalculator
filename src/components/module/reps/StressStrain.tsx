@@ -164,7 +164,11 @@ function CurveChart({ spec, calc }: { spec: StressStrainSpec; calc: Calculator }
       xNeed = Math.max(xNeed, 1.7 * curve.yieldAt[0]);
       yNeed = Math.max(yNeed, curve.yieldAt[1]);
     }
-    if (!full && !tissue && !curve.yieldAt) xNeed = Math.max(xNeed, last[0]);
+    if (!full && !tissue && !curve.yieldAt) {
+      xNeed = Math.max(xNeed, last[0]);
+      // The line's end too, so the top-left corner stays clear for the point's values.
+      yNeed = Math.max(yNeed, last[1]);
+    }
   }
   for (const [e, s] of truePts) {
     xNeed = Math.max(xNeed, e);
@@ -383,6 +387,8 @@ function CurveChart({ spec, calc }: { spec: StressStrainSpec; calc: Calculator }
     );
   }
 
+  /** A label's left edge moved right of the point's vertical guide when it would cross it. */
+  const clearOfPoint = (x: number) => (havePoint && x < ptX + 8 ? ptX + 8 : x);
   const xTicks = ticks(xMax);
   const yTicks = ticks(yMax);
 
@@ -688,18 +694,28 @@ function CurveChart({ spec, calc }: { spec: StressStrainSpec; calc: Calculator }
                   </G>
                 ) : null}
                 {/* E along the elastic line, when it has room. */}
-                {eLabel && curve && !full && !tissue && spec.area !== 'resilience'
+                {eLabel &&
+                curve &&
+                (!full || model === 'epp') &&
+                !tissue &&
+                spec.area !== 'resilience'
                   ? (() => {
                       const s = yMax * 0.32;
                       const e = s / (E ?? 1);
                       return e <= xMax ? (
-                        <HeLabel x={px(e) + 10} y={py(s) + 6} text={eLabel} anchor="start" w={BW} />
+                        <HeLabel
+                          x={clearOfPoint(px(e) + 10)}
+                          y={py(s) + 6}
+                          text={eLabel}
+                          anchor="start"
+                          w={BW}
+                        />
                       ) : null;
                     })()
                   : null}
                 {eLabel && tissue && curve ? (
                   <HeLabel
-                    x={px(shift + (yMax * 0.3) / (E ?? 1)) + 10}
+                    x={clearOfPoint(px(shift + (yMax * 0.3) / (E ?? 1)) + 10)}
                     y={py(yMax * 0.3) + 6}
                     text={eLabel}
                     anchor="start"
@@ -935,7 +951,7 @@ function TubeSection({ spec, calc }: { spec: StressStrainSpec; calc: Calculator 
                     stroke={c.chartInk}
                     strokeWidth={1.2}
                   />
-                  <Sym x={cx + R * 0.4 - 6} y={cy - R * 0.4 - 6} text="r_o" anchor="end" />
+                  <Sym x={cx + R * 0.53 - 8} y={cy - R * 0.53 - 4} text="r_o" anchor="end" />
                   {r > 0 ? (
                     <G>
                       <Line

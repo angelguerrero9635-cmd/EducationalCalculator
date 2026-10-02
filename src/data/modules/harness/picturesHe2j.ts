@@ -49,15 +49,28 @@ function stressStrainIssues(
   if (E !== undefined && !(E > 0)) out.push(`stressStrain: E = ${E} is not positive`);
   if (sy !== undefined && su !== undefined && su < sy)
     out.push(`stressStrain: the UTS ${su} is below σ_Y ${sy}`);
-  if (E !== undefined && sy !== undefined && ef !== undefined && model === 'metal' && ef <= sy / E + OFFSET)
+  if (
+    E !== undefined &&
+    sy !== undefined &&
+    ef !== undefined &&
+    model === 'metal' &&
+    ef <= sy / E + OFFSET
+  )
     out.push(`stressStrain: fracture at ε = ${ef} comes before the 0.2% offset yield`);
   // The point sits on the elastic line below yield (the tissue's straight part).
   if (E !== undefined && pe !== undefined && ps !== undefined && (sy === undefined || ps <= sy)) {
-    if (!near(ps, E * pe)) out.push(`stressStrain: the point (${pe}, ${ps}) is off σ = Eε (E = ${E})`);
+    if (!near(ps, E * pe))
+      out.push(`stressStrain: the point (${pe}, ${ps}) is off σ = Eε (E = ${E})`);
   }
   // The curve's 0.2% offset point is σ_Y exactly.
   if (E !== undefined && sy !== undefined && model === 'metal') {
-    const curve = engineeringCurve({ model, E, sy, ...(su !== undefined ? { su } : {}), ...(ef !== undefined ? { ef } : {}) });
+    const curve = engineeringCurve({
+      model,
+      E,
+      sy,
+      ...(su !== undefined ? { su } : {}),
+      ...(ef !== undefined ? { ef } : {}),
+    });
     const knee = curve.pts.find(([, s]) => near(s, sy, 1e-9));
     if (!knee || !near(knee[0], sy / E + OFFSET, 1e-6))
       out.push('stressStrain: the curve misses the 0.2% offset point at σ_Y');
@@ -111,7 +124,9 @@ function stressStrainIssues(
     const share = get(pa.share);
     const s2 = get(pa.stress2);
     if (share !== undefined && (share < 0 || share > 1))
-      out.push(`stressStrain: a share of ${share} is not between 0 and 1, so the two can't add to 1`);
+      out.push(
+        `stressStrain: a share of ${share} is not between 0 and 1, so the two can't add to 1`,
+      );
     if (E1 !== undefined && A1 !== undefined && E2 !== undefined && A2 !== undefined) {
       const want = shareOf(E1, A1, E2, A2);
       if (share !== undefined && !near(share, want))
