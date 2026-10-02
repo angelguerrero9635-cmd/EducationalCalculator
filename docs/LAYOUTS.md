@@ -227,6 +227,11 @@ casting`, `investment casting`, `forging`, `rolling mill`, `extrusion`, `deep dr
 families `SLA printing`, `DLP printing`, `FDM printing`, `SLS printing`, `laser metal powder
 fusion`, `electron beam melting`, `PolyJet-style jetting`, `binder jet`, `wire-and-arc DED`,
 `laminated sheets`.
+College tissue card icons (HC154, `layouts/icons/he4j.tsx`), drawn sections in a slide's
+stains: `simple squamous epithelium`, `simple cuboidal epithelium`, `simple columnar epithelium`,
+`stratified squamous epithelium`, `compact bone`, `hyaline cartilage`, `blood smear`, `adipose
+tissue`, `skeletal muscle tissue`, `cardiac muscle tissue`, `smooth muscle tissue`, `neuron with
+glia`.
 
 Observe figures: an observation can set `figure: { kind: 'shadowStick', stick: 100 }`
 (`layouts/ShadowStick.tsx`): a meter stick and its noon shadow for the column tapped last, to

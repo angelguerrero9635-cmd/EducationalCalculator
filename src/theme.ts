@@ -568,6 +568,21 @@ const light = {
   profileWall: '#E9A8A0',
   profileBlood: '#C9393F',
   /**
+   * College round 4, group J (HC154–HC159): tissue sections (eosin pink, hematoxylin nuclei,
+   * a basement membrane, cartilage matrix, bone's lamellae, plasma, muscle and its striations,
+   * glia); the heart pump's blood and its pressure band; footprints and the stance leg; a
+   * dashpot's oil and a spring; a diffusing solute.
+   */
+  he4jEosin: '#EBA7BC',
+  he4jNucleus: '#5E3D8F',
+  he4jMembrane: '#9C4F6E',
+  he4jMatrix: '#C8D3E6',
+  he4jLamella: '#C2AE7C',
+  he4jPlasma: '#F7E3C6',
+  he4jMuscle: '#E07A8A',
+  he4jStriation: '#93324C',
+  he4jGlia: '#5874B5',
+  /**
    * College HC24, HC30, HC31 (round 2, group H): the relative wind, lift and drag, tip vortices;
    * the gas in a duct, a hot chamber or exhaust; a shock and an expansion fan's Mach lines.
    */
@@ -1263,6 +1278,15 @@ const dark: Palette = {
   cvSolvent: '#8C7C3A',
   profileWall: '#9E5A55',
   profileBlood: '#B83238',
+  he4jEosin: '#B9768C',
+  he4jNucleus: '#A88AD8',
+  he4jMembrane: '#D58BA8',
+  he4jMatrix: '#5F6E8C',
+  he4jLamella: '#9C8D66',
+  he4jPlasma: '#5C4A33',
+  he4jMuscle: '#B85A6A',
+  he4jStriation: '#E7A0B4',
+  he4jGlia: '#9CB2E3',
   aeroWind: '#7FB0DA',
   aeroLift: '#6EA3FF',
   aeroDrag: '#FB8A4C',
