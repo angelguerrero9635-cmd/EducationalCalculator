@@ -378,6 +378,11 @@ const light = {
   tileNegative: '#F2A3A3',
   tileNegativeEdge: '#C23A3A',
   vectorResultant: '#0E9F6E',
+  /** College surfaces and solids (HC46, HC47, HC65): the body, its mesh, a plane, a slice. */
+  surfaceFill: '#3B7DD8',
+  surfaceMesh: '#1E3A5F',
+  planeFill: '#7C3AED',
+  sliceFill: '#D97706',
   /** H98: the unit circle's two angles in turn, A then B (and a second value's line). */
   unitCircleAngleA: '#0E7490',
   unitCircleAngleB: '#C2410C',
@@ -892,6 +897,10 @@ const dark: Palette = {
   tileNegative: '#7A3434',
   tileNegativeEdge: '#F2A3A3',
   vectorResultant: '#34D399',
+  surfaceFill: '#60A5FA',
+  surfaceMesh: '#BFD7F5',
+  planeFill: '#A78BFA',
+  sliceFill: '#FBBF24',
   unitCircleAngleA: '#38BDF8',
   unitCircleAngleB: '#FB923C',
   areaBoxBand1: '#26374F',
