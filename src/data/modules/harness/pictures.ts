@@ -64,6 +64,7 @@ import * as hsk from './picturesHsk';
 import { gasEnergyIssues, hs2cIssues, siOf } from './picturesHs2c';
 import { hs3aIssues, hs3aOptionIssues } from './picturesHs3a';
 import { gasMixtureIssues } from './picturesHs3e';
+import { netIssues } from './picturesHe1h';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -2130,10 +2131,17 @@ export function repIssues(
       }
       break;
     }
+    case 'seriesCircuit':
+      if ('net' in rep) out.push(...netIssues(rep, siOf(val, byId), byId)); // HC7
+      break;
     case 'spectrum':
     case 'circuit':
     case 'electromagnet':
     case 'orbit':
+      if ('net' in rep) {
+        out.push(...netIssues(rep, siOf(val, byId), byId)); // HC7
+        break;
+      }
       if (hsk.physicsHsOption(rep)) out.push(...hsk.physicsHsIssues(rep, (id) => val(id)));
       else out.push(...physics8Issues(rep, (id) => val(id)));
       break;

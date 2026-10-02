@@ -32,6 +32,7 @@ import { hslSpecVars } from '../typesHsl';
 import { hs2fSpecVars } from '../typesHs2f';
 import { hs3cSpecVars } from '../typesHs3c';
 import { hskOptionVars, hskSpecVars } from '../typesHsk';
+import { he1hSpecVars } from '../typesHe1h';
 import { hs2cSpecVars } from '../typesHs2c';
 import { hs3aSpecVars } from '../typesHs3a';
 import { isStandIn, pages } from '../harness/scope';
@@ -486,6 +487,7 @@ function representationVars(r: Representation): string[] {
     case 'force':
       return [r.force, r.mass, r.acceleration];
     case 'seriesCircuit':
+      if ('net' in r) return he1hSpecVars(r); // HC7
       return [r.source, r.current, ...r.resistors.flatMap((x) => [x.r, x.v])];
     case 'linearFunction':
     case 'lineSystem':
@@ -511,6 +513,7 @@ function representationVars(r: Representation): string[] {
     case 'circuit':
     case 'electromagnet':
     case 'orbit':
+      if ('net' in r) return he1hSpecVars(r); // HC7
       return [...physics8SpecVars(r), ...hskOptionVars(r)];
     case 'triangleSolver':
     case 'markedFigure':
