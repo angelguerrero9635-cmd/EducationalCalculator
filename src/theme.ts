@@ -44,6 +44,8 @@ const light = {
   markFace: '#F4F5FF',
   markDeep: '#AEB2EE',
   markLight: '#FFFFFF',
+  markInk: '#120E26',
+  markWash: '#2B2150',
   /** Status: purchase confirmed, pending, errors. */
   success: '#15803D',
   warning: '#B45309',
@@ -870,6 +872,8 @@ const dark: Palette = {
   markFace: '#15161E',
   markDeep: '#04050A',
   markLight: '#46425F',
+  markInk: '#05050A',
+  markWash: '#3A3456',
   success: '#4ADE80',
   warning: '#FBBF24',
   danger: '#F87171',
