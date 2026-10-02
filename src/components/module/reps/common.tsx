@@ -283,6 +283,30 @@ export function snap(x: number, step = 0.1, min = -Infinity, max = Infinity): nu
  * Helpers every representation needs. Geometry uses formula-unit values (`val`), so shapes
  * keep true proportions whatever units are shown; labels and snapping use the shown units.
  */
+/**
+ * A handle that moves two values at once (a rectangle's corner: its length and width). When the
+ * pair would change a typed value it does not send (the typed area of a missing-side page),
+ * only the pair's typed value moves, the one the pointer went farther along first, and the
+ * other follows from the page's rules: a drag never changes a typed value it does not send.
+ */
+export function setPair(
+  calc: Calculator,
+  rep: ReturnType<typeof useRep>,
+  pins: Values,
+  updates: Record<string, number>,
+  /** The pair's ids, the one the pointer moved farther along first. */
+  order: string[],
+) {
+  const both = { ...pins, ...updates };
+  if (calc.fitsHeld(both)) return calc.set(both);
+  for (const id of order.filter((x) => rep.typed(x))) {
+    const one = { ...pins, [id]: updates[id]! };
+    if (calc.fitsHeld(one)) return calc.set(one, rep.slide(id));
+  }
+  const first = order.find((x) => rep.typed(x)) ?? order[0]!;
+  calc.set({ ...pins, [first]: updates[first]! }, rep.slide(first));
+}
+
 export function useRep(calc: Calculator) {
   const { module, values, units } = calc;
   const byId = new Map(module.variables.map((v) => [v.id, v]));
