@@ -210,11 +210,25 @@ export function PropertyDiagram({ spec, calc }: { spec: PropertyDiagramSpec; cal
 
 /** Reads spec fields in the variable's own unit; a "?" is undefined. */
 function useGetter(calc: Calculator) {
-  const { rep, read } = useReadSpec(calc);
+  const { rep: base, read } = useReadSpec(calc);
   const get: PdGetter = (x) => {
     if (x === undefined) return undefined;
     if (typeof x === 'number') return x;
-    return rep.known(x) ? rep.shown(x) : undefined;
+    return base.known(x) ? base.shown(x) : undefined;
+  };
+  // A worked-out value reads to 4 figures in the picture (3,200 kJ/kg, not 3,199.9301); a typed
+  // one reads as typed.
+  const value = (id: string, withUnit = true) => {
+    if (!base.known(id) || base.typed(id)) return base.value(id, withUnit);
+    const unit = base.unit(id);
+    const num = formatNumber(Number(base.shown(id).toPrecision(4)));
+    if (!withUnit || !unit) return num;
+    return `${num}${['%', '°'].includes(unit) ? '' : ' '}${unit}`;
+  };
+  const rep = {
+    ...base,
+    value,
+    label: (id: string, withUnit = true) => `${base.variable(id).symbol} = ${value(id, withUnit)}`,
   };
   return { rep, read, get };
 }
@@ -292,7 +306,7 @@ function Plane({ spec, calc }: { spec: PropertyDiagramSpec; calc: Calculator }) 
   const outOfDome = mainPt?.why !== undefined;
 
   const art = (w: number, h: number) => {
-    const box = { l: 54, r: w - 12, t: 30, b: h - 42 };
+    const box = { l: 54, r: w - 20, t: 30, b: h - 42 };
     const sx = scaler(xa, box.l, box.r);
     const sy = scaler(ya, box.b, box.t);
     const inside = (x: number, y: number) =>
@@ -573,17 +587,25 @@ function Plane({ spec, calc }: { spec: PropertyDiagramSpec; calc: Calculator }) 
         [0, 0, 'start'],
         [0, 22, 'start'],
       ]);
-      const fText = `v_f = ${typeof spec.tie?.vf === 'string' ? rep.value(spec.tie.vf, false) : sig(vf, 4)}`;
-      const gText = `v_g = ${typeof spec.tie?.vg === 'string' ? rep.value(spec.tie.vg, false) : sig(vg, 4)}`;
+      // A short tie line (near the critical point) names its ends; the caption gives the values.
+      const short = sx(vg) - sx(vf) < 110;
+      const fText = short
+        ? 'v_f'
+        : `v_f = ${typeof spec.tie?.vf === 'string' ? rep.value(spec.tie.vf, false) : sig(vf, 4)}`;
+      const gText = short
+        ? 'v_g'
+        : `v_g = ${typeof spec.tie?.vg === 'string' ? rep.value(spec.tie.vg, false) : sig(vg, 4)}`;
       const fl = place.place(sx(vf), y, fText, chart.label, [
         [4, 20, 'start'],
         [-4, 20, 'end'],
         [4, -10, 'start'],
+        [-8, -8, 'end'],
       ]);
       const gl = place.place(sx(vg), y, gText, chart.label, [
         [4, 20, 'start'],
         [-4, 20, 'end'],
         [6, -10, 'start'],
+        [8, 16, 'start'],
         [-4, 36, 'end'],
       ]);
       parts.push(
@@ -857,7 +879,7 @@ function Isotherm({ spec, calc }: { spec: PropertyDiagramSpec; calc: Calculator 
   const ya: Axis = { log: false, lo: 0, hi: Math.ceil(pTop / step) * step, name: `P (${pUnit})` };
 
   const art = (w: number, h: number) => {
-    const box = { l: 54, r: w - 12, t: 30, b: h - 42 };
+    const box = { l: 54, r: w - 20, t: 30, b: h - 42 };
     const sx = scaler(xa, box.l, box.r);
     const sy = scaler(ya, box.b, box.t);
     const place = makePlacer(w, h);
@@ -932,10 +954,11 @@ function Isotherm({ spec, calc }: { spec: PropertyDiagramSpec; calc: Calculator 
       st = [sx(V / fV), sy(P / fP)];
       parts.push(<Circle key="st" cx={st[0]} cy={st[1]} r={5.5} fill={c.chartInk} />);
       place.dot(...st);
-      // The ideal gas at the same V: a hollow dot straight above or below.
+      // The ideal gas at the same V: a hollow dot straight above or below (when it stands
+      // clear of the state's dot; else the caption says it).
       if (T !== undefined && R !== undefined) {
         const yi = sy((R * T) / V / fP);
-        if (inside(st[0], yi)) {
+        if (inside(st[0], yi) && Math.abs(yi - st[1]) > 14) {
           parts.push(
             <Line
               key="gap"
