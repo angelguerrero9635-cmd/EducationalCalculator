@@ -7,6 +7,9 @@
  */
 import {
   HEX_MAX,
+  aliasOf,
+  convolveAt,
+  cosinePeriod,
   dbLevels,
   drawnFiberShare,
   dropQ,
@@ -15,12 +18,20 @@ import {
   mosfetId,
   rocketDv,
   ruleOfMixtures,
+  sampleSpan,
   shockley,
+  stepResponse,
   thrustParts,
 } from '@/components/module/reps/he3kMath';
 
 import type { Representation } from '../types';
-import type { DeviceCurvesSpec, He3kSpec, LaminaSpec, RocketSpec } from '../typesHe3k';
+import type {
+  DeviceCurvesSpec,
+  He3kSpec,
+  LaminaSpec,
+  RocketSpec,
+  StemPlotSpec,
+} from '../typesHe3k';
 
 type Val = (x: string | number) => number | undefined;
 
@@ -213,6 +224,86 @@ export function deviceCurvesIssues(rep: DeviceCurvesSpec, val: Val): string[] {
   return out;
 }
 
+// ─── HC63 ────────────────────────────────────────────────────────────────────
+
+/**
+ * One mode set; the period is N ÷ gcd(k, N) and the samples repeat after it; y[n] and the final
+ * value of the step response; the products add to y[n]; the alias passes every drawn sample.
+ */
+export function stemPlotIssues(rep: StemPlotSpec, val: Val): string[] {
+  const out: string[] = [];
+  const n = reader(val);
+  const set = [rep.cosine, rep.recursive, rep.convolve, rep.sampled].filter(Boolean).length;
+  if (set !== 1) out.push(`a stem plot sets one of cosine, recursive, convolve, sampled (${set})`);
+  if (rep.cosine) {
+    const [k, N, P] = [n(rep.cosine.k), n(rep.cosine.N), n(rep.cosine.period)];
+    if (k !== undefined && N !== undefined && N >= 1) {
+      const drawn = cosinePeriod(k, N);
+      if (P !== undefined && Math.abs(P - drawn) > 1e-9)
+        out.push(`period ${P}, the samples repeat every ${drawn}`);
+      for (let m = 0; m < drawn; m++)
+        if (
+          Math.abs(
+            Math.cos((2 * Math.PI * k * m) / N) - Math.cos((2 * Math.PI * k * (m + drawn)) / N),
+          ) > 1e-6
+        )
+          out.push(`sample ${m} does not repeat after ${drawn}`);
+    }
+  }
+  if (rep.recursive) {
+    const r = rep.recursive;
+    const [a, m, y, fin] = [n(r.alpha), n(r.n), n(r.y), n(r.final)];
+    if (
+      a !== undefined &&
+      m !== undefined &&
+      y !== undefined &&
+      !near(y, stepResponse(a, Math.round(m)), 1e-3)
+    )
+      out.push(`y[${m}] = ${y}, the recursion gives ${stepResponse(a, Math.round(m))}`);
+    if (a !== undefined && fin !== undefined && Math.abs(a) < 1 && !near(fin, 1 / (1 - a)))
+      out.push(`final ${fin} ≠ 1 ÷ (1 − α) = ${1 / (1 - a)}`);
+  }
+  if (rep.convolve) {
+    const xs = rep.convolve.x.map(n);
+    const hs = rep.convolve.h.map(n);
+    const [m, y] = [n(rep.convolve.n), n(rep.convolve.y)];
+    if (
+      xs.every((v) => v !== undefined) &&
+      hs.every((v) => v !== undefined) &&
+      m !== undefined &&
+      y !== undefined
+    ) {
+      const res = convolveAt(xs as number[], hs as number[], Math.round(m));
+      if (!near(y, res.sum, 1e-6)) out.push(`the products add to ${res.sum}, not y[n] = ${y}`);
+    }
+    const ys = (rep.convolve.ys ?? []).map(n);
+    if (xs.every((v) => v !== undefined) && hs.every((v) => v !== undefined))
+      ys.forEach((v, k) => {
+        const want = convolveAt(xs as number[], hs as number[], k).sum;
+        if (v !== undefined && !near(v, want, 1e-6))
+          out.push(`y[${k}] = ${v}, the stems give ${want}`);
+      });
+  }
+  if (rep.sampled) {
+    const [f, fs, fa] = [n(rep.sampled.f), n(rep.sampled.fs), n(rep.sampled.alias)];
+    if (f !== undefined && fs !== undefined && fs > 0) {
+      const drawn = aliasOf(f, fs);
+      if (fa !== undefined && !near(fa, drawn, 1e-4) && Math.abs(fa - drawn) > 1e-9)
+        out.push(`alias ${fa}, |f − f_s round(f ÷ f_s)| = ${drawn}`);
+      for (let k = 0; k <= sampleSpan(f, fs); k++)
+        if (
+          Math.abs(
+            Math.cos((2 * Math.PI * f * k) / fs) - Math.cos((2 * Math.PI * drawn * k) / fs),
+          ) > 1e-6
+        ) {
+          out.push(`the alias misses sample ${k}`);
+          break;
+        }
+    }
+  }
+  return out;
+}
+
 export function he3kIssues(rep: He3kSpec, val: Val): string[] {
   switch (rep.kind) {
     case 'lamina':
@@ -221,5 +312,7 @@ export function he3kIssues(rep: He3kSpec, val: Val): string[] {
       return rocketIssues(rep, val);
     case 'deviceCurves':
       return deviceCurvesIssues(rep, val);
+    case 'stemPlot':
+      return stemPlotIssues(rep, val);
   }
 }

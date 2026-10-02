@@ -204,6 +204,7 @@ import { WaterfallDecibels } from './WaterfallDecibels';
 import { Lamina } from './Lamina';
 import { Rocket } from './Rocket';
 import { DeviceCurves } from './DeviceCurves';
+import { StemPlot } from './StemPlot';
 import { PropertyDiagram } from './PropertyDiagram';
 import { MotionGraphHs } from './MotionGraphHs';
 import { HskView } from './HskView';
@@ -395,6 +396,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <Rocket spec={spec} calc={calc} />; // HC87
     case 'deviceCurves':
       return <DeviceCurves spec={spec} calc={calc} />; // HC62
+    case 'stemPlot':
+      return <StemPlot spec={spec} calc={calc} />; // HC63
     case 'propertyDiagram':
       return <PropertyDiagram spec={spec} calc={calc} />;
     case 'linearFunction':

@@ -120,3 +120,39 @@ export function mosfetId(kn: number, Vov: number, Vds: number) {
   const v = Math.max(0, Vds);
   return v < Vov ? kn * (Vov * v - (v * v) / 2) : 0.5 * kn * Vov * Vov;
 }
+
+// ─── HC63: stem plots ────────────────────────────────────────────────────────
+
+export const gcdInt = (a: number, b: number): number => {
+  let [x, y] = [Math.abs(Math.round(a)), Math.abs(Math.round(b))];
+  while (y) [x, y] = [y, x % y];
+  return x;
+};
+
+/** cos(2πkn ÷ N) repeats every N ÷ gcd(k, N) samples. */
+export const cosinePeriod = (k: number, N: number) => {
+  const g = gcdInt(k, N);
+  return g ? Math.round(N) / g : Math.round(N);
+};
+
+/** The unit step into y[n] = αy[n − 1] + x[n]: y[n] = (1 − αⁿ⁺¹) ÷ (1 − α) (n + 1 when α = 1). */
+export const stepResponse = (alpha: number, n: number) =>
+  alpha === 1 ? n + 1 : (1 - alpha ** (n + 1)) / (1 - alpha);
+
+/** The products x[k]h[n − k] for k over x's indices (0 outside both lists), and their sum. */
+export function convolveAt(x: number[], h: number[], n: number) {
+  const terms = x.map((xk, k) => {
+    const j = n - k;
+    return { k, x: xk, h: j >= 0 && j < h.length ? h[j]! : 0 };
+  });
+  return { terms, sum: terms.reduce((a, t) => a + t.x * t.h, 0) };
+}
+
+/** The alias: the frequency between 0 and f_s ÷ 2 the samples can't tell from f. */
+export const aliasOf = (f: number, fs: number) => Math.abs(f - fs * Math.round(f / fs));
+
+/** How many sampling periods to draw: enough for an alias cycle, 8 to 24. */
+export const sampleSpan = (f: number, fs: number) => {
+  const fa = aliasOf(f, fs);
+  return fa > 0 ? Math.max(8, Math.min(24, Math.ceil((1.2 * fs) / fa))) : 12;
+};

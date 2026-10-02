@@ -2321,7 +2321,8 @@ export function repIssues(
     case 'lamina':
     case 'rocket':
     case 'deviceCurves':
-      // In formula units, as the picture draws them (HC86, HC87, HC62).
+    case 'stemPlot':
+      // In formula units, as the picture draws them (HC86, HC87, HC62, HC63).
       out.push(
         ...he3kIssues(rep, (x) =>
           ((v) =>

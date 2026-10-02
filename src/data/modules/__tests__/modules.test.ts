@@ -654,7 +654,8 @@ function representationVars(r: Representation): string[] {
     case 'lamina':
     case 'rocket':
     case 'deviceCurves':
-      return he3kSpecVars(r); // HC86, HC87, HC62
+    case 'stemPlot':
+      return he3kSpecVars(r); // HC86, HC87, HC62, HC63
     case 'wing':
     case 'duct':
     case 'supersonicFlow':

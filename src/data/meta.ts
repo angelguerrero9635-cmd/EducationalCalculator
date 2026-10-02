@@ -165,6 +165,7 @@ const PICTURE_NAMES: Record<string, string> = {
   lamina: 'a composite lamina: fibers in matrix end-on, springs along or across, the moduli',
   rocket: 'a rocket with its propellant and dry mass, v_e, Δv against the mass ratio; thrust',
   deviceCurves: 'a diode’s I–V curve or a MOSFET’s output curves, the load line and Q point',
+  stemPlot: 'stems of a discrete signal: a periodic cosine, a step response, convolution, aliasing',
   matrixGrid: 'matrices in brackets',
   membrane: 'cell membrane with particles on each side',
   dnaStrand: 'DNA ladder, mRNA and amino acids',

@@ -130,4 +130,34 @@ export const HE3K_REQUESTS: PictureRequest[] = [
       'g.he-deviceCurves-mosfet-triode',
     ],
   },
+  {
+    ...ask(
+      'HC63',
+      'stemPlot',
+      'Stem plots of discrete signals, flat: cos(2πkn ÷ N) over two periods with the cosine faint through the samples and the period bracketed; the unit step into y[n] = αy[n − 1] + x[n] with y[n] lit and the final value dashed; convolution as x[k], h[n − k] flipped and shifted, their products (adding to y[n]) and all of y with y[n] lit; a tone, its samples and the alias tone dashed through every sample',
+      [
+        'he.engineering.signals-systems#0~discrete-period',
+        'he.engineering.signals-systems#1',
+        'he.engineering.signals-systems#3~difference-eq',
+        'he.engineering.signals-systems#4',
+      ],
+      [
+        'From EC-P9. A new kind (typesHe3k.ts, reps/StemPlot.tsx, the sums in reps/he3kMath.ts); round(…) taught to the step harness (phrasesHe3k.ts).',
+        'Fields: { kind: "stemPlot" } plus exactly one of cosine: { k, N, period? }, recursive: { alpha, n, y?, final? }, convolve: { x: [ids], h: [ids], n, y?, ys?: [ids] (the whole output, checked) }, sampled: { f, fs, alias? } (f and f_s in one unit).',
+        'signals#0~discrete-period: { cosine: { k: "k", N: "N", period: "P" } } (P worked out, derived). signals#3~difference-eq: { recursive: { alpha: "a", n: "n", y: "y", final: "yf" } }. signals#4 main: { sampled: { f: "f", fs: "fs", alias: "fa" } } (f_a derived; f_a = |f − f_s round(f ÷ f_s)|). signals#1 main (waits on E6): { convolve: { x: ["x0", "x1", "x2"], h: ["h0", "h1", "h2"], n: "n", ys: ["y0", …, "y4"] } }; the demo gives each output sample its own relation (linear in every input, so the solver can refuse a y that no inputs make) and n is standalone, picking the sample the picture slides h to.',
+        'Check (harness/picturesHe3k.ts): one mode set; the period is N ÷ gcd(k, N) and the samples repeat after it; y[n] = (1 − αⁿ⁺¹) ÷ (1 − α) and the final 1 ÷ (1 − α); the products at n add to y[n] and every y[m] is the convolution; the alias is |f − f_s round(f ÷ f_s)| and passes every drawn sample. Below f_s ÷ 2 the alias is the tone and is not drawn twice.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-stemPlot-cosine',
+      'g.he-stemPlot-cosine-lowest',
+      'g.he-stemPlot-recursive',
+      'g.he-stemPlot-recursive-negative',
+      'g.he-stemPlot-convolve',
+      'g.he-stemPlot-convolve-signed',
+      'g.he-stemPlot-sampled',
+      'g.he-stemPlot-sampled-clean',
+    ],
+  },
 ];

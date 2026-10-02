@@ -8,6 +8,8 @@
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
 import type { LayoutDef } from './layouts';
+import { aliasOf, convolveAt, cosinePeriod, stepResponse } from '@/components/module/reps/he3kMath';
+
 import type { ModuleDef, StepText } from './types';
 
 // ─── Building blocks ─────────────────────────────────────────────────────────
@@ -1198,6 +1200,294 @@ const mosfetTriode: ModuleDef = {
   },
 };
 
+// ─── HC63: a periodic discrete cosine (signals-systems#0~discrete-period) ────
+
+const cosineModule = (id: string, title: string, k: number, N: number): ModuleDef => ({
+  id,
+  title,
+  use: 'Use this for the period of cos(Ω₀n) when Ω₀ = 2πk ÷ N.',
+  assumptions: [
+    'k and N are whole numbers; the period is N once k ÷ N is in lowest terms.',
+    'When Ω₀ ÷ 2π is irrational, cos(Ω₀n) never repeats.',
+  ],
+  variables: [
+    q('k', 'k', 'Cycles in N samples', undefined, 1, 100, 1, { integer: true }),
+    q('N', 'N', 'Samples', undefined, 1, 100, 1, { integer: true }),
+    q('W', 'Ω_0', 'Frequency', 'rad/sample', 0, 700, 0.0001, { derived: true }),
+    q('P', 'N_0', 'Period', 'samples', 1, 100, 1, { integer: true, derived: true }),
+  ],
+  ...rules(
+    rule(
+      'Ω₀ = 2πk ÷ N',
+      '{W} = 2π × {k} ÷ {N}',
+      ['W', 'k', 'N'],
+      (v) => v.W! * v.N! - 2 * Math.PI * v.k!,
+      {
+        W: [
+          (v) => div(2 * Math.PI * v.k!, v.N!),
+          '2π × {k} ÷ {N}',
+          'k full turns spread over N samples.',
+        ],
+      },
+    ),
+    rule(
+      'N₀ = N ÷ gcd(k, N)',
+      '{P} = {N} ÷ gcd({k}, {N})',
+      ['P', 'N', 'k'],
+      (v) => v.P! - cosinePeriod(v.k!, v.N!),
+      {
+        P: [
+          (v) => (v.N! >= 1 && v.k! >= 1 ? cosinePeriod(v.k!, v.N!) : undefined),
+          '{N} ÷ gcd({k}, {N})',
+          'Put k ÷ N in lowest terms: the period is what is left of N.',
+        ],
+      },
+    ),
+  ),
+  example: { k, N, W: (2 * Math.PI * k) / N, P: cosinePeriod(k, N) },
+  startWith: ['k', 'N'],
+  representation: { kind: 'stemPlot', cosine: { k: 'k', N: 'N', period: 'P' } },
+});
+
+const stemCosine = cosineModule('g.he-stemPlot-cosine', 'cos(3πn ÷ 4): period 8', 3, 8);
+
+const stemCosineReduce = cosineModule(
+  'g.he-stemPlot-cosine-lowest',
+  'k ÷ N = 6 ÷ 16 is 3 ÷ 8: period 8, not 16',
+  6,
+  16,
+);
+
+// ─── HC63: a first-order difference equation (signals-systems#3~difference-eq)
+
+const STEP = [
+  rule(
+    'y[n] = (1 − αⁿ⁺¹) ÷ (1 − α)',
+    '{y} = (1 − {a}^({n} + 1)) ÷ (1 − {a})',
+    ['y', 'a', 'n'],
+    (v) => v.y! - stepResponse(v.a!, v.n!),
+    {
+      y: [
+        (v) => (v.a === 1 ? undefined : stepResponse(v.a!, v.n!)),
+        '(1 − {a}^({n} + 1)) ÷ (1 − {a})',
+        'Each step adds αⁿ more: 1 + α + … + αⁿ, a geometric sum.',
+      ],
+    },
+  ),
+  rule('y[∞] = 1 ÷ (1 − α)', '{yf} = 1 ÷ (1 − {a})', ['yf', 'a'], (v) => v.yf! * (1 - v.a!) - 1, {
+    yf: [
+      (v) => div(1, 1 - v.a!),
+      '1 ÷ (1 − {a})',
+      'The sum of all the αⁿ, when |α| < 1: H(1) for H(z) = z ÷ (z − α).',
+    ],
+    a: [(v) => 1 - 1 / v.yf!, '1 − 1 ÷ {yf}', 'Undo the fraction.'],
+  }),
+];
+
+const recursiveModule = (id: string, title: string, a: number, n: number): ModuleDef => ({
+  id,
+  title,
+  use: 'Use this for the step response of y[n] = αy[n − 1] + x[n] at a sample n, and its final value.',
+  assumptions: ['The input is the unit step u[n]; y[−1] = 0.', '|α| < 1, so the output settles.'],
+  variables: [
+    q('a', 'α', 'Feedback coefficient', undefined, -0.99, 0.99, 0.01),
+    q('n', 'n', 'Sample', undefined, 0, 20, 1, { integer: true }),
+    q('y', 'y[n]', 'Output at n', undefined, -1000, 1000, 0.0001),
+    q('yf', 'y[∞]', 'Final value', undefined, 0, 1000, 0.0001),
+  ],
+  ...rules(...STEP),
+  example: { a, n, y: stepResponse(a, n), yf: 1 / (1 - a) },
+  startWith: ['a', 'n'],
+  representation: { kind: 'stemPlot', recursive: { alpha: 'a', n: 'n', y: 'y', final: 'yf' } },
+});
+
+const stemRecursive = recursiveModule(
+  'g.he-stemPlot-recursive',
+  'y[n] = 0.5y[n − 1] + u[n]: climbing to 2',
+  0.5,
+  3,
+);
+
+const stemRecursiveNegative = recursiveModule(
+  'g.he-stemPlot-recursive-negative',
+  'α = −0.8: the step response rings as it settles',
+  -0.8,
+  5,
+);
+
+// ─── HC63: convolution of short sequences (signals-systems#1) ────────────────
+
+/** y[m] = Σ x[k]h[m − k] over the pairs that line up: a relation linear in each sample. */
+function convolveRule(m: number) {
+  const pairs = [0, 1, 2]
+    .filter((k) => m - k >= 0 && m - k <= 2)
+    .map((k) => [`x${k}`, `h${m - k}`] as const);
+  const y = `y${m}`;
+  const sum = (v: Values) => pairs.reduce((a, [p, r]) => a + v[p]! * v[r]!, 0);
+  const text = pairs.map(([p, r]) => `{${p}} × {${r}}`).join(' + ');
+  const solves: Record<string, [Solver, string, string]> = {
+    [y]: [sum, text, `Flip h, slide it to n = ${m}, multiply the samples that line up, and add.`],
+  };
+  for (const [p, r] of pairs)
+    for (const [id, partner] of [
+      [p, r],
+      [r, p],
+    ] as const) {
+      const others = pairs.filter(([a]) => a !== p);
+      solves[id] = [
+        (v) => div(v[y]! - others.reduce((a, [a1, b1]) => a + v[a1]! * v[b1]!, 0), v[partner]!),
+        `({${y}}${others.map(([a1, b1]) => ` − {${a1}} × {${b1}}`).join('')}) ÷ {${partner}}`,
+        'Take the other products away, then divide by its partner.',
+      ];
+    }
+  return rule(
+    `y[${m}] = Σ x[k]h[${m} − k]`,
+    `{${y}} = ${text}`,
+    [y, ...pairs.flat()],
+    (v) => v[y]! - sum(v),
+    solves,
+  );
+}
+
+const CONVOLVE = rules(...[0, 1, 2, 3, 4].map(convolveRule));
+
+const convolveModule = (
+  id: string,
+  title: string,
+  x: [number, number, number],
+  h: [number, number, number],
+  n: number,
+): ModuleDef => {
+  const ids = ['x0', 'x1', 'x2', 'h0', 'h1', 'h2'];
+  const y = [0, 1, 2, 3, 4].map((m) => convolveAt(x, h, m).sum);
+  return {
+    id,
+    title,
+    use: 'Use this for the convolution of two three-sample sequences, one output sample at a time.',
+    assumptions: [
+      'Both sequences are 0 outside n = 0, 1, 2, so y has 3 + 3 − 1 = 5 samples.',
+      'Check: the sum of y is the sum of x times the sum of h.',
+    ],
+    standalone: { vars: ['n'], why: 'n picks the output sample the picture slides h to.' },
+    variables: [
+      ...ids.map((s) =>
+        q(
+          s,
+          `${s[0]}[${s[1]}]`,
+          `${s[0] === 'x' ? 'Input' : 'Impulse response'} at ${s[1]}`,
+          undefined,
+          -100,
+          100,
+          0.01,
+          { group: s[0] },
+        ),
+      ),
+      ...[0, 1, 2, 3, 4].map((m) =>
+        q(`y${m}`, `y[${m}]`, `Output at ${m}`, undefined, -1e5, 1e5, 0.0001, { group: 'y' }),
+      ),
+      q('n', 'n', 'Sample shown', undefined, 0, 4, 1, { integer: true }),
+    ],
+    ...CONVOLVE,
+    example: {
+      x0: x[0],
+      x1: x[1],
+      x2: x[2],
+      h0: h[0],
+      h1: h[1],
+      h2: h[2],
+      n,
+      ...Object.fromEntries(y.map((v, m) => [`y${m}`, v])),
+    },
+    startWith: [...ids, 'n'],
+    representation: {
+      kind: 'stemPlot',
+      convolve: {
+        x: ['x0', 'x1', 'x2'],
+        h: ['h0', 'h1', 'h2'],
+        n: 'n',
+        ys: ['y0', 'y1', 'y2', 'y3', 'y4'],
+      },
+    },
+  };
+};
+
+const stemConvolve = convolveModule(
+  'g.he-stemPlot-convolve',
+  'Convolving {1, 2, 3} with {1, 1, 2}: y[2]',
+  [1, 2, 3],
+  [1, 1, 2],
+  2,
+);
+
+const stemConvolveSigned = convolveModule(
+  'g.he-stemPlot-convolve-signed',
+  'Signed samples: {2, −1, 3} with {1, −2, 1} at n = 1',
+  [2, -1, 3],
+  [1, -2, 1],
+  1,
+);
+
+// ─── HC63: sampling and aliasing (signals-systems#4) ─────────────────────────
+
+const ALIAS = [
+  rule('f_N = f_s ÷ 2', '{fN} = {fs} ÷ 2', ['fN', 'fs'], (v) => v.fN! * 2 - v.fs!, {
+    fN: [(v) => v.fs! / 2, '{fs} ÷ 2', 'The highest frequency the samples can show.'],
+    fs: [(v) => v.fN! * 2, '2 × {fN}', 'Twice the Nyquist frequency.'],
+  }),
+  rule('Nyquist rate = 2f', '{fR} = 2 × {f}', ['fR', 'f'], (v) => v.fR! - 2 * v.f!, {
+    fR: [(v) => 2 * v.f!, '2 × {f}', 'To capture f, sample faster than twice it.'],
+    f: [(v) => v.fR! / 2, '{fR} ÷ 2', 'Half the Nyquist rate.'],
+  }),
+  rule(
+    'f_a = |f − f_s round(f ÷ f_s)|',
+    '{fa} = |{f} − {fs} × round({f} ÷ {fs})|',
+    ['fa', 'f', 'fs'],
+    (v) => v.fa! - aliasOf(v.f!, v.fs!),
+    {
+      fa: [
+        (v) => (v.fs! > 0 ? aliasOf(v.f!, v.fs!) : undefined),
+        '|{f} − {fs} × round({f} ÷ {fs})|',
+        'Take away the nearest whole number of f_s: what is left is what the samples show.',
+      ],
+    },
+  ),
+];
+
+const sampledModule = (id: string, title: string, f: number, fs: number): ModuleDef => ({
+  id,
+  title,
+  use: 'Use this for the Nyquist rate of a tone and the alias it shows when sampled too slowly.',
+  assumptions: [
+    'A pure tone, cos(2πft).',
+    'The alias is the frequency from 0 to f_s ÷ 2 the samples can’t tell from f.',
+  ],
+  variables: [
+    q('f', 'f', 'Tone frequency', 'kHz', 0.001, 1e6, 0.001),
+    q('fs', 'f_s', 'Sampling rate', 'kHz', 0.001, 1e6, 0.001),
+    q('fN', 'f_N', 'Nyquist frequency', 'kHz', 0.0005, 5e5, 0.0005),
+    q('fR', 'f_R', 'Nyquist rate', 'kHz', 0.002, 2e6, 0.001),
+    q('fa', 'f_a', 'Alias frequency', 'kHz', 0, 5e5, 0.001, { derived: true }),
+  ],
+  ...rules(...ALIAS),
+  example: { f, fs, fN: fs / 2, fR: 2 * f, fa: aliasOf(f, fs) },
+  startWith: ['f', 'fs'],
+  representation: { kind: 'stemPlot', sampled: { f: 'f', fs: 'fs', alias: 'fa' } },
+});
+
+const stemSampled = sampledModule(
+  'g.he-stemPlot-sampled',
+  'A 5 kHz tone sampled at 8 kHz shows up at 3 kHz',
+  5,
+  8,
+);
+
+const stemSampledClean = sampledModule(
+  'g.he-stemPlot-sampled-clean',
+  'A 1 kHz tone sampled at 8 kHz: no alias',
+  1,
+  8,
+);
+
 export const HE3K_GALLERY_MODULES: ModuleDef[] = [
   linkBudget,
   linkMargin,
@@ -1219,6 +1509,14 @@ export const HE3K_GALLERY_MODULES: ModuleDef[] = [
   diodeShockleyN2,
   mosfetSat,
   mosfetTriode,
+  stemCosine,
+  stemCosineReduce,
+  stemRecursive,
+  stemRecursiveNegative,
+  stemConvolve,
+  stemConvolveSigned,
+  stemSampled,
+  stemSampledClean,
 ];
 
 export const HE3K_GALLERY_LAYOUTS: LayoutDef[] = [];

@@ -183,8 +183,8 @@ export const deviceCurvesVars = (r: DeviceCurvesSpec) =>
  *   cosine faint through the samples, the period N bracketed (k ÷ N in lowest terms).
  * - `recursive: { alpha, n, y?, final? }` — the unit step into y[n] = αy[n − 1] + x[n]: y[n]
  *   from 0, the stem at n lit, the final value 1 ÷ (1 − α) dashed (|α| < 1).
- * - `convolve: { x, h, n, y? }` — x[k] over h[n − k] flipped and shifted, the products and their
- *   sum y[n] (checked), and the whole of y with y[n] lit.
+ * - `convolve: { x, h, n, y?, ys? }` — x[k] over h[n − k] flipped and shifted, the products and
+ *   their sum y[n] (checked), and the whole of y (`ys`, checked) with y[n] lit.
  * - `sampled: { f, fs, alias? }` — the tone cos(2πft), its samples at f_s and the alias tone
  *   dashed through every sample; f and f_s in one unit.
  */
@@ -192,18 +192,28 @@ export interface StemPlotSpec {
   kind: 'stemPlot';
   cosine?: { k: NumOrVar; N: NumOrVar; period?: NumOrVar };
   recursive?: { alpha: NumOrVar; n: NumOrVar; y?: NumOrVar; final?: NumOrVar };
-  convolve?: { x: NumOrVar[]; h: NumOrVar[]; n: NumOrVar; y?: NumOrVar };
+  convolve?: {
+    x: NumOrVar[];
+    h: NumOrVar[];
+    n: NumOrVar;
+    /** y[n], checked against the products' sum. */
+    y?: NumOrVar;
+    /** The whole output y[0], y[1], … (checked), drawn in the last row. */
+    ys?: NumOrVar[];
+  };
   sampled?: { f: NumOrVar; fs: NumOrVar; alias?: NumOrVar };
 }
 
 export const stemPlotVars = (r: StemPlotSpec) => [
   ...(r.cosine ? ids(r.cosine.k, r.cosine.N, r.cosine.period) : []),
   ...(r.recursive ? ids(r.recursive.alpha, r.recursive.n, r.recursive.y, r.recursive.final) : []),
-  ...(r.convolve ? ids(...r.convolve.x, ...r.convolve.h, r.convolve.n, r.convolve.y) : []),
+  ...(r.convolve
+    ? ids(...r.convolve.x, ...r.convolve.h, r.convolve.n, r.convolve.y, ...(r.convolve.ys ?? []))
+    : []),
   ...(r.sampled ? ids(r.sampled.f, r.sampled.fs, r.sampled.alias) : []),
 ];
 
-export type He3kSpec = LaminaSpec | RocketSpec | DeviceCurvesSpec;
+export type He3kSpec = LaminaSpec | RocketSpec | DeviceCurvesSpec | StemPlotSpec;
 
 /** The variable ids a group K picture reads (for the module tests). */
 export function he3kSpecVars(r: He3kSpec): string[] {
@@ -214,5 +224,7 @@ export function he3kSpecVars(r: He3kSpec): string[] {
       return rocketVars(r);
     case 'deviceCurves':
       return deviceCurvesVars(r);
+    case 'stemPlot':
+      return stemPlotVars(r);
   }
 }
