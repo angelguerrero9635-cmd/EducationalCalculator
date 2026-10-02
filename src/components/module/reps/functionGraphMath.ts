@@ -512,9 +512,10 @@ export function buildCurve(
         f,
         side: side(f),
         breaks: none,
-        key: { x: h, y: k, what: 'vertex' },
+        // a = 0 flattens the V to the line y = k: no vertex to mark, no zeros to list.
+        key: a === 0 ? undefined : { x: h, y: k, what: 'vertex' },
         zeros: () =>
-          r < 0
+          a === 0 || r < 0
             ? []
             : r === 0
               ? [{ x: h, text: fracText(h) }]
