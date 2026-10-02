@@ -50,6 +50,7 @@ import {
   shownClose,
   withinRounding,
 } from '../harness/evaluate';
+import { CALCULUS_MARK, checkCalculus } from '../harness/calculus';
 import { pictureCoverage, repIssues } from '../harness/pictures';
 import {
   asValues,
@@ -468,6 +469,24 @@ function checkSteps(c: Ctx, res: SolveResult, where: string) {
       c.f.add('error', `${c.label}step "${s.substituted}" ≠ "${s.result}"`, where);
     }
   }
+  // Calculus lines (HE-E6): forms, derivatives, integrals, limits and ODE solutions, checked
+  // numerically in reading order, on college pages and wherever a line has a calculus mark.
+  const calculusLines = [...w.steps.flatMap((s) => s.lines), ...w.check.map((k) => k.formula)];
+  const calculusRead = new Set<string>();
+  if (c.module.id.startsWith('he.') || calculusLines.some((l) => CALCULUS_MARK.test(l))) {
+    for (const v of checkCalculus(calculusLines)) {
+      calculusRead.add(v.line);
+      if (v.problem === 'wrong') {
+        c.f.add('error', `${c.label}calculus line is wrong (${v.kind}): "${v.line}"`, where);
+      } else if (v.problem === 'unread') {
+        c.f.add(
+          'harness',
+          `${c.label}can't read calculus line "${v.line.replace(/[\d.]+/g, 'N')}"`,
+          where,
+        );
+      }
+    }
+  }
   // A line shown twice in one walkthrough (the same pairing in two steps) is padding.
   const seen = new Map<string, string>();
   for (const s of w.steps) {
@@ -629,6 +648,8 @@ function checkSteps(c: Ctx, res: SolveResult, where: string) {
     if (/^about \$|^less than 1 cent/.test(q.value) && res.values[q.id] !== undefined)
       shown.add(res.values[q.id]!);
   for (const chk of w.check) {
+    // (a calculus check states a form or a value of its own: read above)
+    if (calculusRead.has(chk.formula)) continue;
     const strays = numbersIn(chk.formula).filter(
       (x) => ![...shown].some((y) => shownClose(x, y) || figuresClose(x, y, figures)),
     );
@@ -642,6 +663,7 @@ function checkSteps(c: Ctx, res: SolveResult, where: string) {
   }
   for (const chk of w.check) {
     if (!chk.ok) c.f.add('error', `${c.label}check line doesn't balance: "${chk.formula}"`, where);
+    if (calculusRead.has(chk.formula)) continue;
     // Comparisons ("3/8 < 5/8, 2 parts apart"): the sign must match the two sides. A sum with
     // its limits ("Σ from k = 1 to 8 of (3k − 1)") is worked out first, so its "k = 1" is no side.
     const formula = expandSums(chk.formula)
