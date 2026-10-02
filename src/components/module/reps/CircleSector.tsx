@@ -153,7 +153,8 @@ export function CircleSector({ spec, calc }: { spec: Spec; calc: Calculator }) {
           const cos = Math.cos(mid);
           // On the picture the arc is short: exact (2π cm) when it is a multiple of π.
           const arcShort = s?.arc && rep.known(s.arc) ? rep.shown(s.arc) : arc;
-          const arcText = `s = ${piMultiple(arcShort) ?? short(arcShort)}${u()}`;
+          // A "?" radius or angle: the arc reads "?" (never worked from the example's numbers).
+          const arcText = `s = ${known ? (piMultiple(arcShort) ?? short(arcShort)) : '?'}${u()}`;
           const arcAnchor = cos > 0.3 ? 'start' : cos < -0.3 ? 'end' : 'middle';
           // The angle's label sits on the bisector, clear of the small arc mark.
           const mark = Math.min(24, R * 0.3);

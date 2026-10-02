@@ -33,7 +33,8 @@
 // does not come from that box ("n = 2" on a ladder, the unit circle's π/4 family, "2V", the
 // 68–95–99.7 brackets); the line notes it as fixed text. Only texts that then change are flagged,
 // and a text of the same shape whose number in that slot is unchanged counts as the same text
-// ("Dollar bills ($1 each): 3" keeps its "$1" while the count moved).
+// ("Dollar bills ($1 each): 3" keeps its "$1" while the count moved), as does a number still
+// drawn with the unit after it ("9.8 N/kg", a fixed g). Ticks may count a letter: T, 2T, 3T.
 // A worked-out "?" box takes no number, so the other "?" boxes are varied in its place; when no
 // box can be varied, the text stays flagged.
 // Gallery demos (g.…) are opened under /gallery, every other page under /skill. A page whose
@@ -215,6 +216,12 @@ const shapeOf = (t) => ({ shape: t.replace(TOKEN, '#'), nums: t.match(TOKEN) ?? 
  */
 function stillThere(t, num, after) {
   if (after.includes(t)) return true;
+  // The number with the unit written after it ("9.8 N/kg", a fixed g) still drawn.
+  const unit = new RegExp(
+    `(^|[^\\d.,])${num.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')} ([^\\s\\d?]+)`,
+  ).exec(t);
+  if (unit && /[A-Za-z]/.test(unit[2]) && after.some((a) => a.includes(`${num} ${unit[2]}`)))
+    return true;
   const was = shapeOf(t);
   const slots = was.nums.flatMap((n, i) => (n === num ? [i] : []));
   if (!slots.length) return false;
@@ -241,8 +248,8 @@ async function settledTexts() {
 function tickValues(texts) {
   const bare = uniq(
     texts
-      .filter((t) => /^[−-]?[\d,]*\.?\d+[%°iπ]?$/.test(t))
-      .map((t) => parseShown(t.replace(/[%°iπ]$/, ''))),
+      .filter((t) => /^[−-]?[\d,]*\.?\d+[%°iπT]?$/.test(t))
+      .map((t) => parseShown(t.replace(/[%°iπT]$/, ''))),
   ).filter(Number.isFinite);
   const has = (x) => bare.some((y) => Math.abs(x - y) <= 1e-9 * Math.max(1, Math.abs(x)));
   // Two bare numbers a round step apart (1, 2 or 5 × 10ⁿ), both on that step, are ticks too (a
