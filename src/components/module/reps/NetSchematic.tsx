@@ -498,7 +498,7 @@ function prefix(x: number, base: string): [number, string] {
 }
 
 /** One part on its wire: the leads and the symbol between them. */
-function Part({ slot, net }: { slot: Slot; net: CircuitNet }) {
+export function Part({ slot, net }: { slot: Slot; net: CircuitNet }) {
   const c = usePalette();
   const { a, b } = slot;
   const len = Math.hypot(b.x - a.x, b.y - a.y) || 1;
@@ -721,7 +721,7 @@ function Block({ spot, rows, w, plain }: { spot: Spot; rows: Row[]; w: number; p
 }
 
 /** A ground: three bars under the wire. */
-function Ground({ p }: { p: Pt }) {
+export function Ground({ p }: { p: Pt }) {
   const c = usePalette();
   const s = { stroke: c.chartInk, strokeWidth: chart.stroke, strokeLinecap: 'round' as const };
   return (

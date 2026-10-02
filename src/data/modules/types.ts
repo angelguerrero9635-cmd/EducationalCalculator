@@ -14,6 +14,7 @@ import type { ChemSpec } from './typesChem';
 import type { EnergyTrackSpec, MotionGraphSpec, SkatersSpec } from './typesMechanics';
 import type { Physics8Spec } from './typesPhysics8';
 import type { CircuitNetSpec } from './typesHe1h';
+import type { He2dSeriesSpec } from './typesHe2d';
 import type { HscSpec } from './typesHsc';
 import type { HsbSpec } from './typesHsb';
 import type { HsdSpec } from './typesHsd';
@@ -1116,6 +1117,8 @@ export type Representation =
   | Physics8Spec
   /** College schematics (HC7): `seriesCircuit` and `circuit` with `net` (`typesHe1h.ts`). */
   | CircuitNetSpec
+  /** College op-amp and semiconductor schematics (HC18, HC39): `amp`, `device` (`typesHe2d.ts`). */
+  | He2dSeriesSpec
   /** Grades 9–12 geometry: triangle solver (specs in `typesHsc.ts`). */
   | HscSpec
   /** Grades 9–12 earth and space, group HL (specs in `typesHsl.ts`). */
