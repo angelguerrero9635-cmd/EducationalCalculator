@@ -135,7 +135,7 @@ function Distillation({ spec, calc }: { spec: XySpec; calc: Calculator }) {
 
   const art = (w: number, h: number) => {
     const l = 48;
-    const t = 46;
+    const t = 58;
     const side = Math.min(w - l - 14, h - t - 42);
     const [r, b] = [l + side, t + side];
     const sx = (x: number) => l + x * side;
@@ -367,7 +367,7 @@ function Distillation({ spec, calc }: { spec: XySpec; calc: Calculator }) {
 
   return (
     <View>
-      <Canvas aspect={(w) => Math.min(1.12, (w - 48 - 14 + 46 + 42) / w)}>
+      <Canvas aspect={(w) => Math.min(1.12, (w - 48 - 14 + 58 + 42) / w)}>
         {({ w, h }) => art(w, h)}
       </Canvas>
       <Caption>{lines.join(' · ')}</Caption>
@@ -396,7 +396,7 @@ function Absorber({ spec, calc }: { spec: XySpec; calc: Calculator }) {
 
   const art = (w: number, h: number) => {
     const l = 56;
-    const t = 46;
+    const t = 58;
     const r = w - 16;
     const b = h - 42;
     const sx = (x: number) => l + (x / xMax) * (r - l);
@@ -557,7 +557,7 @@ function Absorber({ spec, calc }: { spec: XySpec; calc: Calculator }) {
 
   return (
     <View>
-      <Canvas aspect={(w) => Math.min(1.05, 380 / w)}>{({ w, h }) => art(w, h)}</Canvas>
+      <Canvas aspect={(w) => Math.min(1.1, 392 / w)}>{({ w, h }) => art(w, h)}</Canvas>
       <Caption>{lines.join(' · ')}</Caption>
     </View>
   );

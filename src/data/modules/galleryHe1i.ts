@@ -9,6 +9,9 @@ import {
   antoineP,
   bubbleP,
   bubbleT,
+  clausiusDH,
+  clausiusP2,
+  degreesOfFreedom,
   dewP,
   distillationStairs,
   fenske,
@@ -24,6 +27,7 @@ import type { Relation, VariableDef, Values } from '@/engine/types';
 
 import type { LayoutDef } from './layouts';
 import type { ModuleDef, StepText } from './types';
+import type { PhaseSubstance } from './typesHe1i';
 
 /** A relation and its step text, built together so a demo lists both from one place. */
 interface Rule {
@@ -1194,6 +1198,273 @@ export const PHASE_ENVELOPE_DEMOS: ModuleDef[] = [
   xyMinLiquid,
 ];
 
-export const HE1I_GALLERY_MODULES: ModuleDef[] = [...PHASE_ENVELOPE_DEMOS];
+// ─── HC8 chemDiagram phase `substance` (physical-1#1) ────────────────────────
+
+/** Water's fixed points (K, atm) and its melting slope from Clapeyron (atm/K). */
+const WATER: PhaseSubstance = {
+  name: 'Water',
+  unit: 'atm',
+  triple: [273.16, 0.00604],
+  critical: [647.1, 217.7],
+  meltSlope: -133,
+  sublimation: [253.15, 0.00102],
+};
+
+/** The gas constant, J/(mol·K): the page's own value. */
+const R_GAS = 8.314;
+
+const clausiusRule: Rule = {
+  relation: {
+    id: 'ln(P₂ ÷ P₁) = −(ΔH_vap ÷ R)(1/T₂ − 1/T₁)',
+    display: 'ln({P2} ÷ {P1}) = −({dH} × 1000 ÷ 8.314) × (1 ÷ {T2} − 1 ÷ {T1})',
+    vars: ['P2', 'P1', 'dH', 'T2', 'T1'],
+    residual: (v) => Math.log(v.P2! / v.P1!) + ((v.dH! * 1000) / R_GAS) * (1 / v.T2! - 1 / v.T1!),
+    solve: {
+      P2: (v) => clausiusP2(v.dH! * 1000, R_GAS, v.T1!, v.P1!, v.T2!),
+      P1: (v) => clausiusP2(v.dH! * 1000, R_GAS, v.T2!, v.P2!, v.T1!),
+      dH: (v) => (v.T1 === v.T2 ? undefined : clausiusDH(R_GAS, v.T1!, v.P1!, v.T2!, v.P2!) / 1000),
+      T2: (v) => {
+        const inv = 1 / v.T1! - (R_GAS * Math.log(v.P2! / v.P1!)) / (v.dH! * 1000);
+        return inv > 0 ? 1 / inv : undefined;
+      },
+      T1: (v) => {
+        const inv = 1 / v.T2! + (R_GAS * Math.log(v.P2! / v.P1!)) / (v.dH! * 1000);
+        return inv > 0 ? 1 / inv : undefined;
+      },
+    },
+  },
+  steps: {
+    P2: st(
+      '{P1} × e^(−({dH} × 1000 ÷ 8.314) × (1 ÷ {T2} − 1 ÷ {T1}))',
+      'Work out the exponent (ΔH_vap in J/mol over R, times the change in 1 ÷ T), raise e to it, and scale P₁.',
+    ),
+    P1: st(
+      '{P2} ÷ e^(−({dH} × 1000 ÷ 8.314) × (1 ÷ {T2} − 1 ÷ {T1}))',
+      'Work out the exponent the same way, raise e to it, and divide P₂ by the result.',
+    ),
+    dH: st(
+      '−8.314 × ln({P2} ÷ {P1}) ÷ (1 ÷ {T2} − 1 ÷ {T1}) ÷ 1000',
+      'The slope of ln P against 1 ÷ T is −ΔH_vap ÷ R: divide the change in ln P by the change in 1 ÷ T, times −R, then turn J into kJ.',
+    ),
+    T2: st(
+      '1 ÷ (1 ÷ {T1} − 8.314 × ln({P2} ÷ {P1}) ÷ ({dH} × 1000))',
+      'Solve for 1 ÷ T₂: subtract R ln(P₂ ÷ P₁) ÷ ΔH_vap from 1 ÷ T₁, then take the reciprocal.',
+    ),
+    T1: st(
+      '1 ÷ (1 ÷ {T2} + 8.314 × ln({P2} ÷ {P1}) ÷ ({dH} × 1000))',
+      'Solve for 1 ÷ T₁: add R ln(P₂ ÷ P₁) ÷ ΔH_vap to 1 ÷ T₂, then take the reciprocal.',
+    ),
+  },
+};
+
+const kelvin = (id: string, symbol: string, name: string, min = 1, max = 2000) =>
+  quantity(id, symbol, name, 'K', min, max, 0.01);
+const atmV = (id: string, symbol: string, name: string, min = 0.000001, max = 1000) =>
+  quantity(id, symbol, name, 'atm', min, max, 0.0001);
+
+/** Two temperatures far enough apart for a slope between them. */
+const APART: Rule = {
+  relation: {
+    id: 'T₁ ≠ T₂',
+    constraint: true,
+    display: '{T1} ≠ {T2}',
+    vars: ['T1', 'T2'],
+    residual: (v: Values) => (Math.abs(v.T1! - v.T2!) >= 0.5 ? 0 : 1),
+    solve: {},
+    message: () => 'Pick two temperatures at least 0.5 K apart.',
+  },
+  steps: {},
+};
+
+const clausiusDemo = (
+  id: string,
+  title: string,
+  substance: PhaseSubstance,
+  [dH, T1, P1, T2]: [number, number, number, number],
+  range: { T: [number, number]; P: [number, number] },
+): ModuleDef => ({
+  id,
+  title,
+  use: 'Use this for a vapor pressure at another temperature, or ΔH_vap from two points on the vapor curve.',
+  assumptions: [
+    'The vapor is an ideal gas, and the liquid’s volume is tiny next to the gas’s.',
+    'ΔH_vap is constant between the two temperatures; R = 8.314 J/(mol·K).',
+  ],
+  // Ranges within the liquid's: the points sit on this substance's vapor curve.
+  variables: [
+    quantity('dH', 'ΔH_vap', 'Enthalpy of vaporization', 'kJ/mol', 5, 80, 0.01),
+    kelvin('T1', 'T₁', 'First temperature', ...range.T),
+    atmV('P1', 'P₁', 'Vapor pressure at T₁', ...range.P),
+    kelvin('T2', 'T₂', 'Second temperature', ...range.T),
+    atmV('P2', 'P₂', 'Vapor pressure at T₂', ...range.P),
+  ],
+  ...rules(clausiusRule, APART),
+  example: { dH, T1, P1, T2, P2: clausiusP2(dH * 1000, R_GAS, T1, P1, T2) },
+  startWith: ['dH', 'T1', 'P1', 'T2'],
+  representation: {
+    kind: 'chemDiagram',
+    mode: 'phase',
+    substance: {
+      ...substance,
+      points: [
+        ['T1', 'P1'],
+        ['T2', 'P2'],
+      ],
+    },
+  },
+});
+
+const phaseWater = clausiusDemo(
+  'g.he-chemDiagram-phase-clausius',
+  'Water’s phase diagram: the vapor curve through two points',
+  WATER,
+  [40.7, 373.15, 1, 323.15],
+  { T: [274, 647], P: [0.0061, 217] },
+);
+const phaseCO2 = clausiusDemo(
+  'g.he-chemDiagram-phase-clausius-co2',
+  'Carbon dioxide’s phase diagram: a triple point above 1 atm',
+  {
+    name: 'Carbon dioxide',
+    unit: 'atm',
+    triple: [216.6, 5.11],
+    critical: [304.1, 72.8],
+    meltSlope: 48,
+    sublimation: [194.7, 1],
+  },
+  [16.6, 250, 17.9, 280],
+  { T: [217, 304], P: [5.12, 72.7] },
+);
+
+const clapeyronRule: Rule = {
+  relation: {
+    id: 'dP/dT = ΔH ÷ (TΔV)',
+    display: '{slope} = {dH} ÷ ({T} × {dV} × 10⁻⁶) ÷ 101325',
+    vars: ['slope', 'dH', 'T', 'dV'],
+    residual: (v) => v.slope! * v.T! * v.dV! * 1e-6 * 101325 - v.dH!,
+    solve: {
+      slope: (v) => div(v.dH!, v.T! * v.dV! * 1e-6 * 101325),
+      dH: (v) => v.slope! * v.T! * v.dV! * 1e-6 * 101325,
+      T: (v) => div(v.dH!, v.slope! * v.dV! * 1e-6 * 101325),
+      dV: (v) => div(v.dH! * 1e6, v.slope! * v.T! * 101325),
+    },
+  },
+  steps: {
+    slope: st(
+      '{dH} ÷ ({T} × {dV} × 10⁻⁶) ÷ 101325',
+      'Clapeyron: divide ΔH by T times ΔV (cm³ to m³ is × 10⁻⁶) for Pa/K, then divide by 101,325 Pa per atm.',
+    ),
+    dH: st(
+      '{slope} × 101325 × {T} × {dV} × 10⁻⁶',
+      'Turn the slope into Pa/K, then multiply by T and ΔV in m³.',
+    ),
+    T: st(
+      '{dH} ÷ ({slope} × 101325 × {dV} × 10⁻⁶)',
+      'Divide ΔH by the slope in Pa/K times ΔV in m³.',
+    ),
+    dV: st(
+      '{dH} ÷ ({slope} × 101325 × {T}) × 10⁶',
+      'Divide ΔH by the slope in Pa/K times T, then turn m³ into cm³.',
+    ),
+  },
+};
+
+const phaseClapeyron: ModuleDef = {
+  id: 'g.he-chemDiagram-phase-clapeyron',
+  title: 'Water near its triple point: the melting line’s slope',
+  use: 'Use this for the slope of a melting line (Clapeyron) and how pressure moves a melting point.',
+  assumptions: [
+    'ΔH_fus and ΔV are constant over the small range of the line.',
+    'ΔV is the liquid’s molar volume minus the solid’s: negative for water, since ice floats.',
+  ],
+  variables: [
+    quantity('dH', 'ΔH_fus', 'Enthalpy of fusion', 'J/mol', 1, 100000, 1),
+    kelvin('T', 'T', 'Melting temperature'),
+    quantity('dV', 'ΔV', 'Volume change on melting', 'cm³/mol', -50, 50, 0.01),
+    quantity('slope', 'dP/dT', 'Slope of the melting line', 'atm/K', -100000, 100000, 0.1),
+  ],
+  ...rules(clapeyronRule),
+  example: { dH: 6010, T: 273.15, dV: -1.63, slope: 6010 / (273.15 * -1.63e-6 * 101325) },
+  startWith: ['dH', 'T', 'dV'],
+  representation: {
+    kind: 'chemDiagram',
+    mode: 'phase',
+    substance: { ...WATER, meltSlope: 'slope', zoom: 'melting' },
+  },
+};
+
+const phaseRuleDemo = (id: string, title: string, C: number, P: number): ModuleDef => ({
+  id,
+  title,
+  use: 'Use this for the degrees of freedom at a point of a phase diagram (the phase rule).',
+  assumptions: [
+    'F counts the intensive variables (T, P, compositions) that can change while the same phases stay.',
+    'The diagram is water’s: one component, so its points have F = 3 − P.',
+  ],
+  variables: [
+    quantity('C', 'C', 'Components', undefined, 1, 5, 1, { integer: true }),
+    quantity('P', 'P', 'Phases', undefined, 1, 5, 1, { integer: true }),
+    quantity('F', 'F', 'Degrees of freedom', undefined, 0, 6, 1, { integer: true }),
+  ],
+  ...rules({
+    relation: {
+      id: 'F = C − P + 2',
+      display: '{F} = {C} − {P} + 2',
+      vars: ['F', 'C', 'P'],
+      residual: (v) => v.F! - degreesOfFreedom(v.C!, v.P!),
+      solve: {
+        F: (v) => degreesOfFreedom(v.C!, v.P!),
+        C: (v) => v.F! + v.P! - 2,
+        P: (v) => v.C! - v.F! + 2,
+      },
+    },
+    steps: {
+      F: st(
+        '{C} − {P} + 2',
+        'Each component adds a composition to choose, each extra phase adds an equation tying them: C − P + 2.',
+      ),
+      C: st('{F} + {P} − 2', 'Add P to F, then subtract 2.'),
+      P: st('{C} − {F} + 2', 'Subtract F from C, then add 2.'),
+    },
+  }),
+  example: { C, P, F: degreesOfFreedom(C, P) },
+  startWith: ['C', 'P'],
+  representation: {
+    kind: 'chemDiagram',
+    mode: 'phase',
+    substance: {
+      ...WATER,
+      normalBoiling: 373.15,
+      rule: { components: 'C', phases: 'P', freedom: 'F' },
+    },
+  },
+});
+
+const phaseRuleTriple = phaseRuleDemo(
+  'g.he-chemDiagram-phase-rule',
+  'The phase rule at water’s triple point',
+  1,
+  3,
+);
+const phaseRuleBoiling = phaseRuleDemo(
+  'g.he-chemDiagram-phase-rule-boiling',
+  'The phase rule for boiling water: one degree of freedom',
+  1,
+  2,
+);
+
+/** The chemDiagram phase `substance` demos (HC8). */
+export const PHASE_SUBSTANCE_DEMOS: ModuleDef[] = [
+  phaseWater,
+  phaseCO2,
+  phaseClapeyron,
+  phaseRuleTriple,
+  phaseRuleBoiling,
+];
+
+export const HE1I_GALLERY_MODULES: ModuleDef[] = [
+  ...PHASE_ENVELOPE_DEMOS,
+  ...PHASE_SUBSTANCE_DEMOS,
+];
 
 export const HE1I_GALLERY_LAYOUTS: LayoutDef[] = [];

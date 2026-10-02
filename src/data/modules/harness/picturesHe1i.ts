@@ -249,16 +249,14 @@ export function phaseSubstanceIssues(s: PhaseSubstance | undefined, val: Val): s
   for (const [t, p] of s.points ?? []) {
     const [T, P] = [num(t), num(p)];
     if (T === undefined || P === undefined) continue;
-    if (!(T > Tt && T < Tc)) out.push(`the point at ${T} K is off the vapor curve’s range`);
-    else if (P > 0) pts.push([T, P]);
+    // A point outside the liquid's range is drawn off the curve, the caption says why.
+    if (T > Tt && T < Tc && P > 0) pts.push([T, P]);
   }
   const Tb = num(s.normalBoiling);
   if (Tb !== undefined && Tb > Tt && Tb < Tc) pts.push([Tb, s.atm ?? 1]);
   const knots = [[Tt, Pt] as TP, ...pts, [Tc, Pc] as TP].sort((a, b) => a[0] - b[0]);
-  // Pressure rises with temperature along the vapor curve, and the curve passes every point.
-  knots.forEach(([T, P], i) => {
-    if (i > 0 && P <= knots[i - 1]![1])
-      out.push(`the vapor curve falls between ${knots[i - 1]![0]} K and ${T} K`);
+  // The curve passes every point (one that falls with T draws faded, the caption says why).
+  knots.forEach(([T, P]) => {
     if (!near(vaporP(knots, T), P, 1e-6)) out.push(`the vapor curve misses (${T} K, ${P})`);
   });
   const slope = num(s.meltSlope);

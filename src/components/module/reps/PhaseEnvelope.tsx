@@ -17,6 +17,7 @@ import { Frame, KeyItem, poly, sig, ticks, useReadSpec } from './phaseEnvelopeKi
 import { PhaseEnvelopeXy } from './PhaseEnvelopeXy';
 import {
   antoineP,
+  bisect,
   boilingT,
   bubbleP,
   bubbleT,
@@ -142,7 +143,7 @@ function TieLine({
 }
 
 /** The plot rectangle inside a canvas w × h, room left for the key, the ticks and the names. */
-const plotBox = (w: number, h: number) => ({ l: 52, r: w - 14, t: 46, b: h - 42 });
+const plotBox = (w: number, h: number) => ({ l: 52, r: w - 14, t: 58, b: h - 42 });
 
 function Pxy({ spec, calc }: { spec: PxySpec; calc: Calculator }) {
   const c = usePalette();
@@ -367,6 +368,18 @@ function Pxy({ spec, calc }: { spec: PxySpec; calc: Calculator }) {
       lines.push(
         `Margules A = ${A!.text}: ln γ₁ = A x₂², ln γ₂ = A x₁²${g ? `, so γ₁ = ${sig(g[0])} and γ₂ = ${sig(g[1])} at x₁ = ${X.text}` : ''}. ${a > 0 ? 'The curves bulge above Raoult’s straight line (positive deviation).' : 'The curves sag below Raoult’s straight line (negative deviation).'}`,
       );
+      // An azeotrope: inside 0 < x₁ < 1 the vapor matches the liquid (y₁ = x₁) and the curves touch.
+      const gap = (x1: number) => bubbleP(x1, P1.value, P2.value, a).y1 - x1;
+      const azeo = env!.bubble
+        .slice(1, -2)
+        .map(([x1]) => x1)
+        .find((x1) => gap(x1) * gap(x1 + 1 / 60) < 0);
+      if (azeo !== undefined) {
+        const xa = bisect(gap, azeo, azeo + 1 / 60) ?? azeo;
+        lines.push(
+          `The curves touch at an azeotrope, x₁ = y₁ = ${sig(xa)} and P = ${sig(bubbleP(xa, P1.value, P2.value, a).P, 4)} ${unit}: there the vapor matches the liquid, so distilling can’t pass it.`,
+        );
+      }
     }
     if (why) lines.push(why);
     else if (tieLine) {
@@ -401,7 +414,7 @@ function Pxy({ spec, calc }: { spec: PxySpec; calc: Calculator }) {
 
   return (
     <View>
-      <Canvas aspect={(w) => Math.min(1.05, 380 / w)}>{({ w, h }) => art(w, h)}</Canvas>
+      <Canvas aspect={(w) => Math.min(1.1, 392 / w)}>{({ w, h }) => art(w, h)}</Canvas>
       <Caption>{lines.join(' · ')}</Caption>
     </View>
   );
@@ -562,7 +575,7 @@ function Txy({ spec, calc }: { spec: TxySpec; calc: Calculator }) {
 
   return (
     <View>
-      <Canvas aspect={(w) => Math.min(1.05, 380 / w)}>{({ w, h }) => art(w, h)}</Canvas>
+      <Canvas aspect={(w) => Math.min(1.1, 392 / w)}>{({ w, h }) => art(w, h)}</Canvas>
       <Caption>{lines.join(' · ')}</Caption>
     </View>
   );

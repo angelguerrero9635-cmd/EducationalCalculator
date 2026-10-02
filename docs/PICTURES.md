@@ -329,6 +329,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `chemDiagram`      | `mode: 'phase'`, `freezing`, `boiling`   | water's phase diagram, the solution's lines dashed at Tf and Tb (H108)        |
 | `chemDiagram`      | `mode: 'rate'`, `times, concentrations`  | [A] against t through two readings, the secant, Δt and Δ[A], the rate (H108)  |
 | `chemDiagram`      | `mode: 'cell'`, `cathode`, `anode`       | the galvanic cell of two E° values, its meter E°cell, the E° scale (H108)     |
+| `chemDiagram`      | `mode: 'phase'`, `substance`             | any substance, log P: Clausius–Clapeyron vapor curve, F = C − P + 2 (HC8)     |
 | `beaker`           | `solution: { mode, … }`                  | solute as dots by moles; a dilution’s two beakers; solubility (H52)           |
 | `rockLayers`       | `dating` (Grades 9–12)                   | ages on dated layers, a dike cutting across, index fossils, 100 atoms         |
 | `motionGraph`      | `kinematics: { view, at?, slope? }`      | signed v–t, + and − areas as Δx; x–t with a tangent at t₁; strobe (H58)       |
