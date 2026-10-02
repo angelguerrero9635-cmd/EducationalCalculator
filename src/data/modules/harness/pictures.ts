@@ -84,7 +84,7 @@ import { he2eIssues, isHe2e } from './picturesHe2e';
 import { he2hIssues } from './picturesHe2h';
 import { fieldPlotIssues, he2gGraphIssues } from './picturesHe2g';
 import { he2cIssues } from './picturesHe2c';
-import { waterfallDecibelsIssues } from './picturesHe3k';
+import { he3kIssues, waterfallDecibelsIssues } from './picturesHe3k';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -2317,6 +2317,17 @@ export function repIssues(
       break;
     case 'waterfall':
       out.push(...waterfallDecibelsIssues(rep, val)); // HC91, decibels only
+      break;
+    case 'lamina':
+      // In formula units, as the picture draws them (HC86).
+      out.push(
+        ...he3kIssues(rep, (x) =>
+          ((v) =>
+            v === undefined || typeof x === 'number' ? v : v * (byId.get(x)?.unitFactor ?? 1))(
+            val(x),
+          ),
+        ),
+      );
       break;
     case 'projectile':
     case 'induction':

@@ -50,7 +50,7 @@ import type { He2cSpec } from './typesHe2c';
 import type { BeamSpec } from './typesHe1a';
 import type { BodeSpec } from './typesHe2a';
 import type { He2hSpec } from './typesHe2h';
-import type { WaterfallDecibels } from './typesHe3k';
+import type { He3kSpec, WaterfallDecibels } from './typesHe3k';
 
 /**
  * Plot axis: which variable it shows and the visible range, as numbers in the shown unit.
@@ -1186,6 +1186,8 @@ export type Representation =
   | BeamSpec
   /** College round 2, group A: the Bode plot (HC22; `typesHe2a.ts`). */
   | BodeSpec
+  /** College round 3, group K: HC86 lamina, HC87 rocket, HC62, HC63 (`typesHe3k.ts`). */
+  | He3kSpec
   /** College round 2, group H: HC24 wing, HC30 duct, HC31 supersonicFlow (`typesHe2h.ts`). */
   | He2hSpec
   /** Box plot: the five-number summary on a number line, each mark draggable. */

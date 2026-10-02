@@ -50,4 +50,30 @@ export const HE3K_REQUESTS: PictureRequest[] = [
       'g.he-waterfall-cascade',
     ],
   },
+  {
+    ...ask(
+      'HC86',
+      'lamina',
+      'A unidirectional composite lamina: its section end-on (fibers on a hexagonal array in epoxy, painted, the fiber share of the block V_f), the slab model with fiber and matrix as springs side by side (along) or in series (across) between a wall and a pulled plate, and bars of E_f, E_m, E₁, E₂ to one scale (densities to their own)',
+      [
+        'he.engineering.aerospace-structures#1',
+        'he.engineering.aerospace-structures#1~transverse',
+        'he.engineering.aerospace-structures#1~specific',
+      ],
+      [
+        'From ACC-P8. A new kind (typesHe3k.ts, reps/Lamina.tsx, the geometry and rules in reps/he3kMath.ts).',
+        'Fields: { kind: "lamina", load?: "along" | "across" (default along), Vf, Ef?, Em?, E1?, E2?, rho?: { f, m, c? }, specific? (E₁ ÷ ρ_c, in the caption), fiber?: "carbon" | "glass" | "aramid" (paint, default carbon) }. A field is a variable id or a number; moduli in one unit (GPa).',
+        'aerospace-structures#1 main: { kind: "lamina", Vf: "Vf", Ef: "Ef", Em: "Em", E1: "E1" }. ~transverse: { kind: "lamina", load: "across", Vf: "Vf", Ef: "Ef", Em: "Em", E2: "E2" }. ~specific: { kind: "lamina", Vf: "Vf", Ef: "Ef", Em: "Em", E1: "E1", rho: { f: "rf", m: "rm", c: "rc" }, specific: "s" }.',
+        'Check (harness/picturesHe3k.ts): the drawn fiber share (measured on a grid over the clipped circles) is V_f within 2%; E₁ by the rule of mixtures, E₂ by the inverse rule, ρ_c by volume share; E₂ ≤ E₁. Past the densest packing (0.907) it draws faded with the reason in the caption; a "?" for V_f draws the block empty (dashed).',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-lamina-along',
+      'g.he-lamina-across',
+      'g.he-lamina-specific',
+      'g.he-lamina-across-dense',
+      'g.he-lamina-along-sparse',
+    ],
+  },
 ];

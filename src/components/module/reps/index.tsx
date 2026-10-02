@@ -201,6 +201,7 @@ import { SupersonicFlow } from './SupersonicFlow';
 import { FieldPlot } from './FieldPlot';
 import { ThermalWall } from './ThermalWall';
 import { WaterfallDecibels } from './WaterfallDecibels';
+import { Lamina } from './Lamina';
 import { PropertyDiagram } from './PropertyDiagram';
 import { MotionGraphHs } from './MotionGraphHs';
 import { HskView } from './HskView';
@@ -386,6 +387,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <FieldPlot spec={spec} calc={calc} />;
     case 'thermalWall':
       return <ThermalWall spec={spec} calc={calc} />;
+    case 'lamina':
+      return <Lamina spec={spec} calc={calc} />; // HC86
     case 'propertyDiagram':
       return <PropertyDiagram spec={spec} calc={calc} />;
     case 'linearFunction':

@@ -411,6 +411,11 @@ const light = {
   thermalMortar: '#E9DFCF',
   thermalFoam: '#F2E2A4',
   thermalFoamCell: '#D6BF66',
+  /** HC86 lamina: carbon, glass and aramid fiber ends, the epoxy matrix around them. */
+  laminaCarbon: '#34373F',
+  laminaGlass: '#B9D7DF',
+  laminaAramid: '#E0B437',
+  laminaMatrix: '#EBC77F',
   /** The brick wall a ladder leans on (triangleSolver's ladder scene) and its mortar lines. */
   ladderWall: '#B5654A',
   ladderWallDark: '#8A4632',
@@ -918,6 +923,10 @@ const dark: Palette = {
   thermalMortar: '#5E554A',
   thermalFoam: '#8C7C3E',
   thermalFoamCell: '#B09C52',
+  laminaCarbon: '#5A5E68',
+  laminaGlass: '#7FA6B0',
+  laminaAramid: '#B8912A',
+  laminaMatrix: '#8E6E36',
   ladderWall: '#8C4B37',
   ladderWallDark: '#5E3023',
   fbRope: '#9C7B4A',

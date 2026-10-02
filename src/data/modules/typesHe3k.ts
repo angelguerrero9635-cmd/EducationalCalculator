@@ -203,18 +203,12 @@ export const stemPlotVars = (r: StemPlotSpec) => [
   ...(r.sampled ? ids(r.sampled.f, r.sampled.fs, r.sampled.alias) : []),
 ];
 
-export type He3kSpec = LaminaSpec | RocketSpec | DeviceCurvesSpec | StemPlotSpec;
+export type He3kSpec = LaminaSpec;
 
 /** The variable ids a group K picture reads (for the module tests). */
 export function he3kSpecVars(r: He3kSpec): string[] {
   switch (r.kind) {
     case 'lamina':
       return laminaVars(r);
-    case 'rocket':
-      return rocketVars(r);
-    case 'deviceCurves':
-      return deviceCurvesVars(r);
-    case 'stemPlot':
-      return stemPlotVars(r);
   }
 }

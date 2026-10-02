@@ -403,6 +403,228 @@ const cascade: ModuleDef = {
   },
 };
 
-export const HE3K_GALLERY_MODULES: ModuleDef[] = [linkBudget, linkMargin, noiseFloor, cascade];
+// ─── HC86: a composite lamina (aerospace-structures#1) ───────────────────────
+
+const VM = rule('V_m = 1 − V_f', '{Vm} = 1 − {Vf}', ['Vm', 'Vf'], (v) => v.Vm! + v.Vf! - 1, {
+  Vm: [(v) => 1 - v.Vf!, '1 − {Vf}', 'With no voids, the matrix fills what the fibers leave.'],
+  Vf: [(v) => 1 - v.Vm!, '1 − {Vm}', 'With no voids, the fibers fill what the matrix leaves.'],
+});
+
+/** a = b·V_f + c·V_m (the rule of mixtures), each part solvable. */
+const mixture = (id: string, out: string, f: string, m: string, how: string) =>
+  rule(
+    id,
+    `{${out}} = {${f}} × {Vf} + {${m}} × {Vm}`,
+    [out, f, m, 'Vf', 'Vm'],
+    (v) => v[out]! - (v[f]! * v.Vf! + v[m]! * v.Vm!),
+    {
+      [out]: [(v) => v[f]! * v.Vf! + v[m]! * v.Vm!, `{${f}} × {Vf} + {${m}} × {Vm}`, how],
+      [f]: [
+        (v) => div(v[out]! - v[m]! * v.Vm!, v.Vf!),
+        `({${out}} − {${m}} × {Vm}) ÷ {Vf}`,
+        'Take the matrix’s share away, then divide by V_f.',
+      ],
+      [m]: [
+        (v) => div(v[out]! - v[f]! * v.Vf!, v.Vm!),
+        `({${out}} − {${f}} × {Vf}) ÷ {Vm}`,
+        'Take the fibers’ share away, then divide by V_m.',
+      ],
+    },
+  );
+
+const ALONG = mixture(
+  'E₁ = E_fV_f + E_mV_m',
+  'E1',
+  'Ef',
+  'Em',
+  'Along the fibers both stretch alike, so their stiffnesses add by share (springs side by side).',
+);
+
+const ACROSS = rule(
+  '1 ÷ E₂ = V_f ÷ E_f + V_m ÷ E_m',
+  '1 ÷ {E2} = {Vf} ÷ {Ef} + {Vm} ÷ {Em}',
+  ['E2', 'Vf', 'Ef', 'Vm', 'Em'],
+  (v) => 1 / v.E2! - (v.Vf! / v.Ef! + v.Vm! / v.Em!),
+  {
+    E2: [
+      (v) => pos(1 / (v.Vf! / v.Ef! + v.Vm! / v.Em!)),
+      '1 ÷ ({Vf} ÷ {Ef} + {Vm} ÷ {Em})',
+      'Across the fibers both carry the same stress, so their flexibilities add (springs in series).',
+    ],
+    Ef: [
+      (v) => pos(v.Vf! / (1 / v.E2! - v.Vm! / v.Em!)),
+      '{Vf} ÷ (1 ÷ {E2} − {Vm} ÷ {Em})',
+      'Take the matrix’s flexibility from 1 ÷ E₂; V_f over what is left.',
+    ],
+    Em: [
+      (v) => pos(v.Vm! / (1 / v.E2! - v.Vf! / v.Ef!)),
+      '{Vm} ÷ (1 ÷ {E2} − {Vf} ÷ {Ef})',
+      'Take the fibers’ flexibility from 1 ÷ E₂; V_m over what is left.',
+    ],
+  },
+);
+
+const moduli = (fiber: string): VariableDef[] => [
+  q('Ef', 'E_f', `Fiber modulus (${fiber})`, 'GPa', 0.1, 1000, 0.1),
+  q('Em', 'E_m', 'Matrix modulus (epoxy)', 'GPa', 0.1, 1000, 0.1),
+  q('Vf', 'V_f', 'Fiber volume fraction', undefined, 0, 0.8, 0.01),
+  q('Vm', 'V_m', 'Matrix volume fraction', undefined, 0.2, 1, 0.01, { derived: true }),
+];
+
+const LAMINA_ASSUMPTIONS = [
+  'Fibers and matrix bonded perfectly; no voids.',
+  'Each stays linear elastic; the fibers run one way.',
+];
+
+const FIBER_NAME = { carbon: 'carbon', glass: 'E-glass', aramid: 'aramid' } as const;
+
+function laminaModule(
+  id: string,
+  title: string,
+  use: string,
+  load: 'along' | 'across',
+  fiber: 'carbon' | 'glass' | 'aramid',
+  Ef: number,
+  Vf: number,
+): ModuleDef {
+  const Em = 3.5;
+  const along = load === 'along';
+  return {
+    id,
+    title,
+    use,
+    assumptions: [
+      ...LAMINA_ASSUMPTIONS,
+      along
+        ? 'Along the fibers both stretch the same (iso-strain).'
+        : 'Across the fibers both carry the same stress (iso-stress).',
+    ],
+    variables: [
+      ...moduli(FIBER_NAME[fiber]),
+      along
+        ? q('E1', 'E_1', 'Modulus along the fibers', 'GPa', 0.1, 1000, 0.01)
+        : q('E2', 'E_2', 'Modulus across the fibers', 'GPa', 0.1, 1000, 0.01),
+    ],
+    ...rules(VM, along ? ALONG : ACROSS),
+    example: along
+      ? { Ef, Em, Vf, Vm: 1 - Vf, E1: Ef * Vf + Em * (1 - Vf) }
+      : { Ef, Em, Vf, Vm: 1 - Vf, E2: 1 / (Vf / Ef + (1 - Vf) / Em) },
+    startWith: ['Ef', 'Em', 'Vf'],
+    representation: {
+      kind: 'lamina',
+      load,
+      fiber,
+      Vf: 'Vf',
+      Ef: 'Ef',
+      Em: 'Em',
+      ...(along ? { E1: 'E1' } : { E2: 'E2' }),
+    },
+  };
+}
+
+const laminaAlong = laminaModule(
+  'g.he-lamina-along',
+  'Carbon–epoxy lamina: the modulus along the fibers',
+  'Use this for the longitudinal modulus of a fiber composite by the rule of mixtures.',
+  'along',
+  'carbon',
+  230,
+  0.6,
+);
+
+const laminaAcross = laminaModule(
+  'g.he-lamina-across',
+  'Carbon–epoxy lamina: the modulus across the fibers',
+  'Use this for the transverse modulus of a fiber composite (springs in series).',
+  'across',
+  'carbon',
+  230,
+  0.6,
+);
+
+const laminaDense = laminaModule(
+  'g.he-lamina-across-dense',
+  'Glass–epoxy at 80% fiber: still soft across',
+  'Use this for the transverse modulus of a tightly packed glass–epoxy lamina.',
+  'across',
+  'glass',
+  72,
+  0.8,
+);
+
+const laminaSparse = laminaModule(
+  'g.he-lamina-along-sparse',
+  'Aramid–epoxy at 10% fiber: a few fibers carry most of the load',
+  'Use this for the longitudinal modulus of a lamina with few fibers.',
+  'along',
+  'aramid',
+  124,
+  0.1,
+);
+
+const laminaSpecific: ModuleDef = {
+  id: 'g.he-lamina-specific',
+  title: 'Carbon–epoxy: density and specific stiffness',
+  use: 'Use this for a composite’s density and its stiffness per unit mass (E₁ ÷ ρ_c).',
+  assumptions: [
+    ...LAMINA_ASSUMPTIONS,
+    'Along the fibers both stretch the same (iso-strain).',
+    'GPa ÷ (g/cm³) is MN·m/kg; aluminum is about 26 MN·m/kg.',
+  ],
+  variables: [
+    ...moduli('carbon'),
+    q('E1', 'E_1', 'Modulus along the fibers', 'GPa', 0.1, 1000, 0.01),
+    q('rf', 'ρ_f', 'Fiber density', 'g/cm³', 0.5, 25, 0.01),
+    q('rm', 'ρ_m', 'Matrix density', 'g/cm³', 0.5, 25, 0.01),
+    q('rc', 'ρ_c', 'Composite density', 'g/cm³', 0.5, 25, 0.001),
+    q('s', 'E_1/ρ_c', 'Specific stiffness', 'MN·m/kg', 0.001, 2000, 0.01),
+  ],
+  ...rules(
+    VM,
+    ALONG,
+    mixture(
+      'ρ_c = ρ_fV_f + ρ_mV_m',
+      'rc',
+      'rf',
+      'rm',
+      'Mass adds by volume share: each part’s density times its fraction.',
+    ),
+    rule('E₁ ÷ ρ_c', '{s} = {E1} ÷ {rc}', ['s', 'E1', 'rc'], (v) => v.s! * v.rc! - v.E1!, {
+      s: [(v) => div(v.E1!, v.rc!), '{E1} ÷ {rc}', 'Stiffness per unit mass: E₁ over the density.'],
+      E1: [(v) => v.s! * v.rc!, '{s} × {rc}', 'Multiply the specific stiffness by the density.'],
+      rc: [(v) => div(v.E1!, v.s!), '{E1} ÷ {s}', 'Divide E₁ by the specific stiffness.'],
+    }),
+  ),
+  example: (() => {
+    const v: Values = { Ef: 230, Em: 3.5, Vf: 0.6, Vm: 0.4, rf: 1.8, rm: 1.2 };
+    v.E1 = 230 * 0.6 + 3.5 * 0.4;
+    v.rc = 1.8 * 0.6 + 1.2 * 0.4;
+    v.s = v.E1 / v.rc;
+    return v;
+  })(),
+  startWith: ['Ef', 'Em', 'Vf', 'rf', 'rm'],
+  representation: {
+    kind: 'lamina',
+    load: 'along',
+    Vf: 'Vf',
+    Ef: 'Ef',
+    Em: 'Em',
+    E1: 'E1',
+    rho: { f: 'rf', m: 'rm', c: 'rc' },
+    specific: 's',
+  },
+};
+
+export const HE3K_GALLERY_MODULES: ModuleDef[] = [
+  linkBudget,
+  linkMargin,
+  noiseFloor,
+  cascade,
+  laminaAlong,
+  laminaAcross,
+  laminaSpecific,
+  laminaDense,
+  laminaSparse,
+];
 
 export const HE3K_GALLERY_LAYOUTS: LayoutDef[] = [];
