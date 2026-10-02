@@ -51,17 +51,21 @@ export interface BeamSolution {
   slope: (x: number) => number;
 }
 
-const near = (a: number, b: number, L: number) => Math.abs(a - b) <= 1e-9 * Math.max(1, L);
+const near = (a: number, b: number, L: number) => Math.abs(a - b) <= 1e-10 * L;
 
 /** Solves A x = b by Gaussian elimination with partial pivoting; undefined when singular. */
 function solveLinear(A: number[][], b: number[]): number[] | undefined {
   const n = b.length;
-  const m = A.map((row, i) => [...row, b[i]!]);
-  const scale = Math.max(1e-300, ...A.flat().map(Math.abs));
+  // Each row scaled to its largest entry first: elements of very different lengths (a load
+  // 0.1 mm from a support on a 2 km span) give stiffnesses 10²⁰ apart.
+  const m = A.map((row, i) => {
+    const k = Math.max(1e-300, ...row.map(Math.abs));
+    return [...row.map((x) => x / k), b[i]! / k];
+  });
   for (let c = 0; c < n; c++) {
     let p = c;
     for (let r = c + 1; r < n; r++) if (Math.abs(m[r]![c]!) > Math.abs(m[p]![c]!)) p = r;
-    if (Math.abs(m[p]![c]!) < 1e-10 * scale) return undefined;
+    if (Math.abs(m[p]![c]!) < 1e-11) return undefined;
     [m[c], m[p]] = [m[p]!, m[c]!];
     for (let r = c + 1; r < n; r++) {
       const f = m[r]![c]! / m[c]![c]!;
@@ -333,10 +337,11 @@ export function influenceLine(
   count = 120,
 ): { x: number; y: number }[] {
   const { L } = model;
-  const eps = 1e-6 * L;
+  const eps = 1e-8 * L;
   const xs = [...Array(count + 1).keys()].map((k) => (L * k) / count);
   for (const s of model.supports) xs.push(s.x);
-  if (of !== 'reaction') xs.push(c - eps, c + eps);
+  if (of === 'shear') xs.push(c - eps, c + eps);
+  if (of === 'moment') xs.push(c);
   xs.sort((a, b) => a - b);
   const si = model.supports.findIndex((s) => near(s.x, c, L));
   return xs.map((x) => {

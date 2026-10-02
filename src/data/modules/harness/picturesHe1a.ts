@@ -17,7 +17,7 @@ import {
   type BeamModel,
 } from '@/components/module/reps/beamMath';
 
-import { supportsOf, type BeamSpec } from '../typesHe1a';
+import { geometryOf, type BeamSpec } from '../typesHe1a';
 
 type Val = (id: string) => number | undefined;
 type X = number | string | undefined;
@@ -30,14 +30,14 @@ const read = (val: Val, x: X, fallback?: number) =>
 
 /** The beam a spec draws, in formula units, or undefined while a value it needs is blank. */
 export function beamModelOf(rep: BeamSpec, val: Val): BeamModel | undefined {
-  const L = read(val, rep.length);
+  const geo = geometryOf(rep, (x) => read(val, x));
+  const L = geo.length;
   if (L === undefined || !(L > 0)) return undefined;
   const clamp = (x: number) => Math.min(L, Math.max(0, x));
   const supports: BeamModel['supports'] = [];
-  for (const s of supportsOf(rep, (x) => read(val, x))) {
-    const x = read(val, s.at);
-    if (x === undefined) return undefined;
-    supports.push({ x: clamp(x), kind: s.kind });
+  for (const s of geo.supports) {
+    if (s.x === undefined) return undefined;
+    supports.push({ x: clamp(s.x), kind: s.kind });
   }
   const loads: BeamLoadModel[] = [];
   for (const l of rep.loads ?? []) {
@@ -87,7 +87,7 @@ export function he1aIssues(rep: BeamSpec, val: Val): string[] {
       out.push(`beam: reactions ${sumR} don't balance the load ${tot.F}`);
     const sumM = model.supports.reduce((s, p, i) => s + sol.R[i]! * p.x + sol.Mr[i]!, 0);
     if (!near(sumM, tot.M0, scaleM)) out.push(`beam: moments ${sumM} don't balance ${tot.M0}`);
-    supportsOf(rep, (x) => read(val, x)).forEach((s, i) => {
+    geometryOf(rep, (x) => read(val, x)).supports.forEach((s, i) => {
       same(s.reaction, sol.R[i], `reaction at ${s.name ?? i}`, scaleF);
       same(s.moment, Math.abs(sol.Mr[i]!), `wall moment at ${s.name ?? i}`, scaleM);
     });
@@ -153,18 +153,31 @@ export function he1aIssues(rep: BeamSpec, val: Val): string[] {
       const c = read(val, rep.influence.at);
       if (c !== undefined) {
         const line = influenceLine({ ...model, loads: [] }, rep.influence.of, c);
-        const e = 1e-6 * model.L;
+        const e = 1e-8 * model.L;
         const pick = (x: number) =>
           line.reduce((b, p) => (Math.abs(p.x - x) < Math.abs(b.x - x) ? p : b)).y;
-        if (rep.influence.of === 'shear') {
-          same(rep.influence.left, pick(c - e), 'shear ordinate left of c');
-          same(rep.influence.right, pick(c + e), 'shear ordinate right of c');
-        } else same(rep.influence.ordinate, pick(c), 'influence ordinate at c');
+        // (At a support's own place there is no "just left" and "just right" on the beam.)
+        const inside = c > 1e-5 * model.L && c < model.L * (1 - 1e-5);
+        if (rep.influence.of === 'shear' && !inside) {
+          // nothing drawn to compare
+        } else if (rep.influence.of === 'shear') {
+          // (Ordinates per unit load: within 10⁻⁴ of 1, and of L for a moment's.)
+          same(rep.influence.left, pick(c - e), 'shear ordinate left of c', 1);
+          same(rep.influence.right, pick(c + e), 'shear ordinate right of c', 1);
+        } else
+          same(
+            rep.influence.ordinate,
+            pick(c),
+            'influence ordinate at c',
+            rep.influence.of === 'moment' ? model.L : 1,
+          );
       }
     }
     // Moment distribution: the named factors, fixed-end moments and moment are the table's.
     if (rep.continuous) {
-      const names = supportsOf(rep, (x) => read(val, x)).map((s, i) => s.name ?? 'ABCDEFGH'[i]!);
+      const names = geometryOf(rep, (x) => read(val, x)).supports.map(
+        (s, i) => s.name ?? 'ABCDEFGH'[i]!,
+      );
       const t = momentDistribution(model, names, rep.continuous.far);
       if (t) {
         rep.continuous.df?.forEach((id, k) => same(id, t.df[1 + k], 'distribution factor'));

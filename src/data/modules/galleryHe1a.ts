@@ -1394,6 +1394,369 @@ const panelClamped = panelDemo(
   [6.97, 70000, 0.33, 1, 250],
 );
 
+// ─── HC1 beam, influence: moment at a section (structural-analysis#1) ────────
+
+function influenceMoment(
+  id: string,
+  title: string,
+  use: string,
+  [L, c, P, w]: [number, number, number, number],
+) {
+  const vars: VariableDef[] = [
+    val('L', 'L', 'Span', 'm', 1000, { min: 0.1 }),
+    val('c', 'c', 'Section C from A', 'm', 1000),
+    val('y', 'y_C', 'Peak ordinate', 'm', 1000),
+    val('P', 'P', 'Moving load', 'kN', 1e5),
+    val('MP', 'M_P', 'Moment at C from P', 'kN·m', 1e8),
+    val('w', 'w', 'Uniform live load', 'kN/m', 1e4),
+    val('Mw', 'M_w', 'Moment at C from w', 'kN·m', 1e8),
+  ];
+  const s = symbolsOf(vars);
+  const y = (c * (L - c)) / L;
+  return demo(id, title, {
+    use,
+    assumptions: [
+      'Simply supported; the peak effect is with the load right at C.',
+      'The uniform load covers the whole span: its effect is w times the area under the line.',
+    ],
+    variables: vars,
+    relations: [
+      rel(
+        'y_C = c(L − c) ÷ L',
+        '{y} = {c} × ({L} − {c}) ÷ {L}',
+        ['y', 'c', 'L'],
+        (x) => x.y! - (x.c! * (x.L! - x.c!)) / x.L!,
+        {
+          y: [
+            (x) => (x.L === 0 ? undefined : (x.c! * (x.L! - x.c!)) / x.L!),
+            '{c} × ({L} − {c}) ÷ {L}',
+            'A load of 1 at C makes R_A = (L − c) ÷ L, and M at C = R_A × c.',
+          ],
+          L: [
+            (x) => (x.c! - x.y! === 0 ? undefined : (x.c! * x.c!) / (x.c! - x.y!)),
+            '{c}² ÷ ({c} − {y})',
+            'Multiply out yL = cL − c², then gather the L terms: L(c − y) = c².',
+          ],
+        },
+      ),
+      monomial(
+        'M_P = P × y_C',
+        'MP',
+        [
+          ['P', 1],
+          ['y', 1],
+        ],
+        [],
+        'A point load’s effect is its size times the ordinate where it stands.',
+        s,
+      ),
+      monomial(
+        'M_w = w × ½L × y_C',
+        'Mw',
+        [
+          ['w', 1],
+          ['L', 1],
+          ['y', 1],
+        ],
+        [['2', 1]],
+        'A uniform load’s effect is w times the triangle’s area, ½ × L × y_C.',
+        s,
+      ),
+      atMost('c', 'L', '{c} is at most {L}', 'The section is on the beam: c is at most the span.'),
+    ],
+    example: { L, c, y, P, MP: P * y, w, Mw: (w * L * y) / 2 },
+    startWith: ['L', 'c', 'P', 'w'],
+    representation: {
+      kind: 'beam',
+      length: 'L',
+      supports: [
+        { at: 0, kind: 'pin' },
+        { at: 'L', kind: 'roller' },
+      ],
+      influence: { of: 'moment', at: 'c', ordinate: 'y', load: 'P', uniform: 'w' },
+    },
+  });
+}
+
+const influence = influenceMoment(
+  'g.he-beam-influence-moment',
+  'Influence line for the moment at a section',
+  'Use this for “A 10 m span: what largest moment at 4 m from A can a 50 kN load cause? And 12 kN/m over the span?”',
+  [10, 4, 50, 12],
+);
+
+const influenceNearEnd = influenceMoment(
+  'g.he-beam-influence-near-end',
+  'Influence line for the moment near a support: a low, lopsided triangle',
+  'Use this for “On a 10 m span, how much moment can a 50 kN load cause 1 m from A?”',
+  [10, 1, 50, 12],
+);
+
+// ─── HC1 beam, influence: shear at a section (structural-analysis#1~shear) ───
+
+const influenceShear = (() => {
+  const vars: VariableDef[] = [
+    val('L', 'L', 'Span', 'm', 1000, { min: 0.1 }),
+    val('c', 'c', 'Section C from A', 'm', 1000),
+    val('yL', 'y_L', 'Ordinate just left of C', undefined, 0, { min: -1 }),
+    val('yR', 'y_R', 'Ordinate just right of C', undefined, 1),
+    val('P', 'P', 'Moving load', 'kN', 1e5),
+    val('V', 'V_max', 'Largest shear at C', 'kN', 1e5),
+  ];
+  const s = symbolsOf(vars);
+  const [L, c, P] = [10, 4, 50];
+  return demo('g.he-beam-influence-shear', 'Influence line for the shear at a section', {
+    use: 'Use this for “On a 10 m span, what largest shear can a 50 kN load cause 4 m from A?”',
+    assumptions: [
+      'Simply supported; shear at C counts forces left of C, up positive.',
+      'The largest positive shear is with the load just right of C.',
+    ],
+    variables: vars,
+    relations: [
+      rel('y_L = −c ÷ L', '{yL} = −{c} ÷ {L}', ['yL', 'c', 'L'], (x) => x.yL! + x.c! / x.L!, {
+        yL: [
+          (x) => (x.L === 0 ? undefined : -x.c! / x.L!),
+          '−{c} ÷ {L}',
+          'A load of 1 just left of C: V at C = R_A − 1 = −R_B = −c ÷ L.',
+        ],
+        c: [(x) => -x.yL! * x.L!, '−{yL} × {L}', 'Multiply both sides by −L.'],
+        L: [
+          (x) => (x.yL === 0 ? undefined : -x.c! / x.yL!),
+          '−{c} ÷ {yL}',
+          'Swap L and the ordinate: divide −c by it.',
+        ],
+      }),
+      rel(
+        'y_R = (L − c) ÷ L',
+        '{yR} = ({L} − {c}) ÷ {L}',
+        ['yR', 'L', 'c'],
+        (x) => x.yR! - (x.L! - x.c!) / x.L!,
+        {
+          yR: [
+            (x) => (x.L === 0 ? undefined : (x.L! - x.c!) / x.L!),
+            '({L} − {c}) ÷ {L}',
+            'A load of 1 just right of C: V at C = R_A = (L − c) ÷ L.',
+          ],
+          c: [(x) => x.L! * (1 - x.yR!), '{L} × (1 − {yR})', 'Multiply by L, then take it from L.'],
+        },
+      ),
+      monomial(
+        'V_max = P × y_R',
+        'V',
+        [
+          ['P', 1],
+          ['yR', 1],
+        ],
+        [],
+        'The load just right of C gives the largest positive shear: P times that ordinate.',
+        s,
+      ),
+      atMost('c', 'L', '{c} is at most {L}', 'The section is on the beam: c is at most the span.'),
+    ],
+    example: { L, c, yL: -c / L, yR: (L - c) / L, P, V: (P * (L - c)) / L },
+    startWith: ['L', 'c', 'P'],
+    representation: {
+      kind: 'beam',
+      length: 'L',
+      supports: [
+        { at: 0, kind: 'pin' },
+        { at: 'L', kind: 'roller' },
+      ],
+      influence: { of: 'shear', at: 'c', left: 'yL', right: 'yR', load: 'P' },
+    },
+  });
+})();
+
+// ─── HC1 beam, influence on a continuous beam (structural-analysis#1~muller-breslau) ─
+
+const influenceContinuous = (() => {
+  const vars: VariableDef[] = [
+    val('s', 's', 'Each span', 'm', 1000, { min: 0.1 }),
+    val('c', 'c', 'Section C (middle of span 2)', 'm', 1500, { derived: true }),
+    val('y', 'y_C', 'Ordinate at C', 'm', 1000),
+    val('P', 'P', 'Moving load', 'kN', 1e5),
+    val('M', 'M_C', 'Moment at C from P', 'kN·m', 1e8),
+  ];
+  const sy = symbolsOf(vars);
+  const [sp, P] = [5, 50];
+  return demo(
+    'g.he-beam-influence-continuous',
+    'Müller-Breslau: the influence line of a continuous beam',
+    {
+      use: 'Use this for “Three equal 5 m spans: where should live load go for the most moment at the middle of span 2?”',
+      assumptions: [
+        'Three equal spans on a pin and rollers; EI the same throughout.',
+        'Release the moment at C and bend it: the shape is the influence line (Müller-Breslau).',
+      ],
+      variables: vars,
+      relations: [
+        monomial(
+          'c = 3s ÷ 2',
+          'c',
+          [
+            ['3', 1],
+            ['s', 1],
+          ],
+          [['2', 1]],
+          'The middle of span 2 is one and a half spans from A.',
+          sy,
+        ),
+        monomial(
+          'y_C = 7s ÷ 40',
+          'y',
+          [
+            ['7', 1],
+            ['s', 1],
+          ],
+          [['40', 1]],
+          'From the three-moment equation for three equal spans, a load of 1 at C makes M at C = 7s ÷ 40.',
+          sy,
+        ),
+        monomial(
+          'M_C = P × y_C',
+          'M',
+          [
+            ['P', 1],
+            ['y', 1],
+          ],
+          [],
+          'A point load’s effect is its size times the ordinate where it stands.',
+          sy,
+        ),
+      ],
+      example: { s: sp, c: 1.5 * sp, y: (7 * sp) / 40, P, M: (P * 7 * sp) / 40 },
+      startWith: ['s', 'P'],
+      representation: {
+        kind: 'beam',
+        spans: ['s', 's', 's'],
+        influence: { of: 'moment', at: 'c', ordinate: 'y', load: 'P' },
+        fixed: true,
+      },
+    },
+  );
+})();
+
+// ─── HC1 beam, continuous: moment distribution (structural-analysis#2~moment-distribution) ─
+
+const continuous = (() => {
+  const vars: VariableDef[] = [
+    val('L1', 'L₁', 'Span AB', 'm', 1000, { min: 0.1 }),
+    val('L2', 'L₂', 'Span BC', 'm', 1000, { min: 0.1 }),
+    val('w', 'w', 'Uniform load', 'kN/m', 1e4),
+    val('k1', 'k₁', 'Stiffness of AB, 3 ÷ L₁', '/m', 100),
+    val('k2', 'k₂', 'Stiffness of BC, 3 ÷ L₂', '/m', 100),
+    val('DF1', 'DF₁', 'Distribution factor BA', undefined, 1),
+    val('DF2', 'DF₂', 'Distribution factor BC', undefined, 1),
+    val('F1', 'FEM₁', 'Fixed-end moment BA', 'kN·m', 1e8),
+    val('F2', 'FEM₂', 'Fixed-end moment BC', 'kN·m', 1e8),
+    val('MB', 'M_B', 'Moment over B', 'kN·m', 1e8),
+  ];
+  const s = symbolsOf(vars);
+  const [L1, L2, w] = [6, 4, 12];
+  const [k1, k2] = [3 / L1, 3 / L2];
+  const [F1, F2] = [(w * L1 * L1) / 8, (w * L2 * L2) / 8];
+  return demo('g.he-beam-continuous', 'Moment distribution over two spans', {
+    use: 'Use this for “Spans of 6 m and 4 m, pinned at the far ends, carry 12 kN/m. Find the moment over the middle support.”',
+    assumptions: [
+      'Far ends pinned: stiffness 3EI ÷ L, EI the same, and no carry-over to a pin.',
+      'Moments clockwise + on each member end; one cycle balances B.',
+    ],
+    variables: vars,
+    relations: [
+      monomial(
+        'k₁ = 3 ÷ L₁',
+        'k1',
+        [['3', 1]],
+        [['L1', 1]],
+        'A span pinned at its far end is 3EI ÷ L stiff; EI is the same, so keep 3 ÷ L.',
+        s,
+      ),
+      monomial('k₂ = 3 ÷ L₂', 'k2', [['3', 1]], [['L2', 1]], 'The same for span BC.', s),
+      rel(
+        'DF₁ = k₁ ÷ (k₁ + k₂)',
+        '{DF1} = {k1} ÷ ({k1} + {k2})',
+        ['DF1', 'k1', 'k2'],
+        (x) => x.DF1! - x.k1! / (x.k1! + x.k2!),
+        {
+          DF1: [
+            (x) => (x.k1! + x.k2! === 0 ? undefined : x.k1! / (x.k1! + x.k2!)),
+            '{k1} ÷ ({k1} + {k2})',
+            'Each member at B takes its share of the stiffness there.',
+          ],
+          k1: [
+            (x) => (x.DF1 === 1 ? undefined : (x.DF1! * x.k2!) / (1 - x.DF1!)),
+            '{DF1} × {k2} ÷ (1 − {DF1})',
+            'Multiply out DF₁(k₁ + k₂) = k₁, then gather the k₁ terms.',
+          ],
+        },
+      ),
+      rel('DF₂ = 1 − DF₁', '{DF2} = 1 − {DF1}', ['DF2', 'DF1'], (x) => x.DF2! - (1 - x.DF1!), {
+        DF2: [(x) => 1 - x.DF1!, '1 − {DF1}', 'The factors at a joint add to 1.'],
+        DF1: [(x) => 1 - x.DF2!, '1 − {DF2}', 'The factors at a joint add to 1.'],
+      }),
+      monomial(
+        'FEM₁ = wL₁² ÷ 8',
+        'F1',
+        [
+          ['w', 1],
+          ['L1', 2],
+        ],
+        [['8', 1]],
+        'With its far end pinned, the end moment at B of a uniform load is wL² ÷ 8.',
+        s,
+      ),
+      monomial(
+        'FEM₂ = wL₂² ÷ 8',
+        'F2',
+        [
+          ['w', 1],
+          ['L2', 2],
+        ],
+        [['8', 1]],
+        'The same for span BC.',
+        s,
+      ),
+      rel(
+        'M_B = FEM₁ − DF₁(FEM₁ − FEM₂)',
+        '{MB} = {F1} − {DF1} × ({F1} − {F2})',
+        ['MB', 'F1', 'DF1', 'F2'],
+        (x) => x.MB! - (x.F1! - x.DF1! * (x.F1! - x.F2!)),
+        {
+          MB: [
+            (x) => x.F1! - x.DF1! * (x.F1! - x.F2!),
+            '{F1} − {DF1} × ({F1} − {F2})',
+            'Balance B: the unbalance FEM₁ − FEM₂ is shared by the factors; BA keeps FEM₁ less its share.',
+          ],
+          DF1: [
+            (x) => (x.F1 === x.F2 ? undefined : (x.F1! - x.MB!) / (x.F1! - x.F2!)),
+            '({F1} − {MB}) ÷ ({F1} − {F2})',
+            'Take M_B from FEM₁, then divide by the unbalance.',
+          ],
+        },
+      ),
+    ],
+    example: {
+      L1,
+      L2,
+      w,
+      k1,
+      k2,
+      DF1: k1 / (k1 + k2),
+      DF2: k2 / (k1 + k2),
+      F1,
+      F2,
+      MB: F1 - (k1 / (k1 + k2)) * (F1 - F2),
+    },
+    startWith: ['L1', 'L2', 'w'],
+    representation: {
+      kind: 'beam',
+      spans: ['L1', 'L2'],
+      loads: [{ kind: 'uniform', size: 'w' }],
+      continuous: { far: 'pinned', df: ['DF1', 'DF2'], fem: ['F1', 'F2'], moment: 'MB' },
+    },
+  });
+})();
+
 export const HE1A_GALLERY_MODULES: ModuleDef[] = [
   point,
   pointEdge,
@@ -1415,6 +1778,11 @@ export const HE1A_GALLERY_MODULES: ModuleDef[] = [
   columnConcrete,
   panel,
   panelClamped,
+  influence,
+  influenceNearEnd,
+  influenceShear,
+  influenceContinuous,
+  continuous,
 ];
 
 export const HE1A_GALLERY_LAYOUTS: LayoutDef[] = [];

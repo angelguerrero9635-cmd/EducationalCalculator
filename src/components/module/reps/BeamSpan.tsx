@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import Svg, { Circle, Defs, G, Line, Path, Polygon, Rect } from 'react-native-svg';
 
 import type { BeamLoad, BeamSpec } from '@/data/modules/typesHe1a';
-import { he1aSpecVars, supportsOf } from '@/data/modules/typesHe1a';
+import { geometryOf, he1aSpecVars } from '@/data/modules/typesHe1a';
 import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
@@ -53,16 +53,22 @@ export function BeamSpan({ spec, calc }: { spec: BeamSpec; calc: Calculator }) {
   const ids = usePaintIds('steel', 'light');
   const drag = useRef({ x: 0 });
 
-  const L = Math.max(1e-9, v(spec.length, 1));
+  // The geometry as drawn (a "?" box keeps its example) and as typed (undefined while "?").
+  const geo = geometryOf(spec, (x) => v(x));
+  const geoTyped = geometryOf(spec, (x) => (known(x) ? v(x) : undefined));
+  const L = Math.max(1e-9, geo.length ?? 1);
+  const lengthKnown = geoTyped.length !== undefined;
+  const lengthVar = spec.spans?.find((x) => typeof x === 'string') ?? spec.length;
   const lenUnit =
     spec.units?.length ??
-    (typeof spec.length === 'string' ? (rep.variable(spec.length).unit ?? 'm') : 'm');
+    (typeof lengthVar === 'string' ? (rep.variable(lengthVar).unit ?? 'm') : 'm');
   const fu = spec.units?.force ?? 'kN';
   const mu = `${fu}·${lenUnit}`;
   const clampX = (x: number) => Math.min(L, Math.max(0, x));
-  const supports = supportsOf(spec, (x) => v(x)).map((s, i) => ({
+  const supports = geo.supports.map((s, i) => ({
     ...s,
-    x: clampX(v(s.at)),
+    x: clampX(s.x ?? 0),
+    placed: geoTyped.supports[i]?.x !== undefined,
     name: s.name ?? LETTERS[i] ?? '?',
   }));
   const material = spec.stirrups ? 'concrete' : (spec.material ?? 'steel');
@@ -80,8 +86,7 @@ export function BeamSpan({ spec, calc }: { spec: BeamSpec; calc: Calculator }) {
   const loads = spec.loads ?? [];
   const inf = spec.influence;
   // Influence pages stand P and w on the beam for the picture; they aren't the beam's loads.
-  const complete =
-    known(spec.length) && supports.every((s) => known(s.at)) && loads.every(loadKnown);
+  const complete = lengthKnown && supports.every((s) => s.placed) && loads.every(loadKnown);
   const model: BeamModel = {
     L,
     supports: supports.map((s) => ({ x: s.x, kind: s.kind })),
@@ -100,7 +105,7 @@ export function BeamSpan({ spec, calc }: { spec: BeamSpec; calc: Calculator }) {
       : undefined;
   const infC = inf ? clampX(v(inf.at)) : 0;
   const infLine =
-    inf && known(spec.length) && supports.every((s) => known(s.at)) && known(inf.at)
+    inf && lengthKnown && supports.every((s) => s.placed) && known(inf.at)
       ? influenceLine({ ...model, loads: [] }, inf.of, infC)
       : undefined;
 
@@ -155,20 +160,28 @@ export function BeamSpan({ spec, calc }: { spec: BeamSpec; calc: Calculator }) {
         ]) - 1;
     if (inf && known(inf.at) && inf.of !== 'reaction')
       infRow = dimRows.push([{ from: 0, to: infC, text: B.named(inf.at, 'c', infC, lenUnit) }]) - 1;
-    // The supports' places, when the page names one that isn't an end.
-    const placed = supports.filter((s) => typeof s.at === 'string' && known(s.at) && s.x > 0);
-    if (placed.length) {
-      const sorted = [0, ...placed.map((s) => s.x)].sort((a, b) => a - b);
-      dimRows.push(
-        placed.map((s) => ({
-          from: sorted[sorted.indexOf(s.x) - 1] ?? 0,
-          to: s.x,
-          text: B.named(s.at, 'L', s.x - (sorted[sorted.indexOf(s.x) - 1] ?? 0), lenUnit),
-        })),
+    if (spec.spans?.length) {
+      // Each span, labelled by its own value.
+      const spanRow = spec.spans.flatMap((sp, i) =>
+        known(sp) && supports[i] && supports[i + 1]
+          ? [
+              {
+                from: supports[i]!.x,
+                to: supports[i + 1]!.x,
+                text: B.named(sp, `L_${i + 1}`, supports[i + 1]!.x - supports[i]!.x, lenUnit),
+              },
+            ]
+          : [],
       );
+      if (spanRow.length) dimRows.push(spanRow);
+    } else {
+      // A support the page places (not at an end): its distance from the left end.
+      for (const s of supports)
+        if (typeof s.at === 'string' && s.placed && s.at !== spec.length && s.x > 0)
+          dimRows.push([{ from: 0, to: s.x, text: B.named(s.at, 'x', s.x, lenUnit) }]);
+      if (lengthKnown && spec.length !== undefined)
+        dimRows.push([{ from: 0, to: L, text: B.named(spec.length, 'L', L, lenUnit) }]);
     }
-    if (known(spec.length) && !placed.some((s) => s.at === spec.length))
-      dimRows.push([{ from: 0, to: L, text: B.named(spec.length, 'L', L, lenUnit) }]);
   }
 
   const showReactions =
@@ -258,7 +271,7 @@ export function BeamSpan({ spec, calc }: { spec: BeamSpec; calc: Calculator }) {
                   <BeamBody x1={X(0)} x2={X(L)} y={y0} h={thick} material={material} ids={ids} />
                   {st ? renderStirrups(X, y0, thick, Lay.sx, w) : null}
                   {supports.map((s, i) =>
-                    known(s.at) ? (
+                    s.placed ? (
                       <SupportGlyph
                         key={i}
                         x={X(s.x)}
@@ -271,7 +284,7 @@ export function BeamSpan({ spec, calc }: { spec: BeamSpec; calc: Calculator }) {
                     ) : null,
                   )}
                   {supports.map((s, i) =>
-                    known(s.at) ? (
+                    s.placed ? (
                       <HeLabel
                         key={`n${i}`}
                         x={X(s.x) + (s.x <= L / 2 ? -1 : 1) * (s.kind === 'fixed' ? 18 : 14)}
@@ -592,7 +605,7 @@ export function BeamSpan({ spec, calc }: { spec: BeamSpec; calc: Calculator }) {
       const id = reactionVar(i);
       const pageKnown = id !== undefined && known(id);
       if (!pageKnown && !(solved && id === undefined)) return null;
-      if (!known(s.at)) return null;
+      if (!s.placed) return null;
       const Rv = pageKnown ? v(id) : sol!.R[i]!;
       const x = X(s.x);
       const isWall = s.kind === 'fixed';

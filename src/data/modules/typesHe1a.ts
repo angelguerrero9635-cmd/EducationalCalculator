@@ -182,6 +182,12 @@ export interface BeamSpec {
   mode?: 'beam' | 'axial' | 'column' | 'panel' | 'plate';
   /** The span, or a column's length. */
   length?: NumOrVar;
+  /**
+   * A continuous beam's span lengths, left to right, in place of `length` and the supports'
+   * places: supports stand at the spans' ends (a pin, then rollers, unless `supports` names
+   * each one's kind, letter or reaction in order) and each span is labelled.
+   */
+  spans?: NumOrVar[];
   supports?: BeamSupport[];
   /**
    * Supports picked by a page value (a slab's support case: ℓ ÷ 20 simply supported, ℓ ÷ 24 one
@@ -227,10 +233,44 @@ export function supportsOf(r: BeamSpec, value: (x: NumOrVar) => number | undefin
   return cases.reduce((b, k) => (Math.abs(k.value - x) < Math.abs(b.value - x) ? k : b)).supports;
 }
 
+/**
+ * The beam's length and each support with its place `x` (undefined while a value it needs is
+ * blank), from `spans`, or from `length` and the supports (`supportsOf`).
+ */
+export function geometryOf(
+  r: BeamSpec,
+  value: (x: NumOrVar) => number | undefined,
+): { length: number | undefined; supports: (BeamSupport & { x: number | undefined })[] } {
+  if (r.spans?.length) {
+    const lens = r.spans.map(value);
+    const ends = lens.reduce<(number | undefined)[]>(
+      (acc, l) => [
+        ...acc,
+        l === undefined || acc[acc.length - 1] === undefined ? undefined : acc[acc.length - 1]! + l,
+      ],
+      [0],
+    );
+    return {
+      length: ends[ends.length - 1],
+      supports: ends.map((x, i) => ({
+        kind: i ? 'roller' : 'pin',
+        ...r.supports?.[i],
+        at: x ?? 0,
+        x,
+      })),
+    };
+  }
+  return {
+    length: r.length === undefined ? undefined : value(r.length),
+    supports: supportsOf(r, value).map((s) => ({ ...s, x: value(s.at) })),
+  };
+}
+
 /** Every variable id a `beam` spec names (for the module tests). */
 export function he1aSpecVars(r: BeamSpec): string[] {
   return ids(
     r.length,
+    ...(r.spans ?? []),
     r.at,
     r.shear,
     r.moment,
