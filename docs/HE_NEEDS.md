@@ -82,6 +82,17 @@ day⁻¹, kDa, MRayl (CFU/mL, cM, bp stay fixed labels).
 - **Waiting (blocked):** ME 18 (the ΔT unit: mechanics-of-materials#1~thermal and all 17
   heat-transfer pages), EC 19, EG 2 (Sv; long-time conversions). **Upgraded** (fixed labels
   until then): most pages in every group.
+- **Done:** `src/engine/units.ts` has 298 more units (404 in all) in 63 more dimensions, every
+  one in the list above but the fixed labels it names (CFU/mL, cM, bp) and `$/yr` (HE-E30).
+  A temperature difference is its own dimension: a value marked `difference: true` reads K,
+  °C, °F and R as differences (10 °C → 10 K → 18 °F, no 273.15 or 32), and its US unit is °F.
+  `kJ/(kg·K)`, `W/(m·K)` and `°C/km` are per-kelvin units with no offset. dB, dBm/dBW and
+  dBi/dBd are three dimensions of their own; VA and var never convert to W; Hz never to rad/s;
+  N·m (moment) never to J. Years convert to seconds (Julian year). Every unit added is
+  `listed`: it acts as a unit only on a value that lists another unit beside it in `units` (or
+  on a page with a unit set), so the K–12 pages that write Hz, nm, g/mol, u or days as labels
+  are unchanged (their unit menus, systems and contexts were compared page by page before and
+  after). "Sv" is the sverdrup (oceanography); dose pages use mSv and μSv.
 
 ### HE-E6 Calculus lines and notation
 
@@ -129,6 +140,15 @@ owner's decision below).
 - **From:** C-E2, EG-E10; the "Constants" decision of every plan.
 - **Waiting:** EG meteorology#1, oceanography, geophysics#1 pictures; every page reads its
   constants from one place.
+- **Done:** `src/engine/constants.ts`: `CONSTANTS` (39: g, g₀, G, c, h, ħ, k_B, N_A, R in
+  J/(mol·K) and L·atm/(mol·K), F, e, ε₀, μ₀, k, mₑ, mₚ, mₙ, u, σ, R_H, R∞, a₀, K_w, the Nernst
+  slopes at 25 °C and 37 °C, V_T at 300 K, Earth's GM, mass, mean and equatorial radius, the
+  Sun's mass and GM, AU, γ and R of air, 1 atm, 273.15 K, V_m), each with its symbol, the value
+  pages compute with and print, its unit and the precise value behind it. `gFor(pageId)` and
+  `constant('g', pageId)` give 9.81 on `he.` pages and 9.8 on K–12 pages; `constantLine('R')`
+  prints "R = 8.314 J/(mol·K)"; `readConstant(line, pageId)` reads such a line back for the
+  harness (wiring it into `harness/evaluate.ts` and the pictures' `g` is left to their owners).
+  No K–12 page's numbers changed.
 
 ### HE-E10 Number display and range
 
@@ -322,6 +342,14 @@ first, so they read like the textbook (σ = 50,000 N ÷ 314.2 mm²).
 - **From:** ME-E2.
 - **Waiting:** ME every solid-mechanics page (mechanics-of-materials 24, advanced-solid-mechanics
   14, FEA 14, machine-design 15: about 67).
+- **Done:** `src/engine/unitSets.ts`: `UNIT_SETS` (SI base, N–mm–MPa, kN–m–kPa, kip–in–ksi,
+  lbf–in–psi, kip–ft–ksf, kJ–kg–K, Btu–lb–R). A page sets `unitSet: 'N-mm-MPa'` or
+  `{ metric: 'N-mm-MPa', us: 'kip-in-ksi' }` and writes its values in the set; a value typed in
+  kN or m² converts into it first (the usual "F = 50 kN = 50,000 N" line), and under US
+  customary a page with a US set shows every value in that set (squares and fourth powers of
+  its length implied: in², in⁴) and works the steps in it directly, with no conversion lines.
+  `unitSetProblems(page)` (run on every page that names a set) reports a value not written in
+  its set and a set the relations don't hold in.
 
 ### HE-E27 Water and steam properties
 
