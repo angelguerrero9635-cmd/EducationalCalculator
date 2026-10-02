@@ -82,6 +82,14 @@ function rule(
     ),
   };
 }
+/**
+ * A rule checked by re-solving for `id` first: a count rounded to whole people still holds,
+ * where re-solving for a rate from the rounded count would miss by more than the tolerance.
+ */
+const checkedBy = (id: string, r: Rule): Rule => ({
+  ...r,
+  relation: { ...r.relation, solve: { [id]: r.relation.solve![id]!, ...r.relation.solve } },
+});
 /** `x` worked out from the others only. */
 const derive = (
   id: string,
@@ -2534,7 +2542,7 @@ const MODELING: ModuleDef[] = [
     variables: [
       len('r', 'r', 'Radius of the region', 3000, { unit: 'km' }),
       num('A', 'A', 'Area', 0, 1e9, { unit: 'km²' }),
-      num('N', 'N', 'Population', 1, 9e9, { unit: 'people' }),
+      num('N', 'N', 'Population', 1, 9e9, { unit: 'people', integer: true }),
       num('D', 'D', 'Population density', 1e-12, 1e10, { unit: 'people per km²' }),
     ],
     rules: [
@@ -2547,23 +2555,30 @@ const MODELING: ModuleDef[] = [
         },
         (v) => v.A! - Math.PI * v.r! ** 2,
       ),
-      rule(
-        'D = N ÷ A',
-        '{D} = {N} ÷ {A}',
-        {
-          D: [
-            (v) => quot(v.N!, v.A!),
-            '{N} ÷ {A}',
-            'Share the people out over each square kilometer.',
-          ],
-          N: [(v) => v.D! * v.A!, '{D} × {A}', 'Each square kilometer holds D people: multiply.'],
-          A: [
-            (v) => quot(v.N!, v.D!),
-            '{N} ÷ {D}',
-            'How many square kilometers hold that many people.',
-          ],
-        },
-        (v) => v.D! * v.A! - v.N!,
+      checkedBy(
+        'N',
+        rule(
+          'D = N ÷ A',
+          '{D} = {N} ÷ {A}',
+          {
+            N: [
+              (v) => Math.round(v.D! * v.A!),
+              '{D} × {A}',
+              'Each square kilometer holds D people: multiply, to the nearest whole person.',
+            ],
+            D: [
+              (v) => quot(v.N!, v.A!),
+              '{N} ÷ {A}',
+              'Share the people out over each square kilometer.',
+            ],
+            A: [
+              (v) => quot(v.N!, v.D!),
+              '{N} ÷ {D}',
+              'How many square kilometers hold that many people.',
+            ],
+          },
+          (v) => v.D! * v.A! - v.N!,
+        ),
       ),
       limit(
         'D ≤ 2,000,000',
