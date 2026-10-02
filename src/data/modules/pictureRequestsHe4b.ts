@@ -81,4 +81,24 @@ export const HE4B_REQUESTS: PictureRequest[] = [
       "Example (statics#0~components): { kind: 'vectorDiagram', vectors: [{ name: 'R', x: 'Rx', y: 'Ry', magnitude: 'R', direction: 'beta' }], unit: 'N', forces: { list: [{ name: 'F₁', magnitude: 'F1', direction: 'a1' }, { name: 'F₂', magnitude: 'F2', direction: 'a2' }, { name: 'F₃', magnitude: 'F3', direction: 'a3' }] }, fixed: true }. The plan's α₁ = 0° is refused by the module tests (a zero with a unit), so the demo uses 15°.",
     ].join(' '),
   },
+  {
+    id: 'HC102',
+    kind: 'rotor',
+    what: 'Rolling down a ramp of drop h (the body faded at the top, solid at the bottom with v and ω, K_t and K_r stacked to mgh; a race of shapes), and a rod with its center axis dashed and the turning axis lit d away, I = I_cm + Md² as a bar',
+    pages: [`${P}university-1#4`, `${P}university-1#4~parallel-axis`],
+    status: 'drawn',
+    gallery: [
+      'g.he-rotor-rolling',
+      'g.he-rotor-rolling-race',
+      'g.he-rotor-rolling-hoop',
+      'g.he-rotor-rod',
+      'g.he-rotor-rod-near',
+    ],
+    notes: [
+      'From P-P6 (HE-physics-P6). Options `rolling` and `rod` on `rotor` (RollingOf, RodOf in typesHe4b.ts, drawn by RotorRolling.tsx and RotorRod.tsx through RotorHe4b.tsx, which Hs3aView sends rotor specs to when one is set; checked by he4bIssues in harness/picturesHe4b.ts: K_t + K_r = mgh, v = rω, I = I_cm + Md²). Off unless a page sets them; the rotor’s own fields (shape c, mass, radius) carry the body.',
+      "Fields: rolling: { height, g? (default 9.8; pass the page's g), shapes? (c values to race, e.g. [1, 2/3, 0.5, 0.4]), speed?, spin?, kt?, kr? } with shape, mass, radius; rod: { length, d? | axis?: 'center' | 'end', icm?, inertia? } with mass. Drawn fixed.",
+      "Example (university-1#4): { kind: 'rotor', shape: 'c', mass: 'm', radius: 'r', rolling: { height: 'h', g: 9.8, speed: 'v', spin: 'w', kt: 'Kt', kr: 'Kr' }, fixed: true } (add shapes: [1, 2 / 3, 0.5, 0.4] for the race). The demo's c is a number from 0.4 to 1 (step 0.01): an `allowed` list made the solver's c miss the list by rounding when worked back.",
+      "Example (university-1#4~parallel-axis): { kind: 'rotor', mass: 'M', rod: { length: 'L', d: 'd', icm: 'Icm', inertia: 'I' }, fixed: true }.",
+    ].join(' '),
+  },
 ];

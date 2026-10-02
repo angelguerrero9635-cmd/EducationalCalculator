@@ -793,6 +793,214 @@ const coneTop = lCone(
   4,
 );
 
+// ── HC102: rolling down a ramp, and a rod's parallel axis (university-1#4, ~parallel-axis) ──
+
+const G_PHYS = 9.8;
+
+/** university-1#4 main: rolling without slipping from a drop h. */
+function rolling(id: string, title: string, use: string, ex: Values, shapes?: number[]): ModuleDef {
+  const v = Math.sqrt((2 * G_PHYS * ex.h!) / (1 + ex.c!));
+  const Kt = 0.5 * ex.m! * v * v;
+  return page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'It rolls without slipping, so v = rω and static friction does no work.',
+      'I = cmr²: hoop 1, hollow ball ⅔, disk ½, solid ball 0.4; mass and radius cancel from v.',
+      'g = 9.8 m/s², and it starts from rest.',
+    ],
+    variables: [
+      num('c', 'c', 'Shape factor (I = cmr²)', undefined, 0.4, 1, { step: 0.01 }),
+      num('m', 'm', 'Mass', 'kg', 0.001, 1e4, { step: 0.1 }),
+      num('r', 'r', 'Radius', 'm', 0.001, 100, { step: 0.01 }),
+      num('h', 'h', 'Drop', 'm', 0.01, 1000, { step: 0.1 }),
+      num('v', 'v', 'Speed at the bottom', 'm/s', 0, 1e4),
+      num('w', 'ω', 'Spin at the bottom', 'rad/s', 0, 1e7),
+      num('Kt', 'K_t', 'Translational kinetic energy', 'J', 0, 1e9),
+      num('Kr', 'K_r', 'Rotational kinetic energy', 'J', 0, 1e9),
+    ],
+    rules: [
+      rule(
+        'v = √(2gh ÷ (1 + c))',
+        `{v} = √(2 × ${G_PHYS} × {h} ÷ (1 + {c}))`,
+        ['v', 'h', 'c'],
+        (x) => x.v! ** 2 * (1 + x.c!) - 2 * G_PHYS * x.h!,
+        {
+          v: [
+            (x) => Math.sqrt((2 * G_PHYS * x.h!) / (1 + x.c!)),
+            `√(2 × ${G_PHYS} × {h} ÷ (1 + {c}))`,
+            'mgh = ½mv² + ½cmv²: the mass cancels, and 1 + c shares the energy out.',
+          ],
+          h: [
+            (x) => (x.v! ** 2 * (1 + x.c!)) / (2 * G_PHYS),
+            `{v}² × (1 + {c}) ÷ (2 × ${G_PHYS})`,
+            'Turn the energy balance round for the drop.',
+          ],
+        },
+      ),
+      over(
+        'ω = v/r',
+        'w',
+        'v',
+        'r',
+        'Rolling without slipping: the rim speed is the speed, so ω = v ÷ r.',
+      ),
+      rule(
+        'K_t = ½mv²',
+        '{Kt} = 0.5 × {m} × {v}²',
+        ['Kt', 'm', 'v'],
+        (x) => x.Kt! - 0.5 * x.m! * x.v! ** 2,
+        {
+          Kt: [
+            (x) => 0.5 * x.m! * x.v! ** 2,
+            '0.5 × {m} × {v}²',
+            'The energy of moving along: half m v squared.',
+          ],
+          m: [
+            (x) => div(2 * x.Kt!, x.v! ** 2),
+            '2 × {Kt} ÷ {v}²',
+            'Twice the energy over v squared.',
+          ],
+        },
+      ),
+      times('K_r = cK_t', 'Kr', 'c', 'Kt', 'The spin energy is ½Iω² = ½cmv²: c times K_t.'),
+    ],
+    example: { ...ex, v, w: v / ex.r!, Kt, Kr: ex.c! * Kt },
+    startWith: ['c', 'm', 'r', 'h'],
+    representation: {
+      kind: 'rotor',
+      shape: 'c',
+      mass: 'm',
+      radius: 'r',
+      rolling: {
+        height: 'h',
+        g: G_PHYS,
+        speed: 'v',
+        spin: 'w',
+        kt: 'Kt',
+        kr: 'Kr',
+        ...(shapes ? { shapes } : {}),
+      },
+      fixed: true,
+    },
+  });
+}
+
+const rollingBall = rolling(
+  'g.he-rotor-rolling',
+  'A solid ball rolls down a ramp: K_t + K_r = mgh',
+  'Use this for “A 2 kg solid ball (r = 0.1 m) rolls from rest down a 1.5 m drop. Find v and ω at the bottom.”',
+  { c: 0.4, m: 2, r: 0.1, h: 1.5 },
+);
+
+const rollingRace = rolling(
+  'g.he-rotor-rolling-race',
+  'The rolling race: hoop, hollow ball, disk and solid ball',
+  'Use this for “A hoop, a hollow ball, a disk and a solid ball race down the same ramp. Which wins?”',
+  { c: 0.5, m: 1, r: 0.05, h: 0.8 },
+  [1, 2 / 3, 0.5, 0.4],
+);
+
+const rollingHoop = rolling(
+  'g.he-rotor-rolling-hoop',
+  'A hoop on a small drop: half its energy goes into spin',
+  'Use this for “A 0.3 kg hoop of radius 0.2 m rolls down a 0.2 m drop. How fast is it going?”',
+  { c: 1, m: 0.3, r: 0.2, h: 0.2 },
+);
+
+/** university-1#4~parallel-axis: I = I_cm + Md² for a uniform rod. */
+function rodAxis(id: string, title: string, use: string, ex: Values): ModuleDef {
+  const Icm = (ex.M! * ex.L! ** 2) / 12;
+  return page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'A thin uniform rod: about its center, I_cm = ML² ÷ 12.',
+      'The new axis is parallel to the center one, d away: I = I_cm + Md².',
+      'd = L ÷ 2 puts the axis at the end, where I = ML² ÷ 3.',
+    ],
+    variables: [
+      num('M', 'M', 'Rod mass', 'kg', 0.001, 1e4, { step: 0.1 }),
+      num('L', 'L', 'Rod length', 'm', 0.001, 100, { step: 0.01 }),
+      num('d', 'd', 'Distance between the axes', 'm', 0.001, 100, { step: 0.01 }),
+      num('Icm', 'I_cm', 'I about the center', 'kg·m²', 0, 1e8),
+      num('I', 'I', 'I about the new axis', 'kg·m²', 0, 1e8),
+    ],
+    rules: [
+      rule(
+        'I_cm = ML²/12',
+        '{Icm} = {M} × {L}² ÷ 12',
+        ['Icm', 'M', 'L'],
+        (x) => 12 * x.Icm! - x.M! * x.L! ** 2,
+        {
+          Icm: [
+            (x) => (x.M! * x.L! ** 2) / 12,
+            '{M} × {L}² ÷ 12',
+            'A uniform rod about its center: ML² over 12.',
+          ],
+          M: [
+            (x) => div(12 * x.Icm!, x.L! ** 2),
+            '12 × {Icm} ÷ {L}²',
+            'Twelve I_cm over L squared.',
+          ],
+          L: [
+            (x) => Math.sqrt((12 * x.Icm!) / x.M!),
+            '√(12 × {Icm} ÷ {M})',
+            'The square root of 12 I_cm over M.',
+          ],
+        },
+      ),
+      rule(
+        'I = I_cm + Md²',
+        '{I} = {Icm} + {M} × {d}²',
+        ['I', 'Icm', 'M', 'd'],
+        (x) => x.I! - x.Icm! - x.M! * x.d! ** 2,
+        {
+          I: [
+            (x) => x.Icm! + x.M! * x.d! ** 2,
+            '{Icm} + {M} × {d}²',
+            'The parallel-axis theorem: add M d squared to the center’s I.',
+          ],
+          Icm: [
+            (x) => x.I! - x.M! * x.d! ** 2,
+            '{I} − {M} × {d}²',
+            'Take M d squared off the new I.',
+          ],
+          d: [
+            (x) => (x.I! >= x.Icm! ? Math.sqrt((x.I! - x.Icm!) / x.M!) : undefined),
+            '√(({I} − {Icm}) ÷ {M})',
+            'What the shift adds, over M, square-rooted.',
+          ],
+        },
+      ),
+    ],
+    example: { ...ex, Icm, I: Icm + ex.M! * ex.d! ** 2 },
+    startWith: ['M', 'L', 'd'],
+    representation: {
+      kind: 'rotor',
+      mass: 'M',
+      rod: { length: 'L', d: 'd', icm: 'Icm', inertia: 'I' },
+      fixed: true,
+    },
+  });
+}
+
+const rodEnd = rodAxis(
+  'g.he-rotor-rod',
+  'A rod turned about its end: I = I_cm + Md²',
+  'Use this for “A 1.2 kg rod 0.9 m long turns about one end. Find I by the parallel-axis theorem.”',
+  { M: 1.2, L: 0.9, d: 0.45 },
+);
+
+const rodNear = rodAxis(
+  'g.he-rotor-rod-near',
+  'An axis just off the center: a small shift adds little',
+  'Use this for “The same rod turns about an axis 0.1 m from its center. Find I.”',
+  { M: 1.2, L: 0.9, d: 0.1 },
+);
+
 export const HE4B_GALLERY_MODULES: ModuleDef[] = [
   projectMain,
   projectObtuse,
@@ -808,6 +1016,11 @@ export const HE4B_GALLERY_MODULES: ModuleDef[] = [
   coneMain,
   coneDown,
   coneTop,
+  rollingBall,
+  rollingRace,
+  rollingHoop,
+  rodEnd,
+  rodNear,
 ];
 
 export const HE4B_GALLERY_LAYOUTS: LayoutDef[] = [];

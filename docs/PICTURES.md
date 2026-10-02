@@ -454,6 +454,8 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `circularMotion`   | `mode: 'pair'`, `t1`, `t2`               | two planets lined up at t = 0 and again after S, each angle and laps (HC35)   |
 | `circularMotion`   | `mode: 'tangential'`, `rho`, `at`, …     | n–t: v, a_t, a_n = v²/ρ to the center of curvature, a = their sum (HC35)      |
 | `rotor`            | `hollow: true`                           | the hollow ball (c = ⅔, a shell cut open) in the compare row (H111)           |
+| `rotor`            | `rolling: { height, shapes? }`           | a ramp of drop h, v and ω at the bottom, K_t + K_r = mgh bars; a race (HC102) |
+| `rotor`            | `rod: { length, d? }`                    | a rod, center axis dashed, the axis d away lit; I = I_cm + Md² bar (HC102)    |
 | `normalCurve`      | `f.tailsFrom: id`                        | one tail or two as the Hₐ value says (1, 3, 4 right; 0, 6 both) (H112)        |
 | `pascalTriangle`   | `fraction.b`, `fraction.r`               | exactly k of r: C(a, k) × C(b, r − k) ÷ C(a + b, r), to 60 (H113)             |
 | `reserve`          | `growth: id`, `lasts: id`                | use growing g% a year: slices grow, empty at T, beside steady Q ÷ r (H115)    |
