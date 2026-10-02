@@ -3,7 +3,7 @@
 //   node scripts/ci-test.mjs [--since <git ref>] [--heavy | --full] [--dry]
 //
 // By default only the cheap suites run: the two heavy ones (modules and sampling) run on the
-// nightly workflow (--full). --heavy runs them for the pages the push changed, worked out as
+// a run the owner authorizes (--full). --heavy runs them for the pages the push changed, worked out as
 // below.
 //
 // The cheap suites (engine, selectors, standards, layouts, tracker, …) always run in full. The
@@ -17,7 +17,7 @@
 // - a picture component or a picture check: the pages of the kinds that file names;
 // - a harness phrase file: its grades.
 // They run in full when that can't be worked out (the harness core, the heavy suites
-// themselves, a shared component) or with --full; the nightly workflow passes --full.
+// themselves, a shared component) or with --full; a run by hand passes --full.
 // CI passes --since to the commit before the push; locally the default is origin's copy of the
 // current branch, so `node scripts/ci-test.mjs` before a push tests what the push carries.
 import { execSync, spawnSync } from 'node:child_process';
@@ -39,7 +39,7 @@ const git = (cmd) => {
 const branch = git('rev-parse --abbrev-ref HEAD');
 const since = flag('--since', git(`rev-parse --verify origin/${branch}`) || 'HEAD~1');
 // No usable base (a first push, a shallow clone): run everything.
-// The heavy suites run nightly only (--full); a push runs the cheap suites. --heavy runs them
+// The heavy suites run only in a run the owner authorizes (--full); a push runs the cheap suites. --heavy runs them
 // for the pages the push changed, when a change needs it.
 const quick = !args.includes('--full') && !args.includes('--heavy');
 let full = args.includes('--full') || !git(`rev-parse --verify ${since}^{commit}`);
@@ -253,7 +253,7 @@ run('every suite but the two heavy ones', [
 ]);
 if (quick) {
   console.log(
-    '▶ modules and sampling: nightly only (--heavy for the pages changed, --full for all)',
+    '▶ modules and sampling: only in an authorized run (--heavy for the pages changed, --full for all)',
   );
 } else if (full) {
   run('modules and sampling, every page', ['--ci', ...heavy]);

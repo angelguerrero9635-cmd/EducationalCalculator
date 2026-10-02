@@ -3,11 +3,8 @@ name: CI
 on:
   push:
   pull_request:
-  # A full run by hand (Actions → CI → Run workflow), as the nightly one does.
+  # A full run by hand (Actions → CI → Run workflow), only when the owner authorizes one.
   workflow_dispatch:
-  schedule:
-    # Nightly: every test in full (a push runs the cheap suites only).
-    - cron: '17 6 * * *'
 
 permissions:
   contents: read
@@ -40,7 +37,7 @@ jobs:
       - name: Format
         run: pnpm format:check
 
-      # A push: the cheap suites (scripts/ci-test.mjs). The nightly run and a pull request: every
+      # A push: the cheap suites (scripts/ci-test.mjs). A run by hand and a pull request: every
       # test, the heavy modules and sampling suites included.
       - name: Test
         run: |

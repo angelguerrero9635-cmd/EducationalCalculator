@@ -164,7 +164,7 @@ the assumptions and a table or diagram.
 1. **Tests while building:** `MODULE_IDS=<prefix> pnpm test src/data/modules` after each page
    (the module, standards, layouts and sampling suites for that page). Before a push,
    `node scripts/ci-test.mjs` runs the cheap suites only; the heavy ones (modules, sampling)
-   run once a day on the nightly CI run, and what it finds is fixed the next day. No broader or
+   run only when the owner authorizes a full run, and what it finds is fixed then. No broader or
    deep runs while building or fixing; only the review evidence samples deeply. What the tests enforce (reading level and notation by grade,
    formatting, value counts, every rearrangement and walkthrough, every step line the harness
    can read, layout data, the picture tracker) is listed in each test file's header; a new

@@ -40,7 +40,7 @@ truth for grades, skills and courses (log changes in `TAXONOMY_ISSUES.md`).
 | `pnpm check`                                                                | Typecheck, lint, format check, all tests                                                        |
 | `pnpm review -- --prefix m.5. --stage lesson [--changed]`                   | Lesson evidence (dump, deep harness, questions): no build, no browser                           |
 | `pnpm review -- --prefix m.5. --stage page [--changed]`                     | Page evidence: builds only the pages in scope when `dist/` is stale, screenshots, drags, sheets |
-| `node scripts/ci-test.mjs`                                                  | Before a push: the cheap suites (the heavy ones run nightly only)                               |
+| `node scripts/ci-test.mjs`                                                  | Before a push: the cheap suites (the heavy ones only when the owner authorizes a run)           |
 | `node scripts/plan-brief.mjs --grade 8 --subject m`                         | The brief a direction plan starts from (`.review/plans/m.8/brief.md`)                           |
 | `node scripts/promote-demo.mjs g.demo-id m.8.skill~slug ["Title"]`          | Copy a gallery demo into its grade file as a page                                               |
 | `node scripts/review-questions.mjs --prefix m.5.`                           | The released questions for a section's skills into `.review/questions.md`                       |
@@ -70,12 +70,12 @@ not a dependency. Chromium is at `/opt/pw-browsers/chromium`.
 
 - Commit after each unit of work with a clear message; push to the working branch; no pull
   requests unless asked.
-- Testing: the heavy suites (modules, sampling) run once a day, on the nightly CI run. Before a
-  push, `node scripts/ci-test.mjs` runs the cheap suites only. While building a new page, its
-  own tests by id (`MODULE_IDS=<id>`) are fine; no broader or deep runs (the review evidence
-  alone samples deeply). No `--heavy` or `--full` runs outside the nightly unless the owner approves that run (ask first, saying why), engine changes
-  included: test the ids a change is about by `MODULE_IDS`, and fix what the nightly run finds
-  the next day.
+- Testing: the heavy suites (modules, sampling) run only when the owner authorizes a run (no
+  nightly run). Before a push, `node scripts/ci-test.mjs` runs the cheap suites only. While
+  building or fixing a page, its own tests by id (`MODULE_IDS=<id>`) are fine; no broader or deep
+  runs (the review evidence alone samples deeply). No `--heavy` or `--full` run, here or in CI,
+  unless the owner approves that run (ask first, saying why), engine changes included: test the
+  ids a change is about by `MODULE_IDS`.
 - Don't add dependencies without asking.
 - Never edit `taxonomy.ts` casually; it is kept byte-for-byte and Prettier ignores it.
 - Licensed material is never used; lesson text is original. Any licensed or restricted material
