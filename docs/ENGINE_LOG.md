@@ -5,6 +5,31 @@ helpers, pictures, tests, harness) could have prevented are turned into engine w
 next section is written, so each section starts from a better engine than the last. One entry
 per review; each line names the finding and what the engine now does about it.
 
+## The full run after the refusal and step-order changes: 12 regressions, three causes
+
+- **Worked examples refused as "older"** (m.6.gcf-lcm "the first number would be 0.7059, but it
+  must be a whole number"; m.3.elapsed-time "the minutes it takes less than 0"; m.9.factoring~gcf
+  "the other numbers can't reach this"; the gallery copies), and m.9.factoring~gcf refusing a
+  and b that were possible. → `outOfReach` bounded any rule its fixed probes read as straight
+  in each value at the corners of the ranges; a greatest common factor and "(m + d) % 60"
+  happen to read straight at those small probes. Before the corners are trusted, inside points
+  of the actual box (its centre, a quarter and three quarters along each value, three scattered
+  ones, each on its own grid) must come out as the corners predict; a rule that doesn't is left
+  to the search, as before.
+- **A step from a rule that only applies when k = 0** (m.10.probability-rules~counting-probability
+  "f = C(59, 6)" for f = 5,006,386 with k = 1). → `directFor` handed the rearrangement every
+  known value, so "f = C(b, r) when k = 0", whose fallback computes the full count from a, was
+  taken as explaining f before a was. It now sees only the values explained so far (and a
+  rearrangement that throws on a missing one explains nothing).
+- **A worked line that misses the printed answer** (s.10.electrons-in-atoms~emission
+  "λ = 1240/12.1", 102.48, under "λ = 103 nm"; the new older-input fallback now keeps these
+  inputs, and the line was accepted as within 10⁻³ of the exact 102.57). → `misses` compares a
+  line with the answer as the step prints it (to the page's figures) and takes more figures
+  when it would not round to it ("λ = 1240/12.09").
+- **K–5 pages read the Grade 6 wording for a pinned value** ("Only 12 fits every rule here: no
+  other number works."). → K–5 says "12 is the only number that works here."; standards.test
+  leaves each opening value out in turn and checks a pinned step's wording against the grade.
+
 ## Lesson reviews of today's engine changes: refusals a student reads, steps in order
 
 - **K–2 children saw raw engine sentences** ("These numbers can’t all be true together", "The

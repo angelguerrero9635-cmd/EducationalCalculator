@@ -304,6 +304,28 @@ describe.each(pages(TESTED_MODULES))('standards for %s', (id, m) => {
     expect(w.steps.filter((s) => /Try numbers/.test(s.how)).map((s) => s.id)).toEqual([]);
   });
 
+  it('says a value only the search pins in the grade’s words', () => {
+    // A pinned step shows up with an opening value left out (the common denominator with the
+    // first denominator still "?"): each opening value is left out in turn. K–5 reads "12 is
+    // the only number that works here.", not the Grade 6 wording ("fits every rule").
+    const young = band === 'early' || band === 'elementary';
+    const wrong = /fits every rule|no other number works/;
+    for (let i = -1; i < m.startWith.length; i++) {
+      const ids = m.startWith.filter((_, j) => j !== i);
+      const w = buildSteps(
+        m,
+        solve(
+          m,
+          ids.map((id) => ({ id, value: example[id]! })),
+          example,
+        ),
+      );
+      const pinned = w.steps.filter((s) => /only number that works|fits every rule/.test(s.how));
+      const bad = pinned.filter((s) => (young ? wrong.test(s.how) : !wrong.test(s.how)));
+      expect(bad.map((s) => `${s.id}: ${s.how}`)).toEqual([]);
+    }
+  });
+
   it('names a count after what it counts, not after a measurement', () => {
     // "At 1/8 L: 2" reads as 2 liters; a count of beakers is "Beakers with 1/8 L". A count
     // named only by a length or an amount ("One inch longer", "In eighths") is the same slip.
