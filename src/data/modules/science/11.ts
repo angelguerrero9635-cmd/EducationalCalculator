@@ -3510,6 +3510,7 @@ const thermoPages: ModuleDef[] = [
       'Energy is kept: the heat in goes to the gas’s internal energy or out as work. ΔU = Q − W.',
       'Q is + for heat into the gas and − for heat out of it.',
       'W is + when the gas does work by expanding and − when work is done on it (it is squeezed).',
+      'Some books (AP Physics 2) count W as work done on the gas and write ΔU = Q + W.',
     ],
     variables: [
       q('Q', 'Q', 'Heat into the gas', 'J', -1e9, 1e9, 0.01),

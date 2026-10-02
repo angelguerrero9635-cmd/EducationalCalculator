@@ -8,7 +8,7 @@ import { chart, usePalette } from '@/theme';
 import { HaloText } from '../layouts/earthKit';
 import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, ChartText, useRep } from './common';
-import { NORMAL_CHRONS, STRIPE_RECORD, stripeWindow } from './earthModelHs2f';
+import { CHRON_RECORD, NORMAL_CHRONS, STRIPE_RECORD, stripeWindow } from './earthModelHs2f';
 
 const BW = 360;
 const BH = 300;
@@ -49,6 +49,8 @@ export function OceanStripes({ spec, calc }: { spec: StripesSpec; calc: Calculat
         ? km / age
         : num(spec.rate, 25);
   const span = stripeWindow(age);
+  // Past the chron record the seafloor is hatched: striped too, but not drawn here.
+  const hatched = span > CHRON_RECORD;
   const A = (a: number, side: 1 | -1) => CX + side * (a / span) * HALF;
   const kmSpan = v * span;
   const ageStep = tickStep(span, 3);
@@ -112,6 +114,37 @@ export function OceanStripes({ spec, calc }: { spec: StripesSpec; calc: Calculat
                     );
                   }),
                 )}
+                {hatched &&
+                  ([1, -1] as const).map((side) => {
+                    const x0 = A(CHRON_RECORD, side);
+                    const x1 = A(span, side);
+                    const lo = Math.min(x0, x1);
+                    const wide = Math.abs(x1 - x0);
+                    const n = Math.ceil((wide + (BOTTOM - TOP)) / 8);
+                    return (
+                      <G key={`h${side}`}>
+                        <Rect x={lo} y={TOP} width={wide} height={BOTTOM - TOP} fill={c.card} />
+                        {Array.from({ length: n }, (_, i) => {
+                          // Diagonals from the bottom edge up and right, clipped to the band.
+                          const bx = lo - (BOTTOM - TOP) + i * 8;
+                          const [sx, sy] = bx < lo ? [lo, BOTTOM - (lo - bx)] : [bx, BOTTOM];
+                          const ex = Math.min(lo + wide, bx + (BOTTOM - TOP));
+                          const ey = BOTTOM - (ex - bx);
+                          return ex > sx ? (
+                            <Line
+                              key={i}
+                              x1={sx}
+                              y1={sy}
+                              x2={ex}
+                              y2={ey}
+                              stroke={c.chartGrid}
+                              strokeWidth={1}
+                            />
+                          ) : null;
+                        })}
+                      </G>
+                    );
+                  })}
                 <Rect
                   x={CX - HALF}
                   y={TOP}
@@ -295,7 +328,7 @@ export function OceanStripes({ spec, calc }: { spec: StripesSpec; calc: Calculat
       </Canvas>
       <Caption>
         {on
-          ? `The rock ${formatNumber(round(km, 2))} km from the ridge is ${formatNumber(round(age, 2))} million years old: the plate moved ${formatNumber(round(km, 2))} ÷ ${formatNumber(round(age, 2))} = ${rateText} km per million years, ${rateText} mm a year. The two plates part at 2 × ${rateText} = ${fullText} mm a year. The stripes match on both sides: rock cooling at the ridge records the field of its time.`
+          ? `The rock ${formatNumber(round(km, 2))} km from the ridge is ${formatNumber(round(age, 2))} million years old: the plate moved ${formatNumber(round(km, 2))} ÷ ${formatNumber(round(age, 2))} = ${rateText} km per million years, ${rateText} mm a year. The two plates part at 2 × ${rateText} = ${fullText} mm a year. The stripes match on both sides: rock cooling at the ridge records the field of its time.${hatched ? ` Stripes are drawn for the last ${CHRON_RECORD} million years; the hatched, older seafloor is striped too.` : ''}`
           : 'Type the rock’s distance and age to place it.'}
       </Caption>
     </View>
