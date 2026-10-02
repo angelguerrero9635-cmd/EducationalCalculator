@@ -3,6 +3,7 @@
  * college page that waits, built from the plan's worked example. Spread into gallery.ts.
  * HC53: `polarGrid` areas, regions, tangent and the cycloid (calc-2#5, calc-3#2).
  * HC54: `rightTriangle` rates and `curvedSolid` fill and slab (calc-1#2, calc-2#2).
+ * HC66: `termsChart` series: n·rⁿ, cⁿ ÷ n!, alternating signs, bounds (calc-2#3).
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
@@ -55,7 +56,9 @@ function page(d: Omit<ModuleDef, 'relations' | 'steps'> & { rules: Rule[] }): Mo
     workedFigures: 4,
     ...rest,
     relations: rules.map((r) => r.relation),
-    steps: Object.fromEntries(rules.map((r) => [r.relation.id, r.steps])),
+    steps: Object.fromEntries(
+      rules.filter((r) => !r.relation.hidden).map((r) => [r.relation.id, r.steps]),
+    ),
   };
 }
 
@@ -835,6 +838,414 @@ const HC54: ModuleDef[] = [
   ),
 ];
 
-export const HE3C_GALLERY_MODULES: ModuleDef[] = [...HC53, ...HC54];
+// ─── HC66: termsChart series ─────────────────────────────────────────────────
+
+/** n! for a whole n. */
+const factorialOf = (n: number) => {
+  let f = 1;
+  for (let k = 2; k <= n; k++) f *= k;
+  return f;
+};
+
+/** −p for the chart's power rule (aₙ = n⁻ᵖ), never shown. */
+const negP: Rule = {
+  relation: {
+    id: 'mp = −p',
+    display: '{mp} = −{p}',
+    vars: ['mp', 'p'],
+    residual: (v) => v.mp! + v.p!,
+    solve: { mp: (v) => -v.p!, p: (v) => -v.mp! },
+    hidden: true,
+  },
+  steps: {},
+};
+const MP = num('mp', 'k', 'Power on n (−p)', undefined, -5, 0, { hidden: true });
+
+/** Σ from n = 1 to N of 1/nᵖ (the sum's terms put in one by one by the step check). */
+const pSum = (N: number, p: number) =>
+  Array.from({ length: N }, (_, i) => 1 / (i + 1) ** p).reduce((s, t) => s + t, 0);
+
+/** calc-2#3 main: a p-series and the integral test's bounds. */
+function pSeries(id: string, title: string, use: string, ex: Values) {
+  return page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'The terms 1/nᵖ are positive and decreasing, so the integral test applies.',
+      'The tail after N lies between ∫ from N + 1 to ∞ and ∫ from N to ∞ of x⁻ᵖ dx.',
+      'p ≤ 1 diverges; this page takes p > 1.',
+    ],
+    variables: [
+      num('p', 'p', 'Power', undefined, 1.1, 5, { step: 0.1 }),
+      num('N', 'N', 'Terms added', undefined, 1, 30, { step: 1, integer: true }),
+      num('S', 'S_N', 'Partial sum', undefined, 0, 100),
+      num('lo', 'L', 'Lower bound', undefined, 0, 1000),
+      num('hi', 'U', 'Upper bound', undefined, 0, 1000),
+      MP,
+    ],
+    rules: [
+      negP,
+      rule(
+        'S_N = Σ 1/nᵖ',
+        '{S} = Σ from n = 1 to {N} of (1/n)^{p}',
+        ['S', 'N', 'p'],
+        (v) => v.S! - pSum(Math.round(v.N!), v.p!),
+        {
+          S: [
+            (v) => (Number.isInteger(v.N) ? pSum(v.N!, v.p!) : undefined),
+            'Σ from n = 1 to {N} of (1/n)^{p}',
+            'Add the first N terms one by one.',
+          ],
+        },
+      ),
+      rule(
+        'L = S_N + 1/((p − 1)(N + 1)ᵖ⁻¹)',
+        '{lo} = {S} + 1 ÷ (({p} − 1) × ({N} + 1)^({p} − 1))',
+        ['lo', 'S', 'p', 'N'],
+        (v) => v.lo! - v.S! - 1 / ((v.p! - 1) * (v.N! + 1) ** (v.p! - 1)),
+        {
+          lo: [
+            (v) => v.S! + 1 / ((v.p! - 1) * (v.N! + 1) ** (v.p! - 1)),
+            '{S} + 1 ÷ (({p} − 1) × ({N} + 1)^({p} − 1))',
+            'The tail is at least the integral of x⁻ᵖ from N + 1 to ∞.',
+          ],
+        },
+      ),
+      rule(
+        'U = S_N + 1/((p − 1)Nᵖ⁻¹)',
+        '{hi} = {S} + 1 ÷ (({p} − 1) × {N}^({p} − 1))',
+        ['hi', 'S', 'p', 'N'],
+        (v) => v.hi! - v.S! - 1 / ((v.p! - 1) * v.N! ** (v.p! - 1)),
+        {
+          hi: [
+            (v) => v.S! + 1 / ((v.p! - 1) * v.N! ** (v.p! - 1)),
+            '{S} + 1 ÷ (({p} − 1) × {N}^({p} − 1))',
+            'The tail is at most the integral of x⁻ᵖ from N to ∞.',
+          ],
+        },
+      ),
+    ],
+    example: ex,
+    startWith: ['p', 'N'],
+    representation: {
+      kind: 'termsChart',
+      type: 'power',
+      first: 1,
+      step: 'mp',
+      count: 'N',
+      as: 'bars',
+      sums: true,
+      sum: 'S',
+      bounds: { low: 'lo', high: 'hi' },
+      limit: true,
+    },
+  });
+}
+
+const pEx = (p: number, N: number) => {
+  const S = pSum(N, p);
+  return {
+    p,
+    N,
+    S,
+    lo: S + 1 / ((p - 1) * (N + 1) ** (p - 1)),
+    hi: S + 1 / ((p - 1) * N ** (p - 1)),
+    mp: -p,
+  };
+};
+
+/** calc-2#3~ratio: Σ n·rⁿ and the ratio test. */
+const ratioTest = page({
+  id: 'g.he-termsChart-ratio',
+  title: 'The ratio test on n·rⁿ',
+  use: 'Use this for “Does Σ n(0.5)ⁿ converge? Use the ratio test.”',
+  assumptions: [
+    'aₙ₊₁ ÷ aₙ = ((n + 1) ÷ n) × r, which tends to |r| as n grows.',
+    'The ratio test: L < 1 converges, L > 1 diverges, L = 1 says nothing.',
+    'For |r| < 1 the sum is r ÷ (1 − r)².',
+  ],
+  variables: [
+    num('r', 'r', 'Ratio in the rule', undefined, 0.01, 0.99, { step: 0.01 }),
+    num('N', 'n', 'Term number', undefined, 1, 29, { step: 1, integer: true }),
+    num('aN', 'aₙ', 'Term n', undefined, 0, 100),
+    num('aN1', 'aₙ₊₁', 'Next term', undefined, 0, 100),
+    num('q', 'aₙ₊₁/aₙ', 'Ratio of terms', undefined, 0, 100),
+    num('L', 'L', 'Limit of the ratio', undefined, 0, 1),
+    num('S', 'S', 'Sum of the series', undefined, 0, 1e5),
+  ],
+  rules: [
+    rule(
+      'aₙ = n·rⁿ',
+      '{aN} = {N} × {r}^({N})',
+      ['aN', 'N', 'r'],
+      (v) => v.aN! - v.N! * v.r! ** v.N!,
+      {
+        aN: [(v) => v.N! * v.r! ** v.N!, '{N} × {r}^({N})', 'Put the term number into n·rⁿ.'],
+      },
+    ),
+    rule(
+      'aₙ₊₁ = (n + 1)·rⁿ⁺¹',
+      '{aN1} = ({N} + 1) × {r}^({N} + 1)',
+      ['aN1', 'N', 'r'],
+      (v) => v.aN1! - (v.N! + 1) * v.r! ** (v.N! + 1),
+      {
+        aN1: [
+          (v) => (v.N! + 1) * v.r! ** (v.N! + 1),
+          '({N} + 1) × {r}^({N} + 1)',
+          'Put the next term number, n + 1, into n·rⁿ.',
+        ],
+      },
+    ),
+    rule(
+      'ratio = aₙ₊₁ ÷ aₙ',
+      '{q} = {aN1} ÷ {aN}',
+      ['q', 'aN1', 'aN'],
+      (v) => v.q! * v.aN! - v.aN1!,
+      {
+        q: [(v) => div(v.aN1!, v.aN!), '{aN1} ÷ {aN}', 'Divide the next term by this one.'],
+      },
+    ),
+    rule(
+      'ratio = (n + 1)r ÷ n',
+      '{q} = ({N} + 1) × {r} ÷ {N}',
+      ['q', 'N', 'r'],
+      (v) => v.q! * v.N! - (v.N! + 1) * v.r!,
+      {
+        q: [
+          (v) => div((v.N! + 1) * v.r!, v.N!),
+          '({N} + 1) × {r} ÷ {N}',
+          'The n·rⁿ terms divide to ((n + 1) ÷ n) × r.',
+        ],
+        N: [
+          (v) => div(v.r!, v.q! - v.r!),
+          '{r} ÷ ({q} − {r})',
+          'Solve (n + 1)r = n × ratio for n.',
+        ],
+      },
+    ),
+    rule('L = |r|', '{L} = |{r}|', ['L', 'r'], (v) => v.L! - Math.abs(v.r!), {
+      L: [(v) => Math.abs(v.r!), '|{r}|', '(n + 1) ÷ n tends to 1, so the ratio tends to |r|.'],
+      r: [(v) => v.L!, '{L}', 'Here r is positive, so r is the limit itself.'],
+    }),
+    rule(
+      'S = r ÷ (1 − r)²',
+      '{S} = {r} ÷ (1 − {r})²',
+      ['S', 'r'],
+      (v) => v.S! * (1 - v.r!) ** 2 - v.r!,
+      {
+        S: [
+          (v) => div(v.r!, (1 - v.r!) ** 2),
+          '{r} ÷ (1 − {r})²',
+          'Differentiate the geometric series Σ xⁿ = 1 ÷ (1 − x), then multiply by x.',
+        ],
+      },
+    ),
+  ],
+  example: { r: 0.5, N: 5, aN: 0.15625, aN1: 0.09375, q: 0.6, L: 0.5, S: 2 },
+  startWith: ['r', 'N'],
+  representation: {
+    kind: 'termsChart',
+    type: 'nr',
+    first: 1,
+    step: 'r',
+    count: 'N',
+    as: 'bars',
+    sums: true,
+    term: 'aN',
+    next: 'aN1',
+    ratio: 'q',
+    limit: 'S',
+  },
+});
+
+/** The factorial rule: Σ cⁿ ÷ n! = eᶜ − 1, the ratio c ÷ (n + 1). */
+const factorialSeries = page({
+  id: 'g.he-termsChart-factorial',
+  title: 'The ratio test on cⁿ ÷ n!',
+  use: 'Use this for “Does Σ 2ⁿ ÷ n! converge? Find its sum.”',
+  assumptions: [
+    'aₙ₊₁ ÷ aₙ = c ÷ (n + 1), which tends to 0 for any c: the series always converges.',
+    'Σ from n = 0 of cⁿ ÷ n! is eᶜ, so from n = 1 the sum is eᶜ − 1.',
+  ],
+  variables: [
+    num('c', 'c', 'Base', undefined, 0.1, 5, { step: 0.1 }),
+    num('N', 'n', 'Term number', undefined, 1, 29, { step: 1, integer: true }),
+    num('aN', 'aₙ', 'Term n', undefined, 0, 1e4),
+    num('aN1', 'aₙ₊₁', 'Next term', undefined, 0, 1e4),
+    num('q', 'aₙ₊₁/aₙ', 'Ratio of terms', undefined, 0, 10),
+    num('S', 'S', 'Sum of the series', undefined, 0, 1000),
+  ],
+  rules: [
+    rule(
+      'aₙ = cⁿ ÷ n!',
+      '{aN} = {c}^({N}) ÷ {N}!',
+      ['aN', 'c', 'N'],
+      (v) => v.aN! - v.c! ** v.N! / factorialOf(v.N!),
+      {
+        aN: [
+          (v) => v.c! ** v.N! / factorialOf(v.N!),
+          '{c}^({N}) ÷ {N}!',
+          'Put the term number into cⁿ ÷ n!.',
+        ],
+      },
+    ),
+    rule(
+      'ratio = c ÷ (n + 1)',
+      '{q} = {c} ÷ ({N} + 1)',
+      ['q', 'c', 'N'],
+      (v) => v.q! * (v.N! + 1) - v.c!,
+      {
+        q: [
+          (v) => v.c! / (v.N! + 1),
+          '{c} ÷ ({N} + 1)',
+          'cⁿ⁺¹ ÷ (n + 1)! over cⁿ ÷ n! leaves c ÷ (n + 1).',
+        ],
+      },
+    ),
+    rule(
+      'aₙ₊₁ = aₙ × ratio',
+      '{aN1} = {aN} × {q}',
+      ['aN1', 'aN', 'q'],
+      (v) => v.aN1! - v.aN! * v.q!,
+      {
+        aN1: [(v) => v.aN! * v.q!, '{aN} × {q}', 'Multiply this term by the ratio.'],
+      },
+    ),
+    rule('S = eᶜ − 1', '{S} = e^({c}) − 1', ['S', 'c'], (v) => v.S! - Math.exp(v.c!) + 1, {
+      S: [
+        (v) => Math.exp(v.c!) - 1,
+        'e^({c}) − 1',
+        'The exponential series without its n = 0 term, 1.',
+      ],
+      c: [
+        (v) => (v.S! > -1 ? Math.log(v.S! + 1) : undefined),
+        'ln({S} + 1)',
+        'Add 1, then take the natural log.',
+      ],
+    }),
+  ],
+  example: (() => {
+    const [c, N] = [2, 6];
+    const aN = c ** N / factorialOf(N);
+    const q = c / (N + 1);
+    return { c, N, aN, q, aN1: aN * q, S: Math.exp(c) - 1 };
+  })(),
+  startWith: ['c', 'N'],
+  representation: {
+    kind: 'termsChart',
+    type: 'factorial',
+    first: 1,
+    step: 'c',
+    count: 'N',
+    as: 'bars',
+    sums: true,
+    term: 'aN',
+    next: 'aN1',
+    ratio: 'q',
+    limit: 'S',
+  },
+});
+
+/** Σ from n = 1 to N of (−1)ⁿ⁺¹/nᵖ. */
+const altSum = (N: number, p: number) =>
+  Array.from({ length: N }, (_, i) => (i % 2 ? -1 : 1) / (i + 1) ** p).reduce((s, t) => s + t, 0);
+
+/** calc-2#3~alternating: Σ (−1)ⁿ⁺¹/nᵖ, the error at most the next term. */
+const alternating = page({
+  id: 'g.he-termsChart-alternating',
+  title: 'The alternating series error bound',
+  use: 'Use this for “How close is the 9th partial sum of 1 − 1/2 + 1/3 − … to the sum?”',
+  assumptions: [
+    'The terms 1/nᵖ shrink to 0 and the signs alternate, so the series converges.',
+    'The partial sums zig-zag about S, so |S − S_N| ≤ the next term’s size, 1/(N + 1)ᵖ.',
+    'For p = 1 the sum is ln 2.',
+  ],
+  variables: [
+    num('p', 'p', 'Power', undefined, 0.1, 5, { step: 0.1 }),
+    num('N', 'N', 'Terms added', undefined, 1, 29, { step: 1, integer: true }),
+    num('S', 'S_N', 'Partial sum', undefined, -10, 10),
+    num('b', 'b', 'Error bound', undefined, 0, 1),
+    num('lo', 'S_N − b', 'Lowest the sum can be', undefined, -10, 10),
+    num('hi', 'S_N + b', 'Highest the sum can be', undefined, -10, 10),
+    MP,
+  ],
+  rules: [
+    negP,
+    rule(
+      'S_N = Σ (−1)ⁿ⁺¹/nᵖ',
+      '{S} = Σ from n = 1 to {N} of (−1)^(n+1)/n^{p}',
+      ['S', 'N', 'p'],
+      (v) => v.S! - altSum(Math.round(v.N!), v.p!),
+      {
+        S: [
+          (v) => (Number.isInteger(v.N) ? altSum(v.N!, v.p!) : undefined),
+          'Σ from n = 1 to {N} of (−1)^(n+1)/n^{p}',
+          'Add the first N terms, the signs taking turns.',
+        ],
+      },
+    ),
+    rule(
+      'b = 1/(N + 1)ᵖ',
+      '{b} = 1 ÷ ({N} + 1)^({p})',
+      ['b', 'N', 'p'],
+      (v) => v.b! - 1 / (v.N! + 1) ** v.p!,
+      {
+        b: [
+          (v) => 1 / (v.N! + 1) ** v.p!,
+          '1 ÷ ({N} + 1)^({p})',
+          'The first term left out is the bound.',
+        ],
+      },
+    ),
+    rule('low = S_N − b', '{lo} = {S} − {b}', ['lo', 'S', 'b'], (v) => v.lo! - v.S! + v.b!, {
+      lo: [(v) => v.S! - v.b!, '{S} − {b}', 'The sum is at most b below S_N.'],
+    }),
+    rule('high = S_N + b', '{hi} = {S} + {b}', ['hi', 'S', 'b'], (v) => v.hi! - v.S! - v.b!, {
+      hi: [(v) => v.S! + v.b!, '{S} + {b}', 'The sum is at most b above S_N.'],
+    }),
+  ],
+  example: (() => {
+    const [p, N] = [1, 9];
+    const S = altSum(N, p);
+    const b = 1 / (N + 1) ** p;
+    return { p, N, S, b, lo: S - b, hi: S + b, mp: -p };
+  })(),
+  startWith: ['p', 'N'],
+  representation: {
+    kind: 'termsChart',
+    type: 'power',
+    first: 1,
+    step: 'mp',
+    count: 'N',
+    as: 'bars',
+    sums: true,
+    sum: 'S',
+    alternate: true,
+    next: 'b',
+    bounds: { low: 'lo', high: 'hi' },
+    limit: true,
+  },
+});
+
+const HC66: ModuleDef[] = [
+  pSeries(
+    'g.he-termsChart-pseries',
+    'The integral test’s bounds',
+    'Use this for “Estimate Σ 1/n² with 10 terms. How far off can it be?”',
+    pEx(2, 10),
+  ),
+  pSeries(
+    'g.he-termsChart-pseries-slow',
+    'A slowly converging p-series',
+    'Use this for “Bound Σ 1/n^1.1 with 30 terms.”',
+    pEx(1.1, 30),
+  ),
+  ratioTest,
+  factorialSeries,
+  alternating,
+];
+
+export const HE3C_GALLERY_MODULES: ModuleDef[] = [...HC53, ...HC54, ...HC66];
 
 export const HE3C_GALLERY_LAYOUTS: LayoutDef[] = [];

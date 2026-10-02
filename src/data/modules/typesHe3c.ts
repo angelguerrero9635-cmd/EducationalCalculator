@@ -82,6 +82,36 @@ export interface CurvedSolidHe3c {
   };
 }
 
+// ─── HC66: termsChart series ────────────────────────────────────────────────
+
+/**
+ * More `termsChart` rules: 'nr', aₙ = first × n·rⁿ (r = `step`); 'factorial',
+ * aₙ = first × cⁿ ÷ n! (c = `step`).
+ */
+export type TermsTypeHe3c = 'nr' | 'factorial';
+
+/**
+ * `termsChart` options for series pages. `alternate`: the signs alternate, aₙ × (−1)ⁿ⁺¹ (with
+ * 'power', 'geometric', 'nr' or 'factorial'), the partial sums zig-zagging about the sum.
+ * `bounds`: a band low ≤ S ≤ high the sum must lie in (the integral test's, or Sₙ ± aₙ₊₁),
+ * shaded across the chart. `next` and `ratio`: the chart runs one term past n, aₙ₊₁ in the
+ * second colour; `next` is checked as aₙ₊₁ (its size |aₙ₊₁| when the signs alternate, the error
+ * bound) and `ratio` as aₙ₊₁ ÷ aₙ. With any of these (or the two new types) `limit: true`
+ * draws the series' sum, worked out (r ÷ (1 − r)², eᶜ − 1, ζ(p), η(p) …) when it converges, and
+ * a `limit` id is checked against it; the band must contain it.
+ */
+export interface TermsChartHe3c {
+  alternate?: true;
+  bounds?: { low: NumOrVar; high: NumOrVar };
+  next?: string;
+  ratio?: string;
+}
+
+/** The variable ids the HC66 options name (for the module tests). */
+export function termsChartHe3cVars(r: TermsChartHe3c): string[] {
+  return ids(r.bounds?.low, r.bounds?.high, r.next, r.ratio);
+}
+
 /** The variable ids the HC54 options name (for the module tests). */
 export function rightTriangleHe3cVars(r: RightTriangleHe3c): string[] {
   return ids(r.rates?.a, r.rates?.b, r.rates?.c);

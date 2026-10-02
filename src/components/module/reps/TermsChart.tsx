@@ -11,6 +11,7 @@ import { formulaOnly } from './hskKit';
 import { niceStep } from './Plot';
 import { powerLines, powerName } from './termsPowerHs3b';
 import { termsModel } from './termsModel';
+import { useSeriesHe3c } from './SeriesBandHe3c';
 
 const num = (x: number) => formatNumber(Number(x.toPrecision(10)));
 const sub = (n: number) => [...String(n)].map((d) => '₀₁₂₃₄₅₆₇₈₉'[Number(d)]).join('');
@@ -30,11 +31,13 @@ export function TermsChart({ spec, calc }: { spec: TermsChartSpec; calc: Calcula
     v === undefined ? undefined : typeof v === 'number' ? v : rep.shown(v);
   const known = (v: number | string | undefined) => typeof v !== 'string' || rep.known(v);
   const model = termsModel(spec, get);
-  const { terms, sums, limit } = model;
+  const { terms, sums } = model;
   // H93: n is the lit term; `terms` may run on to a second lit term (`lit`).
   const n = model.count;
   const a = get(spec.first) ?? 1;
   const d = get(spec.step) ?? 1;
+  const he3c = useSeriesHe3c(spec, get, known, a, d, model); // HC66: series pages
+  const limit = model.limit ?? he3c.limit;
   const arith = spec.type === 'arithmetic';
   const recursive = spec.type === 'recursive';
   const c0 = get(spec.plus) ?? 0;
@@ -44,12 +47,12 @@ export function TermsChart({ spec, calc }: { spec: TermsChartSpec; calc: Calcula
     known(spec.count) &&
     known(spec.plus) &&
     known(spec.lit);
-  const second = spec.lit === undefined ? -1 : Math.round(get(spec.lit) ?? 0) - 1;
+  const second = spec.lit === undefined ? he3c.second : Math.round(get(spec.lit) ?? 0) - 1;
   const lit2 = second >= 0 && second < terms.length && second !== n - 1 ? second : -1;
   const powers = spec.powers && !arith && !recursive && a === d;
   /** A term's name: aₙ, or as a power of the first term (2³). */
   const termName = (i: number) =>
-    spec.type === 'power' // H106
+    spec.type === 'power' && !he3c.on // H106 (HC66: aₙ on series pages)
       ? powerName(i + 1, d)
       : powers
         ? `${num(a)}${sup(i + 1)}`
@@ -61,7 +64,8 @@ export function TermsChart({ spec, calc }: { spec: TermsChartSpec; calc: Calcula
   // ── Caption ──
   const lines: string[] = [];
   if (model.problem) lines.push(model.problem);
-  if (n && spec.type === 'power') lines.push(...powerLines(a, d, n, terms, sums, !!spec.sums));
+  if (n && he3c.on) lines.push(...he3c.lines);
+  else if (n && spec.type === 'power') lines.push(...powerLines(a, d, n, terms, sums, !!spec.sums));
   else if (n) {
     const shown =
       n <= 6
@@ -124,6 +128,7 @@ export function TermsChart({ spec, calc }: { spec: TermsChartSpec; calc: Calcula
             ...drawn.map((i) => terms[i]!),
             ...(showSums ? sums : []),
             ...(limit !== undefined ? [limit] : []),
+            ...he3c.values,
           ];
           let lo = Math.min(...values);
           let hi = Math.max(...values);
@@ -139,7 +144,8 @@ export function TermsChart({ spec, calc }: { spec: TermsChartSpec; calc: Calcula
           const breakX = L + (HEAD + 0.75) * slot;
           const op = allKnown ? 1 : 0.35;
           const ticks: number[] = [];
-          for (let t = lo; t <= hi + 1e-9; t += step) ticks.push(Number(t.toPrecision(12)));
+          for (let t = lo; t <= hi + 1e-9; t += step)
+            ticks.push(Number((Math.round(t / step) * step).toPrecision(12))); // (0, never 10⁻¹⁷)
           const every = [1, 2, 5, 10].find((e) => e * slot >= 20) ?? 10;
           const bottom = h - B;
           const bars = spec.as !== 'points';
@@ -251,6 +257,7 @@ export function TermsChart({ spec, calc }: { spec: TermsChartSpec; calc: Calcula
                 {powers ? 'exponent n' : 'term number n'}
               </ChartText>
               <G opacity={op}>
+                {he3c.band(L, w - R, sy)}
                 {limit !== undefined ? (
                   <Line
                     x1={L}

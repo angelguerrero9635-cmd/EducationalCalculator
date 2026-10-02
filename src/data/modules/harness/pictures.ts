@@ -2191,6 +2191,7 @@ export function repIssues(
         ...hs2gIssues(rep, val),
       );
       out.push(...hs3bIssues(rep, val, byId)); // H106: the F curve
+      if (rep.kind === 'termsChart') out.push(...he3cIssues(rep, val, byId)); // HC66
       break;
     case 'unitCircle':
     case 'algebraTiles':

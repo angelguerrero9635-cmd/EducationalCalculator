@@ -1,6 +1,6 @@
 /**
  * Picture checks for the college round 3 group C options (`typesHe3c.ts`): HC53 `polarGrid`
- * areas, regions, tangent and traced length; HC54 related rates and pumping work. What each draws must agree with the page's
+ * areas, regions, tangent and traced length; HC54 related rates and pumping work; HC66 series charts. What each draws must agree with the page's
  * values. Called from `repIssues` in `pictures.ts`. Test-only.
  */
 import { CURVE_FIELDS, PATH_FIELDS } from '@/components/module/reps/polar';
@@ -18,6 +18,8 @@ import {
   slabLift,
 } from '@/components/module/reps/ratesHe3cMath';
 
+import { termsModel } from '@/components/module/reps/termsModel';
+import { isSeriesHe3c, sumHe3c } from '@/components/module/reps/termsSeriesHe3c';
 import type { VariableDef } from '@/engine/types';
 
 import type { NumOrVar } from '../typesGraphs';
@@ -62,6 +64,43 @@ export function he3cIssues(
       const scale = Math.max(Math.abs(a! * da!), Math.abs(b! * db!), Math.abs(c! * dc!), 1e-9);
       if (Math.abs(gap) > 1e-3 * scale)
         out.push(`the rates don't satisfy a·a′ + b·b′ = c·c′ (off by ${gap})`);
+    }
+  }
+  if (rep.kind === 'termsChart' && isSeriesHe3c(rep)) {
+    // HC66: aₙ₊₁ and the ratio by the rule; the band holds the sum; a limit id is the sum.
+    if (rep.alternate && rep.type === 'recursive')
+      out.push('alternate is not for a recursive rule');
+    if (rep.alternate && rep.type === 'geometric')
+      out.push('alternate on a geometric series: use a negative ratio instead');
+    // Only when the rule's values are all known (the picture draws nothing worked otherwise).
+    const [a, d, n] = [get(rep.first), get(rep.step), get(rep.count)];
+    const m = termsModel(rep, get);
+    if (a !== undefined && d !== undefined && n !== undefined && !m.problem && m.count) {
+      const next = m.terms[m.count];
+      if (rep.next !== undefined || rep.ratio !== undefined) {
+        if (next === undefined) out.push('aₙ₊₁ is not drawn');
+        else {
+          check(rep.next, rep.alternate ? Math.abs(next) : next, 'aₙ₊₁');
+          const last = m.terms[m.count - 1]!;
+          if (last !== 0) check(rep.ratio, next / last, 'the ratio aₙ₊₁ ÷ aₙ');
+        }
+      }
+      const S = sumHe3c(rep, a, d);
+      if (typeof rep.limit === 'string') {
+        if (S === undefined) {
+          if (get(rep.limit) !== undefined) out.push('a sum is given for a series that diverges');
+        } else check(rep.limit, S, 'the sum S');
+      }
+      const [lo, hi] = [get(rep.bounds?.low), get(rep.bounds?.high)];
+      if (lo !== undefined && hi !== undefined) {
+        if (lo > hi + 1e-12) out.push(`the band runs backwards (${lo} to ${hi})`);
+        const want = typeof rep.limit === 'string' ? (get(rep.limit) ?? S) : S;
+        if (
+          want !== undefined &&
+          (want < lo - 1e-9 * Math.abs(want) || want > hi + 1e-9 * Math.abs(want))
+        )
+          out.push(`the sum ${want} is outside the band ${lo} to ${hi}`);
+      }
     }
   }
   if (rep.kind === 'curvedSolid') {

@@ -50,7 +50,12 @@ import { he1bSpecVars } from '../typesHe1b';
 import { he1aSpecVars } from '../typesHe1a';
 import { bodeVars, complexPlaneHe2aVars } from '../typesHe2a';
 import { he2hSpecVars } from '../typesHe2h';
-import { curvedSolidHe3cVars, polarGridHe3cVars, rightTriangleHe3cVars } from '../typesHe3c';
+import {
+  curvedSolidHe3cVars,
+  polarGridHe3cVars,
+  rightTriangleHe3cVars,
+  termsChartHe3cVars,
+} from '../typesHe3c';
 import { isStandIn, pages } from '../harness/scope';
 import { treeChanceVars, twoWayVars, vennChanceVars } from '../harness/picturesHse';
 
@@ -542,7 +547,13 @@ function representationVars(r: Representation): string[] {
     case 'histogram':
     case 'pascalTriangle':
     case 'termsChart':
-      return [...hsbSpecVars(r), ...hs2aSpecVars(r), ...hs2gSpecVars(r), ...hs3bSpecVars(r)];
+      return [
+        ...hsbSpecVars(r),
+        ...hs2aSpecVars(r),
+        ...hs2gSpecVars(r),
+        ...hs3bSpecVars(r),
+        ...(r.kind === 'termsChart' ? termsChartHe3cVars(r) : []), // HC66
+      ];
     case 'unitCircle':
     case 'algebraTiles':
     case 'vectorDiagram':

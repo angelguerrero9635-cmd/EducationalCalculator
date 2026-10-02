@@ -86,4 +86,26 @@ export const HE3C_REQUESTS: PictureRequest[] = [
       'g.he-curvedSolid-pump-oil',
     ],
   },
+  {
+    ...ask(
+      'HC66',
+      'termsChart',
+      'Series on the terms chart: the n·rⁿ and cⁿ ÷ n! rules, alternating signs with the partial sums zig-zagging about the sum, the next term and the ratio for the ratio test, a band the sum must lie in, and the sum itself worked out',
+      [`${M}calc-2#3`, `${M}calc-2#3~ratio`, `${M}calc-2#3~alternating`],
+      [
+        'From M-P17. Options on termsChart (typesHe3c.ts; the rules and sums in reps/termsSeriesHe3c.ts, drawn through reps/SeriesBandHe3c.tsx with a line or two in TermsChart.tsx and termsModel.ts); each is off unless a page sets it, and with any of them the terms are named aₙ and the caption is the series one.',
+        "Fields: type: 'nr' (aₙ = first × n·rⁿ, r = step) | 'factorial' (aₙ = first × cⁿ ÷ n!, c = step); alternate: true (aₙ × (−1)ⁿ⁺¹ on 'power', 'nr' or 'factorial'; a geometric series takes a negative ratio instead); bounds: { low, high } (a band shaded across the chart, dashed edges, at least 3 px tall; the caption says whether the sum lies in it); next: id (the chart runs to n + 1, aₙ₊₁ in the second colour; checked as aₙ₊₁, or |aₙ₊₁| when the signs alternate, the error bound); ratio: id (aₙ₊₁ ÷ aₙ, checked; the caption gives the ratio's limit, |r| for n·rⁿ and 0 for cⁿ ÷ n!); limit: true | id (the series' sum dashed: r ÷ (1 ∓ r)², eᶜ − 1 or 1 − e⁻ᶜ, ζ(p) and η(p) summed to 10⁻⁹; an id is checked against it; 'This series has no sum' when it diverges). A p-series is type 'power' with step −p (a hidden value: the page's p negated).",
+        "Examples. calc-2#3 main: { kind: 'termsChart', type: 'power', first: 1, step: 'mp', count: 'N', as: 'bars', sums: true, sum: 'S', bounds: { low: 'lo', high: 'hi' }, limit: true } with hidden mp = −p. ~ratio: { kind: 'termsChart', type: 'nr', first: 1, step: 'r', count: 'N', sums: true, term: 'aN', next: 'aN1', ratio: 'q', limit: 'S' }. ~alternating: { kind: 'termsChart', type: 'power', first: 1, step: 'mp', count: 'N', sums: true, sum: 'S', alternate: true, next: 'b', bounds: { low: 'lo', high: 'hi' }, limit: true }. Step text: write the sums Σ from n = 1 to N of (1/n)^p and Σ from n = 1 to N of (−1)^(n+1)/n^p (other forms of a power inside Σ don't typeset); n! is taught to the harness (phrasesHe3c.ts).",
+        'The harness checks every term and partial sum by the rule (picturesHsb.ts with the HC66 rules), aₙ₊₁ and the ratio, the sum against a limit id, the band in order and containing the sum (picturesHe3c.ts).',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-termsChart-pseries',
+      'g.he-termsChart-pseries-slow',
+      'g.he-termsChart-ratio',
+      'g.he-termsChart-factorial',
+      'g.he-termsChart-alternating',
+    ],
+  },
 ];
