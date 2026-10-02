@@ -148,6 +148,16 @@ export function Tape({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     { ...rep.pinTyped([...others, ...total]), [id]: value },
                     { ...rep.pinTyped(others), [id]: value },
                   ];
+                  // Past a value that leaves a part no whole number (a share into 8 groups),
+                  // the nearest that does, on the way the pointer went.
+                  const now = calc.values[id];
+                  const step = rep.slide(id)?.slide.step ?? 0;
+                  if (now !== undefined && step > 0 && Math.abs(value - now) > 1e-9)
+                    for (let k = 1; k <= 12; k++)
+                      updates.push({
+                        ...rep.pinTyped(others),
+                        [id]: value + Math.sign(value - now) * k * step,
+                      });
                   if (!compare && typeof spec.total === 'string' && rep.known(spec.total)) {
                     const grown = rep.shown(spec.total) - shown[i]! + value / rep.factor(id);
                     updates.push({
