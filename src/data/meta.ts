@@ -150,6 +150,7 @@ const PICTURE_NAMES: Record<string, string> = {
   velocityProfile: 'velocity or concentration profiles across a tube, gap or film',
   bode: 'a Bode plot: gain in dB and phase over log frequency, corners, margins',
   potentialWell: 'a potential well with its energy levels and wavefunctions',
+  phaseSpace: 'phase space: an energy curve, the state and its flow; a bead on a hoop',
   unitCell: 'a cubic unit cell, its lattice planes and Bragg reflection',
   globe:
     'a globe: the Sun’s rays, a great-circle route, a turning plate, a dipole field or a ring of air',
