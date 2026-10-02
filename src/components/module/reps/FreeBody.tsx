@@ -9,7 +9,7 @@ import { chart, usePalette } from '@/theme';
 import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, DragHandle, useFrozen, useRep } from './common';
 import { freeBodyOf, G_EARTH, type Force } from './hskMath';
-import { RAD, sig, SubLabel, Vec } from './hskKit';
+import { formulaOnly, RAD, sig, SubLabel, Vec } from './hskKit';
 import { FreeBodyWork } from './freeBodyWork';
 import { BoxShadow, TopLight, url, usePaintIds } from './paint';
 
@@ -62,12 +62,15 @@ export function FreeBody({ spec, calc }: { spec: FreeBodySpec; calc: Calculator 
     tension: c.forceTension,
     applied: c.forceApplied,
   };
+  // A "?" box reads "?" on the picture too, not the example's number drawn faded behind it.
+  const q = (ok: boolean, text: string) => (ok ? text : '?');
+  const mOk = known(spec.mass);
   const nameOf: Record<Force['key'], string> = {
-    weight: `W ${sig(fb.W)} N`,
-    normal: `F_N ${sig(fb.N)} N`,
-    friction: `${fb.isStatic ? 'f_s' : 'f'} ${sig(fb.fUsed)} N`,
-    tension: `T ${sig(si(spec.tension))} N`,
-    applied: `F ${sig(si(spec.applied))} N`,
+    weight: `W ${q(mOk, sig(fb.W))} N`,
+    normal: `F_N ${q(all, sig(fb.N))} N`,
+    friction: `${fb.isStatic ? 'f_s' : 'f'} ${q(all, sig(fb.fUsed))} N`,
+    tension: `T ${q(known(spec.tension), sig(si(spec.tension)))} N`,
+    applied: `F ${q(known(spec.applied), sig(si(spec.applied)))} N`,
   };
   // H102: a floor block moved d to the right, and the pull's part along it.
   const moved = spec.support === 'floor' && spec.displacement !== undefined;
@@ -75,7 +78,8 @@ export function FreeBody({ spec, calc }: { spec: FreeBodySpec; calc: Calculator 
   const pullA = si(spec.applied) ? si(spec.appliedAngle) : si(spec.tensionAngle);
   const pullAlong = pullF * Math.cos(pullA * RAD);
   const dist = si(spec.displacement);
-  const lines = moved ? [...captionLines(), ...workLines()] : captionLines();
+  const worked = moved ? [...captionLines(), ...workLines()] : captionLines();
+  const lines = all && (!moved || known(spec.displacement)) ? worked : formulaOnly(worked);
 
   return (
     <View>
@@ -200,7 +204,7 @@ export function FreeBody({ spec, calc }: { spec: FreeBodySpec; calc: Calculator 
                     <SubLabel
                       x={ramp.x0 + 30}
                       y={floorY + 17}
-                      text={`θ = ${formatNumber(Number(theta.toFixed(1)))}°`}
+                      text={`θ = ${q(known(spec.incline), formatNumber(Number(theta.toFixed(1))))}°`}
                       anchor="start"
                       chip={false}
                     />
@@ -294,7 +298,7 @@ export function FreeBody({ spec, calc }: { spec: FreeBodySpec; calc: Calculator 
                     <SubLabel
                       x={end(along).x - 6}
                       y={end(along).y + 16}
-                      text={`W sin θ ${sig(W * Math.sin(th))}`}
+                      text={`W sin θ ${q(mOk && known(spec.incline), sig(W * Math.sin(th)))}`}
                       anchor="end"
                       color={c.forceWeight}
                       size={chart.label}
@@ -303,7 +307,7 @@ export function FreeBody({ spec, calc }: { spec: FreeBodySpec; calc: Calculator 
                     <SubLabel
                       x={end(into).x + 8}
                       y={end(into).y + 4}
-                      text={`W cos θ ${sig(W * Math.cos(th))}`}
+                      text={`W cos θ ${q(mOk && known(spec.incline), sig(W * Math.cos(th)))}`}
                       anchor="start"
                       color={c.forceWeight}
                       size={chart.label}
@@ -339,8 +343,8 @@ export function FreeBody({ spec, calc }: { spec: FreeBodySpec; calc: Calculator 
                     along={pullAlong * k}
                     floorY={floorY}
                     w={w}
-                    text={`F cos θ ${sig(pullAlong)} N`}
-                    d={`d = ${sig(dist)} m`}
+                    text={`F cos θ ${q(all, sig(pullAlong))} N`}
+                    d={`d = ${q(known(spec.displacement), sig(dist))} m`}
                     faded={!all || !known(spec.displacement)}
                   />
                 ) : null}
@@ -360,7 +364,13 @@ export function FreeBody({ spec, calc }: { spec: FreeBodySpec; calc: Calculator 
                   <SubLabel
                     x={netStart.x}
                     y={netStart.y + Math.max(24, (Math.abs(fb.net.y) * k) / 2 + 20)}
-                    text={fb.netSize > 1e-9 ? `F_net ${sig(Math.abs(fb.netSize))} N` : 'F_net = 0'}
+                    text={
+                      !all
+                        ? 'F_net ? N'
+                        : fb.netSize > 1e-9
+                          ? `F_net ${sig(Math.abs(fb.netSize))} N`
+                          : 'F_net = 0'
+                    }
                     color={c.forceNet}
                     w={w}
                   />

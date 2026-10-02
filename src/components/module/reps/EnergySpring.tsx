@@ -49,6 +49,20 @@ export function EnergySpring({
   const ke = E0 - heat - pe;
   const reach = Math.max(0, (E0 - heat) / (m * g));
   const all = [s.k, s.compression, spec.mass, s.friction, s.rough, spec.height].every(known);
+  // A "?" box reads "?" on the picture too, not the example's number drawn faded behind it.
+  const q = (ok: boolean, text: string) => (ok ? text : '?');
+  const [kOk, xOk, fOk, dOk] = [
+    known(s.k),
+    known(s.compression),
+    known(s.friction),
+    known(s.rough),
+  ];
+  const mOk = known(spec.mass);
+  const hOk = known(spec.height);
+  const eOk = kOk && xOk;
+  const heatOk = fOk && dOk;
+  const peOk = mOk && hOk;
+  const reachOk = eOk && heatOk && mOk;
   const scale = useFrozen({ top: Math.max(reach, h, 1e-9) * 1.1, E: niceCeil(Math.max(E0, 1e-9)) });
   const lines = captionLines();
 
@@ -114,7 +128,7 @@ export function EnergySpring({
                   <SubLabel
                     x={(wallX + springEnd) / 2}
                     y={ground - 26}
-                    text={`k ${sig(k)} N/m`}
+                    text={`k ${q(kOk, sig(k))} N/m`}
                     size={chart.label}
                     w={w}
                   />
@@ -139,7 +153,7 @@ export function EnergySpring({
                   <SubLabel
                     x={(patch.x0 + patch.x1) / 2}
                     y={ground + 20}
-                    text={`rough ${sig(d)} m, f = ${sig(f)} N`}
+                    text={`rough ${q(dOk, sig(d))} m, f = ${q(fOk, sig(f))} N`}
                     size={chart.label}
                     w={w}
                   />
@@ -152,7 +166,7 @@ export function EnergySpring({
                     points={`${rampX0},${ground} ${rampX1},${ground} ${rampX1},${rampTop}`}
                     fill={url(ids.light)}
                   />
-                  {reach < scale.value.top ? (
+                  {reachOk && reach < scale.value.top ? (
                     <G>
                       <Line
                         x1={rampX0 - 10}
@@ -199,7 +213,7 @@ export function EnergySpring({
                     <SubLabel
                       x={xB + 10}
                       y={yB + 24}
-                      text={`h ${sig(h)} m`}
+                      text={`h ${q(hOk, sig(h))} m`}
                       anchor="start"
                       size={chart.label}
                       w={w}
@@ -249,15 +263,15 @@ export function EnergySpring({
                 })}
                 {/* A key beside the bars, each energy with its value. */}
                 {[
-                  { E: E0, color: c.chartSecond, name: 'spring ½kx²' },
-                  { E: ke, color: c.chartHighlight, name: 'kinetic' },
-                  { E: pe, color: c.lineSum, name: 'potential mgh' },
-                  { E: heat, color: c.forceFriction, name: 'heat fd' },
+                  { E: E0, ok: eOk, color: c.chartSecond, name: 'spring ½kx²' },
+                  { E: ke, ok: reachOk && hOk, color: c.chartHighlight, name: 'kinetic' },
+                  { E: pe, ok: peOk, color: c.lineSum, name: 'potential mgh' },
+                  { E: heat, ok: heatOk, color: c.forceFriction, name: 'heat fd' },
                 ].map((p, i) => (
                   <G key={p.name}>
                     <Rect x={w * 0.66} y={barTop + i * 24} width={12} height={12} fill={p.color} />
                     <ChartText x={w * 0.66 + 17} y={barTop + i * 24 + 11} fontSize={chart.label}>
-                      {`${p.name} ${sig(Math.max(0, p.E))} J`}
+                      {`${p.name} ${q(p.ok, sig(Math.max(0, p.E)))} J`}
                     </ChartText>
                   </G>
                 ))}
@@ -298,10 +312,15 @@ export function EnergySpring({
 
   function captionLines() {
     const out = [
-      `Spring: ½kx² = ½ × ${sig(k)} × ${sig(x)}² = ${sig(E0)} J`,
-      `Heat on the rough patch: fd = ${sig(f)} × ${sig(d)} = ${sig(heat)} J`,
-      `Potential: mgh = ${sig(m)} × ${formatNumber(g)} × ${sig(h)} = ${sig(pe)} J`,
+      eOk ? `Spring: ½kx² = ½ × ${sig(k)} × ${sig(x)}² = ${sig(E0)} J` : 'Spring: ½kx²',
+      heatOk
+        ? `Heat on the rough patch: fd = ${sig(f)} × ${sig(d)} = ${sig(heat)} J`
+        : 'Heat on the rough patch: fd',
+      peOk
+        ? `Potential: mgh = ${sig(m)} × ${formatNumber(g)} × ${sig(h)} = ${sig(pe)} J`
+        : 'Potential: mgh',
     ];
+    if (!(reachOk && hOk)) return [...out, 'Kinetic: what is left of the spring’s energy'];
     out.push(
       ke >= -1e-9
         ? `Kinetic: ${sig(E0)} − ${sig(heat)} − ${sig(pe)} = ${sig(Math.max(0, ke))} J`

@@ -8,7 +8,7 @@ import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, ChartText, niceCeil, useFrozen, useRep } from './common';
 import { arrowAt, pathOf, traceLine, type Pole } from './fieldLines';
 import { arrowHead } from './graphKit';
-import { RAD, sig, SubLabel, Vec } from './hskKit';
+import { RAD, sig, SubLabel, Vec, worked } from './hskKit';
 import { MovingCharge } from './MovingCharge';
 import { Sheen, TopLight, url, usePaintIds } from './paint';
 
@@ -36,6 +36,9 @@ type Rep = ReturnType<typeof useRep>;
 const num = (rep: Rep, x: number | string | undefined, d = 0) =>
   x === undefined ? d : typeof x === 'number' ? x : rep.val(x);
 const isKnown = (rep: Rep, x: number | string | undefined) => typeof x !== 'string' || rep.known(x);
+/** A value's text, or "?" while a box it comes from is "?" (not the example's number). */
+const say = (rep: Rep, xs: (number | string | undefined)[], value: number) =>
+  xs.every((x) => isKnown(rep, x)) ? sig(value) : '?';
 
 /** Loops of copper wire around a horizontal axis at y, spread from x0 to x1: one per turn. */
 function Coil({
@@ -262,7 +265,7 @@ function CoilView({
                 <SubLabel
                   x={(cx0 + cx1) / 2}
                   y={y - 44}
-                  text={`N = ${sig(N)} turns${N > MAX_LOOPS ? ` (${MAX_LOOPS} drawn)` : ''}`}
+                  text={`N = ${say(rep, [spec.turns], N)} turns${N > MAX_LOOPS ? ` (${MAX_LOOPS} drawn)` : ''}`}
                   size={chart.label}
                   w={w}
                 />
@@ -320,7 +323,7 @@ function CoilView({
                 <SubLabel
                   x={gx - 38}
                   y={gy + 4}
-                  text={`emf ${sig(Math.abs(emf))} V`}
+                  text={`emf ${all ? sig(Math.abs(emf)) : '?'} V`}
                   anchor="end"
                   color={c.chartHighlight}
                   w={w}
@@ -332,7 +335,7 @@ function CoilView({
       </Canvas>
       <Caption>
         {[
-          `emf = NΔΦ/Δt = ${sig(N)} × ${sig(dF)}/${sig(dt)} = ${sig(emf)} V`,
+          ...worked(all, `emf = NΔΦ/Δt = ${sig(N)} × ${sig(dF)}/${sig(dt)} = ${sig(emf)} V`),
           into
             ? 'Pushing the N pole in, the coil’s current makes its near end an N pole that pushes back (Lenz’s law).'
             : 'Pulling it out, the current reverses: the coil’s near end becomes an S pole that pulls back.',
@@ -443,7 +446,7 @@ function ForceView({
                 <SubLabel
                   x={w / 2 - dir.x * half * 0.65}
                   y={mid - dir.y * half * 0.65 - 26}
-                  text={`I ${sig(I)} A`}
+                  text={`I ${say(rep, [spec.current], I)} A`}
                   color={c.chartHighlight}
                   w={w}
                 />
@@ -482,7 +485,7 @@ function ForceView({
                     <SubLabel
                       x={w / 2 + 18}
                       y={mid + 30}
-                      text={`F ${sig(F)} N ${forceInto ? 'into' : 'out of'} the page`}
+                      text={`F ${all ? sig(F) : '?'} N ${forceInto ? 'into' : 'out of'} the page`}
                       anchor="start"
                       color={c.forceNet}
                       w={w}
@@ -501,7 +504,7 @@ function ForceView({
                     <SubLabel
                       x={w / 2 + 10}
                       y={mid + (up ? -1 : 1) * Math.max(12, len) * 0.6 + 4}
-                      text={`F ${sig(F)} N`}
+                      text={`F ${all ? sig(F) : '?'} N`}
                       anchor="start"
                       color={c.forceNet}
                       w={w}
@@ -514,8 +517,8 @@ function ForceView({
                 y={h - 8}
                 text={
                   inPlane
-                    ? `B ${sig(B)} T →, θ = ${sig(th)}°`
-                    : `B ${sig(B)} T ${intoPage ? 'into' : 'out of'} the page`
+                    ? `B ${say(rep, [spec.field], B)} T →, θ = ${say(rep, [spec.angle], th)}°`
+                    : `B ${say(rep, [spec.field], B)} T ${intoPage ? 'into' : 'out of'} the page`
                 }
                 anchor="start"
                 size={chart.label}
@@ -524,7 +527,7 @@ function ForceView({
               <SubLabel
                 x={w - 10}
                 y={h - 8}
-                text={`L ${sig(L)} m`}
+                text={`L ${say(rep, [spec.length], L)} m`}
                 anchor="end"
                 size={chart.label}
                 w={w}
@@ -535,7 +538,10 @@ function ForceView({
       </Canvas>
       <Caption>
         {[
-          `F = BIL sin θ = ${sig(B)} × ${sig(I)} × ${sig(L)} × sin ${sig(th)}° = ${sig(F)} N`,
+          ...worked(
+            all,
+            `F = BIL sin θ = ${sig(B)} × ${sig(I)} × ${sig(L)} × sin ${sig(th)}° = ${sig(F)} N`,
+          ),
           'Right-hand rule: fingers along the current, curl them toward B; the thumb points along the force.',
           inPlane
             ? 'With B along the paper the force comes straight out of it or into it.'
@@ -649,25 +655,25 @@ function TransformerView({
               <SubLabel
                 x={cx0}
                 y={y1 + 18}
-                text={`N_p ${sig(Np)}${Np > MAX_LOOPS ? ` (${MAX_LOOPS} drawn)` : ''}`}
+                text={`N_p ${say(rep, [spec.primary], Np)}${Np > MAX_LOOPS ? ` (${MAX_LOOPS} drawn)` : ''}`}
                 w={w}
               />
               <SubLabel
                 x={cx1}
                 y={y1 + 18}
-                text={`N_s ${sig(Ns)}${Ns > MAX_LOOPS ? ` (${MAX_LOOPS} drawn)` : ''}`}
+                text={`N_s ${say(rep, [spec.secondary], Ns)}${Ns > MAX_LOOPS ? ` (${MAX_LOOPS} drawn)` : ''}`}
                 w={w}
               />
               <SubLabel
                 x={cx0}
                 y={y0 - 6}
-                text={`V_p ${sig(Vp)} V${Ip !== undefined ? `, I_p ${sig(Ip)} A` : ''}`}
+                text={`V_p ${say(rep, [spec.voltage], Vp)} V${Ip !== undefined ? `, I_p ${say(rep, [spec.current], Ip)} A` : ''}`}
                 w={w}
               />
               <SubLabel
                 x={cx1}
                 y={y0 - 6}
-                text={`V_s ${sig(Vs)} V${Is !== undefined ? `, I_s ${sig(Is)} A` : ''}`}
+                text={`V_s ${say(rep, [spec.primary, spec.secondary, spec.voltage], Vs)} V${Is !== undefined ? `, I_s ${all ? sig(Is) : '?'} A` : ''}`}
                 color={c.chartHighlight}
                 w={w}
               />
@@ -685,11 +691,15 @@ function TransformerView({
       </Canvas>
       <Caption>
         {[
-          `Vₛ = Vₚ × Nₛ/Nₚ = ${sig(Vp)} × ${sig(Ns)}/${sig(Np)} = ${sig(Vs)} V`,
+          ...worked(
+            [spec.primary, spec.secondary, spec.voltage].every((x) => isKnown(rep, x)),
+            `Vₛ = Vₚ × Nₛ/Nₚ = ${sig(Vp)} × ${sig(Ns)}/${sig(Np)} = ${sig(Vs)} V`,
+          ),
           ...(Ip !== undefined && Is !== undefined
-            ? [
+            ? worked(
+                all,
                 `Iₛ = Iₚ × Nₚ/Nₛ = ${sig(Ip)} × ${sig(Np)}/${sig(Ns)} = ${sig(Is)} A: VₚIₚ = VₛIₛ = ${sig(Vp * Ip)} W, the power kept.`,
-              ]
+              )
             : []),
           'The alternating current in the primary makes a changing field in the iron, which induces the voltage in the secondary.',
         ].join(' · ')}

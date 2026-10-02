@@ -8,6 +8,7 @@ import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, ChartText, DragHandle, fitLabel, useFrozen, useRep } from './common';
+import { formulaOnly } from './hskKit';
 import { histDataIds, histModel } from './histModel';
 import { probDecimals, rangeOf } from './histRange';
 import { prob4 } from './NormalCurve';
@@ -39,6 +40,7 @@ export function Histogram({ spec, calc }: { spec: HistogramSpec; calc: Calculato
     spec.start,
     spec.end,
     ...(spec.probability?.probs ?? []),
+    ...(spec.probability?.values ?? []),
     spec.binomial?.n,
     spec.binomial?.p,
   ].every(known);
@@ -112,12 +114,15 @@ export function Histogram({ spec, calc }: { spec: HistogramSpec; calc: Calculato
   if (spec.shape && !model.problem)
     lines.push(`Shape: ${spec.shape === true ? model.shape : spec.shape}.`);
 
+  // A "?" value or chance reads "?" on the picture, not the example's number behind it.
+  const valueIds = spec.probability?.values;
+  const xText = (x: number, i: number) => (prob && valueIds && !known(valueIds[i]) ? '?' : num(x));
   const markers = [
     ...(showMean
       ? [
           {
             x: meanValue!,
-            text: `${meanSym} = ${num(meanValue!)}`,
+            text: `${meanSym} = ${allKnown ? num(meanValue!) : '?'}`,
             color: c.chartHighlight,
             dash: undefined,
           },
@@ -239,7 +244,9 @@ export function Histogram({ spec, calc }: { spec: HistogramSpec; calc: Calculato
                   {barLabels
                     ? bars.map((b, i) => {
                         const text = prob
-                          ? b.h.toFixed(decimals)
+                          ? b.id && !known(b.id)
+                            ? '?'
+                            : b.h.toFixed(decimals)
                           : rel
                             ? num(height(b.h))
                             : num(b.h);
@@ -294,7 +301,7 @@ export function Histogram({ spec, calc }: { spec: HistogramSpec; calc: Calculato
                       {...fitLabel(sx(x), num(x), chart.label, w)}
                       y={axisY + 16}
                     >
-                      {num(x)}
+                      {xText(x, i)}
                     </ChartText>
                   ) : null,
                 )}
@@ -373,7 +380,7 @@ export function Histogram({ spec, calc }: { spec: HistogramSpec; calc: Calculato
           );
         }}
       </Canvas>
-      <Caption>{lines.join(' · ')}</Caption>
+      <Caption>{(prob && !allKnown && !waiting ? formulaOnly(lines) : lines).join(' · ')}</Caption>
     </View>
   );
 }

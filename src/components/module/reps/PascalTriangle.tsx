@@ -7,6 +7,7 @@ import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, ChartText, useRep } from './common';
+import { formulaOnly } from './hskKit';
 import { expansion, pascalRows, slotsOf } from './pascal';
 import { FractionRow, fractionHeight, fractionOf } from './PascalFraction';
 
@@ -82,6 +83,10 @@ export function PascalTriangle({ spec, calc }: { spec: PascalTriangleSpec; calc:
         );
     }
   }
+
+  // A "?" box is not worked with the example's numbers (row 4 lit while n is "?").
+  const cut = formulaOnly(lines);
+  const shownLines = allKnown ? lines : cut.length ? cut : ['Type the numbers you know.'];
 
   const triH = (w: number) => (showTriangle ? (R + 1) * cellOf(w).h + 10 : 0);
   // The boxes for the places; past 6, the first 4, "…" and the last.
@@ -355,7 +360,7 @@ export function PascalTriangle({ spec, calc }: { spec: PascalTriangleSpec; calc:
           );
         }}
       </Canvas>
-      <Caption>{lines.join(' · ')}</Caption>
+      <Caption>{shownLines.join(' · ')}</Caption>
     </View>
   );
 }

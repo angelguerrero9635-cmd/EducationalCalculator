@@ -8,7 +8,7 @@ import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, ChartText, useRep } from './common';
 import { longTime, num } from './CircularSatellite';
 import { niceStep } from './hsdGrid';
-import { sig, SubLabel, Vec } from './hskKit';
+import { sig, SubLabel, unknownOr as q, Vec, worked } from './hskKit';
 import { Crate, Metal, TopLight, url, usePaintIds } from './paint';
 
 /** The most one-second pieces the energy bar draws before it counts in bigger pieces. */
@@ -33,6 +33,8 @@ export function PowerLift({ spec, calc }: { spec: PowerLiftSpec; calc: Calculato
   const W = m * g * hgt;
   const P = W / t;
   const all = [spec.mass, spec.height, spec.time].every(known);
+  // A "?" box reads "?" on the picture too, not the example's number drawn faded behind it.
+  const wOk = known(spec.mass) && known(spec.height);
   // Pieces of one second, or of a nice bigger step when there are too many.
   const step = t <= MAX_PIECES ? 1 : niceStep(t / 10);
   const whole = Math.floor(t / step + 1e-9);
@@ -117,19 +119,24 @@ export function PowerLift({ spec, calc }: { spec: PowerLiftSpec; calc: Calculato
                 <SubLabel
                   x={sx - 14 - CRATE / 2 - 20}
                   y={(floorY + liftY) / 2 + 5}
-                  text={`h = ${sig(hgt)} m`}
+                  text={`h = ${q(known(spec.height), sig(hgt))} m`}
                   anchor="end"
                   w={w}
                 />
                 <SubLabel
                   x={sx + 22}
                   y={(floorY + liftY) / 2 + 22}
-                  text={`pull = mg = ${sig(m * g, 4)} N`}
+                  text={`pull = mg = ${q(known(spec.mass), sig(m * g, 4))} N`}
                   anchor="start"
                   color={c.forceWeight}
                   w={w}
                 />
-                <SubLabel x={sx - 14} y={floorY + 20} text={`m = ${sig(m)} kg`} w={w} />
+                <SubLabel
+                  x={sx - 14}
+                  y={floorY + 20}
+                  text={`m = ${q(known(spec.mass), sig(m))} kg`}
+                  w={w}
+                />
                 {/* The stopwatch. */}
                 <Rect
                   x={watch.x - 6}
@@ -189,7 +196,7 @@ export function PowerLift({ spec, calc }: { spec: PowerLiftSpec; calc: Calculato
                 <SubLabel
                   x={watch.x}
                   y={watch.y + watch.r + 20}
-                  text={`t = ${longTime(t)}`}
+                  text={`t = ${known(spec.time) ? longTime(t) : '? s'}`}
                   w={w}
                 />
                 {frac >= 1 ? (
@@ -207,7 +214,7 @@ export function PowerLift({ spec, calc }: { spec: PowerLiftSpec; calc: Calculato
                 <SubLabel
                   x={bar.x}
                   y={bar.y - 10}
-                  text={`W = mgh = ${num(W, 4)} J`}
+                  text={`W = mgh = ${q(wOk, num(W, 4))} J`}
                   anchor="start"
                   color={c.physWork}
                   w={w}
@@ -241,16 +248,18 @@ export function PowerLift({ spec, calc }: { spec: PowerLiftSpec; calc: Calculato
                     fontSize={chart.label}
                     fontWeight="700"
                   >
-                    {num(P * step, 4)}
+                    {q(all, num(P * step, 4))}
                   </ChartText>
                 ) : null}
                 <SubLabel
                   x={bar.x}
                   y={bar.y + bar.h + 20}
                   text={
-                    step === 1
-                      ? `each piece is 1 s: P = ${num(P, 4)} J/s = ${num(P, 4)} W`
-                      : `each piece is ${num(step)} s: ${num(P * step, 4)} J; P = ${num(P, 4)} W`
+                    !all
+                      ? 'each piece is the work done in one second: the power'
+                      : step === 1
+                        ? `each piece is 1 s: P = ${num(P, 4)} J/s = ${num(P, 4)} W`
+                        : `each piece is ${num(step)} s: ${num(P * step, 4)} J; P = ${num(P, 4)} W`
                   }
                   anchor="start"
                   w={w}
@@ -266,8 +275,8 @@ export function PowerLift({ spec, calc }: { spec: PowerLiftSpec; calc: Calculato
 
   function captionLines(): string[] {
     return [
-      `Work done: W = mgh = ${sig(m)} × ${sig(g)} × ${sig(hgt)} = ${num(W, 4)} J`,
-      `Power: P = W/t = ${num(W, 4)}/${num(t)} = ${num(P, 4)} W`,
+      ...worked(wOk, `Work done: W = mgh = ${sig(m)} × ${sig(g)} × ${sig(hgt)} = ${num(W, 4)} J`),
+      ...worked(all, `Power: P = W/t = ${num(W, 4)}/${num(t)} = ${num(P, 4)} W`),
       'A watt is a joule every second: the same work done faster needs more power.',
     ];
   }

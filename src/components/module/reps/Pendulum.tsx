@@ -10,7 +10,7 @@ import { Canvas, Caption, ChartText, DragHandle, useFrozen } from './common';
 import { num } from './CircularSatellite';
 import { useReader } from './hs3aKit';
 import { pendulumOf } from './hs3aMath';
-import { RAD, SubLabel, zeroWindow } from './hskKit';
+import { RAD, SubLabel, worked, zeroWindow } from './hskKit';
 import { Ball, url, usePaintIds } from './paint';
 
 /** Where g is what the page types (m/s²). */
@@ -249,8 +249,12 @@ export function Pendulum({ spec, calc }: { spec: PendulumSpec; calc: Calculator 
       </Canvas>
       <Caption>
         {[
-          `T = 2π√(L/g) = 2π × √(${num(L)}/${num(g)}) = ${num(T)} s`,
-          `f = 1/T = ${num(f)} Hz`,
+          // A "?" box is not worked with the example's numbers: the formula only.
+          ...worked(
+            all(spec.length, spec.gravity),
+            `T = 2π√(L/g) = 2π × √(${num(L)}/${num(g)}) = ${num(T)} s`,
+          ),
+          ...worked(all(spec.length, spec.gravity), `f = 1/T = ${num(f)} Hz`),
           'For small swings T depends only on L and g: not on the bob’s mass or how far it swings.',
         ].join(' · ')}
       </Caption>

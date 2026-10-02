@@ -9,7 +9,7 @@ import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, DragHandle } from './common';
 import { num } from './CircularSatellite';
 import { CurvedArrow, useReader } from './hs3aKit';
-import { RAD, SubLabel, Vec } from './hskKit';
+import { RAD, SubLabel, Vec, worked } from './hskKit';
 import { Metal, TopLight, url, usePaintIds } from './paint';
 
 /** The force arrow's length in px (F is the only force, so its size is its label). */
@@ -186,8 +186,15 @@ export function Torque({ spec, calc }: { spec: TorqueSpec; calc: Calculator }) {
       </Canvas>
       <Caption>
         {[
-          `F⊥ = F sin θ = ${num(F)} × sin ${num(th)}° = ${num(across)} ${uF}`,
-          `τ = rF⊥ = ${num(r)} × ${num(across)} = ${num(tau)} ${uT}`,
+          // A "?" box is not worked with the example's numbers: the formula only.
+          ...worked(
+            all(spec.force, spec.angle),
+            `F⊥ = F sin θ = ${num(F)} × sin ${num(th)}° = ${num(across)} ${uF}`,
+          ),
+          ...worked(
+            all(spec.arm, spec.force, spec.angle),
+            `τ = rF⊥ = ${num(r)} × ${num(across)} = ${num(tau)} ${uT}`,
+          ),
           th < 0.5 || th > 179.5
             ? 'Pushed straight along the arm, the force only pulls on the pivot: no turn.'
             : 'Only the part of F across the arm turns it; the part along the arm pulls on the pivot.',

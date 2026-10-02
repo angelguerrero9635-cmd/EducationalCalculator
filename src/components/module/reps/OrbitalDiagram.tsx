@@ -236,6 +236,9 @@ function Ladder({
   const up = Math.round(ur.value);
   const lo = Math.round(lr.value);
   const known = ur.known && lr.known && up > lo;
+  // A "?" level is not marked: the example's levels are not drawn behind a "?".
+  const upMark = ur.known ? up : NaN;
+  const loMark = lr.known ? lo : NaN;
   const E = known ? photonEnergy(up, lo) : undefined;
   const nm = E ? photonWavelength(E) : undefined;
   const color = nm ? spectrumColor(nm, c) : undefined;
@@ -263,7 +266,7 @@ function Ladder({
             .filter((n) => !below.includes(n))
             .map((n) => {
               const y = yOf(levelEnergy(n));
-              const show = (lastY - y >= 13 && y - zeroY >= 14) || n === up || n === lo;
+              const show = (lastY - y >= 13 && y - zeroY >= 14) || n === upMark || n === loMark;
               if (show) lastY = y;
               return { n, y, show: show && (n <= 4 || n === up || n === lo) };
             });
@@ -311,8 +314,8 @@ function Ladder({
                     y1={y}
                     x2={x1}
                     y2={y}
-                    stroke={n === up || n === lo ? c.chartInk : c.chartMuted}
-                    strokeWidth={n === up || n === lo ? chart.stroke : 1.2}
+                    stroke={n === upMark || n === loMark ? c.chartInk : c.chartMuted}
+                    strokeWidth={n === upMark || n === loMark ? chart.stroke : 1.2}
                   />
                   {show ? (
                     <>

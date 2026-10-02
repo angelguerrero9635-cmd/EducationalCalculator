@@ -9,7 +9,7 @@ import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, ChartText, useRep } from './common';
 import { photonOf, SPECTRAL_LINES } from './hskMath';
 import { labLineIndex } from './hs2h';
-import { sci, sig, SubLabel } from './hskKit';
+import { formulaOnly, sci, sig, SubLabel } from './hskKit';
 import { url, usePaintIds } from './paint';
 
 type Spec = Extract<Representation, { kind: 'spectrum' }>;
@@ -142,7 +142,9 @@ export function SpectrumLinesView({ spec, l, calc }: { spec: Spec; l: Lines; cal
   const lines: string[] = [
     `${NAMES[l.element]} ${l.mode === 'emission' ? 'glows at' : 'absorbs at'} ${lab.map((q) => nm1(q.nm)).join(', ')} nm: its fingerprint.`,
   ];
-  if (z !== undefined)
+  // A "?" redshift reads "?" on the picture, not the example's number drawn faded behind it.
+  if (z !== undefined && !zKnown) lines.push('λ = λ₀(1 + z)', 'v ≈ cz, with c = 300,000 km/s');
+  else if (z !== undefined)
     lines.push(
       `λ = λ₀(1 + z) = ${nm1(ref.nm)} × (1 + ${sig(z)}) = ${sig(ref.nm * (1 + z), 4)} nm`,
       `v ≈ cz = 300,000 km/s × ${sig(z)} = ${sig(300000 * z)} km/s ${z >= 0 ? 'away from us (redshift)' : 'toward us (blueshift)'}`,
@@ -227,7 +229,7 @@ export function SpectrumLinesView({ spec, l, calc }: { spec: Spec; l: Lines; cal
                   <SubLabel
                     x={x0}
                     y={y2 - 8}
-                    text={`observed, z = ${sig(z!)}`}
+                    text={`observed, z = ${zKnown ? sig(z!) : '?'}`}
                     anchor="start"
                     size={chart.label}
                     w={w}
@@ -278,6 +280,12 @@ export function PhotonView({ p, calc }: { spec: Spec; p: PhotonEnergy; calc: Cal
           : ph.nm > HI
             ? 'infrared'
             : 'visible';
+  // A "?" frequency is not worked with the example's numbers: the formulas only.
+  const worked = [
+    `λ = c/f = 3 × 10⁸/(${sci(f)}) = ${sig(ph.nm)} nm`,
+    `E = hf = 6.626 × 10⁻³⁴ × ${sci(f)} = ${sci(ph.J)} J`,
+    `In electronvolts: ${sci(ph.J)}/(1.602 × 10⁻¹⁹) = ${sig(ph.eV)} eV`,
+  ];
   return (
     <View>
       <Canvas aspect={0.5}>
@@ -315,7 +323,7 @@ export function PhotonView({ p, calc }: { spec: Spec; p: PhotonEnergy; calc: Cal
                   fontWeight="700"
                   halo
                 >
-                  {`${sig(ph.nm)} nm (${band})`}
+                  {known ? `${sig(ph.nm)} nm (${band})` : '? nm'}
                 </ChartText>
                 {[400, 500, 600, 700].map((nm) => (
                   <ChartText
@@ -336,9 +344,7 @@ export function PhotonView({ p, calc }: { spec: Spec; p: PhotonEnergy; calc: Cal
       </Canvas>
       <Caption>
         {[
-          `λ = c/f = 3 × 10⁸/(${sci(f)}) = ${sig(ph.nm)} nm`,
-          `E = hf = 6.626 × 10⁻³⁴ × ${sci(f)} = ${sci(ph.J)} J`,
-          `In electronvolts: ${sci(ph.J)}/(1.602 × 10⁻¹⁹) = ${sig(ph.eV)} eV`,
+          ...(known ? worked : formulaOnly(worked)),
           'Higher frequency, shorter wavelength, more energy per photon: blue photons carry more than red.',
         ].join(' · ')}
       </Caption>

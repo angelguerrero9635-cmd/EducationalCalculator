@@ -62,7 +62,7 @@ export function PointField({
       <SubLabel
         x={px + (field.E * k) / 2}
         y={y - 40}
-        text={`E ${sig(field.E)} N/C`}
+        text={`E ${faded ? '?' : sig(field.E)} N/C`}
         color={c.forceNet}
         w={w}
       />

@@ -116,7 +116,12 @@ export function ComplexPlane({ spec, calc }: { spec: ComplexPlaneSpec; calc: Cal
   if (zPolar && 'modulus' in spec.z) {
     const r = num(spec.z.modulus);
     const t = num(spec.z.argument);
-    lines.push(`z = ${short(r)}(cos ${short(t)}° + i sin ${short(t)}°) ≈ ${zText}.`);
+    // A "?" modulus or argument is not worked with the example's numbers.
+    lines.push(
+      z.known
+        ? `z = ${short(r)}(cos ${short(t)}° + i sin ${short(t)}°) ≈ ${zText}.`
+        : 'z = r(cos θ + i sin θ).',
+    );
   } else lines.push(`z = ${zText}.`);
   if (z.known && (spec.modulus || spec.argument || spec.polar) && !zPolar) {
     const r = Math.hypot(z.a, z.b);

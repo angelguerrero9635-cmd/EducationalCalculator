@@ -11,7 +11,7 @@ import { arrowAt, pathOf, traceLine, type Pole } from './fieldLines';
 import { arrowHead } from './graphKit';
 import { coulombOf, fieldAtPoint, fieldOf, K_COULOMB } from './hskMath';
 import { PointField } from './chargesPoint';
-import { sig, SubLabel, Vec } from './hskKit';
+import { formulaOnly, sig, SubLabel, unknownOr as q, Vec } from './hskKit';
 import { Ball, url, usePaintIds } from './paint';
 
 const R = 15;
@@ -41,8 +41,10 @@ export function Charges({ spec, calc }: { spec: ChargesSpec; calc: Calculator })
   // H102: the field at a point x along the line of two charges (the forces are left out).
   const at = two && spec.point !== undefined ? si(spec.point) : undefined;
   const fp = at === undefined ? undefined : fieldAtPoint(q1, q2, r, at);
-  const lines =
+  const workedLines =
     fp && at !== undefined ? [...captionLines().slice(2), ...pointLines()] : captionLines();
+  // A "?" box reads "?" on the picture too, not the example's number drawn faded behind it.
+  const lines = all && known(spec.point) ? workedLines : formulaOnly(workedLines);
 
   return (
     <View>
@@ -116,7 +118,7 @@ export function Charges({ spec, calc }: { spec: ChargesSpec; calc: Calculator })
                       y={mid}
                       field={fp}
                       w={w}
-                      faded={!known(spec.point)}
+                      faded={!all || !known(spec.point)}
                     />
                   ) : two ? (
                     <G>
@@ -137,7 +139,7 @@ export function Charges({ spec, calc }: { spec: ChargesSpec; calc: Calculator })
                       <SubLabel
                         x={w / 2}
                         y={mid - 26}
-                        text={`F ${sig(co.F)} N on each`}
+                        text={`F ${q(all, sig(co.F))} N on each`}
                         color={c.forceNet}
                         w={w}
                       />
@@ -155,7 +157,7 @@ export function Charges({ spec, calc }: { spec: ChargesSpec; calc: Calculator })
                       <SubLabel
                         x={B.x + 6}
                         y={B.y - 14}
-                        text={`E ${sig(E)} N/C`}
+                        text={`E ${q(all, sig(E))} N/C`}
                         anchor="start"
                         color={c.forceNet}
                         w={w}
@@ -184,7 +186,11 @@ export function Charges({ spec, calc }: { spec: ChargesSpec; calc: Calculator })
                       <SubLabel
                         x={p.x}
                         y={p.y + R + 20}
-                        text={`q_${i + 1} ${p.q > 0 ? '+' : ''}${sig(p.q)} μC`}
+                        text={
+                          known(spec.charges[i])
+                            ? `q_${i + 1} ${p.q > 0 ? '+' : ''}${sig(p.q)} μC`
+                            : `q_${i + 1} ? μC`
+                        }
                         w={w}
                       />
                     </G>
@@ -196,7 +202,7 @@ export function Charges({ spec, calc }: { spec: ChargesSpec; calc: Calculator })
                 <SubLabel
                   x={(A.x + B.x) / 2}
                   y={h - 22}
-                  text={`r = ${sig(r)} m`}
+                  text={`r = ${q(known(spec.distance), sig(r))} m`}
                   size={chart.label}
                   w={w}
                 />

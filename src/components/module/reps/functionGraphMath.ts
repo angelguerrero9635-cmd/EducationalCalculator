@@ -488,7 +488,15 @@ export function buildCurve(
               : `${lead(m, ms)}${x}${plusText(b, say(fam.b, 0))}`,
           ),
         ],
-        inverse: m === 0 ? undefined : [T(`(${x}${plusText(-b, numText(-b))})/${numText(m)}`)],
+        // A "?" slope or intercept reads "?" in the inverse too, not the example's number.
+        inverse:
+          m === 0
+            ? undefined
+            : [
+                T(
+                  `(${x}${plusText(-b, say(fam.b, 0) === '?' ? '?' : numText(-b))})/${ms === '?' ? '?' : numText(m)}`,
+                ),
+              ],
         parent: { family: 'linear', m: 1, b: 0 },
         handles: [
           { name: 'the intercept', x: 0, y: b, axis: 'y', sets: ['b'], to: (_, Y) => ({ b: Y }) },
@@ -730,8 +738,8 @@ export function buildCurve(
         inverse:
           k === 0 && h === 0 && a === 1
             ? natural
-              ? [T(r === 1 ? `ln ${x}` : `(ln ${x})/${numText(r)}`)]
-              : [T('log'), T(numText(b), { sub: true }), T(` ${x}`)]
+              ? [T(r === 1 ? `ln ${x}` : `(ln ${x})/${say(fam.r, 1)}`)]
+              : [T('log'), T(say(fam.b, 2), { sub: true }), T(` ${x}`)]
             : undefined,
         parent: natural ? { family: 'exponential', r: 1 } : { family: 'exponential', b },
         handles,
@@ -814,7 +822,7 @@ export function buildCurve(
           a === 1 && h === 0 && k === 0
             ? natural
               ? [T('e'), T(x, { sup: true })]
-              : [T(numText(b)), T(x, { sup: true })]
+              : [T(say(fam.b, 10)), T(x, { sup: true })]
             : undefined,
         parent: natural ? { family: 'log' } : { family: 'log', b },
         handles: [

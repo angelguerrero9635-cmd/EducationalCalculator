@@ -42,6 +42,10 @@ export function Projectile({ spec, calc }: { spec: ProjectileSpec; calc: Calcula
     rep.known(spec.speed) &&
     (!angleId || rep.known(angleId)) &&
     (typeof spec.height !== 'string' || rep.known(spec.height));
+  // A "?" box reads "?" on the picture too, not the example's number drawn faded behind it.
+  const q = (ok: boolean, text: string) => (ok ? text : '?');
+  const compOk = rep.known(spec.speed) && (!angleId || rep.known(angleId));
+  const atOk = known && (!spec.at || rep.known(spec.at));
   const tAt = spec.at ? Math.max(0, rep.val(spec.at)) : undefined;
   const pos = (t: number) => ({ x: p.vx * t, y: h + p.vy * t - (g * t * t) / 2 });
   const vel = (t: number) => ({ x: p.vx, y: p.vy - g * t });
@@ -210,7 +214,7 @@ export function Projectile({ spec, calc }: { spec: ProjectileSpec; calc: Calcula
                     <SubLabel
                       x={sx(pos(tTop).x) + 14}
                       y={sy(p.H) - 9}
-                      text={`H = ${withUnit(sig(p.H), lenU)}`}
+                      text={`H = ${withUnit(q(known, sig(p.H)), lenU)}`}
                       anchor="start"
                       w={w}
                     />
@@ -348,7 +352,7 @@ export function Projectile({ spec, calc }: { spec: ProjectileSpec; calc: Calcula
                 <SubLabel
                   x={launch.x + p.vx * k + 4}
                   y={launch.y + 16}
-                  text={`v_x ${sig(p.vx)}`}
+                  text={`v_x ${q(compOk, sig(p.vx))}`}
                   anchor="start"
                   color={c.unitCircleCosine}
                   w={w}
@@ -357,7 +361,7 @@ export function Projectile({ spec, calc }: { spec: ProjectileSpec; calc: Calcula
                   <SubLabel
                     x={launch.x - 4}
                     y={launch.y - p.vy * k * 0.55}
-                    text={`v_y ${sig(p.vy)}`}
+                    text={`v_y ${q(compOk, sig(p.vy))}`}
                     anchor="end"
                     color={c.unitCircleSine}
                     w={w}
@@ -376,7 +380,7 @@ export function Projectile({ spec, calc }: { spec: ProjectileSpec; calc: Calcula
                 <SubLabel
                   x={sx(p.R) - 6}
                   y={ground - 7}
-                  text={`R = ${withUnit(sig(p.R), lenU)}`}
+                  text={`R = ${withUnit(q(known, sig(p.R)), lenU)}`}
                   anchor="end"
                   w={w}
                 />
@@ -392,7 +396,7 @@ export function Projectile({ spec, calc }: { spec: ProjectileSpec; calc: Calcula
                         ? 24
                         : -10)
                     }
-                    text={`(${sig(pos(tAt).x)}, ${sig(pos(tAt).y)})`}
+                    text={atOk ? `(${sig(pos(tAt).x)}, ${sig(pos(tAt).y)})` : '(?, ?)'}
                     anchor="start"
                     color={c.chartHighlight}
                     w={w}
@@ -440,9 +444,14 @@ export function Projectile({ spec, calc }: { spec: ProjectileSpec; calc: Calcula
     const vxs = spec.vx ? sym(spec.vx) : 'vₓ';
     const vys = spec.vy ? sym(spec.vy) : 'vᵧ';
     const out = [
-      `${vxs} = ${vs} cos ${ts} = ${vt} × cos ${tt}° = ${withUnit(sig(p.vx), spU)}`,
-      `${vys} = ${vs} sin ${ts} = ${vt} × sin ${tt}° = ${withUnit(sig(p.vy), spU)}`,
+      `${vxs} = ${vs} cos ${ts} = ${vt} × cos ${tt}° = ${withUnit(q(compOk, sig(p.vx)), spU)}`,
+      `${vys} = ${vs} sin ${ts} = ${vt} × sin ${tt}° = ${withUnit(q(compOk, sig(p.vy)), spU)}`,
     ];
+    // Until every box the path needs is known, no worked numbers: the rest are "?".
+    if (!known) {
+      if (!spec.parametric) out.push(`In the air until h + ${vys}t − ½gt² = 0.`, `R = ${vxs}T`);
+      return out;
+    }
     if (spec.parametric && tAt !== undefined) {
       const q = pos(tAt);
       const tv = spec.at ? rep.value(spec.at, false) : sig(tAt);

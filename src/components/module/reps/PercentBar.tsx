@@ -33,7 +33,11 @@ function OneBar({ spec, calc }: { spec: Spec; calc: Calculator }) {
   const paint = usePaintIds('light');
   const rep = useRep(calc);
   const start = useRef(0);
-  const pct = Math.max(0, rep.shown(spec.percent));
+  // A "?" percent or whole draws nothing (no shading, no scale under the bar), not the
+  // example's numbers behind the "?"; the handle then waits at 0%.
+  const pctOk = rep.known(spec.percent);
+  const wholeOk = rep.known(spec.whole);
+  const pct = pctOk ? Math.max(0, rep.shown(spec.percent)) : 0;
   // A worked-out percent reads to a tenth (84.2%, not 84.2105%); a typed one as typed.
   const pctText =
     calc.status(spec.percent) === 'derived'
@@ -153,7 +157,7 @@ function OneBar({ spec, calc }: { spec: Spec; calc: Calculator }) {
                     fontWeight={m === 100 ? '700' : '400'}
                     textAnchor="middle"
                   >
-                    {bottom(m)}
+                    {wholeOk ? bottom(m) : m === 100 ? '?' : ''}
                   </ChartText>
                 ))}
                 <ChartText

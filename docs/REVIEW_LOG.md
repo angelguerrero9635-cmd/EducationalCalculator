@@ -46,6 +46,17 @@ script. One entry per review, with the token cost, so the next review is cheaper
   photoelectric "?" case (open), the orbit and relativity captions, `(x − 3)/?` on the
   restricted inverse, and a FunctionGraph handle hidden mid-drag when it nears another (the
   34 px rule).
+- First full run of the new checks, and the fixes: the end-drags caught a graph vertex hidden
+  under the traced point or the secant's Q mid-drag (the dragged handle now always shows), a
+  steep slope triangle with no whole run on the grid (it now centers) and a force tip dragged
+  off the picture (now clamped). The ? check caught the example's numbers behind a "?" on the
+  orbit, light clock, inverse, spring track, cliff, both Doppler pages, humidity and complex
+  roots, then on about 60 more of the 137 Grade 11 pages with a picture: nearly every physics
+  picture worked its caption with the example's numbers. `formulaOnly`/`worked` (hskKit) now
+  cut a worked line to its formula while a box it uses is "?", and the labels read "?". The
+  check reads "40%", "4i" and "2π" ticks as ticks. What it still flags is not a leak: fixed
+  labels that match an example number (hydrogen's lines, the 68–95–99.7 brackets, the unit
+  circle's π/4, levels "n = 2", fringe orders "m = 2", "2V" and "V/2", the boat's fixed 90°).
 
 ## Grades 9–12 pages: two page reviews, placements, and the testing change
 

@@ -7,7 +7,7 @@ import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, DragHandle, useFrozen, useRep } from './common';
-import { sig, SubLabel, Vec } from './hskKit';
+import { formulaOnly, sig, SubLabel, Vec } from './hskKit';
 import { axisOf, leftFor, makePlot, PlotFrame } from './hsjPlot';
 
 /** A signed number in brackets for substituting: (−2). */
@@ -39,6 +39,10 @@ export function Impulse({ spec, calc }: { spec: ImpulseSpec; calc: Calculator })
   const t = numOrVar(spec.time, 1);
   const t2 = spec.compare === undefined ? undefined : numOrVar(spec.compare, 1);
   const all = [m, v0, v, t, ...(t2 ? [t2] : [])].every((x) => x.known);
+  // A "?" box reads "?" on the picture too, not the example's number drawn faded behind it.
+  const say = (ok: boolean, x: number) => (ok ? sig(x) : '?');
+  const dpOk = m.known && v0.known && v.known;
+  const fOk = dpOk && t.known;
   const dt = Math.max(1e-9, t.value);
   const p0 = m.value * v0.value;
   const p1 = m.value * v.value;
@@ -68,21 +72,21 @@ export function Impulse({ spec, calc }: { spec: ImpulseSpec; calc: Calculator })
               x1: x0,
               x2: x0 + p0 * k,
               color: c.physCartA,
-              text: `p_0 = mv_0 = ${sig(p0)} kg·m/s`,
+              text: `p_0 = mv_0 = ${say(m.known && v0.known, p0)} kg·m/s`,
             },
             {
               y: 66,
               x1: x0,
               x2: x0 + p1 * k,
               color: c.physCartB,
-              text: `p = mv = ${sig(p1)} kg·m/s`,
+              text: `p = mv = ${say(m.known && v.known, p1)} kg·m/s`,
             },
             {
               y: 100,
               x1: x0 + p0 * k,
               x2: x0 + p1 * k,
               color: c.forceNet,
-              text: `Δp = ${sig(dp)} kg·m/s`,
+              text: `Δp = ${say(dpOk, dp)} kg·m/s`,
             },
           ];
           const gh = h - TOP;
@@ -100,7 +104,10 @@ export function Impulse({ spec, calc }: { spec: ImpulseSpec; calc: Calculator })
           const inside = X1 - X0 > 110 && main.h > 22;
           // The other Δt's label: in its dashed box when it fits there, else right of both
           // boxes, else under its box (it ran over the F axis when the box was narrow).
-          const t2Text = F2 !== undefined && dt2 ? `same Δp over ${sig(dt2)} s: ${sig(F2)} N` : '';
+          const t2Text =
+            F2 !== undefined && dt2
+              ? `same Δp over ${say(!!t2?.known, dt2)} s: ${say(all, F2)} N`
+              : '';
           const t2W = t2Text.length * chart.label * 0.6;
           const t2End = dt2 ? plot.sx(dt2) : X0;
           const t2In = t2End - 4 - t2W >= X0;
@@ -161,7 +168,7 @@ export function Impulse({ spec, calc }: { spec: ImpulseSpec; calc: Calculator })
                           : Math.min(main.y + main.h - 4, gh - plot.B - 6)
                     }
                     anchor={inside ? 'middle' : 'start'}
-                    text={`F = ${sig(F)} N, area Δp`}
+                    text={`F = ${say(fOk, F)} N, area Δp`}
                     color={c.forceNet}
                     w={w}
                   />
@@ -209,7 +216,7 @@ export function Impulse({ spec, calc }: { spec: ImpulseSpec; calc: Calculator })
           );
         }}
       </Canvas>
-      <Caption>{captionLines().join(' · ')}</Caption>
+      <Caption>{(all ? captionLines() : formulaOnly(captionLines())).join(' · ')}</Caption>
     </View>
   );
 

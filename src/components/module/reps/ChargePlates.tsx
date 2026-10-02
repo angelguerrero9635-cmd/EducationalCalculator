@@ -8,7 +8,7 @@ import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, ChartText, useRep } from './common';
 import { num } from './CircularSatellite';
 import { arrowHead } from './graphKit';
-import { SubLabel, Vec } from './hskKit';
+import { SubLabel, unknownOr as qq, Vec, worked } from './hskKit';
 import { Ball, Sheen, url, usePaintIds } from './paint';
 
 /** A signed number in brackets for substituting: (−1.6 × 10⁻¹⁹). */
@@ -39,6 +39,8 @@ export function ChargePlates({ spec, calc }: { spec: ChargePlatesSpec; calc: Cal
   const all = [spec.voltage, spec.gap, spec.charge].every(known);
   // The higher-potential plate on the left, so the field runs left to right.
   const flip = V < 0;
+  // A "?" box reads "?" on the picture too, not the example's number drawn faded behind it.
+  const eOk = known(spec.voltage) && known(spec.gap);
 
   return (
     <View>
@@ -128,7 +130,7 @@ export function ChargePlates({ spec, calc }: { spec: ChargePlatesSpec; calc: Cal
                 <SubLabel
                   x={w / 2}
                   y={top + 2}
-                  text={`E = ${num(Math.abs(E))} V/m`}
+                  text={`E = ${qq(eOk, num(Math.abs(E)))} V/m`}
                   color={c.forceNet}
                   w={w}
                 />
@@ -165,7 +167,7 @@ export function ChargePlates({ spec, calc }: { spec: ChargePlatesSpec; calc: Cal
                     <SubLabel
                       x={w / 2}
                       y={mid + 34}
-                      text={`F = ${num(F)} N`}
+                      text={`F = ${qq(all, num(F))} N`}
                       color={c.forceApplied}
                       w={w}
                     />
@@ -200,10 +202,10 @@ export function ChargePlates({ spec, calc }: { spec: ChargePlatesSpec; calc: Cal
   );
 
   function captionLines(): string[] {
-    const out = [`Field: E = V/d = ${num(V)}/${num(d)} = ${num(E)} V/m`];
+    const out = worked(eOk, `Field: E = V/d = ${num(V)}/${num(d)} = ${num(E)} V/m`);
     if (q !== undefined && F !== undefined)
       out.push(
-        `Force: F = qE = ${par(num(q))} × ${num(E)} = ${num(F)} N`,
+        ...worked(all, `Force: F = qE = ${par(num(q))} × ${num(E)} = ${num(F)} N`),
         q >= 0
           ? 'A + charge is pushed along the field, toward the − plate.'
           : 'A − charge is pushed against the field, toward the + plate.',

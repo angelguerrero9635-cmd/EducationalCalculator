@@ -754,9 +754,17 @@ export function FunctionGraph({
               ? { x: sec.x + sec.h, y: main.f(sec.x + sec.h) }
               : undefined;
           if (secQ && inWin(secQ.x, secQ.y)) handlePx.push([sx(secQ.x), sy(secQ.y)]);
-          const shownHandles = handleDefs.filter(({ def }) => {
+          // A handle within 34 px of another is hidden, but never the one being dragged: it
+          // would vanish under the finger (a vertex dragged past the traced point). It goes
+          // first, so a handle it passes is the one hidden.
+          const held0 = start.current.def?.name;
+          const shownHandles = [
+            ...handleDefs.filter(({ def }) => def.name === held0),
+            ...handleDefs.filter(({ def }) => def.name !== held0),
+          ].filter(({ def }) => {
             const p: [number, number] = [sx(def.x), sy(def.y)];
-            if (handlePx.some(([x, y]) => Math.hypot(x - p[0], y - p[1]) < 34)) return false;
+            const near = handlePx.some(([x, y]) => Math.hypot(x - p[0], y - p[1]) < 34);
+            if (near && def.name !== held0) return false;
             handlePx.push(p);
             return true;
           });
@@ -975,7 +983,9 @@ export function FunctionGraph({
               color: c.chartMuted,
               dash: chart.dashFine,
             });
-            const t = `midline y = ${numText(main.midline)}`;
+            // The midline is k: "?" while k is (not the example's k drawn faded).
+            const kUnknown = 'k' in spec && say(spec.k as NumOrVar | undefined, 0) === '?';
+            const t = `midline y = ${kUnknown ? '?' : numText(main.midline)}`;
             labels.push({
               box: place(L + 4 + width(t, chart.label) / 2, sy(main.midline), t),
               text: t,
@@ -1704,7 +1714,10 @@ export function FunctionGraph({
                     const first = hIds[s.def.sets.find((p) => hIds[p])!]!;
                     calc.set({ ...held(moving), ...updates }, rep.slide(first));
                   }}
-                  onEnd={frozen.release}
+                  onEnd={() => {
+                    start.current = { x: 0, y: 0 };
+                    frozen.release();
+                  }}
                 />
               ))}
             </>

@@ -53,6 +53,11 @@ export function CircularSatellite({ spec, calc }: { spec: CircularMotionSpec; ca
   const T = v > 0 ? (2 * Math.PI * r) / v : NaN;
   const R = spec.bodyRadius === undefined ? undefined : Math.max(0, si(spec.bodyRadius));
   const all = [spec.central, spec.radius, spec.bodyRadius].every(known);
+  // A "?" box reads "?" on the picture too, not the example's number drawn faded behind it.
+  const mOk = known(spec.central);
+  const rOk = known(spec.radius);
+  const ok = mOk && rOk;
+  const q = (yes: boolean, text: string) => (yes ? text : '?');
   const body = spec.body ?? 'earth';
 
   return (
@@ -74,8 +79,8 @@ export function CircularSatellite({ spec, calc }: { spec: CircularMotionSpec; ca
           };
           // r's label below the radius's middle, unless it would touch GM/r²'s (right-aligned
           // under the satellite): then on the line's other side, ending at it.
-          const rText = `r = ${num(r)} m`;
-          const gText = `GM/r² = ${num(g)} m/s²`;
+          const rText = `r = ${q(rOk, num(r))} m`;
+          const gText = `GM/r² = ${q(ok, num(g))} m/s²`;
           const mid = { x: (O.x + P.x) / 2, y: (O.y + P.y) / 2 };
           const charW = chart.label * 0.6;
           const rBelow = { x: mid.x + 12, y: mid.y + 16 };
@@ -137,7 +142,7 @@ export function CircularSatellite({ spec, calc }: { spec: CircularMotionSpec; ca
                   <SubLabel
                     x={P.x + t.x * 70 + 6}
                     y={P.y + t.y * 70 - 6}
-                    text={`v = ${num(v)} m/s`}
+                    text={`v = ${q(ok, num(v))} m/s`}
                     anchor="start"
                     color={c.forceApplied}
                     w={w}
@@ -185,10 +190,15 @@ export function CircularSatellite({ spec, calc }: { spec: CircularMotionSpec; ca
                   <SubLabel
                     x={O.x}
                     y={Rb > 40 ? O.y + 5 : O.y + Rb + 18}
-                    text={`M = ${num(M)} kg`}
+                    text={`M = ${q(mOk, num(M))} kg`}
                     w={w}
                   />
-                  <SubLabel x={O.x} y={O.y + Rpx + 22} text={`T = ${longTime(T)}`} w={w} />
+                  <SubLabel
+                    x={O.x}
+                    y={O.y + Rpx + 22}
+                    text={`T = ${ok ? longTime(T) : '? s'}`}
+                    w={w}
+                  />
                   {!toScale ? (
                     <ChartText
                       x={w - 6}
@@ -245,13 +255,15 @@ export function CircularSatellite({ spec, calc }: { spec: CircularMotionSpec; ca
 
   function captionLines(): string[] {
     const out = [
-      `Orbital speed: v = √(GM/r) = √(${num(G_NEWTON)} × ${num(M)}/${num(r)}) = ${num(v)} m/s`,
-      `Period: T = 2πr/v = 2π × ${num(r)}/${num(v)} = ${longTime(T)}`,
+      ok
+        ? `Orbital speed: v = √(GM/r) = √(${num(G_NEWTON)} × ${num(M)}/${num(r)}) = ${num(v)} m/s`
+        : 'Orbital speed: v = √(GM/r)',
+      ok ? `Period: T = 2πr/v = 2π × ${num(r)}/${num(v)} = ${longTime(T)}` : 'Period: T = 2πr/v',
       'Gravity is the centripetal force: GMm/r² = mv²/r, so the satellite’s own mass cancels.',
     ];
-    if (R !== undefined && r > R)
+    if (R !== undefined && rOk && r > R)
       out.push(`It orbits ${num(r - R)} m above the surface (r − R, with R = ${num(R)} m).`);
-    if (R !== undefined && r <= R) out.push('An orbit inside the body is not possible.');
+    if (R !== undefined && rOk && r <= R) out.push('An orbit inside the body is not possible.');
     return out;
   }
 }

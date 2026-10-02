@@ -254,7 +254,9 @@ function keptInverse(
   const left = Math.abs(hi - h) < 1e-12 && lo === -Infinity;
   if (!right && !left) return undefined;
   const hs = say(spec.h, 0);
-  const inner = `${x}${plusText(-k, k === 0 ? '0' : numText(-k))}`;
+  // A "?" k reads "x − ?", not the example's number.
+  const inner =
+    say(spec.k, 0) === '?' ? `${x} ${MINUS} ?` : `${x}${plusText(-k, k === 0 ? '0' : numText(-k))}`;
   const as = say(spec.a, 1);
   const body: Tok[] =
     a === 1 && as !== '?'

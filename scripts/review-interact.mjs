@@ -24,8 +24,8 @@
 // student leaving the example, which empties the boxes it does not keep), or, when that
 // leaves no "?", the box cleared. The picture's text (svg text and caption) must not then
 // show the example's value of a box now "?" (**ERROR**, naming the value and the text it is
-// in). A number that is also a known box's value, or an axis tick (a bare number in a run of
-// evenly spaced bare numbers), is not flagged; 0 is never matched.
+// in). A number that is also a known box's value, or an axis tick (a bare number, percent,
+// degrees or imaginary tick in a run of evenly spaced ones), is not flagged; 0 is never matched.
 // Uses the globally installed Playwright and the pre-installed Chromium; serves dist/ itself.
 import { spawn } from 'node:child_process';
 import { mkdirSync, writeFileSync } from 'node:fs';
@@ -169,10 +169,15 @@ const pictureTexts = () =>
     }
     return out;
   });
-/** Bare numbers among the texts that sit in a run of three evenly spaced ones: axis ticks. */
+/**
+ * Bare numbers (or a bare percent, degrees or imaginary tick: "40%", "4i") among the texts that sit in
+ * a run of three evenly spaced ones: axis ticks.
+ */
 function tickValues(texts) {
   const bare = uniq(
-    texts.filter((t) => /^[−-]?[\d,]*\.?\d+$/.test(t)).map((t) => parseShown(t)),
+    texts
+      .filter((t) => /^[−-]?[\d,]*\.?\d+[%°iπ]?$/.test(t))
+      .map((t) => parseShown(t.replace(/[%°iπ]$/, ''))),
   ).filter(Number.isFinite);
   const has = (x) => bare.some((y) => Math.abs(x - y) <= 1e-9 * Math.max(1, Math.abs(x)));
   return bare.filter((p) =>

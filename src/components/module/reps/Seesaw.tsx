@@ -8,7 +8,7 @@ import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, ChartText } from './common';
 import { num } from './CircularSatellite';
 import { CurvedArrow, useReader } from './hs3aKit';
-import { SubLabel, Vec } from './hskKit';
+import { SubLabel, Vec, worked } from './hskKit';
 import { Crate, Metal, TopLight, url, usePaintIds } from './paint';
 
 /** The longest force arrow (the pivot's push, the sum of both weights), px. */
@@ -36,6 +36,10 @@ export function Seesaw({ spec, calc }: { spec: SimpleMachineSpec; calc: Calculat
   const uT = unit(o.torque, 'N·m');
   const px = (F: number) => (LONGEST * F) / Math.max(1e-12, Fp);
   const balanced = Math.abs(t1 - t2) <= 1e-6 * Math.max(1, t1, t2);
+  // A "?" box reads "?" on the picture too, not the example's number drawn faded behind it.
+  const t1Ok = all(spec.load, spec.loadArm);
+  const f2Ok = spec.effort ? all(spec.effort) : all(spec.load, spec.loadArm, spec.effortArm);
+  const t2Ok = f2Ok && all(spec.effortArm);
 
   return (
     <View>
@@ -186,7 +190,7 @@ export function Seesaw({ spec, calc }: { spec: SimpleMachineSpec; calc: Calculat
                 <SubLabel
                   x={8}
                   y={22}
-                  text={`F₁d₁ = ${num(t1)} ${uT}`}
+                  text={`F₁d₁ = ${t1Ok ? num(t1) : '?'} ${uT}`}
                   anchor="start"
                   color={c.physCartA}
                   w={w}
@@ -194,7 +198,7 @@ export function Seesaw({ spec, calc }: { spec: SimpleMachineSpec; calc: Calculat
                 <SubLabel
                   x={w - 8}
                   y={22}
-                  text={`F₂d₂ = ${num(t2)} ${uT}`}
+                  text={`F₂d₂ = ${t2Ok ? num(t2) : '?'} ${uT}`}
                   anchor="end"
                   color={c.physCartB}
                   w={w}
@@ -215,8 +219,14 @@ export function Seesaw({ spec, calc }: { spec: SimpleMachineSpec; calc: Calculat
       </Canvas>
       <Caption>
         {[
-          `Balanced: F₁d₁ = F₂d₂: ${num(F1)} × ${num(d1)} = ${num(F2)} × ${num(d2)} = ${num(t1)} ${uT}`,
-          `Fₚ = F₁ + F₂ = ${num(F1)} + ${num(F2)} = ${num(Fp)} ${uF}`,
+          ...worked(
+            t1Ok && t2Ok,
+            `Balanced: F₁d₁ = F₂d₂: ${num(F1)} × ${num(d1)} = ${num(F2)} × ${num(d2)} = ${num(t1)} ${uT}`,
+          ),
+          ...worked(
+            all(spec.load) && f2Ok,
+            `Fₚ = F₁ + F₂ = ${num(F1)} + ${num(F2)} = ${num(Fp)} ${uF}`,
+          ),
           'The heavier weight sits closer to the pivot; the pivot holds up both.',
         ].join(' · ')}
       </Caption>

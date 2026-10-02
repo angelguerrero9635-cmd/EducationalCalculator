@@ -7,7 +7,7 @@ import { chart, usePalette } from '@/theme';
 import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, ChartText, niceCeil, useRep } from './common';
 import { heatEngineOf } from './hskMath';
-import { sig, SubLabel } from './hskKit';
+import { formulaOnly, sig, SubLabel } from './hskKit';
 import { Sheen, TopLight, url, usePaintIds } from './paint';
 
 /**
@@ -34,7 +34,11 @@ export function HeatEngine({ spec, calc }: { spec: HeatEngineSpec; calc: Calcula
     fl.QC < -1e-9 ||
     (temps && (TH <= TC || fl.e > fl.carnot + 1e-9)) ||
     (!fridge && fl.e > 1 + 1e-9);
-  const lines = captionLines();
+  // A "?" box reads "?" on the picture too, not the example's number drawn faded behind it.
+  const say = (ok: boolean, x: number) => (ok ? sig(x) : '?');
+  const flowOk = known(given) && known(spec.work);
+  const tOk = known(spec.hot) && known(spec.cold);
+  const lines = all ? captionLines() : formulaOnly(captionLines());
 
   return (
     <View>
@@ -113,7 +117,7 @@ export function HeatEngine({ spec, calc }: { spec: HeatEngineSpec; calc: Calcula
                   fontWeight="700"
                   fill={c.onAccent}
                 >
-                  {`Hot reservoir${temps ? `  ${sig(TH)} K` : ''}`}
+                  {`Hot reservoir${temps ? `  ${say(known(spec.hot), TH)} K` : ''}`}
                 </ChartText>
                 <Rect
                   x={L}
@@ -138,7 +142,7 @@ export function HeatEngine({ spec, calc }: { spec: HeatEngineSpec; calc: Calcula
                   fontWeight="700"
                   fill={c.onAccent}
                 >
-                  {`Cold reservoir${temps ? `  ${sig(TC)} K` : ''}`}
+                  {`Cold reservoir${temps ? `  ${say(known(spec.cold), TC)} K` : ''}`}
                 </ChartText>
                 {/* Flows. */}
                 {fridge ? (
@@ -218,7 +222,7 @@ export function HeatEngine({ spec, calc }: { spec: HeatEngineSpec; calc: Calcula
                 <SubLabel
                   x={left + wH + 10}
                   y={(hotY[1] + eng.y) / 2 + 5}
-                  text={`Q_H ${sig(fl.QH)} J`}
+                  text={`Q_H ${say(fridge ? flowOk : known(given), fl.QH)} J`}
                   anchor="start"
                   color={c.physHot}
                   w={w}
@@ -226,7 +230,7 @@ export function HeatEngine({ spec, calc }: { spec: HeatEngineSpec; calc: Calcula
                 <SubLabel
                   x={left + wC + 10}
                   y={(eng.y + eng.h + coldY[0]) / 2 + 5}
-                  text={`Q_L ${sig(fl.QC)} J`}
+                  text={`Q_L ${say(fridge ? known(given) : flowOk, fl.QC)} J`}
                   anchor="start"
                   color={c.physCold}
                   w={w}
@@ -234,7 +238,7 @@ export function HeatEngine({ spec, calc }: { spec: HeatEngineSpec; calc: Calcula
                 <SubLabel
                   x={(wx1 + wx2) / 2 + 6}
                   y={wy - 8}
-                  text={`W ${sig(fl.W)} J ${fridge ? 'in' : 'out'}`}
+                  text={`W ${say(known(spec.work), fl.W)} J ${fridge ? 'in' : 'out'}`}
                   color={c.physWork}
                   w={w}
                 />
@@ -271,7 +275,7 @@ export function HeatEngine({ spec, calc }: { spec: HeatEngineSpec; calc: Calcula
                   <SubLabel
                     x={bx(fl.carnot)}
                     y={barY - 10}
-                    text={`Carnot ${fridge ? sig(fl.carnot) : `${sig(fl.carnot * 100)}%`}`}
+                    text={`Carnot ${fridge ? say(tOk, fl.carnot) : `${say(tOk, fl.carnot * 100)}%`}`}
                     size={chart.label}
                     w={w}
                   />
@@ -292,7 +296,9 @@ export function HeatEngine({ spec, calc }: { spec: HeatEngineSpec; calc: Calcula
               <SubLabel
                 x={w / 2}
                 y={barY + 32}
-                text={fridge ? `COP ${sig(fl.e)}` : `efficiency ${sig(fl.e * 100)}%`}
+                text={
+                  fridge ? `COP ${say(flowOk, fl.e)}` : `efficiency ${say(flowOk, fl.e * 100)}%`
+                }
                 color={impossible ? c.normalReject : c.physWork}
                 w={w}
               />
