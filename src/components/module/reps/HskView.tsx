@@ -20,6 +20,7 @@ import { Induction } from './Induction';
 import { Projectile } from './Projectile';
 import { RayLens } from './RayLens';
 import { RayRefraction, RaySlits, RayTelescope } from './RayOptics';
+import { SimpleMachineLimb } from './SimpleMachineLimb';
 import { Seesaw } from './Seesaw';
 import { SimpleMachine } from './SimpleMachine';
 
@@ -36,6 +37,7 @@ export function HskView({ spec, calc }: { spec: HskSpec; calc: Calculator }) {
       return <Collision spec={spec} calc={calc} />;
     case 'simpleMachine':
       if (spec.seesaw && spec.machine === 'lever') return <Seesaw spec={spec} calc={calc} />;
+      if (spec.limb) return <SimpleMachineLimb spec={spec} calc={calc} />; // HC81
       return <SimpleMachine spec={spec} calc={calc} />;
     case 'heatEngine':
       return <HeatEngine spec={spec} calc={calc} />;

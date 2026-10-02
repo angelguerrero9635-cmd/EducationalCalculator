@@ -3,6 +3,7 @@
  * `pictureRequestsHs.ts`), kept apart from `types.ts` so that file's union only names them. A
  * `NumOrVar` field is a fixed number or a variable id; every other string is a variable id.
  */
+import { limbVars, type LimbOption } from './typesHe3i';
 import type { NumOrVar } from './typesGraphs';
 import type { PlanetName } from './typesPhysics8';
 import {
@@ -266,6 +267,8 @@ export interface SimpleMachineSpec {
   loadDistance?: string;
   /** H107: a balanced seesaw (lever only; `typesHs3a.ts`). */
   seesaw?: SeesawOption;
+  /** HC81: a forearm or hip drawn as the lever (`typesHe3i.ts`). */
+  limb?: LimbOption;
   fixed?: boolean;
 }
 
@@ -631,6 +634,7 @@ export function hskSpecVars(r: HskSpec): string[] {
         r.effortDistance,
         r.loadDistance,
         ...seesawVars(r.seesaw),
+        ...limbVars(r.limb),
       );
     case 'heatEngine':
       return ids(r.hotHeat, r.coldHeat, r.work, r.hot, r.cold, r.efficiency, r.carnot);

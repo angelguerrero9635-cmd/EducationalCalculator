@@ -79,6 +79,7 @@ import { phaseEnvelopeIssues, phaseSubstanceIssues } from './picturesHe1i';
 import { chemRateHe2kIssues, globeIssues } from './picturesHe2k';
 import { he1fIssues } from './picturesHe1f';
 import { he2bIssues } from './picturesHe2b';
+import { limbIssues } from './picturesHe3i';
 import { he2jIssues } from './picturesHe2j';
 import { he2eIssues, isHe2e } from './picturesHe2e';
 import { he2hIssues } from './picturesHe2h';
@@ -2324,6 +2325,8 @@ export function repIssues(
     case 'circularMotion':
     case 'freeBody':
       if (isHe2fSpec(rep)) return [...out, ...he2fIssues(rep, siOf(val, byId))]; // HC20, HC25, HC35
+      if (rep.kind === 'simpleMachine' && rep.limb)
+        return [...out, ...limbIssues(rep, siOf(val, byId), byId)]; // HC81
       if (isHe2e(rep)) {
         out.push(...he2eIssues(rep, siOf(val, byId)));
         break;
