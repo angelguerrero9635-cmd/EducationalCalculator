@@ -77,6 +77,7 @@ import { isHe2fSpec } from '../typesHe2f';
 import { skeletalIssues } from './picturesHe1c';
 import { phaseEnvelopeIssues, phaseSubstanceIssues } from './picturesHe1i';
 import { he1fIssues } from './picturesHe1f';
+import { he2bIssues } from './picturesHe2b';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -2263,6 +2264,17 @@ export function repIssues(
     case 'velocityProfile':
       // In formula units, as the picture draws them.
       out.push(...he1fIssues(rep, (id) => (val(id) ?? NaN) * (byId.get(id)?.unitFactor ?? 1)));
+      break;
+    case 'potentialWell':
+    case 'unitCell':
+      // In the variables' own units, which the check reads SI from.
+      out.push(
+        ...he2bIssues(
+          rep,
+          (id) => (val(id) ?? NaN) * (byId.get(id)?.unitFactor ?? 1),
+          (id) => byId.get(id)?.unit,
+        ),
+      );
       break;
     case 'projectile':
     case 'induction':

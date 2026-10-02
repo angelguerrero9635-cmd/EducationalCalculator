@@ -149,6 +149,8 @@ const PICTURE_NAMES: Record<string, string> = {
   controlVolume: 'a process unit or device with its streams balanced',
   velocityProfile: 'velocity or concentration profiles across a tube, gap or film',
   bode: 'a Bode plot: gain in dB and phase over log frequency, corners, margins',
+  potentialWell: 'a potential well with its energy levels and wavefunctions',
+  unitCell: 'a cubic unit cell, its lattice planes and Bragg reflection',
   matrixGrid: 'matrices in brackets',
   membrane: 'cell membrane with particles on each side',
   dnaStrand: 'DNA ladder, mRNA and amino acids',
