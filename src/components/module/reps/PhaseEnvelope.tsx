@@ -74,12 +74,21 @@ function TieLine({
   levelText,
   xText,
   yText,
+  r,
+  flip = false,
+  avoid,
 }: {
   c: Palette;
   sx: (x: number) => number;
   sy: (y: number) => number;
   b: number;
   l: number;
+  /** The plot's right edge: the y₁ label turns back inside it. */
+  r: number;
+  /** Txy: x₁ below the line, y₁ above it. */
+  flip?: boolean;
+  /** A centred label on the line (z₁) the x₁ label keeps clear of. */
+  avoid?: { x: number; y: number; w: number };
   x1: number;
   y1: number;
   level: number;
@@ -89,8 +98,30 @@ function TieLine({
 }) {
   const yy = sy(level);
   const [ax, bx] = [sx(x1), sx(y1)];
-  // Labels go on the far side of each dot from the other one, so they never meet.
+  // Labels go on the far side of each dot from the other one, so they never meet; `flip`
+  // (Txy, where the curves fall to the right) puts x₁ under the line and y₁ over it, in the
+  // open liquid and vapor regions.
   const xLeft = x1 <= y1;
+  const wide = (s: string, size: number) => [...s].length * size * 0.6;
+  const level0 = { x0: l + 4, x1: l + 4 + wide(levelText, chart.label), y: yy - 6 };
+  // The y₁ label turns back toward the liquid dot where it would run past the plot's edge.
+  const wy = wide(yText, chart.value);
+  const yOut = xLeft ? bx + 8 + wy > r - 2 : bx - 8 - wy < l + 2;
+  const yToLeft = xLeft === yOut;
+  const yAt = { x: bx + (yToLeft ? -8 : 8), y: flip ? yy - 9 : yy + 18 };
+  // The x₁ label: beside its dot, lifted a row where it would meet the level text or z₁.
+  const wx = wide(xText, chart.value);
+  const xx = ax + (xLeft ? -8 : 8);
+  const [xa0, xa1] = xLeft ? [xx - wx, xx] : [xx, xx + wx];
+  const hits = (y: number, box: { x0: number; x1: number; y: number }, size: number) =>
+    xa0 < box.x1 + 4 && xa1 > box.x0 - 4 && Math.abs(y - box.y) < size + 2;
+  const zBox =
+    avoid === undefined
+      ? undefined
+      : { x0: avoid.x - avoid.w / 2, x1: avoid.x + avoid.w / 2, y: avoid.y };
+  let xy = flip ? yy + 18 : yy - 9;
+  if (!flip && (hits(xy, level0, chart.value) || (zBox && hits(xy, zBox, chart.value))))
+    xy = yy - 27;
   return (
     <G>
       <Line
@@ -114,8 +145,8 @@ function TieLine({
       <Circle cx={ax} cy={yy} r={5} fill={c.chartHighlight} />
       <Circle cx={bx} cy={yy} r={5} fill={c.fnSecond} />
       <ChartText
-        x={ax + (xLeft ? -8 : 8)}
-        y={yy - 9}
+        x={xx}
+        y={xy}
         textAnchor={xLeft ? 'end' : 'start'}
         fontSize={chart.value}
         fontWeight="700"
@@ -125,9 +156,9 @@ function TieLine({
         {xText}
       </ChartText>
       <ChartText
-        x={bx + (xLeft ? 8 : -8)}
-        y={yy + 18}
-        textAnchor={xLeft ? 'start' : 'end'}
+        x={yAt.x}
+        y={yAt.y}
+        textAnchor={yToLeft ? 'end' : 'start'}
         fontSize={chart.value}
         fontWeight="700"
         fill={c.fnSecond}
@@ -140,6 +171,27 @@ function TieLine({
       </ChartText>
     </G>
   );
+}
+
+/** Where TieLine draws the y₁ label (its box), so other labels can keep clear of it. */
+function yLabelBox(
+  sx: (x: number) => number,
+  sy: (y: number) => number,
+  l: number,
+  r: number,
+  x1: number,
+  y1: number,
+  level: number,
+  yText: string,
+  flip = false,
+) {
+  const bx = sx(y1);
+  const wy = [...yText].length * chart.value * 0.6;
+  const xLeft = x1 <= y1;
+  const yOut = xLeft ? bx + 8 + wy > r - 2 : bx - 8 - wy < l + 2;
+  const toLeft = xLeft === yOut;
+  const x0 = toLeft ? bx - 8 - wy : bx + 8;
+  return { x0, x1: x0 + wy, y: flip ? sy(level) - 9 : sy(level) + 18 };
 }
 
 /** The plot rectangle inside a canvas w × h, room left for the key, the ticks and the names. */
@@ -183,7 +235,7 @@ function Pxy({ spec, calc }: { spec: PxySpec; calc: Calculator }) {
     } else if (tie === 'flash' && PP.known) {
       const r = tieAt(PP.value, p1, p2);
       if (r.x1 < 0 || r.x1 > 1)
-        why = `At ${PP.text} ${unit} the mixture is all ${PP.value > Math.max(p1, p2) ? 'liquid' : 'vapor'}: P lies outside P₂sat to P₁sat, so there is no tie line.`;
+        why = `At ${PP.text} ${unit} the mixture is all ${PP.value > Math.max(p1, p2) ? 'liquid' : 'vapor'}: P lies outside P₂ˢᵃᵗ to P₁ˢᵃᵗ, so there is no tie line.`;
       else tieLine = { x1: r.x1, y1: r.y1, P: PP.value };
     }
   }
@@ -206,6 +258,24 @@ function Pxy({ spec, calc }: { spec: PxySpec; calc: Calculator }) {
       ? z >= Math.min(tieLine.x1, tieLine.y1) && z <= Math.max(tieLine.x1, tieLine.y1)
       : false;
 
+  // P₁ˢᵃᵗ is written over the curves' right end, or under it where the y₁ label is there.
+  const p1Y = (sx: (x: number) => number, sy: (p: number) => number, l: number, r: number) => {
+    const above = sy(P1.value) - 8;
+    if (!tieLine) return above;
+    const yb = yLabelBox(
+      sx,
+      sy,
+      l,
+      r,
+      tieLine.x1,
+      tieLine.y1,
+      tieLine.P,
+      `y₁ = ${Y.known ? Y.text : sig(tieLine.y1)}`,
+    );
+    const w1 = [...`P₁ˢᵃᵗ = ${P1.text}`].length * chart.label * 0.6;
+    const meets = yb.x1 > sx(1) - 4 - w1 - 4 && Math.abs(yb.y - above) < chart.value + 2;
+    return meets ? sy(P1.value) + 16 : above;
+  };
   const art = (w: number, h: number) => {
     const { l, r, t, b } = plotBox(w, h);
     const sx = (x: number) => l + x * (r - l);
@@ -275,15 +345,15 @@ function Pxy({ spec, calc }: { spec: PxySpec; calc: Calculator }) {
               </ChartText>
               <ChartText
                 x={sx(1) - 4}
-                y={sy(P1.value) - 8}
+                y={p1Y(sx, sy, l, r)}
                 textAnchor="end"
                 fontSize={chart.label}
                 halo
               >
-                {`P₁sat = ${P1.text}`}
+                {`P₁ˢᵃᵗ = ${P1.text}`}
               </ChartText>
               <ChartText x={sx(0) + 4} y={sy(P2.value) + 16} fontSize={chart.label} halo>
-                {`P₂sat = ${P2.text}`}
+                {`P₂ˢᵃᵗ = ${P2.text}`}
               </ChartText>
             </G>
           ) : null}
@@ -300,6 +370,16 @@ function Pxy({ spec, calc }: { spec: PxySpec; calc: Calculator }) {
               levelText={`P = ${PP.known ? PP.text : sig(tieLine.P, 4)} ${unit}`}
               xText={`x₁ = ${X.known ? X.text : sig(tieLine.x1)}`}
               yText={`y₁ = ${Y.known ? Y.text : sig(tieLine.y1)}`}
+              r={r}
+              avoid={
+                z !== undefined
+                  ? {
+                      x: sx(z),
+                      y: sy(tieLine.P) - 10,
+                      w: [...`z₁ = ${Z.text}`].length * chart.value * 0.6,
+                    }
+                  : undefined
+              }
             />
           ) : null}
           {tieLine && z !== undefined ? (
@@ -357,11 +437,11 @@ function Pxy({ spec, calc }: { spec: PxySpec; calc: Calculator }) {
     lines.push(
       A && !A.known
         ? 'Type A to draw the curves.'
-        : `Type P₁sat and P₂sat to draw the bubble and dew curves${at}.`,
+        : `Type P₁ˢᵃᵗ and P₂ˢᵃᵗ to draw the bubble and dew curves${at}.`,
     );
   else {
     lines.push(
-      `Pxy diagram of ${n1}–${n2}${at}: the bubble curve runs from P₂sat = ${P2.text} to P₁sat = ${P1.text} ${unit}, the dew curve under it; between them liquid and vapor coexist.`,
+      `Pxy diagram of ${n1}–${n2}${at}: the bubble curve runs from P₂ˢᵃᵗ = ${P2.text} to P₁ˢᵃᵗ = ${P1.text} ${unit}, the dew curve under it; between them liquid and vapor coexist.`,
     );
     if (!ideal) {
       const g = tieLine ? margules(a, tieLine.x1) : undefined;
@@ -387,20 +467,20 @@ function Pxy({ spec, calc }: { spec: PxySpec; calc: Calculator }) {
       const pText = PP.known ? PP.text : sig(p, 4);
       if (tie === 'bubble' && ideal)
         lines.push(
-          `P = x₁P₁sat + (1 − x₁)P₂sat = ${X.text} × ${P1.text} + ${sig(1 - x, 4)} × ${P2.text} = ${pText} ${unit}.`,
-          `y₁ = x₁P₁sat ÷ P = ${Y.known ? Y.text : sig(y)}: the vapor is richer in ${n1}, the more volatile.`,
+          `P = x₁P₁ˢᵃᵗ + (1 − x₁)P₂ˢᵃᵗ = ${X.text} × ${P1.text} + ${sig(1 - x, 4)} × ${P2.text} = ${pText} ${unit}.`,
+          `y₁ = x₁P₁ˢᵃᵗ ÷ P = ${Y.known ? Y.text : sig(y)}: the vapor is richer in ${n1}, the more volatile.`,
         );
       else if (tie === 'bubble')
         lines.push(
-          `P = x₁γ₁P₁sat + x₂γ₂P₂sat = ${sig(p, 4)} ${unit}, y₁ = ${sig(y)} at x₁ = ${X.text}.`,
+          `P = x₁γ₁P₁ˢᵃᵗ + x₂γ₂P₂ˢᵃᵗ = ${sig(p, 4)} ${unit}, y₁ = ${sig(y)} at x₁ = ${X.text}.`,
         );
       else if (tie === 'dew')
         lines.push(
-          `1 ÷ P = y₁ ÷ P₁sat + (1 − y₁) ÷ P₂sat, so P = ${pText} ${unit}: the dew point of vapor y₁ = ${Y.text}, its first drop of liquid x₁ = ${sig(x)}.`,
+          `1 ÷ P = y₁ ÷ P₁ˢᵃᵗ + (1 − y₁) ÷ P₂ˢᵃᵗ, so P = ${pText} ${unit}: the dew point of vapor y₁ = ${Y.text}, its first drop of liquid x₁ = ${sig(x)}.`,
         );
       else {
         lines.push(
-          `At P = ${pText} ${unit}: x₁ = (P − P₂sat) ÷ (P₁sat − P₂sat) = ${sig(x)}, y₁ = ${sig(y)}.`,
+          `At P = ${pText} ${unit}: x₁ = (P − P₂ˢᵃᵗ) ÷ (P₁ˢᵃᵗ − P₂ˢᵃᵗ) = ${sig(x)}, y₁ = ${sig(y)}.`,
         );
         if (z !== undefined)
           lines.push(
@@ -414,7 +494,7 @@ function Pxy({ spec, calc }: { spec: PxySpec; calc: Calculator }) {
 
   return (
     <View>
-      <Canvas aspect={(w) => Math.min(1.1, 392 / w)}>{({ w, h }) => art(w, h)}</Canvas>
+      <Canvas aspect={(w) => Math.min(1.1, 350 / w)}>{({ w, h }) => art(w, h)}</Canvas>
       <Caption>{lines.join(' · ')}</Caption>
     </View>
   );
@@ -530,6 +610,8 @@ function Txy({ spec, calc }: { spec: TxySpec; calc: Calculator }) {
               levelText={`T = ${TT.known ? TT.text : sig(tieLine.T, 4)} °C`}
               xText={`x₁ = ${X.known ? X.text : sig(tieLine.x1)}`}
               yText={`y₁ = ${Y.known ? Y.text : sig(tieLine.y1)}`}
+              r={r}
+              flip
             />
           ) : null}
           <KeyItem x={8} y={16} color={c.chartHighlight} text="Bubble (liquid)" />
@@ -567,7 +649,7 @@ function Txy({ spec, calc }: { spec: TxySpec; calc: Calculator }) {
       const p1 = antoineP(a1, tieLine.T);
       lines.push(
         tie === 'bubble'
-          ? `Liquid x₁ = ${X.text} starts to boil at T = ${TT.known ? TT.text : sig(tieLine.T, 4)} °C, where x₁P₁sat + (1 − x₁)P₂sat = P; its first vapor has y₁ = x₁P₁sat ÷ P = ${sig(tieLine.y1)} (P₁sat = ${sig(p1, 4)} mmHg).`
+          ? `Liquid x₁ = ${X.text} starts to boil at T = ${TT.known ? TT.text : sig(tieLine.T, 4)} °C, where x₁P₁ˢᵃᵗ + (1 − x₁)P₂ˢᵃᵗ = P; its first vapor has y₁ = x₁P₁ˢᵃᵗ ÷ P = ${sig(tieLine.y1)} (P₁ˢᵃᵗ = ${sig(p1, 4)} mmHg).`
           : `Vapor y₁ = ${Y.text} starts to condense at T = ${TT.known ? TT.text : sig(tieLine.T, 4)} °C; its first drop has x₁ = ${sig(tieLine.x1)}.`,
       );
     } else lines.push('Type a mole fraction to draw the tie line.');
@@ -575,7 +657,7 @@ function Txy({ spec, calc }: { spec: TxySpec; calc: Calculator }) {
 
   return (
     <View>
-      <Canvas aspect={(w) => Math.min(1.1, 392 / w)}>{({ w, h }) => art(w, h)}</Canvas>
+      <Canvas aspect={(w) => Math.min(1.1, 350 / w)}>{({ w, h }) => art(w, h)}</Canvas>
       <Caption>{lines.join(' · ')}</Caption>
     </View>
   );

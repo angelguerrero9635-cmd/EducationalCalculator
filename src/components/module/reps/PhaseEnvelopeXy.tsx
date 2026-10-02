@@ -159,7 +159,7 @@ function Distillation({ spec, calc }: { spec: XySpec; calc: Calculator }) {
         />
         <Circle cx={sx(v.value)} cy={sy(v.value)} r={4} fill={c.chartInk} />
         <ChartText
-          x={sx(v.value) + dx}
+          x={anchor === 'start' ? Math.min(sx(v.value) + dx, w - 26) : sx(v.value) + dx}
           y={sy(v.value) + dy}
           textAnchor={anchor}
           fontSize={chart.value}
@@ -520,7 +520,7 @@ function Absorber({ spec, calc }: { spec: XySpec; calc: Calculator }) {
             y={34}
             color={c.lineSum}
             dash={chart.dash}
-            text="(L ÷ G)min"
+            text="(L ÷ G)ₘᵢₙ"
           />
         ) : null}
       </Svg>
@@ -551,13 +551,13 @@ function Absorber({ spec, calc }: { spec: XySpec; calc: Calculator }) {
       );
     if (LGmin.known)
       lines.push(
-        `(L ÷ G)min = (y_in − y_out) ÷ (y_in ÷ m − x_in) = ${LGmin.text}: the dashed line touches the equilibrium line where the gas enters (the pinch).`,
+        `(L ÷ G)ₘᵢₙ = (y_in − y_out) ÷ (y_in ÷ m − x_in) = ${LGmin.text}: the dashed line touches the equilibrium line where the gas enters (the pinch).`,
       );
   }
 
   return (
     <View>
-      <Canvas aspect={(w) => Math.min(1.1, 392 / w)}>{({ w, h }) => art(w, h)}</Canvas>
+      <Canvas aspect={(w) => Math.min(1.1, 350 / w)}>{({ w, h }) => art(w, h)}</Canvas>
       <Caption>{lines.join(' · ')}</Caption>
     </View>
   );
