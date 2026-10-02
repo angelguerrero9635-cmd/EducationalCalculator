@@ -38,6 +38,8 @@ const LETTERS = 'ABCDEFGH';
 const TOP = 20;
 const LOAD_MAX = 46;
 const PANEL = 112;
+/** The shear and moment panels: lower, so a beam with both fits one screen with its input. */
+const DPANEL = 86;
 const ROW = 20;
 
 /**
@@ -147,7 +149,11 @@ export function BeamSpan({ spec, calc }: { spec: BeamSpec; calc: Calculator }) {
         );
       }
     }
-    if (row.length) dimRows.push(row);
+    // A load at the far end measures the whole span: L's own row says it.
+    const whole = (e: { from: number; to: number }) => e.from <= 1e-9 * L && e.to >= L * (1 - 1e-9);
+    const lRow = lengthKnown && spec.length !== undefined && !spec.spans?.length;
+    const kept = lRow ? row.filter((e) => !whole(e)) : row;
+    if (kept.length) dimRows.push(kept);
     const res = spec.resultant;
     if (res && known(res.at))
       dimRows.push([
@@ -201,12 +207,13 @@ export function BeamSpan({ spec, calc }: { spec: BeamSpec; calc: Calculator }) {
     const yB = y0 + thick;
     const yR = yB + SUPPORT_DEPTH + (showReactions || supports.some((s) => s.reaction) ? 50 : 6);
     const yDims = yR + 12;
-    let y = yDims + dimRows.length * 26 + 4;
+    let y = yDims + dimRows.length * 24 + 4;
     const panels: Record<string, number> = {};
     if (spec.diagrams && !inf) {
       panels.V = y;
-      panels.M = y + PANEL;
-      y += 2 * PANEL;
+      panels.M = y + DPANEL;
+      // (and room under the moment panel for a peak's label below its plot)
+      y += 2 * DPANEL + 8;
     }
     if (inf) {
       panels.I = y;
@@ -305,7 +312,7 @@ export function BeamSpan({ spec, calc }: { spec: BeamSpec; calc: Calculator }) {
                       x1={X(clampX(v(spec.at)))}
                       y1={TOP - 4}
                       x2={X(clampX(v(spec.at)))}
-                      y2={Lay.panels.M !== undefined ? Lay.panels.M + PANEL - 8 : yB + 8}
+                      y2={Lay.panels.M !== undefined ? Lay.panels.M + DPANEL - 8 : yB + 8}
                       stroke={c.chartMuted}
                       strokeDasharray={chart.dash}
                     />
@@ -316,7 +323,7 @@ export function BeamSpan({ spec, calc }: { spec: BeamSpec; calc: Calculator }) {
                         key={`${r}-${k}`}
                         x1={X(d.from)}
                         x2={X(d.to)}
-                        y={Lay.yDims + 14 + r * 26}
+                        y={Lay.yDims + 14 + r * 24}
                         text={d.text}
                         w={w}
                       />
@@ -348,7 +355,7 @@ export function BeamSpan({ spec, calc }: { spec: BeamSpec; calc: Calculator }) {
                 <DragHandle
                   testID="drag-section"
                   x={X(clampX(v(spec.at)))}
-                  y={Lay.yDims + 14 + atRow * 26}
+                  y={Lay.yDims + 14 + atRow * 24}
                   label={rep.variable(spec.at).name}
                   {...dragX(spec.at, X(clampX(v(spec.at))), Lay.sx, w)}
                 />
@@ -357,7 +364,7 @@ export function BeamSpan({ spec, calc }: { spec: BeamSpec; calc: Calculator }) {
                 <DragHandle
                   testID="drag-section"
                   x={X(infC)}
-                  y={Lay.yDims + 14 + infRow * 26}
+                  y={Lay.yDims + 14 + infRow * 24}
                   label={rep.variable(inf.at).name}
                   {...dragX(inf.at, X(infC), Lay.sx, w)}
                 />
@@ -744,7 +751,11 @@ export function BeamSpan({ spec, calc }: { spec: BeamSpec; calc: Calculator }) {
             />
             <HeLabel
               x={X(xs) + dir * 38}
-              y={(yC - s.y(xs) * k + ey) / 2 + 16}
+              y={
+                (yC - s.y(xs) * k + ey) / 2 +
+                // A row lower where δ_max is labelled at the same end (a cantilever's tip).
+                (showD && Math.abs(xm - X(xs)) < 80 ? 34 : 16)
+              }
               text={B.named(spec.slope, 'θ', 0)}
               color={c.beamDeflect}
               anchor={dir > 0 ? 'start' : 'end'}
@@ -767,8 +778,8 @@ export function BeamSpan({ spec, calc }: { spec: BeamSpec; calc: Calculator }) {
       const lo = Math.min(0, ...vals);
       const span = Math.max(1e-12, hi - lo);
       // Room under the title for a peak's label.
-      const plotTop = top + 34;
-      const plotH = PANEL - 52;
+      const plotTop = top + 30;
+      const plotH = DPANEL - 50;
       const Y = (y: number) => plotTop + ((hi - y) / span) * plotH;
       const color = key === 'V' ? c.beamShear : c.beamMoment;
       const pts = s.map((p) => `${X(p.x)},${Y(p[key])}`).join(' ');
@@ -848,7 +859,7 @@ export function BeamSpan({ spec, calc }: { spec: BeamSpec; calc: Calculator }) {
                     x1={X(x)}
                     y1={Y(0) + 4}
                     x2={X(x)}
-                    y2={panels.M! + 34}
+                    y2={panels.M! + 30}
                     stroke={c.chartMuted}
                     strokeWidth={1}
                     strokeDasharray={chart.dashFine}
