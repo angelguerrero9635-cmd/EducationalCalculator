@@ -6,6 +6,8 @@
  * picture and the harness read the same tree.
  */
 
+const SUPER_DIGITS = ['⁰', '¹', '²', '³', '⁴', '⁵', '⁶', '⁷', '⁸', '⁹'];
+
 export const EXPR_FUNCS = ['exp', 'ln', 'sin', 'cos', 'tan', 'sqrt', 'abs', 'u'] as const;
 export type ExprFunc = (typeof EXPR_FUNCS)[number];
 
@@ -321,6 +323,11 @@ export function writeExpr(
           const base = prec(m.a) <= 4 || (m.a.t === 'name' && nameSaid(m.a.name).startsWith(MINUS));
           if (inSup) {
             wrap(m.a, base);
+            // A whole-number power inside raised text reads x², not x^(2).
+            if (m.b.t === 'num' && Number.isInteger(m.b.v) && m.b.v >= 0) {
+              emit([...String(m.b.v)].map((d) => SUPER_DIGITS[Number(d)]).join(''));
+              return;
+            }
             emit('^(');
             walk(m.b, true, emit);
             emit(')');

@@ -152,20 +152,24 @@ export function he2gLayer(p: He1eLayerProps): { under: ReactNode; over: ReactNod
       const mid = (a + z) / 2;
       p.label(mid, s.P(mid) / 2, `∫P = ${said(I.value, s.integral!, fig6)}`, c.fnSecond);
     }
-    // The polynomial, dashed, only where it stays near the window (it runs away past it).
+    // The polynomial, dashed, inside the window: where it runs away past the top or bottom it
+    // stops at the edge (never on into the legend or the axis numbers).
     let d = '';
     let pen = false;
+    let wasOut = true;
     const n = Math.max(240, Math.round(pw * 1.6));
-    const span = y1 - y0;
     for (let i = 0; i <= n; i++) {
       const x = x0 + ((x1 - x0) * i) / n;
       const y = s.P(x);
-      if (!Number.isFinite(y) || y < y0 - span || y > y1 + span) {
+      if (!Number.isFinite(y)) {
         pen = false;
         continue;
       }
-      d += `${pen ? 'L' : 'M'} ${sx(x).toFixed(2)} ${sy(y).toFixed(2)} `;
+      const out = y < y0 || y > y1;
+      if (out && wasOut) pen = false;
+      d += `${pen ? 'L' : 'M'} ${sx(x).toFixed(2)} ${sy(Math.max(y0, Math.min(y1, y))).toFixed(2)} `;
       pen = true;
+      wasOut = out;
     }
     over.push(
       <Path
