@@ -4,6 +4,7 @@
  * in taxonomy order. Course and topic titles come from taxonomy.ts. Layout pages are in
  * `../layouts/collegeChemistry.ts`. Rules: docs/MODULE_GUIDE.md; plan: docs/plans/he.chemistry.md.
  */
+import { domainAngleOf } from '@/components/module/reps/vseprHe3eMath';
 import { valueOf } from '@/engine/constants';
 import { formatNumber } from '@/engine/format';
 
@@ -2048,6 +2049,115 @@ export const COLLEGE_CHEMISTRY_MODULES: ModuleDef[] = [
           { from: 1, to: 2, label: 'Bonds formed' },
         ],
         total: { from: 0, to: 2, value: 'dH' },
+      },
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    // General Chemistry I → Bonding and molecular geometry: shapes with 5 and 6 domains.
+    // XeF₄: V = 8 + 4 × 7 = 36, b = 4, each F keeps 3 lone pairs (o = 24):
+    // l = (36 − 8 − 24) ÷ 2 = 2, d = 6 → sp³d², square planar, 90°.
+    const [Vt, b, o] = [36, 4, 24];
+    const l = (Vt - 2 * b - o) / 2;
+    const d = b + l;
+    const count = (id: string, symbol: string, name: string, min: number, max: number) =>
+      V(id, symbol, name, { min, max, step: 1, integer: true });
+    return {
+      id: 'he.chemistry.gen-chem-1#4',
+      use: 'Use this for “XeF₄ has 36 valence electrons. Find the lone pairs on xenon, the shape, the smallest bond angle and the hybridization.”',
+      assumptions: [
+        'V counts the valence electrons of every atom, plus one for each negative charge of an ion and less one for each positive charge.',
+        'Each outer atom first fills its octet with lone pairs (a halogen keeps three, so o = 6 for each); the central atom takes what is left.',
+        'Lone pairs take the roomiest places: equatorial in 5 domains, opposite each other in 6. The shape is named by the atoms only.',
+        'The hybrid orbitals on the center equal the domains: 2 sp, 3 sp², 4 sp³, 5 sp³d, 6 sp³d².',
+      ],
+      variables: [
+        count('Vt', 'V', 'Total valence electrons', 2, 60),
+        count('b', 'b', 'Bonded atoms on the center', 2, 6),
+        count('o', 'o', 'Lone electrons on the outer atoms', 0, 42),
+        count('l', 'l', 'Lone pairs on the center', 0, 3),
+        count('d', 'd', 'Electron domains on the center', 2, 6),
+        V('theta', 'θ', 'Smallest ideal angle between domains', {
+          unit: '°',
+          units: ['°'],
+          min: 90,
+          max: 180,
+          step: 0.5,
+        }),
+      ],
+      ...rels(
+        rel(
+          'l = (V − 2b − o) ÷ 2',
+          '{l} = ({Vt} − 2 × {b} − {o}) ÷ 2',
+          ['l', 'Vt', 'b', 'o'],
+          (v) => 2 * v.l! - (v.Vt! - 2 * v.b! - v.o!),
+          {
+            l: [
+              (v) => (v.Vt! - 2 * v.b! - v.o!) / 2,
+              '({Vt} − 2 × {b} − {o}) ÷ 2',
+              'Take two electrons for each bond and the outer atoms’ lone electrons from V. What is left sits on the center, two to a lone pair.',
+            ],
+            Vt: [
+              (v) => 2 * v.l! + 2 * v.b! + v.o!,
+              '2 × {l} + 2 × {b} + {o}',
+              'Add the center’s lone electrons, two for each bond and the outer atoms’ lone electrons.',
+            ],
+            o: [
+              (v) => v.Vt! - 2 * v.b! - 2 * v.l!,
+              '{Vt} − 2 × {b} − 2 × {l}',
+              'What the bonds and the center’s lone pairs leave of V.',
+            ],
+          },
+        ),
+        rel('d = b + l', '{d} = {b} + {l}', ['d', 'b', 'l'], (v) => v.d! - v.b! - v.l!, {
+          d: [
+            (v) => v.b! + v.l!,
+            '{b} + {l}',
+            'Each bonded atom is one domain (a double bond counts once) and each lone pair is one more.',
+          ],
+          b: [(v) => v.d! - v.l!, '{d} − {l}', 'The domains less the lone pairs.'],
+          l: [(v) => v.d! - v.b!, '{d} − {b}', 'The domains less the bonded atoms.'],
+        }),
+        rel(
+          'θ from d',
+          '{theta} = smallest angle between {d} domains',
+          ['theta', 'd'],
+          (v) => v.theta! - domainAngleOf(v.d!),
+          {
+            theta: [
+              (v) => domainAngleOf(v.d!),
+              'smallest angle between {d} domains',
+              'Two domains sit 180° apart, three 120°, four 109.5°; with five or six the closest are 90° apart.',
+            ],
+          },
+        ),
+        {
+          relation: {
+            id: 'l ≤ 2 in 6 domains',
+            constraint: true,
+            display: '{l} is at most 2 when {d} is 6',
+            vars: ['l', 'd'],
+            residual: (v) => (v.d! >= 6 && v.l! > 2 ? 1 : 0),
+            solve: {},
+            // Three lone pairs in six domains (T-shaped, never met in class) is refused.
+            message: (v) =>
+              v.d! >= 6 && v.l! > 2
+                ? 'Six domains hold at most two lone pairs here: square planar is the last shape.'
+                : undefined,
+          },
+          steps: {},
+        },
+      ),
+      example: { Vt, b, o, l, d, theta: domainAngleOf(d) },
+      startWith: ['Vt', 'b', 'o'],
+      unitSystems: ['metric'],
+      representation: {
+        kind: 'vsepr',
+        mode: 'expanded',
+        bonded: 'b',
+        lone: 'l',
+        angle: 'theta',
+        // No molecule named: each shape draws its own example (XeF₄ for 4 bonded, 2 lone).
+        domains: 'd',
       },
     } satisfies ModuleDef;
   })(),
