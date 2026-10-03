@@ -743,6 +743,9 @@ const light = {
   he3iCarbideLight: '#9CA3AF',
   he3iChip: '#3E6FB0',
   he3iChipHot: '#C98A2A',
+  /** HC165 Moody chart: the transition band; the page's point and its guides. */
+  he4lMoodyBand: '#FDECC8',
+  he4lMoodyPoint: '#C2410C',
   he3iSpeed: '#0F766E',
   he3iFeed: '#C2410C',
   he3iIc: '#B42318',
@@ -1393,6 +1396,8 @@ const dark: Palette = {
   he3iCarbideLight: '#7B828E',
   he3iChip: '#6F9BD6',
   he3iChipHot: '#E0A84A',
+  he4lMoodyBand: '#3A2E14',
+  he4lMoodyPoint: '#FB923C',
   he3iSpeed: '#2DD4BF',
   he3iFeed: '#F59E0B',
   he3iIc: '#F87171',
