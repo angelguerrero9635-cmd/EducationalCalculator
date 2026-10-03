@@ -1879,4 +1879,86 @@ export const COLLEGE_PHYSICS_MODULES: ModuleDef[] = [
       change: 'dv',
     },
   },
+  {
+    // University Physics I → Momentum: the rocket equation. Each bit of exhaust thrown back
+    // pushes the rocket forward; adding those pushes as the mass falls gives a log.
+    id: 'he.physics.university-1#3~rocket',
+    title: 'The rocket equation',
+    use: 'Use this for “A 12,000 kg rocket burns fuel until it weighs 4,000 kg, its exhaust leaving at 3,000 m/s. How much speed does it gain?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'No gravity or air drag acts during the burn (a rocket in deep space), so the momentum of the rocket and its exhaust together is kept.',
+      'The exhaust leaves at a steady speed u measured from the rocket, straight backward.',
+      'Throwing back a small mass dm gives m dv = u dm; adding these up as the mass falls from m₀ to m_f gives Δv = u ln(m₀ ÷ m_f).',
+    ],
+    variables: [
+      V('u', 'u', 'Exhaust speed', { unit: 'm/s', min: 10, max: 5000, step: 10 }),
+      V('m0', 'm₀', 'Start mass, with fuel', fixed('kg', 0.001, 1e7, 1)),
+      V('mf', 'm_f', 'End mass, fuel burned', fixed('kg', 0.001, 1e7, 1)),
+      V('R', 'R', 'Mass ratio m₀ ÷ m_f', { min: 1, max: 1e10, derived: true }),
+      V('dv', 'Δv', 'Change in speed', { unit: 'm/s', min: 0, max: 1.2e5, derived: true }),
+    ],
+    ...rels(
+      rule(
+        'm_f < m₀',
+        'The end mass {mf} is less than the start mass {m0}',
+        ['mf', 'm0'],
+        (v) => v.mf! < v.m0!,
+        'The rocket gets lighter as it burns fuel, so its end mass must be less than its start mass.',
+      ),
+      rel('R = m₀ ÷ m_f', '{R} = {m0} ÷ {mf}', ['R', 'm0', 'mf'], (v) => v.R! * v.mf! - v.m0!, {
+        R: [
+          (v) => div(v.m0!, v.mf!),
+          '{m0} ÷ {mf}',
+          'The mass ratio is the start mass over the end mass: how many times lighter the rocket gets.',
+        ],
+        m0: [
+          (v) => exact(v.R! * v.mf!),
+          '{R} × {mf}',
+          'The start mass is the mass ratio times the end mass.',
+        ],
+        mf: [(v) => div(v.m0!, v.R!), '{m0} ÷ {R}', 'Divide the start mass by the mass ratio.'],
+      }),
+      rel(
+        'Δv = u ln R',
+        '{dv} = {u} × ln({R})',
+        ['dv', 'u', 'R'],
+        (v) => v.dv! - v.u! * Math.log(v.R!),
+        {
+          dv: [
+            (v) => (v.R! > 0 ? exact(v.u! * Math.log(v.R!)) : undefined),
+            '{u} × ln({R})',
+            'The speed gained is the exhaust speed times the natural log of the mass ratio.',
+          ],
+          u: [
+            (v) => (v.R! > 1 ? v.dv! / Math.log(v.R!) : undefined),
+            '{dv} ÷ ln({R})',
+            'Divide the speed gained by the natural log of the mass ratio.',
+          ],
+          R: [
+            (v) => exact(Math.exp(v.dv! / v.u!)),
+            'e^({dv} ÷ {u})',
+            'Undo the log: divide the speed gained by the exhaust speed, then raise e to that power.',
+          ],
+        },
+      ),
+    ),
+    // The plan's rocket: u = 2500 m/s, 5000 kg down to 2000 kg → R = 2.5,
+    // Δv = 2500 × ln 2.5 = 2500 × 0.9163 = 2290.7 m/s.
+    example: { u: 2500, m0: 5000, mf: 2000, R: 2.5, dv: exact(2500 * Math.log(2.5)) },
+    startWith: ['u', 'm0', 'mf'],
+    // Δv = u ln(m₀ ÷ m) against the mass m left, from m₀ (nothing burned, Δv = 0) down to 0,
+    // the rocket's point at m_f: the log of the mass ratio, steeper as the tank runs dry.
+    // (Against R itself the window's padding pulls the left edge below R = 1, where ln R < 0.)
+    representation: {
+      kind: 'functionGraph',
+      family: 'expr',
+      expr: 'u*ln(m0/x)',
+      name: 'Δv',
+      input: 'm',
+      at: { x: 'mf', y: 'dv' },
+      window: { x: [0, 'm0'] },
+      axes: { x: 'Mass left m (kg)', y: 'Change in speed Δv (m/s)' },
+    },
+  },
 ];
