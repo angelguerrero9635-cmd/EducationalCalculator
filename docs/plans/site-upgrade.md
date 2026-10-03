@@ -615,3 +615,32 @@ asset: Inter variable WOFF2 (SIL OFL) in `public/fonts/`.
 | D-10 | Domain, support email, bundle id, legal entity name and governing law                                              | A custom domain before payments (Stripe and Apple both need a site and support URL)                              |
 | D-11 | Kids Category on the App Store                                                                                     | No; age rating 4+                                                                                                |
 | D-12 | Web font: Inter self-hosted, or the system stack                                                                   | Inter on web, system font on iOS                                                                                 |
+
+## 7. Owner decisions (2026-10-03)
+
+These replace the recommendations for D-1 to D-5 and D-8 above; section 4 follows them.
+
+- **Getting in (D-1):** $1 once: the App Store price of the iPhone app (a paid app), or a
+  one-time sign-up fee on the web (added to the first Stripe checkout). Nothing is free after
+  that without a plan.
+- **Plans (D-1, D-3, D-5):** all monthly, one subscription at a time.
+
+  | Plan     | Price                       | Holds                                   |
+  | -------- | --------------------------- | --------------------------------------- |
+  | Basic    | $1 a month                  | Every K–12 lesson and 1 college course  |
+  | Advanced | $5 a month                  | Every K–12 lesson and 7 college courses |
+  | Premium  | $10 a month, or $100 a year | Every lesson and every college course   |
+
+  Basic and Advanced: the chosen courses can be changed after one billing cycle. (Advanced is
+  taken to include K–12 as Basic does; confirm with the owner if that changes.)
+
+- **iPhone (D-3):** one subscription group with four products (Basic, Advanced, Premium monthly,
+  Premium yearly) in a paid app. The chosen courses are kept on the device with the date they
+  were chosen; a change is allowed once the current period has renewed.
+- **Web restore (D-6):** the recommendation (a signed licence on the device plus a restore code).
+- **Web price (D-8):** $1.00, not $0.99.
+- The prices live in `src/config/pricing.ts`; the plans page reads them.
+
+Still open: D-4 (Stripe or a merchant of record; US only at launch), D-7 (one purchase on both
+platforms), D-9 (web refunds), D-10 (domain, support email, bundle id, legal entity), D-11
+(Kids Category), D-12 (web font).

@@ -18,3 +18,4 @@ export { ModuleSections } from './module/ModuleSections';
 export { Logo } from './Logo';
 export { NotFound } from './NotFound';
 export { Page } from './Page';
+export { ShowOn } from './ShowOn';

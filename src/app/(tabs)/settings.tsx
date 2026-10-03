@@ -17,7 +17,7 @@ import {
 import type { UnitSystem } from '@/engine/units';
 import type { AppearancePref } from '@/state';
 import { space, type, usePalette } from '@/theme';
-import { monthly, PRICES } from '@/config/pricing';
+import { PLANS_FROM } from '@/config/pricing';
 
 const APPEARANCES: { value: AppearancePref; label: string }[] = [
   { value: 'system', label: 'System' },
@@ -93,7 +93,7 @@ export default function SettingsScreen() {
         <Group>
           <ListRow
             title="Plans and prices"
-            subtitle={`K–12 ${monthly(PRICES.k12.usd)}; each college course ${monthly(PRICES.course.usd)}`}
+            subtitle={`${PLANS_FROM}. Basic, Advanced and Premium.`}
             onPress={() => router.push('/paywall')}
           />
         </Group>

@@ -4,6 +4,7 @@ import { FlatList, StyleSheet, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Card, Chip, EmptyState, Icon, ListRow, SectionHeader } from '@/components';
+import { NoResults, SearchStart } from '@/components/art';
 import { PageMeta } from '@/components/PageMeta';
 import { matchProblem } from '@/data/match';
 import { countLabel, search, type SearchKind } from '@/data/selectors';
@@ -123,12 +124,14 @@ export default function SearchScreen() {
                 <Card style={styles.emptyCard}>
                   {query.trim() ? (
                     <EmptyState
+                      art={<NoResults width={180} />}
                       title="No matches"
                       message={`Nothing found for “${query.trim()}”. Try fewer words, or a word from the lesson’s title.`}
                     />
                   ) : (
                     <>
                       <EmptyState
+                        art={<SearchStart width={180} />}
                         title="Search everything"
                         message={`${countLabel(SKILLS.length, 'skill')}, ${countLabel(COURSES.length, 'course')} and ${countLabel(TOPIC_COUNT, 'topic')}. Try a word from your homework, or type a whole problem to find the lesson that solves it.`}
                       />

@@ -4,6 +4,7 @@ import { StyleSheet, View } from 'react-native';
 import { PageMeta } from '@/components/PageMeta';
 import { space } from '@/theme';
 
+import { NotFoundArt } from './art';
 import { EmptyState } from './EmptyState';
 
 /**
@@ -21,6 +22,7 @@ export function NotFound() {
       <Stack.Screen options={{ title: 'Not found' }} />
       <EmptyState
         heading
+        art={<NotFoundArt width={260} />}
         title="We couldn’t find that page"
         message="It may have moved. Try Search, or start from Browse."
         actionLabel="Search"

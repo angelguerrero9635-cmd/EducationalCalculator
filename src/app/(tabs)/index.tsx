@@ -2,14 +2,15 @@ import { router } from 'expo-router';
 import { useMemo } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import { Card, Icon, ListRow, Page, SectionHeader, Tile, TileGrid } from '@/components';
+import { Card, Icon, ListRow, Page, SectionHeader, ShowOn, Tile, TileGrid } from '@/components';
+import { ExploreCollege, ExploreK12, HomeHero } from '@/components/art';
 import { PageMeta } from '@/components/PageMeta';
 import { Text } from '@/components/Text';
 import { SITE_NAME, SITE_SLOGAN } from '@/config/site';
 import { countLabel, myCourseCards } from '@/data/selectors';
 import { COURSES, SKILLS } from '@/data/taxonomy';
 import { useRecents, useSelectedLevels } from '@/state';
-import { radius, space, type, usePalette, useTone } from '@/theme';
+import { radius, space, type, usePalette } from '@/theme';
 
 /** Recently viewed items shown on Home (the full list is kept in app state). */
 const RECENT_LIMIT = 5;
@@ -19,24 +20,34 @@ function Hero() {
   const c = usePalette();
   return (
     <View style={[styles.hero, { backgroundColor: c.accentSoft }]}>
-      <Text accessibilityRole="header" style={[type.display, { color: c.text }]}>
-        {SITE_SLOGAN}
-      </Text>
-      <Text style={[type.body, styles.heroText, { color: c.textMuted }]}>
-        {`${countLabel(SKILLS.length, 'skill')} and ${countLabel(COURSES.length, 'course')}, from Kindergarten to university, with pictures you can move and every step shown.`}
-      </Text>
-      <Pressable
-        testID="home-search"
-        accessibilityRole="search"
-        onPress={() => router.push('/search')}
-        style={({ pressed }) => [
-          styles.searchPill,
-          { backgroundColor: c.card, borderColor: c.borderStrong, opacity: pressed ? 0.9 : 1 },
-        ]}
-      >
-        <Icon name="search" size={20} color={c.textMuted} />
-        <Text style={[type.callout, { color: c.textMuted }]}>Search skills, or type a problem</Text>
-      </Pressable>
+      <ShowOn size="narrow" style={styles.heroBand}>
+        <HomeHero band width={300} />
+      </ShowOn>
+      <View style={styles.heroText}>
+        <Text accessibilityRole="header" style={[type.display, { color: c.text }]}>
+          {SITE_SLOGAN}
+        </Text>
+        <Text style={[type.body, { color: c.textMuted }]}>
+          {`${countLabel(SKILLS.length, 'skill')} and ${countLabel(COURSES.length, 'course')}, from Kindergarten to university, with pictures you can move and every step shown.`}
+        </Text>
+        <Pressable
+          testID="home-search"
+          accessibilityRole="search"
+          onPress={() => router.push('/search')}
+          style={({ pressed }) => [
+            styles.searchPill,
+            { backgroundColor: c.card, borderColor: c.borderStrong, opacity: pressed ? 0.9 : 1 },
+          ]}
+        >
+          <Icon name="search" size={20} color={c.textMuted} />
+          <Text style={[type.callout, { color: c.textMuted }]}>
+            Search skills, or type a problem
+          </Text>
+        </Pressable>
+      </View>
+      <ShowOn size="wide" style={styles.heroArt}>
+        <HomeHero width={420} />
+      </ShowOn>
     </View>
   );
 }
@@ -45,23 +56,18 @@ function Hero() {
 function ExploreCard({
   title,
   text,
-  tone,
-  icon,
+  art,
   path,
 }: {
   title: string;
   text: string;
-  tone: number;
-  icon: 'school' | 'book';
+  art: 'k12' | 'college';
   path: '/browse' | '/he';
 }) {
   const c = usePalette();
-  const t = useTone(tone);
   return (
     <Card onPress={() => router.push(path)} style={styles.explore} accessibilityLabel={title}>
-      <View style={[styles.exploreBadge, { backgroundColor: t.bg }]}>
-        <Icon name={icon} size={26} color={t.fg} />
-      </View>
+      {art === 'k12' ? <ExploreK12 width={112} /> : <ExploreCollege width={112} />}
       <View style={styles.exploreText}>
         <Text style={[type.title3, { color: c.text }]}>{title}</Text>
         <Text style={[type.callout, { color: c.textMuted }]}>{text}</Text>
@@ -136,15 +142,13 @@ export default function HomeScreen() {
               <ExploreCard
                 title="Kindergarten to Grade 12"
                 text="Math and science for every grade, skill by skill."
-                tone={0}
-                icon="school"
+                art="k12"
                 path="/browse"
               />
               <ExploreCard
                 title="College"
                 text="University math, science and engineering courses."
-                tone={3}
-                icon="book"
+                art="college"
                 path="/he"
               />
             </View>
@@ -171,8 +175,13 @@ const styles = StyleSheet.create({
     borderRadius: radius.xl,
     padding: space.xl,
     gap: space.md,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'center',
   },
-  heroText: { maxWidth: 560 },
+  heroBand: { width: '100%', alignItems: 'center' },
+  heroText: { flexGrow: 1, flexBasis: 280, maxWidth: 560, gap: space.md },
+  heroArt: { flexGrow: 1, alignItems: 'center' },
   searchPill: {
     marginTop: space.sm,
     maxWidth: 560,
@@ -202,13 +211,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: space.md,
-  },
-  exploreBadge: {
-    width: 52,
-    height: 52,
-    borderRadius: radius.md,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   exploreText: { flex: 1, gap: 2 },
 });

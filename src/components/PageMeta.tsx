@@ -20,6 +20,12 @@ export function PageMeta({
   const pathname = usePathname();
   const full = title === SITE_NAME ? title : `${title} | ${SITE_NAME}`;
   const url = SITE_URL + (pathname === '/' ? '' : pathname);
+  // The link-preview picture: school pages, college pages, or the default.
+  const og = /^\/(grade|skill|lessons)(\/|$)/.test(pathname)
+    ? 'k12'
+    : /^\/(he|course)(\/|$)/.test(pathname)
+      ? 'college'
+      : 'default';
   return (
     <Head>
       <title>{full}</title>
@@ -31,7 +37,10 @@ export function PageMeta({
       <meta property="og:title" content={full} />
       <meta property="og:description" content={description} />
       <meta property="og:site_name" content={SITE_NAME} />
-      <meta name="twitter:card" content="summary" />
+      <meta property="og:image" content={`${SITE_URL}/og/${og}.png`} />
+      <meta property="og:image:width" content="1200" />
+      <meta property="og:image:height" content="630" />
+      <meta name="twitter:card" content="summary_large_image" />
     </Head>
   );
 }

@@ -3,6 +3,7 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Button, LevelPicker, Logo } from '@/components';
+import { OnboardingWelcome } from '@/components/art';
 import { PageMeta } from '@/components/PageMeta';
 import { Text } from '@/components/Text';
 import { SITE_NAME, SITE_SLOGAN } from '@/config/site';
@@ -34,8 +35,9 @@ export default function OnboardingScreen() {
         {step === 'welcome' ? (
           <View style={styles.welcome}>
             <View style={styles.column}>
-              <Logo size={64} />
+              <Logo size={72} />
               <Text style={[type.overline, { color: c.textMuted }]}>{SITE_NAME}</Text>
+              <OnboardingWelcome width={320} />
               <Text
                 accessibilityRole="header"
                 style={[type.display, styles.center, { color: c.text }]}

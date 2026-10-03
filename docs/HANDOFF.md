@@ -20,8 +20,9 @@ Where the work stands, for the next session. Everything listed as merged is on
 
 - Site upgrade (`docs/plans/site-upgrade.md`): phases A (tokens, web template, meta), B (one
   header, desktop sidebar and top bar, breadcrumbs, footer) and C (every screen) are done.
-  Left: C13 legal and support pages, D brand assets (waiting on `docs/RENDERINGS_BRAND.md` from
-  the pictures chat), E–G payments (waiting on owner decisions D-1 to D-12 in the plan).
+  Phase D (the seal, icons, splash, link previews, illustrations) is placed. Left: C13 legal and
+  support pages, E–G payments (prices decided: plan section 7; D-4, D-7, D-9 to D-12 open), B23
+  store screenshots.
 
 ## Done and merged
 

@@ -2,7 +2,7 @@ import { router } from 'expo-router';
 import { Platform, Pressable, StyleSheet, View } from 'react-native';
 
 import { Text } from '@/components/Text';
-import { monthly, PRICES } from '@/config/pricing';
+import { PLANS_FROM } from '@/config/pricing';
 import type { Crumb, RefreshRow } from '@/data/selectors';
 import { push } from '@/navigation';
 import { font, radius, space, type, usePalette } from '@/theme';
@@ -11,6 +11,7 @@ import { useLayoutSize } from './layoutSize';
 import { Breadcrumbs } from './shell/Breadcrumbs';
 import { webData } from './webData';
 
+import { LockedLesson } from './art';
 import { EmptyState } from './EmptyState';
 import { Icon } from './Icon';
 import { SectionHeader } from './SectionHeader';
@@ -102,8 +103,9 @@ export function RefreshSection({
 export function LockedState() {
   return (
     <EmptyState
+      art={<LockedLesson width={140} />}
       title="Part of a plan"
-      message={`Kindergarten to Grade 12 is ${monthly(PRICES.k12.usd)}, and each college course is ${monthly(PRICES.course.usd)}.`}
+      message={`${PLANS_FROM}: every K–12 lesson and college courses to choose.`}
       actionLabel="See plans"
       onAction={() => router.push('/paywall')}
     />
