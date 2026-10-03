@@ -212,7 +212,11 @@ const describe_ = (sys: System, vals: Values | readonly Given[]) => {
 function resultNumber(result: string, exp = false): number {
   // "about $3.33": a price rounded to the cent.
   // A negative amount of money is written with its sign first (−$10).
-  const rhs = (result.split(' = ')[1] ?? '').replace(/^about /, '').replace(/^[−-]\$/, '-');
+  // A signed value (a formal charge, a change) is written with its plus sign: +1.
+  const rhs = (result.split(' = ')[1] ?? '')
+    .replace(/^about /, '')
+    .replace(/^[−-]\$/, '-')
+    .replace(/^\+(?=\d)/, '');
   // A coded value reads as its meaning ("e = nonsense"): the phrases read it back.
   if (/^[A-Za-z]/.test(rhs)) {
     const x = evaluate(rhs);

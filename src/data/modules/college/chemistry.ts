@@ -2182,7 +2182,7 @@ export const COLLEGE_CHEMISTRY_MODULES: ModuleDef[] = [
         count('v', 'v', 'Valence electrons of the free atom', 1, 8),
         count('N', 'N', 'Nonbonding electrons on the atom', 0, 8),
         count('B', 'B', 'Bonding electrons around the atom', 0, 12),
-        V('FC', 'FC', 'Formal charge', { min: -4, max: 4, step: 1, integer: true }),
+        V('FC', 'FC', 'Formal charge', { min: -4, max: 4, step: 1, integer: true, signed: true }),
       ],
       ...rels(
         rel(
