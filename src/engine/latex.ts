@@ -53,9 +53,9 @@ const USUB = String.raw`(?:_[\p{L}\d]+(?:,[\p{L}\d]+)?)`;
 /**
  * An operand of a stacked division: a function of a bracket (sin(30°), ln(ΔT₁ ÷ ΔT₂): never
  * the name alone over its bracket) or of one number or letter (log₁₀ 2), a bracket, a number (maybe times a letter), a name (with
- * its marks and subscript, maybe after ∂: ∂U ÷ ∂P).
+ * its marks and subscript, maybe after ∂: ∂U ÷ ∂P), or a rate written dV/dt (dV/dt ÷ (πr²)).
  */
-const OPERAND = String.raw`\p{L}+[₀-₉]*\([^()]*\)|(?:ln|log|log₁₀|log₂|sin|cos|tan) (?:\d+(?:\.\d+)?|\p{L}${SUB})(?![\p{L}\p{M}\d(_])|\([^()]*\)|\d[\d,]*(?:\.\d+)?\p{L}?|∂?(?:\p{L}\p{M}*)+′?${USUB}?${SUB}`;
+const OPERAND = String.raw`d\p{L}\p{M}*${SUB}/d\p{L}(?![\p{L}\p{M}])|\p{L}+[₀-₉]*\([^()]*\)|(?:ln|log|log₁₀|log₂|sin|cos|tan) (?:\d+(?:\.\d+)?|\p{L}${SUB})(?![\p{L}\p{M}\d(_])|\([^()]*\)|\d[\d,]*(?:\.\d+)?\p{L}?|∂?(?:\p{L}\p{M}*)+′?${USUB}?${SUB}`;
 /** A bracket with one more bracket level inside: ((k − 1)/k), (P₂ ÷ (P₁ + 1)). */
 const NESTED = String.raw`\((?:[^()]|\([^()]*\))*\)`;
 
@@ -265,7 +265,7 @@ function divisions(segs: Seg[], band: MathBand, symbols: string[]): Seg[] {
   // Each side may be raised to a power (v² ÷ r, (a − b) ÷ t²): the power stays inside its side,
   // so t² is the bottom, never the whole fraction squared.
   const div = new RegExp(
-    String.raw`(?<![\d/.,])(?<a>(?:${OPERAND})(?:${SUP})?) ÷ (?<b>(?:${OPERAND})(?:${SUP})?)(?![\d^])`,
+    String.raw`(?<![\d/.,])(?<!/d)(?<a>(?:${OPERAND})(?:${SUP})?) ÷ (?<b>(?:${OPERAND})(?:${SUP})?)(?![\d^])`,
     'gu',
   );
   return pass(segs, div, (m) =>

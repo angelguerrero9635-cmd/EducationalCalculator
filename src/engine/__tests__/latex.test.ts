@@ -60,6 +60,8 @@ describe('toLatex', () => {
   it('high school and college: ^ powers, stacked divisions, roots with powers inside', () => {
     expect(both('x^(n − 1)', 'standard')).toBe('$\\pow{x}{(n − 1)}$');
     expect(both('m = (8 − 2) ÷ (4 − 1)', 'standard')).toBe('m = $\\divfrac{(8 − 2)}{(4 − 1)}$');
+    // A rate written dV/dt is one side, never split at its slash.
+    expect(both('dV/dt ÷ (π × 4)', 'standard')).toBe('$\\divfrac{dV/dt}{(π × 4)}$');
     expect(both('c = √(3² + 4²)', 'standard')).toBe('c = $\\sqrt{({3}^{2} + {4}^{2})}$');
     expect(both('The growth factor is 1 + r/100.', 'standard')).toBe(
       'The growth factor is 1 + $\\tfrac{r}{100}$.',
