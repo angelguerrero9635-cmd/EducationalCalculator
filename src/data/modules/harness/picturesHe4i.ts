@@ -1,12 +1,15 @@
 /**
  * Picture checks for college round 4, group I (docs/RENDERINGS_HE.md). HC141: a cell's A, V and
- * A ÷ V agree with r to 3 significant figures, on a sphere. Called from `repIssues` in
+ * A ÷ V agree with r to 3 significant figures, on a sphere. HC142: chromatids and c by stage.
+ * HC143: an evolution icon sits in the bin for its kind of evidence. Called from `repIssues` in
  * `pictures.ts` (and the layout checks from `layoutFigures.ts`). Test-only.
  */
 import { cellRatio } from '@/components/module/reps/he4iMath';
 
 import { divisionStages } from '../typesHe4i';
 
+import type { LayoutDef } from '../layouts';
+import { EVIDENCE_OF } from '../layouts/icons/he4i';
 import type { Representation } from '../types';
 
 type Val = (x: string | number) => number | undefined;
@@ -70,5 +73,27 @@ export function divisionContentIssues(rep: Representation, val: Val): string[] {
   const gam = k.gamete ? val(k.gamete) : undefined;
   if (gam !== undefined && g1 !== undefined && Math.abs(gam - g1 / 2) > 1e-9)
     out.push(`content: a gamete holds ${gam}c, half of G₁'s ${g1}c is ${g1 / 2}c`);
+  return out;
+}
+
+/** The layout checks for group I's card icons and figures (from `layoutFigures.ts`). */
+export function he4iLayoutIssues(l: LayoutDef): string[] {
+  const out: string[] = [];
+  if (l.kind === 'sort') {
+    // HC143: in a sort by kind of evidence, an evolution icon goes in the bin naming its kind.
+    const words = ['homologous', 'analogous', 'vestigial'];
+    const named = (b: { id: string; label: string }) =>
+      words.filter((w) => `${b.id} ${b.label}`.toLowerCase().includes(w));
+    if (l.bins.some((b) => named(b).length)) {
+      for (const card of l.cards) {
+        const f = card.figure;
+        const kind = f?.kind === 'icon' ? EVIDENCE_OF[f.icon] : undefined;
+        if (!kind) continue;
+        const bin = l.bins.find((b) => b.id === card.bin);
+        if (!bin || !named(bin).includes(kind))
+          out.push(`card "${card.label}": a ${kind} structure in bin "${bin?.label ?? card.bin}"`);
+      }
+    }
+  }
   return out;
 }

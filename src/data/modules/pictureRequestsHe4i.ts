@@ -57,4 +57,20 @@ export const HE4I_REQUESTS: PictureRequest[] = [
     status: 'drawn',
     gallery: ['g.he-cellDivision-content', 'g.he-cellDivision-content-four'],
   },
+  {
+    ...ask(
+      'HC143',
+      'icon',
+      'Card icons for the evidence of evolution: a whale with its vestigial pelvis ringed, the large intestine with the appendix ringed, a bird’s wing (arm bones) beside a butterfly’s wing (no bones), a shark’s fin (fin rays) beside a dolphin’s flipper (arm bones)',
+      [`${B}principles-2#0`],
+      [
+        'From B-P4. Card icons (data/modules/layouts/icons/he4i.ts, layouts/icons/he4i.tsx), 48 × 48, drawn like group HH’s limbs (the same bone colors).',
+        "Fields: { kind: 'icon', icon: 'whale pelvis' | 'human appendix' | 'bird wing and butterfly wing' | 'shark fin and dolphin flipper' } on a sort card.",
+        "Example: the main page's sort with bins homologous, analogous, vestigial and cards { label: 'Whale pelvis', bin: 'vestigial', figure: { kind: 'icon', icon: 'whale pelvis' } }, beside group HH's five limbs (gallery g.he-cardIcons-evolution).",
+        'Layout check (harness/picturesHe4i.ts he4iLayoutIssues): in a sort whose bins name homologous, analogous or vestigial, each evolution icon (these four and HH’s limbs and insect wing) sits in the bin naming its kind.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: ['g.he-cardIcons-evolution'],
+  },
 ];

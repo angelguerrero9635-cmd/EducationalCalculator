@@ -37,6 +37,7 @@ import { H3C_ICONS } from '@/data/modules/layouts/icons/h3c';
 import { H3D_ICONS } from '@/data/modules/layouts/icons/h3d';
 import { H3E_ICONS } from '@/data/modules/layouts/icons/h3e';
 import { HE3I_ICONS } from '@/data/modules/layouts/icons/he3i';
+import { HE4I_ICONS } from '@/data/modules/layouts/icons/he4i';
 
 import { R3AIcon } from './r3a';
 import { R3BIcon } from './r3b';
@@ -74,6 +75,7 @@ import { H3CIcon } from './h3c';
 import { H3DIcon } from './h3d';
 import { H3EIcon } from './h3e';
 import { He3iIcon } from './he3i';
+import { He4iIcon } from './he4i';
 import type { IconProps } from './types';
 
 const GROUPS: [readonly string[], ComponentType<IconProps>][] = [
@@ -113,6 +115,7 @@ const GROUPS: [readonly string[], ComponentType<IconProps>][] = [
   [H3D_ICONS, H3DIcon],
   [H3E_ICONS, H3EIcon],
   [HE3I_ICONS, He3iIcon],
+  [HE4I_ICONS, He4iIcon], // HC143, HC149
 ];
 
 export function Round3Icon({ icon, ink }: IconProps): ReactNode {

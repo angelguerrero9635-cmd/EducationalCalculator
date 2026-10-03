@@ -3,10 +3,11 @@
  * college page that waits, built from the plan's worked example. Spread into gallery.ts.
  * HC141: `curvedSolid` `ratio` (he.biology.principles-1#1).
  * HC142: `cellDivision` `content` (he.biology.principles-1#3).
+ * HC143: card icons, evidence for evolution (he.biology.principles-2#0).
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
-import type { LayoutDef } from './layouts';
+import type { CardIcon, LayoutDef } from './layouts';
 import type { ModuleDef, Representation, StepText } from './types';
 
 type Solver = (v: Values) => number | number[] | undefined;
@@ -273,6 +274,56 @@ const DIVISION_CONTENT_SMALL = contentPage(
   'With 2n = 4 every chromosome is drawn: two pairs, one of each pair from each parent.',
 );
 
+// ─── HC143: evidence for evolution (principles-2#0) ────────────────────────────────
+
+const icon = (label: string, bin: string, name: CardIcon) => ({
+  label,
+  bin,
+  figure: { kind: 'icon' as const, icon: name },
+});
+
+const SORT_EVIDENCE: LayoutDef = {
+  id: 'g.he-cardIcons-evolution',
+  title: 'Homologous, analogous or vestigial?',
+  kind: 'sort',
+  use: 'Use this for sorting structures as homologous, analogous or vestigial evidence for evolution.',
+  assumptions: [
+    'Homologous parts share an ancestor’s plan; analogous parts share a job.',
+    'A vestigial part is a reduced remnant of one that worked in an ancestor.',
+  ],
+  intro:
+    'Look at the bones: the same bones in a new job, a job done with other parts, or a leftover.',
+  question: 'What does the structure show?',
+  bins: [
+    {
+      id: 'homologous',
+      label: 'Homologous structure',
+      why: 'The same bones in the same order, doing different jobs: a shared ancestor.',
+    },
+    {
+      id: 'analogous',
+      label: 'Analogous structure',
+      why: 'The same job done with a different build: the two evolved it apart.',
+    },
+    {
+      id: 'vestigial',
+      label: 'Vestigial structure',
+      why: 'A reduced part with little or no use, left over from an ancestor that used it.',
+    },
+  ],
+  cards: [
+    icon('Human arm', 'homologous', 'human arm bones'),
+    icon('Bat wing', 'homologous', 'bat wing bones'),
+    icon('Whale flipper', 'homologous', 'whale flipper bones'),
+    icon('Cat foreleg', 'homologous', 'cat leg bones'),
+    icon('Insect wing', 'analogous', 'insect wing'),
+    icon('Bird wing and butterfly wing', 'analogous', 'bird wing and butterfly wing'),
+    icon('Shark fin and dolphin flipper', 'analogous', 'shark fin and dolphin flipper'),
+    icon('Whale pelvis', 'vestigial', 'whale pelvis'),
+    icon('Human appendix', 'vestigial', 'human appendix'),
+  ],
+};
+
 export const HE4I_GALLERY_MODULES: ModuleDef[] = [
   CELL_RATIO,
   CELL_RATIO_SMALL,
@@ -280,4 +331,4 @@ export const HE4I_GALLERY_MODULES: ModuleDef[] = [
   DIVISION_CONTENT_SMALL,
 ];
 
-export const HE4I_GALLERY_LAYOUTS: LayoutDef[] = [];
+export const HE4I_GALLERY_LAYOUTS: LayoutDef[] = [SORT_EVIDENCE];
