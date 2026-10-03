@@ -5,12 +5,13 @@
  * in `../layouts/collegePhysics.ts`. Rules: docs/MODULE_GUIDE.md.
  */
 import { atan2D, atanD, cosD, sinD, tanD } from '@/engine/angles';
+import { formatNumber } from '@/engine/format';
 import type { Values } from '@/engine/types';
 
 import { div } from '../helpers';
 import type { ModuleDef } from '../types';
 
-import { polyDerivative, polyForm } from './forms';
+import { polyDerivative, polyForm, termsForm } from './forms';
 import {
   atLeastZero,
   derive,
@@ -824,6 +825,107 @@ export const COLLEGE_PHYSICS_MODULES: ModuleDef[] = [
       kind: 'freeBody',
       g: G,
       banked: { angle: 'theta', radius: 'r', speed: 'v', mass: 'm', normal: 'N' },
+    },
+  },
+  {
+    // University Physics I → Work and energy: the work a spring does between two stretches,
+    // and the speed it gives a block.
+    id: 'he.physics.university-1#2',
+    use: 'Use this for “A spring (k = 60 N/m) on a smooth track is stretched 2 m and let go, pulling a 1.5 kg cart from rest. How much work has it done, and how fast is the cart, when the stretch is down to 0.5 m?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'The spring obeys Hooke’s law, F = −kx, where x is the stretch from its natural length (+ stretched, − squeezed).',
+      'The work by the spring from x₁ to x₂ is the area under the line kx between them: W = ∫ from x₂ to x₁ of kx dx.',
+      'The track is smooth and the spring is light, so the spring’s work is the only work done on the cart.',
+      'v₁ and v₂ are the cart’s speeds at x₁ and x₂.',
+    ],
+    // One unit for x and W: the picture's area is ∫kx dx in m and J.
+    variables: [
+      V('k', 'k', 'Spring constant', { unit: 'N/m', min: 0.1, max: 1e6, step: 1 }),
+      V('x1', 'x₁', 'Start stretch', { unit: 'm', units: ['m'], min: -5, max: 5, step: 0.01 }),
+      V('x2', 'x₂', 'End stretch', { unit: 'm', units: ['m'], min: -5, max: 5, step: 0.01 }),
+      V('W', 'W', 'Work by the spring', {
+        unit: 'J',
+        units: ['J'],
+        min: -1.25e7,
+        max: 1.25e7,
+        derived: true,
+      }),
+      V('m', 'm', 'Mass of the cart', { unit: 'kg', min: 0.001, max: 1e4, step: 0.01 }),
+      V('v1', 'v₁', 'Start speed', { unit: 'm/s', min: 0, max: 1e5, step: 0.1 }),
+      V('v2', 'v₂', 'End speed', { unit: 'm/s', min: 0, max: 1e5 }),
+    ],
+    ...rels(
+      withStep(
+        rel(
+          'W = ½k(x₁² − x₂²)',
+          '{W} = ½ × {k} × ({x1}² − {x2}²)',
+          ['W', 'k', 'x1', 'x2'],
+          (v) => v.W! - 0.5 * v.k! * (v.x1! ** 2 - v.x2! ** 2),
+          {
+            W: [
+              (v) => exact(0.5 * v.k! * (v.x1! ** 2 - v.x2! ** 2)),
+              '½ × {k} × ({x1}² − {x2}²)',
+              'The spring pulls with −kx, so its work from x₁ to x₂ is the integral of kx from x₂ to x₁: ½kx² at x₁ less ½kx² at x₂.',
+            ],
+          },
+        ),
+        'W',
+        {
+          // The area under kx from x₂ to x₁, by the power rule (checked by quadrature).
+          work: (v) => [
+            `∫ from ${formatNumber(v.x2!)} to ${formatNumber(v.x1!)} of ${termsForm([[v.k!, 'x']])} dx = [${termsForm([[v.k! / 2, 'x²']])}] from ${formatNumber(v.x2!)} to ${formatNumber(v.x1!)}`,
+          ],
+        },
+      ),
+      rel(
+        '½mv₂² = ½mv₁² + W',
+        '½ × {m} × {v2}² = ½ × {m} × {v1}² + {W}',
+        ['v2', 'v1', 'm', 'W'],
+        (v) => 0.5 * v.m! * v.v2! ** 2 - 0.5 * v.m! * v.v1! ** 2 - v.W!,
+        {
+          v2: [
+            (v) => rootOf(v.v1! ** 2 + (2 * v.W!) / v.m!, v.v1! ** 2),
+            '√({v1}² + 2 × {W} ÷ {m})',
+            'Work–energy theorem: the kinetic energy at x₂ is the kinetic energy at x₁ plus the spring’s work. Solve ½mv₂² for v₂.',
+          ],
+          v1: [
+            (v) => rootOf(v.v2! ** 2 - (2 * v.W!) / v.m!, v.v2! ** 2),
+            '√({v2}² − 2 × {W} ÷ {m})',
+            'Take the spring’s work back off the kinetic energy at x₂, then solve ½mv₁² for v₁.',
+          ],
+          m: [
+            (v) => div(2 * v.W!, v.v2! ** 2 - v.v1! ** 2),
+            '2 × {W} ÷ ({v2}² − {v1}²)',
+            'Undo W = ½m(v₂² − v₁²) for m: double the work, then divide by the change in v².',
+          ],
+        },
+        {
+          message: (v) =>
+            v.v1 !== undefined &&
+            v.W !== undefined &&
+            v.m !== undefined &&
+            v.v1 ** 2 + (2 * v.W) / v.m < -1e-9
+              ? 'The spring takes more energy than the cart has: it stops and turns back before it reaches x₂.'
+              : undefined,
+        },
+      ),
+    ),
+    // k = 40 N/m, x₁ = 3 m, x₂ = 1 m: W = ½ × 40 × (9 − 1) = 160 J;
+    // m = 2 kg at v₁ = 3 m/s: v₂ = √(9 + 2 × 160 ÷ 2) = √169 = 13 m/s
+    // (energy check: 9 + 180 = 169 + 20 = 189 J). Meters, not centimeters: the graph's x-axis
+    // spans at least 5, so a band a few centimeters wide would be a sliver.
+    example: { k: 40, x1: 3, x2: 1, W: 160, m: 2, v1: 3, v2: 13 },
+    startWith: ['k', 'x1', 'x2', 'm', 'v1'],
+    // The line kx with the band from x₂ to x₁ shaded: its area is the spring's work.
+    representation: {
+      kind: 'functionGraph',
+      family: 'linear',
+      m: 'k',
+      b: 0,
+      name: 'F',
+      area: { from: 'x2', to: 'x1', value: 'W' },
+      axes: { x: 'Stretch x (m)', y: 'Force kx (N)' },
     },
   },
 ];
