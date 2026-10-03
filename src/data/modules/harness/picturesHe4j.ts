@@ -9,6 +9,8 @@
  * - HC156 `footprints`: the prints alternate left and right a step apart, heel to heel; the
  *   stride (one foot's heels) is 2 × step; v = step × cadence ÷ 60; Fr = v² ÷ (gL); the run speed
  *   is √(0.5gL), where Fr = 0.5.
+ * - HC157 `springDashpot`: τ = η ÷ E; the drawn curve at τ reads 1 ÷ e ≈ 37% of σ₀ (relaxation)
+ *   or 1 − 1 ÷ e ≈ 63% of σ ÷ E (creep); σ₀ = Eε₀ and σ = σ₀e^(−t/τ); ε = (σ ÷ E)(1 − e^(−t/τ)).
  */
 import type { VariableDef } from '@/engine/types';
 import {
@@ -16,11 +18,13 @@ import {
   beatsDrawn,
   cavityCap,
   cavityLevel,
+  creepShare,
   DIAL_MAX,
   dialAngle,
   froudeOf,
   inUnit,
   printHeels,
+  relaxShare,
 } from '@/components/module/reps/he4jMath';
 
 import type { Representation } from '../types';
@@ -156,6 +160,67 @@ export function he4jIssues(
         out.push(`footprints: Fr ${fr} is not v² ÷ (gL) = ${froudeOf(v, g, leg)}`);
       if (run !== undefined && leg !== undefined && !close(froudeOf(run, g, leg), 0.5, 1e-4))
         out.push(`footprints: the run speed ${run} does not give Fr = 0.5`);
+      break;
+    }
+    case 'springDashpot': {
+      const raw = (v: string | number | undefined) => (v === undefined ? undefined : val(v));
+      const E = raw(rep.E);
+      const eta = raw(rep.eta);
+      const tauGiven = get(rep.tau, 's');
+      const tau = tauGiven ?? (E !== undefined && eta !== undefined && E > 0 ? eta / E : undefined);
+      const t = get(rep.t, 's');
+      if (
+        tauGiven !== undefined &&
+        E !== undefined &&
+        eta !== undefined &&
+        !close(tauGiven, eta / E, 1e-4)
+      )
+        out.push(`springDashpot: τ ${tauGiven} is not η ÷ E = ${eta / E}`);
+      if (tau === undefined || !(tau > 0)) break;
+      // The curve the picture draws, read at τ against e (an independent constant).
+      const atTau = rep.model === 'maxwell' ? relaxShare(tau, tau) : creepShare(tau, tau);
+      const want = rep.model === 'maxwell' ? 1 / Math.E : 1 - 1 / Math.E;
+      if (Math.abs(atTau - want) > 1e-12) out.push(`springDashpot: the curve at τ reads ${atTau}`);
+      if (rep.model === 'maxwell') {
+        const e0 = raw(rep.strain0);
+        const s0 = raw(rep.stress0) ?? (E !== undefined && e0 !== undefined ? E * e0 : undefined);
+        if (
+          raw(rep.stress0) !== undefined &&
+          E !== undefined &&
+          e0 !== undefined &&
+          !close(s0!, E * e0, 1e-4)
+        )
+          out.push(`springDashpot: σ₀ ${s0} is not Eε₀ = ${E * e0}`);
+        const s = raw(rep.stress);
+        if (
+          s !== undefined &&
+          s0 !== undefined &&
+          t !== undefined &&
+          !close(s, s0 * Math.exp(-t / tau), 1e-4)
+        )
+          out.push(`springDashpot: σ ${s} is not σ₀e^(−t/τ) = ${s0 * Math.exp(-t / tau)}`);
+      } else {
+        const load = raw(rep.load);
+        const fin =
+          raw(rep.final) ?? (load !== undefined && E !== undefined ? load / E : undefined);
+        if (
+          raw(rep.final) !== undefined &&
+          load !== undefined &&
+          E !== undefined &&
+          !close(fin!, load / E, 1e-4)
+        )
+          out.push(`springDashpot: the final strain ${fin} is not σ ÷ E = ${load / E}`);
+        const e = raw(rep.strain);
+        if (
+          e !== undefined &&
+          fin !== undefined &&
+          t !== undefined &&
+          !close(e, fin * (1 - Math.exp(-t / tau)), 1e-4)
+        )
+          out.push(
+            `springDashpot: ε ${e} is not (σ ÷ E)(1 − e^(−t/τ)) = ${fin * (1 - Math.exp(-t / tau))}`,
+          );
+      }
       break;
     }
   }

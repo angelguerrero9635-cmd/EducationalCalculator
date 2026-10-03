@@ -8,6 +8,7 @@
  *   per minute and a pressure gauge.
  * - HC156 `footprints`: prints to scale, step and stride bracketed, a tick a step; card figure
  *   `gait`, a stick leg in one of the six phases.
+ * - HC157 `springDashpot`: a Maxwell or Kelvin–Voigt model beside its relaxation or creep curve.
  */
 import type { NumOrVar } from './typesGraphs';
 
@@ -83,8 +84,39 @@ export interface GaitCard {
   phase: GaitPhase;
 }
 
+// ─── HC157: springDashpot (new kind) ───────────────────────────────────────────
+
+/**
+ * HC157 (B-P25): a viscoelastic model beside its curve. `model: 'maxwell'` draws a spring and a
+ * dashpot in series held at a fixed strain ε₀ between two walls (relaxation): the spring's share
+ * of the stretch e^(−t/τ), the dashpot's the rest, and σ = σ₀e^(−t/τ) falling with τ and 37%
+ * marked. `model: 'kelvin'` draws them side by side under a held stress (creep): both stretch
+ * together and ε = (σ ÷ E)(1 − e^(−t/τ)) rises toward σ ÷ E with τ and 63% marked.
+ *
+ * Fields: `E` (modulus), `eta` (η, in E's unit times seconds: MPa and MPa·s), `tau?` (τ = η ÷ E,
+ * s), `t?` (s; the point on the curve and the model's state). Maxwell: `strain0?` (ε₀),
+ * `stress0?` (σ₀ = Eε₀), `stress?` (σ at t). Kelvin: `load?` (σ held), `strain?` (ε at t),
+ * `final?` (σ ÷ E). Drag the point to change `t` (`keep` pins typed values; `fixed` no handle).
+ */
+export interface SpringDashpotSpec {
+  kind: 'springDashpot';
+  model: 'maxwell' | 'kelvin';
+  E: NumOrVar;
+  eta: NumOrVar;
+  tau?: NumOrVar;
+  t?: NumOrVar;
+  strain0?: NumOrVar;
+  stress0?: NumOrVar;
+  stress?: NumOrVar;
+  load?: NumOrVar;
+  strain?: NumOrVar;
+  final?: NumOrVar;
+  keep?: string[];
+  fixed?: boolean;
+}
+
 /** Every group J picture kind. */
-export type He4jSpec = HeartPumpSpec | FootprintsSpec;
+export type He4jSpec = HeartPumpSpec | FootprintsSpec | SpringDashpotSpec;
 
 /** The variable ids a group J spec names. */
 export function he4jSpecVars(r: He4jSpec): string[] {
@@ -93,5 +125,7 @@ export function he4jSpecVars(r: He4jSpec): string[] {
       return ids(r.edv, r.esv, r.sv, r.ef, r.hr, r.co, r.sbp, r.dbp, r.map, r.tpr);
     case 'footprints':
       return ids(r.step, r.cadence, r.stride, r.speed, r.leg, r.froude, r.runSpeed, r.g);
+    case 'springDashpot':
+      return ids(r.E, r.eta, r.tau, r.t, r.strain0, r.stress0, r.stress, r.load, r.strain, r.final);
   }
 }

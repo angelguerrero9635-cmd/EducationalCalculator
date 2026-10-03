@@ -216,6 +216,7 @@ import { ControlVolume } from './ControlVolume';
 import { VelocityProfile } from './VelocityProfile';
 import { HeartPump } from './HeartPump';
 import { Footprints } from './Footprints';
+import { SpringDashpot } from './SpringDashpot';
 import { ComplexPlaneHe2a } from './ComplexPlaneHe2a';
 import { Bode } from './Bode';
 import { StreamChannelHe } from './StreamChannelHe';
@@ -456,6 +457,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <HeartPump spec={spec} calc={calc} />; // HC155
     case 'footprints':
       return <Footprints spec={spec} calc={calc} />; // HC156
+    case 'springDashpot':
+      return <SpringDashpot spec={spec} calc={calc} />; // HC157
     case 'potentialWell':
       return <PotentialWell spec={spec} calc={calc} />;
     case 'phaseSpace':

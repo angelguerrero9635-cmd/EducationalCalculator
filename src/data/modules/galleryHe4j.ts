@@ -557,6 +557,232 @@ const gaitPhases: LayoutDef = {
   totalLabel: 'Gait cycle',
 };
 
+// ─── HC157: viscoelasticity (biomechanics#3, ~creep) ────────────────────────────
+
+const tauRule = rule(
+  'time constant',
+  '{tau} = {eta} ÷ {E}',
+  ['tau', 'eta', 'E'],
+  (v) => v.tau! - v.eta! / v.E!,
+  {
+    tau: [
+      (v) => v.eta! / v.E!,
+      '{eta} ÷ {E}',
+      'The dashpot’s viscosity over the spring’s modulus: how long the dashpot takes to undo the spring.',
+    ],
+    eta: [
+      (v) => v.tau! * v.E!,
+      '{tau} × {E}',
+      'The viscosity is the time constant times the modulus.',
+    ],
+    E: [
+      (v) => v.eta! / v.tau!,
+      '{eta} ÷ {tau}',
+      'The modulus is the viscosity over the time constant.',
+    ],
+  },
+);
+
+const modulusVars = () => [
+  num('E', 'E', 'Spring modulus', 'MPa', 0.01, 100000, { step: 0.01 }),
+  num('eta', 'η', 'Dashpot viscosity', 'MPa·s', 0.001, 1e7, { step: 0.1 }),
+  num('tau', 'τ', 'Time constant', 's', 0.001, 1e6, { step: 0.1 }),
+  num('t', 't', 'Time', 's', 0.001, 1e6, { step: 1 }),
+];
+
+const sigmaOf = (v: Values) => v.s0! * Math.exp(-v.t! / v.tau!);
+
+const relaxPage = (id: string, title: string, use: string, typed: Values) =>
+  page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'A Maxwell solid: a spring and a dashpot in series, stretched to ε₀ and held there.',
+      'At first the spring takes all the stretch; the dashpot slowly gives way and the stress relaxes.',
+      'After one time constant τ, 37% of the stress is left (e⁻¹).',
+    ],
+    variables: [
+      ...modulusVars(),
+      num('e0', 'ε₀', 'Held strain', undefined, 0.0001, 0.5, { step: 0.001 }),
+      num('s0', 'σ₀', 'Starting stress', 'MPa', 0.000001, 50000, { step: 0.001 }),
+      num('sigma', 'σ', 'Stress at t', 'MPa', 0.000001, 50000, { step: 0.001 }),
+    ],
+    rules: [
+      tauRule,
+      rule('starting stress', '{s0} = {E} × {e0}', ['s0', 'E', 'e0'], (v) => v.s0! - v.E! * v.e0!, {
+        s0: [(v) => v.E! * v.e0!, '{E} × {e0}', 'At first only the spring stretches: Hooke’s law.'],
+        E: [(v) => v.s0! / v.e0!, '{s0} ÷ {e0}', 'The modulus is the stress over the strain.'],
+        e0: [(v) => v.s0! / v.E!, '{s0} ÷ {E}', 'The strain is the stress over the modulus.'],
+      }),
+      rule(
+        'relaxation',
+        '{sigma} = {s0} × e^(−{t} ÷ {tau})',
+        ['sigma', 's0', 't', 'tau'],
+        (v) => v.sigma! - sigmaOf(v),
+        {
+          sigma: [
+            sigmaOf,
+            '{s0} × e^(−{t} ÷ {tau})',
+            'The stress falls by the factor e^(−t/τ) as the dashpot gives way.',
+          ],
+          s0: [
+            (v) => v.sigma! * Math.exp(v.t! / v.tau!),
+            '{sigma} × e^({t} ÷ {tau})',
+            'Undo the decay: multiply by e^(t/τ).',
+          ],
+          t: [
+            (v) => v.tau! * Math.log(v.s0! / v.sigma!),
+            '{tau} × ln({s0} ÷ {sigma})',
+            'Take the natural log of how many times the stress has fallen, then times τ.',
+          ],
+          tau: [
+            (v) => v.t! / Math.log(v.s0! / v.sigma!),
+            '{t} ÷ ln({s0} ÷ {sigma})',
+            'The time divided by the natural log of how many times the stress has fallen.',
+          ],
+        },
+      ),
+    ],
+    example: example(
+      typed,
+      ['tau', (v) => v.eta! / v.E!],
+      ['s0', (v) => v.E! * v.e0!],
+      ['sigma', sigmaOf],
+    ),
+    startWith: ['E', 'eta', 'e0', 't'],
+    representation: {
+      kind: 'springDashpot',
+      model: 'maxwell',
+      E: 'E',
+      eta: 'eta',
+      tau: 'tau',
+      t: 't',
+      strain0: 'e0',
+      stress0: 's0',
+      stress: 'sigma',
+    },
+  });
+
+const RELAX = relaxPage(
+  'g.he-springDashpot-relax',
+  'Stress relaxation in a Maxwell solid',
+  'Use this for “A tissue with E = 10 MPa and η = 500 MPa·s is held at 5% strain. What stress is left after 50 s?”',
+  { E: 10, eta: 500, e0: 0.05, t: 50 },
+);
+
+/** Four time constants on: under 2% of the stress is left. */
+const RELAX_LATE = relaxPage(
+  'g.he-springDashpot-relax-late',
+  'Stress almost gone after four time constants',
+  'Use this for “The same tissue is held at 5% strain for 200 s. How much of the stress is left?”',
+  { E: 10, eta: 500, e0: 0.05, t: 200 },
+);
+
+const finalOf = (v: Values) => v.sigma! / v.E!;
+const strainOf = (v: Values) => v.final! * (1 - Math.exp(-v.t! / v.tau!));
+
+const creepPage = (id: string, title: string, use: string, typed: Values) =>
+  page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'A Kelvin–Voigt solid: a spring and a dashpot side by side, under a stress held from t = 0.',
+      'The dashpot slows the stretch; the strain creeps toward σ ÷ E, where the spring takes all the load, and never flows past it.',
+      'After one time constant τ the strain is 63% of the way there (1 − e⁻¹).',
+    ],
+    variables: [
+      num('sigma', 'σ', 'Held stress', 'MPa', 0.0001, 50000, { step: 0.01 }),
+      ...modulusVars(),
+      num('final', 'ε_∞', 'Final strain', undefined, 0.000001, 10, { step: 0.0001 }),
+      num('strain', 'ε', 'Strain at t', undefined, 0.000001, 10, { step: 0.0001 }),
+    ],
+    rules: [
+      tauRule,
+      rule(
+        'final strain',
+        '{final} = {sigma} ÷ {E}',
+        ['final', 'sigma', 'E'],
+        (v) => v.final! - finalOf(v),
+        {
+          final: [finalOf, '{sigma} ÷ {E}', 'In the end the spring carries the whole stress.'],
+          sigma: [
+            (v) => v.final! * v.E!,
+            '{final} × {E}',
+            'The stress is the modulus times the final strain.',
+          ],
+          E: [
+            (v) => v.sigma! / v.final!,
+            '{sigma} ÷ {final}',
+            'The modulus is the stress over the final strain.',
+          ],
+        },
+      ),
+      rule(
+        'creep',
+        '{strain} = {final} × (1 − e^(−{t} ÷ {tau}))',
+        ['strain', 'final', 't', 'tau'],
+        (v) => v.strain! - strainOf(v),
+        {
+          strain: [
+            strainOf,
+            '{final} × (1 − e^(−{t} ÷ {tau}))',
+            'The share of the final strain reached by t is 1 − e^(−t/τ).',
+          ],
+          final: [
+            (v) => v.strain! / (1 - Math.exp(-v.t! / v.tau!)),
+            '{strain} ÷ (1 − e^(−{t} ÷ {tau}))',
+            'Divide the strain by the share reached so far.',
+          ],
+          t: [
+            (v) => -v.tau! * Math.log(1 - v.strain! / v.final!),
+            '−{tau} × ln(1 − {strain} ÷ {final})',
+            'The share still to go is e^(−t/τ): take its natural log and times by −τ.',
+          ],
+          tau: [
+            (v) => -v.t! / Math.log(1 - v.strain! / v.final!),
+            '−{t} ÷ ln(1 − {strain} ÷ {final})',
+            'The time divided by minus the natural log of the share still to go.',
+          ],
+        },
+      ),
+    ],
+    example: example(
+      typed,
+      ['eta', (v) => v.tau! * v.E!],
+      ['final', finalOf],
+      ['strain', strainOf],
+    ),
+    startWith: ['sigma', 'E', 'tau', 't'],
+    representation: {
+      kind: 'springDashpot',
+      model: 'kelvin',
+      E: 'E',
+      eta: 'eta',
+      tau: 'tau',
+      t: 't',
+      load: 'sigma',
+      strain: 'strain',
+      final: 'final',
+    },
+  });
+
+const CREEP = creepPage(
+  'g.he-springDashpot-creep',
+  'Creep in a Kelvin–Voigt solid',
+  'Use this for “A ligament model with E = 10 MPa and τ = 50 s carries 0.5 MPa. What is its strain after 100 s?”',
+  { sigma: 0.5, E: 10, tau: 50, t: 100 },
+);
+
+/** A fifth of a time constant in: the strain has barely begun to creep. */
+const CREEP_EARLY = creepPage(
+  'g.he-springDashpot-creep-early',
+  'The first seconds of creep',
+  'Use this for “The same ligament model has carried 0.5 MPa for 10 s. How far has it crept?”',
+  { sigma: 0.5, E: 10, tau: 50, t: 10 },
+);
+
 export const HE4J_GALLERY_MODULES: ModuleDef[] = [
   HEART_OUTPUT,
   HEART_EXERCISE,
@@ -565,6 +791,10 @@ export const HE4J_GALLERY_MODULES: ModuleDef[] = [
   GAIT_WALK,
   GAIT_RUN,
   GAIT_TODDLER,
+  RELAX,
+  RELAX_LATE,
+  CREEP,
+  CREEP_EARLY,
 ];
 
 export const HE4J_GALLERY_LAYOUTS: LayoutDef[] = [sortTissues, sortEpithelia, gaitPhases];

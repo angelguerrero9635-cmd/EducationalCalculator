@@ -2403,6 +2403,7 @@ export function repIssues(
       break;
     case 'heartPump':
     case 'footprints':
+    case 'springDashpot':
       out.push(...he4jIssues(rep, val, byId)); // HC155–HC159
       break;
     case 'potentialWell':

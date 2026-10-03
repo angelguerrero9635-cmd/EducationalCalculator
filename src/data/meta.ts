@@ -150,6 +150,8 @@ const PICTURE_NAMES: Record<string, string> = {
   velocityProfile: 'velocity or concentration profiles across a tube, gap or film',
   heartPump: 'the left ventricle filling and emptying, the beats in a minute and a pressure gauge',
   footprints: 'footprints to scale with the step and stride bracketed and a tick a step',
+  springDashpot:
+    'a spring and a dashpot in series or side by side, with the stress relaxing or the strain creeping',
   bode: 'a Bode plot: gain in dB and phase over log frequency, corners, margins',
   roadCurve: 'a road: stopping distance, a horizontal curve, or a crest curve and its sight line',
   connection:

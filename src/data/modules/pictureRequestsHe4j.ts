@@ -90,4 +90,26 @@ export const HE4J_REQUESTS: PictureRequest[] = [
       'g.he-gait-phases',
     ],
   },
+  {
+    ...ask(
+      'HC157',
+      'springDashpot',
+      'Viscoelasticity: a spring and a dashpot in series (Maxwell, stress relaxing at a held strain) or side by side (Kelvin–Voigt, strain creeping under a held stress) beside the curve, τ and 37% or 63% marked',
+      [`${E}biomechanics#3`, `${E}biomechanics#3~creep`],
+      [
+        'From B-P25. New kind (typesHe4j.ts SpringDashpotSpec, reps/SpringDashpot.tsx).',
+        "Fields: { kind: 'springDashpot', model: 'maxwell' | 'kelvin', E, eta (η in E's unit × s: MPa, MPa·s), tau? (s), t? (s); Maxwell: strain0? (ε₀), stress0? (σ₀), stress? (σ at t); Kelvin: load? (σ), strain? (ε at t), final? (σ ÷ E); keep?, fixed? }.",
+        'Draws the model in steel and oil between hatched walls in its state at t (Maxwell: the spring’s share of the held stretch e^(−t/τ), the dashpot the rest; Kelvin: both stretched to ε, the load arrow under them), beside σ₀e^(−t/τ) or (σ ÷ E)(1 − e^(−t/τ)) to scale with τ dashed to its 37% or 63% level and the point at t labelled. Drag the point to change t. A "?" E or η draws no curve.',
+        "Examples: main { kind: 'springDashpot', model: 'maxwell', E: 'E', eta: 'eta', tau: 'tau', t: 't', strain0: 'e0', stress0: 's0', stress: 'sigma' }; ~creep { kind: 'springDashpot', model: 'kelvin', E: 'E', eta: 'eta', tau: 'tau', t: 't', load: 'sigma', strain: 'strain', final: 'final' }.",
+        'Harness (harness/picturesHe4j.ts): τ = η ÷ E; the drawn curve at τ reads 1 ÷ e or 1 − 1 ÷ e; σ₀ = Eε₀ and σ = σ₀e^(−t/τ); final = σ ÷ E and ε = final × (1 − e^(−t/τ)).',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-springDashpot-relax',
+      'g.he-springDashpot-relax-late',
+      'g.he-springDashpot-creep',
+      'g.he-springDashpot-creep-early',
+    ],
+  },
 ];

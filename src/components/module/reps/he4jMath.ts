@@ -75,3 +75,14 @@ export const walkSpeed = (step: number, cadence: number) => (step * cadence) / 6
 /** The Froude number v² ÷ (gL), and the speed where it reaches 0.5 (people switch to a run). */
 export const froudeOf = (v: number, g: number, leg: number) => (v * v) / (g * leg);
 export const runSpeedOf = (g: number, leg: number) => Math.sqrt(0.5 * g * leg);
+
+// ─── HC157: springDashpot ─────────────────────────────────────────────────────
+
+/** The share of the held strain's stress left after t (Maxwell relaxation): e^(−t/τ). */
+export const relaxShare = (t: number, tau: number) => Math.exp(-t / tau);
+
+/** The share of the final strain reached after t (Kelvin–Voigt creep): 1 − e^(−t/τ). */
+export const creepShare = (t: number, tau: number) => 1 - Math.exp(-t / tau);
+
+/** The time axis: a round span past 3τ and past t. */
+export const springSpan = (tau: number, t?: number) => niceUp(Math.max(3 * tau, 1.15 * (t ?? 0)));
