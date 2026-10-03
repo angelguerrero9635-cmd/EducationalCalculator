@@ -2414,4 +2414,90 @@ export const COLLEGE_PHYSICS_MODULES: ModuleDef[] = [
       axes: { x: 'Moment of inertia I (kg·m²)', y: 'Spin ω (rad/s)' },
     },
   },
+  {
+    // University Physics I → Rotation and torque: static equilibrium of a uniform ladder on a
+    // rough floor against a smooth wall; forces balance and torques about the foot cancel.
+    id: 'he.physics.university-1#4~ladder',
+    title: 'A ladder against a smooth wall: will it slip?',
+    use: 'Use this for “A 300 N ladder leans on a smooth wall at 65° to the floor. How hard does the wall push, and how rough must the floor be to hold it?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'The ladder is uniform, so its weight W acts at its middle.',
+      'The wall is smooth: it only pushes level, N_w. The rough floor pushes up, N_f, and its friction f points toward the wall.',
+      'At rest the forces balance both ways, and the torques about the foot cancel, so N_f and f drop out of that balance.',
+      'The ladder holds while μₛN_f ≥ f, so the least μₛ is f ÷ N_f; the ladder’s length cancels.',
+    ],
+    variables: [
+      V('W', 'W', 'Weight of the ladder', { unit: 'N', min: 1, max: 1e5, step: 1 }),
+      V('theta', 'θ', 'Angle with the floor', { unit: '°', min: 1, max: 89, step: 1 }),
+      V('Nw', 'N_w', 'Push of the wall', { unit: 'N', min: 0, max: 1e7, derived: true }),
+      V('Nf', 'N_f', 'Push of the floor', { unit: 'N', min: 1, max: 1e5, derived: true }),
+      V('f', 'f', 'Friction at the foot', { unit: 'N', min: 0, max: 1e7, derived: true }),
+      V('mu', 'μₛ', 'Least static friction coefficient', { min: 0, max: 100, derived: true }),
+    ],
+    ...rels(
+      rel('N_f = W', '{Nf} = {W}', ['Nf', 'W'], (v) => v.Nf! - v.W!, {
+        Nf: [
+          (v) => v.W!,
+          '{W}',
+          'Up and down: the smooth wall pushes only level, so the floor alone holds the weight.',
+        ],
+        W: [(v) => v.Nf!, '{Nf}', 'Up and down: the weight equals the floor’s push.'],
+      }),
+      rel(
+        'N_w = W ÷ (2 tan θ)',
+        '{Nw} = {W} ÷ (2 × tan({theta}))',
+        ['Nw', 'W', 'theta'],
+        (v) => 2 * v.Nw! * tanD(v.theta!) - v.W!,
+        {
+          Nw: [
+            (v) => exact(v.W! / (2 * tanD(v.theta!))),
+            '{W} ÷ (2 × tan({theta}))',
+            'Torques about the foot: N_w × L sin θ = W × ½L cos θ, and the length L cancels.',
+          ],
+          W: [
+            (v) => exact(2 * v.Nw! * tanD(v.theta!)),
+            '2 × {Nw} × tan({theta})',
+            'Undo N_w = W ÷ (2 tan θ) for W: multiply N_w by 2 tan θ.',
+          ],
+          theta: [
+            (v) => (v.Nw! > 0 ? atanD(v.W! / (2 * v.Nw!)) : undefined),
+            'tan⁻¹({W} ÷ (2 × {Nw}))',
+            'Undo N_w = W ÷ (2 tan θ) for the angle with tan⁻¹.',
+          ],
+        },
+      ),
+      rel('f = N_w', '{f} = {Nw}', ['f', 'Nw'], (v) => v.f! - v.Nw!, {
+        f: [
+          (v) => v.Nw!,
+          '{Nw}',
+          'Level forces: the friction at the foot balances the wall’s push.',
+        ],
+        Nw: [(v) => v.f!, '{f}', 'Level forces: the wall’s push equals the friction.'],
+      }),
+      rel('μₛ = f ÷ N_f', '{mu} = {f} ÷ {Nf}', ['mu', 'f', 'Nf'], (v) => v.mu! * v.Nf! - v.f!, {
+        mu: [
+          (v) => div(v.f!, v.Nf!),
+          '{f} ÷ {Nf}',
+          'The floor holds while μₛN_f ≥ f, so the least μₛ is f divided by N_f.',
+        ],
+        f: [(v) => exact(v.mu! * v.Nf!), '{mu} × {Nf}', 'Friction at its limit is μₛN_f.'],
+        Nf: [(v) => div(v.f!, v.mu!), '{f} ÷ {mu}', 'Undo μₛ = f ÷ N_f: divide f by μₛ.'],
+      }),
+    ),
+    // The plan's ladder: W = 200 N at θ = 60°: N_f = 200 N, N_w = 200 ÷ (2 × 1.7321) = 57.74 N,
+    // f = 57.74 N, μₛ = 57.74 ÷ 200 = 0.2887 (= 1 ÷ (2 tan 60°)).
+    example: (() => {
+      const [W, theta] = [200, 60];
+      const Nw = exact(W / (2 * tanD(theta)));
+      return { W, theta, Nw, Nf: W, f: Nw, mu: Nw / W };
+    })(),
+    startWith: ['W', 'theta'],
+    // The ladder on the wall and floor to scale, every force on one scale, the lever arms about
+    // the foot dashed; dragging the top sets θ.
+    representation: {
+      kind: 'freeBody',
+      ladder: { angle: 'theta', weight: 'W', wall: 'Nw', floor: 'Nf', friction: 'f', mu: 'mu' },
+    },
+  },
 ];
