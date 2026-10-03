@@ -1275,4 +1275,187 @@ export const COLLEGE_CHEMISTRY_MODULES: ModuleDef[] = [
       },
     } satisfies ModuleDef;
   })(),
+  (() => {
+    // Gases → a gas collected over water: H₂ in 0.250 L at 25 °C, 755 torr in all, water's
+    // vapor 23.8 torr. P_H₂ = 731.2 torr = 0.9621 atm; n = 0.9621 × 0.250 ÷ (0.08206 × 298.15)
+    // = 9.83 × 10⁻³ mol.
+    const [Ptot, Pw, vol, t] = [755, 23.8, 0.25, 25];
+    const Pgas = Ptot - Pw;
+    const Patm = Pgas / 760;
+    const T = t + 273.15;
+    return {
+      id: 'he.chemistry.gen-chem-1#2~over-water',
+      title: 'A gas collected over water',
+      // As the data are given (0.250 L, 755 torr): 9.83 × 10⁻³ mol.
+      workedFigures: 3,
+      use: 'Use this for “Hydrogen is collected over water: 0.250 L at 25 °C and 755 torr in all. Water’s vapor pressure is 23.8 torr. How many moles of hydrogen were collected?”',
+      assumptions: [
+        'The bottle holds the gas and water vapor together. By Dalton’s law their partial pressures add to the total, which matches the room’s pressure when the water levels are even.',
+        'Read water’s vapor pressure at the water’s temperature from a table: 23.8 torr at 25 °C, 17.5 torr at 20 °C, 31.8 torr at 30 °C.',
+        'The gas is ideal. R = 0.08206 L·atm/(mol·K), so the pressure goes in atm (760 torr = 1 atm), the volume in liters and the temperature in kelvins.',
+      ],
+      variables: [
+        V('Ptot', 'P_total', 'Total pressure', {
+          unit: 'torr',
+          units: ['torr'],
+          min: 10,
+          max: 7600,
+          step: 0.1,
+          figures: 4,
+        }),
+        V('Pw', 'P_water', 'Water’s vapor pressure', {
+          unit: 'torr',
+          units: ['torr'],
+          min: 0,
+          max: 760,
+          step: 0.1,
+          figures: 3,
+        }),
+        V('Pgas', 'P_gas', 'Pressure of the dry gas', {
+          unit: 'torr',
+          units: ['torr'],
+          min: 0.001,
+          max: 7600,
+          step: 0.1,
+          figures: 4,
+        }),
+        V('Patm', 'P_atm', 'Pressure of the dry gas in atm', {
+          unit: 'atm',
+          units: ['atm'],
+          min: 0.001 / 760,
+          max: 10,
+          figures: 4,
+        }),
+        V('V', 'V', 'Volume collected', {
+          unit: 'L',
+          units: ['L'],
+          min: 0.001,
+          max: 1000,
+          step: 0.001,
+          figures: 4,
+        }),
+        V('t', 't', 'Temperature in °C', {
+          unit: '°C',
+          units: ['°C'],
+          min: 0,
+          max: 100,
+          step: 0.01,
+        }),
+        V('T', 'T', 'Temperature', {
+          unit: 'K',
+          units: ['K'],
+          min: 273.15,
+          max: 373.15,
+          step: 0.01,
+          figures: 5,
+        }),
+        V('n', 'n', 'Amount of the gas', { unit: 'mol', min: 1e-12, max: 1000, figures: 4 }),
+      ],
+      ...rels(
+        rule(
+          'P_water < P_total',
+          '{Pw} < {Ptot}',
+          ['Pw', 'Ptot'],
+          (v) => v.Pw! < v.Ptot!,
+          'Water’s vapor is only part of the gas in the bottle, so its pressure must be less than the total.',
+        ),
+        rel(
+          'P_gas = P_total − P_water',
+          '{Pgas} = {Ptot} − {Pw}',
+          ['Pgas', 'Ptot', 'Pw'],
+          (v) => v.Pgas! - (v.Ptot! - v.Pw!),
+          {
+            Pgas: [
+              (v) => exact(v.Ptot! - v.Pw!),
+              '{Ptot} − {Pw}',
+              'Dalton’s law: the total is the gas plus the water vapor, so take the vapor off.',
+            ],
+            Ptot: [
+              (v) => exact(v.Pgas! + v.Pw!),
+              '{Pgas} + {Pw}',
+              'Dalton’s law: the partial pressures add to the total.',
+            ],
+            Pw: [
+              (v) => exact(v.Ptot! - v.Pgas!),
+              '{Ptot} − {Pgas}',
+              'The water vapor makes up what the dry gas does not.',
+            ],
+          },
+        ),
+        rel(
+          'P_atm = P_gas ÷ 760',
+          '{Patm} = {Pgas} ÷ 760',
+          ['Patm', 'Pgas'],
+          (v) => v.Patm! * 760 - v.Pgas!,
+          {
+            Patm: [
+              (v) => v.Pgas! / 760,
+              '{Pgas} ÷ 760',
+              'R is in L·atm/(mol·K), so change torr to atm: 760 torr make 1 atm.',
+            ],
+            Pgas: [(v) => exact(v.Patm! * 760), '{Patm} × 760', 'Back to torr: 760 in each atm.'],
+          },
+        ),
+        rel('T = t + 273.15', '{T} = {t} + 273.15', ['T', 't'], (v) => v.T! - (v.t! + 273.15), {
+          T: [
+            (v) => exact(v.t! + 273.15),
+            '{t} + 273.15',
+            'The gas laws use kelvins, which start 273.15 degrees below 0 °C.',
+          ],
+          t: [(v) => exact(v.T! - 273.15), '{T} − 273.15', 'Take 273.15 off the kelvins for °C.'],
+        }),
+        rel(
+          'PV = nRT',
+          '{Patm} × {V} = {n} × 0.08206 × {T}',
+          ['Patm', 'V', 'n', 'T'],
+          (v) => v.Patm! * v.V! - v.n! * R_LATM * v.T!,
+          {
+            n: [
+              (v) => (v.Patm! * v.V!) / (R_LATM * v.T!),
+              '{Patm} × {V} ÷ (0.08206 × {T})',
+              'Only the dry gas’s own pressure counts its moles: divide PV by RT.',
+            ],
+            V: [
+              (v) => (v.n! * R_LATM * v.T!) / v.Patm!,
+              '{n} × 0.08206 × {T} ÷ {Patm}',
+              'Divide nRT by the dry gas’s pressure; the volume comes out in liters.',
+            ],
+            Patm: [
+              (v) => (v.n! * R_LATM * v.T!) / v.V!,
+              '{n} × 0.08206 × {T} ÷ {V}',
+              'Divide nRT by V for the dry gas’s pressure in atm.',
+            ],
+            T: [
+              (v) => (v.Patm! * v.V!) / (v.n! * R_LATM),
+              '{Patm} × {V} ÷ ({n} × 0.08206)',
+              'Divide PV by nR.',
+            ],
+          },
+        ),
+      ),
+      example: {
+        Ptot,
+        Pw,
+        Pgas,
+        Patm,
+        V: vol,
+        t,
+        T,
+        n: (Patm * vol) / (R_LATM * T),
+      },
+      startWith: ['Ptot', 'Pw', 'V', 't'],
+      unitSystems: ['metric'],
+      representation: {
+        kind: 'gasPiston',
+        law: 'ideal',
+        mixture: {
+          gases: [
+            { formula: 'H2', pressure: 'Pgas' },
+            { formula: 'H2O', pressure: 'Pw' },
+          ],
+          total: 'Ptot',
+        },
+      },
+    } satisfies ModuleDef;
+  })(),
 ];
