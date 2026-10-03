@@ -628,6 +628,9 @@ function print(n: Node, parentRank = 0, rightSide = false, afterSign = false): s
         : s;
     }
     case 'neg': {
+      // −0 is 0: −(3 × 0) works out to 0, not "−0".
+      if (n.arg.kind === 'num' && n.arg.value === 0)
+        return print(n.arg, parentRank, rightSide, afterSign);
       // −(−4), not −−4.
       const inner = print(n.arg, 4);
       const s = `−${inner.startsWith('−') ? `(${inner})` : inner}`;
