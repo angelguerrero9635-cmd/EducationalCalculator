@@ -233,6 +233,18 @@ casting`, `investment casting`, `forging`, `rolling mill`, `extrusion`, `deep dr
 families `SLA printing`, `DLP printing`, `FDM printing`, `SLS printing`, `laser metal powder
 fusion`, `electron beam melting`, `PolyJet-style jetting`, `binder jet`, `wire-and-arc DED`,
 `laminated sheets`.
+College tissue card icons (HC154, `layouts/icons/he4j.tsx`), drawn sections in a slide's
+stains: `simple squamous epithelium`, `simple cuboidal epithelium`, `simple columnar epithelium`,
+`stratified squamous epithelium`, `compact bone`, `hyaline cartilage`, `blood smear`, `adipose
+tissue`, `skeletal muscle tissue`, `cardiac muscle tissue`, `smooth muscle tissue`, `neuron with
+glia`. Implants and scanners (HC158, `layouts/icons/he4jObjects.tsx`), painted: `titanium hip
+stem`, `CoCrMo femoral head`, `steel bone screw`, `polyethylene cup liner`, `PMMA bone cement`,
+`PLGA suture`, `alumina femoral head`, `hydroxyapatite-coated stem`; `X-ray tube`, `CT scanner`,
+`MRI scanner`, `ultrasound probe`, `PET scanner`, `SPECT camera`, `OCT probe`.
+Card figure `gait` (HC156, `layouts/gaitCard.tsx`, 112 × 76, for sequence stages): `{ kind:
+'gait', phase }`, a stick walker side on with the right leg lit at `heelStrike`, `footFlat`,
+`midstance`, `heelOff`, `toeOff` or `midswing`, standing on its lowest foot; a sequence's gait
+cards must come in that order.
 
 Observe figures: an observation can set `figure: { kind: 'shadowStick', stick: 100 }`
 (`layouts/ShadowStick.tsx`): a meter stick and its noon shadow for the column tapped last, to

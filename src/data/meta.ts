@@ -148,6 +148,11 @@ const PICTURE_NAMES: Record<string, string> = {
   fluidSystem: 'a fluid system: a tank, gauge, gate, meter, jet, pipe or plate',
   controlVolume: 'a process unit or device with its streams balanced',
   velocityProfile: 'velocity or concentration profiles across a tube, gap or film',
+  heartPump: 'the left ventricle filling and emptying, the beats in a minute and a pressure gauge',
+  footprints: 'footprints to scale with the step and stride bracketed and a tick a step',
+  springDashpot:
+    'a spring and a dashpot in series or side by side, with the stress relaxing or the strain creeping',
+  diffusionProfile: 'a solute spreading into a tissue slab: its profile and the distance √(2Dt)',
   bode: 'a Bode plot: gain in dB and phase over log frequency, corners, margins',
   roadCurve: 'a road: stopping distance, a horizontal curve, or a crest curve and its sight line',
   connection:
