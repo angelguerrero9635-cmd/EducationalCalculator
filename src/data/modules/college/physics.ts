@@ -29,6 +29,9 @@ import {
 /** g on every college page (HE_NEEDS, Decisions 1). */
 const G = 9.81;
 
+/** Coulomb's constant k = 8.99 × 10⁹ N·m²/C² (the plan's constants). */
+const K = 8.99e9;
+
 /** cos θ in degrees, exactly 0 straight up or down (cos 90° is 6 × 10⁻¹⁷ in floating point). */
 const levelCos = (q: number) => (Math.abs(Math.abs(q) - 90) < 1e-12 ? 0 : cosD(q));
 
@@ -2829,6 +2832,126 @@ export const COLLEGE_PHYSICS_MODULES: ModuleDef[] = [
       distance: 'd',
       period: 'T',
       equivalent: 'Leq',
+    },
+  },
+  {
+    // University Physics II: Electricity & Magnetism → Electric fields and Gauss's law: a ball
+    // with its charge spread evenly; a Gaussian sphere of radius r takes in all of Q outside the
+    // ball and the share (r ÷ R)³ inside it, so E = kQ_enc ÷ r² on both sides.
+    id: 'he.physics.university-2#0',
+    use: 'Use this for “A ball 0.2 m in radius holds 3 μC spread evenly through it. Find the field and the flux 0.1 m and 0.5 m from its center.”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'The charge is spread evenly through the ball, so E points straight out and is the same all over a sphere of radius r.',
+      'Gauss’s law: the flux through that sphere is Φ = E × 4πr² = Q_enc ÷ ε₀, with 1 ÷ ε₀ = 4πk and k = 8.99 × 10⁹ N·m²/C².',
+      'Inside the ball the sphere holds the share (r ÷ R)³ of Q, so E = kQr ÷ R³; outside it holds all of Q, as a point charge would.',
+    ],
+    variables: [
+      V('Q', 'Q', 'Charge on the ball', {
+        unit: 'C',
+        units: ['nC', 'μC', 'C'],
+        shownIn: 'μC',
+        min: -1e-3,
+        max: 1e-3,
+        scientific: true,
+      }),
+      V('R', 'R', 'Radius of the ball', { unit: 'm', min: 0.001, max: 100, step: 0.01 }),
+      V('r', 'r', 'Distance from the center', { unit: 'm', min: 0.0001, max: 1000, step: 0.01 }),
+      V('Qe', 'Q_enc', 'Charge inside r', {
+        unit: 'C',
+        units: ['nC', 'μC', 'C'],
+        shownIn: 'μC',
+        min: -1e-3,
+        max: 1e-3,
+        scientific: true,
+      }),
+      V('E', 'E', 'Electric field at r', { unit: 'N/C', min: -1e15, max: 1e15, scientific: true }),
+      V('Phi', 'Φ', 'Flux through the sphere', {
+        unit: 'N·m²/C',
+        units: ['N·m²/C'],
+        min: -1e9,
+        max: 1e9,
+        scientific: true,
+      }),
+    ],
+    ...rels(
+      rel(
+        'Q_enc = Q(r ÷ R)³ inside, Q outside',
+        '{Qe} = {Q} × (min({r}, {R}) ÷ {R})³',
+        ['Qe', 'Q', 'r', 'R'],
+        (v) => v.Qe! * v.R! ** 3 - v.Q! * Math.min(v.r!, v.R!) ** 3,
+        {
+          Qe: [
+            (v) => exact((v.Q! * Math.min(v.r!, v.R!) ** 3) / v.R! ** 3),
+            (v) => (v.r! < v.R! ? '{Q} × ({r} ÷ {R})³' : '{Q}'),
+            (v) =>
+              v.r! < v.R!
+                ? 'r is inside the ball: the sphere holds the share (r ÷ R)³ of its volume, and so of its charge.'
+                : 'r is outside the ball (r ≥ R): the sphere holds all of the charge.',
+          ],
+          Q: [
+            (v) => (v.r! < v.R! ? div(v.Qe! * v.R! ** 3, v.r! ** 3) : v.Qe!),
+            (v) => (v.r! < v.R! ? '{Qe} × ({R} ÷ {r})³' : '{Qe}'),
+            (v) =>
+              v.r! < v.R!
+                ? 'Undo the share: multiply the charge inside by (R ÷ r)³.'
+                : 'Outside the ball the sphere holds all of the charge.',
+          ],
+        },
+      ),
+      rel(
+        'E = kQ_enc ÷ r²',
+        '{E} = 8.99 × 10⁹ × {Qe} ÷ {r}²',
+        ['E', 'Qe', 'r'],
+        (v) => v.E! * v.r! ** 2 - K * v.Qe!,
+        {
+          E: [
+            (v) => div(K * v.Qe!, v.r! ** 2),
+            '8.99 × 10⁹ × {Qe} ÷ {r}²',
+            'E × 4πr² = Q_enc ÷ ε₀ and 1 ÷ (4πε₀) = k; a negative E points in.',
+          ],
+          Qe: [
+            (v) => (v.E! * v.r! ** 2) / K,
+            '{E} × {r}² ÷ (8.99 × 10⁹)',
+            'Undo E = kQ_enc ÷ r²: times r², divide by k.',
+          ],
+        },
+      ),
+      rel(
+        'Φ = Q_enc ÷ ε₀',
+        '{Phi} = 4π × 8.99 × 10⁹ × {Qe}',
+        ['Phi', 'Qe'],
+        (v) => v.Phi! - 4 * Math.PI * K * v.Qe!,
+        {
+          Phi: [
+            (v) => 4 * Math.PI * K * v.Qe!,
+            '4π × 8.99 × 10⁹ × {Qe}',
+            'Gauss’s law: the flux is the charge inside over ε₀, and 1 ÷ ε₀ = 4πk.',
+          ],
+          Qe: [
+            (v) => v.Phi! / (4 * Math.PI * K),
+            '{Phi} ÷ (4π × 8.99 × 10⁹)',
+            'Undo Φ = Q_enc ÷ ε₀: divide by 4πk.',
+          ],
+        },
+      ),
+    ),
+    // The plan's ball: Q = 2.0 μC, R = 0.10 m, r = 0.30 m (outside): Q_enc = 2.0 μC;
+    // E = 8.99 × 10⁹ × 2 × 10⁻⁶ ÷ 0.09 = 17,980 ÷ 0.09 = 1.998 × 10⁵ N/C;
+    // Φ = 4π × 8.99 × 10⁹ × 2 × 10⁻⁶ = 2.259 × 10⁵ N·m²/C. Inside at r = 0.05 m:
+    // Q_enc = 2 μC ÷ 8 = 0.25 μC, E = 8.99 × 10⁹ × 2.5 × 10⁻⁷ ÷ 0.0025 = 8.99 × 10⁵ N/C.
+    example: (() => {
+      const [Q, R, r] = [2e-6, 0.1, 0.3];
+      const Qe = Q;
+      return { Q, R, r, Qe, E: (K * Qe) / r ** 2, Phi: 4 * Math.PI * K * Qe };
+    })(),
+    startWith: ['Q', 'R', 'r'],
+    // The ball (radius R) with the dashed Gaussian sphere at r, E arrows on it, the charge inside
+    // r shaded when r < R, and the E(r) graph rising inside and falling as 1 ÷ r² outside.
+    representation: {
+      kind: 'charges',
+      gauss: { shape: 'sphere', Q: 'Q', R: 'R', r: 'r', E: 'E', flux: 'Phi', enclosed: 'Qe' },
+      k: K,
     },
   },
 ];
