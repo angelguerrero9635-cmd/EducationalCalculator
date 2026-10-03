@@ -15,6 +15,7 @@ import { HS3C_SCENE_FIELD } from '../typesHs3c';
 import { HS3D_SCENE_FIELD } from '../typesHs3d';
 import { HE3D_SCENE_FIELD } from '../typesHe3d';
 import { HE4D_SCENE_FIELD } from '../typesHe4d';
+import { cliffIssues } from '@/components/module/layouts/cliffMath';
 
 /** The scene field each explore figure draws from. */
 const SCENE_FIELD: Record<Figure['kind'], keyof Scene | undefined> = {
@@ -203,6 +204,14 @@ describe.each(pages(LAYOUTS))('layout %s', (id, l) => {
         if (l.totalLabel) {
           expect(l.stages.slice(0, -1).every((s) => s.span !== undefined)).toBe(true);
         }
+        // HC120: a cliff header's order of events is the stages' order.
+        if (l.header)
+          expect(
+            cliffIssues(
+              l.header,
+              l.stages.map((s) => s.label),
+            ),
+          ).toEqual([]);
         // Signed spans (HE-E25) are whole changes with a net: every stage has one.
         if (l.signed) {
           expect(l.stages.every((s) => s.span !== undefined)).toBe(true);

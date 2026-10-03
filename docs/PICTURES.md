@@ -598,6 +598,10 @@ search or the sitemap, but the module tests and the harness run over it):
 | `unitCell`         | cubic cell: atoms counted to Z, touching line; (hkl) and d; Bragg      | College solids, minerals (HC16)     |
 | `phaseSpace`       | oscillator ellipse, flow (ẋ, ṗ), area; pendulum θ–ω; bead on a hoop    | College classical mech. (HC69)      |
 | `driftPaths`       | 12 Wright–Fisher paths of p over t; expected H dashed on a 2nd axis    | College evolution, drift (HC153)    |
+| `ternary`          | a triangle of 3 amounts, 10% grid; QAP fields or feldspars named       | College rocks, minerals (HC116)     |
+| `silicateChain`    | SiO₄ tetrahedra from above: shared O ringed, repeat unit boxed         | College minerals (HC117)            |
+| `michelLevy`       | interference colours computed by Γ; δ lines; the grain's order named   | College optical mineralogy (HC121)  |
+| `tsDiagram`        | T against S: isopycnals every 0.5 kg/m³, freezing line, ρ of a point   | College oceanography (HC127)        |
 | `globe`            | sun rays, noon angle, day dial; great circle; Euler pole; dipole; air  | College earth and geography (HC36)  |
 | `stressStrain`     | σ–ε curve: E, 0.2% offset, UTS, necking; specimen; tube; two members   | College materials, biomech. (HC28)  |
 | `stressElement`    | element, turned to θ_p; Mohr's circle; 3 circles; loci, n; soil line   | College stress, soil (HC33)         |
@@ -631,6 +635,25 @@ search or the sitemap, but the module tests and the harness run over it):
 | `induction`        | magnet into a coil, galvanometer; BIL on a wire; transformer turns     | Physics electromagnetism (H69)      |
 | `fluidSystem`      | tank, manometer, gate, float; venturi, pitot, jet; pipe grade lines    | College fluids, pipe networks (HC6) |
 | `none`             | no picture: the page opens on its values and equation, no labels       | Equation-only pages (H105)          |
+
+`earthLayers` mode `rupture` (HC119, `typesHe4f.ts`): a block of crust cut along a vertical fault,
+the near half lifted away, the rupture patch L × W to scale on the fault plane, slip arrows D, and
+Mw on a bar against an M 6 (fields `length`, `width`, `slip`, `rigidity?`, `area?`, `moment?`,
+`magnitude?`).
+
+`rockLayers` `ranges` (HC120, `typesHe4f.ts`): index fossils’ ranges as bars on a Ma axis beside a
+rock column, their overlap shaded and bracketed (fields `ranges: { name, first, last }[]`,
+`oldest?`, `youngest?`, `window?`); no window when they never overlap.
+
+`oceanProfile` mode `slope` (HC126, `typesHe4f.ts`): a section across a geostrophic current, the sea
+surface tilted Δη over Δx (stretch written), the pressure-gradient and Coriolis forces on a parcel,
+the current into or out of the page by hemisphere (fields `rise`, `width`, `latitude`, `speed?`,
+`coriolis?`, `g?`, `omega?`, `hemisphere?`).
+
+`wave` option `depth` (HC128, `typesHe4f.ts`): one wavelength over the floor at depth d to the
+wavelength’s scale, L ÷ 2 dashed, particle orbits (circles in deep water, flat ellipses to the floor
+in shallow), labelled deep, intermediate or shallow by d ÷ L (fields `depth: { depth, wavelength,
+speed? }`).
 
 `alleleFrequencies` (H38, a name too long for the table): 100 allele beads counted from p, a p
 scale to drag, and the bars p², 2pq and q², for Grade 9 population genetics.

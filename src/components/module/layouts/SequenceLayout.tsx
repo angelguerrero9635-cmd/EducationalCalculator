@@ -8,6 +8,7 @@ import type { SequenceLayout as Spec } from '@/data/modules/layouts';
 import { font, radius, space, usePalette } from '@/theme';
 
 import { CardFigureView } from './CardFigure';
+import { CliffHeaderView } from './cliffHeaderHe4f';
 import { LabelText } from './LabelText';
 import { signedSpan, spanSum } from './sequenceMath';
 
@@ -56,6 +57,7 @@ export function SequenceLayout({ spec }: { spec: Spec }) {
 
   return (
     <View style={styles.wrap}>
+      {spec.header ? <CliffHeaderView header={spec.header} /> : null}
       <Text style={[styles.question, { color: c.text }]}>{spec.question}</Text>
       {/* The stages still to place, in a mixed-up order. */}
       <View style={styles.pool}>

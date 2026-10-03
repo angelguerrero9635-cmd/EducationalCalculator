@@ -16,6 +16,7 @@ import type { GalvanicScene } from '../typesHsj';
 import type { CondensedCard, HydrationScene } from '../typesHs2d';
 import type { SkeletalCard } from '../typesHe1c';
 import type { TrussJointCard } from '../typesHe2i';
+import type { CliffHeader } from '../typesHe4f';
 import type { IrCard } from '../typesHe3e';
 import type { ProjectionCard } from '../typesHe3m';
 import type { CodeTraceScene, He3dCard, He3dFigure } from '../typesHe3d';
@@ -320,6 +321,8 @@ export interface SequenceLayout extends LayoutBase {
   signed?: boolean;
   /** HE-E25: the stages are code (a program's lines), drawn in a code font exactly as written. */
   code?: boolean;
+  /** HC120: a figure above the stages to read the order from (a cliff, `typesHe4f.ts`). */
+  header?: CliffHeader;
 }
 
 /** What an explore figure can show; a scene sets one of these. */

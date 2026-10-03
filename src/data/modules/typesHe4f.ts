@@ -1,0 +1,256 @@
+/**
+ * College pictures, round 4, group F (docs/RENDERINGS_HE.md, earth science). Kept apart from
+ * `types.ts` and `typesHsl.ts` so each gains a line. A `NumOrVar` field is a fixed number or a
+ * variable id, read in the variable's formula unit (the unit each field names); a string field
+ * is the page's own value, checked.
+ *
+ * - HC116 `ternary` (new kind): a triangle plot with a 10 % grid, QAP or feldspar fields.
+ * - HC117 `silicateChain` (new kind): SiO₄ tetrahedra from above, sharing oxygens.
+ * - HC119 `earthLayers` mode `rupture`: the fault patch L × W to scale, slip, Mw against M 6.
+ * - HC120 `rockLayers` `ranges`, and the cliff as a sequence `header` (layouts/types.ts).
+ * - HC121 `michelLevy` (new kind): the interference colour chart, computed in code.
+ * - HC126 `oceanProfile` mode `slope`: a geostrophic current across a tilted sea surface.
+ * - HC127 `tsDiagram` (new kind): temperature against salinity with isopycnals.
+ * - HC128 `wave` option `depth`: the floor under a water wave, orbits, deep or shallow.
+ */
+import type { NumOrVar } from './typesGraphs';
+
+const ids = (...xs: (NumOrVar | undefined)[]) =>
+  xs.filter((x): x is string => typeof x === 'string');
+
+// ─── HC116: ternary (new kind) ─────────────────────────────────────────────────
+
+/**
+ * HC116 (EG-P1): three amounts `a` (the top corner), `b` (bottom left) and `c` (bottom right),
+ * in any one unit (%, mol), plotted at a ÷ sum, b ÷ sum, c ÷ sum on a triangle with a 10 % grid,
+ * the corners named by `labels`. `fields` adds a classification with its fields numbered or
+ * named, the point's field lit and named in the caption:
+ *
+ * - `'qap'`: the IUGS plutonic triangle, Q (quartz) at the top, A (alkali feldspar) left, P
+ *   (plagioclase) right: rows at Q′ = 5, 20, 60, 90 % and the P ÷ (A + P) lines at 10, 35, 65
+ *   and 90 % (fields 1a–10, keyed under the triangle);
+ * - `'feldspar'`: Or at the top, Ab left, An right: plagioclase along the Ab–An edge (Or ≤ 10 %)
+ *   named albite to anorthite by An ÷ (Ab + An) (10, 30, 50, 70, 90 %), the alkali feldspars
+ *   along the Ab–Or edge (An ≤ 10 %: anorthoclase to Or 37 %, then sanidine and orthoclase), and
+ *   no single feldspar between them (the fields are drawn straight, a teaching simplification).
+ *
+ * `share` is the page's c ÷ (b + c) in % (P ÷ (A + P); An), dashed from the top corner through
+ * the point to the base; `normalized` the page's three percents (all checked). Nothing is
+ * plotted while an amount is "?" or the sum is 0. Later also sand–silt–clay.
+ */
+export interface TernarySpec {
+  kind: 'ternary';
+  a: NumOrVar;
+  b: NumOrVar;
+  c: NumOrVar;
+  /** The corners' names: top, bottom left, bottom right ("Q", "A", "P"). */
+  labels: [string, string, string];
+  fields?: 'qap' | 'feldspar';
+  share?: NumOrVar;
+  normalized?: [NumOrVar, NumOrVar, NumOrVar];
+}
+
+// ─── HC117: silicateChain (new kind) ───────────────────────────────────────────
+
+/**
+ * HC117 (EG-P2): silicate structures from above, each SiO₄ tetrahedron a triangle with O at its
+ * three corners and Si at the centre (the fourth O on top of the Si, drawn as a ring round it).
+ * `shared` is the oxygens each tetrahedron shares, s: 0 isolated (olivine), 1 a pair (epidote),
+ * 2 a six-ring (`form: 'ring'`, beryl) or a single chain (the default, pyroxenes), 2.5 a double
+ * chain (amphiboles), 3 a sheet (micas, clays), 4 a framework corner (quartz). `units` is n, the
+ * Si in the boxed repeat unit (whole, 1–6; a ring of 3 to 6 is drawn with n tetrahedra), its
+ * tetrahedra lit; shared oxygens are ringed and count ½ in the box. `oxygens` is the page's O in
+ * the unit, `perSi` its O per Si, `charge` its charge (all checked: O = n(4 − s ÷ 2), charge =
+ * −n(4 − s)). Another s draws faded, the reason in the caption.
+ */
+export interface SilicateChainSpec {
+  kind: 'silicateChain';
+  shared: NumOrVar;
+  units: NumOrVar;
+  form?: 'ring' | 'chain';
+  oxygens?: NumOrVar;
+  perSi?: NumOrVar;
+  charge?: NumOrVar;
+}
+
+// ─── HC119: earthLayers mode rupture ───────────────────────────────────────────
+
+/**
+ * HC119 (EG-P5): moment magnitude. A block of crust cut along a vertical fault, its near half
+ * lifted away so the fault plane faces us, the rupture patch `length` × `width` (km) on it to
+ * scale (the sides in the ratio L : W), slip arrows `slip` (m) either side of the trace; under
+ * it the magnitude on a bar against an M 6 reference. `rigidity` is μ in GPa (default 30).
+ * `moment` (N·m) and `magnitude` are the page's (checked: M₀ = μLWD, Mw = (2 ÷ 3)(log₁₀ M₀ −
+ * 9.1) within 0.01); `area` its L × W (km²). A "?" length or width draws no patch.
+ */
+export interface RuptureSpec {
+  kind: 'earthLayers';
+  mode: 'rupture';
+  length: NumOrVar;
+  width: NumOrVar;
+  slip: NumOrVar;
+  rigidity?: NumOrVar;
+  area?: NumOrVar;
+  moment?: NumOrVar;
+  magnitude?: NumOrVar;
+}
+
+// ─── HC120: rockLayers ranges, and the dated cliff as a sequence header ────────
+
+/**
+ * HC120 (a) (EG-P6): index fossils' ranges as bars on an age axis (Ma, younger up) beside a
+ * rock column: each fossil from its `first` appearance (older) to its `last`, the overlap of all
+ * of them shaded across the column and bracketed, the window under the chart. `oldest`
+ * (the youngest first appearance), `youngest` (the oldest last appearance) and `window` (Myr)
+ * are the page's (checked). Ranges that never overlap draw no window and say so. 2–4 ranges.
+ */
+export interface RockRangesSpec {
+  kind: 'rockLayers';
+  ranges: { name: string; first: NumOrVar; last: NumOrVar }[];
+  oldest?: NumOrVar;
+  youngest?: NumOrVar;
+  window?: NumOrVar;
+}
+
+/** The sedimentary rocks a cliff header draws. */
+export type CliffRock = 'sandstone' | 'shale' | 'limestone' | 'siltstone' | 'conglomerate';
+
+/**
+ * HC120 (b) (EG-P6): a sequence page's `header`, the cliff to read an order of events from.
+ * `beds` bottom up (oldest first). `unconformity` is how many beds lie under an erosion surface
+ * (angular when `tilt`, in degrees, tilts them); the rest lie flat on it. `intrusion` is a dike
+ * from the bottom up through bed `top` (default the top bed: it cuts every layer; a `top` under
+ * the unconformity stops at it). `surface` erodes today's ground (the last event). The layout
+ * check reads the events in the stages' text (rock names, "tilt", "erosion", "dike") and
+ * compares them with the figure's order.
+ */
+export interface CliffHeader {
+  kind: 'cliff';
+  beds: CliffRock[];
+  unconformity?: number;
+  tilt?: number;
+  intrusion?: { rock?: 'basalt' | 'granite'; top?: number };
+  surface?: boolean;
+}
+
+// ─── HC121: michelLevy (new kind) ──────────────────────────────────────────────
+
+/**
+ * HC121 (EG-P9): the interference colour chart, its colours computed (michelLevyMath.ts):
+ * retardation 0–1,800 nm across, thickness 0–50 μm up, birefringence lines from the origin, and
+ * the grain at `thickness` (t, μm) and `birefringence` (δ) on its own line, Γ and the colour's
+ * order and name printed by it. `retardation` (Γ, nm) and `order` are the page's (checked:
+ * Γ = 1,000tδ, order = floor(Γ ÷ 550) + 1). A Γ past 1,800 nm widens the chart.
+ */
+export interface MichelLevySpec {
+  kind: 'michelLevy';
+  thickness: NumOrVar;
+  birefringence: NumOrVar;
+  retardation?: NumOrVar;
+  order?: NumOrVar;
+}
+
+// ─── HC126: oceanProfile mode slope ────────────────────────────────────────────
+
+/**
+ * HC126 (EG-P14): a section across a geostrophic current. The sea surface tilted `rise` (Δη, m;
+ * negative when high on the left) over `width` (Δx, km), the vertical stretch written, the
+ * pressure-gradient force down the slope and the Coriolis force back, and the current into or
+ * out of the page: high sea level on its right in the north, its left in the south (`latitude`
+ * φ in degrees, negative or `hemisphere: 'south'` for the south). `speed` (v, m/s) and
+ * `coriolis` (f, s⁻¹) are the page's (checked: f = 2Ω sin φ, v = gΔη ÷ (fΔx)). `g` defaults
+ * to 9.81 m/s² and `omega` to 7.292 × 10⁻⁵ rad/s (the plan's values: pass the page's own).
+ */
+export interface OceanSlopeSpec {
+  kind: 'oceanProfile';
+  mode: 'slope';
+  rise: NumOrVar;
+  width: NumOrVar;
+  latitude: NumOrVar;
+  speed?: NumOrVar;
+  coriolis?: NumOrVar;
+  g?: NumOrVar;
+  omega?: number;
+  hemisphere?: 'north' | 'south';
+}
+
+// ─── HC127: tsDiagram (new kind) ───────────────────────────────────────────────
+
+/**
+ * HC127 (EG-P15): a T–S diagram, temperature (°C) up and salinity (g/kg) across, the
+ * isopycnals of the page's linear equation of state (`state`: ρ = ρ₀(1 − α(T − T₀) + β(S − S₀)),
+ * default the plan's 1,027, 1.7 × 10⁻⁴, 7.6 × 10⁻⁴, 10, 35) every 0.5 kg/m³, the freezing line
+ * T = −`freezeSlope` × S (default 0.054) with ice below it, and the water's point with its
+ * density. `density` (kg/m³) and `freezing` (°C) are the page's (checked within 0.01 kg/m³).
+ */
+export interface TsDiagramSpec {
+  kind: 'tsDiagram';
+  temperature: NumOrVar;
+  salinity: NumOrVar;
+  density?: NumOrVar;
+  freezing?: NumOrVar;
+  state?: Partial<{ rho0: number; alpha: number; beta: number; t0: number; s0: number }>;
+  freezeSlope?: number;
+}
+
+// ─── HC128: wave depth ─────────────────────────────────────────────────────────
+
+/**
+ * HC128 (EG-P16): one wavelength of a water wave over the floor at `depth` (d, m), drawn to
+ * the `wavelength`'s scale (L, m: a variable, or a number such as a tsunami's 200,000), L ÷ 2
+ * dashed, the particles' orbits (circles shrinking with depth in deep water, ellipses flattening
+ * to the floor otherwise), and the label deep (d > L ÷ 2), intermediate or shallow
+ * (d < L ÷ 20). `speed` (c, m/s) goes in the caption. Kept apart from the wave's other fields.
+ */
+export interface WaveDepthSpec {
+  kind: 'wave';
+  depth: { depth: NumOrVar; wavelength: NumOrVar; speed?: NumOrVar };
+}
+
+/** Every picture of group HE4F (new kinds and options on drawn kinds). */
+export type He4fSpec =
+  | TernarySpec
+  | SilicateChainSpec
+  | RuptureSpec
+  | RockRangesSpec
+  | MichelLevySpec
+  | OceanSlopeSpec
+  | TsDiagramSpec
+  | WaveDepthSpec;
+
+/** Whether a picture is one of group HE4F's (a new kind, or an option on a drawn kind). */
+export function isHe4fSpec(r: { kind: string }): r is He4fSpec {
+  const o = r as { kind: string; mode?: string };
+  if (r.kind === 'earthLayers') return o.mode === 'rupture';
+  if (r.kind === 'wave') return 'depth' in o;
+  if (r.kind === 'oceanProfile') return o.mode === 'slope';
+  if (r.kind === 'rockLayers') return 'ranges' in o;
+  return (
+    r.kind === 'ternary' ||
+    r.kind === 'silicateChain' ||
+    r.kind === 'tsDiagram' ||
+    r.kind === 'michelLevy'
+  );
+}
+
+/** Every variable id a group-HE4F picture reads (modules.test.ts). */
+export function he4fSpecVars(r: He4fSpec): string[] {
+  switch (r.kind) {
+    case 'ternary':
+      return ids(r.a, r.b, r.c, r.share, ...(r.normalized ?? []));
+    case 'silicateChain':
+      return ids(r.shared, r.units, r.oxygens, r.perSi, r.charge);
+    case 'earthLayers':
+      return ids(r.length, r.width, r.slip, r.rigidity, r.area, r.moment, r.magnitude);
+    case 'rockLayers':
+      return ids(...r.ranges.flatMap((x) => [x.first, x.last]), r.oldest, r.youngest, r.window);
+    case 'michelLevy':
+      return ids(r.thickness, r.birefringence, r.retardation, r.order);
+    case 'oceanProfile':
+      return ids(r.rise, r.width, r.latitude, r.speed, r.coriolis, r.g);
+    case 'tsDiagram':
+      return ids(r.temperature, r.salinity, r.density, r.freezing);
+    case 'wave':
+      return ids(r.depth.depth, r.depth.wavelength, r.depth.speed);
+  }
+}

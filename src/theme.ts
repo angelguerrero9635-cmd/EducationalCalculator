@@ -417,6 +417,27 @@ const light = {
   currentWarm: '#D93A3A',
   currentCold: '#2F6FD0',
   seafloor: '#9C8A77',
+  /** College round 4, group F (earth science). HC117: tetrahedra, the boxed ones, Si. */
+  he4fTetra: '#DCE6F0',
+  he4fTetraLit: '#C7CDFB',
+  he4fSilicon: '#6F819B',
+  /** HC119: the crust's cut end, and the rupture patch and its magnitude bar. */
+  he4fCrustDeep: '#6E5340',
+  he4fRupture: '#D9483B',
+  /** HC120: an index fossil's range bar. */
+  he4fRange: '#8B6BB8',
+  /** HC128: water particles' orbits under a wave. */
+  he4fOrbit: '#0B3D66',
+  /** HC127: isopycnals, and ice under the freezing line. */
+  he4fIsopycnal: '#4B5B78',
+  he4fIce: '#DDEFFB',
+  he4fIceLine: '#2B7BB9',
+  /** HC126: the pressure-gradient and Coriolis forces on a parcel. */
+  he4fPressureForce: '#C2410C',
+  he4fCoriolis: '#1D4ED8',
+  /** HC121: lines and labels on the colour chart (dark in both themes), their halo. */
+  he4fMlInk: '#1B1E28',
+  he4fMlHalo: '#FFFFFF',
   /** The atmosphere (H76): its four layers as bands, the ozone layer, and highs and lows. */
   atmoTropo: '#DCEFFB',
   atmoStrato: '#E6E9FB',
@@ -1155,6 +1176,20 @@ const dark: Palette = {
   currentWarm: '#F0625A',
   currentCold: '#5B9BFF',
   seafloor: '#6B5D50',
+  he4fTetra: '#2B3846',
+  he4fTetraLit: '#3A3F7C',
+  he4fSilicon: '#A3B1C6',
+  he4fCrustDeep: '#4E3A2C',
+  he4fRupture: '#F06A5C',
+  he4fRange: '#B497E0',
+  he4fOrbit: '#E6F2FF',
+  he4fIsopycnal: '#A9B6CF',
+  he4fIce: '#1E3346',
+  he4fIceLine: '#6FB2EA',
+  he4fPressureForce: '#FB923C',
+  he4fCoriolis: '#60A5FA',
+  he4fMlInk: '#14161C',
+  he4fMlHalo: '#F5F6FA',
   atmoTropo: '#1C3446',
   atmoStrato: '#232A48',
   atmoMeso: '#2D2442',
