@@ -18,7 +18,7 @@ import { physics8SpecVars } from '../typesPhysics8';
 import { hscSpecVars } from '../typesHsc';
 import { hsbSpecVars } from '../typesHsb';
 import { alleleHe4eVars, driftPathsVars, normalCurveHe4eVars } from '../typesHe4e';
-import { he4mSpecVars } from '../typesHe4m';
+import { complexPlaneHe4mVars, he4mSpecVars } from '../typesHe4m';
 import { hs2aSpecVars } from '../typesHs2a';
 import { hs2eSpecVars } from '../typesHs2e';
 import { hs3dSpecVars } from '../typesHs3d';
@@ -598,6 +598,7 @@ function representationVars(r: Representation): string[] {
         ...hs2gSpecVars(r),
         ...hs3bSpecVars(r),
         ...(r.kind === 'complexPlane' ? complexPlaneHe2aVars(r) : []), // HC14
+        ...(r.kind === 'complexPlane' ? complexPlaneHe4mVars(r) : []), // HC182
         ...(r.kind === 'vectorDiagram' ? spaceObjectsVars(r.space) : []), // HC47
         ...(r.kind === 'polarGrid' ? polarGridHe3cVars(r) : []), // HC53
         ...(r.kind === 'conicGraph' && r.conic === 'circle' ? conicGraphHe3cVars(r) : []), // HC67

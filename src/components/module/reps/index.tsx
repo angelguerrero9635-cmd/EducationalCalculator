@@ -219,6 +219,7 @@ import { FluidSystem } from './FluidSystem';
 import { ControlVolume } from './ControlVolume';
 import { VelocityProfile } from './VelocityProfile';
 import { ComplexPlaneHe2a } from './ComplexPlaneHe2a';
+import { ConstellationHe4m } from './ConstellationHe4m';
 import { Bode } from './Bode';
 import { StreamChannelHe } from './StreamChannelHe';
 import { RoadCurve } from './RoadCurve';
@@ -397,6 +398,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       if (spec.curve?.shape === 'conic') return <PolarConic spec={spec} calc={calc} />; // H106
       return <PolarGrid spec={spec} calc={calc} />;
     case 'complexPlane':
+      if (spec.constellation) return <ConstellationHe4m spec={spec} calc={calc} />; // HC182
       if (spec.j || spec.axes || spec.phasors || spec.poles || spec.zeros || spec.locus)
         return <ComplexPlaneHe2a spec={spec} calc={calc} />; // HC14
       return spec.power !== undefined || spec.roots !== undefined ? (

@@ -100,4 +100,25 @@ export const HE4M_REQUESTS: PictureRequest[] = [
       'g.he-rfSpectrum-fm-narrow',
     ],
   },
+  {
+    ...ask(
+      'HC182',
+      'complexPlane',
+      'A digital modulation’s constellation on the I–Q plane: M points (PSK on a circle, square QAM on a grid), each labelled with its Gray-coded bits, the decision boundaries dashed',
+      [`${E}communication-systems#1`],
+      [
+        'From EC-P16. New option on complexPlane (typesHe4m.ts ComplexPlaneHe4m, reps/ConstellationHe4m.tsx, points in reps/he4mMath.ts); without `constellation` the plane is unchanged.',
+        "Fields: { kind: 'complexPlane', z: { re: 0, im: 0 } (not drawn), j?: true, constellation: { M, kind? ('psk' | 'qam'; default PSK to 8, QAM above), symbolRate?, bitRate?, rolloff?, bandwidth?, efficiency? (checked) } }.",
+        'PSK: M = 2 on the real axis, otherwise offset π ÷ M (QPSK at 45°), the boundaries the rays halfway between, the spacing written. QAM: a √M × √M grid, the label the column’s Gray code then the row’s, the boundaries the lines between. Labels to 16 points; 64 and 256 draw points and thin boundaries and say so. A "?" M draws no points. No handles: M comes from its `allowed` list (2, 4, 8, 16, 64, 256).',
+        "Example: { kind: 'complexPlane', z: { re: 0, im: 0 }, j: true, constellation: { M: 'M', symbolRate: 'Rs', bitRate: 'Rb', rolloff: 'alpha', bandwidth: 'B', efficiency: 'eta' } }.",
+        'Harness (harness/picturesHe4m.ts): M points, all apart, each label log₂M bits and all different; every pair of nearest neighbours differs in one bit; R_b = R_s log₂M, B = R_s(1 + α), η = R_b ÷ B.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-complexPlane-constellation-qam',
+      'g.he-complexPlane-constellation-psk',
+      'g.he-complexPlane-constellation-256',
+    ],
+  },
 ];

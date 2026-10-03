@@ -10,8 +10,12 @@
  * - HC181 `rfSpectrum`: the bracket's width is B (2f_m, or Carson's 2(Δf + f_m)); the drawn
  *   sideband heights squared give P_sb ÷ P_c (AM); the FM lines' heights squared add to the
  *   carrier's power (Σ J_n² = 1); β = Δf ÷ f_m.
+ * - HC182 `complexPlane` `constellation`: M points drawn, all apart, each label log₂M bits and
+ *   all different; nearest neighbours differ in one bit (Gray); R_b = R_s log₂M,
+ *   B = R_s(1 + α), η = R_b ÷ B.
  */
 import {
+  constellation,
   LOS_BOUNDS,
   losOf,
   soilPhaseParts,
@@ -204,5 +208,51 @@ function rfSpectrumIssues(rep: Extract<Representation, { kind: 'rfSpectrum' }>, 
       if (Math.abs(all - 1) > 2e-3) out.push(`rf: the FM lines hold ${all} of the carrier's power`);
     }
   }
+  return out;
+}
+
+/** HC182: the constellation drawn for M. */
+export function constellationIssues(rep: Representation, val: Val): string[] {
+  if (rep.kind !== 'complexPlane' || !rep.constellation) return [];
+  const k = rep.constellation;
+  const out: string[] = [];
+  const get = (v: string | number | undefined) => (v === undefined ? undefined : val(v));
+  const M = get(k.M);
+  if (M === undefined) return out;
+  const bits = Math.log2(M);
+  if (!Number.isInteger(bits) || M < 2) return [`constellation: M = ${M} is not a power of 2`];
+  const pts = constellation(M, k.kind);
+  if (pts.length !== M) out.push(`constellation: ${pts.length} points drawn for M = ${M}`);
+  if (pts.some((p) => p.bits.length !== bits || /[^01]/.test(p.bits)))
+    out.push(`constellation: a label is not ${bits} bits`);
+  if (new Set(pts.map((p) => p.bits)).size !== pts.length)
+    out.push('constellation: two points share a label');
+  // Nearest neighbours (the closest distance, to rounding) differ in exactly one bit.
+  const d = (a: (typeof pts)[0], b: (typeof pts)[0]) => Math.hypot(a.i - b.i, a.q - b.q);
+  let dmin = Infinity;
+  for (let i = 0; i < pts.length; i++)
+    for (let j = i + 1; j < pts.length; j++) dmin = Math.min(dmin, d(pts[i]!, pts[j]!));
+  if (dmin < 1e-9) out.push('constellation: two points coincide');
+  for (let i = 0; i < pts.length; i++)
+    for (let j = i + 1; j < pts.length; j++) {
+      if (Math.abs(d(pts[i]!, pts[j]!) - dmin) > 1e-6 * dmin) continue;
+      let diff = 0;
+      for (let b = 0; b < bits; b++) if (pts[i]!.bits[b] !== pts[j]!.bits[b]) diff++;
+      if (diff !== 1) out.push(`constellation: neighbours ${pts[i]!.bits} and ${pts[j]!.bits}`);
+    }
+  const [Rs, Rb, a, B, eta] = [
+    get(k.symbolRate),
+    get(k.bitRate),
+    get(k.rolloff),
+    get(k.bandwidth),
+    get(k.efficiency),
+  ];
+  if (a !== undefined && (a < 0 || a > 1)) out.push(`constellation: roll-off ${a} outside 0 to 1`);
+  if (Rs !== undefined && Rb !== undefined && !close(Rb, Rs * bits))
+    out.push(`constellation: R_b = ${Rb}, not R_s log₂M = ${Rs * bits}`);
+  if (Rs !== undefined && a !== undefined && B !== undefined && !close(B, Rs * (1 + a)))
+    out.push(`constellation: B = ${B}, not R_s(1 + α) = ${Rs * (1 + a)}`);
+  if (Rb !== undefined && B !== undefined && eta !== undefined && !close(eta, Rb / B))
+    out.push(`constellation: η = ${eta}, not R_b ÷ B = ${Rb / B}`);
   return out;
 }

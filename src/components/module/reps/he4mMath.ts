@@ -106,3 +106,51 @@ export function spectrumLines(mode: 'am' | 'fm', index: number): { n: number; a:
   }
   return out;
 }
+
+// ─── HC182: constellations ───────────────────────────────────────────────────────
+
+/** The Gray code of k: neighbours k and k + 1 differ in one bit. */
+export const gray = (k: number) => k ^ (k >> 1);
+
+export interface ConstellationPoint {
+  /** In-phase and quadrature parts (PSK on the unit circle; QAM on odd integers). */
+  i: number;
+  q: number;
+  /** The log₂M bits, Gray-coded. */
+  bits: string;
+}
+
+/** Whether a constellation of M points is drawn as QAM (a square grid) or PSK. */
+export function isQam(M: number, kind?: 'psk' | 'qam'): boolean {
+  const side = Math.round(Math.sqrt(M));
+  const square = side * side === M && M >= 4;
+  return (kind ?? (M > 8 ? 'qam' : 'psk')) === 'qam' && square;
+}
+
+/**
+ * The M points of a constellation with their Gray-coded labels. PSK: point k at angle
+ * 2πk ÷ M (plus π ÷ M from M = 4), labelled gray(k). QAM: columns and rows of a √M × √M grid,
+ * the label the column's Gray code then the row's.
+ */
+export function constellation(M: number, kind?: 'psk' | 'qam'): ConstellationPoint[] {
+  const n = Math.round(Math.log2(M));
+  const bitsOf = (x: number, w: number) => x.toString(2).padStart(w, '0');
+  if (isQam(M, kind)) {
+    const side = Math.round(Math.sqrt(M));
+    const half = n / 2;
+    const out: ConstellationPoint[] = [];
+    for (let col = 0; col < side; col++)
+      for (let row = 0; row < side; row++)
+        out.push({
+          i: 2 * col - (side - 1),
+          q: 2 * row - (side - 1),
+          bits: bitsOf(gray(col), half) + bitsOf(gray(row), half),
+        });
+    return out;
+  }
+  const off = M >= 4 ? Math.PI / M : 0;
+  return Array.from({ length: M }, (_, k) => {
+    const a = (2 * Math.PI * k) / M + off;
+    return { i: Math.cos(a), q: Math.sin(a), bits: bitsOf(gray(k), n) };
+  });
+}

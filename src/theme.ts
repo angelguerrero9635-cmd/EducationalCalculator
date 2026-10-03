@@ -379,6 +379,9 @@ const light = {
   he4mCar: '#2F6FD0',
   he4mCarGlass: '#BFD8F2',
   he4mLaneLine: '#F4F1E6',
+  /** HC182: a constellation's points and its dashed decision boundaries. */
+  he4mSymbol: '#1D4ED8',
+  he4mBoundary: '#C2410C',
   /** HC181: the carrier's line, the sidebands and the dashed envelope. */
   he4mCarrierLine: '#1B1E28',
   he4mSideband: '#2F6FD0',
@@ -1138,6 +1141,8 @@ const dark: Palette = {
   he4mCar: '#5B8FE0',
   he4mCarGlass: '#1E3550',
   he4mLaneLine: '#D9D6CC',
+  he4mSymbol: '#7DB4FF',
+  he4mBoundary: '#FB923C',
   he4mCarrierLine: '#EEF0F6',
   he4mSideband: '#7DB4FF',
   he4mEnvelope: '#FB923C',

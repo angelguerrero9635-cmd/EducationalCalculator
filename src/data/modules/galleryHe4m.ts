@@ -5,6 +5,7 @@
  * HC175: `losScale`, the new kind (he.engineering.transportation#3).
  * HC180: `oneLine`, the new kind (he.engineering.power-systems#2, ~slg).
  * HC181: `rfSpectrum`, the new kind (he.engineering.communication-systems#0, ~fm).
+ * HC182: `complexPlane` `constellation` (he.engineering.communication-systems#1).
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
@@ -766,6 +767,100 @@ const FM_NARROW = fmPage(
   { df: 2.5, fm: 5 },
 );
 
+// ─── HC182: digital modulation's constellation (communication-systems#1) ───────
+
+const rbOf = (v: Values) => v.Rs! * Math.log2(v.M!);
+const bwOf = (v: Values) => v.Rs! * (1 + v.alpha!);
+
+const constellationPage = (id: string, title: string, use: string, typed: Values) =>
+  page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'Each symbol carries log₂M bits; M is 2, 4, 8, 16, 64 or 256.',
+      'Raised-cosine pulses: the bandwidth is R_s(1 + α).',
+      'PSK up to 8 points, square QAM from 16, each Gray-coded.',
+    ],
+    variables: [
+      num('M', 'M', 'Points in the constellation', undefined, 2, 256, {
+        integer: true,
+        allowed: [2, 4, 8, 16, 64, 256],
+      }),
+      num('Rs', 'R_s', 'Symbol rate', 'Msym/s', 0.001, 1000, { step: 0.01 }),
+      out('Rb', 'R_b', 'Bit rate', 'Mb/s'),
+      num('alpha', 'α', 'Roll-off', undefined, 0, 1, { step: 0.01 }),
+      out('B', 'B', 'Bandwidth', 'MHz'),
+      out('eta', 'η', 'Spectral efficiency', 'b/s/Hz'),
+    ],
+    rules: [
+      derive(
+        'Rb',
+        'Rb',
+        ['Rs', 'M'],
+        '{Rb} = {Rs} × log₂({M})',
+        rbOf,
+        '{Rs} × log₂({M})',
+        'Each symbol picks one of M points, which is log₂M bits.',
+      ),
+      derive(
+        'B',
+        'B',
+        ['Rs', 'alpha'],
+        '{B} = {Rs} × (1 + {alpha})',
+        bwOf,
+        '{Rs} × (1 + {alpha})',
+        'The pulses need R_s of bandwidth, plus the roll-off’s share.',
+      ),
+      derive(
+        'eta',
+        'eta',
+        ['Rb', 'B'],
+        '{eta} = {Rb} ÷ {B}',
+        (v) => v.Rb! / v.B!,
+        '{Rb} ÷ {B}',
+        'Bits per second for each hertz used.',
+      ),
+    ],
+    example: example(typed, ['Rb', rbOf], ['B', bwOf], ['eta', (v) => v.Rb! / v.B!]),
+    startWith: ['M', 'Rs', 'alpha'],
+    representation: {
+      kind: 'complexPlane',
+      z: { re: 0, im: 0 },
+      j: true,
+      constellation: {
+        M: 'M',
+        symbolRate: 'Rs',
+        bitRate: 'Rb',
+        rolloff: 'alpha',
+        bandwidth: 'B',
+        efficiency: 'eta',
+      },
+    },
+  });
+
+const QAM16 = constellationPage(
+  'g.he-complexPlane-constellation-qam',
+  'Bit rate and bandwidth of M-ary modulation',
+  'Use this for “A 16-QAM link sends 1 Msymbol/s with roll-off 0.25. Find the bit rate and bandwidth.”',
+  { M: 16, Rs: 1, alpha: 0.25 },
+);
+
+const PSK8 = constellationPage(
+  'g.he-complexPlane-constellation-psk',
+  '8-PSK: bits per symbol and bandwidth',
+  'Use this for “An 8-PSK link sends 2 Msymbol/s with roll-off 0.35. Find its bit rate and spectral efficiency.”',
+  { M: 8, Rs: 2, alpha: 0.35 },
+);
+
+/** The top of the list: 256-QAM, 8 bits a symbol (too many points to label). */
+const QAM256 = constellationPage(
+  'g.he-complexPlane-constellation-256',
+  '256-QAM: the densest constellation',
+  'Use this for “A cable channel runs 256-QAM at 5.36 Msymbol/s with roll-off 0.12. Find the bit rate.”',
+  { M: 256, Rs: 5.36, alpha: 0.12 },
+);
+
 export const HE4M_GALLERY_MODULES: ModuleDef[] = [
   PHASES,
   PHASES_SATURATED,
@@ -779,6 +874,9 @@ export const HE4M_GALLERY_MODULES: ModuleDef[] = [
   AM_FULL,
   FM,
   FM_NARROW,
+  QAM16,
+  PSK8,
+  QAM256,
 ];
 
 export const HE4M_GALLERY_LAYOUTS: LayoutDef[] = [];

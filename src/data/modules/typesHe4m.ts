@@ -8,6 +8,7 @@
  * - HC175 `losScale` (new kind): a freeway segment's density on the level-of-service bar.
  * - HC180 `oneLine` (new kind): a power system's one-line diagram with a fault on a bus.
  * - HC181 `rfSpectrum` (new kind): an AM or FM signal in time and its spectrum.
+ * - HC182 `complexPlane` `constellation`: M-PSK or M-QAM points, Gray-coded, with boundaries.
  */
 import type { NumOrVar } from './typesGraphs';
 
@@ -196,6 +197,38 @@ export const rfSpectrumVars = (r: RfSpectrumSpec): string[] =>
     r.totalPower,
     r.efficiency,
   );
+
+// ─── HC182: complexPlane constellation ──────────────────────────────────────────
+
+/**
+ * HC182 (EC-P16): a digital modulation's constellation on the I–Q plane (`complexPlane`, drawn
+ * by `reps/ConstellationHe4m.tsx` whenever `constellation` is set; `z` is not drawn, pass
+ * `{ re: 0, im: 0 }`). `M` points: `'psk'` on a circle (M = 2 on the real axis, otherwise
+ * offset by π ÷ M), `'qam'` on a square grid (M = 4, 16, 64, 256); left out, PSK up to 8 and
+ * QAM above. Each point is labelled with its Gray-coded log₂M bits (to 16 points; 64 and 256
+ * draw the points and boundaries only) and the decision boundaries are dashed: rays halfway
+ * between PSK points, the grid lines between QAM columns and rows.
+ *
+ * The page's rates (checked): `symbolRate` R_s, `bitRate` R_b = R_s log₂M, `rolloff` α,
+ * `bandwidth` B = R_s(1 + α) and `efficiency` η = R_b ÷ B. A "?" M draws no points.
+ */
+export interface ComplexPlaneHe4m {
+  constellation?: {
+    M: NumOrVar;
+    kind?: 'psk' | 'qam';
+    symbolRate?: NumOrVar;
+    bitRate?: NumOrVar;
+    rolloff?: NumOrVar;
+    bandwidth?: NumOrVar;
+    efficiency?: NumOrVar;
+  };
+}
+
+/** The variable ids HC182's fields name. */
+export function complexPlaneHe4mVars(r: ComplexPlaneHe4m): string[] {
+  const k = r.constellation;
+  return k ? ids(k.M, k.symbolRate, k.bitRate, k.rolloff, k.bandwidth, k.efficiency) : [];
+}
 
 // ─── The new kinds together ──────────────────────────────────────────────────────
 

@@ -848,6 +848,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `complexPlane`     | `j`, `axes`, `reactances`, `zMag`        | Z = R + jX: R and jX legs, jX_L up, −jX_C down, the size, θ (HC14)            |
 | `complexPlane`     | `phasors`, `between`                     | a three-phase star, V_ab tip to tail, I at its own scale (HC14)               |
 | `complexPlane`     | `poles`, `zeros`, `locus`, `transfer`    | s-plane × and ○, root locus, σₐ, breakaway, poles at K (HC14)                 |
+| `complexPlane`     | `constellation`                          | M-PSK or square M-QAM, Gray-coded bits, dashed boundaries (HC182)             |
 | `matrixGrid`       | `mode: 'determinant'`, `cramer`          | D by its diagonals or the first-row expansion; D, Dx, Dy side by side (H99)   |
 | `matrixGrid`       | `steps: 'echelon' \| 'reduced'`          | row operations worked out from typed entries, a 0 row read out (H105)         |
 | `matrixGrid`       | `inverse: { values? }` (rowReduce)       | [A \| I] to [I \| A⁻¹], 3 × 6 or 4 × 8, A⁻¹ lit; columns fit (HC94)           |
