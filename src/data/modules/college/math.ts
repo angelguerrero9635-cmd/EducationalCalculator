@@ -286,6 +286,28 @@ const crossAt = (v: Values, side: -1 | 1) => {
 /** True when a number is short enough (three decimals) to write as an integral's limit. */
 const tidy = (x: number) => Math.abs(x * 1000 - Math.round(x * 1000)) < 1e-6;
 
+/** u = x² + c at x, the inside of x(x² + c)ⁿ. */
+const insideAt = (v: Values, x: number) => x * x + v.c!;
+
+/** ∫ from a to b of x(x² + c)ⁿ dx = (u(b)ⁿ⁺¹ − u(a)ⁿ⁺¹) ÷ (2(n + 1)), with u = x² + c. */
+const subIntegral = (v: Values) => (v.ub! ** (v.n! + 1) - v.ua! ** (v.n! + 1)) / (2 * (v.n! + 1));
+
+/** Integrals of whole powers as fractions with a bottom up to 14 (15/8), as 2(n + 1) gives. */
+const fourteenths = { fraction: 14, improper: true } as const;
+
+/** "x(x² + 1)³", "x(x² − 4)", "x": the integrand x(x² + c)ⁿ as written. */
+const subIntegrand = (v: Values) => {
+  const n = v.n!;
+  if (n === 0) return 'x';
+  return `x(${polyForm([1, 0, v.c!])})${n === 1 ? '' : raised(n)}`;
+};
+
+/** "u³ ÷ 2", "u ÷ 2", "1 ÷ 2": the integrand in u once x dx = du ÷ 2. */
+const uIntegrand = (n: number) => `${n === 0 ? '1' : n === 1 ? 'u' : `u${raised(n)}`} ÷ 2`;
+
+/** "u⁴ ÷ 8": its antiderivative uⁿ⁺¹ ÷ (2(n + 1)). */
+const uAnti = (n: number) => `${n === 0 ? 'u' : `u${raised(n + 1)}`} ÷ ${2 * (n + 1)}`;
+
 export const COLLEGE_MATH_MODULES: ModuleDef[] = [
   {
     // Calculus I → Limits and continuity: a quotient at x = a, 0/0 or k/0.
@@ -2806,6 +2828,103 @@ export const COLLEGE_MATH_MODULES: ModuleDef[] = [
       b: 'c',
       other: { family: 'quadratic', form: 'standard', a: 1, b: 0, c: 0 },
       between: { from: 'x1', to: 'x2', value: 'A' },
+    },
+  },
+  {
+    // Calculus I → u-substitution: ∫ from a to b of x(x² + c)ⁿ dx with u = x² + c, du = 2x dx.
+    id: 'he.math.calc-1#4',
+    use: 'Use this for “Evaluate the integral of x(x² − 3)² from 1 to 2.”',
+    assumptions: [
+      'Pick u as the inside part, u = x² + c. Its derivative 2x is already outside, up to a factor of 2, so x dx = du ÷ 2.',
+      'Change the limits with u: x = a becomes u(a) = a² + c and x = b becomes u(b) = b² + c. Then there is no need to go back to x.',
+      'In u the integral is ½ × ∫ uⁿ du, and by the power rule an antiderivative is uⁿ⁺¹ ÷ (2(n + 1)).',
+      'Area below the x-axis counts as negative, as for any definite integral.',
+    ],
+    variables: [
+      V('c', 'c', 'Constant in u = x² + c', { min: -10, max: 10, step: 0.1 }),
+      V('n', 'n', 'Power on the inside', { integer: true, min: 0, max: 6 }),
+      V('a', 'a', 'Lower limit', { min: -10, max: 10, step: 0.1 }),
+      V('b', 'b', 'Upper limit', { min: -10, max: 10, step: 0.1 }),
+      V('ua', 'u(a)', 'New lower limit, a² + c', {
+        min: -10,
+        max: 110,
+        step: 0.0001,
+        derived: true,
+      }),
+      V('ub', 'u(b)', 'New upper limit, b² + c', {
+        min: -10,
+        max: 110,
+        step: 0.0001,
+        derived: true,
+      }),
+      V('I', 'I', 'Value of the integral', {
+        min: -1e14,
+        max: 1e14,
+        derived: true,
+        ...fourteenths,
+      }),
+    ],
+    ...rels(
+      derive(
+        'u(a) = a² + c',
+        '{ua} = {a}² + {c}',
+        'ua',
+        ['a', 'c'],
+        (v) => insideAt(v, v.a!),
+        '{a}² + {c}',
+        'Put the lower limit x = a into the inside, u = x² + c: the integral in u starts there.',
+      ),
+      derive(
+        'u(b) = b² + c',
+        '{ub} = {b}² + {c}',
+        'ub',
+        ['b', 'c'],
+        (v) => insideAt(v, v.b!),
+        '{b}² + {c}',
+        'Put the upper limit x = b into the inside: the integral in u ends there.',
+      ),
+      withStep(
+        derive(
+          'I = (u(b)ⁿ⁺¹ − u(a)ⁿ⁺¹) ÷ (2(n + 1))',
+          '{I} = ({ub}^({n} + 1) − {ua}^({n} + 1)) ÷ (2 × ({n} + 1))',
+          'I',
+          ['ub', 'ua', 'n'],
+          subIntegral,
+          (v) => {
+            const p = raised(v.n! + 1);
+            return `(${signed(v.ub!)}${p} − ${signed(v.ua!)}${p}) ÷ ${2 * (v.n! + 1)}`;
+          },
+          'Since du = 2x dx, x dx is du ÷ 2: the integral becomes half the integral of uⁿ from u(a) to u(b). Raise the power by 1, then divide by the new power and by 2.',
+        ),
+        'I',
+        {
+          // u and du, then the integral in x and in u with the new limits (when short to write).
+          work: (v) => {
+            const du = `u(x) = ${polyForm([1, 0, v.c!])} → du/dx = 2x`;
+            if (![v.a!, v.b!, v.ua!, v.ub!].every(tidy)) return [du];
+            const [a, b] = [formatNumber(v.a!), formatNumber(v.b!)];
+            const [ua, ub] = [formatNumber(exact(v.ua!)), formatNumber(exact(v.ub!))];
+            const n = v.n!;
+            return [
+              du,
+              `∫ from ${a} to ${b} of (${subIntegrand(v)}) dx = ∫ from ${ua} to ${ub} of (${uIntegrand(n)}) du`,
+              `∫ from ${ua} to ${ub} of (${uIntegrand(n)}) du = [${uAnti(n)}] from ${ua} to ${ub} = ${formatNumber(exact(v.I!), fourteenths)}`,
+            ];
+          },
+        },
+      ),
+    ),
+    // ∫ from 0 to 1 of x(x² + 1)³ dx: u = x² + 1 runs from 1 to 2, x dx = du ÷ 2, so
+    // I = [u⁴ ÷ 8] from 1 to 2 = (16 − 1) ÷ 8 = 15/8 = 1.875.
+    example: { c: 1, n: 3, a: 0, b: 1, ua: 1, ub: 2, I: 15 / 8 },
+    startWith: ['c', 'n', 'a', 'b'],
+    // y = x(x² + c)ⁿ with a to b shaded, the part above the axis + and below it −, ∫ written.
+    representation: {
+      kind: 'functionGraph',
+      family: 'expr',
+      expr: 'x * (x^2 + c)^n',
+      window: { x: ['a', 'b'] },
+      area: { from: 'a', to: 'b', value: 'I', signed: true },
     },
   },
 ];
