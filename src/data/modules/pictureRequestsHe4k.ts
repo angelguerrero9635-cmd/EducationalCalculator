@@ -84,4 +84,21 @@ export const HE4K_REQUESTS: PictureRequest[] = [
     status: 'drawn',
     gallery: ['g.he-scaffold-pcl', 'g.he-scaffold-open', 'g.he-scaffold-dense'],
   },
+  {
+    ...ask(
+      'HC163',
+      'ligandGrid',
+      'Adhesion ligands (RGD) seen from above on a square grid at spacing d under a cell’s edge, a 70 nm ring around one ligand, and focal-adhesion plaques drawn when d ≤ 70 nm',
+      [`${E}tissue-engineering#1`],
+      [
+        'From B-P34. New kind (typesHe4k.ts LigandGridSpec, reps/LigandGrid.tsx, reps/he4kMath.ts).',
+        "Fields: { kind: 'ligandGrid', density (per μm², 1 to 10⁵), spacing? (d, nm, checked), threshold? (nm, default 70; the page passes its own) }.",
+        'A window of whole grid squares of side d = 1000 ÷ √density (8 to 40 across, about 300 nm wide, so the dots drawn per μm² are the density exactly), a dot in each square; the cell (translucent, its wavy leading edge drawn) over the upper part; a dashed ring of radius 70 nm around the middle ligand under the cell, its neighbours inside outlined; when d ≤ 70 nm, purple plaques over runs of ligands in every other row under the cell (left and right in turn, clear of the ring) and “Adhesions form”; past it, none and “No adhesions”. A scale bar (1, 2 or 5 × 10ⁿ nm). A "?" density draws the substrate and the cell only. No handles.',
+        "Example: { kind: 'ligandGrid', density: 'density', spacing: 'd' } (400 per μm² → 50 nm, adhesions form; 100 per μm² → 100 nm, they don't).",
+        'Harness (harness/picturesHe4k.ts): the dots drawn over the window’s area are the density (to 0.1%); d = √(10⁶ ÷ density); plaques exactly when d ≤ the threshold.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: ['g.he-ligandGrid-adhere', 'g.he-ligandGrid-sparse', 'g.he-ligandGrid-dense'],
+  },
 ];

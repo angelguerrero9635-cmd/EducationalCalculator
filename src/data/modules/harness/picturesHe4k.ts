@@ -4,6 +4,9 @@
  * it with the page's values. Test-only.
  */
 import {
+  LIGAND_ASPECT,
+  ligandPlaques,
+  ligandWindow,
   meanShare,
   PHOTONS,
   photonDepths,
@@ -147,6 +150,32 @@ function scaffoldIssues(rep: Extract<He4kSpec, { kind: 'scaffold' }>, val: Val):
   return out;
 }
 
+/**
+ * HC163 `ligandGrid`: the dots drawn, counted over the window's area in μm², are the density
+ * (to 0.1%); the window is whole grid squares of side 1000 ÷ √density nm (the page's d);
+ * plaques are drawn exactly when d ≤ the threshold (default 70 nm).
+ */
+function ligandIssues(rep: Extract<He4kSpec, { kind: 'ligandGrid' }>, val: Val): string[] {
+  const out: string[] = [];
+  const get = (x: string | number | undefined) => (x === undefined ? undefined : val(x));
+  const density = get(rep.density);
+  const thr = get(rep.threshold ?? 70) ?? 70;
+  if (density === undefined || density <= 0) return out;
+  const d = Math.sqrt(1e6 / density);
+  const win = ligandWindow(d, LIGAND_ASPECT);
+  const dots = win.cols * win.rows;
+  const area = (win.width / 1000) * (win.height / 1000);
+  if (!close(dots / area, density, 1e-3))
+    out.push(`ligandGrid: ${dots} dots on ${area} μm² is not ${density} per μm²`);
+  const spacing = get(rep.spacing);
+  if (spacing !== undefined && !close(spacing, d))
+    out.push(`ligandGrid: d = ${spacing} nm is not √(10⁶ ÷ density) = ${d} nm`);
+  const plaques = ligandPlaques(d, thr, win.cols, Math.ceil(win.rows * 0.55)).length;
+  if (d <= thr && plaques === 0) out.push(`ligandGrid: d = ${d} ≤ ${thr} nm but no plaques`);
+  if (d > thr && plaques > 0) out.push(`ligandGrid: d = ${d} > ${thr} nm but ${plaques} plaques`);
+  return out;
+}
+
 export function he4kIssues(rep: He4kSpec, val: Val): string[] {
   switch (rep.kind) {
     case 'dialyzer':
@@ -155,5 +184,7 @@ export function he4kIssues(rep: He4kSpec, val: Val): string[] {
       return attenuationIssues(rep, val);
     case 'scaffold':
       return scaffoldIssues(rep, val);
+    case 'ligandGrid':
+      return ligandIssues(rep, val);
   }
 }

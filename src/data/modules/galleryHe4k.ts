@@ -4,6 +4,7 @@
  * HC160: `dialyzer` (he.engineering.biotransport#2).
  * HC161: `attenuation` (he.engineering.bioinstrumentation#2, ~ultrasound).
  * HC162: `scaffold` (he.engineering.tissue-engineering#0).
+ * HC163: `ligandGrid` (he.engineering.tissue-engineering#1).
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
@@ -503,6 +504,71 @@ const SCAFFOLD_DENSE = scaffoldPage(
   { rhoS: 3.16, rhoStar: 1.896, es: 110000 },
 );
 
+// ─── HC163: ligand spacing and adhesion (tissue-engineering#1) ─────────────────
+
+const spacingOf = (v: Values) => 1000 / Math.sqrt(v.density!);
+
+const ligandPage = (id: string, title: string, use: string, typed: Values) =>
+  page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'The ligands sit on a square grid.',
+      'Focal adhesions need ligands about 70 nm apart or closer (a measured threshold, not derived).',
+    ],
+    variables: [
+      num('density', 'σ', 'Ligand density', 'μm⁻²', 1, 1e5, { step: 1 }),
+      num('d', 'd', 'Spacing between ligands', 'nm', 3, 1000, { step: 0.1 }),
+    ],
+    rules: [
+      rule(
+        'spacing',
+        '{d} = 1000 ÷ √{density}',
+        ['d', 'density'],
+        (v) => v.d! ** 2 * v.density! - 1e6,
+        {
+          d: [
+            (v) => posOf(spacingOf(v)),
+            '1000 ÷ sqrt({density})',
+            'Each ligand has a square of 1 ÷ density to itself; its side is the spacing (1 μm is 1000 nm).',
+          ],
+          density: [
+            (v) => posOf(1e6 / v.d! ** 2),
+            '1000000 ÷ {d}^2',
+            'One ligand per square of side d: a square micrometre holds (1000 ÷ d)² of them.',
+          ],
+        },
+      ),
+    ],
+    example: example(typed, ['d', spacingOf]),
+    startWith: ['density'],
+    representation: { kind: 'ligandGrid', density: 'density', spacing: 'd' },
+  });
+
+const LIGAND = ligandPage(
+  'g.he-ligandGrid-adhere',
+  'Ligand spacing: will focal adhesions form?',
+  'Use this for “A surface carries 400 RGD ligands per μm². How far apart are they, and will cells form focal adhesions?”',
+  { density: 400 },
+);
+
+/** Past the threshold: 100 per μm² puts the ligands 100 nm apart. */
+const LIGAND_SPARSE = ligandPage(
+  'g.he-ligandGrid-sparse',
+  'Ligands too far apart to cluster',
+  'Use this for “At 100 ligands per μm², how far apart are they? Can integrins cluster?”',
+  { density: 100 },
+);
+
+/** A crowded surface: 10⁴ per μm², 10 nm apart. */
+const LIGAND_DENSE = ligandPage(
+  'g.he-ligandGrid-dense',
+  'A densely coated surface',
+  'Use this for “A surface is coated at 10,000 ligands per μm². What is their spacing?”',
+  { density: 10000 },
+);
+
 export const HE4K_GALLERY_MODULES: ModuleDef[] = [
   DIALYZER,
   DIALYZER_HIGH,
@@ -513,6 +579,9 @@ export const HE4K_GALLERY_MODULES: ModuleDef[] = [
   SCAFFOLD,
   SCAFFOLD_OPEN,
   SCAFFOLD_DENSE,
+  LIGAND,
+  LIGAND_SPARSE,
+  LIGAND_DENSE,
 ];
 
 export const HE4K_GALLERY_LAYOUTS: LayoutDef[] = [];

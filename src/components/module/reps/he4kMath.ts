@@ -1,6 +1,6 @@
 /**
  * The arithmetic group K's college pictures draw from (round 4: HC160 dialyzer, HC161 attenuation, HC162
- * scaffold), shared by the
+ * scaffold, HC163 ligandGrid), shared by the
  * pictures and their harness checks.
  */
 
@@ -94,4 +94,39 @@ export function latticeStruts(n: number, s: number): Box[] {
         blocks.push({ box: [x[0], x[1], y[0], y[1], z[0], z[1]], order: i + j + k });
       }
   return blocks.sort((p, q) => p.order - q.order).map((b) => b.box);
+}
+
+// ─── HC163: ligandGrid ─────────────────────────────────────────────────────────
+
+/** The ligand spacing (nm) on a square grid of `density` per μm²: 1000 ÷ √density. */
+export const ligandSpacing = (density: number) => 1000 / Math.sqrt(density);
+
+/** The window's height over its width at most (170 px under 320). */
+export const LIGAND_ASPECT = 170 / 320;
+
+/**
+ * The window of the grid drawn: `cols` × `rows` whole squares of side d (nm), about 300 nm
+ * across (8 to 40 squares), its height `aspect` of its width; a dot sits in each square's middle.
+ */
+export function ligandWindow(d: number, aspect: number) {
+  const cols = Math.min(40, Math.max(8, Math.round(300 / d)));
+  const rows = Math.max(3, Math.floor(cols * aspect));
+  return { cols, rows, width: cols * d, height: rows * d };
+}
+
+/**
+ * Focal-adhesion plaques under the cell when d ≤ the threshold: each over a run of ligands in
+ * every other row of the cell’s part, at the left and right in turn (`cellRows` rows from the top), as [row, first col, last
+ * col]. None past the threshold.
+ */
+export function ligandPlaques(d: number, threshold: number, cols: number, cellRows: number) {
+  if (d > threshold) return [];
+  const run = Math.max(3, Math.round(cols / 4));
+  const out: [number, number, number][] = [];
+  for (let r = 0; r < cellRows; r += 2) {
+    // Left and right in turn, clear of the ring in the middle column.
+    const first = (r / 2) % 2 === 0 ? 0 : cols - run;
+    out.push([r, first, Math.min(cols - 1, first + run - 1)]);
+  }
+  return out;
 }

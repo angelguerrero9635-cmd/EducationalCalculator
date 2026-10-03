@@ -1,6 +1,7 @@
 /**
  * College pictures, round 4, group K (docs/RENDERINGS_HE.md): the new kinds HC160 `dialyzer`,
- * HC161 `attenuation`, HC162 `scaffold`.
+ * HC161 `attenuation`, HC162 `scaffold`,
+ * HC163 `ligandGrid`.
  * Kept apart from `types.ts` so the union only names them.
  *
  * Every string is a variable id; a `NumOrVar` is a fixed number or one. A value is read in its
@@ -90,10 +91,27 @@ export interface ScaffoldSpec {
   estar?: string;
 }
 
-/** Every new kind of group K. */
-export type He4kSpec = DialyzerSpec | AttenuationSpec | ScaffoldSpec;
+// ─── HC163: ligandGrid ─────────────────────────────────────────────────────────
 
-const HE4K_KINDS = new Set<string>(['dialyzer', 'attenuation', 'scaffold']);
+/**
+ * HC163 (B-P34): adhesion ligands (RGD) seen from above on a square grid at spacing
+ * d = 1000 ÷ √density nm (`density` per μm²), a window of whole grid squares (6 to 40 across,
+ * so the dots drawn per μm² are the density exactly), a cell's edge lying over the upper part.
+ * A ring of radius `threshold` (nm, default 70) around one ligand under the cell takes in its
+ * neighbours when d ≤ threshold; then integrins cluster and focal-adhesion plaques are drawn
+ * under the cell; past it, none. `spacing` is the page's d (checked). A scale bar in nm.
+ */
+export interface LigandGridSpec {
+  kind: 'ligandGrid';
+  density: NumOrVar;
+  spacing?: NumOrVar;
+  threshold?: NumOrVar;
+}
+
+/** Every new kind of group K. */
+export type He4kSpec = DialyzerSpec | AttenuationSpec | ScaffoldSpec | LigandGridSpec;
+
+const HE4K_KINDS = new Set<string>(['dialyzer', 'attenuation', 'scaffold', 'ligandGrid']);
 
 /** Whether a picture is one of group K's new kinds. */
 export const isHe4k = (r: Representation): r is He4kSpec => HE4K_KINDS.has(r.kind);
@@ -107,5 +125,7 @@ export function he4kSpecVars(r: He4kSpec): string[] {
       return ids(r.mu, r.x, r.share, r.hvl, r.t, r.d, r.c, r.z1, r.z2, r.r);
     case 'scaffold':
       return ids(r.rhoS, r.rhoStar, r.relative, r.porosity, r.es, r.estar);
+    case 'ligandGrid':
+      return ids(r.density, r.spacing, r.threshold);
   }
 }
