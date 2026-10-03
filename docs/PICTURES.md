@@ -593,6 +593,7 @@ search or the sitemap, but the module tests and the harness run over it):
 | `parallax`         | Earth in January and July, a near star shifting on far stars; p, d     | Earth and space stars (H110)        |
 | `controlVolume`    | a unit or steel device in a control volume; streams, Q̇, Ẇ, in = out    | College balances, devices (HC5)     |
 | `velocityProfile`  | tube, vessel, plates or film: v arrows, v_max = 2v_avg, τ_w; c lines   | College transport, blood (HC13)     |
+| `heartPump`        | left ventricle to EDV and ESV, SV lit; beats a minute, CO; MAP gauge   | College cardiovascular (HC155)      |
 | `bode`             | gain (dB) over phase on log frequency; asymptotes, corners, PM, GM     | College filters, control (HC22)     |
 | `potentialWell`    | box, oscillator, step, barrier, bump: levels to scale, ψ, nodes, λ     | College quantum, chemistry (HC15)   |
 | `unitCell`         | cubic cell: atoms counted to Z, touching line; (hkl) and d; Bragg      | College solids, minerals (HC16)     |

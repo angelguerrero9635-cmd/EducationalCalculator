@@ -582,6 +582,8 @@ const light = {
   he4jMuscle: '#E07A8A',
   he4jStriation: '#93324C',
   he4jGlia: '#5874B5',
+  he4jBand: '#6D28D9',
+  he4jWall: '#B9806F',
   /**
    * College HC24, HC30, HC31 (round 2, group H): the relative wind, lift and drag, tip vortices;
    * the gas in a duct, a hot chamber or exhaust; a shock and an expansion fan's Mach lines.
@@ -1287,6 +1289,8 @@ const dark: Palette = {
   he4jMuscle: '#B85A6A',
   he4jStriation: '#E7A0B4',
   he4jGlia: '#9CB2E3',
+  he4jBand: '#A78BFA',
+  he4jWall: '#8F5E52',
   aeroWind: '#7FB0DA',
   aeroLift: '#6EA3FF',
   aeroDrag: '#FB8A4C',

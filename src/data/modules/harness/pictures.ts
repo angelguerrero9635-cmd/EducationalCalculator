@@ -128,6 +128,7 @@ import {
   he4eGraphIssues,
   he4eNormalIssues,
 } from './picturesHe4e';
+import { he4jIssues } from './picturesHe4j';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -2399,6 +2400,9 @@ export function repIssues(
     case 'velocityProfile':
       // In formula units, as the picture draws them.
       out.push(...he1fIssues(rep, (id) => (val(id) ?? NaN) * (byId.get(id)?.unitFactor ?? 1)));
+      break;
+    case 'heartPump':
+      out.push(...he4jIssues(rep, val, byId)); // HC155–HC159
       break;
     case 'potentialWell':
     case 'unitCell':

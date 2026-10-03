@@ -214,6 +214,7 @@ import { Hs3cPicture } from './Hs3cPicture';
 import { FluidSystem } from './FluidSystem';
 import { ControlVolume } from './ControlVolume';
 import { VelocityProfile } from './VelocityProfile';
+import { HeartPump } from './HeartPump';
 import { ComplexPlaneHe2a } from './ComplexPlaneHe2a';
 import { Bode } from './Bode';
 import { StreamChannelHe } from './StreamChannelHe';
@@ -450,6 +451,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <Connection spec={spec} calc={calc} />; // HC61
     case 'velocityProfile':
       return <VelocityProfile spec={spec} calc={calc} />;
+    case 'heartPump':
+      return <HeartPump spec={spec} calc={calc} />; // HC155
     case 'potentialWell':
       return <PotentialWell spec={spec} calc={calc} />;
     case 'phaseSpace':

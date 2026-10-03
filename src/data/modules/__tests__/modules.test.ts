@@ -18,6 +18,7 @@ import { physics8SpecVars } from '../typesPhysics8';
 import { hscSpecVars } from '../typesHsc';
 import { hsbSpecVars } from '../typesHsb';
 import { alleleHe4eVars, driftPathsVars, normalCurveHe4eVars } from '../typesHe4e';
+import { he4jSpecVars } from '../typesHe4j';
 import { hs2aSpecVars } from '../typesHs2a';
 import { hs2eSpecVars } from '../typesHs2e';
 import { hs3dSpecVars } from '../typesHs3d';
@@ -662,6 +663,8 @@ function representationVars(r: Representation): string[] {
     case 'controlVolume':
     case 'velocityProfile':
       return he1fSpecVars(r);
+    case 'heartPump':
+      return he4jSpecVars(r); // HC155–HC159
     case 'potentialWell':
     case 'unitCell':
       return he2bSpecVars(r);
