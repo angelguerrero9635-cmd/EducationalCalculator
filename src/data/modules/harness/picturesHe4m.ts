@@ -7,8 +7,16 @@
  * - HC175 `losScale`: D = v_p ÷ S; the bounds rise; the letter marked is the band holding D.
  * - HC180 `oneLine`: the summed reactance written is X_th; I_f = V_f ÷ X_th (or 3V_f ÷ ΣX for a
  *   line-to-ground fault); the base current, the kA and the fault MVA are the page's.
+ * - HC181 `rfSpectrum`: the bracket's width is B (2f_m, or Carson's 2(Δf + f_m)); the drawn
+ *   sideband heights squared give P_sb ÷ P_c (AM); the FM lines' heights squared add to the
+ *   carrier's power (Σ J_n² = 1); β = Δf ÷ f_m.
  */
-import { LOS_BOUNDS, losOf, soilPhaseParts } from '@/components/module/reps/he4mMath';
+import {
+  LOS_BOUNDS,
+  losOf,
+  soilPhaseParts,
+  spectrumLines,
+} from '@/components/module/reps/he4mMath';
 
 import type { Representation } from '../types';
 
@@ -26,6 +34,8 @@ export function he4mIssues(rep: Representation, val: Val): string[] {
       return losScaleIssues(rep, val);
     case 'oneLine':
       return oneLineIssues(rep, val);
+    case 'rfSpectrum':
+      return rfSpectrumIssues(rep, val);
     default:
       return [];
   }
@@ -146,6 +156,53 @@ function oneLineIssues(rep: Extract<Representation, { kind: 'oneLine' }>, val: V
       out.push(`one-line: ${IkA} kA, not I_f × I_base = ${(I * Ib) / 1000}`);
     if (I !== undefined && S !== undefined && mva !== undefined && !close(mva, (vf ?? 1) * I * S))
       out.push(`one-line: fault ${mva} MVA, not V_fI_fS_base = ${(vf ?? 1) * I * S}`);
+  }
+  return out;
+}
+
+function rfSpectrumIssues(rep: Extract<Representation, { kind: 'rfSpectrum' }>, val: Val) {
+  const out: string[] = [];
+  const get = (v: string | number | undefined) => (v === undefined ? undefined : val(v));
+  const [fm, mu, dev, beta, B] = [
+    get(rep.fm),
+    get(rep.mu),
+    get(rep.deviation),
+    get(rep.beta),
+    get(rep.bandwidth),
+  ];
+  if (fm !== undefined && fm <= 0) out.push(`rf: f_m = ${fm}`);
+  if (rep.mode === 'am') {
+    if (mu !== undefined && (mu < 0 || mu > 1)) out.push(`rf: μ = ${mu} is outside 0 to 1`);
+    // The bracket spans the outer sidebands, f_c ± f_m.
+    if (B !== undefined && fm !== undefined && !close(B, 2 * fm))
+      out.push(`rf: B = ${B}, not 2f_m`);
+    const [Pc, Psb, Pt, eta] = [
+      get(rep.carrierPower),
+      get(rep.sidebandPower),
+      get(rep.totalPower),
+      get(rep.efficiency),
+    ];
+    if (mu !== undefined && Pc !== undefined) {
+      const lines = spectrumLines('am', mu);
+      const share = lines.filter((l) => l.n !== 0).reduce((a, l) => a + l.a ** 2, 0);
+      if (Psb !== undefined && !close(Psb, Pc * share))
+        out.push(`rf: P_sb = ${Psb}, but the drawn sidebands hold ${Pc * share}`);
+      if (Pt !== undefined && !close(Pt, Pc * (1 + share)))
+        out.push(`rf: P_t = ${Pt}, not P_c + P_sb = ${Pc * (1 + share)}`);
+      if (eta !== undefined && !close(eta, (100 * share) / (1 + share)))
+        out.push(`rf: η = ${eta}%, not P_sb ÷ P_t = ${(100 * share) / (1 + share)}%`);
+    }
+  } else {
+    const b = beta ?? (dev !== undefined && fm ? dev / fm : undefined);
+    if (beta !== undefined && dev !== undefined && fm !== undefined && !close(beta, dev / fm))
+      out.push(`rf: β = ${beta}, not Δf ÷ f_m = ${dev / fm}`);
+    if (B !== undefined && b !== undefined && fm !== undefined && !close(B, 2 * (b + 1) * fm))
+      out.push(`rf: B = ${B}, but Carson's bracket spans ${2 * (b + 1) * fm}`);
+    if (b !== undefined) {
+      const lines = spectrumLines('fm', b);
+      const all = lines.reduce((a, l) => a + l.a ** 2, 0);
+      if (Math.abs(all - 1) > 2e-3) out.push(`rf: the FM lines hold ${all} of the carrier's power`);
+    }
   }
   return out;
 }

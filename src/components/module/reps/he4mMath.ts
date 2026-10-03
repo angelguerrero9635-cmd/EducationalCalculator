@@ -73,3 +73,36 @@ export function losOf(d: number, bounds: readonly number[] = LOS_BOUNDS): number
   const i = bounds.findIndex((b) => d <= b);
   return i === -1 ? bounds.length : i;
 }
+
+// ─── HC181: AM and FM spectra ────────────────────────────────────────────────────
+
+/** Bessel J_n(x) by its integral (1 ÷ π) ∫₀^π cos(nτ − x sin τ) dτ, Simpson's rule. */
+export function besselJ(n: number, x: number): number {
+  // Enough steps for the integrand's oscillations (about x of them over [0, π]); N even.
+  const N = Math.max(400, 2 * Math.ceil(40 * Math.abs(x)));
+  const f = (t: number) => Math.cos(n * t - x * Math.sin(t));
+  let sum = f(0) + f(Math.PI);
+  for (let i = 1; i < N; i++) sum += (i % 2 ? 4 : 2) * f((Math.PI * i) / N);
+  return (sum * (Math.PI / N)) / 3 / Math.PI;
+}
+
+/**
+ * The spectral lines of a tone-modulated carrier, as offsets n from it (in f_m) and amplitudes
+ * relative to the unmodulated carrier: AM's carrier 1 and sidebands μ ÷ 2; FM's J_n(β) for
+ * |n| up to β + 3 (Carson's band holds 98% of the power within β + 1).
+ */
+export function spectrumLines(mode: 'am' | 'fm', index: number): { n: number; a: number }[] {
+  if (mode === 'am')
+    return [
+      { n: -1, a: index / 2 },
+      { n: 0, a: 1 },
+      { n: 1, a: index / 2 },
+    ];
+  const top = Math.max(1, Math.ceil(index + 3));
+  const out: { n: number; a: number }[] = [];
+  for (let n = -top; n <= top; n++) {
+    // J₋ₙ = (−1)ⁿ Jₙ: the same size on both sides.
+    out.push({ n, a: besselJ(Math.abs(n), index) * (n < 0 && Math.abs(n) % 2 ? -1 : 1) });
+  }
+  return out;
+}

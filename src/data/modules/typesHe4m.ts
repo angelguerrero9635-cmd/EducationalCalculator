@@ -7,6 +7,7 @@
  * - HC174 `soilPhases` (new kind): the three-phase block of a soil.
  * - HC175 `losScale` (new kind): a freeway segment's density on the level-of-service bar.
  * - HC180 `oneLine` (new kind): a power system's one-line diagram with a fault on a bus.
+ * - HC181 `rfSpectrum` (new kind): an AM or FM signal in time and its spectrum.
  */
 import type { NumOrVar } from './typesGraphs';
 
@@ -149,10 +150,57 @@ export const oneLineVars = (r: OneLineSpec): string[] =>
     r.base?.mva,
   );
 
+// ─── HC181: rfSpectrum (new kind) ───────────────────────────────────────────────
+
+/**
+ * HC181 (EC-P15): a tone-modulated carrier. Above, the signal in time with its envelope dashed
+ * (AM: 1 ± μ, to scale; FM: constant, the crests bunching and spreading; the carrier drawn
+ * far slower than it is). Below, the spectrum to scale on a frequency axis: AM's carrier
+ * (height 1) and the sidebands at f_c ± f_m (height μ ÷ 2); FM's lines every f_m with heights
+ * |J_n(β)|, Carson's band 2(Δf + f_m) bracketed. Without `fc` the axis is the offset f − f_c.
+ *
+ * `mu` is AM's index (0–1; above 1 draws faded, overmodulated); `deviation` FM's Δf and `beta`
+ * the page's β (checked: Δf ÷ f_m). `bandwidth` is the page's B (checked: 2f_m, or
+ * 2(Δf + f_m)). Powers (AM): `carrierPower` P_c, and the page's `sidebandPower` P_sb (checked:
+ * P_cμ² ÷ 2, the two sideband heights squared), `totalPower` and `efficiency` (%, checked).
+ * The frequencies are read in one unit (kHz), `fc` and `fm` alike. A "?" draws no line for it.
+ */
+export interface RfSpectrumSpec {
+  kind: 'rfSpectrum';
+  mode: 'am' | 'fm';
+  fm: NumOrVar;
+  fc?: NumOrVar;
+  mu?: NumOrVar;
+  deviation?: NumOrVar;
+  beta?: NumOrVar;
+  bandwidth?: NumOrVar;
+  carrierPower?: NumOrVar;
+  sidebandPower?: string;
+  totalPower?: string;
+  efficiency?: string;
+  /** The frequency unit written on the axis (default fm's unit). */
+  unit?: string;
+}
+
+/** The variable ids an rfSpectrum spec names. */
+export const rfSpectrumVars = (r: RfSpectrumSpec): string[] =>
+  ids(
+    r.fm,
+    r.fc,
+    r.mu,
+    r.deviation,
+    r.beta,
+    r.bandwidth,
+    r.carrierPower,
+    r.sidebandPower,
+    r.totalPower,
+    r.efficiency,
+  );
+
 // ─── The new kinds together ──────────────────────────────────────────────────────
 
 /** Group M's new picture kinds (one line in `types.ts`). */
-export type He4mSpec = SoilPhasesSpec | LosScaleSpec | OneLineSpec;
+export type He4mSpec = SoilPhasesSpec | LosScaleSpec | OneLineSpec | RfSpectrumSpec;
 
 /** The variable ids a group M new-kind spec names (one case in `modules.test.ts`). */
 export function he4mSpecVars(r: He4mSpec): string[] {
@@ -163,5 +211,7 @@ export function he4mSpecVars(r: He4mSpec): string[] {
       return losScaleVars(r);
     case 'oneLine':
       return oneLineVars(r);
+    case 'rfSpectrum':
+      return rfSpectrumVars(r);
   }
 }

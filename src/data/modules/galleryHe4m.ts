@@ -4,6 +4,7 @@
  * HC174: `soilPhases`, the new kind (he.engineering.soil-mechanics#0, #1~sand-cone).
  * HC175: `losScale`, the new kind (he.engineering.transportation#3).
  * HC180: `oneLine`, the new kind (he.engineering.power-systems#2, ~slg).
+ * HC181: `rfSpectrum`, the new kind (he.engineering.communication-systems#0, ~fm).
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
@@ -572,6 +573,199 @@ const SLG = page({
   },
 });
 
+// ─── HC181: AM and FM spectra (communication-systems#0, ~fm) ───────────────────
+
+const ptOf = (v: Values) => v.Pc! * (1 + v.mu! ** 2 / 2);
+const etaOf = (v: Values) => (100 * v.mu! ** 2) / (2 + v.mu! ** 2);
+
+const amPage = (id: string, title: string, use: string, typed: Values) =>
+  page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'Tone modulation: one message frequency f_m.',
+      'μ ≤ 1, so the envelope never reaches zero (no overmodulation).',
+      'The sidebands sit at f_c ± f_m, each μ ÷ 2 of the carrier’s height.',
+    ],
+    variables: [
+      num('Pc', 'P_c', 'Carrier power', 'W', 0.001, 1e7, { step: 0.1 }),
+      num('mu', 'μ', 'Modulation index', undefined, 0.01, 1, { step: 0.01 }),
+      out('Pt', 'P_t', 'Total power', 'W'),
+      out('Psb', 'P_sb', 'Sideband power', 'W'),
+      out('eta', 'η', 'Efficiency', '%'),
+      num('fm', 'f_m', 'Message frequency', 'kHz', 0.01, 100, { step: 0.1 }),
+      out('B', 'B', 'Bandwidth', 'kHz'),
+      num('fc', 'f_c', 'Carrier frequency', 'kHz', 100, 1e6, { step: 1 }),
+      out('fL', 'f_L', 'Lower sideband', 'kHz'),
+      out('fU', 'f_U', 'Upper sideband', 'kHz'),
+    ],
+    rules: [
+      derive(
+        'Pt',
+        'Pt',
+        ['Pc', 'mu'],
+        '{Pt} = {Pc} × (1 + {mu}^2 ÷ 2)',
+        ptOf,
+        '{Pc} × (1 + {mu}^2 ÷ 2)',
+        'Each sideband is μ ÷ 2 of the carrier’s amplitude, so the two add μ² ÷ 2 of its power.',
+      ),
+      derive(
+        'Psb',
+        'Psb',
+        ['Pt', 'Pc'],
+        '{Psb} = {Pt} − {Pc}',
+        (v) => v.Pt! - v.Pc!,
+        '{Pt} − {Pc}',
+        'What the sidebands carry is the total less the carrier.',
+      ),
+      derive(
+        'eta',
+        'eta',
+        ['mu'],
+        '{eta} = 100 × {mu}^2 ÷ (2 + {mu}^2)',
+        etaOf,
+        '100 × {mu}^2 ÷ (2 + {mu}^2)',
+        'The share of the power in the sidebands, where the message is.',
+      ),
+      derive(
+        'B',
+        'B',
+        ['fm'],
+        '{B} = 2 × {fm}',
+        (v) => 2 * v.fm!,
+        '2 × {fm}',
+        'The sidebands reach f_m either side of the carrier.',
+      ),
+      derive(
+        'fL',
+        'fL',
+        ['fc', 'fm'],
+        '{fL} = {fc} − {fm}',
+        (v) => v.fc! - v.fm!,
+        '{fc} − {fm}',
+        'The lower sideband sits f_m below the carrier …',
+      ),
+      derive(
+        'fU',
+        'fU',
+        ['fc', 'fm'],
+        '{fU} = {fc} + {fm}',
+        (v) => v.fc! + v.fm!,
+        '{fc} + {fm}',
+        '… and the upper one f_m above it.',
+      ),
+    ],
+    example: example(
+      typed,
+      ['Pt', ptOf],
+      ['Psb', (v) => v.Pt! - v.Pc!],
+      ['eta', etaOf],
+      ['B', (v) => 2 * v.fm!],
+      ['fL', (v) => v.fc! - v.fm!],
+      ['fU', (v) => v.fc! + v.fm!],
+    ),
+    startWith: ['Pc', 'mu', 'fm', 'fc'],
+    standalone: {
+      vars: ['fm', 'B', 'fc', 'fL', 'fU'],
+      why: 'The frequencies place the lines on the axis and the powers set their heights; the picture joins them.',
+    },
+    representation: {
+      kind: 'rfSpectrum',
+      mode: 'am',
+      fc: 'fc',
+      fm: 'fm',
+      mu: 'mu',
+      bandwidth: 'B',
+      carrierPower: 'Pc',
+      sidebandPower: 'Psb',
+      totalPower: 'Pt',
+      efficiency: 'eta',
+    },
+  });
+
+const AM = amPage(
+  'g.he-rfSpectrum-am',
+  'AM power, efficiency and bandwidth',
+  'Use this for “A 100 W carrier is modulated to μ = 0.5. Find the total and sideband power.”',
+  { Pc: 100, mu: 0.5, fm: 5, fc: 1000 },
+);
+
+/** Full modulation, μ = 1: the most the sidebands can carry, a third of the power. */
+const AM_FULL = amPage(
+  'g.he-rfSpectrum-am-full',
+  'AM at 100% modulation',
+  'Use this for “A 50 kW broadcast carrier is modulated 100%. What share of the power carries the message?”',
+  { Pc: 50000, mu: 1, fm: 10, fc: 760 },
+);
+
+const betaOf = (v: Values) => v.df! / v.fm!;
+const carsonOf = (v: Values) => 2 * (v.df! + v.fm!);
+
+const fmPage = (id: string, title: string, use: string, typed: Values) =>
+  page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'Tone modulation: one message frequency f_m.',
+      'Carson’s rule: about 98% of the power lies within (β + 1)f_m of the carrier.',
+      'The lines sit every f_m, each |J_n(β)| of the unmodulated carrier.',
+    ],
+    variables: [
+      num('df', 'Δf', 'Peak frequency deviation', 'kHz', 0.01, 1000, { step: 0.1 }),
+      num('fm', 'f_m', 'Message frequency', 'kHz', 0.01, 100, { step: 0.1 }),
+      // The page draws to β = 25 (wideband FM); past it the lines are too many to show.
+      out('beta', 'β', 'Modulation index', undefined, { max: 25 }),
+      out('B', 'B', 'Carson bandwidth', 'kHz'),
+    ],
+    rules: [
+      derive(
+        'beta',
+        'beta',
+        ['df', 'fm'],
+        '{beta} = {df} ÷ {fm}',
+        betaOf,
+        '{df} ÷ {fm}',
+        'The swing of the frequency in units of the message frequency.',
+      ),
+      derive(
+        'B',
+        'B',
+        ['df', 'fm'],
+        '{B} = 2 × ({df} + {fm})',
+        carsonOf,
+        '2 × ({df} + {fm})',
+        'Carson’s rule: the deviation plus one more message frequency, on each side.',
+      ),
+    ],
+    example: example(typed, ['beta', betaOf], ['B', carsonOf]),
+    startWith: ['df', 'fm'],
+    representation: {
+      kind: 'rfSpectrum',
+      mode: 'fm',
+      fm: 'fm',
+      deviation: 'df',
+      beta: 'beta',
+      bandwidth: 'B',
+    },
+  });
+
+const FM = fmPage(
+  'g.he-rfSpectrum-fm',
+  'FM bandwidth by Carson’s rule',
+  'Use this for “Broadcast FM swings 75 kHz with a 15 kHz tone. Find β and the bandwidth.”',
+  { df: 75, fm: 15 },
+);
+
+/** Narrowband FM (β < 1): little more than a carrier and one pair of lines, like AM. */
+const FM_NARROW = fmPage(
+  'g.he-rfSpectrum-fm-narrow',
+  'Narrowband FM',
+  'Use this for “A 2.5 kHz deviation carries a 5 kHz tone. Find β and the bandwidth.”',
+  { df: 2.5, fm: 5 },
+);
+
 export const HE4M_GALLERY_MODULES: ModuleDef[] = [
   PHASES,
   PHASES_SATURATED,
@@ -581,6 +775,10 @@ export const HE4M_GALLERY_MODULES: ModuleDef[] = [
   FAULT,
   FAULT_GEN,
   SLG,
+  AM,
+  AM_FULL,
+  FM,
+  FM_NARROW,
 ];
 
 export const HE4M_GALLERY_LAYOUTS: LayoutDef[] = [];

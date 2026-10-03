@@ -181,6 +181,7 @@ const PICTURE_NAMES: Record<string, string> = {
   driftPaths: 'genetic drift: populations’ allele frequencies wandering, expected H falling',
   losScale: 'a freeway’s level of service: the density on the A–F bar, its cars in a mile of lane',
   oneLine: 'a power system’s one-line diagram, a fault on a bus, the reactances summed to it',
+  rfSpectrum: 'an AM or FM signal in time over its spectrum: carrier, sidebands, the bandwidth',
   soilPhases: 'a soil’s air, water and solids to scale, volumes on one side, weights on the other',
   propertyDiagram: 'a T–v, P–v or T–s plane with the vapor dome, states and a cycle',
   elementChain: 'finite elements: springs or bars between nodes, loads, displacements; a mesh',

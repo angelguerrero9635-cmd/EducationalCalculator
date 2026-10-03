@@ -78,4 +78,26 @@ export const HE4M_REQUESTS: PictureRequest[] = [
     status: 'drawn',
     gallery: ['g.he-oneLine-three-phase', 'g.he-oneLine-generator-bus', 'g.he-oneLine-slg'],
   },
+  {
+    ...ask(
+      'HC181',
+      'rfSpectrum',
+      'A tone-modulated carrier: the signal in time with its dashed envelope above, and its spectrum to scale below (AM’s carrier and two sidebands of height μ ÷ 2; FM’s lines every f_m of height |J_n(β)|) with the bandwidth bracketed',
+      [`${E}communication-systems#0`, `${E}communication-systems#0~fm`],
+      [
+        'From EC-P15. New kind (typesHe4m.ts RfSpectrumSpec, reps/RfSpectrum.tsx, Bessel lines in reps/he4mMath.ts, computed by the integral, never a table).',
+        "Fields: { kind: 'rfSpectrum', mode ('am' | 'fm'), fm, fc? (left out, the axis is f − f_c), mu? (AM), deviation? (FM Δf), beta? (checked), bandwidth? (checked), carrierPower?, sidebandPower?, totalPower?, efficiency? (%; checked), unit? (default fm's unit) }.",
+        'AM: the envelope 1 ± μ to scale, the carrier height 1 and each sideband μ ÷ 2 written, the sideband frequencies under them; μ above 1 draws faded (overmodulation). FM: constant envelope, the crests bunching; lines out to β + 3, |J₀| written; Carson’s band 2(Δf + f_m) bracketed. The carrier is drawn 11 cycles a message cycle (said in the caption). A "?" μ or β draws no signal or lines. No handles. A page should keep β ≤ 25 (the demo’s β has max 25).',
+        "Example (main): { kind: 'rfSpectrum', mode: 'am', fc: 'fc', fm: 'fm', mu: 'mu', bandwidth: 'B', carrierPower: 'Pc', sidebandPower: 'Psb', totalPower: 'Pt', efficiency: 'eta' } (the demo marks fm, B, fc and the sideband frequencies `standalone`: the powers and the frequencies meet only in the picture). Example (~fm): { kind: 'rfSpectrum', mode: 'fm', fm: 'fm', deviation: 'df', beta: 'beta', bandwidth: 'B' }.",
+        'Harness (harness/picturesHe4m.ts): AM B = 2f_m and the drawn sideband heights squared give P_sb = P_cμ² ÷ 2, P_t, η; FM β = Δf ÷ f_m, B = 2(β + 1)f_m (the bracket) and Σ J_n² = 1 over the drawn lines.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-rfSpectrum-am',
+      'g.he-rfSpectrum-am-full',
+      'g.he-rfSpectrum-fm',
+      'g.he-rfSpectrum-fm-narrow',
+    ],
+  },
 ];

@@ -72,6 +72,7 @@ import { FunctionGraphHe1d } from './FunctionGraphHe1d';
 import { NormalCurveHe4e } from './NormalCurveHe4e';
 import { DriftPaths } from './DriftPaths';
 import { SoilPhases } from './SoilPhases';
+import { RfSpectrum } from './RfSpectrum';
 import { OneLine } from './OneLine';
 import { LosScale } from './LosScale';
 import { FunctionGraphHe4e } from './FunctionGraphHe4e';
@@ -493,6 +494,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <DriftPaths spec={spec} calc={calc} />; // HC153
     case 'soilPhases':
       return <SoilPhases spec={spec} calc={calc} />; // HC174
+    case 'rfSpectrum':
+      return <RfSpectrum spec={spec} calc={calc} />; // HC181
     case 'oneLine':
       return <OneLine spec={spec} calc={calc} />; // HC180
     case 'losScale':

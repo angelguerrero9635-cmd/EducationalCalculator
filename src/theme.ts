@@ -379,6 +379,10 @@ const light = {
   he4mCar: '#2F6FD0',
   he4mCarGlass: '#BFD8F2',
   he4mLaneLine: '#F4F1E6',
+  /** HC181: the carrier's line, the sidebands and the dashed envelope. */
+  he4mCarrierLine: '#1B1E28',
+  he4mSideband: '#2F6FD0',
+  he4mEnvelope: '#C2410C',
   /** HC180: a one-line diagram's reactances and its fault bolt. */
   he4mReactance: '#1D4ED8',
   he4mFault: '#D97706',
@@ -1134,6 +1138,9 @@ const dark: Palette = {
   he4mCar: '#5B8FE0',
   he4mCarGlass: '#1E3550',
   he4mLaneLine: '#D9D6CC',
+  he4mCarrierLine: '#EEF0F6',
+  he4mSideband: '#7DB4FF',
+  he4mEnvelope: '#FB923C',
   he4mReactance: '#7DB4FF',
   he4mFault: '#FBBF24',
   landGrass: '#5E8C45',

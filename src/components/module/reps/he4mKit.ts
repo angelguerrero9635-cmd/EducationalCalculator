@@ -24,7 +24,7 @@ export function useFields(calc: Calculator) {
   const say = (v: Field, x: number, unit = false) => {
     if (typeof v === 'string' && known(v) && rep.typed(v)) return rep.value(v, unit);
     const u = unit && typeof v === 'string' ? rep.unit(v) : undefined;
-    return u ? `${n3(x)} ${u}` : n3(x);
+    return u ? `${n3(x)}${['%', '°'].includes(u) ? '' : ' '}${u}` : n3(x);
   };
   return { rep, known, get, say };
 }
