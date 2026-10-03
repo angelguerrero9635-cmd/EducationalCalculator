@@ -1340,4 +1340,165 @@ export const COLLEGE_PHYSICS_MODULES: ModuleDef[] = [
       friction: 'f',
     },
   },
+  {
+    // University Physics I → Momentum: two cars meet at a crossing and stick; momentum is kept
+    // east and north separately, and the wreck moves off along the total momentum.
+    id: 'he.physics.university-1#3',
+    use: 'Use this for “A 1200 kg car going east at 25 m/s hits a 1800 kg van going north at 10 m/s, and they lock together. How fast and in what direction do they slide?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'No outside force acts during the crash (road friction is small over that short time), so momentum is kept east and north separately.',
+      'Object 1 moves east and object 2 moves north before the crash; afterward they stick and move as one mass m₁ + m₂.',
+      'Kinetic energy is not kept: the energy lost goes into bending, heat and sound.',
+      'The direction θ is measured from east toward north.',
+    ],
+    variables: [
+      V('m1', 'm₁', 'Mass of object 1', { unit: 'kg', min: 0.001, max: 1e5, step: 1 }),
+      V('v1', 'v₁', 'Speed of object 1 (east)', { unit: 'm/s', min: 0, max: 500, step: 0.1 }),
+      V('m2', 'm₂', 'Mass of object 2', { unit: 'kg', min: 0.001, max: 1e5, step: 1 }),
+      V('v2', 'v₂', 'Speed of object 2 (north)', { unit: 'm/s', min: 0, max: 500, step: 0.1 }),
+      V('px', 'pₓ', 'Momentum east', { unit: 'kg·m/s', min: 0, max: 5e7, derived: true }),
+      V('py', 'p_y', 'Momentum north', { unit: 'kg·m/s', min: 0, max: 5e7, derived: true }),
+      V('p', 'p', 'Total momentum', { unit: 'kg·m/s', min: 0, max: 7.1e7, derived: true }),
+      V('v', 'v', 'Speed after the crash', { unit: 'm/s', min: 0, max: 500, derived: true }),
+      V('theta', 'θ', 'Direction north of east', { unit: '°', min: 0, max: 90, derived: true }),
+      V('K', 'K_lost', 'Kinetic energy lost', { unit: 'J', min: 0, max: 2.5e10, derived: true }),
+    ],
+    ...rels(
+      rel('pₓ = m₁v₁', '{px} = {m1} × {v1}', ['px', 'm1', 'v1'], (v) => v.px! - v.m1! * v.v1!, {
+        px: [
+          (v) => exact(v.m1! * v.v1!),
+          '{m1} × {v1}',
+          'Only object 1 moves east, so all the momentum east is its own, mass times speed.',
+        ],
+        m1: [
+          (v) => div(v.px!, v.v1!),
+          '{px} ÷ {v1}',
+          'Divide the momentum east by the speed east.',
+        ],
+        v1: [(v) => div(v.px!, v.m1!), '{px} ÷ {m1}', 'Divide the momentum east by the mass.'],
+      }),
+      rel('p_y = m₂v₂', '{py} = {m2} × {v2}', ['py', 'm2', 'v2'], (v) => v.py! - v.m2! * v.v2!, {
+        py: [
+          (v) => exact(v.m2! * v.v2!),
+          '{m2} × {v2}',
+          'Only object 2 moves north, so all the momentum north is its own, mass times speed.',
+        ],
+        m2: [
+          (v) => div(v.py!, v.v2!),
+          '{py} ÷ {v2}',
+          'Divide the momentum north by the speed north.',
+        ],
+        v2: [(v) => div(v.py!, v.m2!), '{py} ÷ {m2}', 'Divide the momentum north by the mass.'],
+      }),
+      rel(
+        'p = √(pₓ² + p_y²)',
+        '{p} = √({px}² + {py}²)',
+        ['p', 'px', 'py'],
+        (v) => v.p! - Math.hypot(v.px!, v.py!),
+        {
+          p: [
+            (v) => exact(Math.hypot(v.px!, v.py!)),
+            '√({px}² + {py}²)',
+            'The east and north momenta are at right angles, so the total is the hypotenuse of their right triangle.',
+          ],
+          px: [
+            (v) => rootOf(v.p! ** 2 - v.py! ** 2, v.p! ** 2),
+            '√({p}² − {py}²)',
+            'The momentum east is the other leg of the right triangle: take p_y² from p².',
+          ],
+          py: [
+            (v) => rootOf(v.p! ** 2 - v.px! ** 2, v.p! ** 2),
+            '√({p}² − {px}²)',
+            'The momentum north is the other leg of the right triangle: take pₓ² from p².',
+          ],
+        },
+      ),
+      rel(
+        'tan θ = p_y ÷ pₓ',
+        'tan({theta}) = {py} ÷ {px}',
+        ['theta', 'px', 'py'],
+        (v) => v.py! * cosD(v.theta!) - v.px! * sinD(v.theta!),
+        {
+          theta: [
+            (v) => (v.px! === 0 && v.py! === 0 ? undefined : atan2D(v.py!, v.px!)),
+            (v) => (v.px === 0 ? '90' : 'tan⁻¹({py} ÷ {px})'),
+            (v) =>
+              v.px === 0
+                ? 'With no momentum east, the total momentum and the wreck point straight north.'
+                : 'The wreck moves along the total momentum; its angle from east has tangent north over east.',
+          ],
+          py: [
+            (v) => exact(v.px! * tanD(v.theta!)),
+            '{px} × tan({theta})',
+            'Undo tan θ = p_y ÷ pₓ: multiply the momentum east by tan θ.',
+          ],
+        },
+      ),
+      rel(
+        'v = p ÷ (m₁ + m₂)',
+        '{v} = {p} ÷ ({m1} + {m2})',
+        ['v', 'p', 'm1', 'm2'],
+        (v) => v.v! * (v.m1! + v.m2!) - v.p!,
+        {
+          v: [
+            (v) => div(v.p!, v.m1! + v.m2!),
+            '{p} ÷ ({m1} + {m2})',
+            'After the crash the two move as one mass m₁ + m₂ carrying the same total momentum.',
+          ],
+          p: [
+            (v) => exact(v.v! * (v.m1! + v.m2!)),
+            '{v} × ({m1} + {m2})',
+            'The joined mass times its speed is the total momentum.',
+          ],
+        },
+      ),
+      derive(
+        'K_lost = m₁m₂(v₁² + v₂²) ÷ (2(m₁ + m₂))',
+        '{K} = {m1} × {m2} × ({v1}² + {v2}²) ÷ (2 × ({m1} + {m2}))',
+        'K',
+        ['m1', 'v1', 'm2', 'v2'],
+        (v) => (v.m1! * v.m2! * (v.v1! ** 2 + v.v2! ** 2)) / (2 * (v.m1! + v.m2!)),
+        '{m1} × {m2} × ({v1}² + {v2}²) ÷ (2 × ({m1} + {m2}))',
+        'Kinetic energy before, ½m₁v₁² + ½m₂v₂², less after, p² ÷ 2(m₁ + m₂), simplifies to this: the energy of their speed toward each other.',
+      ),
+    ),
+    // m₁ = 1500 kg at 20 m/s east, m₂ = 2500 kg at 15 m/s north: pₓ = 30,000 kg·m/s,
+    // p_y = 37,500 kg·m/s, p = √(9 × 10⁸ + 1.40625 × 10⁹) = 48,023 kg·m/s;
+    // v = 48,023 ÷ 4000 = 12.006 m/s at tan⁻¹(1.25) = 51.34° north of east;
+    // K before 300,000 + 281,250 = 581,250 J, after p² ÷ 2M = 288,281 J, lost 292,969 J
+    // (= 1500 × 2500 × 625 ÷ 8000).
+    example: (() => {
+      const [m1, v1, m2, v2] = [1500, 20, 2500, 15];
+      const px = m1 * v1;
+      const py = m2 * v2;
+      const p = exact(Math.hypot(px, py));
+      const v = exact(p / (m1 + m2));
+      return {
+        m1,
+        v1,
+        m2,
+        v2,
+        px,
+        py,
+        p,
+        v,
+        theta: exact(atan2D(py, px)!),
+        K: exact((m1 * m2 * (v1 ** 2 + v2 ** 2)) / (2 * (m1 + m2))),
+      };
+    })(),
+    startWith: ['m1', 'v1', 'm2', 'v2'],
+    // p₁ east and p₂ north, tip to tail, close on the total momentum p: the wreck's direction.
+    representation: {
+      kind: 'vectorDiagram',
+      vectors: [
+        { name: 'p₁', magnitude: 'px', direction: 0 },
+        { name: 'p₂', magnitude: 'py', direction: 90 },
+      ],
+      sum: 'tipToTail',
+      result: { name: 'p', x: 'px', y: 'py', magnitude: 'p', direction: 'theta' },
+      unit: 'kg·m/s',
+      axes: { x: 'east', y: 'north' },
+    },
+  },
 ];
