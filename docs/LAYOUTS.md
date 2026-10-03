@@ -306,3 +306,8 @@ College card figure `graph` (HC50, `reps/GraphDiagram.tsx` `GraphCardView`, `typ
 lit?, degrees?, dist?, wide? }`, a small fixed graph at 96 × 64 (`wide`: 168 × 104) with
 costs on the edges, each vertex's name or degree in it, lit vertices and edges heavy in the
 highlight, and Dijkstra's distances beside the vertices; for Euler sorts and Dijkstra stages.
+College explore figure `karnaugh` (HC184, `layouts/karnaughFigure.tsx`, `typesHe4n.ts`):
+`{ kind: 'karnaugh', mode?: 'map' | 'table' }`, scene `kmap: { names, minterms?, dontCares?,
+groups?, columns?, lit? }`: a 2–4 variable K-map in Gray order beside its truth table, each
+group ringed in its own outline style and f = Σm(…) = SOP written; or a truth table (T first)
+with a column per expression, up to two lit columns compared row by row (≠ where they differ).

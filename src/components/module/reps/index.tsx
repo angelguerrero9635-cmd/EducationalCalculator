@@ -71,6 +71,7 @@ import { FunctionGraph } from './FunctionGraph';
 import { FunctionGraphHe1d } from './FunctionGraphHe1d';
 import { NormalCurveHe4e } from './NormalCurveHe4e';
 import { DriftPaths } from './DriftPaths';
+import { He4nView } from './He4nView';
 import { FunctionGraphHe4e } from './FunctionGraphHe4e';
 import { AlleleFrequenciesAfterHe4e } from './AlleleFrequenciesAfterHe4e';
 import { BarsLogHe1d } from './BarsLogHe1d';
@@ -488,6 +489,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <SurfacePlot spec={spec} calc={calc} />; // HC46
     case 'driftPaths':
       return <DriftPaths spec={spec} calc={calc} />; // HC153
+    case 'karnaugh':
+      return <He4nView spec={spec} calc={calc} />; // group N (HC184–HC191)
     case 'solidOfRevolution':
       return <SolidOfRevolution spec={spec} calc={calc} />; // HC65
     case 'thermalWall':
