@@ -1783,4 +1783,88 @@ export const COLLEGE_MATH_MODULES: ModuleDef[] = [
       marks: ['extrema'],
     },
   },
+  {
+    // Calculus I → Related rates and optimization: a sliding ladder, dy/dt = −x·(dx/dt) ÷ y.
+    id: 'he.math.calc-1#2~ladder',
+    title: 'A sliding ladder',
+    use: 'Use this for “A 10 m ladder leans on a wall and its foot slides away at 1 m/s. How fast is the top sliding down when the foot is 6 m from the wall?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'The wall is vertical and the ground level, so the ladder, the wall and the ground make a right triangle: x² + y² = L² at every instant.',
+      'The ladder’s length L never changes. Differentiating both sides in time t gives 2x·(dx/dt) + 2y·(dy/dt) = 0.',
+      'A positive dx/dt means the foot moves away from the wall; a negative dy/dt means the top slides down.',
+      'Lengths are in m and rates in m/s.',
+    ],
+    variables: [
+      V('L', 'L', 'Length of the ladder', fixed('m', 0.1, 100, 0.1)),
+      V('x', 'x', 'Foot’s distance from the wall', fixed('m', 0.01, 100, 0.01)),
+      V('y', 'y', 'Top’s height up the wall', fixed('m', 0.01, 100, 0.0001)),
+      V('dx', 'dx/dt', 'Foot’s speed away from the wall', fixed('m/s', -100, 100, 0.01)),
+      V('dy', 'dy/dt', 'Top’s rate up the wall', fixed('m/s', -1e4, 1e4, 0.0001)),
+    ],
+    ...rels(
+      rule(
+        'x < L',
+        'The foot’s distance {x} is less than the ladder {L}',
+        ['x', 'L'],
+        (v) => v.x! < v.L!,
+        'The foot can’t be as far from the wall as the ladder is long: the top would be on the ground. Pick x less than L.',
+      ),
+      rel(
+        'x² + y² = L²',
+        '{x}² + {y}² = {L}²',
+        ['x', 'y', 'L'],
+        (v) => v.x! ** 2 + v.y! ** 2 - v.L! ** 2,
+        {
+          y: [
+            (v) => (v.L! > v.x! ? exact(Math.sqrt(v.L! ** 2 - v.x! ** 2)) : undefined),
+            '√({L}² − {x}²)',
+            'The ladder is the hypotenuse: take x² from L², then the square root.',
+          ],
+          x: [
+            (v) => (v.L! > v.y! ? exact(Math.sqrt(v.L! ** 2 - v.y! ** 2)) : undefined),
+            '√({L}² − {y}²)',
+            'Take y² from L², then the square root.',
+          ],
+          L: [
+            (v) => exact(Math.hypot(v.x!, v.y!)),
+            '√({x}² + {y}²)',
+            'Pythagoras: add the squares of the two legs, then the square root.',
+          ],
+        },
+      ),
+      rel(
+        'x·(dx/dt) + y·(dy/dt) = 0',
+        '{x} × {dx} + {y} × {dy} = 0',
+        ['x', 'dx', 'y', 'dy'],
+        (v) => v.x! * v.dx! + v.y! * v.dy!,
+        {
+          dy: [
+            (v) => (v.y! > 0 ? exact((-v.x! * v.dx!) / v.y!) : undefined),
+            (v) => (v.dx === 0 ? '{x} × {dx} ÷ (−{y})' : '−({x} × {dx}) ÷ {y}'),
+            'Differentiate x² + y² = L² in t with L fixed, divide by 2, then solve for dy/dt.',
+          ],
+          dx: [
+            (v) => (v.x! > 0 ? exact((-v.y! * v.dy!) / v.x!) : undefined),
+            (v) => (v.dy === 0 ? '{y} × {dy} ÷ (−{x})' : '−({y} × {dy}) ÷ {x}'),
+            'Differentiate x² + y² = L² in t with L fixed, divide by 2, then solve for dx/dt.',
+          ],
+        },
+      ),
+    ),
+    // L = 5 m, x = 3 m, dx/dt = 0.5 m/s: y = √(25 − 9) = 4 m, dy/dt = −3 × 0.5 ÷ 4 = −0.375 m/s.
+    example: { L: 5, x: 3, y: 4, dx: 0.5, dy: -0.375 },
+    startWith: ['L', 'x', 'dx'],
+    // The ladder against the wall, each end's rate an arrow; dragging the foot keeps L.
+    representation: {
+      kind: 'rightTriangle',
+      a: 'y',
+      b: 'x',
+      c: 'L',
+      extent: 5,
+      rates: { a: 'dy', b: 'dx' },
+      scene: 'ladder',
+      keep: ['dx'],
+    },
+  },
 ];
