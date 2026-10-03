@@ -115,4 +115,27 @@ export const COLLEGE_MATH_LAYOUTS: LayoutDef[] = [
       { label: 'Answer with units: r ≈ 5.42 cm and h ≈ 10.84 cm, twice the radius' },
     ],
   },
+  {
+    // Calculus I → u-substitution: the steps of a substitution.
+    kind: 'sequence',
+    id: 'he.math.calc-1#4~steps',
+    title: 'The steps of a u-substitution',
+    use: 'Use this for “Evaluate ∫ from 0 to 2 of x(x² + 1)² dx.”',
+    assumptions: [
+      'Substitution undoes the chain rule: the integrand holds an inside part u and its derivative du, up to a constant.',
+      'Change the limits to values of u, so there is no need to go back to x.',
+      'For an integral without limits, put x back in at the end and add the constant C.',
+    ],
+    question: 'Put the steps for ∫ from 0 to 2 of x(x² + 1)² dx in order.',
+    stages: [
+      { label: 'Pick u, the inside part: u = x² + 1' },
+      { label: 'Write du = u′ dx: du = 2x dx, so x dx = ½ du' },
+      {
+        label:
+          'Rewrite the integral and its limits in u: x = 0 gives u = 1, x = 2 gives u = 5, so ∫ from 1 to 5 of ½u² du',
+      },
+      { label: 'Integrate in u: ½ × u³ ÷ 3 = u³ ÷ 6' },
+      { label: 'Evaluate between the new limits: (5³ − 1³) ÷ 6 = 124 ÷ 6 ≈ 20.67' },
+    ],
+  },
 ];
