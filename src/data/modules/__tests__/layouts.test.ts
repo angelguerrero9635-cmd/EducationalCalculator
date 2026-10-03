@@ -15,6 +15,11 @@ import { HS3C_SCENE_FIELD } from '../typesHs3c';
 import { HS3D_SCENE_FIELD } from '../typesHs3d';
 import { HE3D_SCENE_FIELD } from '../typesHe3d';
 import { HE4D_SCENE_FIELD } from '../typesHe4d';
+import { cliffIssues } from '@/components/module/layouts/cliffMath';
+import { HE4L_SCENE_FIELD } from '../typesHe4l';
+import { HE4N_SCENE_FIELD } from '../typesHe4n';
+import { HE4M_SCENE_FIELD } from '../typesHe4m';
+import { HE4G_SCENE_FIELD } from '../typesHe4g';
 
 /** The scene field each explore figure draws from. */
 const SCENE_FIELD: Record<Figure['kind'], keyof Scene | undefined> = {
@@ -50,6 +55,10 @@ const SCENE_FIELD: Record<Figure['kind'], keyof Scene | undefined> = {
   pedigree: 'family',
   molecules: 'molecules',
   ...HE4D_SCENE_FIELD, // HC113
+  ...HE4L_SCENE_FIELD, // HC169
+  ...HE4N_SCENE_FIELD, // HC184, HC185, HC187
+  ...HE4M_SCENE_FIELD, // HC173
+  ...HE4G_SCENE_FIELD, // HC140
   phases: 'phase',
   periodicTable: 'elements',
   planets: 'planets',
@@ -203,6 +212,14 @@ describe.each(pages(LAYOUTS))('layout %s', (id, l) => {
         if (l.totalLabel) {
           expect(l.stages.slice(0, -1).every((s) => s.span !== undefined)).toBe(true);
         }
+        // HC120: a cliff header's order of events is the stages' order.
+        if (l.header)
+          expect(
+            cliffIssues(
+              l.header,
+              l.stages.map((s) => s.label),
+            ),
+          ).toEqual([]);
         // Signed spans (HE-E25) are whole changes with a net: every stage has one.
         if (l.signed) {
           expect(l.stages.every((s) => s.span !== undefined)).toBe(true);

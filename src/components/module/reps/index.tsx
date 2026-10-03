@@ -4,6 +4,10 @@ import { isHe2fSpec } from '@/data/modules/typesHe2f';
 import { isHe3lSpec } from '@/data/modules/typesHe3l';
 import { isVectorHe4b } from '@/data/modules/typesHe4b'; // HC96–HC171, group B
 import { isHe4cOption } from '@/data/modules/typesHe4c';
+import { isHe4fSpec } from '@/data/modules/typesHe4f';
+import { isHe4hSpec } from '@/data/modules/typesHe4h';
+import { isHe4k } from '@/data/modules/typesHe4k';
+import { isHe4gOption } from '@/data/modules/typesHe4g'; // HC122–HC130, group G
 import { isFamilyHe4e, isNormalHe4e } from '@/data/modules/typesHe4e';
 
 import type { Calculator } from '../useCalculator';
@@ -28,6 +32,7 @@ import { Marbles } from './Marbles';
 import { EnergyPyramid } from './EnergyPyramid';
 import { Generations } from './Generations';
 import { FieldOfView } from './FieldOfView';
+import { ResolutionHe4i } from './ResolutionHe4i';
 import { GradCylinder } from './GradCylinder';
 import { BaseTen } from './BaseTen';
 import { Clock } from './Clock';
@@ -71,6 +76,19 @@ import { FunctionGraph } from './FunctionGraph';
 import { FunctionGraphHe1d } from './FunctionGraphHe1d';
 import { NormalCurveHe4e } from './NormalCurveHe4e';
 import { DriftPaths } from './DriftPaths';
+import { MoodyChart } from './MoodyChart';
+import { GearPair } from './GearPair';
+import { PrintLayers } from './PrintLayers';
+import { FitDiagram } from './FitDiagram';
+import { Casting } from './Casting';
+import { He4nView } from './He4nView';
+import { VennThree } from './VennThree';
+import { PedigreeHe4i } from './PedigreeHe4i';
+import { LinkageMap } from './LinkageMap';
+import { SoilPhases } from './SoilPhases';
+import { RfSpectrum } from './RfSpectrum';
+import { OneLine } from './OneLine';
+import { LosScale } from './LosScale';
 import { FunctionGraphHe4e } from './FunctionGraphHe4e';
 import { AlleleFrequenciesAfterHe4e } from './AlleleFrequenciesAfterHe4e';
 import { BarsLogHe1d } from './BarsLogHe1d';
@@ -214,7 +232,13 @@ import { Hs3cPicture } from './Hs3cPicture';
 import { FluidSystem } from './FluidSystem';
 import { ControlVolume } from './ControlVolume';
 import { VelocityProfile } from './VelocityProfile';
+import { HeartPump } from './HeartPump';
+import { Footprints } from './Footprints';
+import { SpringDashpot } from './SpringDashpot';
+import { DiffusionProfile } from './DiffusionProfile';
 import { ComplexPlaneHe2a } from './ComplexPlaneHe2a';
+import { ConstellationHe4m } from './ConstellationHe4m';
+import { PlaceValueBaseHe4m } from './PlaceValueBaseHe4m';
 import { Bode } from './Bode';
 import { StreamChannelHe } from './StreamChannelHe';
 import { RoadCurve } from './RoadCurve';
@@ -259,6 +283,12 @@ import { MotionGraphHs } from './MotionGraphHs';
 import { HskView } from './HskView';
 import { He2fView } from './He2fView';
 import { He4cView } from './He4cView';
+import { He4fView } from './He4fView';
+import { He4hView } from './He4hView';
+import { He4kView } from './He4kView';
+import { He4gView } from './He4gView';
+import { GravityProfile } from './GravityProfile';
+import { ElectrodeArray } from './ElectrodeArray';
 import { Spacetime } from './Spacetime';
 import { RayHe3l } from './RayHe3l';
 import { PhaseSpace } from './PhaseSpace';
@@ -305,6 +335,10 @@ export const representationTitle = (r: Representation) =>
 export function RepresentationView({ spec, calc }: { spec: Representation; calc: Calculator }) {
   if (isHe2fSpec(spec)) return <He2fView spec={spec} calc={calc} />; // HC20, HC25, HC35
   if (isHe4cOption(spec)) return <He4cView spec={spec} calc={calc} />; // HC99, HC101, HC103, HC105, HC118
+  if (isHe4fSpec(spec)) return <He4fView spec={spec} calc={calc} />; // HC116–HC128, group F
+  if (isHe4hSpec(spec)) return <He4hView spec={spec} calc={calc} />; // group H, round 4 (HC129–HC138, HC150)
+  if (isHe4k(spec)) return <He4kView spec={spec} calc={calc} />; // HC160–HC164, HC176, HC177
+  if (isHe4gOption(spec)) return <He4gView spec={spec} calc={calc} />; // HC122–HC125, HC130
   switch (spec.kind) {
     case 'none':
       return null; // H105: an equation-only page (ModuleSections leaves out the section)
@@ -393,6 +427,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       if (spec.curve?.shape === 'conic') return <PolarConic spec={spec} calc={calc} />; // H106
       return <PolarGrid spec={spec} calc={calc} />;
     case 'complexPlane':
+      if (spec.constellation) return <ConstellationHe4m spec={spec} calc={calc} />; // HC182
       if (spec.j || spec.axes || spec.phasors || spec.poles || spec.zeros || spec.locus)
         return <ComplexPlaneHe2a spec={spec} calc={calc} />; // HC14
       return spec.power !== undefined || spec.roots !== undefined ? (
@@ -450,12 +485,24 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <Connection spec={spec} calc={calc} />; // HC61
     case 'velocityProfile':
       return <VelocityProfile spec={spec} calc={calc} />;
+    case 'heartPump':
+      return <HeartPump spec={spec} calc={calc} />; // HC155
+    case 'footprints':
+      return <Footprints spec={spec} calc={calc} />; // HC156
+    case 'springDashpot':
+      return <SpringDashpot spec={spec} calc={calc} />; // HC157
+    case 'diffusionProfile':
+      return <DiffusionProfile spec={spec} calc={calc} />; // HC159
     case 'potentialWell':
       return <PotentialWell spec={spec} calc={calc} />;
     case 'phaseSpace':
       return <PhaseSpace spec={spec} calc={calc} />; // HC69
     case 'spacetime':
       return <Spacetime spec={spec} calc={calc} />; // HC104
+    case 'gravityProfile':
+      return <GravityProfile spec={spec} calc={calc} />; // HC131
+    case 'electrodeArray':
+      return <ElectrodeArray spec={spec} calc={calc} />; // HC132
     case 'unitCell':
       return <UnitCell spec={spec} calc={calc} />;
     case 'binaryPhase':
@@ -488,6 +535,34 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <SurfacePlot spec={spec} calc={calc} />; // HC46
     case 'driftPaths':
       return <DriftPaths spec={spec} calc={calc} />; // HC153
+    case 'moodyChart':
+      return <MoodyChart spec={spec} calc={calc} />; // HC165
+    case 'gearPair':
+      return <GearPair spec={spec} calc={calc} />; // HC166
+    case 'printLayers':
+      return <PrintLayers spec={spec} calc={calc} />; // HC167
+    case 'fitDiagram':
+      return <FitDiagram spec={spec} calc={calc} />; // HC168
+    case 'casting':
+      return <Casting spec={spec} calc={calc} />; // HC172
+    case 'karnaugh':
+    case 'pipelineDiagram':
+    case 'dataStructure':
+    case 'memoryMap':
+    case 'datapath':
+      return <He4nView spec={spec} calc={calc} />; // group N (HC184–HC191)
+    case 'pedigree':
+      return <PedigreeHe4i spec={spec} calc={calc} />; // HC144
+    case 'linkageMap':
+      return <LinkageMap spec={spec} calc={calc} />; // HC145
+    case 'soilPhases':
+      return <SoilPhases spec={spec} calc={calc} />; // HC174
+    case 'rfSpectrum':
+      return <RfSpectrum spec={spec} calc={calc} />; // HC181
+    case 'oneLine':
+      return <OneLine spec={spec} calc={calc} />; // HC180
+    case 'losScale':
+      return <LosScale spec={spec} calc={calc} />; // HC175
     case 'solidOfRevolution':
       return <SolidOfRevolution spec={spec} calc={calc} />; // HC65
     case 'thermalWall':
@@ -773,6 +848,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'unitCubes':
       return <UnitCubes spec={spec} calc={calc} />;
     case 'placeValueChart':
+      if (spec.base) return <PlaceValueBaseHe4m spec={spec} calc={calc} />; // HC183
       return <PlaceValueChart spec={spec} calc={calc} />;
     case 'factorTree':
       return <FactorTree spec={spec} calc={calc} />;
@@ -806,6 +882,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'fractionFit':
       return <FractionFit spec={spec} calc={calc} />;
     case 'venn':
+      if ('three' in spec) return <VennThree spec={spec.three} calc={calc} />; // HC188
       return 'chances' in spec ? (
         spec.chances.one ? (
           <VennOne spec={spec.chances} calc={calc} /> // H106
@@ -851,6 +928,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'generations':
       return <Generations spec={spec} calc={calc} />;
     case 'fieldOfView':
+      if (spec.resolution) return <ResolutionHe4i spec={spec} calc={calc} />; // HC149
       return <FieldOfView spec={spec} calc={calc} />;
     case 'gradCylinder':
       return <GradCylinder spec={spec} calc={calc} />;

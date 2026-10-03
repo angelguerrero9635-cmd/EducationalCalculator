@@ -4,6 +4,7 @@ import Svg, { G, Line, Path } from 'react-native-svg';
 
 import type { Representation } from '@/data/modules';
 import type { WaveHe3lSpec } from '@/data/modules/typesHe3l';
+import type { WaveDepthSpec } from '@/data/modules/typesHe4f'; // HC128
 import { formatNumber } from '@/engine/format';
 import { chart, usePalette } from '@/theme';
 
@@ -11,7 +12,7 @@ import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, ChartText, DragHandle, fitLabel, useFrozen, useRep } from './common';
 import { Steppers } from './Steppers';
 
-type Spec = Exclude<Extract<Representation, { kind: 'wave' }>, WaveHe3lSpec>;
+type Spec = Exclude<Extract<Representation, { kind: 'wave' }>, WaveHe3lSpec | WaveDepthSpec>;
 
 /** Tallest crest drawn (px above the middle line); a wave with no amplitude value uses 36. */
 const MAX_AMP = 70;

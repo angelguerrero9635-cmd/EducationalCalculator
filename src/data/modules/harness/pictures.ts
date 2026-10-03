@@ -122,12 +122,31 @@ import {
 } from './picturesHe4a';
 import { he4cIssues } from './picturesHe4c';
 import { isHe4cOption } from '../typesHe4c';
+import { isHe4fSpec } from '../typesHe4f';
+import { he4fIssues } from './picturesHe4f';
+import { isHe4hSpec } from '../typesHe4h';
+import { he4hIssues } from './picturesHe4h';
+import { isHe4k } from '../typesHe4k';
+import { he4kIssues } from './picturesHe4k';
+import { he4gIssues } from './picturesHe4g';
+import { isHe4gOption } from '../typesHe4g';
 import {
   driftPathsIssues,
   he4eAlleleIssues,
   he4eGraphIssues,
   he4eNormalIssues,
 } from './picturesHe4e';
+import { he4jIssues } from './picturesHe4j';
+import { he4lIssues } from './picturesHe4l';
+import { he4nIssues, vennThreeIssues } from './picturesHe4n';
+import {
+  cellRatioIssues,
+  divisionContentIssues,
+  linkageMapIssues,
+  pedigreeIssues,
+  resolutionIssues,
+} from './picturesHe4i';
+import { constellationIssues, he4mIssues, placeValueBaseIssues } from './picturesHe4m';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -166,6 +185,10 @@ export function repIssues(
     return (xs as number[]).sort((a, b) => a - b);
   };
   if (isHe4cOption(rep)) return [...out, ...he4cIssues(rep, siOf(val, byId))]; // HC99, HC101, HC103, HC105, HC118
+  if (isHe4fSpec(rep)) return [...out, ...he4fIssues(rep, siOf(val, byId))]; // HC116–HC128, group F
+  if (isHe4hSpec(rep)) return [...out, ...he4hIssues(rep, val, byId)]; // group H, round 4
+  if (isHe4k(rep)) return [...out, ...he4kIssues(rep, val)]; // HC160–HC164, HC176, HC177
+  if (isHe4gOption(rep)) return [...out, ...he4gIssues(rep, siOf(val, byId))]; // HC122–HC125, HC130
   switch (rep.kind) {
     case 'tenFrame': {
       const cap = 10 * (rep.frames ?? 1);
@@ -1091,6 +1114,10 @@ export function repIssues(
       break;
     }
     case 'placeValueChart': {
+      if (rep.base) {
+        out.push(...placeValueBaseIssues(rep, val)); // HC183: bases 2, 8 and 16
+        break;
+      }
       // Adding: the sum's row is the two rows added, place by place (PlaceValueChart.tsx).
       if (rep.plus && rep.total) {
         const [a, b, t] = [rep.value, rep.plus, rep.total].map(val);
@@ -1438,6 +1465,10 @@ export function repIssues(
       break;
     }
     case 'venn':
+      if ('three' in rep) {
+        out.push(...vennThreeIssues(rep.three, val)); // HC188
+        break;
+      }
       if ('chances' in rep) {
         out.push(...vennChanceIssues(rep.chances, val), ...hs2gIssues(rep, val));
         out.push(...hs3bIssues(rep, val, byId));
@@ -1731,6 +1762,10 @@ export function repIssues(
       break;
     }
     case 'fieldOfView': {
+      if (rep.resolution) {
+        out.push(...resolutionIssues(rep, val)); // HC149
+        break;
+      }
       count(rep.across, 'cells across');
       const [f, n, s] = [rep.field, rep.across, rep.size].map((id) => (id ? val(id) : undefined));
       if (
@@ -1931,6 +1966,7 @@ export function repIssues(
       // The caption works V from the radius and height drawn (in the radius's unit), so a
       // volume shown in another unit (L) is not compared here; the relation holds it.
       out.push(...he3cIssues(rep, val, byId)); // HC54: fill, slab
+      out.push(...cellRatioIssues(rep, val)); // HC141
       break;
     }
     case 'rightTriangle': {
@@ -2288,6 +2324,7 @@ export function repIssues(
     case 'matrixGrid':
       out.push(...hsdIssues(rep, (id) => val(id)), ...hs2gIssues(rep, val));
       if (rep.kind === 'complexPlane') out.push(...complexPlaneHe2aIssues(rep, siOf(val, byId))); // HC14
+      if (rep.kind === 'complexPlane') out.push(...constellationIssues(rep, val)); // HC182
       if (rep.kind === 'matrixGrid') out.push(...matrixGridHe4aIssues(rep, val)); // HC94, HC190
       out.push(...hs3bIssues(rep, val, byId)); // H106: space, polar conics, turned conics
       if (rep.kind === 'vectorDiagram') out.push(...spaceObjectsIssues(rep, val)); // HC47
@@ -2303,6 +2340,7 @@ export function repIssues(
     case 'macromolecules':
     case 'cellDivision':
       out.push(...hs2eIssues(rep, (id) => val(id)));
+      out.push(...divisionContentIssues(rep, val)); // HC142
       if (rep.kind === 'macromolecules') out.push(...proteinLevelIssues(rep, siHe4d(val, byId))); // HC115
       break;
     case 'neuron':
@@ -2399,6 +2437,12 @@ export function repIssues(
     case 'velocityProfile':
       // In formula units, as the picture draws them.
       out.push(...he1fIssues(rep, (id) => (val(id) ?? NaN) * (byId.get(id)?.unitFactor ?? 1)));
+      break;
+    case 'heartPump':
+    case 'footprints':
+    case 'springDashpot':
+    case 'diffusionProfile':
+      out.push(...he4jIssues(rep, val, byId)); // HC155–HC159
       break;
     case 'potentialWell':
     case 'unitCell':
@@ -2552,6 +2596,10 @@ export function repIssues(
     case 'spacetime':
       out.push(...he4cIssues(rep, siOf(val, byId))); // HC104
       break;
+    case 'gravityProfile':
+    case 'electrodeArray':
+      out.push(...he4gIssues(rep, siOf(val, byId))); // HC131, HC132
+      break;
     case 'fieldPlot':
       out.push(...fieldPlotIssues(rep, val)); // HC21
       break;
@@ -2560,6 +2608,32 @@ export function repIssues(
       break;
     case 'driftPaths':
       out.push(...driftPathsIssues(rep, val)); // HC153
+      break;
+    case 'moodyChart':
+    case 'gearPair':
+    case 'printLayers':
+    case 'fitDiagram':
+    case 'casting':
+      out.push(...he4lIssues(rep, val, byId)); // HC165–HC172
+      break;
+    case 'karnaugh':
+    case 'pipelineDiagram':
+    case 'dataStructure':
+    case 'memoryMap':
+    case 'datapath':
+      out.push(...he4nIssues(rep, val)); // group N
+      break;
+    case 'pedigree':
+      out.push(...pedigreeIssues(rep, val)); // HC144
+      break;
+    case 'linkageMap':
+      out.push(...linkageMapIssues(rep, val)); // HC145
+      break;
+    case 'soilPhases':
+    case 'rfSpectrum':
+    case 'oneLine':
+    case 'losScale':
+      out.push(...he4mIssues(rep, val)); // HC174–HC181, group M
       break;
     case 'solidOfRevolution':
       out.push(...solidIssues(rep, val)); // HC65

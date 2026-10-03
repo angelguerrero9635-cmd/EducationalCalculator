@@ -33,6 +33,9 @@ import { HslFigureView } from './hslFigures';
 import { SpectraFigure } from './spectraFigure';
 import { Hs3cFigureView } from './hs3cFigures';
 import { SymmetryFigure } from './symmetryFigure';
+import { OrthographicFigure } from './orthographicFigure';
+import { OrbitElementsFigure } from './orbitElementsFigure';
+import { CirculationFigure } from './circulationFigure';
 import { BodyFigure } from './bodyFigure';
 import { ContinentsFigure } from './continentsFigure';
 import { FrontFigure } from './frontFigure';
@@ -47,6 +50,7 @@ import { PathwayDetail } from './pathwayFigure';
 import { GelFigure } from './gelFigure';
 import { ReflexArcFigure } from './reflexArcFigure';
 import { CodeTraceFigureView } from './codeTraceFigure';
+import { He4nFigureView } from './he4nFigures';
 
 /**
  * A picture with a few scenes to switch between: tap a scene, the figure changes, and the
@@ -125,6 +129,14 @@ function FigureView({
       return <Hs3cFigureView figure={figure} scene={scene} />;
     case 'symmetryElements':
       return <SymmetryFigure scene={scene.symmetry ?? { molecule: 'H2O' }} />; // HC113
+    case 'orthographic':
+      return <OrthographicFigure scene={scene.ortho ?? { view: 'box' }} />; // HC169
+    case 'orbitElements':
+      return (
+        <OrbitElementsFigure scene={scene.orbit ?? { i: 30, raan: 40, argp: 60, nu: 90, e: 0.5 }} />
+      ); // HC173
+    case 'circulationCells':
+      return <CirculationFigure scene={scene.circulation ?? {}} />; // HC140
     case 'parts':
       if (figure.drawing) {
         return (
@@ -232,6 +244,10 @@ function FigureView({
       return <ReflexArcFigure scene={scene.reflex ?? {}} />;
     case 'codeTrace':
       return <CodeTraceFigureView figure={figure} scene={scene.trace ?? { rows: [] }} />;
+    case 'karnaugh':
+    case 'stateDiagram':
+    case 'dataStructure':
+      return <He4nFigureView figure={figure} scene={scene} />; // group N (HC184–HC187)
   }
 }
 

@@ -4,6 +4,7 @@
  * so those files only name them.
  */
 import type { MacroKind } from './typesHsg';
+import type { CellDivisionHe4i, GeneSceneHe4i } from './typesHe4i'; // HC142, HC147
 
 /** A fixed number or a variable id (as in `typesGraphs.ts`). */
 type NumOrVar = number | string;
@@ -99,14 +100,14 @@ export interface ReplicationCard {
  * read into mRNA (on) when nothing blocks the polymerase: no repressor bound, or an activator
  * bound (`geneIsOn`).
  */
-export interface GeneScene {
+export interface GeneScene extends GeneSceneHe4i {
   control: 'repressor' | 'activator';
   signal?: boolean;
   lit?: 'promoter' | 'switch' | 'gene' | 'polymerase' | 'protein' | 'signal' | 'mRNA';
 }
 
 /** Whether a `geneExpression` scene's gene is read: its signal pulls the repressor off, or puts the activator on. */
-export const geneIsOn = (g: GeneScene) => !!g.signal;
+export const geneIsOn = (g: GeneScene) => (g.corepressor ? !g.signal : !!g.signal); // HC147
 
 // ─── H100 part 12: the dichotomous key ───────────────────────────────────────
 
@@ -173,7 +174,7 @@ export function keyPath(steps: KeyStep[], name: string) {
  * `chromatids` (2 × 2n, at metaphase), `zygote` (n + n) and `combinations` (2ⁿ gametes by
  * independent assortment, no crossing over).
  */
-export interface CellDivisionCalcSpec {
+export interface CellDivisionCalcSpec extends CellDivisionHe4i {
   kind: 'cellDivision';
   diploid: NumOrVar;
   haploid?: string;

@@ -34,6 +34,10 @@ import type { DopplerWave, HskSpec, StandingWave } from './typesHsk';
 import type { He2fSpec } from './typesHe2f';
 import type { He3lSpec } from './typesHe3l';
 import type { He4cSpec } from './typesHe4c';
+import type { He4fSpec } from './typesHe4f';
+import type { He4hSpec } from './typesHe4h';
+import type { He4kSpec } from './typesHe4k';
+import type { He4gSpec } from './typesHe4g';
 import type { Hs2cSpec } from './typesHs2c';
 import type { Hs3aSpec } from './typesHs3a';
 import type { He1bSpec } from './typesHe1b';
@@ -48,6 +52,16 @@ import type { FieldPlotSpec } from './typesHe2g';
 import type { He3bSpec } from './typesHe3b';
 import type { ChainTreeHe4a, ScatterClassesSpec } from './typesHe4a'; // HC139, HC98
 import type { DriftPathsSpec } from './typesHe4e';
+import type { He4jSpec } from './typesHe4j';
+import type { He4lSpec } from './typesHe4l';
+import type { He4nSpec, VennThree } from './typesHe4n';
+import type {
+  CurvedSolidHe4i,
+  FieldResolutionHe4i,
+  LinkageMapSpec,
+  PedigreeSpec,
+} from './typesHe4i'; // HC141–HC149, group I
+import type { He4mSpec, PlaceValueBaseHe4m } from './typesHe4m'; // HC174–HC183, group M
 import type { CardIcon } from './layouts/types';
 import type { TreeChances, TwoWaySpec, VennChances } from './typesHse';
 import type { IntegerLineHs2a } from './typesHs2a';
@@ -684,7 +698,8 @@ export type Representation =
       surface?: string;
       /** Grades 9–12 (a cylinder): Cavalieri's two stacks of coins, one straight, one leaning. */
       cavalieri?: boolean;
-    } & CurvedSolidHe3c) // HC54: a cone filling, a cylinder's slab
+    } & CurvedSolidHe3c &
+      CurvedSolidHe4i) // HC54: a cone filling, a cylinder's slab; HC141: a cell's A ÷ V
   /**
    * A scatter plot of fixed data `points` ([x, y], in the axes' numbers) with a line of fit
    * y = `slope` × x + `intercept` (two variables), dragged by a handle near each end; the
@@ -1195,6 +1210,14 @@ export type Representation =
   | He3lSpec
   /** College round 4, group C: HC99, HC101, HC103–HC105, HC118 (`typesHe4c.ts`). */
   | He4cSpec
+  /** College round 4, group F: HC116–HC128 earth science (`typesHe4f.ts`). */
+  | He4fSpec
+  /** College round 4, group H: HC129–HC138, HC150 (`typesHe4h.ts`). */
+  | He4hSpec
+  /** College round 4, group K: HC160–HC164, HC176, HC177 (`typesHe4k.ts`). */
+  | He4kSpec
+  /** College round 4, group G: HC122–HC125, HC130–HC132 (`typesHe4g.ts`). */
+  | He4gSpec
   /** Grades 9–12 physics round 2, group H2C: impulse, … (specs in typesHs2c.ts). */
   | Hs2cSpec
   /** Grades 9–12 physics round 3, group H3A: torque, rotor, … (specs in typesHs3a.ts). */
@@ -1221,6 +1244,17 @@ export type Representation =
   | He3bSpec
   /** College round 4, group E (HC153): genetic drift's paths (`typesHe4e.ts`). */
   | DriftPathsSpec
+  /** College round 4, group J (HC155–HC159): heart pump, footprints, spring and dashpot, diffusion (`typesHe4j.ts`). */
+  | He4jSpec
+  /** College round 4, group L (HC165–HC172): mechanical pictures (`typesHe4l.ts`). */
+  | He4lSpec
+  /** College round 4, group N (`typesHe4n.ts`): K-maps, pipelines, memory maps, datapaths. */
+  | He4nSpec
+  /** College round 4, group I (HC144, HC145): a pedigree; a genetic map (`typesHe4i.ts`). */
+  | PedigreeSpec
+  | LinkageMapSpec
+  /** College round 4, group M (HC174, HC175, HC180, HC181): new kinds (`typesHe4m.ts`). */
+  | He4mSpec
   /** Grades 9–12 round 2 biology, group H2E (specs in `typesHs2e.ts`). */
   | Hs2eSpec
   | Hs3dSpec
@@ -1331,7 +1365,7 @@ export type Representation =
    * digits are seen moving; `compare` draws a second number under it and outlines the first
    * place where the two differ.
    */
-  | {
+  | (PlaceValueBaseHe4m & {
       kind: 'placeValueChart';
       value: string;
       decimals: number;
@@ -1350,7 +1384,7 @@ export type Representation =
        * Numbers to the millions draw as without it. Only with `decimals` 0.
        */
       periods?: boolean;
-    }
+    })
   /** Factor tree of `value` down to its prime factors; `count` is how many primes (with repeats). */
   | {
       kind: 'factorTree';
@@ -1508,6 +1542,8 @@ export type Representation =
     }
   /** Grades 9–12 (H22): a Venn diagram of probabilities (spec in `typesHse.ts`). */
   | { kind: 'venn'; chances: VennChances }
+  /** College (HC188): three sets, the 7 regions and the union (`typesHe4n.ts`). */
+  | { kind: 'venn'; three: VennThree }
   /**
    * A parallelogram, triangle, trapezoid or house with its base thick and its height dashed
    * (drag the top to lean it). `top` is the trapezoid's top base or the house's roof height.
@@ -1679,7 +1715,9 @@ export type Representation =
       sd?: { id: string; kind?: 'population' | 'sample' };
     }
   /** A microscope's field of view with `across` cells end to end along its middle. */
-  | { kind: 'fieldOfView'; field: string; across: string; size?: string }
+  | { kind: 'fieldOfView'; field: string; across: string; size?: string; resolution?: undefined }
+  /** HC149: two points blurred to Airy disks, resolved or not (`typesHe4i.ts`). */
+  | FieldResolutionHe4i
   /** A graduated cylinder: the level before (dashed), after, and the rise (the object's volume). */
   | { kind: 'gradCylinder'; before: string; after: string; volume?: string; max: number }
   /**

@@ -11,6 +11,7 @@ import type { EnergyTrackSpec, MotionGraphSpec } from '../typesMechanics';
 import type { Representation } from '../types';
 import type { HskSpec } from '../typesHsk';
 import type { WaveHe3lSpec } from '../typesHe3l';
+import type { WaveDepthSpec } from '../typesHe4f'; // HC128
 import {
   freeBodyWorkIssues,
   platesIssues,
@@ -412,7 +413,7 @@ export function energySpringIssues(rep: EnergyTrackSpec, si: Val): string[] {
   return out;
 }
 
-type WaveSpec = Exclude<Extract<Representation, { kind: 'wave' }>, WaveHe3lSpec>;
+type WaveSpec = Exclude<Extract<Representation, { kind: 'wave' }>, WaveHe3lSpec | WaveDepthSpec>;
 
 /** H65: a standing wave's λ (2L/n, 4L/n with odd n) and f = v/λ; the Doppler frequencies. */
 export function waveHsIssues(rep: WaveSpec, si: Val): string[] {

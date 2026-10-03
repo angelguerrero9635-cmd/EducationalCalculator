@@ -16,10 +16,12 @@ import type { GalvanicScene } from '../typesHsj';
 import type { CondensedCard, HydrationScene } from '../typesHs2d';
 import type { SkeletalCard } from '../typesHe1c';
 import type { TrussJointCard } from '../typesHe2i';
+import type { CliffHeader } from '../typesHe4f';
 import type { IrCard } from '../typesHe3e';
 import type { ProjectionCard } from '../typesHe3m';
 import type { CodeTraceScene, He3dCard, He3dFigure } from '../typesHe3d';
 import type { PathwayStepCard } from '../typesHe3g';
+import type { GaitCard } from '../typesHe4j';
 import type {
   CurrentsScene,
   GreenhouseScene,
@@ -31,6 +33,11 @@ import type { GeneScene, KeyScene, KeyStep, ObserveSecond, ReplicationCard } fro
 import type { Hs2fFigure, SpectraScene } from '../typesHs2f';
 import type { EarthSectionScene, Hs3cFigure } from '../typesHs3c';
 import type { He4dFigure, SymmetryScene } from '../typesHe4d';
+import type { He4lFigure, OrthoScene } from '../typesHe4l';
+import type { He4nFigure, He4nScene } from '../typesHe4n';
+import type { CodonsCard, PedigreeCard } from '../typesHe4i';
+import type { He4mFigure, OrbitScene, PfdSymbolCard } from '../typesHe4m';
+import type { CirculationScene, He4gFigure } from '../typesHe4g';
 import type { GelScene, Hs3dCard, Hs3dFigure, ObserveScale, ReflexScene } from '../typesHs3d';
 import type { Round3Icon } from './icons';
 import type { StrobeCard } from './strobeCard';
@@ -218,8 +225,16 @@ export type CardFigure =
   | ProjectionCard
   /** College round 3, group D (`typesHe3d.ts`): code on a code panel (HC48). */
   | He3dCard
+  /** College round 4, group M (`typesHe4m.ts`): a process-flow-diagram symbol (HC178). */
+  | PfdSymbolCard
   /** College HC57 (`typesHe3g.ts`): one step of glycolysis or the citric acid cycle, 112 × 76. */
   | PathwayStepCard
+  /** College HC156 (`typesHe4j.ts`): a stick walker at one phase of the gait cycle, 112 × 76. */
+  | GaitCard
+  /** College HC144 (`typesHe4i.ts`): a small pedigree in the standard symbols, 112 × 76. */
+  | PedigreeCard
+  /** College HC146 (`typesHe4i.ts`): a codon strip before and after a mutation, 140 × 74. */
+  | CodonsCard
   /** One stage of DNA replication, old strands dark and new ones lit (H100, `typesHs2e.ts`). */
   | ReplicationCard
   /** Biology round 3 (H109, `typesHs3d.ts`): a reflex arc, one part lit. */
@@ -320,6 +335,8 @@ export interface SequenceLayout extends LayoutBase {
   signed?: boolean;
   /** HE-E25: the stages are code (a program's lines), drawn in a code font exactly as written. */
   code?: boolean;
+  /** HC120: a figure above the stages to read the order from (a cliff, `typesHe4f.ts`). */
+  header?: CliffHeader;
 }
 
 /** What an explore figure can show; a scene sets one of these. */
@@ -332,6 +349,14 @@ export type Figure =
   | Hs3cFigure
   /** College round 4, group D (`typesHe4d.ts`): a molecule with one symmetry element lit. */
   | He4dFigure
+  /** College round 4, group L (`typesHe4l.ts`): a block's orthographic views (HC169). */
+  | He4lFigure
+  /** College round 4, group N (`typesHe4n.ts`): K-maps, state diagrams, data structures. */
+  | He4nFigure
+  /** College round 4, group M (`typesHe4m.ts`): the orbital elements, one lit (HC173). */
+  | He4mFigure
+  /** College round 4, group G (`typesHe4g.ts`): the three-cell circulation (HC140). */
+  | He4gFigure
   /** Biology round 3, group H3D (`typesHs3d.ts`): a gel of fixed samples. */
   | Hs3dFigure
   /** College round 3, group D (`typesHe3d.ts`): a code trace (HC48). */
@@ -571,6 +596,12 @@ export interface Scene {
   earthSection?: EarthSectionScene;
   /** A `symmetryElements` figure (`typesHe4d.ts`): the molecule and the element lit. */
   symmetry?: SymmetryScene;
+  /** An `orthographic` figure (`typesHe4l.ts`): which view or step is shown. */
+  ortho?: OrthoScene;
+  /** An `orbitElements` figure (`typesHe4m.ts`): the orbit's elements and the one lit. */
+  orbit?: OrbitScene;
+  /** A `circulationCells` figure (`typesHe4g.ts`): the cell, wind or belt lit. */
+  circulation?: CirculationScene;
   /** The part to highlight (a `parts` figure). */
   part?: string;
   /** More parts lit with `part`, on a drawn `parts` figure (a stamen: anther and filament). */
@@ -621,6 +652,10 @@ export interface Scene {
   reflex?: ReflexScene;
   /** The line lit, the variables table and the test (a `codeTrace` figure; `typesHe3d.ts`). */
   trace?: CodeTraceScene;
+  /** Group N figures (`typesHe4n.ts`): a K-map or truth table, a state machine, a structure. */
+  kmap?: He4nScene['kmap'];
+  fsm?: He4nScene['fsm'];
+  ds?: He4nScene['ds'];
   /** The flashes, as "● ● ●" with "—" for a long one (a `flashes` figure). */
   flashes?: string;
   /**

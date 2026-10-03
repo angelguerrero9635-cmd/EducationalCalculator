@@ -120,6 +120,10 @@ search or the sitemap, but the module tests and the harness run over it):
 | `coralSection`     | a fossil coral's daily lines across yearly bands; D beside 24 hours    | Earth science history (H110)        |
 | `transit`          | a planet crossing its star to scale; the light curve dipping by δ      | Earth and space exoplanets (H110)   |
 | `habitableZone`    | a star's zone 0.95√L to 1.37√L AU, green; the planet at a with T       | Earth and space exoplanets (H110)   |
+| `soilPhases`       | air, water and solids to scale (Vₛ = 1, Vᵥ = e); volumes, weights      | College soil mechanics (HC174)      |
+| `losScale`         | density on an A–F level-of-service bar; its cars in a mile of lane     | College transportation (HC175)      |
+| `oneLine`          | source, transformers, lines, buses, a fault bolt; jX summed to Xₜₕ     | College power faults (HC180)        |
+| `rfSpectrum`       | AM or FM in time over its spectrum: carrier, sidebands, B bracketed    | College communication (HC181)       |
 | `parallax`         | Earth in January and July, a near star shifting on far stars; p, d     | Earth and space stars (H110)        |
 | `controlVolume`    | a unit or steel device in a control volume; streams, Q̇, Ẇ, in = out    | College balances, devices (HC5)     |
 | `velocityProfile`  | tube, vessel, plates or film: v arrows, v_max = 2v_avg, τ_w; c lines   | College transport, blood (HC13)     |
@@ -593,11 +597,46 @@ search or the sitemap, but the module tests and the harness run over it):
 | `parallax`         | Earth in January and July, a near star shifting on far stars; p, d     | Earth and space stars (H110)        |
 | `controlVolume`    | a unit or steel device in a control volume; streams, Q̇, Ẇ, in = out    | College balances, devices (HC5)     |
 | `velocityProfile`  | tube, vessel, plates or film: v arrows, v_max = 2v_avg, τ_w; c lines   | College transport, blood (HC13)     |
+| `heartPump`        | left ventricle to EDV and ESV, SV lit; beats a minute, CO; MAP gauge   | College cardiovascular (HC155)      |
+| `footprints`       | prints to scale, step and stride bracketed; a tick a step; Froude bar  | College biomechanics, gait (HC156)  |
+| `springDashpot`    | Maxwell or Kelvin–Voigt model; σ relaxing or ε creeping; τ, 37%, 63%   | College viscoelasticity (HC157)     |
+| `diffusionProfile` | tissue slab shaded by C; erfc profile at t; L = √(2Dt), half depth     | College biotransport (HC159)        |
 | `bode`             | gain (dB) over phase on log frequency; asymptotes, corners, PM, GM     | College filters, control (HC22)     |
 | `potentialWell`    | box, oscillator, step, barrier, bump: levels to scale, ψ, nodes, λ     | College quantum, chemistry (HC15)   |
 | `unitCell`         | cubic cell: atoms counted to Z, touching line; (hkl) and d; Bragg      | College solids, minerals (HC16)     |
 | `phaseSpace`       | oscillator ellipse, flow (ẋ, ṗ), area; pendulum θ–ω; bead on a hoop    | College classical mech. (HC69)      |
 | `driftPaths`       | 12 Wright–Fisher paths of p over t; expected H dashed on a 2nd axis    | College evolution, drift (HC153)    |
+| `ternary`          | a triangle of 3 amounts, 10% grid; QAP fields or feldspars named       | College rocks, minerals (HC116)     |
+| `silicateChain`    | SiO₄ tetrahedra from above: shared O ringed, repeat unit boxed         | College minerals (HC117)            |
+| `michelLevy`       | interference colours computed by Γ; δ lines; the grain's order named   | College optical mineralogy (HC121)  |
+| `tsDiagram`        | T against S: isopycnals every 0.5 kg/m³, freezing line, ρ of a point   | College oceanography (HC127)        |
+| `moodyChart`       | f against Re, log–log: 64 ÷ Re, ε ÷ D curves from Colebrook, point     | College pipe flow (HC165)           |
+| `gearPair`         | spur gears in steel: N teeth, d = mN, speeds, W_t; trains of up to 4   | College machine design (HC166)      |
+| `printLayers`      | a part sliced in layers (n = H ÷ t); stair and cusp c = t cos θ; time  | College additive manufac. (HC167)   |
+| `fitDiagram`       | hole and shaft zones on the zero line, C_max and C_min, the fit; stack | College tolerances (HC168)          |
+| `casting`          | sand mould cut open: casting to scale, riser H = D, t = BM² bars       | College casting (HC172)             |
+| `catchment`        | basin to scale by its km bar: rain at i, 40 drops, round(40C) run off  | College hydrology, runoff (HC129)   |
+| `contourMap`       | contours at CI, every 5th bold; A–B across n; scale bar; profile under | College landforms, maps (HC133)     |
+| `rasterGrid`       | extent: a lake's cells filled, columns × rows; window: 3 × 3 z, aspect | College GIS, rasters (HC134)        |
+| populationPyramid  | age bars by sex from 3 group totals and a shape; bracketed; the ratio  | College human geography (HC136)     |
+| `sensorGeometry`   | satellite at H, FOV fanned to the swath to scale; H × IFOV pixel inset | College remote sensing (HC137)      |
+| `spectralCurve`    | ρ against λ for vegetation, soil, water, burn; bands boxed; NDVI, NBR  | College remote sensing (HC138)      |
+| `karnaugh`         | K-map in Gray order beside its truth table; groups ringed, SOP terms   | College digital logic (HC184)       |
+| `pipelineDiagram`  | instructions × cycles, a stage per cell; stalls, forwarding; k+n−1     | College architecture (HC186)        |
+| `dataStructure`    | sorted n: binary search halvings as bars, ⌊log₂n⌋ + 1; linear n        | College data structures (HC187)     |
+| `memoryMap`        | VA → page table → frame, PA = f·S + d; inode pointers to k, k², k³     | College operating systems (HC189)   |
+| `datapath`         | IM, registers, ALU, DM, write back; a class lit, its delays summed     | College architecture (HC191)        |
+| `dialyzer`         | hollow fibers: blood C_in → C_out, dialysate counterflow; cleared K    | College biotransport (HC160)        |
+| `attenuation`      | X-rays through a slab: tracks, HVLs ½ ¼ …, e^(−μx); `echo`: d = ct ÷ 2 | College bioinstrumentation (HC161)  |
+| `scaffold`         | open-cell cube, 3 cells a side: struts 3s² − 2s³ = ρ∗ ÷ ρ_s; pore bar  | College tissue engineering (HC162)  |
+| `ligandGrid`       | RGD dots on a grid at d under a cell, 70 nm ring; plaques if d ≤ 70    | College tissue engineering (HC163)  |
+| `bioreactor`       | glass vessel, sparger, cells as dots by X; O₂ gauge 0 to C∗ at C       | College tissue engineering (HC164)  |
+| `settlingTank`     | basin to scale, a particle at v_s vs v₀ = Q ÷ LW; removed band shaded  | College environmental eng. (HC176)  |
+| `plume`            | stack, rise to H, ±σ_z widening downwind; ground profile and C         | College environmental eng. (HC177)  |
+| `pedigree`         | a family in pedigree symbols; p₁, p₂ written; the child P = p₁p₂ ÷ 4   | College genetics (HC144)            |
+| `linkageMap`       | genes on a chromosome to scale in cM; homologs crossed once or twice   | College genetics, mapping (HC145)   |
+| `gravityProfile`   | buried sphere under its Δg(x), peak, x½ = 0.766z; Airy root, columns   | College geophysics (HC131)          |
+| `electrodeArray`   | Wenner: 4 electrodes a apart, current arcs, equipotentials, V, I; ρₐ   | College geophysics (HC132)          |
 | `globe`            | sun rays, noon angle, day dial; great circle; Euler pole; dipole; air  | College earth and geography (HC36)  |
 | `stressStrain`     | σ–ε curve: E, 0.2% offset, UTS, necking; specimen; tube; two members   | College materials, biomech. (HC28)  |
 | `stressElement`    | element, turned to θ_p; Mohr's circle; 3 circles; loci, n; soil line   | College stress, soil (HC33)         |
@@ -631,6 +670,25 @@ search or the sitemap, but the module tests and the harness run over it):
 | `induction`        | magnet into a coil, galvanometer; BIL on a wire; transformer turns     | Physics electromagnetism (H69)      |
 | `fluidSystem`      | tank, manometer, gate, float; venturi, pitot, jet; pipe grade lines    | College fluids, pipe networks (HC6) |
 | `none`             | no picture: the page opens on its values and equation, no labels       | Equation-only pages (H105)          |
+
+`earthLayers` mode `rupture` (HC119, `typesHe4f.ts`): a block of crust cut along a vertical fault,
+the near half lifted away, the rupture patch L × W to scale on the fault plane, slip arrows D, and
+Mw on a bar against an M 6 (fields `length`, `width`, `slip`, `rigidity?`, `area?`, `moment?`,
+`magnitude?`).
+
+`rockLayers` `ranges` (HC120, `typesHe4f.ts`): index fossils’ ranges as bars on a Ma axis beside a
+rock column, their overlap shaded and bracketed (fields `ranges: { name, first, last }[]`,
+`oldest?`, `youngest?`, `window?`); no window when they never overlap.
+
+`oceanProfile` mode `slope` (HC126, `typesHe4f.ts`): a section across a geostrophic current, the sea
+surface tilted Δη over Δx (stretch written), the pressure-gradient and Coriolis forces on a parcel,
+the current into or out of the page by hemisphere (fields `rise`, `width`, `latitude`, `speed?`,
+`coriolis?`, `g?`, `omega?`, `hemisphere?`).
+
+`wave` option `depth` (HC128, `typesHe4f.ts`): one wavelength over the floor at depth d to the
+wavelength’s scale, L ÷ 2 dashed, particle orbits (circles in deep water, flat ellipses to the floor
+in shallow), labelled deep, intermediate or shallow by d ÷ L (fields `depth: { depth, wavelength,
+speed? }`).
 
 `alleleFrequencies` (H38, a name too long for the table): 100 allele beads counted from p, a p
 scale to drag, and the bars p², 2pq and q², for Grade 9 population genetics.
@@ -672,6 +730,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `areaModel`        | `factors`; `divide`                      | parts split by place from the factors; partial quotients and the remainder    |
 | `placeValueChart`  | `highlight`, `from`, `compare`           | a place with its × 10 neighbors; the number before × 10; the first difference |
 | `placeValueChart`  | `periods`                                | whole numbers to hundred billions, columns grouped ones … billions            |
+| `placeValueChart`  | `base: 2 \| 8 \| 16`, `width`, `twos`    | columns weighted bᵏ, hex under each four bits; invert and add 1 (HC183)       |
 | `tape`             | `times`; groups past 12                  | the bigger bar as copies of the smaller; a label instead of dashes            |
 | `grid100`          | `second`, `wholes`, `stack`, `past100`   | a grid to compare; ones grids (`stack` past 3); past 100%; `exact` tenths     |
 | `rounding`         | `to` 1, 0.1 or 0.01                      | rounding decimals                                                             |
@@ -771,6 +830,9 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `polarGrid`        | `family: 'cycloid'`, `radians`, `length` | the rolling circle at t; t as 3π/2; the traced length L summed (HC53)         |
 | `rightTriangle`    | `rates: { a?, b?, c? }`, `scene`         | rate arrows at the moving ends; a ladder or roads; a·a′ + b·b′ = c·c′ (HC54)  |
 | `curvedSolid`      | `fill` (cone), `slab` (cylinder)         | a cone tank on its apex filling, r = Rh/H; a slab lifted H + h − y; W (HC54)  |
+| `curvedSolid`      | `ratio: { area, volume, ratio, … }`      | a cell as a sphere: A, V, A ÷ V = 3 ÷ r; `compare`: one r × k beside (HC141)  |
+| `cellDivision`     | `content: { chromatids, dna, gamete }`   | G₁, after S, after meiosis I, a gamete; chromatids and c of each (HC142)      |
+| `fieldOfView`      | `resolution: { d, gap, wavelength?, … }` | two points as Airy disks in an eyepiece; resolved when gap ≥ d, a dip (HC149) |
 | `termsChart`       | `type: 'nr'`, `'factorial'`, `alternate` | n·rⁿ, cⁿ ÷ n!; signs alternating, the sums zig-zag about S (HC66)             |
 | `termsChart`       | `bounds`, `next`, `ratio`, `limit`       | a band low ≤ S ≤ high; aₙ₊₁ and aₙ₊₁ ÷ aₙ; the sum S worked out (HC66)        |
 | `rectangle`        | `grow: { du, dv, dt?, product? }`        | u × v growing by strips u′Δt × v and u × v′Δt; (uv)′ = u′v + uv′ (HC67)       |
@@ -826,12 +888,15 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `scatter`          | `residualOf: { point: k }`               | a value picks the point, counted from 1: its residual lit and worked (H105)   |
 | `scatter`          | `pointsFrom: '<group>'`                  | points typed as a value group x₁, y₁, …; axes grow to hold them (HC97)        |
 | `scatter`          | `classes`, `pixel`, `distances`          | class means as stars, the pixel's distance to each, the nearest lit (HC139)   |
+| `sample`           | `pattern: { n, index, area?, … }`        | n points (300 drawn) placed to index R; R gauge; neighbour links (HC135)      |
+| `sample`           | `herd: { r0, immune, threshold? }`       | 100 people, immune shaded; a case’s R₀ arrows, to immune ones stopped (HC150) |
 | `boxPlot`          | `fences`; `second`, `labels`             | 1.5 × IQR fences, outliers as open dots; two box plots on one scale (H19)     |
 | `dotPlot`          | `sd: { id, kind? }` (with `mean`)        | the mean as a line and a band one standard deviation either side (H19)        |
 | `table`            | `twoWay: { rows, cols, cells, … }`       | two-way table: totals, lit cell/row/column, segmented bars, chi-square (H20)  |
 | `treeDiagram`      | `chances: { first, second, names, … }`   | a chance per branch, B given A on the second stage, path products (H21)       |
 | `venn`             | `chances: { a, b, both, shade, … }`      | probabilities per region; and, or, complement shaded; exclusive apart (H22)   |
 | `venn`             | `chances.counts: { total, count? }`      | counts out of a total: regions as counts, neither outside, P = n/N (H97)      |
+| `venn`             | `three: { a, b, c, ab, ac, bc, abc }`    | three sets: 7 regions by inclusion–exclusion, union bracketed (HC188)         |
 | `treeDiagram`      | `chances.third`, `thirdNames`, `path3`   | a third stage: 8 leaves, each path's product; three stages multiplied (H97)   |
 | `treeDiagram`      | `namesBySize`                            | outcome names for a stage of each size: 2 H, T; 3 R, G, B; … (H105)           |
 | `treeDiagram`      | `chain: { partials, rates, total? }`     | chain rule: z, x and y, t; ∂z/∂x and dx/dt on branches, paths added (HC98)    |
@@ -844,6 +909,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `complexPlane`     | `j`, `axes`, `reactances`, `zMag`        | Z = R + jX: R and jX legs, jX_L up, −jX_C down, the size, θ (HC14)            |
 | `complexPlane`     | `phasors`, `between`                     | a three-phase star, V_ab tip to tail, I at its own scale (HC14)               |
 | `complexPlane`     | `poles`, `zeros`, `locus`, `transfer`    | s-plane × and ○, root locus, σₐ, breakaway, poles at K (HC14)                 |
+| `complexPlane`     | `constellation`                          | M-PSK or square M-QAM, Gray-coded bits, dashed boundaries (HC182)             |
 | `matrixGrid`       | `mode: 'determinant'`, `cramer`          | D by its diagonals or the first-row expansion; D, Dx, Dy side by side (H99)   |
 | `matrixGrid`       | `steps: 'echelon' \| 'reduced'`          | row operations worked out from typed entries, a 0 row read out (H105)         |
 | `matrixGrid`       | `inverse: { values? }` (rowReduce)       | [A \| I] to [I \| A⁻¹], 3 × 6 or 4 × 8, A⁻¹ lit; columns fit (HC94)           |
@@ -915,6 +981,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `wave`             | `standing`, `doppler`                    | string or pipe harmonic n, nodes and antinodes; Doppler fronts, cone (H65)    |
 | `wave`             | `em: { amplitude, … }`, `line`           | E and B (or H) in step, E₀, B₀, λ, S; a line's envelope and VSWR (HC93)       |
 | `rayDiagram`       | `singleSlit`, `grating`, `thinFilm`      | sinc² band, w; orders at true angles, m_max; film rays, 2nt, flips (HC68)     |
+| `rayDiagram`       | refraction `speeds: { v1, v2 }`          | seismic ray, sin r = (v₂ ÷ v₁) sin i; wavefronts ∝ v; i_c; reflected (HC130)  |
 | `circuit`          | `mixed: { layout, resistors }`           | R₁ + R₂ ∥ R₃ or (R₁ + R₂) ∥ R₃; V, I, P at each resistor (H68)                |
 | `seriesCircuit`    | `net: { topology, elements, … }`         | a schematic in textbook symbols; node V, mesh and branch I; KCL, KVL (HC7)    |
 | `circuit`          | `net` (the same renderer)                | capacitor networks (Q, V at each), two batteries, internal r (HC7)            |
@@ -955,6 +1022,11 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `oceanProfile`     | `mode: 'stripes'`, `distance`, `age`, …  | ridge from above: stripes mirrored, hatched past 12 Ma; a rock x km, t (H103) |
 | `atmosphereLayers` | `mode: 'parcel'`, `temperature`, …       | a parcel cooling 10 °C/km, dew point 2 °C/km, meeting at a cloud base (H103)  |
 | `atmosphereLayers` | `mode: 'balance'`, `albedo`, `sunlight`  | S ÷ 4 in, α reflected, F absorbed and sent out as σTₑ⁴; a thermometer (H103)  |
+| `atmosphereLayers` | `mode: 'thickness'`, `lower`, `upper`    | log p against height: the T̄ column straight, p₁, p₂, Δz; H at p₁ ÷ e (HC122)  |
+| `atmosphereLayers` | `mode: 'adiabat'`, `temperature`, …      | T against log p, dry adiabats labelled θ; the parcel's to 1,000 hPa (HC123)   |
+| `atmosphereLayers` | `mode: 'saturation'`, `dewPoint`, …      | Tetens eₛ(T) −40 to 50 °C; air at (T, e), up to eₛ, across to T_d; RH (HC123) |
+| `atmosphereLayers` | parcel `dry`, `dewLapse`, `baseUnit`     | the parcel with the page's lapse rates (9.8, 1.8 °C/km); base in m (HC124)    |
+| `atmosphereLayers` | balance `layer: { emissivity, surface }` | one-layer greenhouse: εG absorbed, εG ÷ 2 up and down to scale; Tₛ (HC125)    |
 | `rockLayers`       | `dating.sample.second: { name, share }`  | a parent that decays two ways: the decayed atoms split by share (K-40) (H103) |
 | `hrDiagram`        | `mass`, `luminosity?`, `lifetime?`       | a main-sequence star placed by mass, L = M^3.5; 3, 10, 30 M☉ marked (H103)    |
 | `circularMotion`   | kepler `starMass`                        | round another star: a³ = M × T², star, closest and farthest labels (H110)     |

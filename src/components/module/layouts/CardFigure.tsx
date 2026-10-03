@@ -21,6 +21,8 @@ import { MoleculeCard } from './chemFigures';
 import { CondensedCardView, condensedWidth } from './condensedCard';
 import { SkeletalCardView } from './skeletalCard';
 import { TrussJointCardView } from './trussJointCard';
+import { PfdCardView } from './pfdCard';
+import { PFD_CARD_H, PFD_CARD_W } from '@/data/modules/typesHe4m';
 import { TRUSS_CARD_H, TRUSS_CARD_W } from '@/data/modules/typesHe2i';
 import { IrCardView } from './irCard';
 import { IR_CARD_H, IR_CARD_W } from '@/data/modules/typesHe3e';
@@ -29,6 +31,15 @@ import { ProjectionCardView } from './projectionCard';
 import { PROJECTION_CARD_H, PROJECTION_CARD_W } from '@/data/modules/typesHe3m';
 import { PATHWAY_CARD_H, PATHWAY_CARD_W } from '@/data/modules/typesHe3g';
 import { PathwayCard } from './pathwayCard';
+import { GAIT_CARD_H, GAIT_CARD_W, GaitCardView } from './gaitCard';
+import { PedigreeCardHe4i } from './pedigreeCardHe4i';
+import { CodonsCardHe4i } from './codonsCardHe4i';
+import {
+  CODONS_CARD_H,
+  CODONS_CARD_W,
+  PEDIGREE_CARD_H,
+  PEDIGREE_CARD_W,
+} from '@/data/modules/typesHe4i';
 import {
   CellPartsCard,
   DotPlotCard,
@@ -90,6 +101,8 @@ export function figureWidth(f: Spec): number {
       return SKELETAL_CARD_W;
     case 'trussJoint':
       return TRUSS_CARD_W;
+    case 'pfdSymbol':
+      return PFD_CARD_W; // HC178
     case 'ir':
       return IR_CARD_W;
     case 'projection':
@@ -98,6 +111,12 @@ export function figureWidth(f: Spec): number {
       return REPLICATION_W;
     case 'pathwayStep':
       return PATHWAY_CARD_W; // HC57
+    case 'gait':
+      return GAIT_CARD_W; // HC156
+    case 'pedigree':
+      return PEDIGREE_CARD_W; // HC144
+    case 'codons':
+      return CODONS_CARD_W; // HC146
     case 'reflexArc':
     case 'flowerCycle':
       return hs3dCardSize(f)![0];
@@ -121,6 +140,7 @@ export function CardFigureView({
 }) {
   const w = figureWidth(figure);
   const h =
+    (figure.kind === 'pfdSymbol' ? PFD_CARD_H : undefined) ?? // HC178
     hs2bFigureSize(figure)?.[1] ??
     hs3dCardSize(figure)?.[1] ??
     he3dCardSize(figure)?.[1] ??
@@ -140,7 +160,13 @@ export function CardFigureView({
                   ? PROJECTION_CARD_H
                   : figure.kind === 'pathwayStep'
                     ? PATHWAY_CARD_H
-                    : S);
+                    : figure.kind === 'gait'
+                      ? GAIT_CARD_H
+                      : figure.kind === 'pedigree'
+                        ? PEDIGREE_CARD_H // HC144
+                        : figure.kind === 'codons'
+                          ? CODONS_CARD_H // HC146
+                          : S);
   return (
     <Svg width={w} height={h}>
       <Drawing f={figure} w={w} ink={ink} shade={shade} />
@@ -259,6 +285,12 @@ function Drawing({ f, w, ink, shade }: { f: Spec; w: number; ink: string; shade:
       return <ReplicationCard f={f} ink={ink} />;
     case 'pathwayStep':
       return <PathwayCard f={f} ink={ink} />; // HC57
+    case 'gait':
+      return <GaitCardView phase={f.phase} ink={ink} />; // HC156
+    case 'pedigree':
+      return <PedigreeCardHe4i f={f} ink={ink} />; // HC144
+    case 'codons':
+      return <CodonsCardHe4i f={f} ink={ink} />; // HC146
     case 'reflexArc':
     case 'flowerCycle':
       return <Hs3dCardView f={f} ink={ink} />;
@@ -397,6 +429,8 @@ function Drawing({ f, w, ink, shade }: { f: Spec; w: number; ink: string; shade:
       return <SkeletalCardView f={f} ink={ink} shade={shade} />;
     case 'trussJoint':
       return <TrussJointCardView f={f} ink={ink} shade={shade} />;
+    case 'pfdSymbol':
+      return <PfdCardView f={f} ink={ink} shade={shade} />; // HC178
     case 'ir':
       return <IrCardView f={f} ink={ink} shade={shade} />;
     case 'projection':

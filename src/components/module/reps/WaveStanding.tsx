@@ -3,6 +3,7 @@ import Svg, { Circle, Defs, G, Line, Path, Rect } from 'react-native-svg';
 
 import type { Representation } from '@/data/modules';
 import type { WaveHe3lSpec } from '@/data/modules/typesHe3l';
+import type { WaveDepthSpec } from '@/data/modules/typesHe4f'; // HC128
 import type { StandingWave } from '@/data/modules/typesHsk';
 import { chart, usePalette } from '@/theme';
 
@@ -12,7 +13,7 @@ import { standingOf } from './hskMath';
 import { sig, SubLabel, worked } from './hskKit';
 import { Glass, Sheen, url, usePaintIds } from './paint';
 
-type Spec = Exclude<Extract<Representation, { kind: 'wave' }>, WaveHe3lSpec>;
+type Spec = Exclude<Extract<Representation, { kind: 'wave' }>, WaveHe3lSpec | WaveDepthSpec>;
 
 const AMP = 28;
 

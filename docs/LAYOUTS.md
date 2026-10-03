@@ -36,6 +36,12 @@ them. A sequence with `signed: true` shows signed spans (ATP per glycolysis step
 the total as a net change (`totalLabel: 'Net'` → "Net: +2 ATP"); every stage needs a span. A
 sequence with no spans shows the stages in order only.
 
+A sequence can set `header: { kind: 'cliff', beds, unconformity?, tilt?, intrusion?, surface? }`
+(HC120, `typesHe4f.ts`, `layouts/cliffHeaderHe4f.tsx`): a painted cross-section above the question,
+beds bottom up, those under an angular unconformity tilted, a dike cutting every bed it reaches,
+today's surface eroded. The layout check reads the events in the stages' text (rock names, "tilted",
+"erosion", "dike") and compares them with the figure's order (`layouts/cliffMath.ts`).
+
 Explore figures: `parts` (tap a part), `position`, `clock`, `dots`, `magnets`, `flashes`,
 `lightPath` (lamp, object, eye, hand or mirror; with `wall`, a `height` and clear, cloudy or
 solid blockers it traces the shadow), `particles`, `earth`, `push` (a ball pushed from
@@ -81,7 +87,9 @@ Grade 9 biology (H100, `layouts/geneExpressionFigure.tsx`): `geneExpression`, a 
 promoter, a gene and its switch, RNA polymerase and, when the gene is read, its mRNA; a scene's
 `gene: { control: 'repressor' | 'activator', signal?, lit? }` sets the switch: a repressor sits on
 the operator unless its signal (an inducer) pulls it off, an activator binds only with its
-signal, so the gene is on exactly when the signal is there.
+signal, so the gene is on exactly when the signal is there. HC147: `corepressor: true` (a repressor
+switch) makes the signal a corepressor (tryptophan, trp operon): the repressor binds only with it,
+so the gene is on exactly when it is absent.
 Also H100 (`layouts/dichotomousKeyFigure.tsx`): `dichotomousKey`, `{ kind: 'dichotomousKey', steps }` with
 `steps: { question, yes, no }[]` (an answer is the next question's index or a name), drawn as a
 tree down the page, each question's Yes then No indented under it; a scene's `key: { specimen?,
@@ -144,6 +152,31 @@ College inorganic chemistry, round 4 (group D, HC113): `symmetryElements`
 (`C2`, `C3`, `C4`, `Cinf`, `sv`, `sv2`, `sh`, `sd`, `i`, `S3`, `S4`, `S6`): an axis with its
 turn, a mirror pane, the centre with the atom pairs it swaps, or an axis with a pane across it.
 The layout check applies the element and requires every atom to land on a like atom.
+
+College engineering graphics, round 4 (group L, HC169): `orthographic`
+(`layouts/orthographicFigure.tsx`), a stepped block with a hole through its base; `ortho: { view,
+angle? }` shows it in a glass box (`box`), the box unfolded with its hinges (`unfold`), the
+three views with one lit (`front`, `top`, `right`), the hole's hidden edges lit (`hidden`) or
+its centre lines (`center`), or the isometric view on 120° axes (`isometric`); `angle` is
+`third` (default) or `first`. The layout check requires a known view on every scene.
+College orbital mechanics, round 4 (group M, HC173): `orbitElements`
+(`layouts/orbitElementsFigure.tsx`), Earth in its equatorial plane with the vernal-equinox
+direction, the orbit tilted through the dashed node line (the half below the plane dashed),
+periapsis, the ascending node and the satellite marked; `orbit: { i, raan, argp, nu, e, lit? }`
+(degrees) lights `i` (across the node line), `raan` (Ω in the equatorial plane), `argp` (ω in
+the orbit plane), `nu` (ν from periapsis) or `shape` (2a with e). With i = 0 there is no node
+line and the figure says Ω is undefined. Not to scale; the angles are. The layout check keeps Ω's
+arc in the equatorial plane and ω's and ν's in the orbit plane.
+
+Card figure `pfdSymbol` (HC178, `layouts/pfdCard.tsx`): a process-flow-diagram symbol, 84 × 68,
+its streams arrowed: `symbol` is `pump`, `compressor`, `exchanger` (shell and tube), `heater`
+(fired, with its stack), `column` (trays), `flash`, `absorber` (packed), `cstr` or `packedBed`.
+College climatology, round 4 (group G, HC140): `circulationCells`
+(`layouts/circulationFigure.tsx`), Earth from the side with the Hadley, Ferrel and polar cells of
+both hemispheres over its limb, the surface winds on its face, H and L at the cells' edges and
+the ITCZ, subtropical high and subpolar low named; `circulation: { lit? }` lights `hadley`,
+`ferrel`, `polar`, `trades`, `westerlies`, `easterlies`, `itcz`, `highs` or `lows`. The layout
+check keeps the edges at 0°, 30°, 60° and 90° and the trades equatorward, the westerlies poleward.
 
 Grade 9 biology (HS group G): `macromolecules` (`layouts/macroFigure.tsx`): monomers on their own
 cards joining into a polymer, the joining groups and new bonds lit and one water molecule drawn per
@@ -227,6 +260,43 @@ casting`, `investment casting`, `forging`, `rolling mill`, `extrusion`, `deep dr
 families `SLA printing`, `DLP printing`, `FDM printing`, `SLS printing`, `laser metal powder
 fusion`, `electron beam melting`, `PolyJet-style jetting`, `binder jet`, `wire-and-arc DED`,
 `laminated sheets`.
+College tissue card icons (HC154, `layouts/icons/he4j.tsx`), drawn sections in a slide's
+stains: `simple squamous epithelium`, `simple cuboidal epithelium`, `simple columnar epithelium`,
+`stratified squamous epithelium`, `compact bone`, `hyaline cartilage`, `blood smear`, `adipose
+tissue`, `skeletal muscle tissue`, `cardiac muscle tissue`, `smooth muscle tissue`, `neuron with
+glia`. Implants and scanners (HC158, `layouts/icons/he4jObjects.tsx`), painted: `titanium hip
+stem`, `CoCrMo femoral head`, `steel bone screw`, `polyethylene cup liner`, `PMMA bone cement`,
+`PLGA suture`, `alumina femoral head`, `hydroxyapatite-coated stem`; `X-ray tube`, `CT scanner`,
+`MRI scanner`, `ultrasound probe`, `PET scanner`, `SPECT camera`, `OCT probe`.
+Card figure `gait` (HC156, `layouts/gaitCard.tsx`, 112 × 76, for sequence stages): `{ kind:
+'gait', phase }`, a stick walker side on with the right leg lit at `heelStrike`, `footFlat`,
+`midstance`, `heelOff`, `toeOff` or `midswing`, standing on its lowest foot; a sequence's gait
+cards must come in that order.
+College card icons (HC169, `layouts/icons/he4l.tsx`): line types `visible line`, `hidden line`,
+`center line`, `dimension line`, `extension line`, `circle center lines`, each lit on a part.
+GD&T symbols (HC170, the same file), in a frame cell: `GD&T straightness`, `GD&T flatness`, `GD&T
+circularity`, `GD&T cylindricity`, `GD&T perpendicularity`, `GD&T parallelism`, `GD&T
+angularity`, `GD&T position`, `GD&T profile of a line`, `GD&T profile of a surface`, `GD&T
+circular runout`, `GD&T total runout`, `GD&T concentricity`, `GD&T symmetry`.
+College card icons, round 4 (group I, `layouts/icons/he4i.tsx`), evidence for evolution (HC143):
+`whale pelvis` and `human appendix` (vestigial, the part ringed), `bird wing and butterfly wing`
+and `shark fin and dolphin flipper` (analogous: one drawn with its arm bones, one without); the
+layout check keeps each one, and group HH's limbs, in the bin naming its kind of evidence.
+Microbial structure (HC149): `Gram-positive wall` and `Gram-negative wall` in section (for the
+bins: a thick purple peptidoglycan mesh with teichoic acids over the membrane; an outer membrane
+with LPS, a thin pink layer, the inner membrane), `coccus`, `bacillus`, `spirillum`, `endospore`;
+the layout check keeps a wall on the bin that names its stain.
+Card figure `pedigree` (HC144, `layouts/pedigreeCardHe4i.tsx`): `{ kind: 'pedigree', people,
+marked? }`, 112 × 76, a 2–3 generation family in the standard symbols, `people` as the explore
+figure lists them (drawn with the `pedigree` calculator picture's pieces); `marked` says the
+half-filled symbols are every carrier. The layout check finds the modes (autosomal or X-linked,
+dominant or recessive) the family allows: possible under its bin's mode, impossible under another.
+Card figure `codons` (HC146, `layouts/codonsCardHe4i.tsx`): `{ kind: 'codons', mrna, change: {
+type: 'substitution' | 'insertion' | 'deletion', at, base? } }`, 140 × 74, the mRNA strip of 3–4
+codons before (top) and after (bottom) the change, each codon boxed with its amino acid (the
+`dnaStrand` code, nothing after a stop), the changed base lit; after an insertion or a deletion
+the boxes regroup, so the reading frame moves. The layout check reads the effect (silent,
+missense, nonsense, frameshift) and keeps the card in the bin that names it.
 
 Observe figures: an observation can set `figure: { kind: 'shadowStick', stick: 100 }`
 (`layouts/ShadowStick.tsx`): a meter stick and its noon shadow for the column tapped last, to
@@ -306,3 +376,18 @@ College card figure `graph` (HC50, `reps/GraphDiagram.tsx` `GraphCardView`, `typ
 lit?, degrees?, dist?, wide? }`, a small fixed graph at 96 × 64 (`wide`: 168 × 104) with
 costs on the edges, each vertex's name or degree in it, lit vertices and edges heavy in the
 highlight, and Dijkstra's distances beside the vertices; for Euler sorts and Dijkstra stages.
+College explore figure `karnaugh` (HC184, `layouts/karnaughFigure.tsx`, `typesHe4n.ts`):
+`{ kind: 'karnaugh', mode?: 'map' | 'table' }`, scene `kmap: { names, minterms?, dontCares?,
+groups?, columns?, lit? }`: a 2–4 variable K-map in Gray order beside its truth table, each
+group ringed in its own outline style and f = Σm(…) = SOP written; or a truth table (T first)
+with a column per expression, up to two lit columns compared row by row (≠ where they differ).
+College explore figure `stateDiagram` (HC185, `layouts/stateDiagramFigure.tsx`, `typesHe4n.ts`):
+`{ kind: 'stateDiagram', machine: 'moore' | 'mealy', inputs, start, states: [{ name, output?,
+x, y, loop? }], arrows: [{ from, to, input, output?, bend? }], tape? }`, scene `fsm: { input,
+state? }`: bubbles and arrows in a fixed layout, the input replayed with the state reached and
+the last arrow lit, and a tape with the state and output after each bit.
+College explore figure `dataStructure` (HC187, `layouts/dataStructureFigure.tsx`, `typesHe4n.ts`):
+`{ kind: 'dataStructure' }`, scene `ds: { structure: 'stack' | 'queue' | 'ring' | 'list' |
+'array', start?, ops?, slots?, front?, holds?, out?, values?, target?, step? }`: the operations
+replayed and the structure drawn (top; front and rear; a ring of slots; nodes to ∅; low, mid
+and high), the last added lit and the last removed outside with “out”.
