@@ -4,7 +4,7 @@
  * after it), in taxonomy order. Course and topic titles come from taxonomy.ts. Layout pages are
  * in `../layouts/collegePhysics.ts`. Rules: docs/MODULE_GUIDE.md.
  */
-import { atan2D, cosD, sinD } from '@/engine/angles';
+import { atan2D, atanD, cosD, sinD, tanD } from '@/engine/angles';
 import type { Values } from '@/engine/types';
 
 import { div } from '../helpers';
@@ -742,6 +742,88 @@ export const COLLEGE_PHYSICS_MODULES: ModuleDef[] = [
       kind: 'functionGraph',
       family: 'response',
       transient: { initial: 0, final: 'vT', tau: 'tau', time: 't', value: 'v' },
+    },
+  },
+  {
+    // University Physics I → Newton's laws: the speed a frictionless banked curve is made for.
+    id: 'he.physics.university-1#1~banked',
+    title: 'A banked curve with no friction: the design speed',
+    use: 'Use this for “A curve of radius 80 m is banked at 12°. At what speed can a 1500 kg car take it with no friction, and how hard does the road push on it?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'No friction: only the normal force N and the weight mg act on the car; g = 9.81 m/s².',
+      'The car goes round a level circle of radius r at a steady speed, so the net force points level, toward the center.',
+      'Up and down: N cos θ = mg. Toward the center: N sin θ = mv² ÷ r.',
+    ],
+    variables: [
+      V('r', 'r', 'Radius of the curve', { unit: 'm', min: 1, max: 1e4, step: 1 }),
+      V('theta', 'θ', 'Bank angle', { unit: '°', min: 0, max: 80, step: 0.5 }),
+      V('m', 'm', 'Mass of the car', { unit: 'kg', min: 0.1, max: 1e5, step: 10 }),
+      V('v', 'v', 'Design speed', { unit: 'm/s', min: 0, max: 1000, derived: true }),
+      V('N', 'N', 'Normal force', { unit: 'N', min: 0, max: 1e7, derived: true }),
+    ],
+    ...rels(
+      rel(
+        'tan θ = v² ÷ (rg)',
+        'tan({theta}) = {v}² ÷ ({r} × 9.81)',
+        ['v', 'r', 'theta'],
+        (v) => v.v! ** 2 - v.r! * G * tanD(v.theta!),
+        {
+          v: [
+            (v) => exact(Math.sqrt(v.r! * G * tanD(v.theta!))),
+            '√({r} × 9.81 × tan({theta}))',
+            'Divide N sin θ = mv² ÷ r by N cos θ = mg: N and the mass cancel, leaving tan θ = v² ÷ (rg).',
+          ],
+          r: [
+            (v) => div(v.v! ** 2, G * tanD(v.theta!)),
+            '{v}² ÷ (9.81 × tan({theta}))',
+            'Undo tan θ = v² ÷ (rg) for r: divide v² by g tan θ.',
+          ],
+          theta: [
+            (v) => atanD(v.v! ** 2 / (v.r! * G)),
+            'tan⁻¹({v}² ÷ ({r} × 9.81))',
+            'Undo tan θ = v² ÷ (rg) for the angle with tan⁻¹.',
+          ],
+        },
+      ),
+      rel(
+        'N = mg ÷ cos θ',
+        '{N} = {m} × 9.81 ÷ cos({theta})',
+        ['N', 'm', 'theta'],
+        (v) => v.N! * cosD(v.theta!) - v.m! * G,
+        {
+          N: [
+            (v) => exact((v.m! * G) / cosD(v.theta!)),
+            '{m} × 9.81 ÷ cos({theta})',
+            'Up and down: the upward part of N, N cos θ, holds the weight mg.',
+          ],
+          m: [
+            (v) => (v.N! * cosD(v.theta!)) / G,
+            '{N} × cos({theta}) ÷ 9.81',
+            'Undo N = mg ÷ cos θ for m: N cos θ is the weight, so divide it by g.',
+          ],
+        },
+      ),
+    ),
+    // r = 50 m, θ = 15°, m = 1200 kg: v = √(50 × 9.81 × 0.26795) = √131.43 = 11.46 m/s;
+    // N = 1200 × 9.81 ÷ 0.96593 = 12187 N (check: N sin θ = 3154 N = 1200 × 11.46² ÷ 50).
+    example: (() => {
+      const [r, theta, m] = [50, 15, 1200];
+      return {
+        r,
+        theta,
+        m,
+        v: exact(Math.sqrt(r * G * tanD(theta))),
+        N: exact((m * G) / cosD(theta)),
+      };
+    })(),
+    startWith: ['r', 'theta', 'm'],
+    // The car on the bank in section: N and mg on one scale, N's parts dashed, the net force
+    // level toward the center.
+    representation: {
+      kind: 'freeBody',
+      g: G,
+      banked: { angle: 'theta', radius: 'r', speed: 'v', mass: 'm', normal: 'N' },
     },
   },
 ];
