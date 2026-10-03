@@ -2570,6 +2570,7 @@ export function repIssues(
     case 'pipelineDiagram':
     case 'dataStructure':
     case 'memoryMap':
+    case 'datapath':
       out.push(...he4nIssues(rep, val)); // group N
       break;
     case 'solidOfRevolution':

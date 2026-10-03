@@ -217,9 +217,34 @@ export interface MemoryMapSpec {
   bytes?: NumOrVar;
 }
 
+// ─── HC191: the single-cycle datapath ─────────────────────────────────────────
+
+/** An instruction class and the units it uses. */
+export type InstrClass = 'load' | 'store' | 'rtype' | 'branch';
+
+/**
+ * The five units of a single-cycle datapath in a row (instruction memory, register read, ALU,
+ * data memory, write back to the registers) with each one's delay under it. An instruction
+ * class (`instr`) lights the units it uses, the others dashed, and a bar to scale adds their
+ * delays; `classes` draws the bar of every class, the slowest bracketed as the clock period.
+ * `cpu` (the CPU-time page) draws a strip of clock cycles of T with instructions CPI cycles
+ * long.
+ */
+export interface DatapathSpec {
+  kind: 'datapath';
+  /** The five delays: [instruction memory, register read, ALU, data memory, register write]. */
+  delays?: NumOrVar[];
+  instr?: InstrClass;
+  classes?: boolean;
+  /** The clock period (the slowest class's delays) and frequency, said in the caption. */
+  period?: NumOrVar;
+  freq?: NumOrVar;
+  cpu?: { ic?: NumOrVar; cpi?: NumOrVar; T?: NumOrVar; t?: NumOrVar; mips?: NumOrVar };
+}
+
 // ─── The group's calculator pictures ─────────────────────────────────────────
 
-export type He4nSpec = KarnaughSpec | PipelineSpec | SearchSpec | MemoryMapSpec;
+export type He4nSpec = KarnaughSpec | PipelineSpec | SearchSpec | MemoryMapSpec | DatapathSpec;
 
 const ids = (xs: unknown[]): string[] =>
   xs.flat(4).filter((x): x is string => typeof x === 'string');
@@ -246,6 +271,8 @@ export function he4nSpecVars(r: He4nSpec): string[] {
       const { kind: _k, mode: _m, table: _t, ...rest } = r;
       return ids(Object.values(rest));
     }
+    case 'datapath':
+      return ids([r.delays ?? [], r.period, r.freq, Object.values(r.cpu ?? {})]);
   }
 }
 

@@ -13,7 +13,7 @@ import type { Relation, Values, VariableDef } from '@/engine/types';
 
 import type { LayoutDef } from './layouts';
 import type { ModuleDef, Representation, StepText } from './types';
-import type { StateDiagramFigure } from './typesHe4n';
+import type { InstrClass, StateDiagramFigure } from './typesHe4n';
 
 type Solver = (v: Values) => number | number[] | undefined;
 type Rule = { relation: Relation; steps: Record<string, StepText> };
@@ -1023,7 +1023,147 @@ const INODE_SMALL = inodePage(
   { B: 512, p: 8, d: 10 },
 );
 
+// ─── HC191: the datapath (computer-architecture#1, ~critical-path) ─────────────
+
+const UNIT_IDS = ['im', 'rr', 'alu', 'dm', 'wb'];
+const loadTime = (v: Values) => UNIT_IDS.reduce((s, id) => s + v[id]!, 0);
+
+const criticalPage = (
+  id: string,
+  title: string,
+  use: string,
+  typed: Values,
+  instr: InstrClass = 'load',
+) =>
+  page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'Single-cycle: every instruction finishes in one clock cycle, so the cycle must fit the slowest.',
+      'A load uses all five units in series, so it is the slowest class.',
+      'Wires, multiplexers and register setup are taken as part of the unit delays.',
+    ],
+    variables: [
+      num('im', 't_IM', 'Instruction memory', 'ps', 1, 1e5, { step: 10 }),
+      num('rr', 't_reg', 'Register read', 'ps', 1, 1e5, { step: 10 }),
+      num('alu', 't_ALU', 'ALU', 'ps', 1, 1e5, { step: 10 }),
+      num('dm', 't_DM', 'Data memory', 'ps', 1, 1e5, { step: 10 }),
+      num('wb', 't_WB', 'Register write', 'ps', 1, 1e5, { step: 10 }),
+      out('period', 'T', 'Clock period', 'ps'),
+      out('freq', 'f', 'Clock rate', 'GHz'),
+    ],
+    rules: [
+      derive(
+        'period',
+        'period',
+        UNIT_IDS,
+        '{period} = {im} + {rr} + {alu} + {dm} + {wb}',
+        loadTime,
+        '{im} + {rr} + {alu} + {dm} + {wb}',
+        'The period is the load’s path: all five units, one after another.',
+      ),
+      derive(
+        'freq',
+        'freq',
+        ['period'],
+        '{freq} = 1000 ÷ {period}',
+        (v) => 1000 / v.period!,
+        '1000 ÷ {period}',
+        'f = 1 ÷ T; 1000 ps make 1 ns, and 1 ÷ 1 ns is 1 GHz.',
+      ),
+    ],
+    example: example(typed, ['period', loadTime], ['freq', (v) => 1000 / v.period!]),
+    startWith: UNIT_IDS,
+    representation: {
+      kind: 'datapath',
+      delays: UNIT_IDS,
+      instr,
+      classes: true,
+      period: 'period',
+      freq: 'freq',
+    },
+  });
+
+const CRITICAL = criticalPage(
+  'g.he-datapath-critical-path',
+  'The single-cycle clock from unit delays',
+  'Use this for “Units take 200, 100, 200, 200 and 100 ps. What clock can a single-cycle CPU run?”',
+  { im: 200, rr: 100, alu: 200, dm: 200, wb: 100 },
+);
+
+/** The edge: a slow data memory, so the load's path is far longer than R-type's. */
+const CRITICAL_SLOW = criticalPage(
+  'g.he-datapath-slow-memory',
+  'A slow data memory sets the clock',
+  'Use this for “The data memory takes 500 ps and the rest 300, 100, 150, 100 ps. R-type needs 650 ps; what clock period must the CPU use?”',
+  { im: 300, rr: 100, alu: 150, dm: 500, wb: 100 },
+  'rtype',
+);
+
+const CPU_TIME = page({
+  id: 'g.he-datapath-cpu-time',
+  title: 'CPU time from IC, CPI and the clock',
+  use: 'Use this for “A program runs 2 × 10⁹ instructions at CPI 1.5 on a 3 GHz CPU. How long does it take?”',
+  assumptions: [
+    'CPI is the average number of clock cycles an instruction takes.',
+    'The clock period is T = 1 ÷ f; 1 ÷ 1 GHz is 1 ns.',
+    'MIPS counts millions of instructions a second, ignoring what each one does.',
+  ],
+  variables: [
+    num('ic', 'IC', 'Instruction count', undefined, 1, 1e15, { step: 1 }),
+    num('cpi', 'CPI', 'Cycles per instruction', undefined, 0.1, 100, { step: 0.1 }),
+    num('f', 'f', 'Clock rate', 'GHz', 1e-6, 10, { step: 0.1 }),
+    out('T', 'T', 'Clock period', 'ns'),
+    out('t', 't', 'CPU time', 's'),
+    out('mips', 'MIPS', 'MIPS rating'),
+  ],
+  rules: [
+    derive(
+      'T',
+      'T',
+      ['f'],
+      '{T} = 1 ÷ {f}',
+      (v) => 1 / v.f!,
+      '1 ÷ {f}',
+      'The period is one over the clock rate.',
+    ),
+    derive(
+      't',
+      't',
+      ['ic', 'cpi', 'T'],
+      '{t} = {ic} × {cpi} × {T} ÷ 10^9',
+      (v) => (v.ic! * v.cpi! * v.T!) / 1e9,
+      '{ic} × {cpi} × {T} ÷ 10^9',
+      'Instructions × cycles each × time a cycle; 10⁹ ns make 1 s.',
+    ),
+    derive(
+      'mips',
+      'mips',
+      ['ic', 't'],
+      '{mips} = {ic} ÷ ({t} × 10^6)',
+      (v) => v.ic! / (v.t! * 1e6),
+      '{ic} ÷ ({t} × 10^6)',
+      'Millions of instructions for each second of CPU time.',
+    ),
+  ],
+  example: example(
+    { ic: 2e9, cpi: 1.5, f: 3 },
+    ['T', (v) => 1 / v.f!],
+    ['t', (v) => (v.ic! * v.cpi! * v.T!) / 1e9],
+    ['mips', (v) => v.ic! / (v.t! * 1e6)],
+  ),
+  startWith: ['ic', 'cpi', 'f'],
+  representation: {
+    kind: 'datapath',
+    cpu: { ic: 'ic', cpi: 'cpi', T: 'T', t: 't', mips: 'mips' },
+  },
+});
+
 export const HE4N_GALLERY_MODULES: ModuleDef[] = [
+  CRITICAL,
+  CRITICAL_SLOW,
+  CPU_TIME,
   PAGING,
   PAGING_LARGE,
   INODE,

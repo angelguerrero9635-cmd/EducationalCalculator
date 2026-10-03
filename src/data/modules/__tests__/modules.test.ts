@@ -698,6 +698,7 @@ function representationVars(r: Representation): string[] {
     case 'pipelineDiagram':
     case 'dataStructure':
     case 'memoryMap':
+    case 'datapath':
       return he4nSpecVars(r); // group N
     case 'propertyDiagram':
     case 'thermalWall':

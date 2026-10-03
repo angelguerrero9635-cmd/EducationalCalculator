@@ -143,4 +143,20 @@ export const HE4N_REQUESTS: PictureRequest[] = [
       'g.he-memoryMap-inode-small',
     ],
   },
+  {
+    ...ask(
+      'HC191',
+      'datapath',
+      'The five units of a single-cycle datapath in a row (instruction memory, register read, ALU, data memory, register write) with their delays; an instruction class lights the units it uses (the rest dashed) and bars to scale add each class’s delays in series, the slowest bracketed as the clock period; on the CPU-time page, a strip of clock cycles of T with instructions CPI cycles long',
+      [`${E}computer-architecture#1`, `${E}computer-architecture#1~critical-path`],
+      [
+        'From EC-P32. New kind `datapath` (typesHe4n.ts DatapathSpec; reps/Datapath.tsx; class paths in reps/he4nMath.ts).',
+        "Fields: { kind: 'datapath', delays?: [IM, register read, ALU, DM, register write] (ids or numbers), instr?: 'load' | 'store' | 'rtype' | 'branch', classes? (a bar per class, the slowest bracketed), period?, freq?, cpu?: { ic, cpi, T, t, mips } }.",
+        "Example (~critical-path): { kind: 'datapath', delays: ['im', 'rr', 'alu', 'dm', 'wb'], instr: 'load', classes: true, period: 'period', freq: 'freq' } with 200, 100, 200, 200, 100 ps → load 800 ps, 1.25 GHz. Example (main, the plan’s stand-in none can become): { kind: 'datapath', cpu: { ic: 'ic', cpi: 'cpi', T: 'T', t: 't', mips: 'mips' } } with 2 × 10⁹, 1.5, 3 GHz → T = 0.333 ns, t = 1.0 s.",
+        'Harness (harness/picturesHe4n.ts): the lit class’s delays (or, with classes, the slowest class’s) add to the period; five delays.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: ['g.he-datapath-critical-path', 'g.he-datapath-slow-memory', 'g.he-datapath-cpu-time'],
+  },
 ];

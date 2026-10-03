@@ -494,6 +494,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'pipelineDiagram':
     case 'dataStructure':
     case 'memoryMap':
+    case 'datapath':
       return <He4nView spec={spec} calc={calc} />; // group N (HC184–HC191)
     case 'solidOfRevolution':
       return <SolidOfRevolution spec={spec} calc={calc} />; // HC65

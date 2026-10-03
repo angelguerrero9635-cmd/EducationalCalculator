@@ -15,6 +15,7 @@ import type { Representation } from '../types';
 import type { NumOrVar } from '../typesGraphs';
 import {
   binarySteps,
+  classTime,
   dsReplay,
   fsmReplay,
   pipelineCycles,
@@ -24,6 +25,8 @@ import {
   worstRanges,
 } from '@/components/module/reps/he4nMath';
 import type {
+  DatapathSpec,
+  InstrClass,
   MemoryMapSpec,
   VennThree,
   DataStructureScene,
@@ -53,9 +56,31 @@ export function he4nIssues(rep: Representation, get: Get): string[] {
       return searchIssues(rep, get);
     case 'memoryMap':
       return memoryIssues(rep, get);
+    case 'datapath':
+      return datapathIssues(rep, get);
     default:
       return [];
   }
+}
+
+// ─── HC191 ───────────────────────────────────────────────────────────────────
+
+/** The lit delays (or the slowest class's) add to the period. */
+function datapathIssues(s: DatapathSpec, get: Get): string[] {
+  const out: string[] = [];
+  if (s.delays && s.delays.length !== 5) return [`datapath: ${s.delays.length} delays, not 5`];
+  const ds = (s.delays ?? []).map((d) => get(d));
+  const period = opt(get, s.period);
+  if (ds.length !== 5 || ds.some((d) => d === undefined) || period === undefined) return out;
+  const classes: InstrClass[] = s.classes
+    ? ['load', 'store', 'rtype', 'branch']
+    : s.instr
+      ? [s.instr]
+      : [];
+  if (!classes.length) return out;
+  const want = Math.max(...classes.map((cl) => classTime(cl, ds as number[])));
+  if (!near(period, want)) out.push(`datapath: period ${period}, the lit delays add to ${want}`);
+  return out;
 }
 
 // ─── HC189 ───────────────────────────────────────────────────────────────────

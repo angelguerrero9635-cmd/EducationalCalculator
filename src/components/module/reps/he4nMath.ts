@@ -1,8 +1,13 @@
 /**
- * Group N's shared arithmetic (`typesHe4n.ts`): HC185 replaying a state machine on its input.
- * Used by the drawings and by the harness, so both read the same answer.
+ * Group N's shared arithmetic (`typesHe4n.ts`): state machines, pipelines, data structures, sets
+ * and the datapath. Used by the drawings and by the harness, so both read the same answer.
  */
-import type { DataStructureScene, FsmArrow, StateDiagramFigure } from '@/data/modules/typesHe4n';
+import type {
+  DataStructureScene,
+  FsmArrow,
+  InstrClass,
+  StateDiagramFigure,
+} from '@/data/modules/typesHe4n';
 
 /** One step of a machine: the bit read, the arrow taken, the state reached and its output. */
 export interface FsmStep {
@@ -25,6 +30,27 @@ export function fsmReplay(f: StateDiagramFigure, input: string): FsmStep[] {
   }
   return steps;
 }
+
+// ─── HC191: the datapath ─────────────────────────────────────────────────────
+
+/** The units each class uses: instruction memory, register read, ALU, data memory, write back. */
+export const CLASS_UNITS: Record<InstrClass, boolean[]> = {
+  load: [true, true, true, true, true],
+  store: [true, true, true, true, false],
+  rtype: [true, true, true, false, true],
+  branch: [true, true, true, false, false],
+};
+
+export const CLASS_NAMES: Record<InstrClass, string> = {
+  load: 'load',
+  store: 'store',
+  rtype: 'R-type',
+  branch: 'branch',
+};
+
+/** A class's time: the delays of the units it uses, in series. */
+export const classTime = (cls: InstrClass, delays: number[]) =>
+  CLASS_UNITS[cls].reduce((s, used, i) => s + (used ? delays[i]! : 0), 0);
 
 // ─── HC188: three sets ───────────────────────────────────────────────────────
 
