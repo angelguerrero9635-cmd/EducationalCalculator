@@ -564,9 +564,16 @@ export function SurfacePlot({ spec, calc }: { spec: SurfacePlotSpec; calc: Calcu
       ticks.push(
         <SmallText key={`tx${x}`} x={X(x)} y={Y(y0) + 15} text={short(x)} anchor="middle" />,
       );
+    // The number on the bottom edge sits just above it, clear of the first x number.
     for (let y = Math.ceil(y0 / sty) * sty; y <= y1 + 1e-9; y += sty)
       ticks.push(
-        <SmallText key={`ty${y}`} x={X(x0) - 4} y={Y(y) + 4} text={short(y)} anchor="end" />,
+        <SmallText
+          key={`ty${y}`}
+          x={X(x0) - 4}
+          y={Y(y) + (Math.abs(y - y0) < 1e-9 ? -1 : 4)}
+          text={short(y)}
+          anchor="end"
+        />,
       );
     if (x0 <= 0 && x1 >= 0)
       els.push(

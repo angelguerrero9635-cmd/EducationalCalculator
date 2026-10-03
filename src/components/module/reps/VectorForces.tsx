@@ -13,7 +13,7 @@ import { MathChip } from './hsdText';
 import { Vec } from './hskKit';
 
 const RAD = Math.PI / 180;
-const BOTTOM = 206;
+const BOTTOM = 186;
 
 /**
  * HC171: two to four forces from one point, each with its angle from the horizontal marked,

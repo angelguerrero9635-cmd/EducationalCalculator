@@ -91,7 +91,7 @@ export function Compton({ spec, calc }: { spec: PhotoelectricComptonSpec; calc: 
       `K = E − E′ = ${fmt(k.E)} − ${fmt(k.Ep)} = ${fmt(k.K)} keV`,
     );
     lines.push(
-      `The electron carries K off at φ = ${fmt(k.phi)}° below the axis; the dashed copy of pₑ closes p = p′ + pₑ.`,
+      `The electron takes K at φ = ${fmt(k.phi)}° below the axis; the dashed pₑ closes p = p′ + pₑ.`,
       `Six waves of each, to one scale: the bar is 6Δλ = ${fmt(WAVES * k.shift)} pm.`,
     );
   } else {
