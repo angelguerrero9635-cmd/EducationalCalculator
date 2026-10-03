@@ -819,6 +819,14 @@ const light = {
   he4hCase: '#C2410C',
   he4hCaseSoft: '#FED7AA',
   he4hImmune: '#0F766E',
+  /** HC141 (round 4, group I): a cell's cytoplasm and membrane. */
+  he4iCell: '#F5CDBE',
+  he4iCellEdge: '#B4533C',
+  /** HC149: a dark field and its Airy spots; the Gram stains (crystal violet, safranin). */
+  he4iField: '#10131C',
+  he4iAiry: '#FFE9A8',
+  he4iGramPos: '#6A35A8',
+  he4iGramNeg: '#DE6A9C',
   satellitePanel: '#2B4C8C',
   /**
    * College HC81–HC84 (round 3, group I): a muscle and its tendon; a binary diagram's α, β and
@@ -1606,6 +1614,12 @@ const dark: Palette = {
   he4hCase: '#FB923C',
   he4hCaseSoft: '#7C2D12',
   he4hImmune: '#2DD4BF',
+  he4iCell: '#8E5A4C',
+  he4iCellEdge: '#E9A08C',
+  he4iField: '#05070C',
+  he4iAiry: '#FFE29A',
+  he4iGramPos: '#A47BDB',
+  he4iGramNeg: '#EC8DB6',
   satellitePanel: '#3D5FA3',
   he3iMuscle: '#D45A50',
   he3iTendon: '#B9AC97',

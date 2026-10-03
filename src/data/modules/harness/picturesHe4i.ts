@@ -1,0 +1,310 @@
+/**
+ * Picture checks for college round 4, group I (docs/RENDERINGS_HE.md). HC141: a cell's A, V and
+ * A ÷ V agree with r to 3 significant figures, on a sphere. HC142: chromatids and c by stage.
+ * HC143: an evolution icon sits in the bin for its kind of evidence. HC144: the child's chance
+ * is the parents' × 1/4; a pedigree card is possible under its bin's mode and not another's. Called from `repIssues` in
+ * `pictures.ts` (and the layout checks from `layoutFigures.ts`). Test-only.
+ */
+import { airy, cellRatio, crossoverSpots, resolvedAs } from '@/components/module/reps/he4iMath';
+import { codonEffect, effectOfBin } from '@/components/module/layouts/codonsHe4iMath';
+import { CODON_TABLE } from '@/components/module/reps/dnaMath';
+import { modeOfBin, modePossible, type Mode } from '@/components/module/reps/pedigreeHe4iMath';
+
+import { divisionStages, type CodonsCard } from '../typesHe4i';
+import { geneIsOn } from '../typesHs2e';
+
+import type { LayoutDef, PedigreePerson } from '../layouts';
+import { EVIDENCE_OF, GRAM_OF } from '../layouts/icons/he4i';
+import type { Representation } from '../types';
+
+type Val = (x: string | number) => number | undefined;
+
+/** Equal to 3 significant figures. */
+const sameTo3 = (a: number, b: number) =>
+  Number(a.toPrecision(3)) === Number(b.toPrecision(3)) ||
+  Math.abs(a - b) <= 1e-9 * Math.max(1, Math.abs(b));
+
+/** HC141 on `curvedSolid`. */
+export function cellRatioIssues(rep: Representation, val: Val): string[] {
+  if (rep.kind !== 'curvedSolid' || !rep.ratio) return [];
+  const out: string[] = [];
+  if (rep.shape !== 'sphere') out.push(`ratio: a ${rep.shape} is not a cell's sphere`);
+  const r = val(rep.radius);
+  const q = rep.ratio;
+  if (q.compare !== undefined && q.compare !== false) {
+    const k = val(q.compare);
+    if (k !== undefined && !(k > 0)) out.push(`ratio: compare factor ${k} is not positive`);
+  }
+  if (r === undefined) return out;
+  if (!(r > 0)) return [...out, `ratio: r = ${r} is not positive`];
+  const m = cellRatio(r);
+  const check = (id: string | undefined, want: number, what: string) => {
+    const x = id ? val(id) : undefined;
+    if (x !== undefined && !sameTo3(x, want))
+      out.push(`ratio: ${what} ${x} for r = ${r} (${Number(want.toPrecision(3))})`);
+  };
+  check(q.area, m.area, 'A = 4πr² is');
+  check(q.volume, m.volume, 'V = 4/3 πr³ is');
+  check(q.ratio, m.ratio, 'A ÷ V = 3 ÷ r is');
+  return out;
+}
+
+/**
+ * HC142 on `cellDivision` `content`: chromatids = 2 × chromosomes from S to metaphase II (the
+ * page's chromatids after S are 2 × 2n), and c halves at each meiotic division (the gamete's
+ * content is the G₁ content ÷ 2, after S doubled it).
+ */
+export function divisionContentIssues(rep: Representation, val: Val): string[] {
+  if (rep.kind !== 'cellDivision' || !rep.content) return [];
+  const out: string[] = [];
+  const k = rep.content;
+  const d = val(rep.diploid);
+  const g1 = k.dna === undefined ? 2 : val(k.dna);
+  if (g1 !== undefined && !(g1 > 0)) out.push(`content: G₁ DNA ${g1}c is not positive`);
+  if (d !== undefined && Number.isInteger(d / 2) && d >= 2) {
+    const s = divisionStages(d, g1 ?? 2);
+    // Duplicated (2 chromatids each) after S and after meiosis I; single in G₁ and the gamete.
+    s.forEach((x, i) => {
+      const per = i === 1 || i === 2 ? 2 : 1;
+      if (x.chromatids !== per * x.chromosomes)
+        out.push(`content: ${x.stage} has ${x.chromatids} chromatids on ${x.chromosomes}`);
+    });
+    if (s[2]!.dna * 2 !== s[1]!.dna || s[3]!.dna * 2 !== s[2]!.dna)
+      out.push('content: c does not halve at each meiotic division');
+    const ct = k.chromatids ? val(k.chromatids) : undefined;
+    if (ct !== undefined && ct !== 2 * d)
+      out.push(`content: ${ct} chromatids after S, 2 × 2n is ${2 * d}`);
+  }
+  const gam = k.gamete ? val(k.gamete) : undefined;
+  if (gam !== undefined && g1 !== undefined && Math.abs(gam - g1 / 2) > 1e-9)
+    out.push(`content: a gamete holds ${gam}c, half of G₁'s ${g1}c is ${g1 / 2}c`);
+  return out;
+}
+
+/** The layout checks for group I's card icons and figures (from `layoutFigures.ts`). */
+export function he4iLayoutIssues(l: LayoutDef): string[] {
+  const out: string[] = [];
+  if (l.kind === 'sort') {
+    // HC143: in a sort by kind of evidence, an evolution icon goes in the bin naming its kind.
+    const words = ['homologous', 'analogous', 'vestigial'];
+    const named = (b: { id: string; label: string }) =>
+      words.filter((w) => `${b.id} ${b.label}`.toLowerCase().includes(w));
+    if (l.bins.some((b) => named(b).length)) {
+      for (const card of l.cards) {
+        const f = card.figure;
+        const kind = f?.kind === 'icon' ? EVIDENCE_OF[f.icon] : undefined;
+        if (!kind) continue;
+        const bin = l.bins.find((b) => b.id === card.bin);
+        if (!bin || !named(bin).includes(kind))
+          out.push(`card "${card.label}": a ${kind} structure in bin "${bin?.label ?? card.bin}"`);
+      }
+    }
+    // HC144: a pedigree card is possible under its bin's mode and impossible under another bin's.
+    const modes = l.bins.map((b) => [b.id, modeOfBin(b)] as const);
+    for (const card of l.cards) {
+      if (card.figure?.kind !== 'pedigree') continue;
+      const f = card.figure;
+      out.push(...familyIssues(f.people).map((x) => `card "${card.label}": ${x}`));
+      const own = modes.find(([id]) => id === card.bin)?.[1];
+      if (!own) {
+        out.push(`card "${card.label}": its bin names no mode of inheritance`);
+        continue;
+      }
+      if (!modePossible(f.people, own, f.marked))
+        out.push(`card "${card.label}": impossible under its bin's mode ${own}`);
+      const others = modes.flatMap(([id, m]) => (id !== card.bin && m ? [m] : []));
+      if (!others.some((m: Mode) => !modePossible(f.people, m, f.marked)))
+        out.push(`card "${card.label}": possible under every other bin's mode too`);
+    }
+    // HC146: a codon card's change has one effect, the one its bin names.
+    for (const card of l.cards) {
+      if (card.figure?.kind !== 'codons') continue;
+      out.push(...codonsCardIssues(card.figure).map((x) => `card "${card.label}": ${x}`));
+      const bin = l.bins.find((b) => b.id === card.bin);
+      const want = bin ? effectOfBin(bin) : undefined;
+      const got = codonEffect(card.figure);
+      if (want !== got) out.push(`card "${card.label}": a ${got} change in bin "${bin?.label}"`);
+    }
+  }
+  // HC149: a Gram wall figure sits on (or in) the bin that names its stain.
+  if (l.kind === 'sort') {
+    const stain = (b: { id: string; label: string }) => {
+      const t = `${b.id} ${b.label}`.toLowerCase();
+      return t.includes('positive') ? 'positive' : t.includes('negative') ? 'negative' : 'both';
+    };
+    for (const b of l.bins) {
+      const g = b.figure?.kind === 'icon' ? GRAM_OF[b.figure.icon] : undefined;
+      if (g && stain(b) !== g) out.push(`bin "${b.label}": the Gram-${g} wall drawn on it`);
+    }
+    for (const card of l.cards) {
+      const g = card.figure?.kind === 'icon' ? GRAM_OF[card.figure.icon] : undefined;
+      const bin = l.bins.find((b) => b.id === card.bin);
+      if (g && bin && stain(bin) !== g && stain(bin) !== 'both')
+        out.push(`card "${card.label}": the Gram-${g} wall in bin "${bin.label}"`);
+    }
+  }
+  // HC147: a corepressor works a repressor, and the gene is on exactly when it is absent.
+  if (l.kind === 'explore' && l.figure.kind === 'geneExpression') {
+    for (const sc of l.scenes) {
+      const g = sc.gene;
+      if (!g?.corepressor) continue;
+      if (g.control !== 'repressor') out.push(`scene "${sc.label}": a corepressor on an activator`);
+      if (geneIsOn(g) !== !g.signal)
+        out.push(`scene "${sc.label}": the gene must be on exactly when the corepressor is absent`);
+    }
+  }
+  return out;
+}
+
+/** A family's structure: parents in the family, one male and one female, a generation up. */
+export function familyIssues(people: PedigreePerson[]): string[] {
+  const out: string[] = [];
+  const byId = new Map(people.map((p) => [p.id, p]));
+  if (byId.size !== people.length) out.push('two people share an id');
+  for (const p of people) {
+    if (p.parents) {
+      const [a, b] = p.parents.map((id) => byId.get(id));
+      if (!a || !b) out.push(`${p.id}: a parent is not in the family`);
+      else {
+        if (a.sex === b.sex) out.push(`${p.id}: both parents are ${a.sex}`);
+        if (a.generation !== p.generation - 1 || b.generation !== p.generation - 1)
+          out.push(`${p.id}: parents are not one generation up`);
+      }
+    }
+    if (p.partner && !byId.has(p.partner)) out.push(`${p.id}: partner not in the family`);
+    if (p.trait && p.carrier) out.push(`${p.id}: both shows the trait and carries it`);
+  }
+  return out;
+}
+
+/** HC144 on `pedigree`: the family's structure; chances in 0–1; the child's is the product × 1/4. */
+export function pedigreeIssues(rep: Representation, val: Val): string[] {
+  if (rep.kind !== 'pedigree') return [];
+  const out = familyIssues(rep.people);
+  const ids = new Set(rep.people.map((p) => p.id));
+  for (const [who, id] of Object.entries(rep.chances ?? {})) {
+    if (!ids.has(who)) out.push(`pedigree: a chance on ${who}, not in the family`);
+    const x = val(id);
+    if (x !== undefined && !(x >= 0 && x <= 1)) out.push(`pedigree: chance ${id} = ${x}`);
+  }
+  const k = rep.child;
+  if (k) {
+    const [a, b] = k.parents.map((id) => rep.people.find((p) => p.id === id));
+    if (!a || !b) out.push('pedigree: the child’s parents are not in the family');
+    else if (a.sex === b.sex) out.push('pedigree: the child’s parents are both ' + a.sex);
+    const ps = k.parents.map((id) => (rep.chances?.[id] ? val(rep.chances[id]) : undefined));
+    const P = val(k.chance);
+    if (k.parents.some((id) => !rep.chances?.[id]))
+      out.push('pedigree: a parent of the child has no chance written');
+    else if (P !== undefined && ps[0] !== undefined && ps[1] !== undefined) {
+      const want = ps[0] * ps[1] * 0.25;
+      if (Math.abs(P - want) > 1e-9 * Math.max(1, want))
+        out.push(
+          `pedigree: the child's chance ${P}, the parents' ${ps[0]} × ${ps[1]} × 1/4 = ${want}`,
+        );
+    }
+  }
+  return out;
+}
+
+/**
+ * HC145 on `linkageMap`: 2 or 3 loci with one distance between each pair of neighbours, each
+ * positive and at most 50 cM; the loci drawn in order at their cumulative distances and the
+ * crossovers between them; RF (%) equals the first distance; with three loci the expected double
+ * crossovers d₁d₂N ÷ 10⁴, c.o.c. = observed ÷ expected and I = 1 − c.o.c.
+ */
+export function linkageMapIssues(rep: Representation, val: Val): string[] {
+  if (rep.kind !== 'linkageMap') return [];
+  const out: string[] = [];
+  const n = rep.loci.length;
+  if (n < 2 || n > 3) out.push(`linkageMap: ${n} loci (2 or 3 are drawn)`);
+  if (rep.distances.length !== n - 1)
+    out.push(`linkageMap: ${rep.distances.length} distances for ${n} loci`);
+  if (new Set(rep.loci.map((x) => x.toLowerCase())).size !== n)
+    out.push('linkageMap: two loci share a letter');
+  const d = rep.distances.map((x) => val(x));
+  d.forEach((x, i) => {
+    if (x !== undefined && !(x > 0)) out.push(`linkageMap: distance ${i + 1} is ${x}`);
+    if (x !== undefined && x > 50) out.push(`linkageMap: ${x} cM between neighbours (RF ≤ 50)`);
+  });
+  if (d.some((x) => x === undefined)) return out;
+  const pos = (d as number[]).reduce<number[]>((a, x) => [...a, a[a.length - 1]! + x], [0]);
+  // The drawn spacing: each crossover lies between the loci it separates.
+  const spots = crossoverSpots(pos, rep.doubles !== undefined && n === 3);
+  spots.forEach((s, i) => {
+    if (!(s > pos[i]! && s < pos[i + 1]!))
+      out.push(`linkageMap: crossover ${i + 1} off its interval`);
+  });
+  const near = (a: number, b: number) => Math.abs(a - b) <= 1e-6 * Math.max(1, Math.abs(b));
+  const rf = rep.recombinant === undefined ? undefined : val(rep.recombinant);
+  if (rf !== undefined && !near(rf, d[0]!)) out.push(`linkageMap: RF ${rf}% drawn as ${d[0]} cM`);
+  if (n === 3) {
+    const N = rep.offspring === undefined ? undefined : val(rep.offspring);
+    const exp = N === undefined ? undefined : (d[0]! * d[1]! * N) / 1e4;
+    const e = rep.expected ? val(rep.expected) : undefined;
+    if (e !== undefined && exp !== undefined && !near(e, exp))
+      out.push(`linkageMap: expected doubles ${e}, d₁d₂N ÷ 10⁴ = ${exp}`);
+    const o = rep.doubles === undefined ? undefined : val(rep.doubles);
+    const coc = rep.coincidence ? val(rep.coincidence) : undefined;
+    if (coc !== undefined && o !== undefined && exp !== undefined && !near(coc, o / exp))
+      out.push(`linkageMap: c.o.c. ${coc}, observed ÷ expected = ${o / exp}`);
+    const I = rep.interference ? val(rep.interference) : undefined;
+    if (I !== undefined && coc !== undefined && !near(I, 1 - coc))
+      out.push(`linkageMap: I ${I}, 1 − c.o.c. = ${1 - coc}`);
+  }
+  return out;
+}
+
+/** HC146: a codon card's strip: 3–4 whole codons of A, C, G, U; a change inside it. */
+export function codonsCardIssues(f: CodonsCard): string[] {
+  const out: string[] = [];
+  const m = f.mrna;
+  if (!/^[ACGU]+$/.test(m)) out.push(`codons: "${m}" is not mRNA (A, C, G, U)`);
+  if (m.length % 3 !== 0 || m.length < 9 || m.length > 12)
+    out.push(`codons: ${m.length} bases (9 to 12, whole codons)`);
+  const ch = f.change;
+  const last = ch.type === 'insertion' ? m.length + 1 : m.length;
+  if (!(Number.isInteger(ch.at) && ch.at >= 1 && ch.at <= last))
+    out.push(`codons: change at ${ch.at}`);
+  if (ch.type !== 'deletion' && !(ch.base && /^[ACGU]$/.test(ch.base)))
+    out.push(`codons: a ${ch.type} needs one base`);
+  if (ch.type === 'substitution' && ch.base === m[ch.at - 1])
+    out.push('codons: the base is unchanged');
+  // Every codon reads in the standard code.
+  for (let i = 0; i + 3 <= m.length; i += 3)
+    if (!CODON_TABLE[m.slice(i, i + 3)]) out.push(`codons: ${m.slice(i, i + 3)} is not a codon`);
+  return out;
+}
+
+/**
+ * HC149 on `fieldOfView` `resolution`: d and gap positive; drawn as resolved exactly when
+ * gap ≥ d, and the brightness drawn between the spots dips below their peaks then (an
+ * independent sum of the two Airy disks); d = 0.61λ ÷ NA and total = objective × eyepiece.
+ */
+export function resolutionIssues(rep: Representation, val: Val): string[] {
+  if (rep.kind !== 'fieldOfView' || !rep.resolution) return [];
+  const out: string[] = [];
+  const q = rep.resolution;
+  const [d, gap] = [val(q.d), val(q.gap)];
+  if (d !== undefined && !(d > 0)) out.push(`resolution: d = ${d}`);
+  if (gap !== undefined && !(gap > 0)) out.push(`resolution: gap = ${gap}`);
+  if (d !== undefined && gap !== undefined && d > 0 && gap > 0) {
+    const drawn = resolvedAs(gap, d) !== 'blob';
+    if (drawn !== gap >= d)
+      out.push(`resolution: gap ${gap}, d ${d} drawn ${drawn ? '' : 'not '}resolved`);
+    const sum = (x: number) => airy(x - gap / 2, d) + airy(x + gap / 2, d);
+    const dip = sum(0) < sum(gap / 2) - 1e-9;
+    if (gap >= d && !dip) out.push(`resolution: no dip between spots ${gap} apart (d ${d})`);
+  }
+  const [lam, na] = [q.wavelength, q.na].map((x) => (x === undefined ? undefined : val(x)));
+  const near = (a: number, b: number) => Math.abs(a - b) <= 1e-6 * Math.max(1, Math.abs(b));
+  if (d !== undefined && lam !== undefined && na !== undefined && !near(d, (0.61 * lam) / na))
+    out.push(`resolution: d ${d}, 0.61λ ÷ NA = ${(0.61 * lam) / na}`);
+  if (na !== undefined && !(na > 0 && na <= 1.6)) out.push(`resolution: NA ${na}`);
+  const [ob, ey, tot] = [q.objective, q.eyepiece, q.total].map((x) =>
+    x === undefined ? undefined : val(x),
+  );
+  if (ob !== undefined && ey !== undefined && tot !== undefined && !near(tot, ob * ey))
+    out.push(`resolution: total ${tot}, objective × eyepiece = ${ob * ey}`);
+  return out;
+}

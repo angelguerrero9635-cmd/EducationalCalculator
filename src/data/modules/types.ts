@@ -54,6 +54,12 @@ import type { DriftPathsSpec } from './typesHe4e';
 import type { He4jSpec } from './typesHe4j';
 import type { He4lSpec } from './typesHe4l';
 import type { He4nSpec, VennThree } from './typesHe4n';
+import type {
+  CurvedSolidHe4i,
+  FieldResolutionHe4i,
+  LinkageMapSpec,
+  PedigreeSpec,
+} from './typesHe4i'; // HC141–HC149, group I
 import type { CardIcon } from './layouts/types';
 import type { TreeChances, TwoWaySpec, VennChances } from './typesHse';
 import type { IntegerLineHs2a } from './typesHs2a';
@@ -690,7 +696,8 @@ export type Representation =
       surface?: string;
       /** Grades 9–12 (a cylinder): Cavalieri's two stacks of coins, one straight, one leaning. */
       cavalieri?: boolean;
-    } & CurvedSolidHe3c) // HC54: a cone filling, a cylinder's slab
+    } & CurvedSolidHe3c &
+      CurvedSolidHe4i) // HC54: a cone filling, a cylinder's slab; HC141: a cell's A ÷ V
   /**
    * A scatter plot of fixed data `points` ([x, y], in the axes' numbers) with a line of fit
    * y = `slope` × x + `intercept` (two variables), dragged by a handle near each end; the
@@ -1239,6 +1246,9 @@ export type Representation =
   | He4lSpec
   /** College round 4, group N (`typesHe4n.ts`): K-maps, pipelines, memory maps, datapaths. */
   | He4nSpec
+  /** College round 4, group I (HC144, HC145): a pedigree; a genetic map (`typesHe4i.ts`). */
+  | PedigreeSpec
+  | LinkageMapSpec
   /** Grades 9–12 round 2 biology, group H2E (specs in `typesHs2e.ts`). */
   | Hs2eSpec
   | Hs3dSpec
@@ -1699,7 +1709,9 @@ export type Representation =
       sd?: { id: string; kind?: 'population' | 'sample' };
     }
   /** A microscope's field of view with `across` cells end to end along its middle. */
-  | { kind: 'fieldOfView'; field: string; across: string; size?: string }
+  | { kind: 'fieldOfView'; field: string; across: string; size?: string; resolution?: undefined }
+  /** HC149: two points blurred to Airy disks, resolved or not (`typesHe4i.ts`). */
+  | FieldResolutionHe4i
   /** A graduated cylinder: the level before (dashed), after, and the rise (the object's volume). */
   | { kind: 'gradCylinder'; before: string; after: string; volume?: string; max: number }
   /**

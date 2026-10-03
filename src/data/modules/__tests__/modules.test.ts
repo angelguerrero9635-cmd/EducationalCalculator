@@ -21,6 +21,13 @@ import { alleleHe4eVars, driftPathsVars, normalCurveHe4eVars } from '../typesHe4
 import { he4jSpecVars } from '../typesHe4j';
 import { he4lSpecVars } from '../typesHe4l';
 import { he4nSpecVars, vennThreeVars } from '../typesHe4n';
+import {
+  cellDivisionHe4iVars,
+  curvedSolidHe4iVars,
+  fieldResolutionVars,
+  linkageMapVars,
+  pedigreeVars,
+} from '../typesHe4i';
 import { hs2aSpecVars } from '../typesHs2a';
 import { hs2eSpecVars } from '../typesHs2e';
 import { hs3dSpecVars } from '../typesHs3d';
@@ -432,6 +439,7 @@ function representationVars(r: Representation): string[] {
         ...(r.sd ? [r.sd.id] : []),
       ];
     case 'fieldOfView':
+      if (r.resolution) return fieldResolutionVars(r); // HC149
       return [r.field, r.across, ...(r.size ? [r.size] : [])];
     case 'gradCylinder':
       return [r.before, r.after, ...(r.volume ? [r.volume] : [])];
@@ -531,6 +539,7 @@ function representationVars(r: Representation): string[] {
         r.radius,
         ...[r.height, r.volume, r.slant, r.surface].filter((x): x is string => !!x),
         ...curvedSolidHe3cVars(r), // HC54
+        ...curvedSolidHe4iVars(r), // HC141
       ];
     case 'rootSquare':
       return [r.area, r.side, ...(r.between ?? [])];
@@ -618,6 +627,7 @@ function representationVars(r: Representation): string[] {
       return hsgSpecVars(r);
     case 'macromolecules':
     case 'cellDivision':
+      if (r.kind === 'cellDivision') return [...hs2eSpecVars(r), ...cellDivisionHe4iVars(r)]; // HC142
       return hs2eSpecVars(r);
     case 'neuron':
       return hs3dSpecVars(r);
@@ -719,6 +729,10 @@ function representationVars(r: Representation): string[] {
     case 'memoryMap':
     case 'datapath':
       return he4nSpecVars(r); // group N
+    case 'pedigree':
+      return pedigreeVars(r); // HC144
+    case 'linkageMap':
+      return linkageMapVars(r); // HC145
     case 'propertyDiagram':
     case 'thermalWall':
       return he2cSpecVars(r);

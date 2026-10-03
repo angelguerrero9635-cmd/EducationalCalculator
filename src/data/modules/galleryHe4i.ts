@@ -1,10 +1,1007 @@
 /**
  * College gallery demos, round 4, group I (docs/RENDERINGS_HE.md). Each stands in for the
  * college page that waits, built from the plan's worked example. Spread into gallery.ts.
+ * HC141: `curvedSolid` `ratio` (he.biology.principles-1#1).
+ * HC142: `cellDivision` `content` (he.biology.principles-1#3).
+ * HC143: card icons, evidence for evolution (he.biology.principles-2#0).
+ * HC144: `pedigree`, the calculator picture and the card (he.biology.genetics#0, ~modes).
+ * HC145: `linkageMap`, the new kind (he.biology.genetics#1, ~three-point).
+ * HC146: card figure `codons` (he.biology.genetics#2~mutations).
+ * HC147: `geneExpression` `corepressor` (he.biology.cell-molecular#2).
+ * HC149: Gram card icons and `fieldOfView` `resolution` (he.biology.microbiology#0, ~resolution).
  */
-import type { LayoutDef } from './layouts';
-import type { ModuleDef } from './types';
+import type { Relation, Values, VariableDef } from '@/engine/types';
 
-export const HE4I_GALLERY_MODULES: ModuleDef[] = [];
+import type { CardIcon, LayoutDef, PedigreePerson } from './layouts';
+import type { ModuleDef, Representation, StepText } from './types';
 
-export const HE4I_GALLERY_LAYOUTS: LayoutDef[] = [];
+type Solver = (v: Values) => number | number[] | undefined;
+type Rule = { relation: Relation; steps: Record<string, StepText> };
+
+/** A value with its unit (one unit: the formula is written in it). */
+const num = (
+  id: string,
+  symbol: string,
+  name: string,
+  unit: string | undefined,
+  min: number,
+  max: number,
+  more: Partial<VariableDef> = {},
+): VariableDef => ({
+  id,
+  symbol,
+  name,
+  ...(unit ? { unit, units: [unit] } : {}),
+  min,
+  max,
+  ...more,
+});
+
+/** A value worked out, never typed. */
+const out = (
+  id: string,
+  symbol: string,
+  name: string,
+  unit?: string,
+  more: Partial<VariableDef> = {},
+) => num(id, symbol, name, unit, -1e15, 1e15, { derived: true, ...more });
+
+/** A finite number, or nothing. */
+const fin = (x: number) => (Number.isFinite(x) ? x : undefined);
+
+/** A relation with its steps: each variable's solver, expression and explanation. */
+function rule(
+  id: string,
+  display: string,
+  vars: string[],
+  residual: (v: Values) => number,
+  parts: Record<string, [Solver, StepText['expr'], StepText['how']]>,
+): Rule {
+  const solve: Record<string, Solver> = {};
+  const steps: Record<string, StepText> = {};
+  for (const [v, [fn, expr, how]] of Object.entries(parts)) {
+    solve[v] = fn;
+    steps[v] = { expr, how };
+  }
+  for (const v of vars) if (!(v in solve)) solve[v] = () => undefined;
+  return { relation: { id, display, vars, residual, solve }, steps };
+}
+
+/** A demo from its rules. */
+function page(
+  d: Omit<ModuleDef, 'relations' | 'steps' | 'representation' | 'startWith'> & {
+    rules: Rule[];
+    representation: Representation;
+    startWith?: string[];
+  },
+): ModuleDef {
+  const { rules, ...rest } = d;
+  return {
+    ...rest,
+    unitSystems: ['metric'],
+    startWith: d.startWith ?? d.variables.filter((v) => !v.derived).map((v) => v.id),
+    relations: rules.map((r) => r.relation),
+    steps: Object.fromEntries(rules.map((r) => [r.relation.id, r.steps])),
+  };
+}
+
+/** Values worked out from the typed ones of an example, in order. */
+function example(typed: Values, ...work: [string, (v: Values) => number][]): Values {
+  const v: Values = { ...typed };
+  for (const [id, f] of work) v[id] = f(v);
+  return v;
+}
+
+// ─── HC141: why cells are small (principles-1#1) ───────────────────────────────
+
+const areaOf = (v: Values) => 4 * Math.PI * v.r! ** 2;
+const volumeOf = (v: Values) => (4 / 3) * Math.PI * v.r! ** 3;
+const ratioOf = (v: Values) => 3 / v.r!;
+
+const cellRules = (): Rule[] => [
+  rule('area', '{A} = 4π × {r}²', ['A', 'r'], (v) => v.A! - areaOf(v), {
+    A: [areaOf, '4 × π × {r}^2', 'A sphere’s surface is 4π times the square of its radius.'],
+    r: [
+      (v) => fin(Math.sqrt(v.A! / (4 * Math.PI))),
+      '√({A} ÷ (4 × π))',
+      'Divide the area by 4π and take the square root.',
+    ],
+  }),
+  rule('volume', '{V} = 4/3 × π × {r}³', ['V', 'r'], (v) => v.V! - volumeOf(v), {
+    V: [volumeOf, '4 ÷ 3 × π × {r}^3', 'A sphere’s volume is 4/3 π times the cube of its radius.'],
+  }),
+  rule('ratio', '{q} = 3 ÷ {r}', ['q', 'r'], (v) => v.q! - ratioOf(v), {
+    q: [ratioOf, '3 ÷ {r}', '4πr² ÷ (4/3 πr³) cancels to 3 ÷ r: the ratio falls as r grows.'],
+    r: [(v) => fin(3 / v.q!), '3 ÷ {q}', 'Turn A ÷ V = 3 ÷ r round: r = 3 ÷ (A ÷ V).'],
+  }),
+];
+
+const cellPage = (
+  id: string,
+  title: string,
+  use: string,
+  r: number,
+  compare: number,
+  max: number,
+) =>
+  page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'The cell is a sphere of radius r.',
+      'Nutrients come in through the surface, but every μm³ inside uses them, so a bigger cell feeds each μm³ through less membrane.',
+      `The second cell is ${compare} times as wide, drawn at the same scale.`,
+    ],
+    variables: [
+      num('r', 'r', 'Radius', 'μm', 0.1, max, { step: 0.1 }),
+      out('A', 'A', 'Surface area', 'μm²'),
+      out('V', 'V', 'Volume', 'μm³'),
+      out('q', 'A ÷ V', 'Surface area to volume', 'per μm'),
+    ],
+    rules: cellRules(),
+    example: example({ r }, ['A', areaOf], ['V', volumeOf], ['q', ratioOf]),
+    startWith: ['r'],
+    representation: {
+      kind: 'curvedSolid',
+      shape: 'sphere',
+      radius: 'r',
+      extent: 2 * r,
+      ratio: { area: 'A', volume: 'V', ratio: 'q', compare },
+    },
+  });
+
+const CELL_RATIO = cellPage(
+  'g.he-curvedSolid-ratio',
+  'Why cells are small: surface area to volume',
+  'Use this for “A cell has a radius of 5 μm. What is its surface area to volume ratio, and what happens when it doubles in width?”',
+  5,
+  2,
+  1000,
+);
+
+/** A bacterium beside a cell ten times as wide: the edge of the range, r = 0.5 μm. */
+const CELL_RATIO_SMALL = cellPage(
+  'g.he-curvedSolid-ratio-bacterium',
+  'A bacterium’s surface area to volume',
+  'Use this for “A bacterium is a sphere 0.5 μm in radius. How does its A ÷ V compare with a cell ten times as wide?”',
+  0.5,
+  10,
+  1000,
+);
+
+// ─── HC142: chromosomes, chromatids and DNA by stage (principles-1#3) ──────────────
+
+/** A value worked out from others, never solved backwards. */
+const derive = (
+  x: string,
+  inputs: string[],
+  display: string,
+  f: (v: Values) => number,
+  expr: string,
+  how: string,
+): Rule =>
+  rule(x, display, [x, ...inputs], (v) => v[x]! - f(v), {
+    [x]: [(v) => fin(f(v)), expr, how],
+  });
+
+const contentPage = (id: string, title: string, use: string, D: number, extra: string) =>
+  page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'A G₁ cell holds 2n chromosomes of one chromatid each: its DNA content is called 2c.',
+      'S copies every chromosome (4c); meiosis I parts the pairs (2c), meiosis II the sisters (1c).',
+      extra,
+    ],
+    variables: [
+      num('D', '2n', 'Chromosomes in a body cell', undefined, 2, 100, {
+        integer: true,
+        step: 2,
+        multipleOf: 2,
+      }),
+      out('n', 'n', 'Chromosomes in a gamete', undefined, { integer: true }),
+      out('X', 'X', 'Chromatids after S', undefined, { integer: true }),
+      num('c1', 'DNA₁', 'DNA in G₁ (c)', undefined, 2, 2),
+      out('c2', 'DNA₂', 'DNA after S (c)'),
+      out('c4', 'DNA₄', 'DNA in a gamete (c)'),
+      out('C', 'C', 'Kinds of gamete', undefined, { integer: true }),
+    ],
+    rules: [
+      derive(
+        'n',
+        ['D'],
+        '{n} = {D} ÷ 2',
+        (v) => v.D! / 2,
+        '{D} ÷ 2',
+        'A gamete keeps one of each pair.',
+      ),
+      derive(
+        'X',
+        ['D'],
+        '{X} = 2 × {D}',
+        (v) => 2 * v.D!,
+        '2 × {D}',
+        'S copies each chromosome into two sister chromatids.',
+      ),
+      derive(
+        'c2',
+        ['c1', 'X', 'D'],
+        '{c2} = {c1} × {X} ÷ {D}',
+        (v) => (v.c1! * v.X!) / v.D!,
+        '{c1} × {X} ÷ {D}',
+        'DNA goes with the chromatids: S doubles them, so it doubles the DNA.',
+      ),
+      derive(
+        'c4',
+        ['c2'],
+        '{c4} = {c2} ÷ 2 ÷ 2',
+        (v) => v.c2! / 2 / 2,
+        '{c2} ÷ 2 ÷ 2',
+        'Each of the two meiotic divisions halves the DNA.',
+      ),
+      derive(
+        'C',
+        ['n'],
+        '{C} = 2^{n}',
+        (v) => 2 ** v.n!,
+        '2^{n}',
+        'Each pair lines up either way round, so every pair doubles the kinds of gamete.',
+      ),
+    ],
+    example: { D, n: D / 2, X: 2 * D, c1: 2, c2: 4, c4: 1, C: 2 ** (D / 2) },
+    startWith: ['D', 'c1'],
+    representation: {
+      kind: 'cellDivision',
+      diploid: 'D',
+      haploid: 'n',
+      chromatids: 'X',
+      combinations: 'C',
+      content: { chromatids: 'X', dna: 'c1', gamete: 'c4' },
+    },
+  });
+
+const DIVISION_CONTENT = contentPage(
+  'g.he-cellDivision-content',
+  'Chromosomes, chromatids and DNA through meiosis',
+  'Use this for “A human cell has 2n = 46. How many chromosomes, chromatids and c of DNA are there in G₁, after S and in a gamete?”',
+  46,
+  'Humans have 2n = 46; crossing over is left out of the count of gametes.',
+);
+
+/** 2n = 4: every chromosome drawn in each stage. */
+const DIVISION_CONTENT_SMALL = contentPage(
+  'g.he-cellDivision-content-four',
+  'Meiosis in a cell with 2n = 4',
+  'Use this for “A cell with 2n = 4 goes through meiosis. How many chromatids does it hold after S, and after meiosis I?”',
+  4,
+  'With 2n = 4 every chromosome is drawn: two pairs, one of each pair from each parent.',
+);
+
+// ─── HC143: evidence for evolution (principles-2#0) ────────────────────────────────
+
+const icon = (label: string, bin: string, name: CardIcon) => ({
+  label,
+  bin,
+  figure: { kind: 'icon' as const, icon: name },
+});
+
+const SORT_EVIDENCE: LayoutDef = {
+  id: 'g.he-cardIcons-evolution',
+  title: 'Homologous, analogous or vestigial?',
+  kind: 'sort',
+  use: 'Use this for sorting structures as homologous, analogous or vestigial evidence for evolution.',
+  assumptions: [
+    'Homologous parts share an ancestor’s plan; analogous parts share a job.',
+    'A vestigial part is a reduced remnant of one that worked in an ancestor.',
+  ],
+  intro:
+    'Look at the bones: the same bones in a new job, a job done with other parts, or a leftover.',
+  question: 'What does the structure show?',
+  bins: [
+    {
+      id: 'homologous',
+      label: 'Homologous structure',
+      why: 'The same bones in the same order, doing different jobs: a shared ancestor.',
+    },
+    {
+      id: 'analogous',
+      label: 'Analogous structure',
+      why: 'The same job done with a different build: the two evolved it apart.',
+    },
+    {
+      id: 'vestigial',
+      label: 'Vestigial structure',
+      why: 'A reduced part with little or no use, left over from an ancestor that used it.',
+    },
+  ],
+  cards: [
+    icon('Human arm', 'homologous', 'human arm bones'),
+    icon('Bat wing', 'homologous', 'bat wing bones'),
+    icon('Whale flipper', 'homologous', 'whale flipper bones'),
+    icon('Cat foreleg', 'homologous', 'cat leg bones'),
+    icon('Insect wing', 'analogous', 'insect wing'),
+    icon('Bird wing and butterfly wing', 'analogous', 'bird wing and butterfly wing'),
+    icon('Shark fin and dolphin flipper', 'analogous', 'shark fin and dolphin flipper'),
+    icon('Whale pelvis', 'vestigial', 'whale pelvis'),
+    icon('Human appendix', 'vestigial', 'human appendix'),
+  ],
+};
+
+// ─── HC144: pedigree risk and modes of inheritance (genetics#0, ~modes) ─────────────
+
+/** A person in a pedigree. */
+const person = (
+  id: string,
+  sex: 'male' | 'female',
+  generation: number,
+  more: Partial<PedigreePerson> = {},
+): PedigreePerson => ({ id, sex, generation, ...more });
+
+const riskOf = (v: Values) => v.p1! * v.p2! * 0.25;
+
+const riskPage = (
+  id: string,
+  title: string,
+  use: string,
+  people: PedigreePerson[],
+  typed: Values,
+  extra: string,
+) =>
+  page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'The trait is autosomal recessive: only aa shows it.',
+      'An unaffected sibling of an affected child is a carrier 2 times in 3 (AA, Aa or aA; aa is ruled out).',
+      extra,
+    ],
+    variables: [
+      num('p1', 'p₁', 'Chance the parent is a carrier', undefined, 0, 1, { step: 0.01 }),
+      num('p2', 'p₂', 'Chance the partner is a carrier', undefined, 0, 1, { step: 0.01 }),
+      out('P', 'P', 'Chance of an affected child'),
+    ],
+    rules: [
+      rule('risk', '{P} = {p1} × {p2} × 1/4', ['P', 'p1', 'p2'], (v) => v.P! - riskOf(v), {
+        P: [
+          riskOf,
+          '{p1} × {p2} × 1/4',
+          'Both parents must be carriers, and then a child is aa one time in 4.',
+        ],
+        p1: [
+          (v) => fin((4 * v.P!) / v.p2!),
+          '4 × {P} ÷ {p2}',
+          'Undo the × 1/4 and the partner’s chance.',
+        ],
+        p2: [
+          (v) => fin((4 * v.P!) / v.p1!),
+          '4 × {P} ÷ {p1}',
+          'Undo the × 1/4 and the parent’s chance.',
+        ],
+      }),
+    ],
+    example: example(typed, ['P', riskOf]),
+    startWith: ['p2', 'p1'],
+    representation: {
+      kind: 'pedigree',
+      people,
+      chances: { II2: 'p1', II3: 'p2' },
+      child: { parents: ['II2', 'II3'], chance: 'P' },
+    },
+  });
+
+const PEDIGREE_RISK = riskPage(
+  'g.he-pedigree-chance',
+  'Pedigree risk: a child of an unaffected sibling',
+  'Use this for “Her brother has cystic fibrosis; her partner’s carrier chance is 1/25. What is the chance their child is affected?”',
+  [
+    person('I1', 'male', 1),
+    person('I2', 'female', 1),
+    person('II1', 'male', 2, { trait: true, parents: ['I1', 'I2'] }),
+    person('II2', 'female', 2, { parents: ['I1', 'I2'] }),
+    person('II3', 'male', 2, { partner: 'II2' }),
+  ],
+  { p1: 2 / 3, p2: 1 / 25 },
+  'The partner’s chance is the carrier frequency of the population (1 in 25 here).',
+);
+
+/** Both parents have an affected sibling: the edge of the page's range, 2/3 × 2/3 × 1/4. */
+const PEDIGREE_RISK_BOTH = riskPage(
+  'g.he-pedigree-chance-both',
+  'Pedigree risk: both parents have an affected sibling',
+  'Use this for “He and his wife each have a sister with the disease. What is the chance their first child has it?”',
+  [
+    person('I1', 'male', 1),
+    person('I2', 'female', 1),
+    person('I3', 'male', 1),
+    person('I4', 'female', 1),
+    person('II1', 'male', 2, { trait: true, parents: ['I1', 'I2'] }),
+    person('II2', 'female', 2, { parents: ['I1', 'I2'] }),
+    person('II3', 'male', 2, { parents: ['I3', 'I4'] }),
+    person('II4', 'female', 2, { trait: true, parents: ['I3', 'I4'] }),
+  ],
+  { p1: 2 / 3, p2: 2 / 3 },
+  'Each parent has an affected sibling, so each is a carrier 2 times in 3.',
+);
+
+/** The ~modes sort's cards: each pattern possible under one mode only. */
+const fam = (...people: PedigreePerson[]) => people;
+const MODES_SORT: LayoutDef = {
+  id: 'g.he-pedigree-modes',
+  title: 'Mode of inheritance from a pedigree',
+  kind: 'sort',
+  use: 'Use this for deciding whether a trait is autosomal dominant, autosomal recessive or X-linked recessive from a pedigree.',
+  assumptions: [
+    'Each trait is fully penetrant: everyone with the genotype shows it.',
+    'Half-filled symbols are carriers; where a card shows carriers, it shows all of them.',
+  ],
+  intro:
+    'Look for the deciding clue: an affected child of unaffected parents, an unaffected child of two affected parents, or a carrier mother’s affected son.',
+  question: 'Which mode of inheritance fits the family?',
+  bins: [
+    {
+      id: 'AD',
+      label: 'Autosomal dominant',
+      why: 'Two affected parents have an unaffected child: both were Aa and the child got a and a.',
+    },
+    {
+      id: 'AR',
+      label: 'Autosomal recessive',
+      why: 'Unaffected parents have an affected child (or a daughter): both parents carry a.',
+    },
+    {
+      id: 'XR',
+      label: 'X-linked recessive',
+      why: 'A carrier mother passes her X with the allele to a son, who shows it; the father gives sons his Y.',
+    },
+  ],
+  cards: [
+    {
+      label: 'Unaffected parents, affected daughter',
+      bin: 'AR',
+      figure: {
+        kind: 'pedigree',
+        people: fam(
+          person('a', 'male', 1),
+          person('b', 'female', 1),
+          person('c', 'male', 2, { parents: ['a', 'b'] }),
+          person('d', 'female', 2, { trait: true, parents: ['a', 'b'] }),
+          person('e', 'female', 2, { parents: ['a', 'b'] }),
+        ),
+      },
+    },
+    {
+      label: 'Two carrier parents',
+      bin: 'AR',
+      figure: {
+        kind: 'pedigree',
+        marked: true,
+        people: fam(
+          person('a', 'male', 1, { carrier: true }),
+          person('b', 'female', 1, { carrier: true }),
+          person('c', 'male', 2, { carrier: true, parents: ['a', 'b'] }),
+          person('d', 'female', 2, { trait: true, parents: ['a', 'b'] }),
+          person('e', 'male', 2, { parents: ['a', 'b'] }),
+        ),
+      },
+    },
+    {
+      label: 'Two affected parents, unaffected daughter',
+      bin: 'AD',
+      figure: {
+        kind: 'pedigree',
+        people: fam(
+          person('a', 'male', 1, { trait: true }),
+          person('b', 'female', 1, { trait: true }),
+          person('c', 'male', 2, { trait: true, parents: ['a', 'b'] }),
+          person('d', 'female', 2, { parents: ['a', 'b'] }),
+          person('e', 'female', 2, { trait: true, parents: ['a', 'b'] }),
+        ),
+      },
+    },
+    {
+      label: 'Three generations, affected couple',
+      bin: 'AD',
+      figure: {
+        kind: 'pedigree',
+        people: fam(
+          person('a', 'male', 1, { trait: true }),
+          person('b', 'female', 1),
+          person('c', 'female', 2, { parents: ['a', 'b'] }),
+          person('d', 'male', 2, { trait: true, parents: ['a', 'b'] }),
+          person('e', 'female', 2, { trait: true, partner: 'd' }),
+          person('f', 'male', 3, { parents: ['d', 'e'] }),
+          person('g', 'female', 3, { trait: true, parents: ['d', 'e'] }),
+        ),
+      },
+    },
+    {
+      label: 'Carrier mother, affected son',
+      bin: 'XR',
+      figure: {
+        kind: 'pedigree',
+        marked: true,
+        people: fam(
+          person('a', 'male', 1),
+          person('b', 'female', 1, { carrier: true }),
+          person('c', 'male', 2, { trait: true, parents: ['a', 'b'] }),
+          person('d', 'female', 2, { parents: ['a', 'b'] }),
+          person('e', 'male', 2, { parents: ['a', 'b'] }),
+        ),
+      },
+    },
+    {
+      label: 'Skips a generation through a daughter',
+      bin: 'XR',
+      figure: {
+        kind: 'pedigree',
+        marked: true,
+        people: fam(
+          person('a', 'male', 1),
+          person('b', 'female', 1, { carrier: true }),
+          person('c', 'male', 2, { trait: true, parents: ['a', 'b'] }),
+          person('d', 'female', 2, { carrier: true, parents: ['a', 'b'] }),
+          person('e', 'male', 2, { partner: 'd' }),
+          person('f', 'male', 3, { trait: true, parents: ['d', 'e'] }),
+          person('g', 'female', 3, { parents: ['d', 'e'] }),
+        ),
+      },
+    },
+  ],
+};
+
+// ─── HC145: linkage and mapping (genetics#1, ~three-point) ─────────────────────────
+
+const twoPointPage = (id: string, title: string, use: string, typed: Values, extra: string) =>
+  page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'A test cross: every offspring shows which alleles came from the heterozygous parent.',
+      'Recombinant offspring come from a crossover between the genes; 1% recombinants is 1 cM.',
+      extra,
+    ],
+    variables: [
+      num('P', 'P', 'Parental offspring', undefined, 1, 1e6, { integer: true, step: 1 }),
+      num('R', 'R', 'Recombinant offspring', undefined, 1, 1e6, { integer: true, step: 1 }),
+      out('N', 'N', 'Offspring', undefined, { integer: true }),
+      out('rf', 'RF', 'Recombination frequency', '%', { min: 0, max: 50 }),
+      out('d', 'd', 'Map distance', 'cM'),
+    ],
+    rules: [
+      rule('total', '{N} = {P} + {R}', ['N', 'P', 'R'], (v) => v.N! - v.P! - v.R!, {
+        N: [(v) => v.P! + v.R!, '{P} + {R}', 'Every offspring is parental or recombinant.'],
+        P: [(v) => v.N! - v.R!, '{N} − {R}', 'The offspring that are not recombinant.'],
+        R: [(v) => v.N! - v.P!, '{N} − {P}', 'The offspring that are not parental.'],
+      }),
+      rule('rf', '{rf} = 100 × {R} ÷ {N}', ['rf', 'R', 'N'], (v) => v.rf! - (100 * v.R!) / v.N!, {
+        rf: [
+          (v) => fin((100 * v.R!) / v.N!),
+          '100 × {R} ÷ {N}',
+          'The share of offspring that are recombinant, as a percent.',
+        ],
+      }),
+      rule('map', '{d} = {rf}', ['d', 'rf'], (v) => v.d! - v.rf!, {
+        d: [(v) => v.rf!, '{rf}', 'One percent recombinants is one centimorgan.'],
+        rf: [(v) => v.d!, '{d}', 'One centimorgan is one percent recombinants.'],
+      }),
+    ],
+    example: example(
+      typed,
+      ['N', (v) => v.P! + v.R!],
+      ['rf', (v) => (100 * v.R!) / v.N!],
+      ['d', (v) => v.rf!],
+    ),
+    startWith: ['P', 'R'],
+    representation: { kind: 'linkageMap', loci: ['A', 'B'], distances: ['d'], recombinant: 'rf' },
+  });
+
+const LINKAGE_TWO = twoPointPage(
+  'g.he-linkageMap-two',
+  'Map distance from a test cross',
+  'Use this for “A test cross gives 418 + 422 parental and 78 + 82 recombinant offspring. How far apart are the genes?”',
+  { P: 840, R: 160 },
+  'The two parental classes are added, and so are the two recombinant ones.',
+);
+
+/** Near the limit: 48% recombinants, almost as if the genes assorted independently. */
+const LINKAGE_LOOSE = twoPointPage(
+  'g.he-linkageMap-loose',
+  'Genes far apart on a chromosome',
+  'Use this for “520 parental and 480 recombinant offspring: are the genes linked, and how far apart are they?”',
+  { P: 520, R: 480 },
+  'Past 50 cM a test cross can’t tell linked genes from unlinked ones: RF stops at 50%.',
+);
+
+const expOf = (v: Values) => (v.d1! * v.d2! * v.N!) / 1e4;
+
+const LINKAGE_THREE = page({
+  id: 'g.he-linkageMap-three',
+  title: 'Three-point cross: interference',
+  use: 'Use this for “Genes 12 cM and 20 cM apart give 15 double crossovers in 1000. What is the interference?”',
+  assumptions: [
+    'The middle gene is the one that switches in the double crossovers.',
+    'With no interference, crossovers in the two intervals are independent: expected doubles = (d₁ ÷ 100)(d₂ ÷ 100)N.',
+    'Interference I = 1 − c.o.c.: one crossover makes a second one nearby less likely.',
+  ],
+  variables: [
+    num('d1', 'd₁', 'Distance A–B', 'cM', 0.1, 50, { step: 0.1 }),
+    num('d2', 'd₂', 'Distance B–C', 'cM', 0.1, 50, { step: 0.1 }),
+    out('dAC', 'd_AC', 'Distance A–C', 'cM'),
+    num('N', 'N', 'Offspring', undefined, 1, 1e6, { integer: true, step: 1 }),
+    out('E', 'E', 'Expected double crossovers'),
+    num('O', 'O', 'Observed double crossovers', undefined, 0, 1e6, { integer: true, step: 1 }),
+    out('coc', 'c.o.c.', 'Coefficient of coincidence'),
+    out('I', 'I', 'Interference'),
+  ],
+  rules: [
+    rule('ac', '{dAC} = {d1} + {d2}', ['dAC', 'd1', 'd2'], (v) => v.dAC! - v.d1! - v.d2!, {
+      dAC: [(v) => v.d1! + v.d2!, '{d1} + {d2}', 'Map distances add along the chromosome.'],
+    }),
+    rule(
+      'expected',
+      '{E} = {d1} ÷ 100 × {d2} ÷ 100 × {N}',
+      ['E', 'd1', 'd2', 'N'],
+      (v) => v.E! - expOf(v),
+      {
+        E: [
+          expOf,
+          '{d1} ÷ 100 × {d2} ÷ 100 × {N}',
+          'Two independent crossovers: multiply the two chances, then the offspring.',
+        ],
+      },
+    ),
+    rule('coc', '{coc} = {O} ÷ {E}', ['coc', 'O', 'E'], (v) => v.coc! - v.O! / v.E!, {
+      coc: [
+        (v) => fin(v.O! / v.E!),
+        '{O} ÷ {E}',
+        'How many of the expected double crossovers turned up.',
+      ],
+      O: [(v) => v.coc! * v.E!, '{coc} × {E}', 'The coincidence times the doubles expected.'],
+    }),
+    rule('interference', '{I} = 1 − {coc}', ['I', 'coc'], (v) => v.I! - (1 - v.coc!), {
+      I: [
+        (v) => 1 - v.coc!,
+        '1 − {coc}',
+        'The share of expected doubles that a first crossover prevented.',
+      ],
+      coc: [(v) => 1 - v.I!, '1 − {I}', 'Turn I = 1 − c.o.c. round.'],
+    }),
+  ],
+  example: example(
+    { d1: 12, d2: 20, N: 1000, O: 15 },
+    ['dAC', (v) => v.d1! + v.d2!],
+    ['E', expOf],
+    ['coc', (v) => v.O! / v.E!],
+    ['I', (v) => 1 - v.coc!],
+  ),
+  startWith: ['d1', 'd2', 'N', 'O'],
+  representation: {
+    kind: 'linkageMap',
+    loci: ['A', 'B', 'C'],
+    distances: ['d1', 'd2'],
+    offspring: 'N',
+    expected: 'E',
+    doubles: 'O',
+    coincidence: 'coc',
+    interference: 'I',
+  },
+});
+
+// ─── HC146: kinds of point mutation (genetics#2~mutations) ─────────────────────────
+
+const mutationCard = (
+  label: string,
+  bin: string,
+  mrna: string,
+  change: { type: 'substitution' | 'insertion' | 'deletion'; at: number; base?: string },
+) => ({ label, bin, figure: { kind: 'codons' as const, mrna, change } });
+
+const MUTATIONS_SORT: LayoutDef = {
+  id: 'g.he-codons-mutations',
+  title: 'Silent, missense, nonsense or frameshift?',
+  kind: 'sort',
+  use: 'Use this for naming a point mutation from the codons before and after it.',
+  assumptions: [
+    'Each card shows the mRNA before (top) and after (bottom) the change, each codon boxed with its amino acid.',
+    'The code is read three bases at a time from the start; the lit base is the one that changed.',
+  ],
+  intro:
+    'Compare the codon with the lit base: same amino acid, a different one, a stop, or the boxes regrouping.',
+  question: 'What does the mutation do to the protein?',
+  bins: [
+    {
+      id: 'silent',
+      label: 'Silent',
+      why: 'The new codon codes the same amino acid: the code has several codons for most of them.',
+    },
+    {
+      id: 'missense',
+      label: 'Missense',
+      why: 'The new codon codes a different amino acid; the rest of the protein is unchanged.',
+    },
+    {
+      id: 'nonsense',
+      label: 'Nonsense',
+      why: 'The new codon is a stop codon, so the protein ends early.',
+    },
+    {
+      id: 'frameshift',
+      label: 'Frameshift',
+      why: 'One base in or out moves every codon after it: the reading frame shifts.',
+    },
+  ],
+  cards: [
+    mutationCard('Base 6: U to C', 'silent', 'AUGGCUCUAGGA', {
+      type: 'substitution',
+      at: 6,
+      base: 'C',
+    }),
+    mutationCard('Base 9: U to C', 'silent', 'AUGAAAGUU', {
+      type: 'substitution',
+      at: 9,
+      base: 'C',
+    }),
+    mutationCard('Base 5: A to U', 'missense', 'AUGGAGCUU', {
+      type: 'substitution',
+      at: 5,
+      base: 'U',
+    }),
+    mutationCard('Base 1: U to C', 'missense', 'UUCCGAACU', {
+      type: 'substitution',
+      at: 1,
+      base: 'C',
+    }),
+    mutationCard('Base 4: C to U', 'nonsense', 'AUGCAGUGG', {
+      type: 'substitution',
+      at: 4,
+      base: 'U',
+    }),
+    mutationCard('Base 6: G to A', 'nonsense', 'AUGUGGAAA', {
+      type: 'substitution',
+      at: 6,
+      base: 'A',
+    }),
+    mutationCard('G put in before base 4', 'frameshift', 'AUGACCGUA', {
+      type: 'insertion',
+      at: 4,
+      base: 'G',
+    }),
+    mutationCard('Base 5 lost', 'frameshift', 'AUGUUCGCAAGA', { type: 'deletion', at: 5 }),
+  ],
+};
+
+// ─── HC147: the lac and trp operons (cell-molecular#2) ────────────────────────────
+
+const OPERONS: LayoutDef = {
+  kind: 'explore',
+  id: 'g.he-geneExpression-corepressor',
+  title: 'The lac and trp operons',
+  use: 'Use this for “Is the operon on or off: lac with lactose, or trp with tryptophan?”',
+  assumptions: [
+    'An inducible operon (lac) is off until its inducer pulls the repressor off the operator.',
+    'A repressible operon (trp) is on until its corepressor lets the repressor bind the operator.',
+    'Both repressors block RNA polymerase only while they sit on the operator.',
+  ],
+  figure: { kind: 'geneExpression' },
+  scenes: [
+    {
+      label: 'lac, no lactose',
+      lines: [
+        'The lac repressor sits on the operator and blocks RNA polymerase.',
+        'The gene is off: no enzymes for a sugar that is not there.',
+      ],
+      gene: { control: 'repressor', lit: 'protein' },
+    },
+    {
+      label: 'lac, lactose',
+      lines: [
+        'Allolactose, made from lactose, binds the repressor and pulls it off the operator.',
+        'The gene is on: RNA polymerase reads it into mRNA.',
+      ],
+      gene: { control: 'repressor', signal: true, lit: 'signal' },
+    },
+    {
+      label: 'trp, no tryptophan',
+      lines: [
+        'Without tryptophan the trp repressor cannot hold the operator.',
+        'The gene is on: the cell makes the enzymes that build tryptophan.',
+      ],
+      gene: { control: 'repressor', corepressor: true, lit: 'mRNA' },
+    },
+    {
+      label: 'trp, tryptophan',
+      lines: [
+        'Tryptophan is the corepressor: bound to the repressor, it lets it sit on the operator.',
+        'The gene is off: with tryptophan already there, no more is made.',
+      ],
+      gene: { control: 'repressor', corepressor: true, signal: true, lit: 'signal' },
+    },
+  ],
+};
+
+// ─── HC149: microbial structure and the resolution limit (microbiology#0, ~resolution) ──
+
+const SORT_GRAM: LayoutDef = {
+  id: 'g.he-cardIcons-gram',
+  title: 'Gram-positive or Gram-negative?',
+  kind: 'sort',
+  use: 'Use this for sorting cell-wall features and shapes as Gram-positive, Gram-negative or both.',
+  assumptions: [
+    'The Gram stain colours a thick peptidoglycan wall purple; a thin one under an outer membrane loses the purple and takes the pink counterstain.',
+    'Shape alone does not tell the stain: cocci and bacilli can be either.',
+  ],
+  intro: 'Compare each feature with the two walls drawn on the bins.',
+  question: 'Which cells have it?',
+  bins: [
+    {
+      id: 'positive',
+      label: 'Gram-positive',
+      why: 'A thick peptidoglycan wall threaded with teichoic acids holds the purple stain.',
+      figure: { kind: 'icon', icon: 'Gram-positive wall' },
+    },
+    {
+      id: 'negative',
+      label: 'Gram-negative',
+      why: 'A thin peptidoglycan layer under an outer membrane with LPS: the purple washes out.',
+      figure: { kind: 'icon', icon: 'Gram-negative wall' },
+    },
+    {
+      id: 'both',
+      label: 'Both',
+      why: 'Every bacterium has a plasma membrane and 70S ribosomes, whatever its wall.',
+      figure: { kind: 'icon', icon: 'bacterium' },
+    },
+  ],
+  cards: [
+    { label: 'Thick peptidoglycan', bin: 'positive' },
+    { label: 'Teichoic acids', bin: 'positive' },
+    { label: 'Stains purple', bin: 'positive' },
+    {
+      label: 'Endospores (Bacillus, Clostridium)',
+      bin: 'positive',
+      figure: { kind: 'icon', icon: 'endospore' },
+    },
+    { label: 'Outer membrane with LPS', bin: 'negative' },
+    { label: 'Thin peptidoglycan layer', bin: 'negative' },
+    { label: 'Stains pink', bin: 'negative' },
+    { label: 'Spirilla', bin: 'negative', figure: { kind: 'icon', icon: 'spirillum' } },
+    { label: 'Plasma membrane', bin: 'both' },
+    { label: '70S ribosomes', bin: 'both' },
+    { label: 'Cocci', bin: 'both', figure: { kind: 'icon', icon: 'coccus' } },
+    { label: 'Bacilli', bin: 'both', figure: { kind: 'icon', icon: 'bacillus' } },
+  ],
+};
+
+const dOf = (v: Values) => (0.61 * v.lam!) / v.na!;
+
+const resolutionPage = (id: string, title: string, use: string, typed: Values, extra: string) =>
+  page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'Each point of light blurs to an Airy disk; d, the radius of its first dark ring, is the resolution limit.',
+      'Two points are just resolved when one’s peak sits on the other’s first dark ring (Rayleigh).',
+      extra,
+    ],
+    variables: [
+      num('lam', 'λ', 'Wavelength', 'nm', 380, 700, { step: 1 }),
+      num('na', 'NA', 'Numerical aperture', undefined, 0.1, 1.4, { step: 0.01 }),
+      out('d', 'd', 'Resolution limit', 'nm'),
+      num('gap', 'g', 'Distance between the points', 'nm', 1, 1e5, { step: 1 }),
+      out('k', 'g ÷ d', 'Gap in resolution limits'),
+      num('ob', 'M_obj', 'Objective', '×', 1, 200, { step: 1 }),
+      num('ey', 'M_eye', 'Eyepiece', '×', 1, 30, { step: 1 }),
+      out('tot', 'M', 'Total magnification', '×'),
+      out('seen', 'g_seen', 'Gap as seen in the eyepiece', 'μm'),
+    ],
+    rules: [
+      rule('limit', '{d} = 0.61 × {lam} ÷ {na}', ['d', 'lam', 'na'], (v) => v.d! - dOf(v), {
+        d: [
+          dOf,
+          '0.61 × {lam} ÷ {na}',
+          'The Rayleigh limit: shorter light or a wider cone of it resolves finer detail.',
+        ],
+        na: [
+          (v) => fin((0.61 * v.lam!) / v.d!),
+          '0.61 × {lam} ÷ {d}',
+          'Turn d = 0.61λ ÷ NA round for NA.',
+        ],
+      }),
+      rule('gap', '{k} = {gap} ÷ {d}', ['k', 'gap', 'd'], (v) => v.k! - v.gap! / v.d!, {
+        k: [(v) => fin(v.gap! / v.d!), '{gap} ÷ {d}', 'At 1 or more the two points are resolved.'],
+      }),
+      rule('mag', '{tot} = {ob} × {ey}', ['tot', 'ob', 'ey'], (v) => v.tot! - v.ob! * v.ey!, {
+        tot: [
+          (v) => v.ob! * v.ey!,
+          '{ob} × {ey}',
+          'The eyepiece magnifies the objective’s image again.',
+        ],
+      }),
+      rule(
+        'seen',
+        '{seen} = {gap} × {tot} ÷ 1000',
+        ['seen', 'gap', 'tot'],
+        (v) => v.seen! - (v.gap! * v.tot!) / 1000,
+        {
+          seen: [
+            (v) => (v.gap! * v.tot!) / 1000,
+            '{gap} × {tot} ÷ 1000',
+            'Magnifying makes the gap look bigger (1000 nm in a μm), but blurred disks grow with it.',
+          ],
+        },
+      ),
+    ],
+    example: example(
+      typed,
+      ['d', dOf],
+      ['k', (v) => v.gap! / v.d!],
+      ['tot', (v) => v.ob! * v.ey!],
+      ['seen', (v) => (v.gap! * v.tot!) / 1000],
+    ),
+    startWith: ['lam', 'na', 'gap', 'ob', 'ey'],
+    representation: {
+      kind: 'fieldOfView',
+      resolution: {
+        d: 'd',
+        gap: 'gap',
+        wavelength: 'lam',
+        na: 'na',
+        objective: 'ob',
+        eyepiece: 'ey',
+        total: 'tot',
+      },
+    },
+  });
+
+const RESOLVED = resolutionPage(
+  'g.he-fieldOfView-resolution',
+  'The resolution limit of a lens',
+  'Use this for “What is the smallest detail a 1.25 NA objective resolves in 550 nm light?”',
+  { lam: 550, na: 1.25, gap: 300, ob: 100, ey: 10 },
+  'An oil-immersion objective (NA 1.25) at 1000× in green light.',
+);
+
+const RAYLEIGH = resolutionPage(
+  'g.he-fieldOfView-resolution-rayleigh',
+  'Two points just resolved',
+  'Use this for “Two points are as far apart as the resolution limit. What does the microscope show?”',
+  { lam: 500, na: 1, gap: 305, ob: 60, ey: 10 },
+  'The gap is the limit itself: the dip between the peaks is about a quarter.',
+);
+
+/** A low-power objective: the same two points blur into one. */
+const BLURRED = resolutionPage(
+  'g.he-fieldOfView-resolution-blob',
+  'Two points blurred into one',
+  'Use this for “Can a 10× objective of NA 0.25 separate two points 600 nm apart in 550 nm light?”',
+  { lam: 550, na: 0.25, gap: 600, ob: 10, ey: 10 },
+  'A dry 10× objective (NA 0.25) gathers a narrow cone of light, so its disks are wide.',
+);
+
+export const HE4I_GALLERY_MODULES: ModuleDef[] = [
+  CELL_RATIO,
+  CELL_RATIO_SMALL,
+  DIVISION_CONTENT,
+  DIVISION_CONTENT_SMALL,
+  PEDIGREE_RISK,
+  PEDIGREE_RISK_BOTH,
+  LINKAGE_TWO,
+  LINKAGE_LOOSE,
+  LINKAGE_THREE,
+  RESOLVED,
+  RAYLEIGH,
+  BLURRED,
+];
+
+export const HE4I_GALLERY_LAYOUTS: LayoutDef[] = [
+  SORT_EVIDENCE,
+  MODES_SORT,
+  MUTATIONS_SORT,
+  OPERONS,
+  SORT_GRAM,
+];

@@ -213,6 +213,8 @@ const PICTURE_NAMES: Record<string, string> = {
   bioreactor: 'a sparged bioreactor: cells by density, a dissolved-oxygen gauge from 0 to C∗',
   settlingTank: 'a settling basin to scale: a particle falling at v_s as the flow carries it',
   plume: 'a Gaussian plume from a stack: rise to H, σ_z widening, a receptor on the ground',
+  pedigree: 'a family in pedigree symbols with carrier chances and the next child’s chance',
+  linkageMap: 'genes on a chromosome at their map distances in cM, homologs crossing over',
   propertyDiagram: 'a T–v, P–v or T–s plane with the vapor dome, states and a cycle',
   elementChain: 'finite elements: springs or bars between nodes, loads, displacements; a mesh',
   fatigueDiagram: 'fatigue: a Goodman diagram, an S–N line on log axes, a Miner damage bar',

@@ -137,6 +137,13 @@ import {
 import { he4jIssues } from './picturesHe4j';
 import { he4lIssues } from './picturesHe4l';
 import { he4nIssues, vennThreeIssues } from './picturesHe4n';
+import {
+  cellRatioIssues,
+  divisionContentIssues,
+  linkageMapIssues,
+  pedigreeIssues,
+  resolutionIssues,
+} from './picturesHe4i';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -1747,6 +1754,10 @@ export function repIssues(
       break;
     }
     case 'fieldOfView': {
+      if (rep.resolution) {
+        out.push(...resolutionIssues(rep, val)); // HC149
+        break;
+      }
       count(rep.across, 'cells across');
       const [f, n, s] = [rep.field, rep.across, rep.size].map((id) => (id ? val(id) : undefined));
       if (
@@ -1947,6 +1958,7 @@ export function repIssues(
       // The caption works V from the radius and height drawn (in the radius's unit), so a
       // volume shown in another unit (L) is not compared here; the relation holds it.
       out.push(...he3cIssues(rep, val, byId)); // HC54: fill, slab
+      out.push(...cellRatioIssues(rep, val)); // HC141
       break;
     }
     case 'rightTriangle': {
@@ -2319,6 +2331,7 @@ export function repIssues(
     case 'macromolecules':
     case 'cellDivision':
       out.push(...hs2eIssues(rep, (id) => val(id)));
+      out.push(...divisionContentIssues(rep, val)); // HC142
       if (rep.kind === 'macromolecules') out.push(...proteinLevelIssues(rep, siHe4d(val, byId))); // HC115
       break;
     case 'neuron':
@@ -2596,6 +2609,12 @@ export function repIssues(
     case 'memoryMap':
     case 'datapath':
       out.push(...he4nIssues(rep, val)); // group N
+      break;
+    case 'pedigree':
+      out.push(...pedigreeIssues(rep, val)); // HC144
+      break;
+    case 'linkageMap':
+      out.push(...linkageMapIssues(rep, val)); // HC145
       break;
     case 'solidOfRevolution':
       out.push(...solidIssues(rep, val)); // HC65

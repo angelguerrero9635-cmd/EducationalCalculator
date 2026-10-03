@@ -35,6 +35,7 @@ import type { EarthSectionScene, Hs3cFigure } from '../typesHs3c';
 import type { He4dFigure, SymmetryScene } from '../typesHe4d';
 import type { He4lFigure, OrthoScene } from '../typesHe4l';
 import type { He4nFigure, He4nScene } from '../typesHe4n';
+import type { CodonsCard, PedigreeCard } from '../typesHe4i';
 import type { GelScene, Hs3dCard, Hs3dFigure, ObserveScale, ReflexScene } from '../typesHs3d';
 import type { Round3Icon } from './icons';
 import type { StrobeCard } from './strobeCard';
@@ -226,6 +227,10 @@ export type CardFigure =
   | PathwayStepCard
   /** College HC156 (`typesHe4j.ts`): a stick walker at one phase of the gait cycle, 112 × 76. */
   | GaitCard
+  /** College HC144 (`typesHe4i.ts`): a small pedigree in the standard symbols, 112 × 76. */
+  | PedigreeCard
+  /** College HC146 (`typesHe4i.ts`): a codon strip before and after a mutation, 140 × 74. */
+  | CodonsCard
   /** One stage of DNA replication, old strands dark and new ones lit (H100, `typesHs2e.ts`). */
   | ReplicationCard
   /** Biology round 3 (H109, `typesHs3d.ts`): a reflex arc, one part lit. */

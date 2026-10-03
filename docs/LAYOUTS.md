@@ -87,7 +87,9 @@ Grade 9 biology (H100, `layouts/geneExpressionFigure.tsx`): `geneExpression`, a 
 promoter, a gene and its switch, RNA polymerase and, when the gene is read, its mRNA; a scene's
 `gene: { control: 'repressor' | 'activator', signal?, lit? }` sets the switch: a repressor sits on
 the operator unless its signal (an inducer) pulls it off, an activator binds only with its
-signal, so the gene is on exactly when the signal is there.
+signal, so the gene is on exactly when the signal is there. HC147: `corepressor: true` (a repressor
+switch) makes the signal a corepressor (tryptophan, trp operon): the repressor binds only with it,
+so the gene is on exactly when it is absent.
 Also H100 (`layouts/dichotomousKeyFigure.tsx`): `dichotomousKey`, `{ kind: 'dichotomousKey', steps }` with
 `steps: { question, yes, no }[]` (an answer is the next question's index or a name), drawn as a
 tree down the page, each question's Yes then No indented under it; a scene's `key: { specimen?,
@@ -258,6 +260,25 @@ GD&T symbols (HC170, the same file), in a frame cell: `GD&T straightness`, `GD&T
 circularity`, `GD&T cylindricity`, `GD&T perpendicularity`, `GD&T parallelism`, `GD&T
 angularity`, `GD&T position`, `GD&T profile of a line`, `GD&T profile of a surface`, `GD&T
 circular runout`, `GD&T total runout`, `GD&T concentricity`, `GD&T symmetry`.
+College card icons, round 4 (group I, `layouts/icons/he4i.tsx`), evidence for evolution (HC143):
+`whale pelvis` and `human appendix` (vestigial, the part ringed), `bird wing and butterfly wing`
+and `shark fin and dolphin flipper` (analogous: one drawn with its arm bones, one without); the
+layout check keeps each one, and group HH's limbs, in the bin naming its kind of evidence.
+Microbial structure (HC149): `Gram-positive wall` and `Gram-negative wall` in section (for the
+bins: a thick purple peptidoglycan mesh with teichoic acids over the membrane; an outer membrane
+with LPS, a thin pink layer, the inner membrane), `coccus`, `bacillus`, `spirillum`, `endospore`;
+the layout check keeps a wall on the bin that names its stain.
+Card figure `pedigree` (HC144, `layouts/pedigreeCardHe4i.tsx`): `{ kind: 'pedigree', people,
+marked? }`, 112 × 76, a 2–3 generation family in the standard symbols, `people` as the explore
+figure lists them (drawn with the `pedigree` calculator picture's pieces); `marked` says the
+half-filled symbols are every carrier. The layout check finds the modes (autosomal or X-linked,
+dominant or recessive) the family allows: possible under its bin's mode, impossible under another.
+Card figure `codons` (HC146, `layouts/codonsCardHe4i.tsx`): `{ kind: 'codons', mrna, change: {
+type: 'substitution' | 'insertion' | 'deletion', at, base? } }`, 140 × 74, the mRNA strip of 3–4
+codons before (top) and after (bottom) the change, each codon boxed with its amino acid (the
+`dnaStrand` code, nothing after a stop), the changed base lit; after an insertion or a deletion
+the boxes regroup, so the reading frame moves. The layout check reads the effect (silent,
+missense, nonsense, frameshift) and keeps the card in the bin that names it.
 
 Observe figures: an observation can set `figure: { kind: 'shadowStick', stick: 100 }`
 (`layouts/ShadowStick.tsx`): a meter stick and its noon shadow for the column tapped last, to

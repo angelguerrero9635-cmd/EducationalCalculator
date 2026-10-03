@@ -31,6 +31,7 @@ import { Marbles } from './Marbles';
 import { EnergyPyramid } from './EnergyPyramid';
 import { Generations } from './Generations';
 import { FieldOfView } from './FieldOfView';
+import { ResolutionHe4i } from './ResolutionHe4i';
 import { GradCylinder } from './GradCylinder';
 import { BaseTen } from './BaseTen';
 import { Clock } from './Clock';
@@ -81,6 +82,8 @@ import { FitDiagram } from './FitDiagram';
 import { Casting } from './Casting';
 import { He4nView } from './He4nView';
 import { VennThree } from './VennThree';
+import { PedigreeHe4i } from './PedigreeHe4i';
+import { LinkageMap } from './LinkageMap';
 import { FunctionGraphHe4e } from './FunctionGraphHe4e';
 import { AlleleFrequenciesAfterHe4e } from './AlleleFrequenciesAfterHe4e';
 import { BarsLogHe1d } from './BarsLogHe1d';
@@ -532,6 +535,10 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'memoryMap':
     case 'datapath':
       return <He4nView spec={spec} calc={calc} />; // group N (HC184–HC191)
+    case 'pedigree':
+      return <PedigreeHe4i spec={spec} calc={calc} />; // HC144
+    case 'linkageMap':
+      return <LinkageMap spec={spec} calc={calc} />; // HC145
     case 'solidOfRevolution':
       return <SolidOfRevolution spec={spec} calc={calc} />; // HC65
     case 'thermalWall':
@@ -896,6 +903,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'generations':
       return <Generations spec={spec} calc={calc} />;
     case 'fieldOfView':
+      if (spec.resolution) return <ResolutionHe4i spec={spec} calc={calc} />; // HC149
       return <FieldOfView spec={spec} calc={calc} />;
     case 'gradCylinder':
       return <GradCylinder spec={spec} calc={calc} />;
