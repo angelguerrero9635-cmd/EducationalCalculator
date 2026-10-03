@@ -10,7 +10,40 @@ import type { Values } from '@/engine/types';
 
 import type { ModuleDef } from '../types';
 
-import { derive, powerRule, realRoots, rel, rels, rule, signed, V, withStep } from './shared';
+import { polyDerivative, polyForm } from './forms';
+import {
+  derive,
+  exact,
+  powerRule,
+  realRoots,
+  rel,
+  rels,
+  rule,
+  signed,
+  V,
+  withStep,
+} from './shared';
+
+/** "−12(−1)³": a coefficient times a point raised to a whole power (no power when it is 1). */
+const termAt = (k: number, x: number, p: number) =>
+  p === 0 ? formatNumber(k) : `${formatNumber(k)}(${formatNumber(x)})${p === 1 ? '' : raised(p)}`;
+
+/** Raised digits for a whole power: 3 → "³". */
+const raised = (p: number) => [...String(p)].map((d) => '⁰¹²³⁴⁵⁶⁷⁸⁹'[Number(d)]).join('');
+
+/**
+ * The power rule on c·xⁿ as form lines and the value at x, written with y and dy/dx as the use
+ * line is (a stated f(x) form would make the slope's "f′(x) = …" line read as an equation in f).
+ */
+const powerWork = (c: number, n: number, x: number) => {
+  const f = Array.from({ length: n + 1 }, (_, i) => (i === 0 ? c : 0));
+  return [
+    `y(x) = ${polyForm(f)} → dy/dx = ${polyForm(polyDerivative(f))}`,
+    n === 0
+      ? `dy/dx at x = ${formatNumber(x)} = 0`
+      : `dy/dx at x = ${formatNumber(x)} = ${termAt(n * c, x, n - 1)} = ${formatNumber(exact(powerRule(c, n, x)))}`,
+  ];
+};
 
 /** x² + bx + c at x. */
 const topAt = (v: Values, x: number) => x * x + v.b! * x + v.c!;
@@ -436,120 +469,118 @@ export const COLLEGE_MATH_MODULES: ModuleDef[] = [
     },
   },
   {
-    // Calculus I → Derivatives and differentiation rules
+    // Calculus I → Derivatives and differentiation rules: c·xⁿ by the power rule, its tangent.
     id: 'he.math.calc-1#1',
     use: 'Use this for “Find the slope of y = 3x⁴ at x = −1.”',
     assumptions: [
       'f′(x) = lim (h → 0) [f(x + h) − f(x)] ÷ h: the slope of the tangent line at x.',
-      'Power rule: the derivative of xⁿ is n·xⁿ⁻¹.',
-      'Constant-multiple rule: a constant c multiplies the derivative too.',
-      'This module covers the power and constant-multiple rules; n is a whole number 0–5, so f is defined for every x.',
+      'Power rule: the derivative of xⁿ is n·xⁿ⁻¹. Constant-multiple rule: c stays in front.',
+      'f(x) = c·xⁿ with n a whole number 0–6. With n = 0, f is the constant c and its slope is 0.',
     ],
     variables: [
-      { id: 'x', symbol: 'x', name: 'Point x', min: -3, max: 3, step: 0.1 },
-      { id: 'c', symbol: 'c', name: 'Constant c', min: -5, max: 5, step: 0.5 },
-      { id: 'n', symbol: 'n', name: 'Power n', min: 0, max: 5, step: 1, integer: true },
-      { id: 'y', symbol: 'f(x)', name: 'Function value', min: -2000, max: 2000 },
-      { id: 'm', symbol: 'f′(x)', name: 'Slope of tangent', min: -5000, max: 5000 },
+      V('c', 'c', 'Constant in front', { min: -5, max: 5, step: 0.5 }),
+      V('n', 'n', 'Power', { min: 0, max: 6, step: 1, integer: true }),
+      V('x', 'x', 'Point', { min: -3, max: 3, step: 0.1 }),
+      V('y', 'f(x)', 'Value there', { min: -4000, max: 4000, step: 0.0001 }),
+      V('m', 'f′(x)', 'Slope of the tangent', { min: -8000, max: 8000, step: 0.0001 }),
     ],
-    relations: [
-      {
-        id: 'f(x) = c·xⁿ',
-        display: '{y} = {c} × {x}^{n}',
-        vars: ['y', 'c', 'x', 'n'],
-        residual: (v) => v.y! - v.c! * v.x! ** v.n!,
-        solve: {
-          y: (v) => v.c! * v.x! ** v.n!,
-          // Where no value works, return [NaN] so the solver reports the impossibility.
-          c: (v) => {
-            const xn = v.x! ** v.n!;
-            if (xn !== 0) return v.y! / xn;
-            return v.y === 0 ? undefined : [NaN];
+    ...rels(
+      rel(
+        'f(x) = c·xⁿ',
+        '{y} = {c} × {x}^{n}',
+        ['y', 'c', 'x', 'n'],
+        (v) => v.y! - v.c! * v.x! ** v.n!,
+        {
+          y: [
+            (v) => v.c! * v.x! ** v.n!,
+            '{c} × {x}^{n}',
+            'Raise x to the power n, then multiply by c.',
+          ],
+          c: [
+            (v) => {
+              const xn = v.x! ** v.n!;
+              if (xn !== 0) return v.y! / xn;
+              return v.y === 0 ? undefined : [NaN];
+            },
+            '{y} ÷ {x}^{n}',
+            'Divide both sides by xⁿ.',
+          ],
+          x: [
+            (v) => {
+              // f is constant (c when n = 0, 0 when c = 0): any x works if f matches, none if not.
+              if (v.n === 0 || v.c === 0) {
+                return Math.abs(v.y! - (v.n === 0 ? v.c! : 0)) < 1e-9 ? undefined : [NaN];
+              }
+              return realRoots(v.y! / v.c!, v.n!);
+            },
+            // For even n the negative root is written with its sign.
+            // x < 0: the root of the positive ratio, with its sign written in front.
+            (v) =>
+              v.x! >= 0
+                ? '({y} ÷ {c})^(1 ÷ {n})'
+                : v.n! % 2 === 0
+                  ? '−({y} ÷ {c})^(1 ÷ {n})'
+                  : '−(−{y} ÷ {c})^(1 ÷ {n})',
+            'Divide by c, then take the n-th root. For even n both signs work; the one nearest the point is shown.',
+          ],
+        },
+      ),
+      withStep(
+        rel(
+          'f′(x) = n·c·xⁿ⁻¹',
+          '{m} = {n} × {c} × {x}^({n} − 1)',
+          ['m', 'n', 'c', 'x'],
+          (v) => v.m! - powerRule(v.c!, v.n!, v.x!),
+          {
+            m: [
+              (v) => powerRule(v.c!, v.n!, v.x!),
+              // A constant (n = 0) has slope 0: "0 × c × x^(−1)" would read as 0 × ∞ at x = 0.
+              (v) => (v.n === 0 ? '0 × {c}' : '{n} × {c} × {x}^({n} − 1)'),
+              (v) =>
+                v.n === 0
+                  ? 'f is the constant c, so its slope is 0 everywhere.'
+                  : 'Power rule: bring n down in front and lower the power by 1. Constant-multiple rule: keep c.',
+            ],
+            c: [
+              (v) => {
+                const d = v.n === 0 ? 0 : v.n! * v.x! ** (v.n! - 1);
+                if (d !== 0) return v.m! / d;
+                return v.m === 0 ? undefined : [NaN];
+              },
+              '{m} ÷ ({n} × {x}^({n} − 1))',
+              'Divide both sides by n·xⁿ⁻¹.',
+            ],
+            x: [
+              (v) => {
+                // f′ is constant (0 when n = 0 or c = 0, c when n = 1): any x works, or none.
+                if (v.n === 0 || v.c === 0) return v.m === 0 ? undefined : [NaN];
+                if (v.n === 1) return Math.abs(v.m! - v.c!) < 1e-9 ? undefined : [NaN];
+                return realRoots(v.m! / (v.n! * v.c!), v.n! - 1);
+              },
+              (v) =>
+                v.x! >= 0
+                  ? '({m} ÷ ({n} × {c}))^(1 ÷ ({n} − 1))'
+                  : (v.n! - 1) % 2 === 0
+                    ? '−({m} ÷ ({n} × {c}))^(1 ÷ ({n} − 1))'
+                    : '−(−{m} ÷ ({n} × {c}))^(1 ÷ ({n} − 1))',
+              'Divide by n·c, then take the (n − 1)-th root.',
+            ],
           },
-          x: (v) => {
-            // f is constant (c when n = 0, 0 when c = 0): any x works if f matches, none if not.
-            if (v.n === 0 || v.c === 0) {
-              return Math.abs(v.y! - (v.n === 0 ? v.c! : 0)) < 1e-9 ? undefined : [NaN];
-            }
-            return realRoots(v.y! / v.c!, v.n!);
-          },
-          n: (v) => {
-            if (v.c === 0) return v.y === 0 ? undefined : [NaN];
-            const ratio = v.y! / v.c!;
-            if (ratio === 0 || Math.abs(v.x!) === 1 || v.x === 0) return undefined;
-            return [Math.round(Math.log(Math.abs(ratio)) / Math.log(Math.abs(v.x!)))];
-          },
-        },
-      },
-      {
-        id: 'f′(x) = n·c·xⁿ⁻¹',
-        display: '{m} = {n} × {c} × {x}^({n} − 1)',
-        // A constant (n = 0) has slope 0 everywhere; "0 × c × 0^(−1)" would read as 0 × ∞.
-        check: (v) => {
-          const num = (x: number) => (x < 0 ? `(${formatNumber(x)})` : formatNumber(x));
-          return v.n === 0
-            ? `${num(v.m!)} = 0 × ${num(v.c!)}`
-            : `${num(v.m!)} = ${v.n} × ${num(v.c!)} × ${num(v.x!)}^(${v.n} − 1)`;
-        },
-        vars: ['m', 'n', 'c', 'x'],
-        residual: (v) => v.m! - powerRule(v.c!, v.n!, v.x!),
-        solve: {
-          m: (v) => powerRule(v.c!, v.n!, v.x!),
-          c: (v) => {
-            const d = v.n === 0 ? 0 : v.n! * v.x! ** (v.n! - 1);
-            if (d !== 0) return v.m! / d;
-            return v.m === 0 ? undefined : [NaN];
-          },
-          x: (v) => {
-            // f′ is constant (0 when n = 0 or c = 0, c when n = 1): any x works, or none.
-            if (v.n === 0 || v.c === 0) return v.m === 0 ? undefined : [NaN];
-            if (v.n === 1) return Math.abs(v.m! - v.c!) < 1e-9 ? undefined : [NaN];
-            return realRoots(v.m! / (v.n! * v.c!), v.n! - 1);
-          },
-        },
-      },
-    ],
-    steps: {
-      'f(x) = c·xⁿ': {
-        y: { expr: '{c} × {x}^{n}', how: 'Raise x to the power n, then multiply by c.' },
-        c: { expr: '{y} ÷ {x}^{n}', how: 'Divide both sides by xⁿ.' },
-        x: {
-          // For even n the negative root is written with its sign.
-          expr: (v) => (v.x! < 0 && v.n! % 2 === 0 ? '−' : '') + '({y} ÷ {c})^(1 ÷ {n})',
-          how: 'Divide by c, then take the n-th root. For even n both signs work; the one nearest the current point is shown.',
-        },
-        n: {
-          expr: 'ln|{y} ÷ {c}| ÷ ln|{x}|',
-          how: 'Divide by c, then take logarithms of both sides to bring n down; round to the nearest whole number.',
-        },
-      },
-      'f′(x) = n·c·xⁿ⁻¹': {
-        m: {
-          // A constant (n = 0) has slope 0: "0 × c × x^(−1)" would read as 0 × ∞ at x = 0.
-          expr: (v) => (v.n === 0 ? '0 × {c}' : '{n} × {c} × {x}^({n} − 1)'),
-          how: (v) =>
-            v.n === 0
-              ? 'The function is the constant c, so its slope is 0 everywhere.'
-              : 'Power rule: bring n down in front and lower the power by 1. Constant-multiple rule: keep c.',
-        },
-        c: { expr: '{m} ÷ ({n} × {x}^({n} − 1))', how: 'Divide both sides by n·xⁿ⁻¹.' },
-        x: {
-          expr: (v) =>
-            (v.x! < 0 && (v.n! - 1) % 2 === 0 ? '−' : '') + '({m} ÷ ({n} × {c}))^(1 ÷ ({n} − 1))',
-          how: 'Divide by n·c, then take the (n − 1)-th root.',
-        },
-      },
-    },
+        ),
+        'm',
+        { work: (v) => powerWork(v.c!, v.n!, v.x!) },
+      ),
+    ),
     example: { c: 1, n: 2, x: 1.5, y: 2.25, m: 3 },
     startWith: ['x', 'c', 'n'],
-    // Moves to `functionGraph` `family: 'power'` with `tangent` once HC37 is drawn (the plan).
+    equation: 'f(x) = {c}x^{n}\nf′({x}) = {m}',
     representation: {
-      kind: 'plot',
-      x: { var: 'x', min: -3, max: 3 },
-      y: { var: 'y', min: -4, max: 10 },
-      params: ['c', 'n'],
-      tangentSlope: 'm',
-      autoRange: true,
+      kind: 'functionGraph',
+      // c·xⁿ as an expression: the power family can't take n = 0 (a constant).
+      family: 'expr',
+      expr: 'c*x^n',
+      at: { x: 'x', y: 'y' },
+      tangent: { x: 'x', slope: 'm', y: 'y' },
     },
   },
 ];
