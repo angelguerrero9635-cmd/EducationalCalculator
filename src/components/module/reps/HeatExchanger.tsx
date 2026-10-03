@@ -151,6 +151,8 @@ export function HeatExchanger({ spec, calc }: { spec: Spec; calc: Calculator }) 
     if (t) {
       const hot = prof.map((p) => [sx(p.x), sy(p.Th)] as [number, number]);
       const cold = prof.map((p) => [sx(p.x), sy(p.Tc)] as [number, number]);
+      // The two lines block the labels placed below, so none sits across a line.
+      for (const [x, y] of [...hot, ...cold]) place.dot(x, y, 3);
       parts.push(
         <G key="lines" opacity={fade}>
           <Path d={poly(hot)} stroke={c.physHot} strokeWidth={2.6} fill="none" />
@@ -377,9 +379,7 @@ export function HeatExchanger({ spec, calc }: { spec: Spec; calc: Calculator }) 
     const s1 = counter ? 'T_hi − T_co' : 'T_hi − T_ci';
     const s2 = counter ? 'T_ho − T_ci' : 'T_ho − T_co';
     lines.push(`${name}: ΔT₁ = ${s1} = ${sigText(d1, 3)} K and ΔT₂ = ${s2} = ${sigText(d2, 3)} K.`);
-    lines.push(
-      `ΔT_lm = (ΔT₁ − ΔT₂) ÷ ln(ΔT₁ ÷ ΔT₂) = ${sigText(lm, 4)} K, between the two, where the dashed bracket stands.`,
-    );
+    lines.push(`ΔT_lm = (ΔT₁ − ΔT₂) ÷ ln(ΔT₁ ÷ ΔT₂) = ${sigText(lm, 4)} K, at the dashed bracket.`);
     if (minSide) {
       const [n1, d] = minSide === 'hot' ? [hotName, dropH] : [coldName, riseC];
       const [n2, e] = minSide === 'hot' ? [coldName, riseC] : [hotName, dropH];
@@ -409,7 +409,7 @@ export function HeatExchanger({ spec, calc }: { spec: Spec; calc: Calculator }) 
 
   return (
     <View>
-      <Canvas aspect={(w) => 410 / w}>{({ w, h }) => art(w, h)}</Canvas>
+      <Canvas aspect={(w) => 360 / w}>{({ w, h }) => art(w, h)}</Canvas>
       <Caption>{lines.join(' · ')}</Caption>
     </View>
   );

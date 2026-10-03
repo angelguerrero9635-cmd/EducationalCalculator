@@ -123,8 +123,7 @@ function clip(
 
 // ─── Lorentz ─────────────────────────────────────────────────────────────────
 
-const L_TOP = 4 * ROW + 14;
-const L_H = 410;
+const L_H = 320;
 
 function LorentzView({ spec, calc }: { spec: Lorentz; calc: Calculator }) {
   const c = usePalette();
@@ -167,27 +166,56 @@ function LorentzView({ spec, calc }: { spec: Lorentz; calc: Calculator }) {
     );
     lines.push(
       lz.s2 > 0
-        ? 's² > 0: timelike, so every frame agrees which came first.'
+        ? 's² > 0: timelike, so all frames agree on order.'
         : lz.s2 < 0
           ? 's² < 0: spacelike, so no signal links the event to the origin.'
           : 's² = 0: on the light line.',
     );
   } else if (!okB) lines.push('Type a speed β between −1 and 1 to tilt the moving frame.');
   else lines.push('Type the event’s x and ct to read it in both frames.');
-  if (okB)
-    lines.push(`The S′ axes tilt toward the light line by tan⁻¹β = ${fmt(Math.atan(b) / DEG)}°.`);
+  if (okB) lines.push(`The S′ axes tilt by tan⁻¹β = ${fmt(Math.atan(b) / DEG)}°.`);
 
   return (
     <View>
       <Canvas aspect={(w) => L_H / w}>
         {({ w }) => {
+          const groups: { text: string; color?: string }[][] = [
+            [
+              { text: label(spec.speed, 'β', b) ?? 'β = ?' },
+              ...(gamma !== undefined ? [{ text: label(spec.gamma, 'γ', gamma)! }] : []),
+            ],
+            ev
+              ? [
+                  { text: label(spec.x, 'x', ev.x, xu)! },
+                  { text: label(spec.ct, 'ct', ev.ct, xu)! },
+                ]
+              : [],
+            lz
+              ? [
+                  { text: label(spec.xPrime, 'x′', lz.xp, xu)!, color: c.he4cPrime },
+                  { text: label(spec.ctPrime, 'ct′', lz.ctp, xu)!, color: c.he4cPrime },
+                ]
+              : [],
+            lz ? [{ text: label(spec.interval, 's²', lz.s2, `${xu}²`)!, color: c.he4cEvent }] : [],
+          ];
+          // The pairs (β γ, x ct, x′ ct′, s²) share a row while they fit across, so the
+          // readout takes two rows on a phone, not four, and the plot keeps its size.
+          const rows: (typeof groups)[number][] = [];
+          for (const g of groups.filter((items) => items.length)) {
+            const last = rows[rows.length - 1];
+            const joined = last ? [...last, ...g] : g;
+            if (last && joined.reduce((sum, it) => sum + tagW(it.text) + 14, 6) <= w - 8)
+              rows[rows.length - 1] = joined;
+            else rows.push(g);
+          }
+          const top = rows.length * ROW + 14;
           const box = win.value;
           const availW = w - 16;
-          const availH = L_H - L_TOP - 10;
+          const availH = L_H - top - 10;
           const s = Math.min(availW / (box.x1 - box.x0), availH / (box.c1 - box.c0));
           const ox = (w - (box.x1 - box.x0) * s) / 2;
           const X = (xx: number) => ox + (xx - box.x0) * s;
-          const Y = (cc: number) => L_TOP + availH - (cc - box.c0) * s;
+          const Y = (cc: number) => top + availH - (cc - box.c0) * s;
           const seg = (dx: number, dct: number) => {
             const [lo, hi] = clip(dx, dct, box);
             return lo < hi
@@ -219,25 +247,6 @@ function LorentzView({ spec, calc }: { spec: Lorentz; calc: Calculator }) {
           const Q = lz && okB ? fromPrimed(b, 0, lz.ctp) : undefined;
           const arcR = 34;
           const tilt = okB ? Math.atan(b) : 0;
-          const rows = [
-            [
-              { text: label(spec.speed, 'β', b) ?? 'β = ?' },
-              ...(gamma !== undefined ? [{ text: label(spec.gamma, 'γ', gamma)! }] : []),
-            ],
-            ev
-              ? [
-                  { text: label(spec.x, 'x', ev.x, xu)! },
-                  { text: label(spec.ct, 'ct', ev.ct, xu)! },
-                ]
-              : [],
-            lz
-              ? [
-                  { text: label(spec.xPrime, 'x′', lz.xp, xu)!, color: c.he4cPrime },
-                  { text: label(spec.ctPrime, 'ct′', lz.ctp, xu)!, color: c.he4cPrime },
-                ]
-              : [],
-            lz ? [{ text: label(spec.interval, 's²', lz.s2, `${xu}²`)!, color: c.he4cEvent }] : [],
-          ];
           return (
             <>
               <Svg width={w} height={L_H}>

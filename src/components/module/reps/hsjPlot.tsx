@@ -77,7 +77,10 @@ export function makePlot(
   };
 }
 
-/** Grid, axes, numbers and names. `xNumbers: false` leaves the x-axis unnumbered. */
+/**
+ * Grid, axes, numbers and names. `xNumbers: false` leaves the x-axis unnumbered. The lowest
+ * y number sits just above its line, so it never meets the first x number at the corner.
+ */
 export function PlotFrame({
   p,
   xName,
@@ -124,7 +127,7 @@ export function PlotFrame({
           />
           <ChartText
             x={p.L - 5}
-            y={p.sy(v) + 4}
+            y={p.sy(v) + (xNumbers && v === p.y.lo ? -1 : 4)}
             textAnchor="end"
             fontSize={chart.label}
             fill={c.chartMuted}
