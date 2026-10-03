@@ -203,3 +203,18 @@ export function centroid(poly: Bary[]): Bary {
   const n = poly.length;
   return [0, 1, 2].map((k) => poly.reduce((s, p) => s + p[k]!, 0) / n) as Bary;
 }
+
+// ─── HC119: earthLayers rupture ─────────────────────────────────────────────────
+
+/** Seismic moment M₀ = μLWD in N·m, from μ in GPa, L and W in km and D in m. */
+export const momentOf = (mu: number, L: number, W: number, D: number) =>
+  mu * 1e9 * (L * 1e3) * (W * 1e3) * D;
+
+/** Moment magnitude Mw = (2 ÷ 3)(log₁₀ M₀ − 9.1), M₀ in N·m. */
+export const magnitudeOf = (m0: number) => (2 / 3) * (Math.log10(m0) - 9.1);
+
+/** The rupture patch drawn in a face `fw` × `fh` px: L × W to one scale, filling the face. */
+export function ruptureRect(L: number, W: number, fw: number, fh: number) {
+  const k = Math.max(L / fw, W / fh);
+  return { w: L / k, h: W / k };
+}

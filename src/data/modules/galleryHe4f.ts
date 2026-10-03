@@ -4,6 +4,7 @@
  * Spread into gallery.ts.
  * HC116: `ternary`, the new kind (he.earth-science.physical-geology#0, mineralogy#1~plagioclase).
  * HC117: `silicateChain`, the new kind (he.earth-science.physical-geology#0~silicates).
+ * HC119: `earthLayers` mode `rupture` (he.earth-science.physical-geology#2).
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
@@ -442,12 +443,105 @@ const SILICATES = [
   ),
 ];
 
+// ─── HC119: moment magnitude from a rupture (physical-geology#2) ────────────────
+
+/** A large number in step text as "1.2 × 10²⁰" (the steps work in scientific form). */
+const sci = (x: number) => {
+  const e = Math.floor(Math.log10(Math.abs(x)));
+  const m = Number((x / 10 ** e).toPrecision(7));
+  const sup = [...String(e)].map((d) => '⁰¹²³⁴⁵⁶⁷⁸⁹'[Number(d)] ?? '⁻').join('');
+  return `${m} × 10${sup}`;
+};
+
+const m0Of = (v: Values) => v.mu! * 1e9 * v.A! * 1e6 * v.D!;
+const mwOf = (v: Values) => (2 / 3) * (Math.log10(v.M0!) - 9.1);
+
+const rupturePage = (id: string, title: string, use: string, typed: Values) =>
+  page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'Mw measures the work of slip on the fault, so it does not saturate the way local magnitudes do.',
+      'Each whole step of Mw is about 32 times the energy.',
+      'The largest quakes recorded are near Mw 9.5; rigidity μ is about 30 GPa in the crust.',
+    ],
+    variables: [
+      num('mu', 'μ', 'Rigidity', 'GPa', 10, 70, { step: 1 }),
+      num('L', 'L', 'Rupture length', 'km', 0.01, 1500, { step: 1 }),
+      num('W', 'W', 'Rupture width', 'km', 0.01, 300, { step: 1 }),
+      num('D', 'D', 'Slip', 'm', 0.001, 60, { step: 0.1 }),
+      out('A', 'A', 'Rupture area', 'km²'),
+      out('M0', 'M₀', 'Seismic moment', 'N·m', { scientific: true }),
+      out('Mw', 'Mw', 'Moment magnitude'),
+    ],
+    rules: [
+      derive(
+        'A',
+        'A',
+        ['L', 'W'],
+        '{A} = {L} × {W}',
+        (v) => v.L! * v.W!,
+        '{L} × {W}',
+        'The patch that slipped is the rupture’s length times its width.',
+      ),
+      derive(
+        'M0',
+        'M0',
+        ['mu', 'A', 'D'],
+        '{M0} = {mu} × 10⁹ × {A} × 10⁶ × {D}',
+        m0Of,
+        '{mu} × 10⁹ × {A} × 10⁶ × {D}',
+        'The moment is rigidity (Pa) × area (m²) × slip (m): GPa to Pa is × 10⁹, km² to m² × 10⁶.',
+      ),
+      derive(
+        'Mw',
+        'Mw',
+        ['M0'],
+        '{Mw} = (2 ÷ 3) × (log₁₀({M0}) − 9.1)',
+        mwOf,
+        (v) => `(2 ÷ 3) × (log₁₀(${sci(v.M0!)}) − 9.1)`,
+        'Moment magnitude takes the log of the moment, so each step is a factor of about 32 in energy.',
+      ),
+    ],
+    example: example(typed, ['A', (v) => v.L! * v.W!], ['M0', m0Of], ['Mw', mwOf]),
+    startWith: ['L', 'W', 'D', 'mu'],
+    representation: {
+      kind: 'earthLayers',
+      mode: 'rupture',
+      length: 'L',
+      width: 'W',
+      slip: 'D',
+      rigidity: 'mu',
+      area: 'A',
+      moment: 'M0',
+      magnitude: 'Mw',
+    },
+  });
+
+const RUPTURE = rupturePage(
+  'g.he-earthLayers-rupture',
+  'Moment magnitude from a fault’s rupture',
+  'Use this for “A fault ruptures 100 km long and 20 km deep and slips 2 m in crust of rigidity 30 GPa. Find M₀ and Mw.”',
+  { mu: 30, L: 100, W: 20, D: 2 },
+);
+
+/** A great subduction quake: a rupture over a thousand kilometres long. */
+const RUPTURE_GREAT = rupturePage(
+  'g.he-earthLayers-rupture-great',
+  'A great subduction earthquake’s magnitude',
+  'Use this for “A megathrust ruptures 1,000 km by 200 km and slips 15 m (μ = 40 GPa). What is Mw?”',
+  { mu: 40, L: 1000, W: 200, D: 15 },
+);
+
 export const HE4F_GALLERY_MODULES: ModuleDef[] = [
   QAP,
   QAP_DIORITE,
   PLAGIOCLASE,
   ALBITE,
   ...SILICATES,
+  RUPTURE,
+  RUPTURE_GREAT,
 ];
 
 export const HE4F_GALLERY_LAYOUTS: LayoutDef[] = [];

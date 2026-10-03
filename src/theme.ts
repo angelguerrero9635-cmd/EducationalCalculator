@@ -408,6 +408,9 @@ const light = {
   he4fTetra: '#DCE6F0',
   he4fTetraLit: '#C7CDFB',
   he4fSilicon: '#6F819B',
+  /** HC119: the crust's cut end, and the rupture patch and its magnitude bar. */
+  he4fCrustDeep: '#6E5340',
+  he4fRupture: '#D9483B',
   /** The atmosphere (H76): its four layers as bands, the ozone layer, and highs and lows. */
   atmoTropo: '#DCEFFB',
   atmoStrato: '#E6E9FB',
@@ -1140,6 +1143,8 @@ const dark: Palette = {
   he4fTetra: '#2B3846',
   he4fTetraLit: '#3A3F7C',
   he4fSilicon: '#A3B1C6',
+  he4fCrustDeep: '#4E3A2C',
+  he4fRupture: '#F06A5C',
   atmoTropo: '#1C3446',
   atmoStrato: '#232A48',
   atmoMeso: '#2D2442',

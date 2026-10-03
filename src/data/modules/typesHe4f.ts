@@ -6,6 +6,7 @@
  *
  * - HC116 `ternary` (new kind): a triangle plot with a 10 % grid, QAP or feldspar fields.
  * - HC117 `silicateChain` (new kind): SiO₄ tetrahedra from above, sharing oxygens.
+ * - HC119 `earthLayers` mode `rupture`: the fault patch L × W to scale, slip, Mw against M 6.
  */
 import type { NumOrVar } from './typesGraphs';
 
@@ -67,11 +68,35 @@ export interface SilicateChainSpec {
   charge?: NumOrVar;
 }
 
+// ─── HC119: earthLayers mode rupture ───────────────────────────────────────────
+
+/**
+ * HC119 (EG-P5): moment magnitude. A block of crust cut along a vertical fault, its near half
+ * lifted away so the fault plane faces us, the rupture patch `length` × `width` (km) on it to
+ * scale (the sides in the ratio L : W), slip arrows `slip` (m) either side of the trace; under
+ * it the magnitude on a bar against an M 6 reference. `rigidity` is μ in GPa (default 30).
+ * `moment` (N·m) and `magnitude` are the page's (checked: M₀ = μLWD, Mw = (2 ÷ 3)(log₁₀ M₀ −
+ * 9.1) within 0.01); `area` its L × W (km²). A "?" length or width draws no patch.
+ */
+export interface RuptureSpec {
+  kind: 'earthLayers';
+  mode: 'rupture';
+  length: NumOrVar;
+  width: NumOrVar;
+  slip: NumOrVar;
+  rigidity?: NumOrVar;
+  area?: NumOrVar;
+  moment?: NumOrVar;
+  magnitude?: NumOrVar;
+}
+
 /** Every picture of group HE4F (new kinds and options on drawn kinds). */
-export type He4fSpec = TernarySpec | SilicateChainSpec;
+export type He4fSpec = TernarySpec | SilicateChainSpec | RuptureSpec;
 
 /** Whether a picture is one of group HE4F's (a new kind, or an option on a drawn kind). */
 export function isHe4fSpec(r: { kind: string }): r is He4fSpec {
+  const o = r as { kind: string; mode?: string };
+  if (r.kind === 'earthLayers') return o.mode === 'rupture';
   return r.kind === 'ternary' || r.kind === 'silicateChain';
 }
 
@@ -82,5 +107,7 @@ export function he4fSpecVars(r: He4fSpec): string[] {
       return ids(r.a, r.b, r.c, r.share, ...(r.normalized ?? []));
     case 'silicateChain':
       return ids(r.shared, r.units, r.oxygens, r.perSi, r.charge);
+    case 'earthLayers':
+      return ids(r.length, r.width, r.slip, r.rigidity, r.area, r.moment, r.magnitude);
   }
 }

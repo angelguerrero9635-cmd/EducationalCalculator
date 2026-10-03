@@ -634,6 +634,11 @@ search or the sitemap, but the module tests and the harness run over it):
 | `fluidSystem`      | tank, manometer, gate, float; venturi, pitot, jet; pipe grade lines    | College fluids, pipe networks (HC6) |
 | `none`             | no picture: the page opens on its values and equation, no labels       | Equation-only pages (H105)          |
 
+`earthLayers` mode `rupture` (HC119, `typesHe4f.ts`): a block of crust cut along a vertical fault,
+the near half lifted away, the rupture patch L × W to scale on the fault plane, slip arrows D, and
+Mw on a bar against an M 6 (fields `length`, `width`, `slip`, `rigidity?`, `area?`, `moment?`,
+`magnitude?`).
+
 `alleleFrequencies` (H38, a name too long for the table): 100 allele beads counted from p, a p
 scale to drag, and the bars p², 2pq and q², for Grade 9 population genetics.
 With `after` (p′; `change`, `fitness`, `mean`), a second tray for p′ after one generation of

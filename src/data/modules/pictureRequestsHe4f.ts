@@ -74,4 +74,21 @@ export const HE4F_REQUESTS: PictureRequest[] = [
       'g.he-silicateChain-framework',
     ],
   },
+  {
+    ...ask(
+      'HC119',
+      'earthLayers',
+      'Moment magnitude: a block of crust cut along a vertical fault, its near half lifted away so the rupture patch L × W shows on the fault plane to scale, slip arrows D on either side of the trace, and Mw on a bar against an M 6 reference',
+      [`${E}physical-geology#2`],
+      [
+        'From EG-P5. New mode on earthLayers (typesHe4f.ts RuptureSpec, reps/EarthRupture.tsx; M₀, Mw and the patch in reps/he4fMath.ts). The other modes are unchanged.',
+        "Fields: { kind: 'earthLayers', mode: 'rupture', length (L, km), width (W, km), slip (D, m), rigidity? (μ, GPa; default 30), area? (km²), moment? (M₀, N·m), magnitude? (Mw) }.",
+        'The patch fills the fault face at one scale, its sides in the ratio L : W; the crust is painted, the bars flat; the caption works M₀ = μLWD (μ in Pa, L and W in m) and Mw = (2 ÷ 3)(log₁₀ M₀ − 9.1), and the energy against an M 6 (10^(1.5ΔM)). A "?" L or W draws no patch, a "?" D no slip or bar. No handles.',
+        "Example: { kind: 'earthLayers', mode: 'rupture', length: 'L', width: 'W', slip: 'D', rigidity: 'mu', area: 'A', moment: 'M0', magnitude: 'Mw' } (30 GPa, 100 km × 20 km, 2 m → M₀ = 1.2 × 10²⁰ N·m, Mw = 7.32). The interim `magnitude` mode's m1 = 6, m2 = Mw is no longer needed.",
+        'Harness (harness/picturesHe4f.ts): the drawn patch’s sides are in the ratio L : W inside the face; A = LW; M₀ = μLWD; Mw = (2 ÷ 3)(log₁₀ M₀ − 9.1) within 0.01 of the page’s; Mw on the 0–10 bar.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: ['g.he-earthLayers-rupture', 'g.he-earthLayers-rupture-great'],
+  },
 ];

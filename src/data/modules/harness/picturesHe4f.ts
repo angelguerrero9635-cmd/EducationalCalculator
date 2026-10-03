@@ -8,13 +8,18 @@
  * - HC117 `silicateChain`: the oxygens counted in the box from the drawn corners (a corner held
  *   by two tetrahedra counts ½) equal n(4 − s ÷ 2); the boxed tetrahedra share s on average; the
  *   charge 4n − 2O equals −n(4 − s); the page's O, O per Si and charge agree.
+ * - HC119 `earthLayers` `rupture`: M₀ = μLWD and Mw = (2 ÷ 3)(log₁₀ M₀ − 9.1) (0.01); the drawn
+ *   patch's sides in the ratio L : W, inside the fault face; A = LW.
  */
 import {
   FELDSPAR_FIELDS,
   QAP_FIELDS,
   baryXY,
   inPolygon,
+  magnitudeOf,
+  momentOf,
   normalize,
+  ruptureRect,
   ternaryField,
 } from '@/components/module/reps/he4fMath';
 
@@ -26,7 +31,7 @@ import {
   wholeRepeat,
 } from '@/components/module/reps/silicateMath';
 
-import type { He4fSpec, SilicateChainSpec, TernarySpec } from '../typesHe4f';
+import type { He4fSpec, RuptureSpec, SilicateChainSpec, TernarySpec } from '../typesHe4f';
 
 type Val = (id: string) => number | undefined;
 
@@ -42,6 +47,8 @@ export function he4fIssues(rep: He4fSpec, val: Val): string[] {
       return ternaryIssues(rep, num);
     case 'silicateChain':
       return silicateIssues(rep, num);
+    case 'earthLayers':
+      return ruptureIssues(rep, num);
   }
 }
 
@@ -122,5 +129,37 @@ function silicateIssues(rep: SilicateChainSpec, num: Num): string[] {
     const v = num(field);
     if (v !== undefined && !near(v, want, 1e-6)) out.push(`silicate: ${what} ${v}, not ${want}`);
   }
+  return out;
+}
+
+function ruptureIssues(rep: RuptureSpec, num: Num): string[] {
+  const out: string[] = [];
+  const [L, W, D, mu] = [num(rep.length), num(rep.width), num(rep.slip), num(rep.rigidity ?? 30)];
+  if (L === undefined || W === undefined) return out;
+  if (!(L > 0 && W > 0)) {
+    out.push(`rupture: L = ${L} km and W = ${W} km must be above 0`);
+    return out;
+  }
+  // The patch, as EarthRupture draws it in its 220 × 98 px face.
+  const r = ruptureRect(L, W, 220, 98);
+  if (!near(r.w / r.h, L / W, 1e-9)) out.push(`rupture: the patch is ${r.w} × ${r.h}, not L : W`);
+  if (r.w > 220 + 1e-9 || r.h > 98 + 1e-9) out.push('rupture: the patch runs off the fault face');
+  const area = num(rep.area);
+  if (area !== undefined && !near(area, L * W, 1e-6))
+    out.push(`rupture: A = ${area}, not LW = ${L * W}`);
+  if (D === undefined || mu === undefined) return out;
+  const m0 = momentOf(mu, L, W, D);
+  // An independent sum: μ (Pa) × A (m²) × D (m).
+  if (!near(m0, mu * 1e9 * L * W * 1e6 * D, 1e-9)) out.push(`rupture: M₀ = ${m0} is not μLWD`);
+  const m0Page = num(rep.moment);
+  if (m0Page !== undefined && !near(m0Page, m0, 1e-6))
+    out.push(`rupture: the page's M₀ ${m0Page} is not μLWD = ${m0}`);
+  const mw = magnitudeOf(m0);
+  if (Math.abs(mw - ((Math.log(m0) / Math.LN10 - 9.1) * 2) / 3) > 1e-9)
+    out.push(`rupture: Mw = ${mw} is not (2 ÷ 3)(log₁₀ M₀ − 9.1)`);
+  const mwPage = num(rep.magnitude);
+  if (mwPage !== undefined && Math.abs(mwPage - mw) > 0.01)
+    out.push(`rupture: the page's Mw ${mwPage} is not ${mw}`);
+  if (mw > 10) out.push(`rupture: Mw ${mw} runs off the 0–10 bar`);
   return out;
 }
