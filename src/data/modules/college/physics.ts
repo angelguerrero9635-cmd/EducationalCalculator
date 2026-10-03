@@ -45,6 +45,15 @@ const fixed = (unit: string, min: number, max: number, step: number, derived = f
   ...(derived ? { derived } : {}),
 });
 
+/** x raised to a whole power 1–5, as a line prints it: "4³" (no power when it is 1). */
+const powerOf = (x: number, k: number) => `${formatNumber(x)}${k === 1 ? '' : '¹²³⁴⁵'[k - 1]}`;
+
+/** The work of F = cxⁿ from x₁ to x₂: c(x₂ⁿ⁺¹ − x₁ⁿ⁺¹) ÷ (n + 1). */
+const powerWork = (v: Values) => (v.c! * (v.x2! ** (v.n! + 1) - v.x1! ** (v.n! + 1))) / (v.n! + 1);
+
+/** "6x²", "6x", "6" (n = 0): the force cxⁿ with the page's numbers. */
+const powerForce = (c: number, n: number) => polyForm([c, ...Array<number>(n).fill(0)]);
+
 export const COLLEGE_PHYSICS_MODULES: ModuleDef[] = [
   {
     // University Physics I: Mechanics → Kinematics
@@ -926,6 +935,102 @@ export const COLLEGE_PHYSICS_MODULES: ModuleDef[] = [
       name: 'F',
       area: { from: 'x2', to: 'x1', value: 'W' },
       axes: { x: 'Stretch x (m)', y: 'Force kx (N)' },
+    },
+  },
+  {
+    // University Physics I → Work and energy: the work of a force that grows as a power of x,
+    // the area under F = cxⁿ by the power rule.
+    id: 'he.physics.university-1#2~power-law-force',
+    title: 'Work by a force F = cxⁿ',
+    use: 'Use this for “A force F = 0.5x³ N pushes a cart along a track from x = 2 m to x = 4 m. How much work does it do?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'The force acts along x and depends only on where the object is: F = cxⁿ, with c in N/mⁿ so that F is in newtons.',
+      'The work from x₁ to x₂ is the area under F between them: W = ∫ from x₁ to x₂ of cxⁿ dx.',
+      'x is at least 0, so xⁿ is defined for every power n from 0 to 4; n = 0 is a constant force.',
+    ],
+    variables: [
+      V('c', 'c', 'Force constant', { min: -1000, max: 1000, step: 0.1 }),
+      V('n', 'n', 'Power of x', { min: 0, max: 4, step: 1, integer: true }),
+      V('x1', 'x₁', 'Start position', fixed('m', 0, 100, 0.01)),
+      V('x2', 'x₂', 'End position', fixed('m', 0, 100, 0.01)),
+      V('W', 'W', 'Work by the force', fixed('J', -2e12, 2e12, 0.01, true)),
+    ],
+    ...rels(
+      withStep(
+        rel(
+          'W = c(x₂ⁿ⁺¹ − x₁ⁿ⁺¹) ÷ (n + 1)',
+          '{W} = {c} × ({x2}^({n} + 1) − {x1}^({n} + 1)) ÷ ({n} + 1)',
+          ['W', 'c', 'n', 'x1', 'x2'],
+          (v) => v.W! - powerWork(v),
+          {
+            W: [
+              (v) => exact(powerWork(v)),
+              (v) =>
+                `${signed(v.c!)} × (${powerOf(v.x2!, v.n! + 1)} − ${powerOf(v.x1!, v.n! + 1)}) ÷ ${v.n! + 1}`,
+              'Power rule: an antiderivative of cxⁿ is cxⁿ⁺¹ ÷ (n + 1). Take its value at x₂ less its value at x₁.',
+            ],
+            c: [
+              (v) => div((v.n! + 1) * v.W!, v.x2! ** (v.n! + 1) - v.x1! ** (v.n! + 1)),
+              (v) =>
+                `${v.n! + 1} × ${signed(v.W!)} ÷ (${powerOf(v.x2!, v.n! + 1)} − ${powerOf(v.x1!, v.n! + 1)})`,
+              'Undo the work formula for c: multiply the work by n + 1, then divide by x₂ⁿ⁺¹ − x₁ⁿ⁺¹.',
+            ],
+            x2: [
+              (v) => {
+                const k = v.n! + 1;
+                const top = (k * v.W!) / v.c! + v.x1! ** k;
+                if (!Number.isFinite(top)) return undefined;
+                return top < 0 ? NaN : exact(top ** (1 / k));
+              },
+              (v) =>
+                v.n === 0
+                  ? `${signed(v.W!)} ÷ ${signed(v.c!)} + ${formatNumber(v.x1!)}`
+                  : `(${v.n! + 1} × ${signed(v.W!)} ÷ ${signed(v.c!)} + ${powerOf(v.x1!, v.n! + 1)})^(1 ÷ ${v.n! + 1})`,
+              'Multiply the work by n + 1 and divide by c to get x₂ⁿ⁺¹ − x₁ⁿ⁺¹. Add x₁ⁿ⁺¹, then take the (n + 1)-th root.',
+            ],
+          },
+          {
+            message: (v) =>
+              v.n !== undefined &&
+              v.W !== undefined &&
+              v.c !== undefined &&
+              v.x1 !== undefined &&
+              v.c !== 0 &&
+              ((v.n + 1) * v.W) / v.c + v.x1 ** (v.n + 1) < 0
+                ? 'No end position works: the force would have to take back more work than it does between 0 and x₁.'
+                : undefined,
+          },
+        ),
+        'W',
+        {
+          // The area under cxⁿ from x₁ to x₂, by the power rule (checked by quadrature).
+          work: (v) => {
+            if (v.c === 0) return []; // no force, no area
+            const [a, b] = [formatNumber(v.x1!), formatNumber(v.x2!)];
+            const k = v.n! + 1;
+            const anti = k === 1 ? powerForce(v.c!, 1) : `${powerForce(v.c!, k)} ÷ ${k}`;
+            return [
+              `∫ from ${a} to ${b} of ${powerForce(v.c!, v.n!)} dx = [${anti}] from ${a} to ${b}`,
+            ];
+          },
+        },
+      ),
+    ),
+    // F = 6x² N from 1 m to 4 m: W = 6 × (4³ − 1³) ÷ 3 = 6 × 63 ÷ 3 = 126 J. Meters from 1 to
+    // 4: the graph's x-axis spans at least 5, so the band fills most of it.
+    example: { c: 6, n: 2, x1: 1, x2: 4, W: 126 },
+    startWith: ['c', 'n', 'x1', 'x2'],
+    // The curve cxⁿ with the band from x₁ to x₂ shaded: its area is the work.
+    representation: {
+      kind: 'functionGraph',
+      family: 'power',
+      a: 'c',
+      exponent: 'n',
+      name: 'F',
+      area: { from: 'x1', to: 'x2', value: 'W' },
+      xMin: 0,
+      axes: { x: 'Position x (m)', y: 'Force F (N)' },
     },
   },
 ];
