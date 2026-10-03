@@ -2548,4 +2548,147 @@ export const COLLEGE_CHEMISTRY_MODULES: ModuleDef[] = [
       },
     } satisfies ModuleDef;
   })(),
+  (() => {
+    // General Chemistry II → Kinetics: a zero-order reaction, [A] after a time, t½ and when it
+    // runs out. k = 2.00 × 10⁻³ M/s, [A]₀ = 0.500 M, t = 100 s: [A] = 0.500 − 2.00 × 10⁻³ × 100
+    // = 0.500 − 0.200 = 0.300 M; t½ = 0.500 ÷ (2 × 2.00 × 10⁻³) = 125 s; t_end = 0.500 ÷
+    // (2.00 × 10⁻³) = 250 s.
+    const [k, A0, t] = [2.0e-3, 0.5, 100];
+    const conc = (id: string, symbol: string, name: string, min = 1e-9) =>
+      V(id, symbol, name, { unit: 'M', units: ['M'], min, max: 20, step: 0.0001 });
+    const time = (id: string, symbol: string, name: string, min = 1e-6) =>
+      V(id, symbol, name, { unit: 's', units: ['s'], min, max: 1e10, step: 0.01 });
+    const pos = (x: number) => (x > 0 && Number.isFinite(x) ? x : undefined);
+    return {
+      id: 'he.chemistry.gen-chem-2#0~zero-order',
+      title: 'A zero-order reaction',
+      workedFigures: 3,
+      use: 'Use this for “A zero-order reaction has k = 2.00 × 10⁻³ M/s. Starting at 0.500 M, find the concentration after 100 s, the half-life and when A runs out.”',
+      assumptions: [
+        'The reaction is zero order in A: rate = k, whatever [A] is, as when a catalyst surface is fully covered. So [A] falls by the same amount every second.',
+        'The half-life t½ = [A]₀ ÷ (2k) depends on [A]₀, and there is no second half-life: A runs out at t_end = 2t½.',
+        'The law holds only until A runs out, so t is at most [A]₀ ÷ k. A straight line of [A] against t, with slope −k, is the test for zero order.',
+        'k, [A] and t use the same units: M and seconds here.',
+      ],
+      variables: [
+        V('k', 'k', 'Rate constant', {
+          unit: 'M/s',
+          units: ['M/s'],
+          min: 1e-10,
+          max: 1e6,
+          step: 0.0001,
+          scientific: true,
+        }),
+        conc('A0', '[A]₀', 'Starting concentration'),
+        time('t', 't', 'Time', 0),
+        conc('A', '[A]', 'Concentration at time t', 0),
+        time('half', 't½', 'Half-life'),
+        time('tend', 't_end', 'Time A runs out'),
+      ],
+      ...rels(
+        rel(
+          '[A] = [A]₀ − kt',
+          '{A} = {A0} − {k} × {t}',
+          ['A', 'A0', 'k', 't'],
+          (v) => v.A! - v.A0! + v.k! * v.t!,
+          {
+            A: [
+              (v) => {
+                const a = v.A0! - v.k! * v.t!;
+                return a >= 0 ? a : undefined;
+              },
+              '{A0} − {k} × {t}',
+              'A is used at the steady rate k, so kt is used in time t. Take that from [A]₀.',
+            ],
+            A0: [
+              (v) => v.A! + v.k! * v.t!,
+              '{A} + {k} × {t}',
+              'Add back what was used, kt, to what is left.',
+            ],
+            k: [
+              (v) => pos((v.A0! - v.A!) / v.t!),
+              '({A0} − {A}) ÷ {t}',
+              'Find how much [A] fell, then divide by the time.',
+            ],
+            t: [
+              (v) => {
+                const x = (v.A0! - v.A!) / v.k!;
+                return x >= 0 && Number.isFinite(x) ? x : undefined;
+              },
+              '({A0} − {A}) ÷ {k}',
+              'Find how much [A] fell, then divide by k.',
+            ],
+          },
+        ),
+        rel(
+          't½ = [A]₀ ÷ (2k)',
+          '{half} = {A0} ÷ (2 × {k})',
+          ['half', 'A0', 'k'],
+          (v) => 2 * v.half! * v.k! - v.A0!,
+          {
+            half: [
+              (v) => pos(v.A0! / (2 * v.k!)),
+              '{A0} ÷ (2 × {k})',
+              'Half of [A]₀ is used at the steady rate k. Divide that half by k.',
+            ],
+            A0: [
+              (v) => pos(2 * v.k! * v.half!),
+              '2 × {k} × {half}',
+              'In one half-life, k × t½ is used, and that is half of [A]₀. Double it.',
+            ],
+            k: [
+              (v) => pos(v.A0! / (2 * v.half!)),
+              '{A0} ÷ (2 × {half})',
+              'Half of [A]₀ is used in one half-life. Divide it by the half-life.',
+            ],
+          },
+        ),
+        rel(
+          't_end = [A]₀ ÷ k',
+          '{tend} = {A0} ÷ {k}',
+          ['tend', 'A0', 'k'],
+          (v) => v.tend! * v.k! - v.A0!,
+          {
+            tend: [
+              (v) => pos(v.A0! / v.k!),
+              '{A0} ÷ {k}',
+              'All of [A]₀ is used at the steady rate k. Divide [A]₀ by k.',
+            ],
+            A0: [
+              (v) => pos(v.k! * v.tend!),
+              '{k} × {tend}',
+              'The steady rate times the time it lasts uses all of [A]₀.',
+            ],
+            k: [
+              (v) => pos(v.A0! / v.tend!),
+              '{A0} ÷ {tend}',
+              'All of [A]₀ is used by t_end. Divide [A]₀ by that time.',
+            ],
+          },
+        ),
+        rule(
+          'kt ≤ [A]₀',
+          '{k} × {t} ≤ {A0}',
+          ['k', 't', 'A0'],
+          (v) => v.k! * v.t! <= v.A0! * (1 + 1e-9),
+          'A has run out by then: kt can’t be more than [A]₀. Pick a time up to [A]₀ ÷ k.',
+        ),
+      ),
+      example: {
+        k,
+        A0,
+        t,
+        A: A0 - k * t,
+        half: A0 / (2 * k),
+        tend: A0 / k,
+      },
+      startWith: ['k', 'A0', 't'],
+      unitSystems: ['metric'],
+      representation: {
+        kind: 'chemDiagram',
+        mode: 'rate',
+        integrated: { order: 0, k: 'k', start: 'A0', t: 't', conc: 'A', half: 'half' },
+      },
+    } satisfies ModuleDef;
+  })(),
 ];
