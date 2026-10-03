@@ -1116,4 +1116,115 @@ export const COLLEGE_MATH_MODULES: ModuleDef[] = [
       fixed: true,
     },
   },
+  {
+    // Calculus I → Derivatives and differentiation rules: the tangent to √x as an estimate.
+    id: 'he.math.calc-1#1~linear-approx',
+    title: 'Linear approximation of √x',
+    use: 'Use this for “Use the linearization of √x at a = 25 to estimate √26.”',
+    assumptions: [
+      'L(x) = f(a) + f′(a)(x − a) is the tangent line at a. Near a it stays close to the curve, so f(x) ≈ L(x).',
+      'For f(x) = √x the power rule on x^(1/2) gives f′(x) = 1 ÷ (2√x), so a must be above 0.',
+      'Pick a near x where √a is known, a perfect square, so f(a) and f′(a) are exact.',
+      '√x bends down, so its tangent lies above it: L(x) is a little too big, and the error L(x) − f(x) is never negative.',
+    ],
+    variables: [
+      V('a', 'a', 'Point of tangency', { min: 0.01, max: 10000, step: 1 }),
+      V('X', 'x', 'Point to estimate', { min: 0, max: 10000, step: 0.1 }),
+      V('fa', 'f(a)', 'Value at a', { min: 0.1, max: 100, step: 0.0001 }),
+      V('fpa', 'f′(a)', 'Slope at a', { min: 0.005, max: 5, step: 0.0001 }),
+      V('L', 'L(x)', 'Linear approximation', { min: -100, max: 50000, step: 0.0001 }),
+      V('tv', 'f(x)', 'True value √x', { min: 0, max: 100, step: 0.0001 }),
+      V('err', 'E', 'Error L(x) − f(x)', { min: 0, max: 50000, step: 0.0001, derived: true }),
+    ],
+    ...rels(
+      rule(
+        'a > 0',
+        'The point of tangency {a} is above 0',
+        ['a'],
+        (v) => v.a! > 0,
+        'At a = 0 the slope 1 ÷ (2√a) has no value (the tangent there is vertical). Pick an a above 0.',
+      ),
+      rel('f(a) = √a', '{fa} = √{a}', ['fa', 'a'], (v) => v.fa! ** 2 - v.a!, {
+        fa: [
+          (v) => (v.a! < 0 ? undefined : exact(Math.sqrt(v.a!))),
+          '√{a}',
+          'The value of the curve at the point of tangency.',
+        ],
+        a: [(v) => (v.fa! < 0 ? undefined : v.fa! ** 2), '{fa}²', 'Square f(a) to get a back.'],
+      }),
+      withStep(
+        derive(
+          'f′(a) = 1 ÷ (2√a)',
+          '{fpa} = 1 ÷ (2 × {fa})',
+          'fpa',
+          ['fa'],
+          (v) => (v.fa! > 0 ? 1 / (2 * v.fa!) : undefined),
+          '1 ÷ (2 × {fa})',
+          'Power rule on x^(1/2): bring ½ down and lower the power to −½, so f′(x) = 1 ÷ (2√x). Use √a = f(a).',
+        ),
+        'fpa',
+        { work: () => ['y(x) = √x → dy/dx = 1 ÷ (2√x)'] },
+      ),
+      withStep(
+        rel(
+          'L = f(a) + f′(a)(x − a)',
+          '{L} = {fa} + {fpa} × ({X} − {a})',
+          ['L', 'fa', 'fpa', 'X', 'a'],
+          (v) => v.L! - (v.fa! + v.fpa! * (v.X! - v.a!)),
+          {
+            L: [
+              (v) => v.fa! + v.fpa! * (v.X! - v.a!),
+              '{fa} + {fpa} × ({X} − {a})',
+              'Start at f(a) and follow the tangent’s slope for the step x − a.',
+            ],
+            X: [
+              (v) => (v.fpa === 0 ? undefined : v.a! + (v.L! - v.fa!) / v.fpa!),
+              '{a} + ({L} − {fa}) ÷ {fpa}',
+              'Take f(a) from L, divide by the slope, then add a.',
+            ],
+          },
+        ),
+        'L',
+        {
+          work: (v) => [
+            `L(x) = ${formatNumber(v.fa!)} + ${formatNumber(v.fpa!)}(x − ${formatNumber(v.a!)})`,
+          ],
+        },
+      ),
+      rel('f(x) = √x', '{tv} = √{X}', ['tv', 'X'], (v) => v.tv! ** 2 - v.X!, {
+        tv: [
+          (v) => (v.X! < 0 ? undefined : Math.sqrt(v.X!)),
+          '√{X}',
+          'The true value, worked out to compare.',
+        ],
+        X: [(v) => (v.tv! < 0 ? undefined : v.tv! ** 2), '{tv}²', 'Square the true value.'],
+      }),
+      derive(
+        'E = L(x) − f(x)',
+        '{err} = {L} − {tv}',
+        'err',
+        ['L', 'tv'],
+        (v) => v.L! - v.tv!,
+        '{L} − {tv}',
+        'How far the tangent sits above the curve at x.',
+      ),
+    ),
+    example: {
+      a: 4,
+      X: 4.1,
+      fa: 2,
+      fpa: 0.25,
+      L: 2.025,
+      tv: Math.sqrt(4.1),
+      err: 2.025 - Math.sqrt(4.1),
+    },
+    startWith: ['a', 'X'],
+    equation: 'L(x) = {fa} + {fpa}(x − {a})\n√{X} ≈ L({X}) = {L}',
+    representation: {
+      kind: 'functionGraph',
+      family: 'root',
+      index: 2,
+      tangent: { x: 'a', slope: 'fpa', y: 'fa', at: 'X', value: 'L' },
+    },
+  },
 ];
