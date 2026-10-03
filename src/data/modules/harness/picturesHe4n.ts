@@ -24,6 +24,7 @@ import {
   worstRanges,
 } from '@/components/module/reps/he4nMath';
 import type {
+  MemoryMapSpec,
   VennThree,
   DataStructureScene,
   SearchSpec,
@@ -50,9 +51,43 @@ export function he4nIssues(rep: Representation, get: Get): string[] {
       return pipelineIssues(rep, get);
     case 'dataStructure':
       return searchIssues(rep, get);
+    case 'memoryMap':
+      return memoryIssues(rep, get);
     default:
       return [];
   }
+}
+
+// ─── HC189 ───────────────────────────────────────────────────────────────────
+
+/** Paging: page, offset and PA = frame × size + offset. Inode: k, d + k + k² + k³, bytes. */
+function memoryIssues(s: MemoryMapSpec, get: Get): string[] {
+  const out: string[] = [];
+  const g = (x: NumOrVar | undefined) => opt(get, x);
+  if (s.mode === 'paging') {
+    const [size, va, page, offset, frame, pa] = [s.size, s.va, s.page, s.offset, s.frame, s.pa].map(
+      g,
+    );
+    if (size === undefined || va === undefined || !(size >= 1)) return out;
+    const pg = Math.floor(va / size);
+    const off = va - pg * size;
+    if (page !== undefined && page !== pg) out.push(`memoryMap: page ${page}, ⌊VA ÷ size⌋ = ${pg}`);
+    if (offset !== undefined && !near(offset, off))
+      out.push(`memoryMap: offset ${offset}, VA mod size = ${off}`);
+    if (frame !== undefined && pa !== undefined && !near(pa, frame * size + off))
+      out.push(`memoryMap: PA ${pa}, frame × size + offset = ${frame * size + off}`);
+    return out;
+  }
+  const [B, p, k, d, blocks, bytes] = [s.B, s.p, s.k, s.d, s.blocks, s.bytes].map(g);
+  const kk = B !== undefined && p !== undefined && p > 0 ? Math.floor(B / p) : k;
+  if (k !== undefined && kk !== undefined && k !== kk) out.push(`memoryMap: k ${k}, B ÷ p = ${kk}`);
+  if (kk === undefined || d === undefined) return out;
+  const want = d + kk + kk ** 2 + kk ** 3;
+  if (blocks !== undefined && !near(blocks, want))
+    out.push(`memoryMap: blocks ${blocks}, d + k + k² + k³ = ${want}`);
+  if (bytes !== undefined && B !== undefined && !near(bytes, want * B))
+    out.push(`memoryMap: bytes ${bytes}, blocks × B = ${want * B}`);
+  return out;
 }
 
 // ─── HC188 ───────────────────────────────────────────────────────────────────

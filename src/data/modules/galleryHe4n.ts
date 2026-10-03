@@ -857,7 +857,177 @@ const VENN_NESTED = vennPage(
   true,
 );
 
+// ─── HC189: memory maps (operating-systems#2, #3) ─────────────────────────────
+
+const POW2 = Array.from({ length: 13 }, (_, i) => 2 ** (8 + i)); // 256 B to 1 MiB
+
+const pagingPage = (id: string, title: string, use: string, typed: Values) =>
+  page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'Pages and frames are the same size, a power of 2, so the offset is the address’s low bits.',
+      'The page table maps the page number to a frame; the offset is kept as it is.',
+      'The frame is read from the page table; type the one your table gives.',
+    ],
+    variables: [
+      num('size', 'S', 'Page size', 'B', 256, 1048576, { integer: true, allowed: POW2 }),
+      num('va', 'VA', 'Virtual address', undefined, 0, 1e12, { integer: true, step: 1 }),
+      out('page', 'p', 'Page number', undefined, { integer: true }),
+      out('offset', 'd', 'Offset', undefined, { integer: true }),
+      num('frame', 'f', 'Frame', undefined, 0, 1e9, { integer: true, step: 1 }),
+      out('pa', 'PA', 'Physical address', undefined, { integer: true }),
+    ],
+    rules: [
+      derive(
+        'page',
+        'page',
+        ['va', 'size'],
+        '{page} = ⌊{va} ÷ {size}⌋',
+        (v) => Math.floor(v.va! / v.size!),
+        '⌊{va} ÷ {size}⌋',
+        'The page number is how many whole pages come before the address.',
+      ),
+      derive(
+        'offset',
+        'offset',
+        ['va', 'size'],
+        '{offset} = {va} mod {size}',
+        (v) => v.va! % v.size!,
+        '{va} mod {size}',
+        'The offset is what is left over: the place inside the page.',
+      ),
+      derive(
+        'pa',
+        'pa',
+        ['frame', 'size', 'offset'],
+        '{pa} = {frame} × {size} + {offset}',
+        (v) => v.frame! * v.size! + v.offset!,
+        '{frame} × {size} + {offset}',
+        'The frame starts at frame × size, and the offset is the same inside it.',
+      ),
+    ],
+    example: example(
+      typed,
+      ['page', (v) => Math.floor(v.va! / v.size!)],
+      ['offset', (v) => v.va! % v.size!],
+      ['pa', (v) => v.frame! * v.size! + v.offset!],
+    ),
+    startWith: ['size', 'va', 'frame'],
+    representation: {
+      kind: 'memoryMap',
+      mode: 'paging',
+      size: 'size',
+      va: 'va',
+      page: 'page',
+      offset: 'offset',
+      frame: 'frame',
+      pa: 'pa',
+    },
+  });
+
+const PAGING = pagingPage(
+  'g.he-memoryMap-paging',
+  'Page number, offset and physical address',
+  'Use this for “With 4 KiB pages, virtual address 20 500 is on which page, at what offset?”',
+  { size: 4096, va: 20500, frame: 9 },
+);
+
+/** The edge: 1 MiB pages, the largest size on the menu. */
+const PAGING_LARGE = pagingPage(
+  'g.he-memoryMap-paging-large',
+  'Translating with 1 MiB pages',
+  'Use this for “With 1 MiB pages, where does virtual address 5 000 000 land if its page is in frame 3?”',
+  { size: 1048576, va: 5000000, frame: 3 },
+);
+
+const inodePage = (id: string, title: string, use: string, typed: Values) =>
+  page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'The inode holds d direct pointers, then one single, one double and one triple indirect pointer.',
+      'A block of pointers holds k = B ÷ p of them.',
+      'The largest file uses every pointer; the bytes are its blocks times the block size.',
+    ],
+    variables: [
+      num('B', 'B', 'Block size', 'B', 256, 65536, { integer: true, allowed: POW2.slice(0, 9) }),
+      num('p', 'p', 'Pointer size', 'B', 2, 16, { integer: true, allowed: [2, 4, 8, 16] }),
+      num('d', 'd', 'Direct pointers', undefined, 0, 64, { integer: true, step: 1 }),
+      out('k', 'k', 'Pointers per block', undefined, { integer: true }),
+      out('blocks', 'N', 'Largest file, blocks', undefined, { integer: true }),
+      out('bytes', 'size', 'Largest file', 'B'),
+    ],
+    rules: [
+      derive(
+        'k',
+        'k',
+        ['B', 'p'],
+        '{k} = {B} ÷ {p}',
+        (v) => v.B! / v.p!,
+        '{B} ÷ {p}',
+        'A block of B bytes holds B ÷ p pointers of p bytes.',
+      ),
+      derive(
+        'blocks',
+        'blocks',
+        ['d', 'k'],
+        '{blocks} = {d} + {k} + {k}^2 + {k}^3',
+        (v) => v.d! + v.k! + v.k! ** 2 + v.k! ** 3,
+        '{d} + {k} + {k}^2 + {k}^3',
+        'Direct, then k through the single, k² through the double and k³ through the triple.',
+      ),
+      derive(
+        'bytes',
+        'bytes',
+        ['blocks', 'B'],
+        '{bytes} = {blocks} × {B}',
+        (v) => v.blocks! * v.B!,
+        '{blocks} × {B}',
+        'Every block holds B bytes.',
+      ),
+    ],
+    example: example(
+      typed,
+      ['k', (v) => v.B! / v.p!],
+      ['blocks', (v) => v.d! + v.k! + v.k! ** 2 + v.k! ** 3],
+      ['bytes', (v) => v.blocks! * v.B!],
+    ),
+    startWith: ['B', 'p', 'd'],
+    representation: {
+      kind: 'memoryMap',
+      mode: 'inode',
+      B: 'B',
+      p: 'p',
+      d: 'd',
+      k: 'k',
+      blocks: 'blocks',
+      bytes: 'bytes',
+    },
+  });
+
+const INODE = inodePage(
+  'g.he-memoryMap-inode',
+  'The largest file an inode can address',
+  'Use this for “An inode has 12 direct pointers and single, double and triple indirect ones. With 4 KiB blocks, what is the largest file?”',
+  { B: 4096, p: 4, d: 12 },
+);
+
+/** The edge: small 512 B blocks with 8 B pointers, so k is only 64. */
+const INODE_SMALL = inodePage(
+  'g.he-memoryMap-inode-small',
+  'An inode with small blocks',
+  'Use this for “With 512 B blocks, 8 B pointers and 10 direct pointers, how large can a file be?”',
+  { B: 512, p: 8, d: 10 },
+);
+
 export const HE4N_GALLERY_MODULES: ModuleDef[] = [
+  PAGING,
+  PAGING_LARGE,
+  INODE,
+  INODE_SMALL,
   VENN_THREE,
   VENN_NESTED,
   KMAP_THREE,

@@ -6,6 +6,7 @@ import type { He4nSpec } from '@/data/modules/typesHe4n';
 
 import type { Calculator } from '../useCalculator';
 import { Karnaugh } from './Karnaugh';
+import { MemoryMap } from './MemoryMap';
 import { PipelineDiagram } from './PipelineDiagram';
 import { SearchRanges } from './SearchRanges';
 
@@ -17,5 +18,7 @@ export function He4nView({ spec, calc }: { spec: He4nSpec; calc: Calculator }) {
       return <PipelineDiagram spec={spec} calc={calc} />;
     case 'dataStructure':
       return <SearchRanges spec={spec} calc={calc} />;
+    case 'memoryMap':
+      return <MemoryMap spec={spec} calc={calc} />;
   }
 }

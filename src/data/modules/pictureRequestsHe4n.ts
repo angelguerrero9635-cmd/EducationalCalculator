@@ -122,4 +122,25 @@ export const HE4N_REQUESTS: PictureRequest[] = [
     status: 'drawn',
     gallery: ['g.he-venn-three', 'g.he-venn-three-nested'],
   },
+  {
+    ...ask(
+      'HC189',
+      'memoryMap',
+      'Paging: the virtual address cut into page and offset, the virtual pages, the page table and the physical frames with the address’s page, entry and frame lit and joined, the offset marked at the same place in page and frame, and the physical address; inode: the direct pointers and the single, double and triple indirect pointers fanning out through pointer blocks to the data blocks, each level’s count written (d, k, k², k³) and summed',
+      [`${E}operating-systems#2`, `${E}operating-systems#3`],
+      [
+        'From EC-P28. New kind `memoryMap` (typesHe4n.ts MemoryMapSpec; reps/MemoryMap.tsx).',
+        "Fields: { kind: 'memoryMap', mode: 'paging', size, va, page?, offset?, frame, pa?, table? (frames of pages 0, 1, … for the other entries; without it they read “…”) } or { kind: 'memoryMap', mode: 'inode', B, p, d, k?, blocks?, bytes? }. The page and offset are worked from VA and the size, so a “?” in either leaves them unlit.",
+        "Example (operating-systems#2 main): { kind: 'memoryMap', mode: 'paging', size: 'size', va: 'va', page: 'page', offset: 'offset', frame: 'frame', pa: 'pa' } with 4096, 20 500, frame 9 → page 5, offset 20, PA 36 884. Example (operating-systems#3 main): { kind: 'memoryMap', mode: 'inode', B: 'B', p: 'p', d: 'd', k: 'k', blocks: 'blocks', bytes: 'bytes' } with 4096, 4, 12 → k = 1024, 1 074 791 436 blocks, 4.40 × 10¹² B.",
+        'Harness (harness/picturesHe4n.ts): page = ⌊VA ÷ size⌋, offset = VA mod size, PA = frame × size + offset; k = B ÷ p, blocks = d + k + k² + k³, bytes = blocks × B.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-memoryMap-paging',
+      'g.he-memoryMap-paging-large',
+      'g.he-memoryMap-inode',
+      'g.he-memoryMap-inode-small',
+    ],
+  },
 ];

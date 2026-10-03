@@ -184,9 +184,42 @@ export interface PipelineSpec {
   forward?: { from: number; to: number; out?: string; in?: string }[];
 }
 
+// ─── HC189: memory maps ──────────────────────────────────────────────────────
+
+/**
+ * - `paging`: the virtual address split into page number and offset (offset bits = log₂ size),
+ *   the virtual pages around the address's page, the page table with that page's entry, and the
+ *   physical frames around its frame, the page, its entry and the frame lit and joined by
+ *   arrows, the offset ticked at the same place in page and frame; PA = frame × size + offset.
+ *   `table` (frames of pages 0, 1, …) fills the other entries; without it they read “…”.
+ * - `inode`: the inode's d direct pointers and its single, double and triple indirect pointers
+ *   fanning out through blocks of k pointers, each level's block count written (d, k, k², k³)
+ *   and their sum, and the largest file in bytes.
+ */
+export interface MemoryMapSpec {
+  kind: 'memoryMap';
+  mode: 'paging' | 'inode';
+  /** `paging`: page size (bytes), virtual address, page, offset, frame, physical address. */
+  size?: NumOrVar;
+  va?: NumOrVar;
+  page?: NumOrVar;
+  offset?: NumOrVar;
+  frame?: NumOrVar;
+  pa?: NumOrVar;
+  table?: number[];
+  /** `inode`: block size B, pointer size p, pointers per block k, direct pointers d. */
+  B?: NumOrVar;
+  p?: NumOrVar;
+  k?: NumOrVar;
+  d?: NumOrVar;
+  /** `inode`: the largest file in blocks and in bytes. */
+  blocks?: NumOrVar;
+  bytes?: NumOrVar;
+}
+
 // ─── The group's calculator pictures ─────────────────────────────────────────
 
-export type He4nSpec = KarnaughSpec | PipelineSpec | SearchSpec;
+export type He4nSpec = KarnaughSpec | PipelineSpec | SearchSpec | MemoryMapSpec;
 
 const ids = (xs: unknown[]): string[] =>
   xs.flat(4).filter((x): x is string => typeof x === 'string');
@@ -209,6 +242,10 @@ export function he4nSpecVars(r: He4nSpec): string[] {
       ]);
     case 'dataStructure':
       return ids([r.n, r.binary, r.linear, r.average]);
+    case 'memoryMap': {
+      const { kind: _k, mode: _m, table: _t, ...rest } = r;
+      return ids(Object.values(rest));
+    }
   }
 }
 

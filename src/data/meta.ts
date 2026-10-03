@@ -183,6 +183,7 @@ const PICTURE_NAMES: Record<string, string> = {
   pipelineDiagram:
     'a pipeline: instructions by clock cycles, each cell a stage; stalls, forwarding',
   dataStructure: 'searching n sorted items: binary search halvings beside linear search',
+  memoryMap: 'paging: an address through the page table to its frame; an inode’s block pointers',
   propertyDiagram: 'a T–v, P–v or T–s plane with the vapor dome, states and a cycle',
   elementChain: 'finite elements: springs or bars between nodes, loads, displacements; a mesh',
   fatigueDiagram: 'fatigue: a Goodman diagram, an S–N line on log axes, a Miner damage bar',
