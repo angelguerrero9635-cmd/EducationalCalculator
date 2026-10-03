@@ -108,6 +108,45 @@ const hide = <R extends { relation: { hidden?: boolean } }>(r: R): R => ({
 /** x² + bx + c at x. */
 const topAt = (v: Values, x: number) => x * x + v.b! * x + v.c!;
 
+/** A value with one fixed unit (no menu: the form lines are written in that unit). */
+const fixed = (unit: string, min: number, max: number, step: number, derived = false) => ({
+  unit,
+  units: [unit],
+  min,
+  max,
+  step,
+  ...(derived ? { derived } : {}),
+});
+
+/** A polynomial (highest power first) with a number put in: "12(4)² − 240(4) + 900". */
+const polyAt = (coefficients: readonly number[], x: number) => {
+  const top = coefficients.length - 1;
+  return coefficients
+    .map((k, i) => [k, top - i] as const)
+    .filter(([k]) => k !== 0)
+    .map(([k, p], i) => {
+      const term = termAt(Math.abs(k), x, p);
+      if (i === 0) return k < 0 ? `−${term}` : term;
+      return `${k < 0 ? '−' : '+'} ${term}`;
+    })
+    .join(' ');
+};
+
+/** The open box's volume x(s − 2x)², and its slope (s − 2x)(s − 6x). */
+const boxVolume = (s: number, x: number) => x * (s - 2 * x) ** 2;
+const boxSlope = (s: number, x: number) => (s - 2 * x) * (s - 6 * x);
+
+/** V(x) = x(s − 2x)² multiplied out (4x³ − 4sx² + s²x) and its derivative, then V′ at the cut. */
+const boxWork = (s: number, x: number) => {
+  const V = [4, exact(-4 * s), exact(s * s), 0];
+  const dV = polyDerivative(V);
+  return [
+    `V(x) = x(${formatNumber(s)} − 2x)² = ${polyForm(V)}`,
+    `V′(x) = ${polyForm(dV)} = (${formatNumber(s)} − 2x)(${formatNumber(s)} − 6x)`,
+    `V′(${formatNumber(x)}) = ${polyAt(dV, x)} = ${formatNumber(exact(boxSlope(s, x)))}`,
+  ];
+};
+
 export const COLLEGE_MATH_MODULES: ModuleDef[] = [
   {
     // Calculus I → Limits and continuity: a quotient at x = a, 0/0 or k/0.
@@ -1317,6 +1356,121 @@ export const COLLEGE_MATH_MODULES: ModuleDef[] = [
       output: 'r',
       params: ['k', 'm'],
       rows: [0.1, 0.01, 0.001, -0.001, -0.01, -0.1],
+    },
+  },
+  {
+    // Calculus I → Related rates and optimization: the open box, V = x(s − 2x)², best cut s/6.
+    id: 'he.math.calc-1#2',
+    use: 'Use this for “Squares are cut from the corners of a 30 cm square sheet to make an open box. What cut gives the largest volume?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'Squares of side x are cut from the four corners of an s-by-s sheet and the sides fold up: the box is x tall on a square base of side s − 2x.',
+      'So V(x) = x(s − 2x)², which makes sense for 0 < x < s ÷ 2. At both ends V = 0, so the largest volume is where V′ = 0 inside.',
+      'V′(x) = (s − 2x)(s − 6x) is 0 at x = s ÷ 2 (no box left) and at x = s ÷ 6, the largest volume.',
+      'Lengths are in cm and volumes in cm³; the slope V′ is in cm³ per cm of cut, which is cm².',
+    ],
+    variables: [
+      V('s', 's', 'Side of the sheet', fixed('cm', 1, 500, 0.1)),
+      V('x', 'x', 'Side of each cut square', fixed('cm', 0.01, 250, 0.01)),
+      V('V', 'V', 'Volume of the box', fixed('cm³', 0, 1e7, 0.01)),
+      V('dV', 'm', 'Slope of the volume V′(x) at the cut', fixed('cm²', -1e5, 3e5, 0.01)),
+      V('xs', 'xₘₐₓ', 'Best cut', fixed('cm', 0, 100, 0.0001, true)),
+      V('Vs', 'Vₘₐₓ', 'Largest volume', fixed('cm³', 0, 1e7, 0.01, true)),
+      V('h', 'h', 'Half the sheet', { min: 0, max: 250, derived: true, hidden: true }),
+    ],
+    ...rels(
+      rule(
+        '0 < x < s ÷ 2',
+        'The cut {x} is between 0 and half the sheet {s}',
+        ['x', 's'],
+        (v) => v.x! > 0 && 2 * v.x! < v.s!,
+        'The cut must be above 0 and less than half the sheet, or no base is left to fold up.',
+      ),
+      rel(
+        'V = x(s − 2x)²',
+        '{V} = {x} × ({s} − 2 × {x})²',
+        ['V', 'x', 's'],
+        (v) => v.V! - boxVolume(v.s!, v.x!),
+        {
+          V: [
+            (v) => exact(boxVolume(v.s!, v.x!)),
+            (v) => `${formatNumber(v.x!)} × (${formatNumber(v.s!)} − 2 × ${formatNumber(v.x!)})²`,
+            'Height x times the square base: its side is the sheet less two cuts, s − 2x.',
+          ],
+          s: [
+            (v) => (v.x! > 0 && v.V! >= 0 ? exact(2 * v.x! + Math.sqrt(v.V! / v.x!)) : undefined),
+            (v) => `2 × ${formatNumber(v.x!)} + √(${formatNumber(v.V!)} ÷ ${formatNumber(v.x!)})`,
+            'Divide V by x to get the base area, take its square root for the base side, then add back the two cuts.',
+          ],
+        },
+      ),
+      withStep(
+        rel(
+          'm = V′(x) = (s − 2x)(s − 6x)',
+          '{dV} = ({s} − 2 × {x}) × ({s} − 6 × {x})',
+          ['dV', 's', 'x'],
+          (v) => v.dV! - boxSlope(v.s!, v.x!),
+          {
+            dV: [
+              (v) => exact(boxSlope(v.s!, v.x!)),
+              (v) =>
+                `(${formatNumber(v.s!)} − 2 × ${formatNumber(v.x!)}) × (${formatNumber(v.s!)} − 6 × ${formatNumber(v.x!)})`,
+              (v) =>
+                v.dV! > 0
+                  ? 'Multiply V out and use the power rule. V′ > 0 here, so a bigger cut still adds volume.'
+                  : v.dV! < 0
+                    ? 'Multiply V out and use the power rule. V′ < 0 here, so the cut is already past the best one.'
+                    : 'Multiply V out and use the power rule. V′ = 0 here: this is the best cut.',
+            ],
+          },
+        ),
+        'dV',
+        { work: (v) => boxWork(v.s!, v.x!) },
+      ),
+      derive(
+        'xₘₐₓ = s ÷ 6',
+        '{xs} = {s} ÷ 6',
+        'xs',
+        ['s'],
+        (v) => v.s! / 6,
+        (v) => `${formatNumber(v.s!)} ÷ 6`,
+        'Set V′ = 0: (s − 2x)(s − 6x) = 0. x = s ÷ 2 leaves no base, so the best cut is x = s ÷ 6.',
+      ),
+      derive(
+        'Vₘₐₓ = xₘₐₓ(s − 2xₘₐₓ)²',
+        '{Vs} = {xs} × ({s} − 2 × {xs})²',
+        'Vs',
+        ['xs', 's'],
+        (v) => exact(boxVolume(v.s!, v.xs!)),
+        (v) => `${formatNumber(v.xs!)} × (${formatNumber(v.s!)} − 2 × ${formatNumber(v.xs!)})²`,
+        'Put the best cut into V. V′ goes from + to − there, and both ends give V = 0, so this is the largest.',
+      ),
+      hide(
+        derive(
+          'h = s ÷ 2',
+          '{h} = {s} ÷ 2',
+          'h',
+          ['s'],
+          (v) => v.s! / 2,
+          '{s} ÷ 2',
+          'V = 4x(x − s ÷ 2)² touches 0 at half the sheet.',
+        ),
+      ),
+    ),
+    // s = 30 cm, x = 4 cm: V = 4 × 22² = 1936 cm³, V′(4) = 22 × 6 = 132; xₘₐₓ = 5 cm, Vₘₐₓ = 5 × 20² = 2000 cm³.
+    example: { s: 30, x: 4, V: 1936, dV: 132, xs: 5, Vs: 2000, h: 15 },
+    startWith: ['s', 'x'],
+    // V = 4x(x − s/2)²: the box's volume against the cut, its top at x = s/6.
+    representation: {
+      kind: 'functionGraph',
+      family: 'polynomial',
+      a: 4,
+      zeros: [{ x: 0 }, { x: 'h', times: 2 }],
+      name: 'V',
+      at: { x: 'x', y: 'V' },
+      marks: ['extrema'],
+      xMin: 0,
+      axes: { x: 'Cut x (cm)', y: 'Volume V (cm³)' },
     },
   },
 ];
