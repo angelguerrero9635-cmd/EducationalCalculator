@@ -29,6 +29,8 @@ import { ProjectionCardView } from './projectionCard';
 import { PROJECTION_CARD_H, PROJECTION_CARD_W } from '@/data/modules/typesHe3m';
 import { PATHWAY_CARD_H, PATHWAY_CARD_W } from '@/data/modules/typesHe3g';
 import { PathwayCard } from './pathwayCard';
+import { PedigreeCardHe4i } from './pedigreeCardHe4i';
+import { PEDIGREE_CARD_H, PEDIGREE_CARD_W } from '@/data/modules/typesHe4i';
 import {
   CellPartsCard,
   DotPlotCard,
@@ -98,6 +100,8 @@ export function figureWidth(f: Spec): number {
       return REPLICATION_W;
     case 'pathwayStep':
       return PATHWAY_CARD_W; // HC57
+    case 'pedigree':
+      return PEDIGREE_CARD_W; // HC144
     case 'reflexArc':
     case 'flowerCycle':
       return hs3dCardSize(f)![0];
@@ -140,7 +144,9 @@ export function CardFigureView({
                   ? PROJECTION_CARD_H
                   : figure.kind === 'pathwayStep'
                     ? PATHWAY_CARD_H
-                    : S);
+                    : figure.kind === 'pedigree'
+                      ? PEDIGREE_CARD_H // HC144
+                      : S);
   return (
     <Svg width={w} height={h}>
       <Drawing f={figure} w={w} ink={ink} shade={shade} />
@@ -259,6 +265,8 @@ function Drawing({ f, w, ink, shade }: { f: Spec; w: number; ink: string; shade:
       return <ReplicationCard f={f} ink={ink} />;
     case 'pathwayStep':
       return <PathwayCard f={f} ink={ink} />; // HC57
+    case 'pedigree':
+      return <PedigreeCardHe4i f={f} ink={ink} />; // HC144
     case 'reflexArc':
     case 'flowerCycle':
       return <Hs3dCardView f={f} ink={ink} />;

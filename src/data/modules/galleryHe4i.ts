@@ -4,10 +4,11 @@
  * HC141: `curvedSolid` `ratio` (he.biology.principles-1#1).
  * HC142: `cellDivision` `content` (he.biology.principles-1#3).
  * HC143: card icons, evidence for evolution (he.biology.principles-2#0).
+ * HC144: `pedigree`, the calculator picture and the card (he.biology.genetics#0, ~modes).
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
-import type { CardIcon, LayoutDef } from './layouts';
+import type { CardIcon, LayoutDef, PedigreePerson } from './layouts';
 import type { ModuleDef, Representation, StepText } from './types';
 
 type Solver = (v: Values) => number | number[] | undefined;
@@ -324,11 +325,236 @@ const SORT_EVIDENCE: LayoutDef = {
   ],
 };
 
+// ─── HC144: pedigree risk and modes of inheritance (genetics#0, ~modes) ─────────────
+
+/** A person in a pedigree. */
+const person = (
+  id: string,
+  sex: 'male' | 'female',
+  generation: number,
+  more: Partial<PedigreePerson> = {},
+): PedigreePerson => ({ id, sex, generation, ...more });
+
+const riskOf = (v: Values) => v.p1! * v.p2! * 0.25;
+
+const riskPage = (
+  id: string,
+  title: string,
+  use: string,
+  people: PedigreePerson[],
+  typed: Values,
+  extra: string,
+) =>
+  page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'The trait is autosomal recessive: only aa shows it.',
+      'An unaffected sibling of an affected child is a carrier 2 times in 3 (AA, Aa or aA; aa is ruled out).',
+      extra,
+    ],
+    variables: [
+      num('p1', 'p₁', 'Chance the parent is a carrier', undefined, 0, 1, { step: 0.01 }),
+      num('p2', 'p₂', 'Chance the partner is a carrier', undefined, 0, 1, { step: 0.01 }),
+      out('P', 'P', 'Chance of an affected child'),
+    ],
+    rules: [
+      rule('risk', '{P} = {p1} × {p2} × 1/4', ['P', 'p1', 'p2'], (v) => v.P! - riskOf(v), {
+        P: [
+          riskOf,
+          '{p1} × {p2} × 1/4',
+          'Both parents must be carriers, and then a child is aa one time in 4.',
+        ],
+        p1: [
+          (v) => fin((4 * v.P!) / v.p2!),
+          '4 × {P} ÷ {p2}',
+          'Undo the × 1/4 and the partner’s chance.',
+        ],
+        p2: [
+          (v) => fin((4 * v.P!) / v.p1!),
+          '4 × {P} ÷ {p1}',
+          'Undo the × 1/4 and the parent’s chance.',
+        ],
+      }),
+    ],
+    example: example(typed, ['P', riskOf]),
+    startWith: ['p2', 'p1'],
+    representation: {
+      kind: 'pedigree',
+      people,
+      chances: { II2: 'p1', II3: 'p2' },
+      child: { parents: ['II2', 'II3'], chance: 'P' },
+    },
+  });
+
+const PEDIGREE_RISK = riskPage(
+  'g.he-pedigree-chance',
+  'Pedigree risk: a child of an unaffected sibling',
+  'Use this for “Her brother has cystic fibrosis; her partner’s carrier chance is 1/25. What is the chance their child is affected?”',
+  [
+    person('I1', 'male', 1),
+    person('I2', 'female', 1),
+    person('II1', 'male', 2, { trait: true, parents: ['I1', 'I2'] }),
+    person('II2', 'female', 2, { parents: ['I1', 'I2'] }),
+    person('II3', 'male', 2, { partner: 'II2' }),
+  ],
+  { p1: 2 / 3, p2: 1 / 25 },
+  'The partner’s chance is the carrier frequency of the population (1 in 25 here).',
+);
+
+/** Both parents have an affected sibling: the edge of the page's range, 2/3 × 2/3 × 1/4. */
+const PEDIGREE_RISK_BOTH = riskPage(
+  'g.he-pedigree-chance-both',
+  'Pedigree risk: both parents have an affected sibling',
+  'Use this for “He and his wife each have a sister with the disease. What is the chance their first child has it?”',
+  [
+    person('I1', 'male', 1),
+    person('I2', 'female', 1),
+    person('I3', 'male', 1),
+    person('I4', 'female', 1),
+    person('II1', 'male', 2, { trait: true, parents: ['I1', 'I2'] }),
+    person('II2', 'female', 2, { parents: ['I1', 'I2'] }),
+    person('II3', 'male', 2, { parents: ['I3', 'I4'] }),
+    person('II4', 'female', 2, { trait: true, parents: ['I3', 'I4'] }),
+  ],
+  { p1: 2 / 3, p2: 2 / 3 },
+  'Each parent has an affected sibling, so each is a carrier 2 times in 3.',
+);
+
+/** The ~modes sort's cards: each pattern possible under one mode only. */
+const fam = (...people: PedigreePerson[]) => people;
+const MODES_SORT: LayoutDef = {
+  id: 'g.he-pedigree-modes',
+  title: 'Mode of inheritance from a pedigree',
+  kind: 'sort',
+  use: 'Use this for deciding whether a trait is autosomal dominant, autosomal recessive or X-linked recessive from a pedigree.',
+  assumptions: [
+    'Each trait is fully penetrant: everyone with the genotype shows it.',
+    'Half-filled symbols are carriers; where a card shows carriers, it shows all of them.',
+  ],
+  intro:
+    'Look for the deciding clue: an affected child of unaffected parents, an unaffected child of two affected parents, or a carrier mother’s affected son.',
+  question: 'Which mode of inheritance fits the family?',
+  bins: [
+    {
+      id: 'AD',
+      label: 'Autosomal dominant',
+      why: 'Two affected parents have an unaffected child: both were Aa and the child got a and a.',
+    },
+    {
+      id: 'AR',
+      label: 'Autosomal recessive',
+      why: 'Unaffected parents have an affected child (or a daughter): both parents carry a.',
+    },
+    {
+      id: 'XR',
+      label: 'X-linked recessive',
+      why: 'A carrier mother passes her X with the allele to a son, who shows it; the father gives sons his Y.',
+    },
+  ],
+  cards: [
+    {
+      label: 'Unaffected parents, affected daughter',
+      bin: 'AR',
+      figure: {
+        kind: 'pedigree',
+        people: fam(
+          person('a', 'male', 1),
+          person('b', 'female', 1),
+          person('c', 'male', 2, { parents: ['a', 'b'] }),
+          person('d', 'female', 2, { trait: true, parents: ['a', 'b'] }),
+          person('e', 'female', 2, { parents: ['a', 'b'] }),
+        ),
+      },
+    },
+    {
+      label: 'Two carrier parents',
+      bin: 'AR',
+      figure: {
+        kind: 'pedigree',
+        marked: true,
+        people: fam(
+          person('a', 'male', 1, { carrier: true }),
+          person('b', 'female', 1, { carrier: true }),
+          person('c', 'male', 2, { carrier: true, parents: ['a', 'b'] }),
+          person('d', 'female', 2, { trait: true, parents: ['a', 'b'] }),
+          person('e', 'male', 2, { parents: ['a', 'b'] }),
+        ),
+      },
+    },
+    {
+      label: 'Two affected parents, unaffected daughter',
+      bin: 'AD',
+      figure: {
+        kind: 'pedigree',
+        people: fam(
+          person('a', 'male', 1, { trait: true }),
+          person('b', 'female', 1, { trait: true }),
+          person('c', 'male', 2, { trait: true, parents: ['a', 'b'] }),
+          person('d', 'female', 2, { parents: ['a', 'b'] }),
+          person('e', 'female', 2, { trait: true, parents: ['a', 'b'] }),
+        ),
+      },
+    },
+    {
+      label: 'Three generations, affected couple',
+      bin: 'AD',
+      figure: {
+        kind: 'pedigree',
+        people: fam(
+          person('a', 'male', 1, { trait: true }),
+          person('b', 'female', 1),
+          person('c', 'female', 2, { parents: ['a', 'b'] }),
+          person('d', 'male', 2, { trait: true, parents: ['a', 'b'] }),
+          person('e', 'female', 2, { trait: true, partner: 'd' }),
+          person('f', 'male', 3, { parents: ['d', 'e'] }),
+          person('g', 'female', 3, { trait: true, parents: ['d', 'e'] }),
+        ),
+      },
+    },
+    {
+      label: 'Carrier mother, affected son',
+      bin: 'XR',
+      figure: {
+        kind: 'pedigree',
+        marked: true,
+        people: fam(
+          person('a', 'male', 1),
+          person('b', 'female', 1, { carrier: true }),
+          person('c', 'male', 2, { trait: true, parents: ['a', 'b'] }),
+          person('d', 'female', 2, { parents: ['a', 'b'] }),
+          person('e', 'male', 2, { parents: ['a', 'b'] }),
+        ),
+      },
+    },
+    {
+      label: 'Skips a generation through a daughter',
+      bin: 'XR',
+      figure: {
+        kind: 'pedigree',
+        marked: true,
+        people: fam(
+          person('a', 'male', 1),
+          person('b', 'female', 1, { carrier: true }),
+          person('c', 'male', 2, { trait: true, parents: ['a', 'b'] }),
+          person('d', 'female', 2, { carrier: true, parents: ['a', 'b'] }),
+          person('e', 'male', 2, { partner: 'd' }),
+          person('f', 'male', 3, { trait: true, parents: ['d', 'e'] }),
+          person('g', 'female', 3, { parents: ['d', 'e'] }),
+        ),
+      },
+    },
+  ],
+};
+
 export const HE4I_GALLERY_MODULES: ModuleDef[] = [
   CELL_RATIO,
   CELL_RATIO_SMALL,
   DIVISION_CONTENT,
   DIVISION_CONTENT_SMALL,
+  PEDIGREE_RISK,
+  PEDIGREE_RISK_BOTH,
 ];
 
-export const HE4I_GALLERY_LAYOUTS: LayoutDef[] = [SORT_EVIDENCE];
+export const HE4I_GALLERY_LAYOUTS: LayoutDef[] = [SORT_EVIDENCE, MODES_SORT];

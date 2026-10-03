@@ -5,7 +5,10 @@
  * page's own value, checked.
  *
  * - HC141 `curvedSolid` `ratio`: a cell as a sphere, A, V and A ÷ V, and a bigger cell beside it.
+ * - HC142 `cellDivision` `content`: chromosomes, chromatids and DNA in c by stage.
+ * - HC144 `pedigree`: a family in the standard symbols, as a calculator picture and a card.
  */
+import type { PedigreePerson } from './layouts/types';
 import type { NumOrVar } from './typesGraphs';
 
 const ids = (...xs: (NumOrVar | false | undefined)[]) =>
@@ -67,3 +70,43 @@ export function divisionStages(diploid: number, g1 = 2) {
     { stage: 'Gamete', chromosomes: n, chromatids: n, dna: g1 / 2 },
   ];
 }
+
+// ─── HC144: pedigree, a calculator picture and a card figure ─────────────────────
+
+/**
+ * HC144 (B-P6): a family in the standard symbols (squares males, circles females, filled shows
+ * the trait, half-filled carries it), `people` as the `pedigree` explore figure lists them,
+ * generations numbered I, II, … and people 1, 2, … in each. `chances` writes a value beside a
+ * person (the unaffected sibling's 2/3, the partner's carrier chance); `child` draws the
+ * couple's next child as a diamond (sex not known) with "?" in it and its chance under it,
+ * worked in the caption as the product of the parents' chances × 1/4 (both carriers pass the
+ * allele one time in four). Values read as fractions when they are one (bottom to 1000). A
+ * "?" chance writes nothing; no handles.
+ */
+export interface PedigreeSpec {
+  kind: 'pedigree';
+  people: PedigreePerson[];
+  chances?: Record<string, string>;
+  child?: { parents: [string, string]; chance: string };
+  /** The half-filled carriers are drawn (off: an unaffected carrier looks like anyone). */
+  carriers?: boolean;
+}
+
+/** The variable ids a pedigree names (for the module tests). */
+export function pedigreeVars(r: PedigreeSpec): string[] {
+  return ids(...Object.values(r.chances ?? {}), r.child?.chance);
+}
+
+/**
+ * HC144 (B-P7): a pedigree card, 112 × 76, the same `people` in the standard symbols drawn
+ * small (no numbers). With `marked`, the half-filled symbols are every carrier there is, so an
+ * empty symbol carries nothing (the layout check reads it so).
+ */
+export interface PedigreeCard {
+  kind: 'pedigree';
+  people: PedigreePerson[];
+  marked?: boolean;
+}
+
+export const PEDIGREE_CARD_W = 112;
+export const PEDIGREE_CARD_H = 76;

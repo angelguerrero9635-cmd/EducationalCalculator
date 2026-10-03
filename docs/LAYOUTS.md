@@ -231,6 +231,11 @@ College card icons, round 4 (group I, `layouts/icons/he4i.tsx`), evidence for ev
 `whale pelvis` and `human appendix` (vestigial, the part ringed), `bird wing and butterfly wing`
 and `shark fin and dolphin flipper` (analogous: one drawn with its arm bones, one without); the
 layout check keeps each one, and group HH's limbs, in the bin naming its kind of evidence.
+Card figure `pedigree` (HC144, `layouts/pedigreeCardHe4i.tsx`): `{ kind: 'pedigree', people,
+marked? }`, 112 × 76, a 2–3 generation family in the standard symbols, `people` as the explore
+figure lists them (drawn with the `pedigree` calculator picture's pieces); `marked` says the
+half-filled symbols are every carrier. The layout check finds the modes (autosomal or X-linked,
+dominant or recessive) the family allows: possible under its bin's mode, impossible under another.
 
 Observe figures: an observation can set `figure: { kind: 'shadowStick', stick: 100 }`
 (`layouts/ShadowStick.tsx`): a meter stick and its noon shadow for the column tapped last, to

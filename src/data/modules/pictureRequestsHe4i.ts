@@ -73,4 +73,21 @@ export const HE4I_REQUESTS: PictureRequest[] = [
     status: 'drawn',
     gallery: ['g.he-cardIcons-evolution'],
   },
+  {
+    ...ask(
+      'HC144',
+      'pedigree',
+      'A pedigree as a calculator picture (the family with the carrier chances written on people and the next child as a diamond with its chance) and as a 112 × 76 card figure for sorting modes of inheritance; one drawing of `people`',
+      [`${B}genetics#0`, `${B}genetics#0~modes`],
+      [
+        'From B-P6 and B-P7. New calculator kind `pedigree` (typesHe4i.ts PedigreeSpec, reps/PedigreeHe4i.tsx) and card figure `pedigree` (PedigreeCard, layouts/pedigreeCardHe4i.tsx), both laid out by reps/pedigreeHe4iMath.ts from `people` as the explore figure lists them (PedigreePerson: id, sex, generation, trait?, carrier?, parents?, partner?).',
+        'Calculator fields: { kind: \'pedigree\', people, chances?: { [person id]: value id }, child?: { parents: [id, id], chance }, carriers? }. Generations I, II, … and people numbered; each chance written under its person as “p₁ = 2/3” (a fraction when it is one, bottom to 1000); the child a diamond with “?” and “P = 1/150”; the caption works P = p₁ × p₂ × 1/4. A "?" chance writes nothing. No handles.',
+        "Example (main): { kind: 'pedigree', people: [I1 ♂, I2 ♀, II1 ♂ trait (parents I1, I2), II2 ♀ (parents I1, I2), II3 ♂ (partner II2)], chances: { II2: 'p1', II3: 'p2' }, child: { parents: ['II2', 'II3'], chance: 'P' } }.",
+        "Card fields: { kind: 'pedigree', people, marked? } (marked: the half-filled symbols are all the carriers, so an empty symbol carries nothing). Example (~modes): bins AD, AR, XR (ids or labels naming the mode) with cards such as { label: 'Carrier mother, affected son', bin: 'XR', figure: { kind: 'pedigree', marked: true, people: [...] } }.",
+        'Harness (harness/picturesHe4i.ts): the family’s structure (parents in it, one of each sex, a generation up); chances in 0–1; the child’s chance = the product of the parents’ chances × 1/4. Layout check: each pedigree card is possible under its bin’s mode (a genotype search, full penetrance) and impossible under at least one other bin’s mode; the demo’s six cards are each possible under their own mode only.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: ['g.he-pedigree-chance', 'g.he-pedigree-chance-both', 'g.he-pedigree-modes'],
+  },
 ];

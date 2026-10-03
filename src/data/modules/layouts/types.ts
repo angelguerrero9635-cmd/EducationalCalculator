@@ -31,6 +31,7 @@ import type { GeneScene, KeyScene, KeyStep, ObserveSecond, ReplicationCard } fro
 import type { Hs2fFigure, SpectraScene } from '../typesHs2f';
 import type { EarthSectionScene, Hs3cFigure } from '../typesHs3c';
 import type { He4dFigure, SymmetryScene } from '../typesHe4d';
+import type { PedigreeCard } from '../typesHe4i';
 import type { GelScene, Hs3dCard, Hs3dFigure, ObserveScale, ReflexScene } from '../typesHs3d';
 import type { Round3Icon } from './icons';
 import type { StrobeCard } from './strobeCard';
@@ -220,6 +221,8 @@ export type CardFigure =
   | He3dCard
   /** College HC57 (`typesHe3g.ts`): one step of glycolysis or the citric acid cycle, 112 × 76. */
   | PathwayStepCard
+  /** College HC144 (`typesHe4i.ts`): a small pedigree in the standard symbols, 112 × 76. */
+  | PedigreeCard
   /** One stage of DNA replication, old strands dark and new ones lit (H100, `typesHs2e.ts`). */
   | ReplicationCard
   /** Biology round 3 (H109, `typesHs3d.ts`): a reflex arc, one part lit. */

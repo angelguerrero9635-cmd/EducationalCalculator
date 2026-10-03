@@ -1,14 +1,16 @@
 /**
  * Picture checks for college round 4, group I (docs/RENDERINGS_HE.md). HC141: a cell's A, V and
  * A ÷ V agree with r to 3 significant figures, on a sphere. HC142: chromatids and c by stage.
- * HC143: an evolution icon sits in the bin for its kind of evidence. Called from `repIssues` in
+ * HC143: an evolution icon sits in the bin for its kind of evidence. HC144: the child's chance
+ * is the parents' × 1/4; a pedigree card is possible under its bin's mode and not another's. Called from `repIssues` in
  * `pictures.ts` (and the layout checks from `layoutFigures.ts`). Test-only.
  */
 import { cellRatio } from '@/components/module/reps/he4iMath';
+import { modeOfBin, modePossible, type Mode } from '@/components/module/reps/pedigreeHe4iMath';
 
 import { divisionStages } from '../typesHe4i';
 
-import type { LayoutDef } from '../layouts';
+import type { LayoutDef, PedigreePerson } from '../layouts';
 import { EVIDENCE_OF } from '../layouts/icons/he4i';
 import type { Representation } from '../types';
 
@@ -93,6 +95,74 @@ export function he4iLayoutIssues(l: LayoutDef): string[] {
         if (!bin || !named(bin).includes(kind))
           out.push(`card "${card.label}": a ${kind} structure in bin "${bin?.label ?? card.bin}"`);
       }
+    }
+    // HC144: a pedigree card is possible under its bin's mode and impossible under another bin's.
+    const modes = l.bins.map((b) => [b.id, modeOfBin(b)] as const);
+    for (const card of l.cards) {
+      if (card.figure?.kind !== 'pedigree') continue;
+      const f = card.figure;
+      out.push(...familyIssues(f.people).map((x) => `card "${card.label}": ${x}`));
+      const own = modes.find(([id]) => id === card.bin)?.[1];
+      if (!own) {
+        out.push(`card "${card.label}": its bin names no mode of inheritance`);
+        continue;
+      }
+      if (!modePossible(f.people, own, f.marked))
+        out.push(`card "${card.label}": impossible under its bin's mode ${own}`);
+      const others = modes.flatMap(([id, m]) => (id !== card.bin && m ? [m] : []));
+      if (!others.some((m: Mode) => !modePossible(f.people, m, f.marked)))
+        out.push(`card "${card.label}": possible under every other bin's mode too`);
+    }
+  }
+  return out;
+}
+
+/** A family's structure: parents in the family, one male and one female, a generation up. */
+export function familyIssues(people: PedigreePerson[]): string[] {
+  const out: string[] = [];
+  const byId = new Map(people.map((p) => [p.id, p]));
+  if (byId.size !== people.length) out.push('two people share an id');
+  for (const p of people) {
+    if (p.parents) {
+      const [a, b] = p.parents.map((id) => byId.get(id));
+      if (!a || !b) out.push(`${p.id}: a parent is not in the family`);
+      else {
+        if (a.sex === b.sex) out.push(`${p.id}: both parents are ${a.sex}`);
+        if (a.generation !== p.generation - 1 || b.generation !== p.generation - 1)
+          out.push(`${p.id}: parents are not one generation up`);
+      }
+    }
+    if (p.partner && !byId.has(p.partner)) out.push(`${p.id}: partner not in the family`);
+    if (p.trait && p.carrier) out.push(`${p.id}: both shows the trait and carries it`);
+  }
+  return out;
+}
+
+/** HC144 on `pedigree`: the family's structure; chances in 0–1; the child's is the product × 1/4. */
+export function pedigreeIssues(rep: Representation, val: Val): string[] {
+  if (rep.kind !== 'pedigree') return [];
+  const out = familyIssues(rep.people);
+  const ids = new Set(rep.people.map((p) => p.id));
+  for (const [who, id] of Object.entries(rep.chances ?? {})) {
+    if (!ids.has(who)) out.push(`pedigree: a chance on ${who}, not in the family`);
+    const x = val(id);
+    if (x !== undefined && !(x >= 0 && x <= 1)) out.push(`pedigree: chance ${id} = ${x}`);
+  }
+  const k = rep.child;
+  if (k) {
+    const [a, b] = k.parents.map((id) => rep.people.find((p) => p.id === id));
+    if (!a || !b) out.push('pedigree: the child’s parents are not in the family');
+    else if (a.sex === b.sex) out.push('pedigree: the child’s parents are both ' + a.sex);
+    const ps = k.parents.map((id) => (rep.chances?.[id] ? val(rep.chances[id]) : undefined));
+    const P = val(k.chance);
+    if (k.parents.some((id) => !rep.chances?.[id]))
+      out.push('pedigree: a parent of the child has no chance written');
+    else if (P !== undefined && ps[0] !== undefined && ps[1] !== undefined) {
+      const want = ps[0] * ps[1] * 0.25;
+      if (Math.abs(P - want) > 1e-9 * Math.max(1, want))
+        out.push(
+          `pedigree: the child's chance ${P}, the parents' ${ps[0]} × ${ps[1]} × 1/4 = ${want}`,
+        );
     }
   }
   return out;
