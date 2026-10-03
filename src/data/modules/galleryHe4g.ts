@@ -4,7 +4,7 @@
  *
  * Earth and geography (docs/plans/he.earth-geography.md): HC122 `atmosphereLayers` `thickness`
  * (meteorology#0, ~pressure-altitude; EG-P10); HC123 `adiabat` and `saturation` (meteorology#1,
- * ~humidity; EG-P11).
+ * ~humidity; EG-P11); HC124 parcel `dry` and `dewLapse` (meteorology#1~lcl; EG-P12).
  */
 import type { Relation } from '@/engine/types';
 
@@ -408,6 +408,113 @@ const saturationCold = saturationDemo(
   [-20, -25, 850],
 );
 
+// ── HC124: the lifting condensation level with the page's lapse rates (meteorology#1~lcl) ──
+
+/** The plan's lapse rates: dry 9.8 °C/km, dew point 1.8 °C/km (125 m per °C of spread). */
+const DRY = 9.8;
+const DEW = 1.8;
+
+const lclDemo = (id: string, title: string, use: string, [t, td]: [number, number]) => {
+  const z = (1000 * (t - td)) / (DRY - DEW);
+  return demo({
+    id,
+    title,
+    use,
+    assumptions: [
+      'The parcel cools 9.8 °C per km (dry adiabatic) and its dew point falls 1.8 °C per km.',
+      'They meet, and a cloud forms, 125 m up for each °C of spread; the dew point is never above T.',
+    ],
+    variables: [
+      quantity('T', 'T', 'Temperature at the ground', '°C', -30, 50, 0.1),
+      quantity('Td', 'T_d', 'Dew point at the ground', '°C', -40, 50, 0.1),
+      quantity('s', 'ΔT', 'Spread', '°C', 0, 60, 0.1),
+      quantity('z', 'z_LCL', 'Cloud base', 'm', 0, 7500, 1),
+      quantity('Tb', 'T_base', 'Temperature at the base', '°C', -80, 50, 0.1),
+    ],
+    ...rules(
+      {
+        relation: {
+          id: 'spread = T − T_d',
+          display: '{s} = {T} − {Td}',
+          vars: ['s', 'T', 'Td'],
+          residual: (v) => v.s! - (v.T! - v.Td!),
+          solve: {
+            s: (v) => (v.T! >= v.Td! ? v.T! - v.Td! : undefined),
+            T: (v) => v.Td! + v.s!,
+            Td: (v) => v.T! - v.s!,
+          },
+        },
+        steps: {
+          s: st('{T} − {Td}', 'How far the air is from saturation.'),
+          T: st('{Td} + {s}', 'Add the spread to the dew point.'),
+          Td: st('{T} − {s}', 'Take the spread from the temperature.'),
+        },
+      },
+      {
+        relation: {
+          id: 'z_LCL = 125 m × spread',
+          display: '{z} = 125 × {s}',
+          vars: ['z', 's'],
+          residual: (v) => v.z! - 125 * v.s!,
+          solve: { z: (v) => 125 * v.s!, s: (v) => v.z! / 125 },
+        },
+        steps: {
+          z: st(
+            '125 × {s}',
+            'The two lines close 9.8 − 1.8 = 8 °C per km, so they meet 1,000 ÷ 8 = 125 m up per °C.',
+          ),
+          s: st('{z} ÷ 125', 'Divide the height by 125 m per °C.'),
+        },
+      },
+      {
+        relation: {
+          id: 'T_base = T − 9.8 × z_LCL ÷ 1,000',
+          display: '{Tb} = {T} − 9.8 × {z} ÷ 1000',
+          vars: ['Tb', 'T', 'z'],
+          residual: (v) => v.Tb! - (v.T! - (DRY * v.z!) / 1000),
+          solve: {
+            Tb: (v) => v.T! - (DRY * v.z!) / 1000,
+            T: (v) => v.Tb! + (DRY * v.z!) / 1000,
+            z: (v) => (1000 * (v.T! - v.Tb!)) / DRY,
+          },
+        },
+        steps: {
+          Tb: st('{T} − 9.8 × {z} ÷ 1000', 'The parcel cools 9.8 °C for each km it rises, dry.'),
+          T: st('{Tb} + 9.8 × {z} ÷ 1000', 'Add back the cooling on the way up.'),
+          z: st('1000 × ({T} − {Tb}) ÷ 9.8', 'The cooling over 9.8 °C per km, in metres.'),
+        },
+      },
+    ),
+    example: { T: t, Td: td, s: t - td, z, Tb: t - (DRY * z) / 1000 },
+    startWith: ['T', 'Td'],
+    representation: {
+      kind: 'atmosphereLayers',
+      mode: 'parcel',
+      temperature: 'T',
+      dewPoint: 'Td',
+      base: 'z',
+      baseUnit: 'm',
+      baseTemperature: 'Tb',
+      dry: DRY,
+      dewLapse: DEW,
+    },
+  });
+};
+
+const lcl = lclDemo(
+  'g.he-atmosphereLayers-parcel-lapse',
+  'The lifting condensation level',
+  'Use this for air at 30 °C with a dew point of 14 °C: the cloud base 2,000 m up and the temperature there.',
+  [30, 14],
+);
+
+const lclDesert = lclDemo(
+  'g.he-atmosphereLayers-parcel-lapse-dry',
+  'Dry desert air: a high cloud base',
+  'Use this for desert air at 35 °C with a dew point of 5 °C: the clouds form 3,750 m up, below freezing.',
+  [35, 5],
+);
+
 export const HE4G_GALLERY_MODULES: ModuleDef[] = [
   thickness,
   pressureAltitude,
@@ -416,6 +523,8 @@ export const HE4G_GALLERY_MODULES: ModuleDef[] = [
   adiabatHigh,
   saturation,
   saturationCold,
+  lcl,
+  lclDesert,
 ];
 
 export const HE4G_GALLERY_LAYOUTS: LayoutDef[] = [];

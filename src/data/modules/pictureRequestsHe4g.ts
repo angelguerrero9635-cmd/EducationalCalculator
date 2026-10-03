@@ -71,4 +71,21 @@ export const HE4G_REQUESTS: PictureRequest[] = [
       'g.he-atmosphereLayers-saturation-cold',
     ],
   },
+  {
+    ...ask(
+      'HC124',
+      'atmosphereLayers',
+      'The rising parcel with the page’s lapse rates: the parcel’s line at dry °C per km and its dew point’s at dewLapse °C per km meeting at the cloud base, the cumulus beside it on the same scale',
+      { [`${MET}#1~lcl`]: '"dewLapse"' },
+      [
+        'From EG-P12. New options on atmosphereLayers mode parcel (typesHe4g.ts ParcelLapseFields and ParcelLapseSpec), drawn by the existing reps/AirParcel.tsx, which now takes its two lapse rates from the spec (10 and 2 °C/km when a page sets neither, so s.12.atmosphere-weather~cloud-base is unchanged).',
+        "Fields: { kind: 'atmosphereLayers', mode: 'parcel', temperature (T, °C), dewPoint (T_d, °C), base? (the cloud base, in baseUnit), dry? (°C/km, default 10), dewLapse? (°C/km, default 2), baseUnit?: 'm' | 'km' (default km), baseTemperature? (°C at the base) }; a page sets dry or dewLapse (or both) to use them.",
+        "Example (~lcl): { kind: 'atmosphereLayers', mode: 'parcel', temperature: 'T', dewPoint: 'Td', base: 'z', baseUnit: 'm', baseTemperature: 'Tb', dry: 9.8, dewLapse: 1.8 } (30 °C, 14 °C → 2,000 m, 10.4 °C at the base).",
+        'The key and the caption read the page’s rates (−9.8 and −1.8 °C per km; they close 8 °C per km, 125 m per °C); the caption gives the base in km and, with baseUnit m, in metres. Above the base the parcel cools about 6 °C per km, as before.',
+        'Harness (harness/picturesHe4g.ts): base = (T − T_d) ÷ (dry − dewLapse) (× 1,000 in m); the temperature at the base = T − dry × base; T_d ≤ T; dry > dewLapse.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: ['g.he-atmosphereLayers-parcel-lapse', 'g.he-atmosphereLayers-parcel-lapse-dry'],
+  },
 ];

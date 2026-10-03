@@ -85,9 +85,35 @@ export interface AtmosphereSaturationSpec {
   fixed?: boolean;
 }
 
+// ─── HC124 atmosphereLayers parcel lapse rates ───────────────────────────────
+
+/**
+ * The page's lapse rates on `atmosphereLayers` mode `parcel` (EG-P12): the parcel cools `dry`
+ * °C per km (default 10) and its dew point `dewLapse` °C per km (default 2), so the cloud base is
+ * (T − T_d) ÷ (dry − dewLapse) and its temperature T − dry × base. `baseUnit: 'm'` when the
+ * page's base is in metres; `baseTemperature` names the page's temperature at the base (°C).
+ */
+export interface ParcelLapseFields {
+  dry?: NumOrVar;
+  dewLapse?: NumOrVar;
+  baseUnit?: 'm' | 'km';
+  baseTemperature?: NumOrVar;
+}
+
+/** A parcel with the page's lapse rates (at least one set): drawn by `AirParcel`. */
+export type ParcelLapseSpec = {
+  kind: 'atmosphereLayers';
+  mode: 'parcel';
+  temperature: NumOrVar;
+  dewPoint: NumOrVar;
+  /** The cloud base, in `baseUnit` (default km). */
+  base?: NumOrVar;
+} & ParcelLapseFields &
+  ({ dry: NumOrVar } | { dewLapse: NumOrVar });
+
 /** The round 4 group G options on existing kinds (drawn by `He4gView`). */
 export type He4gOptionSpec =
-  AtmosphereThicknessSpec | AtmosphereAdiabatSpec | AtmosphereSaturationSpec;
+  AtmosphereThicknessSpec | AtmosphereAdiabatSpec | AtmosphereSaturationSpec | ParcelLapseSpec;
 
 /** Every round 4 group G calculator picture. */
 export type He4gSpec = He4gOptionSpec;
@@ -96,7 +122,8 @@ const MODES = ['thickness', 'adiabat', 'saturation'];
 
 /** Whether a picture is one of group G's options on an existing kind. */
 export function isHe4gOption(r: Representation): r is He4gOptionSpec {
-  if (r.kind === 'atmosphereLayers') return MODES.includes(r.mode);
+  if (r.kind === 'atmosphereLayers')
+    return MODES.includes(r.mode) || (r.mode === 'parcel' && ('dry' in r || 'dewLapse' in r));
   return false;
 }
 
@@ -110,6 +137,8 @@ export function he4gSpecVars(r: He4gSpec): string[] {
       return ids(r.lower, r.upper, r.temperature, r.thickness, r.scaleHeight, r.g, r.gasConstant);
     case 'adiabat':
       return ids(r.temperature, r.pressure, r.theta, r.kappa);
+    case 'parcel':
+      return ids(r.temperature, r.dewPoint, r.base, r.dry, r.dewLapse, r.baseTemperature);
     case 'saturation':
       return ids(r.temperature, r.dewPoint, r.saturation, r.vapor, r.rh, r.pressure, r.mixing);
   }

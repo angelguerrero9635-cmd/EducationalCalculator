@@ -6,6 +6,7 @@
 import {
   G_EARTH,
   KAPPA,
+  lclOf,
   mixingOf,
   R_DRY,
   scaleHeightOf,
@@ -73,6 +74,25 @@ export function he4gIssues(rep: He4gSpec, val: Val): string[] {
         const want = thetaOf(t, p, k);
         if (!near(th, want)) out.push(`adiabat: θ ${th} K, but T(1,000 ÷ p)^κ = ${want} K`);
       }
+      break;
+    }
+    case 'parcel': {
+      // The lines meet at (T − T_d) ÷ (dry − dewLapse) km, where the parcel is T − dry × base.
+      const [t, td] = [n(rep.temperature), n(rep.dewPoint)];
+      const [dry, dew] = [n(rep.dry, 10), n(rep.dewLapse, 2)];
+      if (dry !== undefined && dew !== undefined && dry <= dew)
+        out.push(`parcel: dry lapse ${dry} is not above the dew point's ${dew} °C/km`);
+      if (t === undefined || td === undefined || dry === undefined || dew === undefined) break;
+      if (td > t) out.push(`parcel: dew point ${td} °C is above the temperature ${t} °C`);
+      if (dry <= dew || td > t) break;
+      const h = lclOf(t, td, dry, dew);
+      const per = rep.baseUnit === 'm' ? 1000 : 1;
+      const base = n(rep.base);
+      if (base !== undefined && !near(base, h * per))
+        out.push(`parcel: cloud base ${base}, but the lines meet at ${h * per}`);
+      const tb = n(rep.baseTemperature);
+      if (tb !== undefined && !near(tb, t - dry * h))
+        out.push(`parcel: ${tb} °C at the base, but T − dry × base = ${t - dry * h} °C`);
       break;
     }
     case 'saturation': {

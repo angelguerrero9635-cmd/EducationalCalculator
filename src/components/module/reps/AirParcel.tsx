@@ -2,20 +2,15 @@ import { View } from 'react-native';
 import Svg, { ClipPath, Circle, Defs, Ellipse, G, Line, Path, Rect } from 'react-native-svg';
 
 import type { ParcelSpec } from '@/data/modules/typesHs2f';
+import type { ParcelLapseFields } from '@/data/modules/typesHe4g';
 import { formatNumber } from '@/engine/format';
 import { chart, usePalette } from '@/theme';
 
 import { HaloText } from '../layouts/earthKit';
 import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, ChartText, useRep } from './common';
-import {
-  cloudBase,
-  DEW_LAPSE,
-  DRY_LAPSE,
-  MOIST_LAPSE,
-  parcelDewAt,
-  parcelTempAt,
-} from './earthModelHs2f';
+import { DEW_LAPSE, DRY_LAPSE, MOIST_LAPSE } from './earthModelHs2f';
+import { lclOf } from './he4gMath';
 import { Ball, url, usePaintIds } from './paint';
 
 const BW = 360;
@@ -50,11 +45,17 @@ export function AirParcel({ spec, calc }: { spec: ParcelSpec; calc: Calculator }
     x === undefined || typeof x === 'number' || rep.known(x);
   const t = num(spec.temperature, 24);
   const td = Math.min(t, num(spec.dewPoint, 12));
-  const on = known(spec.temperature) && known(spec.dewPoint);
-  const h = Math.max(0, cloudBase(t, td));
+  // HC124: the page's lapse rates (`dry`, `dewLapse`, °C/km; typesHe4g.ts), else 10 and 2.
+  const lapse = spec as ParcelSpec & ParcelLapseFields;
+  const DRY = num(lapse.dry, DRY_LAPSE);
+  const DEW = Math.min(num(lapse.dewLapse, DEW_LAPSE), DRY - 0.1);
+  const on = [spec.temperature, spec.dewPoint, lapse.dry, lapse.dewLapse].every(known);
+  const h = Math.max(0, lclOf(t, td, DRY, DEW));
+  const parcelTempAt = (z: number) => (z <= h ? t - DRY * z : t - DRY * h - MOIST_LAPSE * (z - h));
+  const parcelDewAt = (z: number) => (z <= h ? td - DEW * z : parcelTempAt(z));
   const nice = [1, 1.5, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 30];
   const zMax = nice.find((n) => n >= Math.max(1, h * 1.35 + 0.3)) ?? Math.ceil(h * 1.35 + 1);
-  const tTop = parcelTempAt(zMax, t, td);
+  const tTop = parcelTempAt(zMax);
   const lo0 = Math.min(td, tTop) - 2;
   const hi0 = t + 2;
   const step = tickStep(hi0 - lo0, 4);
@@ -67,7 +68,7 @@ export function AirParcel({ spec, calc }: { spec: ParcelSpec; calc: Calculator }
     [0, Math.min(h, zMax), zMax]
       .map((z, i) => `${i ? 'L' : 'M'} ${X(f(z)).toFixed(1)} ${Y(z).toFixed(1)}`)
       .join(' ');
-  const tBase = t - DRY_LAPSE * h;
+  const tBase = t - DRY * h;
   const tempCol = c.fnSecond;
   const dewCol = c.lineSum;
   const yb = Y(h);
@@ -97,8 +98,13 @@ export function AirParcel({ spec, calc }: { spec: ParcelSpec; calc: Calculator }
                 {/* The key. */}
                 {(
                   [
-                    [`parcel’s temperature: −${DRY_LAPSE} °C per km`, tempCol, 16, undefined],
-                    [`its dew point: −${DEW_LAPSE} °C per km`, dewCol, 34, chart.dash],
+                    [
+                      `parcel’s temperature: −${formatNumber(DRY)} °C per km`,
+                      tempCol,
+                      16,
+                      undefined,
+                    ],
+                    [`its dew point: −${formatNumber(DEW)} °C per km`, dewCol, 34, chart.dash],
                   ] as const
                 ).map(([name, col, y, dash]) => (
                   <G key={name}>
@@ -219,14 +225,14 @@ export function AirParcel({ spec, calc }: { spec: ParcelSpec; calc: Calculator }
                 {/* The two lines: dry to the cloud base, then saturated together. */}
                 <G opacity={on ? 1 : 0.4}>
                   <Path
-                    d={line((z) => parcelTempAt(z, t, td))}
+                    d={line(parcelTempAt)}
                     stroke={tempCol}
                     strokeWidth={chart.strokeHeavy}
                     fill="none"
                     strokeLinejoin="round"
                   />
                   <Path
-                    d={line((z) => parcelDewAt(z, t, td))}
+                    d={line(parcelDewAt)}
                     stroke={dewCol}
                     strokeWidth={chart.strokeHeavy}
                     strokeDasharray={chart.dash}
@@ -315,7 +321,7 @@ export function AirParcel({ spec, calc }: { spec: ParcelSpec; calc: Calculator }
           ? 'Type the temperature and the dew point to raise the parcel.'
           : t === td
             ? `The air is saturated at the ground (T = T_d = ${deg(t)}): fog, a cloud at 0 km.`
-            : `The parcel cools ${DRY_LAPSE} °C per km and its dew point falls ${DEW_LAPSE} °C per km, so they close ${DRY_LAPSE - DEW_LAPSE} °C per km: h = (${formatNumber(round(t, 2))} − ${formatNumber(round(td, 2))}) ÷ ${DRY_LAPSE - DEW_LAPSE} = ${formatNumber(round(h, 3))} km. There the air is ${deg(tBase)}, saturated, and a cloud forms; above it the parcel cools about ${MOIST_LAPSE} °C per km.`}
+            : `The parcel cools ${formatNumber(DRY)} °C per km and its dew point falls ${formatNumber(DEW)} °C per km, so they close ${formatNumber(round(DRY - DEW, 3))} °C per km: h = (${formatNumber(round(t, 2))} − ${formatNumber(round(td, 2))}) ÷ ${formatNumber(round(DRY - DEW, 3))} = ${formatNumber(round(h, 3))} km${lapse.baseUnit === 'm' ? ` = ${formatNumber(round(h * 1000, 1))} m` : ''}. There the air is ${deg(tBase)}, saturated, and a cloud forms; above it the parcel cools about ${MOIST_LAPSE} °C per km.`}
       </Caption>
     </View>
   );
