@@ -23,6 +23,41 @@ Contact sheet of every exported file at real size: `identity.png`.
 | B8  | Store marketing icon      | Same file as B4                                                                                                                                     | Drawn                                             |
 | D1  | `src/components/Logo.tsx` | Draws the small seal from `src/components/logoArt.ts` (palette tokens only)                                                                         | Placed (small seal); full seal and lockups follow |
 
+## Status (rounds 2 and 3)
+
+Contact sheet of every image below, light and dark: `illustrations.png`.
+
+| Id  | What                    | Files                                                                                                                                            | Status |
+| --- | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | ------ |
+| B9  | OG image, default       | `public/og/default.png` (1200 × 630); source `og/default.svg`                                                                                    | Drawn  |
+| B10 | OG image, K–12          | `public/og/k12.png`; source `og/k12.svg`                                                                                                         | Drawn  |
+| B11 | OG image, College       | `public/og/college.png`; source `og/college.svg`                                                                                                 | Drawn  |
+| B12 | Home hero               | `src/components/art/HomeHero.tsx` (`band` crops to the 3:1 strip for phones); `art/home-hero.svg`, PNGs                                          | Drawn  |
+| B13 | Explore: K–12 card      | `src/components/art/ExploreK12.tsx`; `art/explore-k12.svg`, PNGs                                                                                 | Drawn  |
+| B14 | Explore: College card   | `src/components/art/ExploreCollege.tsx`; `art/explore-college.svg`, PNGs                                                                         | Drawn  |
+| B15 | Onboarding welcome      | `src/components/art/OnboardingWelcome.tsx`; `art/onboarding-welcome.svg`, PNGs                                                                   | Drawn  |
+| B16 | Empty: no courses       | `src/components/art/EmptyShelf.tsx`; `art/empty-shelf.svg`, PNGs                                                                                 | Drawn  |
+| B17 | Empty: no results       | `src/components/art/NoResults.tsx`; `art/no-results.svg`, PNGs                                                                                   | Drawn  |
+| B18 | Search start            | `src/components/art/SearchStart.tsx`; `art/search-start.svg`, PNGs                                                                               | Drawn  |
+| B19 | Plans header            | `src/components/art/PlansHeader.tsx`; `art/plans-header.svg`, PNGs                                                                               | Drawn  |
+| B20 | Purchase success        | `src/components/art/PurchaseSuccess.tsx` (`checkProgress`, `PURCHASE_CHECK`); `art/purchase-success.svg`, `art/purchase-success-check.svg`, PNGs | Drawn  |
+| B21 | Not found               | `src/components/art/NotFoundArt.tsx`; `art/not-found.svg`, PNGs                                                                                  | Drawn  |
+| B22 | Locked lesson           | `src/components/art/LockedLesson.tsx`; `art/locked-lesson.svg`, PNGs                                                                             | Drawn  |
+| B23 | Store screenshot frames | Waits for the finished screens                                                                                                                   | Later  |
+| B24 | Error / offline         | `src/components/art/Unplugged.tsx`; `art/unplugged.svg`, PNGs                                                                                    | Drawn  |
+
+Each illustration is drawn once in `scripts/render-art.mjs` with palette token names
+(`accent`, `accentSoft`, `gold`, `goldDeep`, `onAccent`, `onGold`, `success`, `card` and the
+`art*` tokens in `src/theme.ts`: ink, paper, grey, a shade, a shine and the tone colours). The
+script writes the component, the light source SVG and light and dark PNG renders at 2x
+(`art/<file>.png`, `art/<file>-dark.png`, transparent), the OG images and the contact sheet:
+`node scripts/render-art.mjs` (`--no-png` writes only the components and SVGs). Every component
+is decorative (hidden from screen readers) unless given a `label`, and takes `width`.
+
+The OG images: the horizontal lockup (`lockup.svg`), the slogan path from `logoArt.ts`, and for
+K–12 and College a line in Inter 600 outlined with fontTools (`scripts/brand-art/og-lines.json`),
+on white with the objects on a lavender panel inside the 1080 × 566 safe area. Light only, opaque.
+
 "Drawn" means the file is here; "placed" means the app uses it. The lesson chat points
 `app.json` and the web head at the icon and splash files (plan item D2).
 
@@ -60,7 +95,7 @@ Clear space around a lockup: the U's width in the mark as drawn, on every side.
 
 - **Cinzel** (the ring lettering), SIL Open Font License 1.1, from the google/fonts repository
   (`ofl/cinzel`).
-- **Inter** (the wordmark at weight 700 and the slogan), SIL Open Font License 1.1, from the
+- **Inter** (the wordmark at weight 700, the slogan, and the OG lines at weight 600), SIL Open Font License 1.1, from the
   google/fonts repository (`ofl/inter`).
 
 The OFL allows outlined lettering made from these fonts in a logo. The fonts themselves are not

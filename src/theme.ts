@@ -44,6 +44,19 @@ const light = {
   markFace: '#F4F5FF',
   markDeep: '#AEB2EE',
   markLight: '#FFFFFF',
+  /**
+   * Brand illustrations (src/components/art): the ink outline, paper, light grey, a shade and a
+   * shine laid over a fill, and the tone colours (one per drawing).
+   */
+  artInk: '#1F2937',
+  artPaper: '#FFFFFF',
+  artGrey: '#E5E7EB',
+  artShade: 'rgba(31, 41, 55, 0.14)',
+  artShine: 'rgba(255, 255, 255, 0.6)',
+  artGreen: '#22C55E',
+  artTeal: '#14B8A6',
+  artWood: '#D6A76C',
+  artRose: '#FB7185',
   /** Status: purchase confirmed, pending, errors. */
   success: '#15803D',
   warning: '#B45309',
@@ -870,6 +883,15 @@ const dark: Palette = {
   markFace: '#15161E',
   markDeep: '#04050A',
   markLight: '#46425F',
+  artInk: '#ECEEF4',
+  artPaper: '#2A2E3A',
+  artGrey: '#454B5A',
+  artShade: 'rgba(0, 0, 0, 0.3)',
+  artShine: 'rgba(255, 255, 255, 0.16)',
+  artGreen: '#34A862',
+  artTeal: '#1FA898',
+  artWood: '#A07A4E',
+  artRose: '#D9607A',
   success: '#4ADE80',
   warning: '#FBBF24',
   danger: '#F87171',
