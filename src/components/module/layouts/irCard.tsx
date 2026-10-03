@@ -1,7 +1,8 @@
 /**
  * The `ir` card figure (HC55, `typesHe3e.ts`): an IR spectrum, 140 × 60, computed from its band
  * list (`instrumentTraceMath.ts`), never traced. Transmittance runs along the top and dips into
- * each band (shaded); the wavenumber axis runs 4000 → 400 cm⁻¹ with ticks every 1000. Flat, in
+ * each band (shaded); the wavenumber axis runs 4000 → 400 cm⁻¹ with ticks every 1000, numbered
+ * from 3000 (a 1000 cm⁻¹ step is only 37 px, too narrow for "4000" beside "3000"). Flat, in
  * the card's text color.
  */
 import { G, Line, Path } from 'react-native-svg';
@@ -41,15 +42,17 @@ export function IrCardView({ f, ink, shade }: { f: IrCard; ink: string; shade: s
             stroke={ink}
             strokeWidth={1}
           />
-          <ChartText
-            x={nu === 4000 ? X0 : irX(nu)}
-            y={IR_CARD_H - 3}
-            fontSize={chart.label}
-            textAnchor={nu === 4000 ? 'start' : 'middle'}
-            fill={ink}
-          >
-            {String(nu)}
-          </ChartText>
+          {nu === 4000 ? null : (
+            <ChartText
+              x={irX(nu)}
+              y={IR_CARD_H - 3}
+              fontSize={chart.label}
+              textAnchor="middle"
+              fill={ink}
+            >
+              {String(nu)}
+            </ChartText>
+          )}
         </G>
       ))}
     </G>

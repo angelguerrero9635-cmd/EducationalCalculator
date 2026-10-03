@@ -129,6 +129,10 @@ export function Linkage({ spec, calc }: { spec: LinkageSpec; calc: Calculator })
       return { x: p.x + dir * dy * vk, y: p.y - dir * dx * vk };
     };
     const [vAe, vBe, vGe] = [vel(A), vel(B), vel(Gp)];
+    // A steep ladder puts the IC close beside B: "IC" then goes above and right of its dot,
+    // clear of both dashed normals, r_B's label right of the IC on its line, and B's letter
+    // above the top, clear of v_B's label below it.
+    const tight = IC.x - B.x < 100;
     const rail = (x1: number, y1: number, x2: number, y2: number) => {
       const len = Math.hypot(x2 - x1, y2 - y1);
       const ux = (x2 - x1) / len;
@@ -167,7 +171,12 @@ export function Linkage({ spec, calc }: { spec: LinkageSpec; calc: Calculator })
         <ChartText x={A.x + 6} y={A.y + 16} fontSize={chart.label} fontWeight="700">
           A
         </ChartText>
-        <ChartText x={B.x + 8} y={B.y + 16} fontSize={chart.label} fontWeight="700">
+        <ChartText
+          x={B.x + 8}
+          y={tight ? B.y - 8 : B.y + 16}
+          fontSize={chart.label}
+          fontWeight="700"
+        >
           B
         </ChartText>
         {k(spec.length) ? (
@@ -212,8 +221,8 @@ export function Linkage({ spec, calc }: { spec: LinkageSpec; calc: Calculator })
         />
         <Circle cx={IC.x} cy={IC.y} r={5} fill={c.he3iIc} />
         <ChartText
-          x={IC.x + 9}
-          y={IC.y + 4}
+          x={tight ? IC.x + 7 : IC.x + 9}
+          y={tight ? IC.y - 7 : IC.y + 4}
           fontSize={chart.label}
           fontWeight="700"
           fill={c.he3iIc}
@@ -230,8 +239,9 @@ export function Linkage({ spec, calc }: { spec: LinkageSpec; calc: Calculator })
           size={chart.label}
         />
         <HeLabel
-          x={(IC.x + B.x) / 2 + 10}
-          y={IC.y - 8}
+          x={tight ? IC.x + 20 : (IC.x + B.x) / 2 + 10}
+          y={tight ? IC.y + 4 : IC.y - 8}
+          anchor={tight ? 'start' : 'middle'}
           text="r_B = L cos θ"
           color={c.he3iIc}
           w={w}
