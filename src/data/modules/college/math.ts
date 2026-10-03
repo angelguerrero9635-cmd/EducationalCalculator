@@ -252,6 +252,19 @@ const areaSoFar = (v: Values) => (v.m! * (v.x! ** 2 - v.a! ** 2)) / 2 + v.c! * (
 /** f(x) = px² as the main page's quadratic (q = r = 0), for its antiderivative helpers. */
 const squareOnly = (v: Values): Values => ({ p: v.p!, q: 0, r: 0 });
 
+/** v(t) = v₀ + at as a line in t for lineForm and lineAnti: "2t − 4" and "t² − 4t". */
+const velocityAsLine = (v: Values): Values => ({ m: v.a!, c: v.v0! });
+
+/** The displacement from t = 0 to the turn, v₀ × t_turn ÷ 2, and from the turn to T, v × (T − t_turn) ÷ 2. */
+const legsOf = (v: Values) => [(v.v0! * v.tc!) / 2, (v.v! * (v.T! - v.tc!)) / 2] as const;
+
+/** The distance when the object turns round in the trip: the two pieces' sizes added. */
+const bothLegs = (v: Values) => legsOf(v).reduce((s, x) => s + Math.abs(x), 0);
+
+/** True when the velocity changes sign strictly inside the trip, 0 < t_turn < T. */
+const turnsInside = (v: Values) =>
+  v.tc !== undefined && v.T !== undefined && v.tc > 0 && v.tc < v.T;
+
 /** The c in [a, b] where pc² = f_avg: ±√(f_avg ÷ p), the positive root first. */
 const averageAt = (v: Values) => {
   if (v.p === 0) return undefined;
@@ -2529,6 +2542,164 @@ export const COLLEGE_MATH_MODULES: ModuleDef[] = [
       c: 0,
       area: { from: 'a', to: 'b', value: 'I' },
       level: { y: 'favg', label: 'f_avg', at: ['c'] },
+    },
+  },
+  {
+    // Calculus I → Definite integrals: displacement ∫v dt and distance ∫|v| dt for v = v₀ + at, split at the turn.
+    id: 'he.math.calc-1#3~motion',
+    title: 'Displacement and distance from velocity',
+    use: 'Use this for “A particle moves with v(t) = 3t − 6 m/s for 0 ≤ t ≤ 4 s. Find its displacement and the total distance it travels.”',
+    assumptions: [
+      'The velocity is v(t) = v₀ + at from t = 0 to t = T. It is signed: + one way along the line, − the other.',
+      'Displacement is the integral of v from 0 to T. An antiderivative of v₀ + at is v₀t + ½at², so Δx = v₀T + ½aT².',
+      'Distance travelled is the integral of |v|, so every stretch counts as positive. Split the integral where v = 0, at t_turn = −v₀ ÷ a, and add the sizes of the pieces.',
+      'If t_turn is not between 0 and T, the object never turns round during the trip, and the distance is |Δx|.',
+    ],
+    variables: [
+      V('v0', 'v₀', 'Velocity at the start, t = 0', fixed('m/s', -100, 100, 0.1)),
+      V('a', 'a', 'Acceleration (the slope of v)', fixed('m/s²', -50, 50, 0.1)),
+      V('T', 'T', 'Length of the trip', fixed('s', 0.1, 100, 0.1)),
+      V('v', 'v', 'Velocity at the end, t = T', fixed('m/s', -1e4, 1e4, 0.0001, true)),
+      V('tc', 't_turn', 'Time when the velocity is 0', fixed('s', -1e5, 1e5, 0.0001, true)),
+      V('dx', 'Δx', 'Displacement, the integral of v', fixed('m', -1e6, 1e6, 0.0001, true)),
+      V('D', 'D', 'Distance travelled, the integral of |v|', fixed('m', 0, 1e6, 0.0001, true)),
+    ],
+    ...rels(
+      rule(
+        'a ≠ 0',
+        'The acceleration {a} is not 0',
+        ['a'],
+        (v) => v.a !== 0,
+        'With a = 0 the velocity never changes, so it never turns round: the distance is |v₀| × T.',
+      ),
+      derive(
+        'v = v₀ + aT',
+        '{v} = {v0} + {a} × {T}',
+        'v',
+        ['v0', 'a', 'T'],
+        (v) => v.v0! + v.a! * v.T!,
+        '{v0} + {a} × {T}',
+        'The velocity changes by a each second: add a × T to the starting velocity.',
+      ),
+      withStep(
+        derive(
+          't_turn = −v₀ ÷ a',
+          '{tc} = −{v0} ÷ {a}',
+          'tc',
+          ['v0', 'a'],
+          (v) => -v.v0! / v.a!,
+          (v) => `${v.v0 === 0 ? '0' : `−${signed(v.v0!)}`} ÷ ${signed(v.a!)}`,
+          'Set v₀ + at = 0 and solve for t: the moment the velocity passes through 0.',
+        ),
+        'tc',
+        {
+          note: (v) =>
+            v.tc === undefined || turnsInside(v)
+              ? ''
+              : `→ ${v.tc <= 0 ? 'At or before the start' : 'At or after the end'}: v keeps one sign during the trip, so it never turns round`,
+        },
+      ),
+      withStep(
+        derive(
+          'Δx = v₀T + ½aT²',
+          '{dx} = {v0} × {T} + ½ × {a} × {T}²',
+          'dx',
+          ['v0', 'a', 'T'],
+          (v) => v.v0! * v.T! + 0.5 * v.a! * v.T! ** 2,
+          '{v0} × {T} + ½ × {a} × {T}²',
+          (v) =>
+            `Integrate v(t) = ${lineForm(velocityAsLine(v))} from 0 to T: an antiderivative is ${lineAnti(velocityAsLine(v))}, and it is 0 at t = 0.`,
+        ),
+        'dx',
+        {
+          work: (v) => {
+            const T = formatNumber(v.T!);
+            return [
+              `∫ from 0 to ${T} of (${lineForm(velocityAsLine(v))}) dt = [${lineAnti(velocityAsLine(v))}] from 0 to ${T} = ${formatNumber(exact(v.dx!))}`,
+            ];
+          },
+        },
+      ),
+      withStep(
+        rel(
+          'D = |Δx₁| + |Δx₂|',
+          '{D} = |{v0} × {tc} ÷ 2| + |{v} × ({T} − {tc}) ÷ 2|',
+          ['D', 'tc', 'T', 'v0', 'v', 'dx'],
+          (v) => v.D! - (turnsInside(v) ? bothLegs(v) : Math.abs(v.dx!)),
+          {
+            D: [
+              (v) => (turnsInside(v) ? bothLegs(v) : Math.abs(v.dx!)),
+              (v) =>
+                turnsInside(v)
+                  ? legsOf(v)
+                      .map((x) => `|${formatNumber(exact(x))}|`)
+                      .join(' + ')
+                  : '|{dx}|',
+              (v) =>
+                turnsInside(v)
+                  ? 'Integrate v from 0 to t_turn and from t_turn to T. One piece is negative, so add their sizes: distance counts both ways as positive.'
+                  : 'The velocity keeps one sign from 0 to T, so the distance is the size of the displacement.',
+            ],
+          },
+          {
+            // Split at the turn when it falls inside the trip; otherwise |v| keeps one sign.
+            branches: [
+              {
+                name: 'it turns round during the trip',
+                when: '0 < {tc} < {T}',
+                applies: turnsInside,
+                residual: (v) => v.D! - bothLegs(v),
+                solve: { D: bothLegs },
+              },
+              {
+                name: 'it never turns round',
+                when: '{tc} ≤ 0',
+                applies: (v) => v.tc !== undefined && v.tc <= 0,
+                residual: (v) => v.D! - Math.abs(v.dx!),
+                solve: { D: (v) => Math.abs(v.dx!) },
+                display: '{D} = |{dx}|',
+              },
+              {
+                name: 'it turns round only after the trip',
+                when: '{tc} ≥ {T}',
+                applies: (v) => v.tc !== undefined && v.T !== undefined && v.tc >= v.T,
+                residual: (v) => v.D! - Math.abs(v.dx!),
+                solve: { D: (v) => Math.abs(v.dx!) },
+                display: '{D} = |{dx}|',
+              },
+            ],
+          },
+        ),
+        'D',
+        {
+          work: (v) => {
+            if (!turnsInside(v)) return [];
+            const [f, F] = [lineForm(velocityAsLine(v)), lineAnti(velocityAsLine(v))];
+            const [tc, T] = [formatNumber(exact(v.tc!)), formatNumber(v.T!)];
+            const [x1, x2] = legsOf(v).map((x) => formatNumber(exact(x)));
+            return [
+              `∫ from 0 to ${tc} of (${f}) dt = [${F}] from 0 to ${tc} = ${x1}`,
+              `∫ from ${tc} to ${T} of (${f}) dt = [${F}] from ${tc} to ${T} = ${x2}`,
+            ];
+          },
+        },
+      ),
+    ),
+    // v = 2t − 4 on [0, 5]: v(5) = 6; turns at t = 2; Δx = [t² − 4t] from 0 to 5 = 25 − 20 = 5 m;
+    // the pieces are −4 m (0 to 2) and +9 m (2 to 5), so D = 4 + 9 = 13 m.
+    example: { v0: -4, a: 2, T: 5, v: 6, tc: 2, dx: 5, D: 13 },
+    startWith: ['v0', 'a', 'T'],
+    // The v–t line from 0 to T, the area above the axis + and below −, the turn ringed; the
+    // caption gives the displacement and the distance travelled.
+    representation: {
+      kind: 'motionGraph',
+      graph: 'speed',
+      time: 'T',
+      acceleration: 'a',
+      speed: 'v',
+      start: 'v0',
+      distance: 'dx',
+      kinematics: { view: 'velocity' },
     },
   },
 ];
