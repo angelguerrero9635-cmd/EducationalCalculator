@@ -199,6 +199,13 @@ const PICTURE_NAMES: Record<string, string> = {
   populationPyramid: 'a population pyramid: five-year bars by sex, dependents bracketed, the ratio',
   sensorGeometry: 'a satellite sensor: its field of view fanned to the swath, one pixel enlarged',
   spectralCurve: 'reflectance spectra of vegetation, soil and water; a pixel’s NDVI or NBR',
+  karnaugh: 'a K-map in Gray order beside its truth table, the groups of 1s ringed',
+  pipelineDiagram:
+    'a pipeline: instructions by clock cycles, each cell a stage; stalls, forwarding',
+  dataStructure: 'searching n sorted items: binary search halvings beside linear search',
+  memoryMap: 'paging: an address through the page table to its frame; an inode’s block pointers',
+  datapath:
+    'a single-cycle datapath’s five units, an instruction’s units lit and their delays added',
   propertyDiagram: 'a T–v, P–v or T–s plane with the vapor dome, states and a cycle',
   elementChain: 'finite elements: springs or bars between nodes, loads, displacements; a mesh',
   fatigueDiagram: 'fatigue: a Goodman diagram, an S–N line on log axes, a Miner damage bar',

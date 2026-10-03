@@ -48,6 +48,7 @@ import { PathwayDetail } from './pathwayFigure';
 import { GelFigure } from './gelFigure';
 import { ReflexArcFigure } from './reflexArcFigure';
 import { CodeTraceFigureView } from './codeTraceFigure';
+import { He4nFigureView } from './he4nFigures';
 
 /**
  * A picture with a few scenes to switch between: tap a scene, the figure changes, and the
@@ -235,6 +236,10 @@ function FigureView({
       return <ReflexArcFigure scene={scene.reflex ?? {}} />;
     case 'codeTrace':
       return <CodeTraceFigureView figure={figure} scene={scene.trace ?? { rows: [] }} />;
+    case 'karnaugh':
+    case 'stateDiagram':
+    case 'dataStructure':
+      return <He4nFigureView figure={figure} scene={scene} />; // group N (HC184–HC187)
   }
 }
 

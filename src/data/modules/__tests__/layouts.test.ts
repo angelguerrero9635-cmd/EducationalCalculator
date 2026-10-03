@@ -17,6 +17,7 @@ import { HE3D_SCENE_FIELD } from '../typesHe3d';
 import { HE4D_SCENE_FIELD } from '../typesHe4d';
 import { cliffIssues } from '@/components/module/layouts/cliffMath';
 import { HE4L_SCENE_FIELD } from '../typesHe4l';
+import { HE4N_SCENE_FIELD } from '../typesHe4n';
 
 /** The scene field each explore figure draws from. */
 const SCENE_FIELD: Record<Figure['kind'], keyof Scene | undefined> = {
@@ -53,6 +54,7 @@ const SCENE_FIELD: Record<Figure['kind'], keyof Scene | undefined> = {
   molecules: 'molecules',
   ...HE4D_SCENE_FIELD, // HC113
   ...HE4L_SCENE_FIELD, // HC169
+  ...HE4N_SCENE_FIELD, // HC184, HC185, HC187
   phases: 'phase',
   periodicTable: 'elements',
   planets: 'planets',

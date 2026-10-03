@@ -134,6 +134,7 @@ import {
 } from './picturesHe4e';
 import { he4jIssues } from './picturesHe4j';
 import { he4lIssues } from './picturesHe4l';
+import { he4nIssues, vennThreeIssues } from './picturesHe4n';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -1446,6 +1447,10 @@ export function repIssues(
       break;
     }
     case 'venn':
+      if ('three' in rep) {
+        out.push(...vennThreeIssues(rep.three, val)); // HC188
+        break;
+      }
       if ('chances' in rep) {
         out.push(...vennChanceIssues(rep.chances, val), ...hs2gIssues(rep, val));
         out.push(...hs3bIssues(rep, val, byId));
@@ -2581,6 +2586,13 @@ export function repIssues(
     case 'fitDiagram':
     case 'casting':
       out.push(...he4lIssues(rep, val, byId)); // HC165–HC172
+      break;
+    case 'karnaugh':
+    case 'pipelineDiagram':
+    case 'dataStructure':
+    case 'memoryMap':
+    case 'datapath':
+      out.push(...he4nIssues(rep, val)); // group N
       break;
     case 'solidOfRevolution':
       out.push(...solidIssues(rep, val)); // HC65

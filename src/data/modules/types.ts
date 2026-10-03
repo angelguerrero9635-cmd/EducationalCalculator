@@ -52,6 +52,7 @@ import type { ChainTreeHe4a, ScatterClassesSpec } from './typesHe4a'; // HC139, 
 import type { DriftPathsSpec } from './typesHe4e';
 import type { He4jSpec } from './typesHe4j';
 import type { He4lSpec } from './typesHe4l';
+import type { He4nSpec, VennThree } from './typesHe4n';
 import type { CardIcon } from './layouts/types';
 import type { TreeChances, TwoWaySpec, VennChances } from './typesHse';
 import type { IntegerLineHs2a } from './typesHs2a';
@@ -1233,6 +1234,8 @@ export type Representation =
   | He4jSpec
   /** College round 4, group L (HC165–HC172): mechanical pictures (`typesHe4l.ts`). */
   | He4lSpec
+  /** College round 4, group N (`typesHe4n.ts`): K-maps, pipelines, memory maps, datapaths. */
+  | He4nSpec
   /** Grades 9–12 round 2 biology, group H2E (specs in `typesHs2e.ts`). */
   | Hs2eSpec
   | Hs3dSpec
@@ -1520,6 +1523,8 @@ export type Representation =
     }
   /** Grades 9–12 (H22): a Venn diagram of probabilities (spec in `typesHse.ts`). */
   | { kind: 'venn'; chances: VennChances }
+  /** College (HC188): three sets, the 7 regions and the union (`typesHe4n.ts`). */
+  | { kind: 'venn'; three: VennThree }
   /**
    * A parallelogram, triangle, trapezoid or house with its base thick and its height dashed
    * (drag the top to lean it). `top` is the trapezoid's top base or the house's roof height.

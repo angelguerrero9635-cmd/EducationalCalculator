@@ -26,6 +26,7 @@ import { he3gFigureIssues } from './layoutFiguresHe3g';
 import { symmetryFigureIssues } from './picturesHe4d';
 import { he4jFigureIssues } from './layoutFiguresHe4j';
 import { orthoFigureIssues } from './picturesHe4l';
+import { he4nFigureIssues } from './picturesHe4n';
 
 /** The number in a column label ("20 cm" → 20). */
 const numberIn = (label: string) => {
@@ -116,6 +117,7 @@ export function layoutFigureIssues(l: LayoutDef): string[] {
   out.push(...symmetryFigureIssues(l)); // HC113
   out.push(...he4jFigureIssues(l)); // HC156
   out.push(...orthoFigureIssues(l)); // HC169
+  out.push(...he4nFigureIssues(l)); // HC184, HC185, HC187
   if (l.kind === 'sort' && l.header?.kind === 'offspring') {
     const animals = l.header.animals;
     if (animals.length < 2 || animals.length > 4) {

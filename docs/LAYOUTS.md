@@ -337,3 +337,18 @@ College card figure `graph` (HC50, `reps/GraphDiagram.tsx` `GraphCardView`, `typ
 lit?, degrees?, dist?, wide? }`, a small fixed graph at 96 × 64 (`wide`: 168 × 104) with
 costs on the edges, each vertex's name or degree in it, lit vertices and edges heavy in the
 highlight, and Dijkstra's distances beside the vertices; for Euler sorts and Dijkstra stages.
+College explore figure `karnaugh` (HC184, `layouts/karnaughFigure.tsx`, `typesHe4n.ts`):
+`{ kind: 'karnaugh', mode?: 'map' | 'table' }`, scene `kmap: { names, minterms?, dontCares?,
+groups?, columns?, lit? }`: a 2–4 variable K-map in Gray order beside its truth table, each
+group ringed in its own outline style and f = Σm(…) = SOP written; or a truth table (T first)
+with a column per expression, up to two lit columns compared row by row (≠ where they differ).
+College explore figure `stateDiagram` (HC185, `layouts/stateDiagramFigure.tsx`, `typesHe4n.ts`):
+`{ kind: 'stateDiagram', machine: 'moore' | 'mealy', inputs, start, states: [{ name, output?,
+x, y, loop? }], arrows: [{ from, to, input, output?, bend? }], tape? }`, scene `fsm: { input,
+state? }`: bubbles and arrows in a fixed layout, the input replayed with the state reached and
+the last arrow lit, and a tape with the state and output after each bit.
+College explore figure `dataStructure` (HC187, `layouts/dataStructureFigure.tsx`, `typesHe4n.ts`):
+`{ kind: 'dataStructure' }`, scene `ds: { structure: 'stack' | 'queue' | 'ring' | 'list' |
+'array', start?, ops?, slots?, front?, holds?, out?, values?, target?, step? }`: the operations
+replayed and the structure drawn (top; front and rear; a ring of slots; nodes to ∅; low, mid
+and high), the last added lit and the last removed outside with “out”.

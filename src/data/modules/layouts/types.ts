@@ -34,6 +34,7 @@ import type { Hs2fFigure, SpectraScene } from '../typesHs2f';
 import type { EarthSectionScene, Hs3cFigure } from '../typesHs3c';
 import type { He4dFigure, SymmetryScene } from '../typesHe4d';
 import type { He4lFigure, OrthoScene } from '../typesHe4l';
+import type { He4nFigure, He4nScene } from '../typesHe4n';
 import type { GelScene, Hs3dCard, Hs3dFigure, ObserveScale, ReflexScene } from '../typesHs3d';
 import type { Round3Icon } from './icons';
 import type { StrobeCard } from './strobeCard';
@@ -341,6 +342,8 @@ export type Figure =
   | He4dFigure
   /** College round 4, group L (`typesHe4l.ts`): a block's orthographic views (HC169). */
   | He4lFigure
+  /** College round 4, group N (`typesHe4n.ts`): K-maps, state diagrams, data structures. */
+  | He4nFigure
   /** Biology round 3, group H3D (`typesHs3d.ts`): a gel of fixed samples. */
   | Hs3dFigure
   /** College round 3, group D (`typesHe3d.ts`): a code trace (HC48). */
@@ -632,6 +635,10 @@ export interface Scene {
   reflex?: ReflexScene;
   /** The line lit, the variables table and the test (a `codeTrace` figure; `typesHe3d.ts`). */
   trace?: CodeTraceScene;
+  /** Group N figures (`typesHe4n.ts`): a K-map or truth table, a state machine, a structure. */
+  kmap?: He4nScene['kmap'];
+  fsm?: He4nScene['fsm'];
+  ds?: He4nScene['ds'];
   /** The flashes, as "● ● ●" with "—" for a long one (a `flashes` figure). */
   flashes?: string;
   /**

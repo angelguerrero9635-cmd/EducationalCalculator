@@ -617,6 +617,11 @@ search or the sitemap, but the module tests and the harness run over it):
 | populationPyramid  | age bars by sex from 3 group totals and a shape; bracketed; the ratio  | College human geography (HC136)     |
 | `sensorGeometry`   | satellite at H, FOV fanned to the swath to scale; H × IFOV pixel inset | College remote sensing (HC137)      |
 | `spectralCurve`    | ρ against λ for vegetation, soil, water, burn; bands boxed; NDVI, NBR  | College remote sensing (HC138)      |
+| `karnaugh`         | K-map in Gray order beside its truth table; groups ringed, SOP terms   | College digital logic (HC184)       |
+| `pipelineDiagram`  | instructions × cycles, a stage per cell; stalls, forwarding; k+n−1     | College architecture (HC186)        |
+| `dataStructure`    | sorted n: binary search halvings as bars, ⌊log₂n⌋ + 1; linear n        | College data structures (HC187)     |
+| `memoryMap`        | VA → page table → frame, PA = f·S + d; inode pointers to k, k², k³     | College operating systems (HC189)   |
+| `datapath`         | IM, registers, ALU, DM, write back; a class lit, its delays summed     | College architecture (HC191)        |
 | `globe`            | sun rays, noon angle, day dial; great circle; Euler pole; dipole; air  | College earth and geography (HC36)  |
 | `stressStrain`     | σ–ε curve: E, 0.2% offset, UTS, necking; specimen; tube; two members   | College materials, biomech. (HC28)  |
 | `stressElement`    | element, turned to θ_p; Mohr's circle; 3 circles; loci, n; soil line   | College stress, soil (HC33)         |
@@ -872,6 +877,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `treeDiagram`      | `chances: { first, second, names, … }`   | a chance per branch, B given A on the second stage, path products (H21)       |
 | `venn`             | `chances: { a, b, both, shade, … }`      | probabilities per region; and, or, complement shaded; exclusive apart (H22)   |
 | `venn`             | `chances.counts: { total, count? }`      | counts out of a total: regions as counts, neither outside, P = n/N (H97)      |
+| `venn`             | `three: { a, b, c, ab, ac, bc, abc }`    | three sets: 7 regions by inclusion–exclusion, union bracketed (HC188)         |
 | `treeDiagram`      | `chances.third`, `thirdNames`, `path3`   | a third stage: 8 leaves, each path's product; three stages multiplied (H97)   |
 | `treeDiagram`      | `namesBySize`                            | outcome names for a stage of each size: 2 H, T; 3 R, G, B; … (H105)           |
 | `treeDiagram`      | `chain: { partials, rates, total? }`     | chain rule: z, x and y, t; ∂z/∂x and dx/dt on branches, paths added (HC98)    |
