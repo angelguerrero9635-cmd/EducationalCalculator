@@ -18,6 +18,8 @@ const NA = valueOf('NA'); // 6.022 × 10²³ mol⁻¹
 const E_CHARGE = valueOf('e'); // 1.602 × 10⁻¹⁹ C
 const RINF = valueOf('Rinf'); // 1.097 × 10⁷ m⁻¹
 const R_LATM = 0.08206; // L·atm/(mol·K)
+const R_J = valueOf('R'); // 8.314 J/(mol·K)
+const HE_KG = 0.004003; // helium's molar mass, kg/mol
 
 // Wavelengths 10 nm to 100 μm; the other ranges follow from them, so every chain meets.
 const F_MIN = C / 1e-4;
@@ -1126,6 +1128,150 @@ export const COLLEGE_CHEMISTRY_MODULES: ModuleDef[] = [
         moles: 'n',
         R: R_LATM,
         real: { a: 'a', b: 'b', ideal: 'Pid', pressure: 'P', z: 'Z', gas: 'CO₂' },
+      },
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    // Gases → kinetic-molecular theory: N₂ (28.01 g/mol) at 300 K. M = 0.02801 kg/mol;
+    // u = √(3 × 8.314 × 300 ÷ 0.02801) = 516.9 m/s; KE = 1.5 × 8.314 × 300 = 3741 J/mol.
+    // Helium (4.003 g/mol) at the same T: √(3 × 8.314 × 300 ÷ 0.004003) = 1367 m/s.
+    const [T, M] = [300, 28.01];
+    const Mk = M / 1000;
+    const rms = (t: number, kg: number) => Math.sqrt((3 * R_J * t) / kg);
+    return {
+      id: 'he.chemistry.gen-chem-1#2~kinetic',
+      title: 'Kinetic theory: rms speed and kinetic energy',
+      use: 'Use this for “Find the root-mean-square speed and the average kinetic energy per mole of N₂ molecules at 300 K.”',
+      assumptions: [
+        'An ideal gas: the molecules are points that only bounce off each other and the walls, and their speeds follow the Maxwell distribution.',
+        'R = 8.314 J/(mol·K). A joule is kg·m²/s², so the molar mass goes in kg/mol for the speed to come out in m/s.',
+        'The average kinetic energy per mole, (3/2)RT, depends on T only. At the same T a lighter gas moves faster: helium is dashed beside yours.',
+      ],
+      variables: [
+        V('T', 'T', 'Temperature', {
+          unit: 'K',
+          units: ['K'],
+          min: 1,
+          max: 5000,
+          step: 0.01,
+          figures: 4,
+        }),
+        V('M', 'M', 'Molar mass', {
+          unit: 'g/mol',
+          units: ['g/mol'],
+          min: 1,
+          max: 1000,
+          step: 0.001,
+          figures: 4,
+        }),
+        V('Mk', 'M_kg', 'Molar mass in kg/mol', {
+          unit: 'kg/mol',
+          units: ['kg/mol'],
+          min: 0.001,
+          max: 1,
+          figures: 4,
+        }),
+        V('u', 'u', 'Root-mean-square speed', {
+          unit: 'm/s',
+          units: ['m/s'],
+          min: rms(1, 1),
+          max: rms(5000, 0.001),
+          step: 0.1,
+          figures: 4,
+        }),
+        V('KE', 'KE', 'Average kinetic energy per mole', {
+          unit: 'J/mol',
+          units: ['J/mol'],
+          min: 1.5 * R_J,
+          max: 1.5 * R_J * 5000,
+          step: 0.1,
+          figures: 4,
+        }),
+        V('uHe', 'u_He', 'Helium’s rms speed at the same temperature', {
+          unit: 'm/s',
+          units: ['m/s'],
+          min: rms(1, HE_KG),
+          max: rms(5000, HE_KG),
+          figures: 4,
+          derived: true,
+        }),
+      ],
+      ...rels(
+        rel('M_kg = M ÷ 1000', '{Mk} = {M} ÷ 1000', ['Mk', 'M'], (v) => v.Mk! * 1000 - v.M!, {
+          Mk: [
+            (v) => exact(v.M! / 1000),
+            '{M} ÷ 1000',
+            'R is in joules, and a joule is kg·m²/s², so the molar mass must be in kg/mol: divide the grams by 1000.',
+          ],
+          M: [(v) => exact(v.Mk! * 1000), '{Mk} × 1000', 'Back to grams per mole.'],
+        }),
+        rel(
+          'u = √(3RT ÷ M)',
+          '{u} = √(3 × 8.314 × {T} ÷ {Mk})',
+          ['u', 'T', 'Mk'],
+          (v) => v.u! * v.u! * v.Mk! - 3 * R_J * v.T!,
+          {
+            u: [
+              (v) => rms(v.T!, v.Mk!),
+              '√(3 × 8.314 × {T} ÷ {Mk})',
+              'Set (1/2)Mu² equal to (3/2)RT and solve for u: the square root of the mean of the squared speeds.',
+            ],
+            T: [
+              (v) => (v.u! * v.u! * v.Mk!) / (3 * R_J),
+              '{u}² × {Mk} ÷ (3 × 8.314)',
+              'Square both sides and solve for T: T = Mu² ÷ 3R.',
+            ],
+            Mk: [
+              (v) => (3 * R_J * v.T!) / (v.u! * v.u!),
+              '3 × 8.314 × {T} ÷ {u}²',
+              'Square both sides and solve for M: M = 3RT ÷ u².',
+            ],
+          },
+        ),
+        rel(
+          'KE = (3/2)RT',
+          '{KE} = 3 ÷ 2 × 8.314 × {T}',
+          ['KE', 'T'],
+          (v) => v.KE! - 1.5 * R_J * v.T!,
+          {
+            KE: [
+              (v) => exact(1.5 * R_J * v.T!),
+              '3 ÷ 2 × 8.314 × {T}',
+              'The average kinetic energy of a mole of molecules is (3/2)RT, whatever the gas.',
+            ],
+            T: [
+              (v) => v.KE! / (1.5 * R_J),
+              '{KE} ÷ (3 ÷ 2 × 8.314)',
+              'Divide the energy by (3/2)R.',
+            ],
+          },
+        ),
+        derive(
+          'u_He = √(3RT ÷ M_He)',
+          '{uHe} = √(3 × 8.314 × {T} ÷ 0.004003)',
+          'uHe',
+          ['T'],
+          (v) => rms(v.T!, HE_KG),
+          '√(3 × 8.314 × {T} ÷ 0.004003)',
+          'Helium (0.004003 kg/mol) at the same temperature has the same kinetic energy, so being lighter it moves faster (dashed).',
+        ),
+      ),
+      example: { T, M, Mk, u: rms(T, Mk), KE: 1.5 * R_J * T, uHe: rms(T, HE_KG) },
+      startWith: ['T', 'M'],
+      unitSystems: ['metric'],
+      representation: {
+        kind: 'functionGraph',
+        family: 'distribution',
+        distribution: 'maxwell',
+        molar: 'M',
+        T: 'T',
+        R: R_J,
+        compare: { molar: HE_KG * 1000, gas: 'He' },
+        speeds: { rms: 'u' },
+        name: 'f',
+        input: 'v',
+        axes: { x: 'Speed v (m/s)', y: 'f(v) (10⁻³ s/m)' },
+        fixed: true,
       },
     } satisfies ModuleDef;
   })(),
