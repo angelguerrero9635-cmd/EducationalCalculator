@@ -67,6 +67,22 @@ const sineWork = (A: number, b: number, x: number) => {
   ];
 };
 
+/** "−0.5e^(−0.2x)": a number times e to the power r·x ("−e^(x)" when the number is −1). */
+const expTerm = (k: number, r: number) => {
+  const front = k === 1 ? '' : k === -1 ? '−' : formatNumber(k);
+  const inside = r === 1 ? 'x' : r === -1 ? '−x' : `${formatNumber(r)}x`;
+  return `${front}e^(${inside})`;
+};
+
+/** The derivative of A·e^(kx) as a form line, then its value at x (k times the value there). */
+const expWork = (A: number, k: number, x: number) => {
+  const t = exact(k * x);
+  return [
+    `y(x) = ${expTerm(A, k)} → dy/dx = ${expTerm(exact(A * k), k)}`,
+    `dy/dx at x = ${formatNumber(x)} = ${expTerm(exact(A * k), k).replace(/\(.*x\)$/, `(${formatNumber(t)})`)} = ${formatNumber(exact(A * k * Math.exp(t)))}`,
+  ];
+};
+
 /** A sine or cosine with rounding crumbs (cos(π/2) ≈ 6 × 10⁻¹⁷) read as 0. */
 const snap = (y: number) => (Math.abs(y) < 1e-9 ? 0 : y);
 
@@ -906,6 +922,92 @@ export const COLLEGE_MATH_MODULES: ModuleDef[] = [
       b: 'b',
       at: { x: 'x', y: 'f' },
       tangent: { x: 'x', slope: 'm', y: 'f' },
+    },
+  },
+  {
+    // Calculus I → Derivatives and differentiation rules: A·e^(kx), whose slope is k times itself.
+    id: 'he.math.calc-1#1~exp',
+    title: 'The derivative of A·e^(kx)',
+    use: 'Use this for “Find the slope of y = 3e^(0.5x) at x = 2.”',
+    assumptions: [
+      'The slope of eˣ is eˣ itself. For A·e^(kx) the inside kx has slope k (chain rule), so f′(x) = k·A·e^(kx) = k·f(x).',
+      'With k > 0 the curve grows and its slope is the same sign as A; with k < 0 it decays toward 0.',
+      'The slope of ln x is 1 ÷ x for x > 0, the inverse of this rule.',
+    ],
+    variables: [
+      V('A', 'A', 'Number in front', { min: -1000, max: 1000, step: 0.5 }),
+      V('k', 'k', 'Rate in the power', { min: -5, max: 5, step: 0.05 }),
+      V('x', 'x', 'Point', { min: -10, max: 10, step: 0.1 }),
+      V('f', 'f(x)', 'Value there', { min: -1e25, max: 1e25, step: 0.0001 }),
+      V('m', 'f′(x)', 'Slope of the tangent', { min: -1e26, max: 1e26, step: 0.0001 }),
+    ],
+    ...rels(
+      rule(
+        'k ≠ 0',
+        'The rate in the power {k} is not 0',
+        ['k'],
+        (v) => v.k !== 0,
+        'With k = 0 the power is e⁰ = 1, so f is the constant A with slope 0. Pick a k that is not 0.',
+      ),
+      rel(
+        'f = A·e^(kx)',
+        '{f} = {A} × e^({k} × {x})',
+        ['f', 'A', 'k', 'x'],
+        (v) => v.f! - v.A! * Math.exp(v.k! * v.x!),
+        {
+          f: [
+            (v) => v.A! * Math.exp(v.k! * v.x!),
+            '{A} × e^({k} × {x})',
+            'Raise e to the power k times x, then multiply by A.',
+          ],
+          A: [
+            (v) => v.f! / Math.exp(v.k! * v.x!),
+            '{f} ÷ e^({k} × {x})',
+            'Divide the value by e to the power kx.',
+          ],
+          x: [
+            (v) =>
+              v.k === 0 || v.A === 0 || v.f! / v.A! <= 0 ? undefined : Math.log(v.f! / v.A!) / v.k!,
+            'ln({f} ÷ {A}) ÷ {k}',
+            'Divide by A, take the natural log, then divide by k. f and A must have the same sign.',
+          ],
+          k: [
+            (v) =>
+              v.x === 0 || v.A === 0 || v.f! / v.A! <= 0 ? undefined : Math.log(v.f! / v.A!) / v.x!,
+            'ln({f} ÷ {A}) ÷ {x}',
+            'Divide by A, take the natural log, then divide by x.',
+          ],
+        },
+      ),
+      withStep(
+        rel('f′ = k·f', '{m} = {k} × {f}', ['m', 'k', 'f'], (v) => v.m! - v.k! * v.f!, {
+          m: [
+            (v) => v.k! * v.f!,
+            '{k} × {f}',
+            'Chain rule: the slope of e^u is e^u, times the inside’s slope k. So the slope is k times the value.',
+          ],
+          k: [
+            (v) => (v.f === 0 ? undefined : v.m! / v.f!),
+            '{m} ÷ {f}',
+            'The slope divided by the value is the rate k.',
+          ],
+        }),
+        'm',
+        { work: (v) => expWork(v.A!, v.k!, v.x!) },
+      ),
+    ),
+    example: { A: 5, k: -0.2, x: 3, f: 5 * Math.exp(-0.6), m: -Math.exp(-0.6) },
+    startWith: ['A', 'k', 'x'],
+    equation: 'f(x) = {A}e^{{k}x}\nf′({x}) = {m}',
+    representation: {
+      kind: 'functionGraph',
+      family: 'exponential',
+      a: 'A',
+      r: 'k',
+      at: { x: 'x', y: 'f' },
+      tangent: { x: 'x', slope: 'm', y: 'f' },
+      // The family's rate handle draws its own Δx = 1 triangle, which crowds the tangent's.
+      fixed: true,
     },
   },
 ];
