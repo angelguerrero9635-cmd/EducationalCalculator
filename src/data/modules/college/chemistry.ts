@@ -1767,4 +1767,164 @@ export const COLLEGE_CHEMISTRY_MODULES: ModuleDef[] = [
       },
     } satisfies ModuleDef;
   })(),
+  (() => {
+    // General Chemistry I → Thermochemistry: ΔU and ΔH of combustion from a bomb calorimeter.
+    // 0.6400 g of naphthalene (128.17 g/mol; C₁₀H₈ + 12O₂ → 10CO₂ + 4H₂O(l), Δn_g = 10 − 12 = −2)
+    // warms a 10.00 kJ/°C calorimeter by 2.570 °C: q = 25.70 kJ, n = 0.004993 mol,
+    // ΔU = −25.70 ÷ 0.004993 = −5147 kJ/mol; ΔH = −5147 + (−2) × 0.008314 × 298.15 = −5152 kJ/mol.
+    const [m, M, Ccal, dT, dng, T] = [0.64, 128.17, 10, 2.57, -2, 298.15];
+    const R_KJ = R_J / 1000; // 0.008314 kJ/(mol·K)
+    const n = m / M;
+    const q = Ccal * dT;
+    const dU = -q / n;
+    return {
+      id: 'he.chemistry.gen-chem-1#3~bomb',
+      title: 'ΔU and ΔH from a bomb calorimeter',
+      use: 'Use this for “0.6400 g of naphthalene, C₁₀H₈ (128.17 g/mol), burns in a bomb calorimeter of 10.00 kJ/°C, and the water warms by 2.570 °C. Find ΔU and ΔH of combustion at 25 °C.”',
+      assumptions: [
+        'The bomb is sealed, so the volume stays constant and no work is done: the heat the calorimeter takes in is −ΔU of the burning.',
+        'The calorimeter constant C_cal covers the bomb, the bucket and its water together, and no heat leaks out of the jacket.',
+        'Δn_g is moles of gas made less moles of gas used, from the balanced equation with water as a liquid: C₁₀H₈ + 12O₂ → 10CO₂ + 4H₂O gives 10 − 12 = −2.',
+        'R = 0.008314 kJ/(mol·K) and T is in kelvins (25 °C is 298.15 K).',
+      ],
+      variables: [
+        V('m', 'm', 'Mass of the sample', {
+          unit: 'g',
+          units: ['g'],
+          min: 0.0001,
+          max: 100,
+          step: 0.0001,
+          figures: 4,
+        }),
+        V('M', 'M', 'Molar mass of the sample', {
+          unit: 'g/mol',
+          units: ['g/mol'],
+          min: 1,
+          max: 1000,
+          step: 0.01,
+          figures: 5,
+        }),
+        V('n', 'n', 'Moles burned', { unit: 'mol', min: 1e-9, max: 10, figures: 4 }),
+        V('C', 'C_cal', 'Calorimeter constant', {
+          unit: 'kJ/°C',
+          units: ['kJ/°C'],
+          min: 0.01,
+          max: 100,
+          step: 0.001,
+          figures: 4,
+        }),
+        V('dT', 'ΔT', 'Temperature rise', {
+          unit: '°C',
+          units: ['°C'],
+          min: 0.001,
+          max: 100,
+          step: 0.001,
+          figures: 4,
+        }),
+        V('q', 'q', 'Heat the calorimeter takes in', {
+          unit: 'kJ',
+          units: ['kJ'],
+          min: 0.0001,
+          max: 10000,
+          step: 0.0001,
+          figures: 4,
+        }),
+        V('dU', 'ΔU', 'Energy change of combustion per mole', {
+          unit: 'kJ/mol',
+          units: ['kJ/mol'],
+          min: -1e5,
+          max: -0.01,
+          step: 0.01,
+          figures: 4,
+        }),
+        V('dng', 'Δn_g', 'Change in moles of gas', { min: -20, max: 20, step: 0.5 }),
+        V('T', 'T', 'Temperature', {
+          unit: 'K',
+          units: ['K'],
+          min: 200,
+          max: 1000,
+          step: 0.01,
+          figures: 5,
+        }),
+        V('dH', 'ΔH', 'Enthalpy of combustion per mole', {
+          unit: 'kJ/mol',
+          units: ['kJ/mol'],
+          min: -1e5,
+          max: 1e5,
+          step: 0.01,
+          figures: 4,
+        }),
+      ],
+      ...rels(
+        rel('n = m ÷ M', '{n} = {m} ÷ {M}', ['n', 'm', 'M'], (v) => v.n! * v.M! - v.m!, {
+          n: [
+            (v) => v.m! / v.M!,
+            '{m} ÷ {M}',
+            'Grams over the molar mass counts the moles burned.',
+          ],
+          m: [(v) => v.n! * v.M!, '{n} × {M}', 'Moles times the molar mass gives grams.'],
+          M: [(v) => v.m! / v.n!, '{m} ÷ {n}', 'Grams per mole of the sample.'],
+        }),
+        rel('q = C_cal ΔT', '{q} = {C} × {dT}', ['q', 'C', 'dT'], (v) => v.q! - v.C! * v.dT!, {
+          q: [
+            (v) => v.C! * v.dT!,
+            '{C} × {dT}',
+            'The whole calorimeter takes in C_cal kilojoules for each degree it warms.',
+          ],
+          C: [(v) => v.q! / v.dT!, '{q} ÷ {dT}', 'Divide the heat by the temperature rise.'],
+          dT: [(v) => v.q! / v.C!, '{q} ÷ {C}', 'Divide the heat by the calorimeter constant.'],
+        }),
+        rel('ΔU = −q ÷ n', '{dU} = −{q} ÷ {n}', ['dU', 'q', 'n'], (v) => v.dU! * v.n! + v.q!, {
+          dU: [
+            (v) => -v.q! / v.n!,
+            '−{q} ÷ {n}',
+            'The burning sample gave off what the calorimeter took in, so its heat is −q. At constant volume that is ΔU; share it among the moles.',
+          ],
+          q: [
+            (v) => -v.dU! * v.n!,
+            '−{dU} × {n}',
+            'The sample’s energy change is ΔU times the moles; the calorimeter takes in the opposite.',
+          ],
+          n: [
+            (v) => -v.q! / v.dU!,
+            '−{q} ÷ {dU}',
+            'Divide the sample’s heat, −q, by the energy for each mole.',
+          ],
+        }),
+        rel(
+          'ΔH = ΔU + Δn_g RT',
+          '{dH} = {dU} + {dng} × 0.008314 × {T}',
+          ['dH', 'dU', 'dng', 'T'],
+          (v) => v.dH! - v.dU! - v.dng! * R_KJ * v.T!,
+          {
+            dH: [
+              (v) => v.dU! + v.dng! * R_KJ * v.T!,
+              '{dU} + {dng} × 0.008314 × {T}',
+              'At constant pressure the gases made or used would push on the air: add Δn_g RT, with R in kJ.',
+            ],
+            dU: [
+              (v) => v.dH! - v.dng! * R_KJ * v.T!,
+              '{dH} − {dng} × 0.008314 × {T}',
+              'Take Δn_g RT off ΔH.',
+            ],
+          },
+        ),
+      ),
+      example: { m, M, n, C: Ccal, dT, q, dU, dng, T, dH: dU + dng * R_KJ * T },
+      startWith: ['m', 'M', 'C', 'dT', 'dng', 'T'],
+      unitSystems: ['metric'],
+      representation: {
+        kind: 'energyProfile',
+        mode: 'bomb',
+        constant: 'C',
+        change: 'dT',
+        q: 'q',
+        sample: { name: 'naphthalene', mass: 'm', moles: 'n', molar: 'M' },
+        deltaU: 'dU',
+        deltaH: 'dH',
+        gas: 'dng',
+        temperature: 'T',
+      },
+    } satisfies ModuleDef;
+  })(),
 ];
