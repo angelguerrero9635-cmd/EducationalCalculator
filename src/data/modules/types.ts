@@ -48,6 +48,7 @@ import type { FieldPlotSpec } from './typesHe2g';
 import type { He3bSpec } from './typesHe3b';
 import type { ChainTreeHe4a, ScatterClassesSpec } from './typesHe4a'; // HC139, HC98
 import type { DriftPathsSpec } from './typesHe4e';
+import type { CurvedSolidHe4i } from './typesHe4i'; // HC141–HC149, group I
 import type { CardIcon } from './layouts/types';
 import type { TreeChances, TwoWaySpec, VennChances } from './typesHse';
 import type { IntegerLineHs2a } from './typesHs2a';
@@ -684,7 +685,8 @@ export type Representation =
       surface?: string;
       /** Grades 9–12 (a cylinder): Cavalieri's two stacks of coins, one straight, one leaning. */
       cavalieri?: boolean;
-    } & CurvedSolidHe3c) // HC54: a cone filling, a cylinder's slab
+    } & CurvedSolidHe3c &
+      CurvedSolidHe4i) // HC54: a cone filling, a cylinder's slab; HC141: a cell's A ÷ V
   /**
    * A scatter plot of fixed data `points` ([x, y], in the axes' numbers) with a line of fit
    * y = `slope` × x + `intercept` (two variables), dragged by a handle near each end; the

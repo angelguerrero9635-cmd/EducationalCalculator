@@ -128,6 +128,7 @@ import {
   he4eGraphIssues,
   he4eNormalIssues,
 } from './picturesHe4e';
+import { cellRatioIssues } from './picturesHe4i';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -1931,6 +1932,7 @@ export function repIssues(
       // The caption works V from the radius and height drawn (in the radius's unit), so a
       // volume shown in another unit (L) is not compared here; the relation holds it.
       out.push(...he3cIssues(rep, val, byId)); // HC54: fill, slab
+      out.push(...cellRatioIssues(rep, val)); // HC141
       break;
     }
     case 'rightTriangle': {

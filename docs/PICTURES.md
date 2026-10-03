@@ -771,6 +771,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `polarGrid`        | `family: 'cycloid'`, `radians`, `length` | the rolling circle at t; t as 3π/2; the traced length L summed (HC53)         |
 | `rightTriangle`    | `rates: { a?, b?, c? }`, `scene`         | rate arrows at the moving ends; a ladder or roads; a·a′ + b·b′ = c·c′ (HC54)  |
 | `curvedSolid`      | `fill` (cone), `slab` (cylinder)         | a cone tank on its apex filling, r = Rh/H; a slab lifted H + h − y; W (HC54)  |
+| `curvedSolid`      | `ratio: { area, volume, ratio, … }`      | a cell as a sphere: A, V, A ÷ V = 3 ÷ r; `compare`: one r × k beside (HC141)  |
 | `termsChart`       | `type: 'nr'`, `'factorial'`, `alternate` | n·rⁿ, cⁿ ÷ n!; signs alternating, the sums zig-zag about S (HC66)             |
 | `termsChart`       | `bounds`, `next`, `ratio`, `limit`       | a band low ≤ S ≤ high; aₙ₊₁ and aₙ₊₁ ÷ aₙ; the sum S worked out (HC66)        |
 | `rectangle`        | `grow: { du, dv, dt?, product? }`        | u × v growing by strips u′Δt × v and u × v′Δt; (uv)′ = u′v + uv′ (HC67)       |

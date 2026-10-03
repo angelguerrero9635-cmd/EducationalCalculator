@@ -15,6 +15,7 @@ import { toFraction } from './exact';
 import { Ball, Deepen, FloorShadow, Glass, Sheen, url, usePaintIds } from './paint';
 import { CoinStacks, SolidNet } from './CurvedSolidHsf';
 import { TankHe3c } from './TankHe3c';
+import { CellRatioHe4i } from './CellRatioHe4i';
 
 type Spec = Extract<Representation, { kind: 'curvedSolid' }>;
 type Shape = Spec['shape'];
@@ -44,6 +45,7 @@ export function CurvedSolid({ spec, calc }: { spec: Spec; calc: Calculator }) {
   // Grades 9–12 (CurvedSolidHsf.tsx): Cavalieri's coin stacks, or the solid with its net.
   if (spec.cavalieri) return <CoinStacks spec={spec} calc={calc} />;
   if (spec.fill || spec.slab) return <TankHe3c spec={spec} calc={calc} />; // HC54
+  if (spec.ratio) return <CellRatioHe4i spec={spec} calc={calc} />; // HC141
   if (spec.net) return <SolidOrNet spec={spec} calc={calc} />;
   return <GlassSolid spec={spec} calc={calc} />;
 }

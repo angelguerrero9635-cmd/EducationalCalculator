@@ -726,6 +726,9 @@ const light = {
   he4eAfter: '#B45309',
   /** HC153: drift's expected heterozygosity (dashed) and its right-hand axis. */
   he4eDrift: '#BE185D',
+  /** HC141 (round 4, group I): a cell's cytoplasm and membrane. */
+  he4iCell: '#F5CDBE',
+  he4iCellEdge: '#B4533C',
   satellitePanel: '#2B4C8C',
   /**
    * College HC81–HC84 (round 3, group I): a muscle and its tendon; a binary diagram's α, β and
@@ -1381,6 +1384,8 @@ const dark: Palette = {
   he4eOffspring: '#2DD4BF',
   he4eAfter: '#FBBF24',
   he4eDrift: '#F472B6',
+  he4iCell: '#8E5A4C',
+  he4iCellEdge: '#E9A08C',
   satellitePanel: '#3D5FA3',
   he3iMuscle: '#D45A50',
   he3iTendon: '#B9AC97',
