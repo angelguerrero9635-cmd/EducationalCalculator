@@ -639,4 +639,119 @@ export const COLLEGE_CHEMISTRY_MODULES: ModuleDef[] = [
     unitSystems: ['metric'],
     representation: { kind: 'none' },
   },
+  {
+    // Solution stoichiometry: M × L → mol, the mole ratio across, then mol ÷ M → volume.
+    id: 'he.chemistry.gen-chem-1#1~solution-stoich',
+    title: 'Solution stoichiometry: the volume that reacts',
+    use: 'Use this for “What volume of 0.100 M NaOH reacts completely with 25.00 mL of 0.150 M H₂SO₄?”',
+    assumptions: [
+      'H₂SO₄ + 2NaOH → Na₂SO₄ + 2H₂O, so the mole ratio r is 2 mol of base for each mol of acid. Read r from the coefficients of your own balanced equation.',
+      'Moles of solute = molarity × volume in liters; a volume in mL is divided by 1000.',
+      'The reaction goes to completion: the base added is exactly what the acid needs (the equivalence point).',
+    ],
+    variables: [
+      V('C1', 'C₁', 'Acid concentration', {
+        unit: 'M',
+        units: ['M'],
+        min: 0.0001,
+        max: 20,
+        step: 0.001,
+        figures: 4,
+      }),
+      V('V1', 'V₁', 'Acid volume', {
+        unit: 'mL',
+        units: ['mL'],
+        min: 0.01,
+        max: 10000,
+        step: 0.01,
+        figures: 4,
+      }),
+      V('n1', 'n₁', 'Moles of acid', { unit: 'mol', min: 1e-9, max: 200, figures: 4 }),
+      V('r', 'r', 'Mole ratio (base per acid)', {
+        min: 0.1,
+        max: 10,
+        step: 0.001,
+        allowed: [1, 2, 3, 0.5, 1 / 3, 1.5, 2 / 3],
+      }),
+      V('n2', 'n₂', 'Moles of base', { unit: 'mol', min: 1e-9, max: 2000, figures: 4 }),
+      V('C2', 'C₂', 'Base concentration', {
+        unit: 'M',
+        units: ['M'],
+        min: 0.0001,
+        max: 20,
+        step: 0.001,
+        figures: 4,
+      }),
+      V('V2', 'V₂', 'Base volume', {
+        unit: 'mL',
+        units: ['mL'],
+        min: 0.01,
+        max: 1e6,
+        step: 0.01,
+        figures: 4,
+      }),
+    ],
+    ...rels(
+      rel(
+        'n₁ = C₁V₁',
+        '{n1} = {C1} × {V1} ÷ 1000',
+        ['n1', 'C1', 'V1'],
+        (v) => 1000 * v.n1! - v.C1! * v.V1!,
+        {
+          n1: [
+            (v) => (v.C1! * v.V1!) / 1000,
+            '{C1} × {V1} ÷ 1000',
+            'Molarity times the volume in liters (mL ÷ 1000) counts the moles of acid.',
+          ],
+          C1: [(v) => (1000 * v.n1!) / v.V1!, '1000 × {n1} ÷ {V1}', 'Moles per liter of acid.'],
+          V1: [
+            (v) => (1000 * v.n1!) / v.C1!,
+            '1000 × {n1} ÷ {C1}',
+            'Moles over molarity gives liters; × 1000 turns them into mL.',
+          ],
+        },
+      ),
+      rel('n₂ = r·n₁', '{n2} = {r} × {n1}', ['n2', 'r', 'n1'], (v) => v.n2! - v.r! * v.n1!, {
+        n2: [
+          (v) => v.r! * v.n1!,
+          '{r} × {n1}',
+          'The mole ratio from the balanced equation carries the moles from acid to base.',
+        ],
+        n1: [(v) => v.n2! / v.r!, '{n2} ÷ {r}', 'Divide the moles of base by the ratio.'],
+        r: [(v) => v.n2! / v.n1!, '{n2} ÷ {n1}', 'Divide the moles of base by the moles of acid.'],
+      }),
+      rel(
+        'n₂ = C₂V₂',
+        '{n2} = {C2} × {V2} ÷ 1000',
+        ['n2', 'C2', 'V2'],
+        (v) => 1000 * v.n2! - v.C2! * v.V2!,
+        {
+          V2: [
+            (v) => (1000 * v.n2!) / v.C2!,
+            '1000 × {n2} ÷ {C2}',
+            'Moles of base over its molarity gives liters; × 1000 turns them into mL.',
+          ],
+          n2: [
+            (v) => (v.C2! * v.V2!) / 1000,
+            '{C2} × {V2} ÷ 1000',
+            'Molarity times the volume in liters counts the moles of base.',
+          ],
+          C2: [(v) => (1000 * v.n2!) / v.V2!, '1000 × {n2} ÷ {V2}', 'Moles per liter of base.'],
+        },
+      ),
+    ),
+    example: { C1: 0.15, V1: 25, n1: 0.00375, r: 2, n2: 0.0075, C2: 0.1, V2: 75 },
+    startWith: ['C1', 'V1', 'r', 'C2'],
+    unitSystems: ['metric'],
+    representation: {
+      kind: 'moleMap',
+      moles: 'n1',
+      formula: 'H2SO4',
+      second: { formula: 'NaOH', ratio: [1, 'r'], moles: 'n2' },
+      solution: {
+        first: { molarity: 'C1', volume: 'V1' },
+        second: { molarity: 'C2', volume: 'V2' },
+      },
+    },
+  },
 ];
