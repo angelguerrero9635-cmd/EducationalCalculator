@@ -158,6 +158,31 @@ const fenceWork = (P: number, x: number) => {
   ];
 };
 
+/** x³ + bx² + cx + d at x. */
+const cubicAt = (v: Values, x: number) => x ** 3 + v.b! * x ** 2 + v.c! * x + v.d!;
+
+/** The critical points of x³ + bx² + cx + d, (−b ∓ √(b² − 3c)) ÷ 3: the smaller is the maximum. */
+const criticalAt = (v: Values, side: -1 | 1) => {
+  const q = v.b! ** 2 - 3 * v.c!;
+  return q > 0 ? (-v.b! + side * Math.sqrt(q)) / 3 : undefined;
+};
+
+/** "(−(−3) − √((−3)² − 3 × (−9))) ÷ 3": the quadratic formula on f′ = 3x² + 2bx + c, the 2s cancelled. */
+const criticalExpr = (side: '−' | '+') => `(−{b} ${side} √({b}² − 3 × {c})) ÷ 3`;
+
+/** The second derivative 6x + 2b at a critical point, as a form line and its value there. */
+const bendWork = (v: Values, x: number, first: boolean) => {
+  const f2 = [6, exact(2 * v.b!)];
+  return [
+    ...(first
+      ? [
+          `f(x) = ${polyForm([1, v.b!, v.c!, v.d!])} → f′(x) = ${polyForm([3, exact(2 * v.b!), v.c!])} → f″(x) = ${polyForm(f2)}`,
+        ]
+      : []),
+    `f″(${formatNumber(x)}) = ${polyAt(f2, x)} = ${formatNumber(exact(6 * x + 2 * v.b!))}`,
+  ];
+};
+
 export const COLLEGE_MATH_MODULES: ModuleDef[] = [
   {
     // Calculus I → Limits and continuity: a quotient at x = a, 0/0 or k/0.
@@ -1609,6 +1634,153 @@ export const COLLEGE_MATH_MODULES: ModuleDef[] = [
       marks: ['vertex'],
       xMin: 0,
       axes: { x: 'Side x (m)', y: 'Area A (m²)' },
+    },
+  },
+  {
+    // Calculus I → Related rates and optimization: the extrema and inflection of a cubic.
+    id: 'he.math.calc-1#2~extrema',
+    title: 'Highs and lows of a cubic',
+    use: 'Use this for “Find the local maximum and minimum of f(x) = x³ − 6x² + 9x + 1, and where the graph changes how it bends.”',
+    equation: 'f(x) = x³ + {b}x² + {c}x + {d}',
+    assumptions: [
+      'The local maximum and minimum are at critical points, where f′(x) = 3x² + 2bx + c = 0.',
+      'Two critical points need b² > 3c. Then the second derivative test sorts them: f″(x) = 6x + 2b is negative at a maximum and positive at a minimum.',
+      'With x³ in front, the smaller critical point x₁ is always the maximum and x₂ the minimum. The inflection point is halfway, where f″(x) = 0.',
+    ],
+    variables: [
+      V('b', 'b', 'Coefficient of x²', { min: -50, max: 50, step: 0.1 }),
+      V('c', 'c', 'Coefficient of x', { min: -50, max: 50, step: 0.1 }),
+      V('d', 'd', 'Constant term', { min: -50, max: 50, step: 0.1 }),
+      V('x1', 'x₁', 'First critical point', { min: -100, max: 100, step: 0.0001, derived: true }),
+      V('k1', 'k₁', 'Second derivative f″(x₁) there', {
+        min: -1e3,
+        max: 1e3,
+        step: 0.0001,
+        derived: true,
+      }),
+      V('f1', 'y₁', 'Local maximum f(x₁)', { min: -1e6, max: 1e6, step: 0.0001, derived: true }),
+      V('x2', 'x₂', 'Second critical point', { min: -100, max: 100, step: 0.0001, derived: true }),
+      V('k2', 'k₂', 'Second derivative f″(x₂) there', {
+        min: -1e3,
+        max: 1e3,
+        step: 0.0001,
+        derived: true,
+      }),
+      V('f2', 'y₂', 'Local minimum f(x₂)', { min: -1e6, max: 1e6, step: 0.0001, derived: true }),
+      V('xi', 'xᵢ', 'Inflection point', { min: -100, max: 100, step: 0.0001, derived: true }),
+      V('fi', 'yᵢ', 'Value at the inflection f(xᵢ)', {
+        min: -1e6,
+        max: 1e6,
+        step: 0.0001,
+        derived: true,
+      }),
+    ],
+    ...rels(
+      rule(
+        'b² > 3c',
+        'The square of {b} is more than 3 × {c}',
+        ['b', 'c'],
+        (v) => v.b! ** 2 > 3 * v.c!,
+        'With b² ≤ 3c, f′(x) = 3x² + 2bx + c never changes sign, so f only climbs: no local maximum or minimum. Pick b and c with b² > 3c.',
+      ),
+      derive(
+        'x₁ = (−b − √(b² − 3c)) ÷ 3',
+        '{x1} = (−{b} − √({b}² − 3 × {c})) ÷ 3',
+        'x1',
+        ['b', 'c'],
+        (v) => criticalAt(v, -1),
+        criticalExpr('−'),
+        'Set f′(x) = 3x² + 2bx + c = 0. The quadratic formula gives x = (−2b ± √(4b² − 12c)) ÷ 6; cancel the 2s. The smaller root is x₁.',
+      ),
+      derive(
+        'x₂ = (−b + √(b² − 3c)) ÷ 3',
+        '{x2} = (−{b} + √({b}² − 3 × {c})) ÷ 3',
+        'x2',
+        ['b', 'c'],
+        (v) => criticalAt(v, 1),
+        criticalExpr('+'),
+        'The same formula with + gives the larger root, x₂.',
+      ),
+      withStep(
+        derive(
+          'k₁ = f″(x₁) = 6x₁ + 2b',
+          '{k1} = 6 × {x1} + 2 × {b}',
+          'k1',
+          ['x1', 'b'],
+          (v) => 6 * v.x1! + 2 * v.b!,
+          '6 × {x1} + 2 × {b}',
+          (v) =>
+            6 * v.x1! + 2 * v.b! < 0
+              ? 'Differentiate twice with the power rule. f″(x₁) < 0, so the graph bends down there: x₁ is a local maximum.'
+              : 'Differentiate twice with the power rule. f″(x₁) > 0, so the graph bends up there: x₁ is a local minimum.',
+        ),
+        'k1',
+        { work: (v) => bendWork(v, v.x1!, true) },
+      ),
+      withStep(
+        derive(
+          'k₂ = f″(x₂) = 6x₂ + 2b',
+          '{k2} = 6 × {x2} + 2 × {b}',
+          'k2',
+          ['x2', 'b'],
+          (v) => 6 * v.x2! + 2 * v.b!,
+          '6 × {x2} + 2 × {b}',
+          (v) =>
+            6 * v.x2! + 2 * v.b! > 0
+              ? 'f″(x₂) > 0, so the graph bends up there: x₂ is a local minimum.'
+              : 'f″(x₂) < 0, so the graph bends down there: x₂ is a local maximum.',
+        ),
+        'k2',
+        { work: (v) => bendWork(v, v.x2!, false) },
+      ),
+      derive(
+        'y₁ = f(x₁)',
+        '{f1} = {x1}³ + {b} × {x1}² + {c} × {x1} + {d}',
+        'f1',
+        ['x1', 'b', 'c', 'd'],
+        (v) => cubicAt(v, v.x1!),
+        '{x1}³ + {b} × {x1}² + {c} × {x1} + {d}',
+        'Put x₁ into f: the height of the local maximum.',
+      ),
+      derive(
+        'y₂ = f(x₂)',
+        '{f2} = {x2}³ + {b} × {x2}² + {c} × {x2} + {d}',
+        'f2',
+        ['x2', 'b', 'c', 'd'],
+        (v) => cubicAt(v, v.x2!),
+        '{x2}³ + {b} × {x2}² + {c} × {x2} + {d}',
+        'Put x₂ into f: the height of the local minimum.',
+      ),
+      derive(
+        'xᵢ = −b ÷ 3',
+        '{xi} = −{b} ÷ 3',
+        'xi',
+        ['b'],
+        (v) => -v.b! / 3,
+        '−{b} ÷ 3',
+        'Set f″(x) = 6x + 2b = 0. On the left f″ < 0 and on the right f″ > 0, so the bend changes from down to up here.',
+      ),
+      derive(
+        'yᵢ = f(xᵢ)',
+        '{fi} = {xi}³ + {b} × {xi}² + {c} × {xi} + {d}',
+        'fi',
+        ['xi', 'b', 'c', 'd'],
+        (v) => cubicAt(v, v.xi!),
+        '{xi}³ + {b} × {xi}² + {c} × {xi} + {d}',
+        'Put xᵢ into f. A cubic is symmetric about this point, so yᵢ is halfway between y₁ and y₂.',
+      ),
+    ),
+    // f(x) = x³ − 3x² − 9x + 5: f′ = 3x² − 6x − 9 = 3(x − 3)(x + 1), so x₁ = −1 and x₂ = 3;
+    // f″ = 6x − 6 gives −12 (maximum, f = −1 − 3 + 9 + 5 = 10) and 12 (minimum, f = 27 − 27 − 27 + 5 = −22);
+    // inflection at x = 1, f(1) = 1 − 3 − 9 + 5 = −6.
+    example: { b: -3, c: -9, d: 5, x1: -1, x2: 3, k1: -12, k2: 12, f1: 10, f2: -22, xi: 1, fi: -6 },
+    startWith: ['b', 'c', 'd'],
+    // f(x) = x³ + bx² + cx + d with its hill and valley marked.
+    representation: {
+      kind: 'functionGraph',
+      family: 'polynomial',
+      coefficients: [1, 'b', 'c', 'd'],
+      marks: ['extrema'],
     },
   },
 ];
