@@ -40,13 +40,59 @@ export interface AtmosphereThicknessSpec {
   fixed?: boolean;
 }
 
+// ─── HC123 atmosphereLayers adiabat and saturation ───────────────────────────
+
+/**
+ * Potential temperature (EG-P11): a temperature (K, across) against log-pressure (hPa, down to
+ * 1,000 at the bottom) chart with the dry adiabats T = θ(p ÷ 1,000)^κ every 10 K, labelled by θ;
+ * the parcel at (T, p) and its own adiabat brought down to 1,000 hPa, where it reads θ =
+ * T(1,000 ÷ p)^κ. Drag the parcel.
+ */
+export interface AtmosphereAdiabatSpec {
+  kind: 'atmosphereLayers';
+  mode: 'adiabat';
+  /** The parcel's temperature T (K) and pressure p (hPa). */
+  temperature: NumOrVar;
+  pressure: NumOrVar;
+  /** Its potential temperature θ (K), when the page works it out. */
+  theta?: NumOrVar;
+  /** κ = R_d ÷ c_p (default 0.286), the page's. */
+  kappa?: NumOrVar;
+  fixed?: boolean;
+}
+
+/**
+ * Humidity (EG-P11): Tetens' saturation vapor pressure e_s(T) = a e^(bT ÷ (T + c)) from −40 to
+ * 50 °C; the air's point (T, e), up to the curve for e_s at T, and across to the curve at the dew
+ * point T_d, where e_s(T_d) = e; RH = e ÷ e_s, and with a pressure the mixing ratio
+ * r = 622e ÷ (p − e). Drag the air's point for T and the dew point along the curve.
+ */
+export interface AtmosphereSaturationSpec {
+  kind: 'atmosphereLayers';
+  mode: 'saturation';
+  /** The air's temperature T and dew point T_d, °C (T_d ≤ T). */
+  temperature: NumOrVar;
+  dewPoint: NumOrVar;
+  /** e_s and e (hPa), RH (%), when the page works them out. */
+  saturation?: NumOrVar;
+  vapor?: NumOrVar;
+  rh?: NumOrVar;
+  /** The air's pressure p (hPa) and mixing ratio r (g/kg). */
+  pressure?: NumOrVar;
+  mixing?: NumOrVar;
+  /** Tetens' a (hPa), b and c (°C), the page's (default 6.112, 17.67, 243.5). */
+  coefficients?: [number, number, number];
+  fixed?: boolean;
+}
+
 /** The round 4 group G options on existing kinds (drawn by `He4gView`). */
-export type He4gOptionSpec = AtmosphereThicknessSpec;
+export type He4gOptionSpec =
+  AtmosphereThicknessSpec | AtmosphereAdiabatSpec | AtmosphereSaturationSpec;
 
 /** Every round 4 group G calculator picture. */
 export type He4gSpec = He4gOptionSpec;
 
-const MODES = ['thickness'];
+const MODES = ['thickness', 'adiabat', 'saturation'];
 
 /** Whether a picture is one of group G's options on an existing kind. */
 export function isHe4gOption(r: Representation): r is He4gOptionSpec {
@@ -62,5 +108,9 @@ export function he4gSpecVars(r: He4gSpec): string[] {
   switch (r.mode) {
     case 'thickness':
       return ids(r.lower, r.upper, r.temperature, r.thickness, r.scaleHeight, r.g, r.gasConstant);
+    case 'adiabat':
+      return ids(r.temperature, r.pressure, r.theta, r.kappa);
+    case 'saturation':
+      return ids(r.temperature, r.dewPoint, r.saturation, r.vapor, r.rh, r.pressure, r.mixing);
   }
 }

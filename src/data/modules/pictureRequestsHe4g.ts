@@ -49,4 +49,26 @@ export const HE4G_REQUESTS: PictureRequest[] = [
       'g.he-atmosphereLayers-thickness-deep',
     ],
   },
+  {
+    ...ask(
+      'HC123',
+      'atmosphereLayers',
+      'Potential temperature on a temperature against log-pressure chart (dry adiabats labelled θ, the parcel and its adiabat down to 1,000 hPa), and humidity on Tetens’ eₛ(T) curve (the air’s point, up to eₛ at T, across to the curve at the dew point; RH and r)',
+      { [`${MET}#1`]: '"adiabat"', [`${MET}#1~humidity`]: '"saturation"' },
+      [
+        'From EG-P11. Two new modes on atmosphereLayers (typesHe4g.ts AtmosphereAdiabatSpec and AtmosphereSaturationSpec; reps/AtmosphereAdiabat.tsx, reps/AtmosphereSaturation.tsx; sums in reps/he4gMath.ts).',
+        "Fields (#1): { kind: 'atmosphereLayers', mode: 'adiabat', temperature (T, K), pressure (p, hPa), theta? (θ, K), kappa? (κ, default 0.286), fixed? }. Example: { kind: 'atmosphereLayers', mode: 'adiabat', temperature: 'T', pressure: 'p', theta: 'th', kappa: 0.286 } (263.15 K at 700 hPa → θ = 291.4 K).",
+        "Fields (~humidity): { kind: 'atmosphereLayers', mode: 'saturation', temperature (T, °C), dewPoint (T_d, °C), saturation? (eₛ, hPa), vapor? (e, hPa), rh? (RH, %), pressure? (p, hPa), mixing? (r, g/kg), coefficients? ([6.112, 17.67, 243.5], Tetens' a, b, c as the page writes them), fixed? }. Example: { kind: 'atmosphereLayers', mode: 'saturation', temperature: 'T', dewPoint: 'Td', saturation: 'es', vapor: 'e', rh: 'RH', pressure: 'p', mixing: 'r' } (25 °C, 15 °C, 1,000 hPa → eₛ = 31.67, e = 17.04 hPa, RH = 53.8 %, r = 10.78 g/kg).",
+        'adiabat: the chart’s top is the round pressure below p ÷ 1.6; the adiabats every 10 K (20 K on a wide chart) are labelled near the top; the parcel’s adiabat is bold from p down to 1,000 hPa, dashed above. Drag the parcel for T and p. saturation: T from −40 to 50 °C, e up to a round value above eₛ(T) (the curve runs off the top past it). Drag the air’s point for T and the dew point along the curve (T_d ≤ T). A "?" T or p (T or T_d) draws no point.',
+        'Harness (harness/picturesHe4g.ts): θ = T(1,000 ÷ p)^κ; eₛ and e by Tetens at T and T_d, RH = 100e ÷ eₛ, r = 622e ÷ (p − e).',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-atmosphereLayers-adiabat',
+      'g.he-atmosphereLayers-adiabat-high',
+      'g.he-atmosphereLayers-saturation',
+      'g.he-atmosphereLayers-saturation-cold',
+    ],
+  },
 ];

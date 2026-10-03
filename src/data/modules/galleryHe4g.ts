@@ -3,7 +3,8 @@
  * college page that waits, built from the plan's worked example. Spread into gallery.ts.
  *
  * Earth and geography (docs/plans/he.earth-geography.md): HC122 `atmosphereLayers` `thickness`
- * (meteorology#0, ~pressure-altitude; EG-P10).
+ * (meteorology#0, ~pressure-altitude; EG-P10); HC123 `adiabat` and `saturation` (meteorology#1,
+ * ~humidity; EG-P11).
  */
 import type { Relation } from '@/engine/types';
 
@@ -196,6 +197,225 @@ const pressureAltitude = demo({
   },
 });
 
-export const HE4G_GALLERY_MODULES: ModuleDef[] = [thickness, pressureAltitude, thicknessDeep];
+// ── HC123: potential temperature (meteorology#1) and humidity (~humidity) ──
+
+/** κ = R_d ÷ c_p, the plan's exponent. */
+const KAPPA = 0.286;
+
+const adiabatDemo = (id: string, title: string, use: string, [t, p]: [number, number]) =>
+  demo({
+    id,
+    title,
+    use,
+    assumptions: [
+      'θ is the temperature the air would have if brought dry and adiabatically to 1,000 hPa.',
+      'It stays the same for a parcel rising or sinking without heat or condensation; κ = 0.286.',
+    ],
+    variables: [
+      quantity('T', 'T', 'Temperature', 'K', 180, 330, 0.01),
+      quantity('p', 'p', 'Pressure', 'hPa', 10, 1050, 0.1),
+      quantity('th', 'θ', 'Potential temperature', 'K', 150, 900, 0.1),
+    ],
+    ...rules({
+      relation: {
+        id: 'θ = T(1,000 ÷ p)^κ',
+        display: '{th} = {T} × (1000 ÷ {p})^0.286',
+        vars: ['th', 'T', 'p'],
+        residual: (v) => v.th! - v.T! * (1000 / v.p!) ** KAPPA,
+        solve: {
+          th: (v) => (v.p! > 0 ? v.T! * (1000 / v.p!) ** KAPPA : undefined),
+          T: (v) => v.th! / (1000 / v.p!) ** KAPPA,
+          p: (v) => (v.th! > 0 && v.T! > 0 ? 1000 / (v.th! / v.T!) ** (1 / KAPPA) : undefined),
+        },
+      },
+      steps: {
+        th: st(
+          '{T} × (1000 ÷ {p})^0.286',
+          'Bring the parcel down dry to 1,000 hPa: it warms by the pressure ratio to the power κ.',
+        ),
+        T: st('{th} ÷ (1000 ÷ {p})^0.286', 'Divide θ by the same factor.'),
+        p: st(
+          '1000 ÷ ({th} ÷ {T})^(1 ÷ 0.286)',
+          'The ratio θ ÷ T is (1,000 ÷ p)^κ: undo the power, then divide 1,000 by it.',
+        ),
+      },
+    }),
+    example: { T: t, p, th: t * (1000 / p) ** KAPPA },
+    startWith: ['T', 'p'],
+    representation: {
+      kind: 'atmosphereLayers',
+      mode: 'adiabat',
+      temperature: 'T',
+      pressure: 'p',
+      theta: 'th',
+      kappa: KAPPA,
+    },
+  });
+
+const adiabat = adiabatDemo(
+  'g.he-atmosphereLayers-adiabat',
+  'Potential temperature of a parcel',
+  'Use this for the potential temperature of air at 263.15 K and 700 hPa, or the temperature a parcel of known θ has at a pressure.',
+  [263.15, 700],
+);
+
+const adiabatHigh = adiabatDemo(
+  'g.he-atmosphereLayers-adiabat-high',
+  'Cold air high up: a large θ',
+  'Use this for air at 220 K near the tropopause at 200 hPa: brought down dry it would be far warmer than the ground.',
+  [220, 200],
+);
+
+/** Tetens' saturation vapor pressure at T (°C), hPa. */
+const tetens = (t: number) => 6.112 * Math.exp((17.67 * t) / (t + 243.5));
+/** The inverse: the temperature (°C) where it is e. */
+const tetensInv = (e: number) => {
+  const l = Math.log(e / 6.112);
+  return (243.5 * l) / (17.67 - l);
+};
+
+const saturationDemo = (
+  id: string,
+  title: string,
+  use: string,
+  [t, td, p]: [number, number, number],
+) => {
+  const es = tetens(t);
+  const e = tetens(td);
+  return demo({
+    id,
+    title,
+    use,
+    assumptions: [
+      'Tetens’ formula for the saturation vapor pressure over water: 6.112e^(17.67T ÷ (T + 243.5)) hPa.',
+      'The air’s vapor pressure e is the saturation value at its dew point; the dew point is never above T.',
+    ],
+    variables: [
+      quantity('T', 'T', 'Temperature', '°C', -40, 50, 0.1),
+      quantity('Td', 'T_d', 'Dew point', '°C', -60, 50, 0.1),
+      quantity('es', 'eₛ', 'Saturation vapor pressure', 'hPa', 0.01, 130, 0.01),
+      quantity('e', 'e', 'Vapor pressure', 'hPa', 0.001, 130, 0.01),
+      quantity('RH', 'RH', 'Relative humidity', '%', 0.1, 100, 0.1),
+      quantity('p', 'p', 'Pressure', 'hPa', 100, 1050, 0.1),
+      quantity('r', 'r', 'Mixing ratio', 'g/kg', 0.001, 200, 0.01),
+    ],
+    ...rules(
+      {
+        relation: {
+          id: 'eₛ = 6.112e^(17.67T ÷ (T + 243.5))',
+          display: '{es} = 6.112 × e^(17.67 × {T} ÷ ({T} + 243.5))',
+          vars: ['es', 'T'],
+          residual: (v) => v.es! - tetens(v.T!),
+          solve: { es: (v) => tetens(v.T!), T: (v) => (v.es! > 0 ? tetensInv(v.es!) : undefined) },
+        },
+        steps: {
+          es: st(
+            '6.112 × e^(17.67 × {T} ÷ ({T} + 243.5))',
+            'Tetens’ formula: the most vapor the air can hold at T.',
+          ),
+          T: st(
+            '243.5 × ln({es} ÷ 6.112) ÷ (17.67 − ln({es} ÷ 6.112))',
+            'Undo Tetens: take ln(eₛ ÷ 6.112) and solve for T.',
+          ),
+        },
+      },
+      {
+        relation: {
+          id: 'e = 6.112e^(17.67T_d ÷ (T_d + 243.5))',
+          display: '{e} = 6.112 × e^(17.67 × {Td} ÷ ({Td} + 243.5))',
+          vars: ['e', 'Td'],
+          residual: (v) => v.e! - tetens(v.Td!),
+          solve: { e: (v) => tetens(v.Td!), Td: (v) => (v.e! > 0 ? tetensInv(v.e!) : undefined) },
+        },
+        steps: {
+          e: st(
+            '6.112 × e^(17.67 × {Td} ÷ ({Td} + 243.5))',
+            'The air’s vapor pressure is the saturation value at its dew point.',
+          ),
+          Td: st(
+            '243.5 × ln({e} ÷ 6.112) ÷ (17.67 − ln({e} ÷ 6.112))',
+            'Undo Tetens for the temperature where e would saturate the air.',
+          ),
+        },
+      },
+      {
+        relation: {
+          id: 'RH = 100e ÷ eₛ',
+          display: '{RH} = 100 × {e} ÷ {es}',
+          vars: ['RH', 'e', 'es'],
+          residual: (v) => v.RH! * v.es! - 100 * v.e!,
+          solve: {
+            RH: (v) => div(100 * v.e!, v.es!),
+            e: (v) => (v.RH! * v.es!) / 100,
+            es: (v) => div(100 * v.e!, v.RH!),
+          },
+        },
+        steps: {
+          RH: st('100 × {e} ÷ {es}', 'The share of the most vapor the air could hold, in percent.'),
+          e: st('{RH} × {es} ÷ 100', 'Take RH percent of eₛ.'),
+          es: st('100 × {e} ÷ {RH}', 'Divide e by the share RH ÷ 100.'),
+        },
+      },
+      {
+        relation: {
+          id: 'r = 622e ÷ (p − e)',
+          display: '{r} = 622 × {e} ÷ ({p} − {e})',
+          vars: ['r', 'e', 'p'],
+          residual: (v) => v.r! * (v.p! - v.e!) - 622 * v.e!,
+          solve: {
+            r: (v) => (v.p! > v.e! ? (622 * v.e!) / (v.p! - v.e!) : undefined),
+            e: (v) => (v.r! * v.p!) / (622 + v.r!),
+            p: (v) => div(622 * v.e!, v.r!)! + v.e!,
+          },
+        },
+        steps: {
+          r: st(
+            '622 × {e} ÷ ({p} − {e})',
+            'Grams of vapor per kilogram of dry air: 622e over the dry air’s pressure.',
+          ),
+          e: st('{r} × {p} ÷ (622 + {r})', 'Solve r(p − e) = 622e for e.'),
+          p: st('622 × {e} ÷ {r} + {e}', 'The dry air’s pressure 622e ÷ r, plus the vapor’s.'),
+        },
+      },
+    ),
+    example: { T: t, Td: td, es, e, RH: (100 * e) / es, p, r: (622 * e) / (p - e) },
+    startWith: ['T', 'Td', 'p'],
+    representation: {
+      kind: 'atmosphereLayers',
+      mode: 'saturation',
+      temperature: 'T',
+      dewPoint: 'Td',
+      saturation: 'es',
+      vapor: 'e',
+      rh: 'RH',
+      pressure: 'p',
+      mixing: 'r',
+    },
+  });
+};
+
+const saturation = saturationDemo(
+  'g.he-atmosphereLayers-saturation',
+  'Saturation vapor pressure, relative humidity and mixing ratio',
+  'Use this for air at 25 °C with a dew point of 15 °C at 1,000 hPa: eₛ, e, the relative humidity and the mixing ratio.',
+  [25, 15, 1000],
+);
+
+const saturationCold = saturationDemo(
+  'g.he-atmosphereLayers-saturation-cold',
+  'Cold air holds little vapor',
+  'Use this for air at −20 °C with a dew point of −25 °C at 850 hPa: a high RH but very little water.',
+  [-20, -25, 850],
+);
+
+export const HE4G_GALLERY_MODULES: ModuleDef[] = [
+  thickness,
+  pressureAltitude,
+  thicknessDeep,
+  adiabat,
+  adiabatHigh,
+  saturation,
+  saturationCold,
+];
 
 export const HE4G_GALLERY_LAYOUTS: LayoutDef[] = [];

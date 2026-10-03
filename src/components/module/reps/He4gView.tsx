@@ -5,11 +5,17 @@
 import type { He4gOptionSpec } from '@/data/modules/typesHe4g';
 
 import type { Calculator } from '../useCalculator';
+import { AtmosphereAdiabat } from './AtmosphereAdiabat';
+import { AtmosphereSaturation } from './AtmosphereSaturation';
 import { AtmosphereThickness } from './AtmosphereThickness';
 
 export function He4gView({ spec, calc }: { spec: He4gOptionSpec; calc: Calculator }) {
   switch (spec.mode) {
     case 'thickness':
       return <AtmosphereThickness spec={spec} calc={calc} />; // HC122
+    case 'adiabat':
+      return <AtmosphereAdiabat spec={spec} calc={calc} />; // HC123
+    case 'saturation':
+      return <AtmosphereSaturation spec={spec} calc={calc} />; // HC123
   }
 }

@@ -3,7 +3,17 @@
  * draws must agree with the page's values and the relation it shows. Called from `repIssues` in
  * `pictures.ts`. `val` reads formula units (see `siOf`). Test-only.
  */
-import { G_EARTH, R_DRY, scaleHeightOf, thicknessOf } from '@/components/module/reps/he4gMath';
+import {
+  G_EARTH,
+  KAPPA,
+  mixingOf,
+  R_DRY,
+  scaleHeightOf,
+  TETENS,
+  tetensOf,
+  thetaOf,
+  thicknessOf,
+} from '@/components/module/reps/he4gMath';
 
 import type { He4gSpec } from '../typesHe4g';
 
@@ -51,6 +61,37 @@ export function he4gIssues(rep: He4gSpec, val: Val): string[] {
         if (Math.abs(dz * per - want) > 1)
           out.push(`thickness: Δz ${dz * per} m, but H ln(p₁ ÷ p₂) = ${want} m`);
       }
+      break;
+    }
+    case 'adiabat': {
+      // θ = T(1,000 ÷ p)^κ: the parcel's adiabat reaches 1,000 hPa at the page's θ.
+      const [t, p, k] = [n(rep.temperature), n(rep.pressure), n(rep.kappa, KAPPA)];
+      if (t !== undefined && t <= 0) out.push(`adiabat: T ${t} K is not above absolute zero`);
+      if (p !== undefined && p <= 0) out.push(`adiabat: p ${p} hPa is not positive`);
+      const th = n(rep.theta);
+      if (t !== undefined && p !== undefined && p > 0 && k !== undefined && th !== undefined) {
+        const want = thetaOf(t, p, k);
+        if (!near(th, want)) out.push(`adiabat: θ ${th} K, but T(1,000 ÷ p)^κ = ${want} K`);
+      }
+      break;
+    }
+    case 'saturation': {
+      // Tetens at T and at T_d; RH = 100e ÷ eₛ; r = 622e ÷ (p − e); the point at T_d ≤ T.
+      const co = rep.coefficients ?? TETENS;
+      const [t, td] = [n(rep.temperature), n(rep.dewPoint)];
+      if (t === undefined || td === undefined) break;
+      if (td > t + 1e-9) break; // drawn at T, the caption says why
+      const es = tetensOf(t, co);
+      const e = tetensOf(td, co);
+      const same = (x: number | string | undefined, want: number, what: string) => {
+        const y = n(x);
+        if (y !== undefined && !near(y, want)) out.push(`saturation: ${what} ${y}, but ${want}`);
+      };
+      same(rep.saturation, es, 'eₛ');
+      same(rep.vapor, e, 'e');
+      same(rep.rh, (100 * e) / es, 'RH');
+      const p = n(rep.pressure);
+      if (p !== undefined && p > e) same(rep.mixing, mixingOf(e, p), 'r');
       break;
     }
   }
