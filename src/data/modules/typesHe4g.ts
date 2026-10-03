@@ -111,9 +111,34 @@ export type ParcelLapseSpec = {
 } & ParcelLapseFields &
   ({ dry: NumOrVar } | { dewLapse: NumOrVar });
 
+// ─── HC125 atmosphereLayers balance layer ────────────────────────────────────
+
+/**
+ * The one-layer greenhouse (EG-P13) on `atmosphereLayers` mode `balance`: one layer over the
+ * ground, transparent to sunlight, absorbing a share ε of the ground's infrared and sending half
+ * of it up and half back down. The bands to scale (W/m²) and a thermometer at T_s with Tₑ
+ * marked: T_s = Tₑ(2 ÷ (2 − ε))^(1/4).
+ */
+export interface BalanceLayerSpec {
+  kind: 'atmosphereLayers';
+  mode: 'balance';
+  /** The albedo α (0–1) and the sunlight S (W/m², default 1,361). */
+  albedo: NumOrVar;
+  sunlight?: NumOrVar;
+  /** F = S(1 − α) ÷ 4 (W/m²) and Tₑ (K), when the page names them. */
+  absorbed?: NumOrVar;
+  temperature?: NumOrVar;
+  /** The layer's emissivity ε (0–1) and the surface temperature T_s (K). */
+  layer: { emissivity: NumOrVar; surface?: NumOrVar };
+}
+
 /** The round 4 group G options on existing kinds (drawn by `He4gView`). */
 export type He4gOptionSpec =
-  AtmosphereThicknessSpec | AtmosphereAdiabatSpec | AtmosphereSaturationSpec | ParcelLapseSpec;
+  | AtmosphereThicknessSpec
+  | AtmosphereAdiabatSpec
+  | AtmosphereSaturationSpec
+  | ParcelLapseSpec
+  | BalanceLayerSpec;
 
 /** Every round 4 group G calculator picture. */
 export type He4gSpec = He4gOptionSpec;
@@ -123,7 +148,11 @@ const MODES = ['thickness', 'adiabat', 'saturation'];
 /** Whether a picture is one of group G's options on an existing kind. */
 export function isHe4gOption(r: Representation): r is He4gOptionSpec {
   if (r.kind === 'atmosphereLayers')
-    return MODES.includes(r.mode) || (r.mode === 'parcel' && ('dry' in r || 'dewLapse' in r));
+    return (
+      MODES.includes(r.mode) ||
+      (r.mode === 'parcel' && ('dry' in r || 'dewLapse' in r)) ||
+      (r.mode === 'balance' && 'layer' in r)
+    );
   return false;
 }
 
@@ -141,5 +170,14 @@ export function he4gSpecVars(r: He4gSpec): string[] {
       return ids(r.temperature, r.dewPoint, r.base, r.dry, r.dewLapse, r.baseTemperature);
     case 'saturation':
       return ids(r.temperature, r.dewPoint, r.saturation, r.vapor, r.rh, r.pressure, r.mixing);
+    case 'balance':
+      return ids(
+        r.albedo,
+        r.sunlight,
+        r.absorbed,
+        r.temperature,
+        r.layer.emissivity,
+        r.layer.surface,
+      );
   }
 }

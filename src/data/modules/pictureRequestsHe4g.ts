@@ -88,4 +88,21 @@ export const HE4G_REQUESTS: PictureRequest[] = [
     status: 'drawn',
     gallery: ['g.he-atmosphereLayers-parcel-lapse', 'g.he-atmosphereLayers-parcel-lapse-dry'],
   },
+  {
+    ...ask(
+      'HC125',
+      'atmosphereLayers',
+      'The one-layer greenhouse: sunlight S ÷ 4 in, α reflected, F through the layer into the ground; the ground’s infrared G, the share ε absorbed by the layer and the rest escaping; the layer’s εG ÷ 2 up and down; every band to scale and balanced; a thermometer at Tₛ with Tₑ marked',
+      { 'he.geography.climatology#0': '"layer"' },
+      [
+        'From EG-P13. New option on atmosphereLayers mode balance (typesHe4g.ts BalanceLayerSpec, reps/BalanceLayer.tsx, sums in reps/he4gMath.ts layerBudget); balance without layer (s.12.climate-systems~energy-balance) is unchanged.',
+        "Fields: { kind: 'atmosphereLayers', mode: 'balance', albedo (α), sunlight? (S, W/m², default 1,361), absorbed? (F, W/m²), temperature? (Tₑ, K), layer: { emissivity (ε, 0–1), surface? (Tₛ, K) } }.",
+        "Example (#0): { kind: 'atmosphereLayers', mode: 'balance', albedo: 'al', sunlight: 'S', absorbed: 'F', temperature: 'Te', layer: { emissivity: 'eps', surface: 'Ts' } } (1,361 W/m², α = 0.30, ε = 0.78 → F = 238.2 W/m², Tₑ = 254.6 K, Tₛ = 288.1 K).",
+        'Bands at 56 px per 400 W/m²: G = 2F ÷ (2 − ε) = 390.5, εG = 304.6 into the layer, (1 − ε)G = 85.9 and εG ÷ 2 = 152.3 out at the top (238.2 = F), 152.3 back down. The caption works F, Tₑ and Tₛ. A "?" S, α or ε draws the bands faded with "?" numbers.',
+        'Harness (harness/picturesHe4g.ts): F = S(1 − α) ÷ 4; σTₑ⁴ = F; Tₛ = Tₑ(2 ÷ (2 − ε))^(1/4); the top, the layer and the ground each balance; 0 ≤ ε ≤ 1.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: ['g.he-atmosphereLayers-balance-layer', 'g.he-atmosphereLayers-balance-layer-opaque'],
+  },
 ];

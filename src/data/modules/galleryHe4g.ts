@@ -4,7 +4,8 @@
  *
  * Earth and geography (docs/plans/he.earth-geography.md): HC122 `atmosphereLayers` `thickness`
  * (meteorology#0, ~pressure-altitude; EG-P10); HC123 `adiabat` and `saturation` (meteorology#1,
- * ~humidity; EG-P11); HC124 parcel `dry` and `dewLapse` (meteorology#1~lcl; EG-P12).
+ * ~humidity; EG-P11); HC124 parcel `dry` and `dewLapse` (meteorology#1~lcl; EG-P12); HC125
+ * balance `layer` (climatology#0; EG-P13).
  */
 import type { Relation } from '@/engine/types';
 
@@ -515,6 +516,123 @@ const lclDesert = lclDemo(
   [35, 5],
 );
 
+// ── HC125: the one-layer greenhouse (climatology#0) ──
+
+/** σ, W/(m²·K⁴), the plan's value. */
+const SIGMA = 5.67e-8;
+
+const greenhouseDemo = (
+  id: string,
+  title: string,
+  use: string,
+  [sun, al, eps]: [number, number, number],
+) => {
+  const f = (sun * (1 - al)) / 4;
+  const te = (f / SIGMA) ** 0.25;
+  return demo({
+    id,
+    title,
+    use,
+    assumptions: [
+      'One atmospheric layer, transparent to sunlight, absorbing a share ε of the ground’s infrared and sending half of it back down.',
+      'σ = 5.67 × 10⁻⁸ W/(m²·K⁴); ε = 1 gives Tₛ = 2^(1/4)Tₑ.',
+    ],
+    variables: [
+      quantity('S', 'S', 'Sunlight', 'W/m²', 1, 3000, 1),
+      quantity('al', 'α', 'Albedo', undefined, 0, 0.99, 0.01),
+      quantity('F', 'F', 'Absorbed sunlight', 'W/m²', 0.01, 750, 0.1),
+      quantity('Te', 'Tₑ', 'Balance temperature', 'K', 10, 400, 0.1),
+      quantity('eps', 'ε', 'Layer emissivity', undefined, 0, 1, 0.01),
+      quantity('Ts', 'Tₛ', 'Surface temperature', 'K', 10, 500, 0.1),
+    ],
+    ...rules(
+      {
+        relation: {
+          id: 'F = S(1 − α) ÷ 4',
+          display: '{F} = {S} × (1 − {al}) ÷ 4',
+          vars: ['F', 'S', 'al'],
+          residual: (v) => v.F! - (v.S! * (1 - v.al!)) / 4,
+          solve: {
+            F: (v) => (v.S! * (1 - v.al!)) / 4,
+            S: (v) => div(4 * v.F!, 1 - v.al!),
+            al: (v) => 1 - div(4 * v.F!, v.S!)!,
+          },
+        },
+        steps: {
+          F: st(
+            '{S} × (1 − {al}) ÷ 4',
+            'The share not reflected, spread over the whole globe (4 times its disk).',
+          ),
+          S: st('4 × {F} ÷ (1 − {al})', 'Undo the spreading and the reflection.'),
+          al: st('1 − 4 × {F} ÷ {S}', 'The share of the sunlight not absorbed.'),
+        },
+      },
+      {
+        relation: {
+          id: 'Tₑ = (F ÷ σ)^(1/4)',
+          display: '{Te} = ({F} ÷ (5.67 × 10⁻⁸))^(1 ÷ 4)',
+          vars: ['Te', 'F'],
+          residual: (v) => v.Te! - (v.F! / SIGMA) ** 0.25,
+          solve: { Te: (v) => (v.F! / SIGMA) ** 0.25, F: (v) => SIGMA * v.Te! ** 4 },
+        },
+        steps: {
+          Te: st(
+            '({F} ÷ (5.67 × 10⁻⁸))^(1 ÷ 4)',
+            'In balance the planet sends out σTₑ⁴ = F: take the fourth root.',
+          ),
+          F: st('5.67 × 10⁻⁸ × {Te}^4', 'The infrared a body at Tₑ sends out.'),
+        },
+      },
+      {
+        relation: {
+          id: 'Tₛ = Tₑ(2 ÷ (2 − ε))^(1/4)',
+          display: '{Ts} = {Te} × (2 ÷ (2 − {eps}))^(1 ÷ 4)',
+          vars: ['Ts', 'Te', 'eps'],
+          residual: (v) => v.Ts! - v.Te! * (2 / (2 - v.eps!)) ** 0.25,
+          solve: {
+            Ts: (v) => v.Te! * (2 / (2 - v.eps!)) ** 0.25,
+            Te: (v) => v.Ts! / (2 / (2 - v.eps!)) ** 0.25,
+            eps: (v) => 2 - 2 * (v.Te! / v.Ts!) ** 4,
+          },
+        },
+        steps: {
+          Ts: st(
+            '{Te} × (2 ÷ (2 − {eps}))^(1 ÷ 4)',
+            'The layer sends εG ÷ 2 back down, so the ground must send out 2F ÷ (2 − ε).',
+          ),
+          Te: st('{Ts} ÷ (2 ÷ (2 − {eps}))^(1 ÷ 4)', 'Divide by the greenhouse factor.'),
+          eps: st('2 − 2 × ({Te} ÷ {Ts})^4', 'Solve (Tₛ ÷ Tₑ)⁴ = 2 ÷ (2 − ε) for ε.'),
+        },
+      },
+    ),
+    example: { S: sun, al, F: f, Te: te, eps, Ts: te * (2 / (2 - eps)) ** 0.25 },
+    startWith: ['S', 'al', 'eps'],
+    representation: {
+      kind: 'atmosphereLayers',
+      mode: 'balance',
+      albedo: 'al',
+      sunlight: 'S',
+      absorbed: 'F',
+      temperature: 'Te',
+      layer: { emissivity: 'eps', surface: 'Ts' },
+    },
+  });
+};
+
+const greenhouse = greenhouseDemo(
+  'g.he-atmosphereLayers-balance-layer',
+  'Surface temperature with a one-layer greenhouse',
+  'Use this for Earth (1,361 W/m², α = 0.30) under a layer of emissivity 0.78: about 288 K at the ground.',
+  [1361, 0.3, 0.78],
+);
+
+const greenhouseFull = greenhouseDemo(
+  'g.he-atmosphereLayers-balance-layer-opaque',
+  'A layer that absorbs all the infrared',
+  'Use this for a layer of emissivity 1: the ground warms to 2^(1/4) times the balance temperature.',
+  [1361, 0.3, 1],
+);
+
 export const HE4G_GALLERY_MODULES: ModuleDef[] = [
   thickness,
   pressureAltitude,
@@ -525,6 +643,8 @@ export const HE4G_GALLERY_MODULES: ModuleDef[] = [
   saturationCold,
   lcl,
   lclDesert,
+  greenhouse,
+  greenhouseFull,
 ];
 
 export const HE4G_GALLERY_LAYOUTS: LayoutDef[] = [];

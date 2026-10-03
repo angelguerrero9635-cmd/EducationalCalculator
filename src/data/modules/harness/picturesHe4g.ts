@@ -6,6 +6,7 @@
 import {
   G_EARTH,
   KAPPA,
+  layerBudget,
   lclOf,
   mixingOf,
   R_DRY,
@@ -15,6 +16,8 @@ import {
   thetaOf,
   thicknessOf,
 } from '@/components/module/reps/he4gMath';
+
+import { absorbedOf, balanceTemp, SOLAR_CONSTANT } from '@/components/module/reps/earthModelHs2f';
 
 import type { He4gSpec } from '../typesHe4g';
 
@@ -93,6 +96,27 @@ export function he4gIssues(rep: He4gSpec, val: Val): string[] {
       const tb = n(rep.baseTemperature);
       if (tb !== undefined && !near(tb, t - dry * h))
         out.push(`parcel: ${tb} °C at the base, but T − dry × base = ${t - dry * h} °C`);
+      break;
+    }
+    case 'balance': {
+      // F = S(1 − α) ÷ 4, σTₑ⁴ = F, T_s = Tₑ(2 ÷ (2 − ε))^(1/4); the bands balance at the top
+      // ((1 − ε)G + εG ÷ 2 = F), in the layer (εG = 2 × εG ÷ 2) and at the ground (F + εG ÷ 2 = G).
+      const [a, s, eps] = [n(rep.albedo), n(rep.sunlight, SOLAR_CONSTANT), n(rep.layer.emissivity)];
+      if (eps !== undefined && (eps < 0 || eps > 1)) out.push(`balance: ε ${eps} is not 0–1`);
+      if (a === undefined || s === undefined || eps === undefined || eps < 0 || eps > 1) break;
+      const f = absorbedOf(s, a);
+      const te = balanceTemp(f);
+      const b = layerBudget(f, eps);
+      const same = (x: number | string | undefined, want: number, what: string) => {
+        const y = n(x);
+        if (y !== undefined && !near(y, want)) out.push(`balance: ${what} ${y}, but ${want}`);
+      };
+      same(rep.absorbed, f, 'F');
+      same(rep.temperature, te, 'Tₑ');
+      same(rep.layer.surface, b.surfaceTemp(te), 'T_s');
+      if (!near(b.through + b.half, f, 1e-9)) out.push('balance: the top does not balance');
+      if (!near(b.absorbed, 2 * b.half, 1e-9)) out.push('balance: the layer does not balance');
+      if (!near(f + b.half, b.ground, 1e-9)) out.push('balance: the ground does not balance');
       break;
     }
     case 'saturation': {
