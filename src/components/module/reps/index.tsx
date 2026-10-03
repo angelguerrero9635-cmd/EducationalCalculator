@@ -72,6 +72,11 @@ import { FunctionGraph } from './FunctionGraph';
 import { FunctionGraphHe1d } from './FunctionGraphHe1d';
 import { NormalCurveHe4e } from './NormalCurveHe4e';
 import { DriftPaths } from './DriftPaths';
+import { MoodyChart } from './MoodyChart';
+import { GearPair } from './GearPair';
+import { PrintLayers } from './PrintLayers';
+import { FitDiagram } from './FitDiagram';
+import { Casting } from './Casting';
 import { FunctionGraphHe4e } from './FunctionGraphHe4e';
 import { AlleleFrequenciesAfterHe4e } from './AlleleFrequenciesAfterHe4e';
 import { BarsLogHe1d } from './BarsLogHe1d';
@@ -503,6 +508,16 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <SurfacePlot spec={spec} calc={calc} />; // HC46
     case 'driftPaths':
       return <DriftPaths spec={spec} calc={calc} />; // HC153
+    case 'moodyChart':
+      return <MoodyChart spec={spec} calc={calc} />; // HC165
+    case 'gearPair':
+      return <GearPair spec={spec} calc={calc} />; // HC166
+    case 'printLayers':
+      return <PrintLayers spec={spec} calc={calc} />; // HC167
+    case 'fitDiagram':
+      return <FitDiagram spec={spec} calc={calc} />; // HC168
+    case 'casting':
+      return <Casting spec={spec} calc={calc} />; // HC172
     case 'solidOfRevolution':
       return <SolidOfRevolution spec={spec} calc={calc} />; // HC65
     case 'thermalWall':

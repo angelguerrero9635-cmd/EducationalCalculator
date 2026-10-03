@@ -606,6 +606,11 @@ search or the sitemap, but the module tests and the harness run over it):
 | `silicateChain`    | SiO₄ tetrahedra from above: shared O ringed, repeat unit boxed         | College minerals (HC117)            |
 | `michelLevy`       | interference colours computed by Γ; δ lines; the grain's order named   | College optical mineralogy (HC121)  |
 | `tsDiagram`        | T against S: isopycnals every 0.5 kg/m³, freezing line, ρ of a point   | College oceanography (HC127)        |
+| `moodyChart`       | f against Re, log–log: 64 ÷ Re, ε ÷ D curves from Colebrook, point     | College pipe flow (HC165)           |
+| `gearPair`         | spur gears in steel: N teeth, d = mN, speeds, W_t; trains of up to 4   | College machine design (HC166)      |
+| `printLayers`      | a part sliced in layers (n = H ÷ t); stair and cusp c = t cos θ; time  | College additive manufac. (HC167)   |
+| `fitDiagram`       | hole and shaft zones on the zero line, C_max and C_min, the fit; stack | College tolerances (HC168)          |
+| `casting`          | sand mould cut open: casting to scale, riser H = D, t = BM² bars       | College casting (HC172)             |
 | `globe`            | sun rays, noon angle, day dial; great circle; Euler pole; dipole; air  | College earth and geography (HC36)  |
 | `stressStrain`     | σ–ε curve: E, 0.2% offset, UTS, necking; specimen; tube; two members   | College materials, biomech. (HC28)  |
 | `stressElement`    | element, turned to θ_p; Mohr's circle; 3 circles; loci, n; soil line   | College stress, soil (HC33)         |

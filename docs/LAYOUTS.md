@@ -151,6 +151,13 @@ College inorganic chemistry, round 4 (group D, HC113): `symmetryElements`
 turn, a mirror pane, the centre with the atom pairs it swaps, or an axis with a pane across it.
 The layout check applies the element and requires every atom to land on a like atom.
 
+College engineering graphics, round 4 (group L, HC169): `orthographic`
+(`layouts/orthographicFigure.tsx`), a stepped block with a hole through its base; `ortho: { view,
+angle? }` shows it in a glass box (`box`), the box unfolded with its hinges (`unfold`), the
+three views with one lit (`front`, `top`, `right`), the hole's hidden edges lit (`hidden`) or
+its centre lines (`center`), or the isometric view on 120° axes (`isometric`); `angle` is
+`third` (default) or `first`. The layout check requires a known view on every scene.
+
 Grade 9 biology (HS group G): `macromolecules` (`layouts/macroFigure.tsx`): monomers on their own
 cards joining into a polymer, the joining groups and new bonds lit and one water molecule drawn per
 bond; `macro: { kind, count?, split? }` builds starch, a polypeptide (folded), a DNA strand or a fat
@@ -245,6 +252,12 @@ Card figure `gait` (HC156, `layouts/gaitCard.tsx`, 112 × 76, for sequence stage
 'gait', phase }`, a stick walker side on with the right leg lit at `heelStrike`, `footFlat`,
 `midstance`, `heelOff`, `toeOff` or `midswing`, standing on its lowest foot; a sequence's gait
 cards must come in that order.
+College card icons (HC169, `layouts/icons/he4l.tsx`): line types `visible line`, `hidden line`,
+`center line`, `dimension line`, `extension line`, `circle center lines`, each lit on a part.
+GD&T symbols (HC170, the same file), in a frame cell: `GD&T straightness`, `GD&T flatness`, `GD&T
+circularity`, `GD&T cylindricity`, `GD&T perpendicularity`, `GD&T parallelism`, `GD&T
+angularity`, `GD&T position`, `GD&T profile of a line`, `GD&T profile of a surface`, `GD&T
+circular runout`, `GD&T total runout`, `GD&T concentricity`, `GD&T symmetry`.
 
 Observe figures: an observation can set `figure: { kind: 'shadowStick', stick: 100 }`
 (`layouts/ShadowStick.tsx`): a meter stick and its noon shadow for the column tapped last, to

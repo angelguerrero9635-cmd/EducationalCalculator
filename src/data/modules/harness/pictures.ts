@@ -131,6 +131,7 @@ import {
   he4eNormalIssues,
 } from './picturesHe4e';
 import { he4jIssues } from './picturesHe4j';
+import { he4lIssues } from './picturesHe4l';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -2570,6 +2571,13 @@ export function repIssues(
       break;
     case 'driftPaths':
       out.push(...driftPathsIssues(rep, val)); // HC153
+      break;
+    case 'moodyChart':
+    case 'gearPair':
+    case 'printLayers':
+    case 'fitDiagram':
+    case 'casting':
+      out.push(...he4lIssues(rep, val, byId)); // HC165–HC172
       break;
     case 'solidOfRevolution':
       out.push(...solidIssues(rep, val)); // HC65

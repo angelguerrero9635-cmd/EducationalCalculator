@@ -33,6 +33,7 @@ import type { GeneScene, KeyScene, KeyStep, ObserveSecond, ReplicationCard } fro
 import type { Hs2fFigure, SpectraScene } from '../typesHs2f';
 import type { EarthSectionScene, Hs3cFigure } from '../typesHs3c';
 import type { He4dFigure, SymmetryScene } from '../typesHe4d';
+import type { He4lFigure, OrthoScene } from '../typesHe4l';
 import type { GelScene, Hs3dCard, Hs3dFigure, ObserveScale, ReflexScene } from '../typesHs3d';
 import type { Round3Icon } from './icons';
 import type { StrobeCard } from './strobeCard';
@@ -338,6 +339,8 @@ export type Figure =
   | Hs3cFigure
   /** College round 4, group D (`typesHe4d.ts`): a molecule with one symmetry element lit. */
   | He4dFigure
+  /** College round 4, group L (`typesHe4l.ts`): a block's orthographic views (HC169). */
+  | He4lFigure
   /** Biology round 3, group H3D (`typesHs3d.ts`): a gel of fixed samples. */
   | Hs3dFigure
   /** College round 3, group D (`typesHe3d.ts`): a code trace (HC48). */
@@ -577,6 +580,8 @@ export interface Scene {
   earthSection?: EarthSectionScene;
   /** A `symmetryElements` figure (`typesHe4d.ts`): the molecule and the element lit. */
   symmetry?: SymmetryScene;
+  /** An `orthographic` figure (`typesHe4l.ts`): which view or step is shown. */
+  ortho?: OrthoScene;
   /** The part to highlight (a `parts` figure). */
   part?: string;
   /** More parts lit with `part`, on a drawn `parts` figure (a stamen: anther and filament). */

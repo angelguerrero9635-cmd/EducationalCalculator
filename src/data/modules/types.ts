@@ -50,6 +50,7 @@ import type { He3bSpec } from './typesHe3b';
 import type { ChainTreeHe4a, ScatterClassesSpec } from './typesHe4a'; // HC139, HC98
 import type { DriftPathsSpec } from './typesHe4e';
 import type { He4jSpec } from './typesHe4j';
+import type { He4lSpec } from './typesHe4l';
 import type { CardIcon } from './layouts/types';
 import type { TreeChances, TwoWaySpec, VennChances } from './typesHse';
 import type { IntegerLineHs2a } from './typesHs2a';
@@ -1227,6 +1228,8 @@ export type Representation =
   | DriftPathsSpec
   /** College round 4, group J (HC155–HC159): heart pump, footprints, spring and dashpot, diffusion (`typesHe4j.ts`). */
   | He4jSpec
+  /** College round 4, group L (HC165–HC172): mechanical pictures (`typesHe4l.ts`). */
+  | He4lSpec
   /** Grades 9–12 round 2 biology, group H2E (specs in `typesHs2e.ts`). */
   | Hs2eSpec
   | Hs3dSpec
