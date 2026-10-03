@@ -6,6 +6,7 @@
  * HC117: `silicateChain`, the new kind (he.earth-science.physical-geology#0~silicates).
  * HC119: `earthLayers` mode `rupture` (he.earth-science.physical-geology#2).
  * HC120: `rockLayers` `ranges` (historical-geology#2) and the cliff header (#0).
+ * HC121: `michelLevy`, the new kind (he.earth-science.mineralogy#2).
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
@@ -688,6 +689,80 @@ const CLIFF_OLD_DIKE: LayoutDef = {
   ],
 };
 
+// ─── HC121: retardation and interference colour (mineralogy#2) ─────────────────
+
+const gammaOf = (v: Values) => 1000 * v.t! * v.d!;
+const orderNum = (v: Values) => Math.floor(v.G! / 550) + 1;
+
+const michelLevyPage = (id: string, title: string, use: string, typed: Values) =>
+  page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'δ is n_high − n_low for the grain as cut, so grains of one mineral show colours up to its maximum.',
+      'Each order of colours spans about 550 nm of retardation.',
+      'A standard thin section is 30 μm thick.',
+    ],
+    variables: [
+      num('t', 't', 'Thickness', 'μm', 1, 100, { step: 1 }),
+      num('d', 'δ', 'Birefringence', undefined, 0.001, 0.3, { step: 0.001 }),
+      out('G', 'Γ', 'Retardation', 'nm'),
+      out('ord', 'order', 'Interference order', undefined, { integer: true }),
+    ],
+    rules: [
+      derive(
+        'G',
+        'G',
+        ['t', 'd'],
+        '{G} = 1000 × {t} × {d}',
+        gammaOf,
+        '1000 × {t} × {d}',
+        'Retardation is the thickness (1,000 nm per μm) times the birefringence.',
+      ),
+      derive(
+        'ord',
+        'ord',
+        ['G'],
+        '{ord} = floor({G} ÷ 550) + 1',
+        orderNum,
+        'floor({G} ÷ 550) + 1',
+        'Each order of colours spans about 550 nm.',
+      ),
+    ],
+    example: example(typed, ['G', gammaOf], ['ord', orderNum]),
+    startWith: ['d', 't'],
+    representation: {
+      kind: 'michelLevy',
+      thickness: 't',
+      birefringence: 'd',
+      retardation: 'G',
+      order: 'ord',
+    },
+  });
+
+const QUARTZ = michelLevyPage(
+  'g.he-michelLevy-quartz',
+  'Quartz’s interference colour in a thin section',
+  'Use this for “Quartz has δ = 0.009. What colour is it in a 30 μm section?”',
+  { t: 30, d: 0.009 },
+);
+
+const OLIVINE = michelLevyPage(
+  'g.he-michelLevy-olivine',
+  'Olivine’s interference colour in a thin section',
+  'Use this for “Olivine has δ = 0.035. What order is its colour in a 30 μm section?”',
+  { t: 30, d: 0.035 },
+);
+
+/** Calcite's large birefringence: far past the third order, a pale high-order white. */
+const CALCITE = michelLevyPage(
+  'g.he-michelLevy-calcite',
+  'Calcite’s high-order white',
+  'Use this for “Calcite has δ = 0.172. Why does it look pale in a 30 μm section?”',
+  { t: 30, d: 0.172 },
+);
+
 export const HE4F_GALLERY_MODULES: ModuleDef[] = [
   QAP,
   QAP_DIORITE,
@@ -698,6 +773,9 @@ export const HE4F_GALLERY_MODULES: ModuleDef[] = [
   RUPTURE_GREAT,
   FOSSIL_WINDOW,
   FOSSIL_NARROW,
+  QUARTZ,
+  OLIVINE,
+  CALCITE,
 ];
 
 export const HE4F_GALLERY_LAYOUTS: LayoutDef[] = [CLIFF_STAGES, CLIFF_OLD_DIKE];

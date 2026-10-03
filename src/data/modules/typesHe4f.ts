@@ -8,6 +8,7 @@
  * - HC117 `silicateChain` (new kind): SiO₄ tetrahedra from above, sharing oxygens.
  * - HC119 `earthLayers` mode `rupture`: the fault patch L × W to scale, slip, Mw against M 6.
  * - HC120 `rockLayers` `ranges`, and the cliff as a sequence `header` (layouts/types.ts).
+ * - HC121 `michelLevy` (new kind): the interference colour chart, computed in code.
  */
 import type { NumOrVar } from './typesGraphs';
 
@@ -129,15 +130,33 @@ export interface CliffHeader {
   surface?: boolean;
 }
 
+// ─── HC121: michelLevy (new kind) ──────────────────────────────────────────────
+
+/**
+ * HC121 (EG-P9): the interference colour chart, its colours computed (michelLevyMath.ts):
+ * retardation 0–1,800 nm across, thickness 0–50 μm up, birefringence lines from the origin, and
+ * the grain at `thickness` (t, μm) and `birefringence` (δ) on its own line, Γ and the colour's
+ * order and name printed by it. `retardation` (Γ, nm) and `order` are the page's (checked:
+ * Γ = 1,000tδ, order = floor(Γ ÷ 550) + 1). A Γ past 1,800 nm widens the chart.
+ */
+export interface MichelLevySpec {
+  kind: 'michelLevy';
+  thickness: NumOrVar;
+  birefringence: NumOrVar;
+  retardation?: NumOrVar;
+  order?: NumOrVar;
+}
+
 /** Every picture of group HE4F (new kinds and options on drawn kinds). */
-export type He4fSpec = TernarySpec | SilicateChainSpec | RuptureSpec | RockRangesSpec;
+export type He4fSpec =
+  TernarySpec | SilicateChainSpec | RuptureSpec | RockRangesSpec | MichelLevySpec;
 
 /** Whether a picture is one of group HE4F's (a new kind, or an option on a drawn kind). */
 export function isHe4fSpec(r: { kind: string }): r is He4fSpec {
   const o = r as { kind: string; mode?: string };
   if (r.kind === 'earthLayers') return o.mode === 'rupture';
   if (r.kind === 'rockLayers') return 'ranges' in o;
-  return r.kind === 'ternary' || r.kind === 'silicateChain';
+  return r.kind === 'ternary' || r.kind === 'silicateChain' || r.kind === 'michelLevy';
 }
 
 /** Every variable id a group-HE4F picture reads (modules.test.ts). */
@@ -151,5 +170,7 @@ export function he4fSpecVars(r: He4fSpec): string[] {
       return ids(r.length, r.width, r.slip, r.rigidity, r.area, r.moment, r.magnitude);
     case 'rockLayers':
       return ids(...r.ranges.flatMap((x) => [x.first, x.last]), r.oldest, r.youngest, r.window);
+    case 'michelLevy':
+      return ids(r.thickness, r.birefringence, r.retardation, r.order);
   }
 }

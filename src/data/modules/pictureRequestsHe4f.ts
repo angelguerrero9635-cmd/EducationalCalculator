@@ -117,4 +117,21 @@ export const HE4F_REQUESTS: PictureRequest[] = [
       'g.he-rockLayers-cliff-old-dike',
     ],
   },
+  {
+    ...ask(
+      'HC121',
+      'michelLevy',
+      'The interference colour chart, computed in code: retardation 0–1,800 nm across in the first to third orders, thickness 0–50 μm up, birefringence lines from the origin with their values, the grain’s point on its own line with Γ and the colour’s order and name printed by it',
+      [`${E}mineralogy#2`],
+      [
+        'From EG-P9. New kind (typesHe4f.ts MichelLevySpec, reps/MichelLevy.tsx; the colours in reps/michelLevyMath.ts: sin²(πΓ ÷ λ) through crossed polars, lit by a 6,500 K black body, weighed with analytic Gaussian fits of the CIE 1931 colour-matching functions, to sRGB; no scanned chart).',
+        "Fields: { kind: 'michelLevy', thickness (t, μm), birefringence (δ), retardation? (Γ, nm), order? }.",
+        'Order lines every 550 nm, the standard 30 μm dashed, lines δ = 0.005 … 0.2 labelled where they leave the chart (one near the grain’s left out). A Γ past 1,800 nm widens the chart (to the tenth order) and the caption says high orders wash out to white. A "?" t or δ places no point. No handles.',
+        "Example: { kind: 'michelLevy', thickness: 't', birefringence: 'd', retardation: 'G', order: 'ord' } (quartz δ = 0.009, 30 μm → Γ = 270 nm, first-order white; olivine δ = 0.035 → 1,050 nm, second-order red).",
+        'Harness (harness/picturesHe4f.ts): Γ = 1,000tδ (and the page’s); the order printed is floor(Γ ÷ 550) + 1 and the colour’s name carries it; the ramp is black at 0 and near white past the third order.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: ['g.he-michelLevy-quartz', 'g.he-michelLevy-olivine', 'g.he-michelLevy-calcite'],
+  },
 ];

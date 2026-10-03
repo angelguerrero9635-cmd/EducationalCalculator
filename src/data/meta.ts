@@ -179,6 +179,7 @@ const PICTURE_NAMES: Record<string, string> = {
   surfacePlot: 'a surface z = f(x, y) with traces, a tangent plane, prisms or level curves',
   solidOfRevolution: 'a region turned about an axis, with one disk, washer or shell',
   ternary: 'a triangle plot of three amounts: QAP rock fields or the feldspars',
+  michelLevy: 'the Michel-Lévy chart: interference colours by retardation, a grain placed',
   silicateChain: 'SiO₄ tetrahedra from above sharing oxygens, the repeat unit boxed',
   driftPaths: 'genetic drift: populations’ allele frequencies wandering, expected H falling',
   propertyDiagram: 'a T–v, P–v or T–s plane with the vapor dome, states and a cycle',

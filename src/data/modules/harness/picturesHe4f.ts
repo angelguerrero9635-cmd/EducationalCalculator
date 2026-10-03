@@ -34,8 +34,15 @@ import {
   wholeRepeat,
 } from '@/components/module/reps/silicateMath';
 
+import {
+  interferenceColor,
+  interferenceName,
+  orderOf,
+  retardationOf,
+} from '@/components/module/reps/michelLevyMath';
 import type {
   He4fSpec,
+  MichelLevySpec,
   RockRangesSpec,
   RuptureSpec,
   SilicateChainSpec,
@@ -60,6 +67,8 @@ export function he4fIssues(rep: He4fSpec, val: Val): string[] {
       return ruptureIssues(rep, num);
     case 'rockLayers':
       return rangesIssues(rep, num);
+    case 'michelLevy':
+      return michelLevyIssues(rep, num);
   }
 }
 
@@ -201,5 +210,30 @@ function rangesIssues(rep: RockRangesSpec, num: Num): string[] {
       if (v !== undefined && !near(v, want, 1e-9)) out.push(`ranges: ${what} ${v}, not ${want}`);
     }
   } else if (win) out.push('ranges: a window is drawn for ranges that never overlap');
+  return out;
+}
+
+function michelLevyIssues(rep: MichelLevySpec, num: Num): string[] {
+  const out: string[] = [];
+  const [t, d] = [num(rep.thickness), num(rep.birefringence)];
+  if (t === undefined || d === undefined) return out;
+  if (t <= 0 || d <= 0) out.push(`michelLevy: t = ${t} μm and δ = ${d} must be above 0`);
+  const g = retardationOf(t, d);
+  if (!near(g, t * d * 1000, 1e-12)) out.push(`michelLevy: Γ = ${g}, not 1,000tδ`);
+  const gPage = num(rep.retardation);
+  if (gPage !== undefined && !near(gPage, g, 1e-6)) out.push(`michelLevy: Γ ${gPage}, not ${g}`);
+  const ord = Math.floor(g / 550) + 1;
+  if (orderOf(g) !== ord) out.push(`michelLevy: the order printed is ${orderOf(g)}, not ${ord}`);
+  const oPage = num(rep.order);
+  if (oPage !== undefined && oPage !== ord) out.push(`michelLevy: order ${oPage}, not ${ord}`);
+  // The name printed by the point carries the same order (colour never alone).
+  const ordinal = ['first', 'second', 'third'][ord - 1];
+  if (ordinal && !interferenceName(g).startsWith(`${ordinal}-order`))
+    out.push(`michelLevy: "${interferenceName(g)}" is not order ${ord}`);
+  // The computed ramp: black at Γ = 0, and nearly white far past the third order.
+  if (interferenceColor(0) !== '#000000') out.push('michelLevy: Γ = 0 is not black');
+  const hex = interferenceColor(5000);
+  const ch = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
+  if (Math.min(...ch) < 150) out.push(`michelLevy: high-order white draws ${hex}`);
   return out;
 }
