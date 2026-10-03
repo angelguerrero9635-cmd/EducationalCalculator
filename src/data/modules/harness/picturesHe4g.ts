@@ -10,6 +10,11 @@ import {
   lclOf,
   mixingOf,
   R_DRY,
+  airyRootOf,
+  G_NEWTON,
+  HALF_WIDTH,
+  sphereMassOf,
+  spherePeakOf,
   snellSpeeds,
   scaleHeightOf,
   TETENS,
@@ -118,6 +123,38 @@ export function he4gIssues(rep: He4gSpec, val: Val): string[] {
       if (!near(b.through + b.half, f, 1e-9)) out.push('balance: the top does not balance');
       if (!near(b.absorbed, 2 * b.half, 1e-9)) out.push('balance: the layer does not balance');
       if (!near(f + b.half, b.ground, 1e-9)) out.push('balance: the ground does not balance');
+      break;
+    }
+    case 'sphere': {
+      // mass = (4 ÷ 3)πR³Δρ; Δg_max = G × mass ÷ z² (mGal); x½ = 0.766z; buried: z > R.
+      const [r, d, z, g] = [n(rep.radius), n(rep.contrast), n(rep.depth), n(rep.G, G_NEWTON)];
+      if (r !== undefined && r <= 0) out.push(`sphere: radius ${r} m is not positive`);
+      if (r === undefined || d === undefined || z === undefined || g === undefined || r <= 0) break;
+      if (z <= r) break; // drawn faded: "the sphere must be buried"
+      const mass = sphereMassOf(r, d);
+      const same = (x: number | string | undefined, want: number, what: string, tol = 1e-4) => {
+        const y = n(x);
+        if (y !== undefined && !near(y, want, tol)) out.push(`sphere: ${what} ${y}, but ${want}`);
+      };
+      same(rep.mass, mass, 'mass');
+      same(rep.peak, spherePeakOf(mass, z, g), 'Δg_max');
+      // The page writes 0.766z; the curve's half point is z√(2^(2/3) − 1) = 0.76631z.
+      same(rep.halfWidth, HALF_WIDTH * z, 'x½', 1e-3);
+      break;
+    }
+    case 'airy': {
+      // r = hρ_c ÷ (ρ_m − ρ_c); total = T + h + r; the columns weigh the same.
+      const [h, t, rc, rm] = [n(rep.height), n(rep.thickness), n(rep.crust), n(rep.mantle)];
+      if (h === undefined || t === undefined || rc === undefined || rm === undefined) break;
+      if (rm <= rc) break; // drawn without a root: the caption says the mantle must be denser
+      const r = airyRootOf(h, rc, rm);
+      const root = n(rep.root);
+      if (root !== undefined && !near(root, r)) out.push(`airy: root ${root}, but ${r} km`);
+      const tot = n(rep.total);
+      if (tot !== undefined && !near(tot, t + h + r))
+        out.push(`airy: crust ${tot}, but T + h + r = ${t + h + r} km`);
+      if (!near(rc * (h + t + r), rc * t + rm * r, 1e-9))
+        out.push('airy: the two columns do not weigh the same');
       break;
     }
     case 'refraction': {

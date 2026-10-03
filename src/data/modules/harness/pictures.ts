@@ -2555,6 +2555,9 @@ export function repIssues(
     case 'spacetime':
       out.push(...he4cIssues(rep, siOf(val, byId))); // HC104
       break;
+    case 'gravityProfile':
+      out.push(...he4gIssues(rep, siOf(val, byId))); // HC131
+      break;
     case 'fieldPlot':
       out.push(...fieldPlotIssues(rep, val)); // HC21
       break;

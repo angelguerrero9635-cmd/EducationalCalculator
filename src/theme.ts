@@ -441,6 +441,7 @@ const light = {
   he4gPolar: '#1C7ED6',
   he4gOcean: '#3E8ED0',
   he4gLand: '#7DB46C',
+  he4gOnGround: '#FFFFFF',
   /** Stars (H79–H80) by surface temperature, hot blue to cool red, and a nebula's glow. */
   starBlue: '#9DB8FF',
   starWhite: '#F2F4FF',
@@ -1184,6 +1185,7 @@ const dark: Palette = {
   he4gPolar: '#5AAEFF',
   he4gOcean: '#2B6AA6',
   he4gLand: '#5E8F51',
+  he4gOnGround: '#F3F4F6',
   starBlue: '#9DB8FF',
   starWhite: '#F2F4FF',
   starYellow: '#FFE27A',

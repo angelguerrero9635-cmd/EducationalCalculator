@@ -123,4 +123,26 @@ export const HE4G_REQUESTS: PictureRequest[] = [
     status: 'drawn',
     gallery: ['g.he-rayDiagram-speeds', 'g.he-rayDiagram-speeds-near-critical'],
   },
+  {
+    ...ask(
+      'HC131',
+      'gravityProfile',
+      'Gravity and isostasy: a buried sphere in section to scale under its anomaly profile (the peak and the half-width x½ = 0.766z), or crust floating on the mantle, a mountain and its root to the compensation depth with two columns of equal weight',
+      { [`${GEO}#1~sphere`]: '"sphere"', [`${GEO}#1~isostasy`]: '"airy"' },
+      [
+        'From EG-P22. New kind gravityProfile (typesHe4g.ts GravitySphereSpec and GravityAirySpec, reps/GravityProfile.tsx, sums in reps/he4gMath.ts).',
+        "Fields (~sphere): { kind: 'gravityProfile', mode: 'sphere', radius (R, m), contrast (Δρ, kg/m³; negative for a light body), depth (z, m, to the centre), mass? (kg), peak? (Δg_max, mGal), halfWidth? (x½, m), G? (default 6.674 × 10⁻¹¹), fixed? }. Example: { kind: 'gravityProfile', mode: 'sphere', radius: 'R', contrast: 'drho', depth: 'z', mass: 'M', peak: 'gmax', halfWidth: 'xh', G: 6.674e-11 } (100 m, 500 kg/m³, 200 m → 2.094 × 10⁹ kg, 0.3494 mGal, x½ = 153.2 m).",
+        "Fields (~isostasy): { kind: 'gravityProfile', mode: 'airy', height (h, km), thickness (T, normal crust, km), crust (ρ_c, g/cm³), mantle (ρ_m, g/cm³), root? (r, km), total? (T + h + r, km) }. Example: { kind: 'gravityProfile', mode: 'airy', height: 'h', thickness: 'T', crust: 'rc', mantle: 'rm', root: 'r', total: 'tot' } (3 km, 35 km, 2.8, 3.3 → r = 16.8 km, 54.8 km).",
+        'sphere: one scale across and down (±3z), stations on the surface, a scale bar; a low for Δρ < 0; z ≤ R draws faded ("the sphere must be buried"). Drag the sphere for z. airy: heights to scale, widths not; the caption checks the two columns’ weights. The demos add constraints R < z and ρ_c < ρ_m.',
+        'Harness (harness/picturesHe4g.ts): mass = (4 ÷ 3)πR³Δρ; Δg_max = GM ÷ z² × 10⁵; x½ = 0.766z (0.1%); r = hρ_c ÷ (ρ_m − ρ_c); total = T + h + r; equal column weights.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-gravityProfile-sphere',
+      'g.he-gravityProfile-sphere-salt',
+      'g.he-gravityProfile-airy',
+      'g.he-gravityProfile-airy-high',
+    ],
+  },
 ];

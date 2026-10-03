@@ -162,8 +162,51 @@ export type He4gOptionSpec =
   | BalanceLayerSpec
   | RaySpeedsSpec;
 
+// ─── HC131 gravityProfile (new kind) ─────────────────────────────────────────
+
+/**
+ * Gravity over a buried sphere (EG-P22): the sphere in section to scale under its anomaly
+ * profile Δg(x) = Δg_max(1 + x² ÷ z²)^(−3/2), the peak and the half-width x½ = 0.766z marked.
+ * Excess mass (4 ÷ 3)πR³Δρ, Δg_max = G × mass ÷ z² × 10⁵ mGal. Drag the sphere for z.
+ */
+export interface GravitySphereSpec {
+  kind: 'gravityProfile';
+  mode: 'sphere';
+  /** Radius R (m), density contrast Δρ (kg/m³, negative for a light body), depth to centre z (m). */
+  radius: NumOrVar;
+  contrast: NumOrVar;
+  depth: NumOrVar;
+  /** Excess mass (kg), peak anomaly Δg_max (mGal), half-width x½ (m), when the page names them. */
+  mass?: NumOrVar;
+  peak?: NumOrVar;
+  halfWidth?: NumOrVar;
+  /** G (N·m²/kg², default 6.674 × 10⁻¹¹), the page's. */
+  G?: NumOrVar;
+  fixed?: boolean;
+}
+
+/**
+ * Airy isostasy (EG-P22): crust of density ρ_c floating on mantle ρ_m, normal crust T thick, a
+ * mountain h high with its root r = hρ_c ÷ (ρ_m − ρ_c) down to the compensation depth; two
+ * columns to it weigh the same. Heights to scale, widths not.
+ */
+export interface GravityAirySpec {
+  kind: 'gravityProfile';
+  mode: 'airy';
+  /** Mountain height h and normal crust T (km); densities ρ_c and ρ_m (g/cm³). */
+  height: NumOrVar;
+  thickness: NumOrVar;
+  crust: NumOrVar;
+  mantle: NumOrVar;
+  /** The root r and the crust under the peak T + h + r (km), when the page names them. */
+  root?: NumOrVar;
+  total?: NumOrVar;
+}
+
+export type GravityProfileSpec = GravitySphereSpec | GravityAirySpec;
+
 /** Every round 4 group G calculator picture. */
-export type He4gSpec = He4gOptionSpec;
+export type He4gSpec = He4gOptionSpec | GravityProfileSpec;
 
 const MODES = ['thickness', 'adiabat', 'saturation'];
 
@@ -193,6 +236,10 @@ export function he4gSpecVars(r: He4gSpec): string[] {
       return ids(r.temperature, r.dewPoint, r.base, r.dry, r.dewLapse, r.baseTemperature);
     case 'saturation':
       return ids(r.temperature, r.dewPoint, r.saturation, r.vapor, r.rh, r.pressure, r.mixing);
+    case 'sphere':
+      return ids(r.radius, r.contrast, r.depth, r.mass, r.peak, r.halfWidth, r.G);
+    case 'airy':
+      return ids(r.height, r.thickness, r.crust, r.mantle, r.root, r.total);
     case 'refraction':
       return ids(r.speeds.v1, r.speeds.v2, r.angle, r.refracted, r.critical);
     case 'balance':

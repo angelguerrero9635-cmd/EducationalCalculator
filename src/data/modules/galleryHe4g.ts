@@ -6,7 +6,8 @@
  * (meteorology#0, ~pressure-altitude; EG-P10); HC123 `adiabat` and `saturation` (meteorology#1,
  * ~humidity; EG-P11); HC124 parcel `dry` and `dewLapse` (meteorology#1~lcl; EG-P12); HC125
  * balance `layer` (climatology#0; EG-P13); HC130 `rayDiagram` Snell `speeds`
- * (geophysics#0~critical-angle; EG-P21).
+ * (geophysics#0~critical-angle; EG-P21); HC131 `gravityProfile` (geophysics#1~sphere, ~isostasy;
+ * EG-P22).
  */
 import type { Relation } from '@/engine/types';
 
@@ -728,6 +729,247 @@ const snellNear = snellDemo(
   [1500, 4500, 19],
 );
 
+// ── HC131: gravity over a buried sphere (geophysics#1~sphere), Airy isostasy (~isostasy) ──
+
+/** G, N·m²/kg², the plan's value. */
+const G_N = 6.674e-11;
+
+/** A limit, not a formula: `a` is below `b`. */
+const below = (a: string, b: string, display: string, why: string): Rule => ({
+  relation: {
+    id: `${a} < ${b}`,
+    constraint: true,
+    display,
+    vars: [a, b],
+    residual: (x) => (x[a]! < x[b]! ? 0 : 1),
+    solve: {},
+    message: () => why,
+  } as Relation,
+  steps: {},
+});
+
+const sphereDemo = (
+  id: string,
+  title: string,
+  use: string,
+  [r, d, z]: [number, number, number],
+) => {
+  const mass = (4 / 3) * Math.PI * r ** 3 * d;
+  return demo({
+    id,
+    title,
+    use,
+    assumptions: [
+      'The body is a sphere; its excess mass pulls as if it were all at its centre.',
+      'G = 6.674 × 10⁻¹¹ N·m²/kg²; 1 mGal = 10⁻⁵ m/s².',
+    ],
+    variables: [
+      quantity('R', 'R', 'Radius', 'm', 1, 5000, 0.1),
+      quantity('drho', 'Δρ', 'Density contrast', 'kg/m³', -3000, 3000, 1),
+      quantity('z', 'z', 'Depth to centre', 'm', 1, 20000, 0.1),
+      quantity('M', 'M', 'Excess mass', 'kg', -1e15, 1e15, 1e6, { scientific: true }),
+      quantity('gmax', 'Δg_max', 'Peak anomaly', 'mGal', -1000, 1000, 0.001),
+      quantity('xh', 'x½', 'Half-width', 'm', 0.1, 20000, 0.1),
+    ],
+    ...rules(
+      below('R', 'z', '{R} < {z}', 'The sphere must be buried: its centre deeper than its radius.'),
+      {
+        relation: {
+          id: 'M = (4 ÷ 3)πR³Δρ',
+          display: '{M} = 4 ÷ 3 × π × {R}³ × {drho}',
+          vars: ['M', 'R', 'drho'],
+          residual: (v) => v.M! - (4 / 3) * Math.PI * v.R! ** 3 * v.drho!,
+          solve: {
+            M: (v) => (4 / 3) * Math.PI * v.R! ** 3 * v.drho!,
+            drho: (v) => div(v.M!, (4 / 3) * Math.PI * v.R! ** 3),
+            R: (v) => {
+              const x = div(v.M!, (4 / 3) * Math.PI * v.drho!);
+              return x === undefined || x <= 0 ? undefined : Math.cbrt(x);
+            },
+          },
+        },
+        steps: {
+          M: st('4 ÷ 3 × π × {R}³ × {drho}', 'The sphere’s volume times how much denser it is.'),
+          drho: st('{M} ÷ (4 ÷ 3 × π × {R}³)', 'Divide the excess mass by the volume.'),
+          R: st(
+            '∛({M} ÷ (4 ÷ 3 × π × {drho}))',
+            'Undo the volume: divide, then take the cube root.',
+          ),
+        },
+      },
+      {
+        relation: {
+          id: 'Δg_max = GM ÷ z²',
+          display: '{gmax} = 6.674 × 10⁻¹¹ × {M} ÷ {z}² × 10⁵',
+          vars: ['gmax', 'M', 'z'],
+          residual: (v) => v.gmax! - ((G_N * v.M!) / v.z! ** 2) * 1e5,
+          solve: {
+            gmax: (v) => ((G_N * v.M!) / v.z! ** 2) * 1e5,
+            M: (v) => (v.gmax! * v.z! ** 2) / (G_N * 1e5),
+            z: (v) => {
+              const x = div(G_N * v.M! * 1e5, v.gmax!);
+              return x === undefined || x <= 0 ? undefined : Math.sqrt(x);
+            },
+          },
+        },
+        steps: {
+          gmax: st(
+            '6.674 × 10⁻¹¹ × {M} ÷ {z}² × 10⁵',
+            'Newton’s gravity of the excess mass straight above it, in mGal.',
+          ),
+          M: st('{gmax} × {z}² ÷ (6.674 × 10⁻¹¹ × 10⁵)', 'Undo GM ÷ z² for the mass.'),
+          z: st('√(6.674 × 10⁻¹¹ × {M} × 10⁵ ÷ {gmax})', 'Solve GM ÷ z² for z.'),
+        },
+      },
+      {
+        relation: {
+          id: 'x½ = 0.766z',
+          display: '{xh} = 0.766 × {z}',
+          vars: ['xh', 'z'],
+          residual: (v) => v.xh! - 0.766 * v.z!,
+          solve: { xh: (v) => 0.766 * v.z!, z: (v) => v.xh! / 0.766 },
+        },
+        steps: {
+          xh: st('0.766 × {z}', 'The anomaly falls to half its peak 0.766z either side.'),
+          z: st('{xh} ÷ 0.766', 'The depth from the half-width: a quick depth estimate.'),
+        },
+      },
+    ),
+    example: {
+      R: r,
+      drho: d,
+      z,
+      M: mass,
+      gmax: ((G_N * mass) / z ** 2) * 1e5,
+      xh: 0.766 * z,
+    },
+    startWith: ['R', 'drho', 'z'],
+    representation: {
+      kind: 'gravityProfile',
+      mode: 'sphere',
+      radius: 'R',
+      contrast: 'drho',
+      depth: 'z',
+      mass: 'M',
+      peak: 'gmax',
+      halfWidth: 'xh',
+      G: G_N,
+    },
+  });
+};
+
+const sphere = sphereDemo(
+  'g.he-gravityProfile-sphere',
+  'The anomaly over a buried sphere',
+  'Use this for an ore body 100 m in radius, 500 kg/m³ denser than its host, centred 200 m down: its excess mass, peak anomaly and half-width.',
+  [100, 500, 200],
+);
+
+const sphereSalt = sphereDemo(
+  'g.he-gravityProfile-sphere-salt',
+  'A light body: a gravity low',
+  'Use this for a salt body 300 m in radius, 200 kg/m³ lighter than the rock around it, centred 500 m down.',
+  [300, -200, 500],
+);
+
+const airyDemo = (id: string, title: string, use: string, [h, t]: [number, number]) => {
+  const root = (h * 2.8) / (3.3 - 2.8);
+  return demo({
+    id,
+    title,
+    use,
+    assumptions: [
+      'The crust floats on the mantle like ice on water; every column weighs the same down to the compensation depth.',
+      'The crust has one density everywhere; widths in the picture are not to scale.',
+    ],
+    variables: [
+      quantity('h', 'h', 'Mountain height', 'km', 0.1, 9, 0.01),
+      quantity('rc', 'ρ_c', 'Crust density', 'g/cm³', 2, 3.2, 0.01),
+      quantity('rm', 'ρ_m', 'Mantle density', 'g/cm³', 2.5, 3.6, 0.01),
+      quantity('r', 'r', 'Root', 'km', 0.01, 200, 0.01),
+      quantity('T', 'T', 'Normal crust', 'km', 5, 70, 0.1),
+      quantity('tot', 'T + h + r', 'Crust under the peak', 'km', 5, 300, 0.01),
+    ],
+    ...rules(
+      below(
+        'rc',
+        'rm',
+        '{rc} < {rm}',
+        'The mantle must be denser than the crust, or the crust would sink.',
+      ),
+      {
+        relation: {
+          id: 'r = hρ_c ÷ (ρ_m − ρ_c)',
+          display: '{r} = {h} × {rc} ÷ ({rm} − {rc})',
+          vars: ['r', 'h', 'rc', 'rm'],
+          residual: (v) => v.r! * (v.rm! - v.rc!) - v.h! * v.rc!,
+          solve: {
+            r: (v) => (v.rm! > v.rc! ? (v.h! * v.rc!) / (v.rm! - v.rc!) : undefined),
+            h: (v) => div(v.r! * (v.rm! - v.rc!), v.rc!),
+            rm: (v) => v.rc! + div(v.h! * v.rc!, v.r!)!,
+            rc: (v) => div(v.r! * v.rm!, v.h! + v.r!),
+          },
+        },
+        steps: {
+          r: st(
+            '{h} × {rc} ÷ ({rm} − {rc})',
+            'The root’s missing weight (ρ_m − ρ_c) × r balances the mountain’s ρ_c × h.',
+          ),
+          h: st('{r} × ({rm} − {rc}) ÷ {rc}', 'The height the root holds up.'),
+          rm: st('{rc} + {h} × {rc} ÷ {r}', 'Solve the balance for ρ_m.'),
+          rc: st('{r} × {rm} ÷ ({h} + {r})', 'Solve the balance for ρ_c.'),
+        },
+      },
+      {
+        relation: {
+          id: 'crust = T + h + r',
+          display: '{tot} = {T} + {h} + {r}',
+          vars: ['tot', 'T', 'h', 'r'],
+          residual: (v) => v.tot! - (v.T! + v.h! + v.r!),
+          solve: {
+            tot: (v) => v.T! + v.h! + v.r!,
+            T: (v) => v.tot! - v.h! - v.r!,
+            h: (v) => v.tot! - v.T! - v.r!,
+            r: (v) => v.tot! - v.T! - v.h!,
+          },
+        },
+        steps: {
+          tot: st('{T} + {h} + {r}', 'The normal crust, the mountain above it and the root below.'),
+          T: st('{tot} − {h} − {r}', 'Take the mountain and the root away.'),
+          h: st('{tot} − {T} − {r}', 'Take the normal crust and the root away.'),
+          r: st('{tot} − {T} − {h}', 'Take the normal crust and the mountain away.'),
+        },
+      },
+    ),
+    example: { h, rc: 2.8, rm: 3.3, r: root, T: t, tot: t + h + root },
+    startWith: ['h', 'rc', 'rm', 'T'],
+    representation: {
+      kind: 'gravityProfile',
+      mode: 'airy',
+      height: 'h',
+      thickness: 'T',
+      crust: 'rc',
+      mantle: 'rm',
+      root: 'r',
+      total: 'tot',
+    },
+  });
+};
+
+const airy = airyDemo(
+  'g.he-gravityProfile-airy',
+  'The depth of a mountain’s root',
+  'Use this for a range 3 km high on 35 km of normal crust (ρ_c = 2.8, ρ_m = 3.3): its root and the crust under the peak.',
+  [3, 35],
+);
+
+const airyHigh = airyDemo(
+  'g.he-gravityProfile-airy-high',
+  'The highest peaks: a root over 40 km deep',
+  'Use this for a peak 8 km high on 35 km of normal crust: the root reaches far into the mantle.',
+  [8, 35],
+);
+
 export const HE4G_GALLERY_MODULES: ModuleDef[] = [
   thickness,
   pressureAltitude,
@@ -742,6 +984,10 @@ export const HE4G_GALLERY_MODULES: ModuleDef[] = [
   greenhouseFull,
   snell,
   snellNear,
+  sphere,
+  sphereSalt,
+  airy,
+  airyHigh,
 ];
 
 export const HE4G_GALLERY_LAYOUTS: LayoutDef[] = [];

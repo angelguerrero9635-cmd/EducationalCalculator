@@ -675,6 +675,8 @@ function representationVars(r: Representation): string[] {
       return he3iSpecVars(r);
     case 'spacetime':
       return he4cSpecVars(r); // HC104
+    case 'gravityProfile':
+      return he4gSpecVars(r); // HC131
     case 'globe':
       return globeVars(r);
     case 'instrumentTrace':
