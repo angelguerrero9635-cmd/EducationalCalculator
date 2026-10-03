@@ -48,7 +48,7 @@ import type { FieldPlotSpec } from './typesHe2g';
 import type { He3bSpec } from './typesHe3b';
 import type { ChainTreeHe4a, ScatterClassesSpec } from './typesHe4a'; // HC139, HC98
 import type { DriftPathsSpec } from './typesHe4e';
-import type { He4nSpec } from './typesHe4n';
+import type { He4nSpec, VennThree } from './typesHe4n';
 import type { CardIcon } from './layouts/types';
 import type { TreeChances, TwoWaySpec, VennChances } from './typesHse';
 import type { IntegerLineHs2a } from './typesHs2a';
@@ -1511,6 +1511,8 @@ export type Representation =
     }
   /** Grades 9–12 (H22): a Venn diagram of probabilities (spec in `typesHse.ts`). */
   | { kind: 'venn'; chances: VennChances }
+  /** College (HC188): three sets, the 7 regions and the union (`typesHe4n.ts`). */
+  | { kind: 'venn'; three: VennThree }
   /**
    * A parallelogram, triangle, trapezoid or house with its base thick and its height dashed
    * (drag the top to lean it). `top` is the trapezoid's top base or the house's roof height.

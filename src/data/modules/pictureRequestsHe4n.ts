@@ -106,4 +106,20 @@ export const HE4N_REQUESTS: PictureRequest[] = [
       'g.he-dataStructure-search-billion',
     ],
   },
+  {
+    ...ask(
+      'HC188',
+      'venn',
+      'Three sets: three circles, each named with its size and outlined in its own colour and dash, the count in each of the 7 regions worked out from the 7 values, and the union bracketed; with a total, the universe’s box and “neither”',
+      [`${E}discrete-math#1`],
+      [
+        "From EC-P27. New option `three` on `venn` (typesHe4n.ts VennThree; reps/VennThree.tsx; regions in reps/he4nMath.ts): a new member { kind: 'venn', three } of the Representation union, so existing venn pages are unchanged.",
+        "Fields: { kind: 'venn', three: { a, b, c, ab, ac, bc, abc, union?, total?, names? ([A, B, C] names, e.g. ['Art', 'Band', 'Drama']) } }. A region whose values include a “?” stays blank; a region below 0 fades the drawing and the caption says why.",
+        "Example (discrete-math#1 main): { kind: 'venn', three: { a: 'a', b: 'b', c: 'c', ab: 'ab', ac: 'ac', bc: 'bc', abc: 'abc', union: 'union', names: ['Art', 'Band', 'Drama'] } } with 40, 35, 30, 15, 10, 12, 5 → regions 20, 13, 13, 10, 5, 7, 5 and the union 73. The page should carry the limit “every region is 0 or more” (the demo’s regionLimit).",
+        'Harness (harness/picturesHe4n.ts vennThreeIssues): the 7 regions add to the union and to the page’s union value whenever every region is 0 or more (the page limit keeps them so; counts it refuses are drawn faded with the reason).',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: ['g.he-venn-three', 'g.he-venn-three-nested'],
+  },
 ];

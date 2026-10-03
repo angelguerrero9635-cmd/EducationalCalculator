@@ -128,7 +128,7 @@ import {
   he4eGraphIssues,
   he4eNormalIssues,
 } from './picturesHe4e';
-import { he4nIssues } from './picturesHe4n';
+import { he4nIssues, vennThreeIssues } from './picturesHe4n';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -1439,6 +1439,10 @@ export function repIssues(
       break;
     }
     case 'venn':
+      if ('three' in rep) {
+        out.push(...vennThreeIssues(rep.three, val)); // HC188
+        break;
+      }
       if ('chances' in rep) {
         out.push(...vennChanceIssues(rep.chances, val), ...hs2gIssues(rep, val));
         out.push(...hs3bIssues(rep, val, byId));

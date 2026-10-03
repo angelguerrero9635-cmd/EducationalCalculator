@@ -20,9 +20,11 @@ import {
   pipelineCycles,
   pipelineRow,
   stageNames,
+  vennRegions,
   worstRanges,
 } from '@/components/module/reps/he4nMath';
 import type {
+  VennThree,
   DataStructureScene,
   SearchSpec,
   KarnaughScene,
@@ -51,6 +53,37 @@ export function he4nIssues(rep: Representation, get: Get): string[] {
     default:
       return [];
   }
+}
+
+// ─── HC188 ───────────────────────────────────────────────────────────────────
+
+/**
+ * The 7 regions add to the union and to the page's value. Counts the page's limit refuses (a
+ * region below 0, a total under the union) are drawn faded with the reason, so they are not
+ * errors; the regions are checked whenever every one is 0 or more.
+ */
+export function vennThreeIssues(s: VennThree, get: Get): string[] {
+  const out: string[] = [];
+  const g = (x: NumOrVar | undefined) => opt(get, x);
+  const reg = vennRegions({
+    a: g(s.a),
+    b: g(s.b),
+    c: g(s.c),
+    ab: g(s.ab),
+    ac: g(s.ac),
+    bc: g(s.bc),
+    abc: g(s.abc),
+  });
+  const { union, ...parts } = reg;
+  const xs = Object.values(parts);
+  if (xs.some((x) => x !== undefined && x < -1e-9)) return out;
+  if (union !== undefined && xs.every((x) => x !== undefined)) {
+    const sum = xs.reduce((a: number, x) => a + x!, 0);
+    if (!near(sum, union)) out.push(`venn three: regions add to ${sum}, the union is ${union}`);
+    const u = g(s.union);
+    if (u !== undefined && !near(u, union)) out.push(`venn three: union ${u}, worked ${union}`);
+  }
+  return out;
 }
 
 // ─── HC187 ───────────────────────────────────────────────────────────────────

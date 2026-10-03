@@ -218,3 +218,30 @@ export interface He4nScene {
   fsm?: StateDiagramScene;
   ds?: DataStructureScene;
 }
+
+// ─── HC188: three sets (`venn` `three`) ──────────────────────────────────────
+
+/**
+ * `{ kind: 'venn', three }`: three circles with the count in each of the 7 regions worked out
+ * from the page's 7 values (|A|, |B|, |C|, the three pairwise overlaps, the triple overlap),
+ * the union bracketed with its value; `total` adds the universe's box and “neither”. A region
+ * whose values include a “?” is left blank; a region that comes out negative fades the drawing
+ * and the caption says why.
+ */
+export interface VennThree {
+  a: NumOrVar;
+  b: NumOrVar;
+  c: NumOrVar;
+  ab: NumOrVar;
+  ac: NumOrVar;
+  bc: NumOrVar;
+  abc: NumOrVar;
+  union?: NumOrVar;
+  total?: NumOrVar;
+  /** The sets' names (default A, B, C). */
+  names?: [string, string, string];
+}
+
+/** The variable ids a `venn` `three` reads (for the module tests). */
+export const vennThreeVars = (v: VennThree): string[] =>
+  ids([v.a, v.b, v.c, v.ab, v.ac, v.bc, v.abc, v.union, v.total]);

@@ -700,7 +700,166 @@ const SEARCH_BILLION = searchPage(
   1e9,
 );
 
+// ─── HC188: three sets (discrete-math#1) ──────────────────────────────────────
+
+const SETS = ['a', 'b', 'c', 'ab', 'ac', 'bc', 'abc'];
+const unionOf = (v: Values) => v.a! + v.b! + v.c! - v.ab! - v.ac! - v.bc! + v.abc!;
+
+const regionLimit: Relation = {
+  id: 'every region is 0 or more',
+  constraint: true,
+  display:
+    '{abc}, {ab} − {abc}, {ac} − {abc}, {bc} − {abc}, {a} − {ab} − {ac} + {abc}, {b} − {ab} − {bc} + {abc} and {c} − {ac} − {bc} + {abc} are 0 or more',
+  vars: SETS,
+  residual: (x) => (regionsOk(x) ? 0 : 1),
+  solve: {},
+  message: (x) =>
+    regionsOk(x) ? undefined : 'An overlap can’t be larger than the sets or overlaps it lies in.',
+};
+function regionsOk(x: Values) {
+  const [a, b, c, ab, ac, bc, abc] = SETS.map((k) => x[k] ?? 0) as [
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+  ];
+  return [
+    abc,
+    ab - abc,
+    ac - abc,
+    bc - abc,
+    a - ab - ac + abc,
+    b - ab - bc + abc,
+    c - ac - bc + abc,
+  ].every((r) => r! >= -1e-9);
+}
+
+const vennPage = (
+  id: string,
+  title: string,
+  use: string,
+  typed: Values,
+  names: [string, string, string],
+  withTotal: boolean,
+) =>
+  page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'Adding the three sets counts each pairwise overlap twice, so each is taken away once.',
+      'That takes the triple overlap away once too often, so it is added back.',
+      'Every region of the diagram is 0 or more: an overlap is no larger than what it lies in.',
+    ],
+    variables: [
+      num('a', '|A|', `${names[0]}`, undefined, 0, 1e6, { integer: true, step: 1 }),
+      num('b', '|B|', `${names[1]}`, undefined, 0, 1e6, { integer: true, step: 1 }),
+      num('c', '|C|', `${names[2]}`, undefined, 0, 1e6, { integer: true, step: 1 }),
+      num('ab', '|A ∩ B|', `${names[0]} and ${names[1].toLowerCase()}`, undefined, 0, 1e6, {
+        integer: true,
+        step: 1,
+      }),
+      num('ac', '|A ∩ C|', `${names[0]} and ${names[2].toLowerCase()}`, undefined, 0, 1e6, {
+        integer: true,
+        step: 1,
+      }),
+      num('bc', '|B ∩ C|', `${names[1]} and ${names[2].toLowerCase()}`, undefined, 0, 1e6, {
+        integer: true,
+        step: 1,
+      }),
+      num('abc', '|A ∩ B ∩ C|', 'All three', undefined, 0, 1e6, { integer: true, step: 1 }),
+      num('union', '|A ∪ B ∪ C|', 'At least one', undefined, 0, 3e6, { integer: true, step: 1 }),
+      ...(withTotal
+        ? [
+            num('total', 'N', 'Everyone', undefined, 0, 1e7, { integer: true, step: 1 }),
+            out('neither', 'n₀', 'None of the three', undefined, { integer: true }),
+          ]
+        : []),
+    ],
+    rules: [
+      rule(
+        'union',
+        '{union} = {a} + {b} + {c} − {ab} − {ac} − {bc} + {abc}',
+        [...SETS, 'union'],
+        (v) => v.union! - unionOf(v),
+        {
+          union: [
+            unionOf,
+            '{a} + {b} + {c} − {ab} − {ac} − {bc} + {abc}',
+            'Inclusion–exclusion: add the sets, take away the pairs, add back the triple.',
+          ],
+          abc: [
+            (v) => v.union! - (v.a! + v.b! + v.c! - v.ab! - v.ac! - v.bc!),
+            '{union} − ({a} + {b} + {c} − {ab} − {ac} − {bc})',
+            'The triple overlap is what the union has beyond the sets less the pairs.',
+          ],
+        },
+      ),
+      ...(withTotal
+        ? [
+            derive(
+              'neither',
+              'neither',
+              ['total', 'union'],
+              '{neither} = {total} − {union}',
+              (v) => v.total! - v.union!,
+              '{total} − {union}',
+              'Everyone not in at least one set is in none.',
+            ),
+          ]
+        : []),
+      { relation: regionLimit, steps: {} },
+    ],
+    example: example(
+      typed,
+      ['union', unionOf],
+      ...(withTotal
+        ? [['neither', (v: Values) => v.total! - v.union!] as [string, (v: Values) => number]]
+        : []),
+    ),
+    startWith: [...SETS, ...(withTotal ? ['total'] : [])],
+    representation: {
+      kind: 'venn',
+      three: {
+        a: 'a',
+        b: 'b',
+        c: 'c',
+        ab: 'ab',
+        ac: 'ac',
+        bc: 'bc',
+        abc: 'abc',
+        union: 'union',
+        ...(withTotal ? { total: 'total' } : {}),
+        names,
+      },
+    },
+  });
+
+const VENN_THREE = vennPage(
+  'g.he-venn-three',
+  'At least one of three (inclusion–exclusion)',
+  'Use this for “40 students take art, 35 band, 30 drama… how many take at least one?”',
+  { a: 40, b: 35, c: 30, ab: 15, ac: 10, bc: 12, abc: 5 },
+  ['Art', 'Band', 'Drama'],
+  false,
+);
+
+/** The edge: sets inside one another (drama within band within art), regions of 0, and none. */
+const VENN_NESTED = vennPage(
+  'g.he-venn-three-nested',
+  'Sets inside one another',
+  'Use this for “Of 60 students, 50 take art; the 20 in band all take art, and the 10 in drama all take band. How many take none?”',
+  { a: 50, b: 20, c: 10, ab: 20, ac: 10, bc: 10, abc: 10, total: 60 },
+  ['Art', 'Band', 'Drama'],
+  true,
+);
+
 export const HE4N_GALLERY_MODULES: ModuleDef[] = [
+  VENN_THREE,
+  VENN_NESTED,
   KMAP_THREE,
   KMAP_FOUR,
   PIPELINE,

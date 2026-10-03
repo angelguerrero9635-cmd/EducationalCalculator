@@ -835,6 +835,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `treeDiagram`      | `chances: { first, second, names, … }`   | a chance per branch, B given A on the second stage, path products (H21)       |
 | `venn`             | `chances: { a, b, both, shade, … }`      | probabilities per region; and, or, complement shaded; exclusive apart (H22)   |
 | `venn`             | `chances.counts: { total, count? }`      | counts out of a total: regions as counts, neither outside, P = n/N (H97)      |
+| `venn`             | `three: { a, b, c, ab, ac, bc, abc }`    | three sets: 7 regions by inclusion–exclusion, union bracketed (HC188)         |
 | `treeDiagram`      | `chances.third`, `thirdNames`, `path3`   | a third stage: 8 leaves, each path's product; three stages multiplied (H97)   |
 | `treeDiagram`      | `namesBySize`                            | outcome names for a stage of each size: 2 H, T; 3 R, G, B; … (H105)           |
 | `treeDiagram`      | `chain: { partials, rates, total? }`     | chain rule: z, x and y, t; ∂z/∂x and dx/dt on branches, paths added (HC98)    |

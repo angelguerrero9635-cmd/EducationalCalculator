@@ -72,6 +72,7 @@ import { FunctionGraphHe1d } from './FunctionGraphHe1d';
 import { NormalCurveHe4e } from './NormalCurveHe4e';
 import { DriftPaths } from './DriftPaths';
 import { He4nView } from './He4nView';
+import { VennThree } from './VennThree';
 import { FunctionGraphHe4e } from './FunctionGraphHe4e';
 import { AlleleFrequenciesAfterHe4e } from './AlleleFrequenciesAfterHe4e';
 import { BarsLogHe1d } from './BarsLogHe1d';
@@ -811,6 +812,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'fractionFit':
       return <FractionFit spec={spec} calc={calc} />;
     case 'venn':
+      if ('three' in spec) return <VennThree spec={spec.three} calc={calc} />; // HC188
       return 'chances' in spec ? (
         spec.chances.one ? (
           <VennOne spec={spec.chances} calc={calc} /> // H106

@@ -26,6 +26,32 @@ export function fsmReplay(f: StateDiagramFigure, input: string): FsmStep[] {
   return steps;
 }
 
+// ─── HC188: three sets ───────────────────────────────────────────────────────
+
+/** The 7 regions of three sets from their sizes and overlaps (undefined where a value is). */
+export function vennRegions(v: {
+  a?: number;
+  b?: number;
+  c?: number;
+  ab?: number;
+  ac?: number;
+  bc?: number;
+  abc?: number;
+}) {
+  const all = (...xs: (number | undefined)[]) => xs.every((x) => x !== undefined);
+  const { a, b, c, ab, ac, bc, abc } = v;
+  return {
+    abc,
+    abOnly: all(ab, abc) ? ab! - abc! : undefined,
+    acOnly: all(ac, abc) ? ac! - abc! : undefined,
+    bcOnly: all(bc, abc) ? bc! - abc! : undefined,
+    aOnly: all(a, ab, ac, abc) ? a! - ab! - ac! + abc! : undefined,
+    bOnly: all(b, ab, bc, abc) ? b! - ab! - bc! + abc! : undefined,
+    cOnly: all(c, ac, bc, abc) ? c! - ac! - bc! + abc! : undefined,
+    union: all(a, b, c, ab, ac, bc, abc) ? a! + b! + c! - ab! - ac! - bc! + abc! : undefined,
+  };
+}
+
 // ─── HC186: pipelines ────────────────────────────────────────────────────────
 
 /** The stage names for k stages: the classic five, or S1 … Sk. */
