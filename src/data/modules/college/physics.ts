@@ -54,6 +54,9 @@ const powerWork = (v: Values) => (v.c! * (v.x2! ** (v.n! + 1) - v.x1! ** (v.n! +
 /** "6x²", "6x", "6" (n = 0): the force cxⁿ with the page's numbers. */
 const powerForce = (c: number, n: number) => polyForm([c, ...Array<number>(n).fill(0)]);
 
+/** A mass worked out from a total: none when the others already use it all up. */
+const positive = (x: number) => (x > 0 ? x : undefined);
+
 /** U(x) = ax³ − bx²'s coefficients, highest power first: [a, −b, 0, 0]. */
 const potential = (v: Values) => [v.a!, -v.b!, 0, 0];
 
@@ -1679,6 +1682,99 @@ export const COLLEGE_PHYSICS_MODULES: ModuleDef[] = [
       after: ['v1p', 'v2p'],
       momentum: 'p',
       energy: ['K', 'Kp'],
+    },
+  },
+  {
+    // University Physics I → Momentum: up to three point masses on a line and the point where
+    // the line balances, the mass-weighted average of their places.
+    id: 'he.physics.university-1#3~center-of-mass',
+    title: 'Center of mass of masses on a line',
+    use: 'Use this for “A light 1.2 m rod holds 0.4 kg at 0.1 m, 0.6 kg at 0.5 m and 1 kg at 1.1 m. Where is its center of mass?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'Point masses: each mass sits at one place on the line, and the rod joining them weighs nothing.',
+      'Places are measured from one origin, + to the right; a place left of the origin is negative.',
+      'The center of mass is the mass-weighted average place, so Σm(x − x_cm) = 0: the rod balances on a pivot there.',
+    ],
+    variables: [
+      V('m1', 'm₁', 'Mass 1', { unit: 'kg', min: 0.001, max: 1e5, step: 0.1 }),
+      V('x1', 'x₁', 'Place of mass 1', { unit: 'm', min: -1e4, max: 1e4, step: 0.1 }),
+      V('m2', 'm₂', 'Mass 2', { unit: 'kg', min: 0.001, max: 1e5, step: 0.1 }),
+      V('x2', 'x₂', 'Place of mass 2', { unit: 'm', min: -1e4, max: 1e4, step: 0.1 }),
+      V('m3', 'm₃', 'Mass 3', { unit: 'kg', min: 0.001, max: 1e5, step: 0.1 }),
+      V('x3', 'x₃', 'Place of mass 3', { unit: 'm', min: -1e4, max: 1e4, step: 0.1 }),
+      V('M', 'M', 'Total mass', { unit: 'kg', min: 0.003, max: 3e5, derived: true }),
+      V('xcm', 'x_cm', 'Center of mass', { unit: 'm', min: -1e4, max: 1e4, derived: true }),
+    ],
+    ...rels(
+      rel(
+        'M = m₁ + m₂ + m₃',
+        '{M} = {m1} + {m2} + {m3}',
+        ['M', 'm1', 'm2', 'm3'],
+        (v) => v.M! - v.m1! - v.m2! - v.m3!,
+        {
+          M: [(v) => exact(v.m1! + v.m2! + v.m3!), '{m1} + {m2} + {m3}', 'Add the three masses.'],
+          m1: [
+            (v) => positive(exact(v.M! - v.m2! - v.m3!)),
+            '{M} − {m2} − {m3}',
+            'Mass 1 is what the total leaves after the other two.',
+          ],
+          m2: [
+            (v) => positive(exact(v.M! - v.m1! - v.m3!)),
+            '{M} − {m1} − {m3}',
+            'Mass 2 is what the total leaves after the other two.',
+          ],
+          m3: [
+            (v) => positive(exact(v.M! - v.m1! - v.m2!)),
+            '{M} − {m1} − {m2}',
+            'Mass 3 is what the total leaves after the other two.',
+          ],
+        },
+      ),
+      rel(
+        'x_cm = (m₁x₁ + m₂x₂ + m₃x₃) ÷ M',
+        '{xcm} = ({m1} × {x1} + {m2} × {x2} + {m3} × {x3}) ÷ {M}',
+        ['xcm', 'm1', 'x1', 'm2', 'x2', 'm3', 'x3', 'M'],
+        (v) => v.xcm! * v.M! - v.m1! * v.x1! - v.m2! * v.x2! - v.m3! * v.x3!,
+        {
+          xcm: [
+            (v) => div(v.m1! * v.x1! + v.m2! * v.x2! + v.m3! * v.x3!, v.M!),
+            '({m1} × {x1} + {m2} × {x2} + {m3} × {x3}) ÷ {M}',
+            'Weight each place by its mass, add the three, and divide by the total mass.',
+          ],
+          x1: [
+            (v) => div(v.xcm! * v.M! - v.m2! * v.x2! - v.m3! * v.x3!, v.m1!),
+            '({xcm} × {M} − {m2} × {x2} − {m3} × {x3}) ÷ {m1}',
+            'M times x_cm is the sum of mass times place. Take the other two masses’ share away, then divide by mass 1.',
+          ],
+          x2: [
+            (v) => div(v.xcm! * v.M! - v.m1! * v.x1! - v.m3! * v.x3!, v.m2!),
+            '({xcm} × {M} − {m1} × {x1} − {m3} × {x3}) ÷ {m2}',
+            'M times x_cm is the sum of mass times place. Take the other two masses’ share away, then divide by mass 2.',
+          ],
+          x3: [
+            (v) => div(v.xcm! * v.M! - v.m1! * v.x1! - v.m2! * v.x2!, v.m3!),
+            '({xcm} × {M} − {m1} × {x1} − {m2} × {x2}) ÷ {m3}',
+            'M times x_cm is the sum of mass times place. Take the other two masses’ share away, then divide by mass 3.',
+          ],
+        },
+      ),
+    ),
+    // The plan's 2 kg at 0, 3 kg at 1 m, 5 kg at 2 m, moved 0.5 m right (a place with a unit
+    // can't be 0 in an example): M = 10 kg; Σmx = 2 × 0.5 + 3 × 1.5 + 5 × 2.5 = 1 + 4.5 + 12.5
+    // = 18 kg·m; x_cm = 18 ÷ 10 = 1.8 m (the plan's 1.3 m plus 0.5 m).
+    example: { m1: 2, x1: 0.5, m2: 3, x2: 1.5, m3: 5, x3: 2.5, M: 10, xcm: 1.8 },
+    startWith: ['m1', 'x1', 'm2', 'x2', 'm3', 'x3'],
+    // Balls sized by mass on a light rod over a ruler, a pivot under x_cm.
+    representation: {
+      kind: 'vectorDiagram',
+      vectors: [{ name: 'x_cm' }],
+      masses: [
+        { m: 'm1', x: 'x1' },
+        { m: 'm2', x: 'x2' },
+        { m: 'm3', x: 'x3' },
+      ],
+      centerOfMass: { x: 'xcm', total: 'M' },
     },
   },
 ];
