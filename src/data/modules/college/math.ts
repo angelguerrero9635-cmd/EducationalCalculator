@@ -1010,4 +1010,110 @@ export const COLLEGE_MATH_MODULES: ModuleDef[] = [
       fixed: true,
     },
   },
+  {
+    // Calculus I → Derivatives and differentiation rules: implicit slope on x² + y² = r².
+    id: 'he.math.calc-1#1~implicit',
+    title: 'Implicit slope on a circle',
+    use: 'Use this for “Find dy/dx on x² + y² = 100 at (6, −8), and the tangent line there.”',
+    assumptions: [
+      'x² + y² = r² is a circle with its center at the origin. Near a point on it, y is a function of x (the top or bottom half).',
+      'Differentiate both sides in x, using the chain rule on y²: 2x + 2y·(dy/dx) = 0, so dy/dx = −x ÷ y.',
+      'The radius to the point has slope y₀ ÷ x₀, and the tangent −x₀ ÷ y₀: the tangent is at right angles to the radius.',
+      'Where y₀ = 0 (the far left and right of the circle) the tangent is the vertical line x = x₀, which has no slope.',
+    ],
+    variables: [
+      V('x0', 'x₀', 'Point’s x', { min: -100, max: 100, step: 0.1 }),
+      V('y0', 'y₀', 'Point’s y', { min: -100, max: 100, step: 0.1 }),
+      V('R', 'r²', 'Right side x² + y²', { min: 0.01, max: 20000, step: 0.01 }),
+      V('r', 'r', 'Radius', { min: 0, max: 142, step: 0.0001, derived: true }),
+      V('m', 'dy/dx', 'Slope of the tangent', { min: -1e5, max: 1e5, step: 0.0001 }),
+      V('c', 'c', 'Tangent’s y-intercept', { min: -1e7, max: 1e7, step: 0.0001 }),
+    ],
+    ...rels(
+      rule(
+        'y₀ ≠ 0',
+        'The point’s y {y0} is not 0',
+        ['y0'],
+        (v) => v.y0 !== 0,
+        'With y₀ = 0 the point is at the far left or right of the circle: the tangent is the vertical line x = x₀, with no slope.',
+      ),
+      rel(
+        'x₀² + y₀² = r²',
+        '{R} = {x0}² + {y0}²',
+        ['R', 'x0', 'y0'],
+        (v) => v.R! - (v.x0! ** 2 + v.y0! ** 2),
+        {
+          R: [
+            (v) => v.x0! ** 2 + v.y0! ** 2,
+            '{x0}² + {y0}²',
+            'The point is on the circle, so it makes x² + y² true.',
+          ],
+          y0: [
+            (v) => realRoots(v.R! - v.x0! ** 2, 2),
+            (v) => (v.y0! >= 0 ? '√({R} − {x0}²)' : '−√({R} − {x0}²)'),
+            'Take x₀² from r², then the square root. Both signs work (top and bottom half); the one nearest the point is shown.',
+          ],
+          x0: [
+            (v) => realRoots(v.R! - v.y0! ** 2, 2),
+            (v) => (v.x0! >= 0 ? '√({R} − {y0}²)' : '−√({R} − {y0}²)'),
+            'Take y₀² from r², then the square root. Both signs work (right and left half); the one nearest the point is shown.',
+          ],
+        },
+      ),
+      derive(
+        'r = √(r²)',
+        '{r} = √{R}',
+        'r',
+        ['R'],
+        (v) => Math.sqrt(v.R!),
+        '√{R}',
+        'The radius is the square root of the right side.',
+      ),
+      rel(
+        'dy/dx = −x₀ ÷ y₀',
+        '{m} = −{x0} ÷ {y0}',
+        ['m', 'x0', 'y0'],
+        (v) => v.m! * v.y0! + v.x0!,
+        {
+          m: [
+            (v) => (v.y0 === 0 ? undefined : exact(-v.x0! / v.y0!)),
+            '−{x0} ÷ {y0}',
+            'Solve 2x + 2y·(dy/dx) = 0 for dy/dx, then put in the point.',
+          ],
+          x0: [(v) => exact(-v.m! * v.y0!), '−{m} × {y0}', 'Multiply the slope by −y₀.'],
+          y0: [
+            (v) => (v.m === 0 ? undefined : exact(-v.x0! / v.m!)),
+            '−{x0} ÷ {m}',
+            'Divide −x₀ by the slope.',
+          ],
+        },
+      ),
+      rel(
+        'c = y₀ − m·x₀',
+        '{c} = {y0} − {m} × {x0}',
+        ['c', 'y0', 'm', 'x0'],
+        (v) => v.c! - (v.y0! - v.m! * v.x0!),
+        {
+          c: [
+            (v) => exact(v.y0! - v.m! * v.x0!),
+            '{y0} − {m} × {x0}',
+            'The tangent y = mx + c goes through the point, so c = y₀ − m·x₀.',
+          ],
+        },
+      ),
+    ),
+    example: { x0: 3, y0: 4, R: 25, r: 5, m: -0.75, c: 6.25 },
+    startWith: ['x0', 'y0'],
+    equation: 'x² + y² = {R}\ndy/dx at ({x0}, {y0}) = {m}\ntangent: y = {m}x + {c}',
+    representation: {
+      kind: 'conicGraph',
+      conic: 'circle',
+      h: 0,
+      k: 0,
+      r: 'r',
+      point: { x: 'x0', y: 'y0' },
+      tangent: { slope: 'm', intercept: 'c' },
+      fixed: true,
+    },
+  },
 ];
