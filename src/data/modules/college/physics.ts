@@ -4,10 +4,26 @@
  * after it), in taxonomy order. Course and topic titles come from taxonomy.ts. Layout pages are
  * in `../layouts/collegePhysics.ts`. Rules: docs/MODULE_GUIDE.md.
  */
+import type { Values } from '@/engine/types';
+
 import { div } from '../helpers';
 import type { ModuleDef } from '../types';
 
-import { atLeastZero, plusMinus, rootOf } from './shared';
+import { polyDerivative, polyForm } from './forms';
+import { atLeastZero, plusMinus, rel, rels, rootOf, signed, V, withStep } from './shared';
+
+/** x(t)'s coefficients, highest power first: [c₃, c₂, c₁, c₀]. */
+const cubic = (v: Values) => [v.c3!, v.c2!, v.c1!, v.c0!];
+
+/** A value with one fixed unit (no menu: the coefficients' units go together). */
+const fixed = (unit: string, min: number, max: number, step: number, derived = false) => ({
+  unit,
+  units: [unit],
+  min,
+  max,
+  step,
+  ...(derived ? { derived } : {}),
+});
 
 export const COLLEGE_PHYSICS_MODULES: ModuleDef[] = [
   {
@@ -177,6 +193,129 @@ export const COLLEGE_PHYSICS_MODULES: ModuleDef[] = [
       start: 'v0',
       distance: 'd',
       kinematics: { view: 'velocity' },
+    },
+  },
+  {
+    // University Physics I → Kinematics: x(t) a cubic; v and a by the power rule.
+    id: 'he.physics.university-1#0~calculus',
+    title: 'Velocity and acceleration from x(t)',
+    use: 'Use this for “x = 2t³ − 9t² + 12t + 4 (m, s). Find the velocity and acceleration at t = 3 s.”',
+    assumptions: [
+      'The position is given as x(t) = c₀ + c₁t + c₂t² + c₃t³, x in meters and t in seconds.',
+      'Power rule: the derivative of tⁿ is ntⁿ⁻¹, so v = dx/dt and a = dv/dt term by term.',
+      'Where v = 0 and changes sign, the object turns round.',
+    ],
+    variables: [
+      V('c3', 'c₃', 'Coefficient of t³', fixed('m/s³', -50, 50, 0.01)),
+      V('c2', 'c₂', 'Coefficient of t²', fixed('m/s²', -100, 100, 0.01)),
+      V('c1', 'c₁', 'Coefficient of t', fixed('m/s', -1000, 1000, 0.1)),
+      V('c0', 'c₀', 'Starting position', fixed('m', -10000, 10000, 0.1)),
+      V('t', 't', 'Time', fixed('s', 0, 100, 0.01)),
+      V('x', 'x', 'Position', fixed('m', -1e8, 1e8, 0.01, true)),
+      V('v', 'v', 'Velocity', fixed('m/s', -1e7, 1e7, 0.01, true)),
+      V('a', 'a', 'Acceleration', fixed('m/s²', -1e5, 1e5, 0.01, true)),
+    ],
+    ...rels(
+      withStep(
+        rel(
+          'x = c₀ + c₁t + c₂t² + c₃t³',
+          '{x} = {c0} + {c1} × {t} + {c2} × {t}² + {c3} × {t}³',
+          ['x', 'c0', 'c1', 'c2', 'c3', 't'],
+          (v) => v.x! - (v.c0! + v.c1! * v.t! + v.c2! * v.t! ** 2 + v.c3! * v.t! ** 3),
+          {
+            x: [
+              (v) => v.c0! + v.c1! * v.t! + v.c2! * v.t! ** 2 + v.c3! * v.t! ** 3,
+              (v) =>
+                `${signed(v.c0!)} + ${signed(v.c1!)} × ${signed(v.t!)} + ${signed(v.c2!)} × ${signed(v.t!)}² + ${signed(v.c3!)} × ${signed(v.t!)}³`,
+              'Put the time into x(t), one term at a time, and add.',
+            ],
+            c0: [
+              (v) => v.x! - v.c1! * v.t! - v.c2! * v.t! ** 2 - v.c3! * v.t! ** 3,
+              '{x} − {c1} × {t} − {c2} × {t}² − {c3} × {t}³',
+              'Take the other three terms away from the position.',
+            ],
+          },
+        ),
+        'x',
+        { work: (v) => [`x(t) = ${polyForm(cubic(v), 't')}`] },
+      ),
+      withStep(
+        rel(
+          'v = c₁ + 2c₂t + 3c₃t²',
+          '{v} = {c1} + 2 × {c2} × {t} + 3 × {c3} × {t}²',
+          ['v', 'c1', 'c2', 'c3', 't'],
+          (v) => v.v! - (v.c1! + 2 * v.c2! * v.t! + 3 * v.c3! * v.t! ** 2),
+          {
+            v: [
+              (v) => v.c1! + 2 * v.c2! * v.t! + 3 * v.c3! * v.t! ** 2,
+              (v) =>
+                `${signed(v.c1!)} + 2 × ${signed(v.c2!)} × ${signed(v.t!)} + 3 × ${signed(v.c3!)} × ${signed(v.t!)}²`,
+              'v = dx/dt: by the power rule each cₙtⁿ gives ncₙtⁿ⁻¹, and c₀ drops out. Put t in.',
+            ],
+            c1: [
+              (v) => v.v! - 2 * v.c2! * v.t! - 3 * v.c3! * v.t! ** 2,
+              '{v} − 2 × {c2} × {t} − 3 × {c3} × {t}²',
+              'Take the t and t² terms of v away from the velocity.',
+            ],
+          },
+        ),
+        'v',
+        {
+          // "d/dt (…) = …" keeps a constant derivative from reading as an equation in v.
+          work: (v) => [
+            `d/dt (${polyForm(cubic(v), 't')}) = ${polyForm(polyDerivative(cubic(v)), 't')}`,
+          ],
+        },
+      ),
+      withStep(
+        rel(
+          'a = 2c₂ + 6c₃t',
+          '{a} = 2 × {c2} + 6 × {c3} × {t}',
+          ['a', 'c2', 'c3', 't'],
+          (v) => v.a! - (2 * v.c2! + 6 * v.c3! * v.t!),
+          {
+            a: [
+              (v) => 2 * v.c2! + 6 * v.c3! * v.t!,
+              (v) => `2 × ${signed(v.c2!)} + 6 × ${signed(v.c3!)} × ${signed(v.t!)}`,
+              'a = dv/dt: the power rule again, on v = c₁ + 2c₂t + 3c₃t². Put t in.',
+            ],
+            c2: [
+              (v) => (v.a! - 6 * v.c3! * v.t!) / 2,
+              '({a} − 6 × {c3} × {t}) ÷ 2',
+              'Take 6c₃t away from a, then halve it.',
+            ],
+            t: [
+              (v) => div(v.a! - 2 * v.c2!, 6 * v.c3!),
+              '({a} − 2 × {c2}) ÷ (6 × {c3})',
+              'Take 2c₂ away from a, then divide by 6c₃.',
+            ],
+          },
+        ),
+        'a',
+        {
+          work: (v) => {
+            const dv = polyDerivative(cubic(v));
+            return [`d/dt (${polyForm(dv, 't')}) = ${polyForm(polyDerivative(dv), 't')}`];
+          },
+        },
+      ),
+    ),
+    // The plan's x = 2t³ − 9t² + 12t with c₀ = 4 m (a 0 with a unit fails the module tests):
+    // x(3) = 4 + 36 − 81 + 54 = 13 m, v = 12 − 54 + 54 = 12 m/s, a = −18 + 36 = 18 m/s².
+    example: { c3: 2, c2: -9, c1: 12, c0: 4, t: 3, x: 13, v: 12, a: 18 },
+    startWith: ['c3', 'c2', 'c1', 'c0', 't'],
+    representation: {
+      kind: 'motionGraph',
+      polynomial: {
+        c0: 'c0',
+        c1: 'c1',
+        c2: 'c2',
+        c3: 'c3',
+        at: 't',
+        position: 'x',
+        velocity: 'v',
+        acceleration: 'a',
+      },
     },
   },
 ];
