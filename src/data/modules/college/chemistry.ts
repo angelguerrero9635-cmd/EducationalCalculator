@@ -2232,4 +2232,93 @@ export const COLLEGE_CHEMISTRY_MODULES: ModuleDef[] = [
       },
     } satisfies ModuleDef;
   })(),
+  (() => {
+    // General Chemistry I → Bonding and molecular geometry: lattice energy from a Born–Haber cycle.
+    // NaCl: 107 + 496 + 121 − 349 + U = −411 → U = −411 − 107 − 496 − 121 + 349 = −786 kJ/mol.
+    const [sub, IE, half, EA, dHf] = [107, 496, 121, -349, -411];
+    const energy = (id: string, symbol: string, name: string, min: number, max: number) =>
+      V(id, symbol, name, { unit: 'kJ/mol', units: ['kJ/mol'], min, max, step: 0.1 });
+    return {
+      id: 'he.chemistry.gen-chem-1#4~born-haber',
+      title: 'Lattice energy from a Born–Haber cycle',
+      use: 'Use this for “Find the lattice energy of NaCl from these values in kJ/mol: sublimation of Na 107, first ionization energy of Na 496, half the Cl–Cl bond energy 121, electron affinity of Cl −349 and ΔH°f of NaCl −411.”',
+      assumptions: [
+        'The salt MX is a metal M with a 1+ charge and a halogen X with a 1− charge, each from its element in its standard state. The cycle makes one mole of MX, so the diagram shows each step in kJ.',
+        'Hess’s law: the path through gaseous atoms and gaseous ions has the same ΔH as forming the salt in one step.',
+        'U is the energy given off when the gaseous ions come together as the solid, so it is negative. Some books quote the reverse, a positive number.',
+        'An electron affinity here is the energy change when the atom takes an electron: −349 kJ/mol for Cl, energy given off.',
+      ],
+      variables: [
+        energy('sub', 'ΔH_sub', 'Sublimation enthalpy of the metal', 1, 1000),
+        energy('IE', 'IE', 'First ionization energy of the metal', 300, 1500),
+        energy('half', '½D', 'Half the bond energy of X₂', 1, 500),
+        energy('EA', 'EA', 'Electron affinity of X', -500, 200),
+        energy('dHf', 'ΔH°f', 'Standard enthalpy of formation of the salt', -3000, 500),
+        energy('U', 'U', 'Lattice energy', -5000, -100),
+      ],
+      ...rels(
+        rel(
+          'ΔH°f = ΔH_sub + IE + ½D + EA + U',
+          '{dHf} = {sub} + {IE} + {half} + {EA} + {U}',
+          ['dHf', 'sub', 'IE', 'half', 'EA', 'U'],
+          (v) => v.dHf! - (v.sub! + v.IE! + v.half! + v.EA! + v.U!),
+          {
+            U: [
+              (v) => v.dHf! - v.sub! - v.IE! - v.half! - v.EA!,
+              '{dHf} − {sub} − {IE} − {half} − {EA}',
+              'Hess’s law: the five steps add to ΔH°f, so take the other four off it. What is left is the ions coming together.',
+            ],
+            dHf: [
+              (v) => v.sub! + v.IE! + v.half! + v.EA! + v.U!,
+              '{sub} + {IE} + {half} + {EA} + {U}',
+              'Add the steps of the cycle: make gaseous atoms, turn them into ions, then pack the ions into the solid.',
+            ],
+            sub: [
+              (v) => v.dHf! - v.IE! - v.half! - v.EA! - v.U!,
+              '{dHf} − {IE} − {half} − {EA} − {U}',
+              'Take the other four steps off ΔH°f.',
+            ],
+            IE: [
+              (v) => v.dHf! - v.sub! - v.half! - v.EA! - v.U!,
+              '{dHf} − {sub} − {half} − {EA} − {U}',
+              'Take the other four steps off ΔH°f.',
+            ],
+            half: [
+              (v) => v.dHf! - v.sub! - v.IE! - v.EA! - v.U!,
+              '{dHf} − {sub} − {IE} − {EA} − {U}',
+              'Take the other four steps off ΔH°f.',
+            ],
+            EA: [
+              (v) => v.dHf! - v.sub! - v.IE! - v.half! - v.U!,
+              '{dHf} − {sub} − {IE} − {half} − {U}',
+              'Take the other four steps off ΔH°f.',
+            ],
+          },
+        ),
+      ),
+      example: { sub, IE, half, EA, dHf, U: dHf - sub - IE - half - EA },
+      startWith: ['sub', 'IE', 'half', 'EA', 'dHf'],
+      unitSystems: ['metric'],
+      representation: {
+        kind: 'energyProfile',
+        mode: 'ladder',
+        // kJ for the one mole of MX the cycle makes: kJ/mol chips overflow five columns.
+        unit: 'kJ',
+        levels: [
+          { name: 'M(s) + ½X₂', value: 0 },
+          { name: 'M(g) + X(g)' },
+          { name: 'M⁺(g) + X(g)' },
+          { name: 'M⁺(g) + X⁻(g)' },
+          { name: 'MX(s)', value: 'dHf' },
+        ],
+        steps: [
+          { from: 0, to: 1, label: 'Atoms' },
+          { from: 1, to: 2, value: 'IE', label: 'IE' },
+          { from: 2, to: 3, value: 'EA', label: 'EA' },
+          { from: 3, to: 4, value: 'U', label: 'U' },
+        ],
+        total: { from: 0, to: 4, value: 'dHf', label: 'ΔH°f' },
+      },
+    } satisfies ModuleDef;
+  })(),
 ];
