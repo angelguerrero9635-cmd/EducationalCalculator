@@ -481,4 +481,87 @@ export const COLLEGE_PHYSICS_MODULES: ModuleDef[] = [
       parametric: true,
     },
   },
+  {
+    // University Physics I → Newton's laws: a block on a table pulled by a hanging block.
+    id: 'he.physics.university-1#1',
+    use: 'Use this for “A 4 kg block on a table (μₖ = 0.25) is pulled by a 2 kg block hanging over a pulley at the edge. Find the acceleration and the string’s tension.”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'A light string over a light, frictionless pulley, so the tension T is the same on both sides; g = 9.81 m/s².',
+      'The string doesn’t stretch, so both blocks move together with one acceleration a.',
+      'The table block is already sliding, so kinetic friction μₖm₁g holds it back.',
+      'If m₂ ≤ μₖm₁, friction is enough to hold the blocks: once at rest, nothing slides.',
+    ],
+    variables: [
+      V('m1', 'm₁', 'Mass on the table', { unit: 'kg', min: 0.01, max: 1000, step: 0.1 }),
+      V('m2', 'm₂', 'Hanging mass', { unit: 'kg', min: 0.01, max: 1000, step: 0.1 }),
+      V('mu', 'μₖ', 'Kinetic friction coefficient', { min: 0, max: 1.5, step: 0.01 }),
+      V('a', 'a', 'Acceleration', { unit: 'm/s²', min: -100, max: G, derived: true }),
+      V('T', 'T', 'Tension', { unit: 'N', min: 0, max: 1e5, derived: true }),
+    ],
+    ...rels(
+      rel(
+        'a = (m₂ − μₖm₁)g ÷ (m₁ + m₂)',
+        '{a} = ({m2} − {mu} × {m1}) × 9.81 ÷ ({m1} + {m2})',
+        ['a', 'm1', 'm2', 'mu'],
+        (v) => v.a! * (v.m1! + v.m2!) - (v.m2! - v.mu! * v.m1!) * G,
+        {
+          a: [
+            (v) => exact(((v.m2! - v.mu! * v.m1!) * G) / (v.m1! + v.m2!)),
+            '({m2} − {mu} × {m1}) × 9.81 ÷ ({m1} + {m2})',
+            'Add m₂g − T = m₂a and T − μₖm₁g = m₁a: T cancels. The hanging weight less the friction moves both masses.',
+          ],
+          mu: [
+            (v) => div(v.m2! * G - v.a! * (v.m1! + v.m2!), v.m1! * G),
+            '({m2} × 9.81 − {a} × ({m1} + {m2})) ÷ ({m1} × 9.81)',
+            'The friction μₖm₁g is the hanging weight less the force that accelerates both blocks. Divide it by m₁g.',
+          ],
+          m2: [
+            (v) => div(v.m1! * (v.a! + v.mu! * G), G - v.a!),
+            '{m1} × ({a} + {mu} × 9.81) ÷ (9.81 − {a})',
+            'Gather the m₂ terms of a(m₁ + m₂) = (m₂ − μₖm₁)g on one side, then divide by g − a.',
+          ],
+          m1: [
+            (v) => div(v.m2! * (G - v.a!), v.a! + v.mu! * G),
+            '{m2} × (9.81 − {a}) ÷ ({a} + {mu} × 9.81)',
+            'Gather the m₁ terms of a(m₁ + m₂) = (m₂ − μₖm₁)g on one side, then divide by a + μₖg.',
+          ],
+        },
+      ),
+      rule(
+        'a ≥ 0',
+        'The blocks slide: {a} is 0 or more',
+        ['a'],
+        (v) => v.a! >= -1e-9,
+        'The hanging weight m₂g is less than the friction μₖm₁g, so the blocks can’t speed up: once at rest, nothing slides.',
+      ),
+      rel(
+        'T = m₂(g − a)',
+        '{T} = {m2} × (9.81 − {a})',
+        ['T', 'm2', 'a'],
+        (v) => v.T! - v.m2! * (G - v.a!),
+        {
+          T: [
+            (v) => exact(v.m2! * (G - v.a!)),
+            '{m2} × (9.81 − {a})',
+            'Newton’s second law on the hanging block: m₂g − T = m₂a, so T is m₂g less m₂a.',
+          ],
+          a: [
+            (v) => div(v.m2! * G - v.T!, v.m2!),
+            '9.81 − {T} ÷ {m2}',
+            'Undo T = m₂(g − a): divide T by m₂ and take it from g.',
+          ],
+        },
+      ),
+    ),
+    // m₁ = 4 kg, m₂ = 2 kg, μₖ = 0.25: a = (2 − 1) × 9.81 ÷ 6 = 1.635 m/s²,
+    // T = 2 × (9.81 − 1.635) = 16.35 N (on m₁: 16.35 − 0.25 × 4 × 9.81 = 6.54 = 4 × 1.635).
+    example: { m1: 4, m2: 2, mu: 0.25, a: 1.635, T: 16.35 },
+    startWith: ['m1', 'm2', 'mu'],
+    representation: {
+      kind: 'freeBody',
+      g: G,
+      pulley: { layout: 'table', m1: 'm1', m2: 'm2', mu: 'mu', a: 'a', T: 'T' },
+    },
+  },
 ];
