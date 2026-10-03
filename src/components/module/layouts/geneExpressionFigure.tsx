@@ -41,7 +41,7 @@ export function GeneExpressionFigure({ gene }: { gene: GeneScene }) {
   const polX = on ? 188 : (promoter[0] + promoter[1]) / 2;
   const polY = DNA_Y - 20;
   // The switch protein: on its site, or lifted off.
-  const bound = rep ? !signal : signal;
+  const bound = rep ? (gene.corepressor ? signal : !signal) : signal; // HC147: trp binds only with Trp
   const swX = (sw[0] + sw[1]) / 2;
   const swY = bound ? DNA_Y - 20 : 74;
   const protein = rep ? c.bioSolute : c.dnaA;
@@ -172,8 +172,14 @@ export function GeneExpressionFigure({ gene }: { gene: GeneScene }) {
               const t = (k * Math.PI) / 3;
               return `${swX + 7 * Math.cos(t)},${swY - 21 + 7 * Math.sin(t)}`;
             }).join(' ')}
-            fill={c.bioSugar}
-            stroke={gene.lit === 'signal' ? c.chartHighlight : c.bioSugarEdge}
+            fill={gene.corepressor ? c.bioAmino : c.bioSugar}
+            stroke={
+              gene.lit === 'signal'
+                ? c.chartHighlight
+                : gene.corepressor
+                  ? c.bioAminoEdge
+                  : c.bioSugarEdge
+            }
             strokeWidth={gene.lit === 'signal' ? chart.strokeHeavy : 1.2}
           />
         ) : null}
@@ -189,7 +195,7 @@ export function GeneExpressionFigure({ gene }: { gene: GeneScene }) {
         </ChartText>
         {signal ? (
           <ChartText x={swX + 11} y={swY - 22} fontSize={chart.label} fill={c.chartMuted}>
-            {rep ? 'inducer (lactose)' : 'signal'}
+            {rep ? (gene.corepressor ? 'corepressor (tryptophan)' : 'inducer (lactose)') : 'signal'}
           </ChartText>
         ) : null}
       </G>

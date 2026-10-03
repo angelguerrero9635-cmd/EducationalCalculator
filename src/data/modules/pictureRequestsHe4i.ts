@@ -123,4 +123,20 @@ export const HE4I_REQUESTS: PictureRequest[] = [
     status: 'drawn',
     gallery: ['g.he-codons-mutations'],
   },
+  {
+    ...ask(
+      'HC147',
+      'geneExpression',
+      'The trp operon on the geneExpression explore figure: the repressor binds the operator only with its corepressor (tryptophan) bound, so the gene is on without tryptophan and off with it',
+      [`${B}cell-molecular#2`],
+      [
+        'From B-P11. New scene field `corepressor` on the geneExpression figure (typesHe4i.ts GeneSceneHe4i, extended by GeneScene in typesHs2e.ts; geneIsOn reads it; three lines in layouts/geneExpressionFigure.tsx). Without it the lac and activator scenes are unchanged.',
+        "Fields: a scene's gene: { control: 'repressor', corepressor: true, signal?: true (tryptophan there), lit? }. The signal is drawn as tryptophan (an amino-acid hexagon) and labelled “corepressor (tryptophan)”; with it the repressor sits on the operator and the polymerase is blocked.",
+        "Example: { label: 'trp, tryptophan', lines: ['…', 'The gene is off: …'], gene: { control: 'repressor', corepressor: true, signal: true, lit: 'signal' } }, beside the lac scenes the page has.",
+        'Layout check (harness/picturesHe4i.ts, with the H100 check that a line saying “gene is on/off” matches the figure): a corepressor works only a repressor; the gene is on exactly when the corepressor is absent.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: ['g.he-geneExpression-corepressor'],
+  },
 ];

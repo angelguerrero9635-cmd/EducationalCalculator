@@ -11,6 +11,7 @@ import { CODON_TABLE } from '@/components/module/reps/dnaMath';
 import { modeOfBin, modePossible, type Mode } from '@/components/module/reps/pedigreeHe4iMath';
 
 import { divisionStages, type CodonsCard } from '../typesHe4i';
+import { geneIsOn } from '../typesHs2e';
 
 import type { LayoutDef, PedigreePerson } from '../layouts';
 import { EVIDENCE_OF } from '../layouts/icons/he4i';
@@ -123,6 +124,16 @@ export function he4iLayoutIssues(l: LayoutDef): string[] {
       const want = bin ? effectOfBin(bin) : undefined;
       const got = codonEffect(card.figure);
       if (want !== got) out.push(`card "${card.label}": a ${got} change in bin "${bin?.label}"`);
+    }
+  }
+  // HC147: a corepressor works a repressor, and the gene is on exactly when it is absent.
+  if (l.kind === 'explore' && l.figure.kind === 'geneExpression') {
+    for (const sc of l.scenes) {
+      const g = sc.gene;
+      if (!g?.corepressor) continue;
+      if (g.control !== 'repressor') out.push(`scene "${sc.label}": a corepressor on an activator`);
+      if (geneIsOn(g) !== !g.signal)
+        out.push(`scene "${sc.label}": the gene must be on exactly when the corepressor is absent`);
     }
   }
   return out;

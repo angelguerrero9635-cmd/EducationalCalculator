@@ -9,6 +9,7 @@
  * - HC144 `pedigree`: a family in the standard symbols, as a calculator picture and a card.
  * - HC145 `linkageMap`: loci on a chromosome to scale in cM, homologs with their crossovers.
  * - HC146 card `codons`: a codon strip before and after a point mutation.
+ * - HC147 `geneExpression` `corepressor`: the trp repressor binds only with tryptophan.
  */
 import type { PedigreePerson } from './layouts/types';
 import type { NumOrVar } from './typesGraphs';
@@ -170,3 +171,15 @@ export interface CodonsCard {
 
 export const CODONS_CARD_W = 140;
 export const CODONS_CARD_H = 74;
+
+// ─── HC147: geneExpression corepressor ───────────────────────────────────────────
+
+/**
+ * HC147 (B-P11): `corepressor` on a `geneExpression` scene (a repressor switch). The signal is
+ * then a corepressor (tryptophan for the trp operon): the repressor binds the operator only with
+ * it bound, so the gene is off when the signal is there and on when it is not, the reverse of
+ * an inducer (`geneIsOn` in `typesHs2e.ts`).
+ */
+export interface GeneSceneHe4i {
+  corepressor?: boolean;
+}

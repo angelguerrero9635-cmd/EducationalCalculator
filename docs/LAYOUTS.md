@@ -81,7 +81,9 @@ Grade 9 biology (H100, `layouts/geneExpressionFigure.tsx`): `geneExpression`, a 
 promoter, a gene and its switch, RNA polymerase and, when the gene is read, its mRNA; a scene's
 `gene: { control: 'repressor' | 'activator', signal?, lit? }` sets the switch: a repressor sits on
 the operator unless its signal (an inducer) pulls it off, an activator binds only with its
-signal, so the gene is on exactly when the signal is there.
+signal, so the gene is on exactly when the signal is there. HC147: `corepressor: true` (a repressor
+switch) makes the signal a corepressor (tryptophan, trp operon): the repressor binds only with it,
+so the gene is on exactly when it is absent.
 Also H100 (`layouts/dichotomousKeyFigure.tsx`): `dichotomousKey`, `{ kind: 'dichotomousKey', steps }` with
 `steps: { question, yes, no }[]` (an answer is the next question's index or a name), drawn as a
 tree down the page, each question's Yes then No indented under it; a scene's `key: { specimen?,

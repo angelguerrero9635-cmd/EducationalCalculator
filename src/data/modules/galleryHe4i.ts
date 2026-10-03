@@ -7,6 +7,7 @@
  * HC144: `pedigree`, the calculator picture and the card (he.biology.genetics#0, ~modes).
  * HC145: `linkageMap`, the new kind (he.biology.genetics#1, ~three-point).
  * HC146: card figure `codons` (he.biology.genetics#2~mutations).
+ * HC147: `geneExpression` `corepressor` (he.biology.cell-molecular#2).
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
@@ -772,6 +773,55 @@ const MUTATIONS_SORT: LayoutDef = {
   ],
 };
 
+// ─── HC147: the lac and trp operons (cell-molecular#2) ────────────────────────────
+
+const OPERONS: LayoutDef = {
+  kind: 'explore',
+  id: 'g.he-geneExpression-corepressor',
+  title: 'The lac and trp operons',
+  use: 'Use this for “Is the operon on or off: lac with lactose, or trp with tryptophan?”',
+  assumptions: [
+    'An inducible operon (lac) is off until its inducer pulls the repressor off the operator.',
+    'A repressible operon (trp) is on until its corepressor lets the repressor bind the operator.',
+    'Both repressors block RNA polymerase only while they sit on the operator.',
+  ],
+  figure: { kind: 'geneExpression' },
+  scenes: [
+    {
+      label: 'lac, no lactose',
+      lines: [
+        'The lac repressor sits on the operator and blocks RNA polymerase.',
+        'The gene is off: no enzymes for a sugar that is not there.',
+      ],
+      gene: { control: 'repressor', lit: 'protein' },
+    },
+    {
+      label: 'lac, lactose',
+      lines: [
+        'Allolactose, made from lactose, binds the repressor and pulls it off the operator.',
+        'The gene is on: RNA polymerase reads it into mRNA.',
+      ],
+      gene: { control: 'repressor', signal: true, lit: 'signal' },
+    },
+    {
+      label: 'trp, no tryptophan',
+      lines: [
+        'Without tryptophan the trp repressor cannot hold the operator.',
+        'The gene is on: the cell makes the enzymes that build tryptophan.',
+      ],
+      gene: { control: 'repressor', corepressor: true, lit: 'mRNA' },
+    },
+    {
+      label: 'trp, tryptophan',
+      lines: [
+        'Tryptophan is the corepressor: bound to the repressor, it lets it sit on the operator.',
+        'The gene is off: with tryptophan already there, no more is made.',
+      ],
+      gene: { control: 'repressor', corepressor: true, signal: true, lit: 'signal' },
+    },
+  ],
+};
+
 export const HE4I_GALLERY_MODULES: ModuleDef[] = [
   CELL_RATIO,
   CELL_RATIO_SMALL,
@@ -784,4 +834,9 @@ export const HE4I_GALLERY_MODULES: ModuleDef[] = [
   LINKAGE_THREE,
 ];
 
-export const HE4I_GALLERY_LAYOUTS: LayoutDef[] = [SORT_EVIDENCE, MODES_SORT, MUTATIONS_SORT];
+export const HE4I_GALLERY_LAYOUTS: LayoutDef[] = [
+  SORT_EVIDENCE,
+  MODES_SORT,
+  MUTATIONS_SORT,
+  OPERONS,
+];
