@@ -126,3 +126,52 @@ export const airyRootOf = (h: number, rc: number, rm: number) => (h * rc) / (rm 
 
 /** ρ_a = 2πaV ÷ I. */
 export const wennerOf = (a: number, v: number, i: number) => (2 * Math.PI * a * v) / i;
+
+// ── HC140: the three-cell circulation ──
+
+/** The cells' edges, degrees of latitude: Hadley 0–30°, Ferrel 30–60°, polar 60–90°. */
+export const CELL_EDGES = [0, 30, 60, 90] as const;
+
+/**
+ * Each cell's surface wind in the north (the south mirrors it): `toward` the equator or the pole
+ * along the ground, turned by the Coriolis effect to blow from the east (`blows: 'west'`) or
+ * from the west (`blows: 'east'`).
+ */
+export const CELLS = [
+  {
+    id: 'hadley',
+    name: 'Hadley',
+    wind: 'trades',
+    from: 0,
+    to: 30,
+    toward: 'equator',
+    blows: 'west',
+  },
+  {
+    id: 'ferrel',
+    name: 'Ferrel',
+    wind: 'westerlies',
+    from: 30,
+    to: 60,
+    toward: 'pole',
+    blows: 'east',
+  },
+  {
+    id: 'polar',
+    name: 'Polar',
+    wind: 'easterlies',
+    from: 60,
+    to: 90,
+    toward: 'equator',
+    blows: 'west',
+  },
+] as const;
+
+/**
+ * A cell's surface wind arrow in a picture (x east, y down): equatorward is down in the north
+ * and up in the south; the Coriolis turn sends it west or east.
+ */
+export function windArrow(cell: (typeof CELLS)[number], north: boolean): [number, number] {
+  const ns = (cell.toward === 'equator' ? 1 : -1) * (north ? 1 : -1);
+  return [cell.blows === 'east' ? 34 : -34, 18 * ns];
+}

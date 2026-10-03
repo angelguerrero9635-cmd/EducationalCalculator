@@ -5,12 +5,15 @@
  */
 import {
   G_EARTH,
+  CELL_EDGES,
+  CELLS,
   KAPPA,
   layerBudget,
   lclOf,
   mixingOf,
   R_DRY,
   wennerOf,
+  windArrow,
   airyRootOf,
   G_NEWTON,
   HALF_WIDTH,
@@ -26,6 +29,7 @@ import {
 
 import { absorbedOf, balanceTemp, SOLAR_CONSTANT } from '@/components/module/reps/earthModelHs2f';
 
+import type { LayoutDef } from '../layouts';
 import type { He4gSpec } from '../typesHe4g';
 
 type Val = (id: string) => number | undefined;
@@ -210,5 +214,51 @@ export function he4gIssues(rep: He4gSpec, val: Val): string[] {
       break;
     }
   }
+  return out;
+}
+
+/**
+ * HC140: a `circulationCells` figure draws its cells' edges at 0°, 30°, 60° and 90°, the trades
+ * toward the equator and the westerlies toward the pole (both hemispheres), and each scene lights
+ * something the figure has.
+ */
+export function circulationFigureIssues(l: LayoutDef): string[] {
+  const out: string[] = [];
+  if (l.kind !== 'explore') return out;
+  const lits = new Set<string>([
+    'hadley',
+    'ferrel',
+    'polar',
+    'trades',
+    'westerlies',
+    'easterlies',
+    'itcz',
+    'highs',
+    'lows',
+  ]);
+  for (const s of l.scenes) {
+    if (s.circulation && l.figure.kind !== 'circulationCells')
+      out.push(`scene "${s.label}": a circulation scene on a ${l.figure.kind} figure`);
+    if (s.circulation?.lit !== undefined && !lits.has(s.circulation.lit))
+      out.push(`scene "${s.label}": nothing called ${s.circulation.lit} to light`);
+  }
+  if (l.figure.kind !== 'circulationCells') return out;
+  if (CELL_EDGES.join() !== '0,30,60,90')
+    out.push('circulation: cell edges are not 0, 30, 60, 90°');
+  CELLS.forEach((cell, i) => {
+    if (cell.from !== CELL_EDGES[i] || cell.to !== CELL_EDGES[i + 1])
+      out.push(`circulation: the ${cell.name} cell is not ${CELL_EDGES[i]}–${CELL_EDGES[i + 1]}°`);
+    for (const north of [true, false]) {
+      const [, dy] = windArrow(cell, north);
+      // Screen y is down: equatorward is +y in the north, −y in the south.
+      const equatorward = north ? dy > 0 : dy < 0;
+      if (cell.wind === 'trades' && !equatorward)
+        out.push(`circulation: the trades blow poleward in the ${north ? 'north' : 'south'}`);
+      if (cell.wind === 'westerlies' && equatorward)
+        out.push(
+          `circulation: the westerlies blow equatorward in the ${north ? 'north' : 'south'}`,
+        );
+    }
+  });
   return out;
 }

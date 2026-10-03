@@ -145,6 +145,13 @@ College inorganic chemistry, round 4 (group D, HC113): `symmetryElements`
 turn, a mirror pane, the centre with the atom pairs it swaps, or an axis with a pane across it.
 The layout check applies the element and requires every atom to land on a like atom.
 
+College climatology, round 4 (group G, HC140): `circulationCells`
+(`layouts/circulationFigure.tsx`), Earth from the side with the Hadley, Ferrel and polar cells of
+both hemispheres over its limb, the surface winds on its face, H and L at the cells' edges and
+the ITCZ, subtropical high and subpolar low named; `circulation: { lit? }` lights `hadley`,
+`ferrel`, `polar`, `trades`, `westerlies`, `easterlies`, `itcz`, `highs` or `lows`. The layout
+check keeps the edges at 0°, 30°, 60° and 90° and the trades equatorward, the westerlies poleward.
+
 Grade 9 biology (HS group G): `macromolecules` (`layouts/macroFigure.tsx`): monomers on their own
 cards joining into a polymer, the joining groups and new bonds lit and one water molecule drawn per
 bond; `macro: { kind, count?, split? }` builds starch, a polypeptide (folded), a DNA strand or a fat

@@ -7,7 +7,8 @@
  * ~humidity; EG-P11); HC124 parcel `dry` and `dewLapse` (meteorology#1~lcl; EG-P12); HC125
  * balance `layer` (climatology#0; EG-P13); HC130 `rayDiagram` Snell `speeds`
  * (geophysics#0~critical-angle; EG-P21); HC131 `gravityProfile` (geophysics#1~sphere, ~isostasy;
- * EG-P22); HC132 `electrodeArray` (geophysics#3; EG-P23).
+ * EG-P22); HC132 `electrodeArray` (geophysics#3; EG-P23); HC140 explore figure
+ * `circulationCells` (climatology#1~cells; EG-P33).
  */
 import type { Relation } from '@/engine/types';
 
@@ -1080,4 +1081,84 @@ export const HE4G_GALLERY_MODULES: ModuleDef[] = [
   wennerWide,
 ];
 
-export const HE4G_GALLERY_LAYOUTS: LayoutDef[] = [];
+// ── HC140: the three-cell circulation (climatology#1~cells, explore) ──
+
+const circulation: LayoutDef = {
+  kind: 'explore',
+  id: 'g.he-circulationCells',
+  title: 'The general circulation: three cells in each hemisphere',
+  use: 'Use this for “Which cell holds the trade winds, the westerlies and the ITCZ, and why are the subtropics dry?”',
+  assumptions: [
+    'An idealized Earth: the cells meet at about 30° and 60°; real ones shift with the seasons.',
+    'Surface winds turn right of their path in the north and left in the south (the Coriolis effect).',
+  ],
+  figure: { kind: 'circulationCells' },
+  scenes: [
+    {
+      label: 'The three cells',
+      lines: [
+        'Each hemisphere has three cells: Hadley from 0° to 30°, Ferrel from 30° to 60°, polar from 60° to the pole.',
+        'Air rises at 0° and 60° and sinks at 30° and at the poles.',
+      ],
+      circulation: {},
+    },
+    {
+      label: 'Hadley cell',
+      lines: [
+        'Sun-warmed air rises at the equator, flows poleward aloft and sinks near 30°.',
+        'It returns toward the equator along the ground: the Hadley cell, driven by heat.',
+      ],
+      circulation: { lit: 'hadley' },
+    },
+    {
+      label: 'ITCZ',
+      lines: [
+        'Where the trades of both hemispheres meet, air rises: the intertropical convergence zone.',
+        'Rising air cools and its vapor condenses, so the ITCZ is a belt of clouds and rain.',
+      ],
+      circulation: { lit: 'itcz' },
+    },
+    {
+      label: 'Trade winds',
+      lines: [
+        'The Hadley cell’s surface flow runs toward the equator and is turned west.',
+        'So the trades blow from the northeast in the north and from the southeast in the south.',
+      ],
+      circulation: { lit: 'trades' },
+    },
+    {
+      label: 'Subtropical highs',
+      lines: [
+        'Air sinking near 30° warms as it is squeezed, and its relative humidity falls.',
+        'High pressure and dry air: most of the great deserts lie under these belts.',
+      ],
+      circulation: { lit: 'highs' },
+    },
+    {
+      label: 'Ferrel cell',
+      lines: [
+        'Between 30° and 60° the Ferrel cell turns the other way, driven by the cells beside it.',
+        'Its surface flow runs toward the pole and is turned east: the westerlies.',
+      ],
+      circulation: { lit: 'ferrel' },
+    },
+    {
+      label: 'Westerlies',
+      lines: [
+        'The westerlies blow from the southwest in the north and from the northwest in the south.',
+        'They carry the mid-latitude storms from west to east.',
+      ],
+      circulation: { lit: 'westerlies' },
+    },
+    {
+      label: 'Polar cell',
+      lines: [
+        'Cold, dense air sinks over the pole and flows out along the ground, turned west: the polar easterlies.',
+        'It meets the westerlies near 60°, where the air rises at the subpolar low.',
+      ],
+      circulation: { lit: 'polar' },
+    },
+  ],
+};
+
+export const HE4G_GALLERY_LAYOUTS: LayoutDef[] = [circulation];

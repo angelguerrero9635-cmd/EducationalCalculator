@@ -162,4 +162,21 @@ export const HE4G_REQUESTS: PictureRequest[] = [
     status: 'drawn',
     gallery: ['g.he-electrodeArray', 'g.he-electrodeArray-wide'],
   },
+  {
+    ...ask(
+      'HC140',
+      'circulationCells',
+      'Explore figure: Earth from the side with the Hadley, Ferrel and polar cells of both hemispheres over its limb (edges at 0°, 30°, 60°, 90°), the surface winds on its face, the ITCZ, subtropical highs and subpolar lows; a scene lights a cell, a wind or a belt',
+      { 'he.geography.climatology#1~cells': '"circulationCells"' },
+      [
+        'From EG-P33. New explore figure (typesHe4g.ts He4gFigure and CirculationScene, layouts/circulationFigure.tsx, the cells in reps/he4gMath.ts CELLS); the page ships as a sort today and can become this explore.',
+        "Figure: { kind: 'circulationCells' }; each scene: circulation: { lit?: 'hadley' | 'ferrel' | 'polar' | 'trades' | 'westerlies' | 'easterlies' | 'itcz' | 'highs' | 'lows' } (none lights everything).",
+        "Example scene: { label: 'Trade winds', lines: [...], circulation: { lit: 'trades' } }; the demo g.he-circulationCells has eight scenes (the three cells, the ITCZ, the trades, the subtropical highs and deserts, the westerlies, the polar cell).",
+        'The globe is painted; the cells, arrows and labels are flat. Each loop has its surface and upper arrows; H and L sit at the edges (L at 0° and 60°, H at 30° and the poles); the belts and winds are named in the north, the south mirrors them.',
+        'Layout check (harness/picturesHe4g.ts circulationFigureIssues): the edges are 0, 30, 60, 90°; the trades blow toward the equator and the westerlies toward the pole in both hemispheres; every lit name exists.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: ['g.he-circulationCells'],
+  },
 ];

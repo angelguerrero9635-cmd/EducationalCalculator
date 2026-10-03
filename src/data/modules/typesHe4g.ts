@@ -274,3 +274,33 @@ export function he4gSpecVars(r: He4gSpec): string[] {
       );
   }
 }
+
+// ─── HC140: explore figure `circulationCells` ────────────────────────────────
+
+/** What a `circulationCells` scene lights: a cell, a surface wind, or the belts of pressure. */
+export type CirculationLit =
+  | 'hadley'
+  | 'ferrel'
+  | 'polar'
+  | 'trades'
+  | 'westerlies'
+  | 'easterlies'
+  | 'itcz'
+  | 'highs'
+  | 'lows';
+
+/**
+ * A `circulationCells` scene (HC140, EG-P33): Earth from the side with the Hadley, Ferrel and
+ * polar cells in both hemispheres (edges at 0°, 30°, 60° and 90°), the ITCZ, the subtropical
+ * highs and subpolar lows, and the surface winds (trades toward the equator, westerlies
+ * poleward, polar easterlies); `lit` lights one of them and fades the rest.
+ */
+export interface CirculationScene {
+  lit?: CirculationLit;
+}
+
+/** The round 4 group G explore figures (listed in `layouts/types.ts`). */
+export type He4gFigure = { kind: 'circulationCells' };
+
+/** The scene field each group G figure reads (for the layout tests). */
+export const HE4G_SCENE_FIELD = { circulationCells: 'circulation' } as const;
