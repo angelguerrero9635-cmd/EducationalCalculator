@@ -67,4 +67,21 @@ export const HE4K_REQUESTS: PictureRequest[] = [
       'g.he-attenuation-reflect',
     ],
   },
+  {
+    ...ask(
+      'HC162',
+      'scaffold',
+      'A porous scaffold as an open-cell cube, three cells a side, its square struts as thick as the relative density ρ∗ ÷ ρ_s makes them, pores open between; a bar of solid and pore beside it',
+      [`${E}tissue-engineering#0`],
+      [
+        'From B-P33. New kind (typesHe4k.ts ScaffoldSpec, reps/Scaffold.tsx, reps/he4kMath.ts).',
+        "Fields: { kind: 'scaffold', rhoS (ρ_s, g/cm³), rhoStar (ρ∗, g/cm³), relative? (ρ∗ ÷ ρ_s, checked), porosity? (% or a share, checked), es? (E_s, MPa), estar? (E∗, MPa, checked) }.",
+        'Painted in isometric (light from the top: lit tops, shaded sides): struts along every cell edge with thickness s = t ÷ L solved from 3s² − 2s³ = ρ∗ ÷ ρ_s (the exact solid share of a cubic cell of square bars), drawn as disjoint node and segment blocks in grid order so nothing overlaps wrongly. The bar beside it holds the cell’s volume, solid below and pore above, with the porosity; ρ∗ ÷ ρ_s and E∗ = E_s(ρ∗ ÷ ρ_s)² along the bottom and in the caption. A "?" density draws no struts; ρ∗ ≥ ρ_s draws a solid block, faded, with the reason. No handles.',
+        "Example: { kind: 'scaffold', rhoS: 'rhoS', rhoStar: 'rhoStar', relative: 'rel', porosity: 'porosity', es: 'es', estar: 'estar' } (PCL 1.145 g/cm³, scaffold 0.229 → 0.2, 80% porous; 400 MPa → 16 MPa).",
+        'Harness (harness/picturesHe4k.ts): the drawn strut thickness makes a cell as solid as ρ∗ ÷ ρ_s within 5 points, counted on a 40³ grid of points in one cell; ρ∗ < ρ_s; the relative density, porosity and E∗ as written.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: ['g.he-scaffold-pcl', 'g.he-scaffold-open', 'g.he-scaffold-dense'],
+  },
 ];

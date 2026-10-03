@@ -1,6 +1,6 @@
 /**
  * College pictures, round 4, group K (docs/RENDERINGS_HE.md): the new kinds HC160 `dialyzer`,
- * HC161 `attenuation`.
+ * HC161 `attenuation`, HC162 `scaffold`.
  * Kept apart from `types.ts` so the union only names them.
  *
  * Every string is a variable id; a `NumOrVar` is a fixed number or one. A value is read in its
@@ -70,10 +70,30 @@ export interface AttenuationSpec {
   layers?: [string, string];
 }
 
-/** Every new kind of group K. */
-export type He4kSpec = DialyzerSpec | AttenuationSpec;
+// ─── HC162: scaffold ───────────────────────────────────────────────────────────
 
-const HE4K_KINDS = new Set<string>(['dialyzer', 'attenuation']);
+/**
+ * HC162 (B-P33): a porous scaffold as an open-cell cube, three cells a side, painted: square
+ * struts along every cell edge, their thickness t ÷ L set so the solid share of a cell,
+ * 3(t ÷ L)² − 2(t ÷ L)³, is the relative density ρ∗ ÷ ρ_s (`rhoStar`, `rhoS`, g/cm³). Beside it a
+ * bar of the volume, solid below and pores above, with the porosity. `relative` and `porosity`
+ * (% or a share) are the page's, checked; `es` and `estar` (MPa) add the Gibson–Ashby modulus
+ * E∗ = E_s(ρ∗ ÷ ρ_s)² to the caption. ρ∗ ≥ ρ_s draws a solid block, faded, with the reason.
+ */
+export interface ScaffoldSpec {
+  kind: 'scaffold';
+  rhoS: NumOrVar;
+  rhoStar: NumOrVar;
+  relative?: string;
+  porosity?: string;
+  es?: NumOrVar;
+  estar?: string;
+}
+
+/** Every new kind of group K. */
+export type He4kSpec = DialyzerSpec | AttenuationSpec | ScaffoldSpec;
+
+const HE4K_KINDS = new Set<string>(['dialyzer', 'attenuation', 'scaffold']);
 
 /** Whether a picture is one of group K's new kinds. */
 export const isHe4k = (r: Representation): r is He4kSpec => HE4K_KINDS.has(r.kind);
@@ -85,5 +105,7 @@ export function he4kSpecVars(r: He4kSpec): string[] {
       return ids(r.qb, r.cin, r.cout, r.k, r.qd, r.t, r.v, r.ktv, r.urr);
     case 'attenuation':
       return ids(r.mu, r.x, r.share, r.hvl, r.t, r.d, r.c, r.z1, r.z2, r.r);
+    case 'scaffold':
+      return ids(r.rhoS, r.rhoStar, r.relative, r.porosity, r.es, r.estar);
   }
 }

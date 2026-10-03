@@ -3,6 +3,7 @@
  * college page that waits, built from the plan's worked example. Spread into gallery.ts.
  * HC160: `dialyzer` (he.engineering.biotransport#2).
  * HC161: `attenuation` (he.engineering.bioinstrumentation#2, ~ultrasound).
+ * HC162: `scaffold` (he.engineering.tissue-engineering#0).
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
@@ -379,6 +380,129 @@ const ECHO_REFLECT = page({
   },
 });
 
+// ─── HC162: a scaffold's porosity and stiffness (tissue-engineering#0) ─────────
+
+const relOf = (v: Values) => v.rhoStar! / v.rhoS!;
+const porOf = (v: Values) => 100 * (1 - v.rel!);
+const estarOf = (v: Values) => v.es! * v.rel! ** 2;
+
+const scaffoldRules = [
+  rule(
+    'rel',
+    '{rel} = {rhoStar} ÷ {rhoS}',
+    ['rel', 'rhoStar', 'rhoS'],
+    (v) => v.rel! * v.rhoS! - v.rhoStar!,
+    {
+      rel: [
+        (v) => posOf(relOf(v)),
+        '{rhoStar} ÷ {rhoS}',
+        'The scaffold weighs this share of the same volume of solid: its solid share.',
+      ],
+      rhoStar: [
+        (v) => posOf(v.rel! * v.rhoS!),
+        '{rel} × {rhoS}',
+        'Only the solid share of the volume carries the material’s density.',
+      ],
+      rhoS: [
+        (v) => posOf(v.rhoStar! / v.rel!),
+        '{rhoStar} ÷ {rel}',
+        'The scaffold’s density is the solid share of the material’s.',
+      ],
+    },
+  ),
+  rule(
+    'porosity',
+    '{porosity} = 100 × (1 − {rel})',
+    ['porosity', 'rel'],
+    (v) => v.porosity! - porOf(v),
+    {
+      porosity: [(v) => fin(porOf(v)), '100 × (1 − {rel})', 'What is not solid is pore.'],
+      rel: [
+        (v) => fin(1 - v.porosity! / 100),
+        '1 − {porosity} ÷ 100',
+        'What is not pore is solid.',
+      ],
+    },
+  ),
+  rule(
+    'stiffness',
+    '{estar} = {es} × {rel}²',
+    ['estar', 'es', 'rel'],
+    (v) => v.estar! - estarOf(v),
+    {
+      estar: [
+        (v) => fin(estarOf(v)),
+        '{es} × {rel}^2',
+        'An open-cell foam bends at its struts, so its stiffness falls as the relative density squared (Gibson–Ashby).',
+      ],
+      es: [
+        (v) => posOf(v.estar! / v.rel! ** 2),
+        '{estar} ÷ {rel}^2',
+        'Undo the square of the relative density.',
+      ],
+      rel: [
+        (v) => posOf(Math.sqrt(v.estar! / v.es!)),
+        'sqrt({estar} ÷ {es})',
+        'The stiffness share is the relative density squared: take its square root.',
+      ],
+    },
+  ),
+];
+
+const scaffoldPage = (id: string, title: string, use: string, typed: Values) =>
+  page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'An open-cell foam: the struts bend under load (Gibson–Ashby).',
+      'The pores connect, and the solid is one material of density ρ_s.',
+    ],
+    variables: [
+      num('rhoS', 'ρ_s', 'Density of the solid', 'g/cm³', 0.5, 10, { step: 0.001 }),
+      num('rhoStar', 'ρ∗', 'Density of the scaffold', 'g/cm³', 0.001, 10, { step: 0.001 }),
+      num('rel', 'ρ_rel', 'Relative density', undefined, 0.0001, 0.9999, { step: 0.01 }),
+      num('porosity', 'P', 'Porosity', '%', 0.01, 99.99, { step: 0.1 }),
+      num('es', 'E_s', 'Modulus of the solid', 'MPa', 0.1, 1e6, { step: 1 }),
+      num('estar', 'E∗', 'Modulus of the scaffold', 'MPa', 0.0001, 1e6, { step: 0.1 }),
+    ],
+    rules: scaffoldRules,
+    example: example(typed, ['rel', relOf], ['porosity', porOf], ['estar', estarOf]),
+    startWith: ['rhoS', 'rhoStar', 'es'],
+    representation: {
+      kind: 'scaffold',
+      rhoS: 'rhoS',
+      rhoStar: 'rhoStar',
+      relative: 'rel',
+      porosity: 'porosity',
+      es: 'es',
+      estar: 'estar',
+    },
+  });
+
+const SCAFFOLD = scaffoldPage(
+  'g.he-scaffold-pcl',
+  'A scaffold’s porosity and stiffness',
+  'Use this for “A PCL scaffold (solid 1.145 g/cm³, E = 400 MPa) weighs 0.229 g/cm³. How porous is it, and how stiff?”',
+  { rhoS: 1.145, rhoStar: 0.229, es: 400 },
+);
+
+/** A very open scaffold: 95% pore, the struts thin. */
+const SCAFFOLD_OPEN = scaffoldPage(
+  'g.he-scaffold-open',
+  'A very porous scaffold',
+  'Use this for “A PCL foam is 95% pore. What does it weigh per cm³, and how stiff is it?”',
+  { rhoS: 1.145, rhoStar: 0.05725, es: 400 },
+);
+
+/** A dense scaffold: 60% solid, small pores between thick struts. */
+const SCAFFOLD_DENSE = scaffoldPage(
+  'g.he-scaffold-dense',
+  'A dense scaffold',
+  'Use this for “A hydroxyapatite scaffold (solid 3.16 g/cm³, E = 110,000 MPa) weighs 1.896 g/cm³. How porous and how stiff is it?”',
+  { rhoS: 3.16, rhoStar: 1.896, es: 110000 },
+);
+
 export const HE4K_GALLERY_MODULES: ModuleDef[] = [
   DIALYZER,
   DIALYZER_HIGH,
@@ -386,6 +510,9 @@ export const HE4K_GALLERY_MODULES: ModuleDef[] = [
   BEAM_DENSE,
   ECHO,
   ECHO_REFLECT,
+  SCAFFOLD,
+  SCAFFOLD_OPEN,
+  SCAFFOLD_DENSE,
 ];
 
 export const HE4K_GALLERY_LAYOUTS: LayoutDef[] = [];

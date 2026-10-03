@@ -1,12 +1,13 @@
 /**
  * Group K's college kinds (round 4, typesHe4k.ts), one line in `RepresentationView`:
- * HC160 `dialyzer`, HC161 `attenuation`.
+ * HC160 `dialyzer`, HC161 `attenuation`, HC162 `scaffold`.
  */
 import type { He4kSpec } from '@/data/modules/typesHe4k';
 
 import type { Calculator } from '../useCalculator';
 import { Attenuation } from './Attenuation';
 import { Dialyzer } from './Dialyzer';
+import { Scaffold } from './Scaffold';
 
 export function He4kView({ spec, calc }: { spec: He4kSpec; calc: Calculator }) {
   switch (spec.kind) {
@@ -14,5 +15,7 @@ export function He4kView({ spec, calc }: { spec: He4kSpec; calc: Calculator }) {
       return <Dialyzer spec={spec} calc={calc} />; // HC160
     case 'attenuation':
       return <Attenuation spec={spec} calc={calc} />; // HC161
+    case 'scaffold':
+      return <Scaffold spec={spec} calc={calc} />; // HC162
   }
 }

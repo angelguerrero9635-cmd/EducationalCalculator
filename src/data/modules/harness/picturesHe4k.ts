@@ -8,6 +8,7 @@ import {
   PHOTONS,
   photonDepths,
   photonRows,
+  strutFor,
   ureaDots,
 } from '@/components/module/reps/he4kMath';
 
@@ -109,11 +110,50 @@ function attenuationIssues(rep: Extract<He4kSpec, { kind: 'attenuation' }>, val:
   return out;
 }
 
+/**
+ * HC162 `scaffold`: the drawn strut thickness makes a cell as solid as ρ∗ ÷ ρ_s within 5 points,
+ * counted on a 40³ grid of points in one cell (inside any of its three square bars), not from
+ * 3s² − 2s³; ρ∗ < ρ_s; the page's relative density, porosity and E∗ = E_s(ρ∗ ÷ ρ_s)².
+ */
+function scaffoldIssues(rep: Extract<He4kSpec, { kind: 'scaffold' }>, val: Val): string[] {
+  const out: string[] = [];
+  const get = (x: string | number | undefined) => (x === undefined ? undefined : val(x));
+  const [rs, rStar] = [get(rep.rhoS), get(rep.rhoStar)];
+  if (rs === undefined || rStar === undefined || rs <= 0) return out;
+  if (rStar >= rs) return [`scaffold: ρ∗ = ${rStar} is not below ρ_s = ${rs}`];
+  const rel = rStar / rs;
+  const s = strutFor(rel);
+  const n = 40;
+  let inside = 0;
+  const near = (u: number) => Math.abs(u - 0.5) <= s / 2;
+  for (let i = 0; i < n; i++)
+    for (let j = 0; j < n; j++)
+      for (let k = 0; k < n; k++) {
+        const [u, v, w] = [(i + 0.5) / n, (j + 0.5) / n, (k + 0.5) / n];
+        if ((near(v) && near(w)) || (near(u) && near(w)) || (near(u) && near(v))) inside++;
+      }
+  const solid = inside / n ** 3;
+  if (Math.abs(solid - rel) > 0.05)
+    out.push(`scaffold: the struts make a cell ${solid} solid, not ρ∗ ÷ ρ_s = ${rel}`);
+  const relative = get(rep.relative);
+  if (relative !== undefined && !close(relative, rel))
+    out.push(`scaffold: ρ∗ ÷ ρ_s = ${relative} is not ${rel}`);
+  const porosity = get(rep.porosity);
+  if (porosity !== undefined && !sameShare(porosity, 1 - rel))
+    out.push(`scaffold: the porosity ${porosity} is not 1 − ${rel}`);
+  const [es, estar] = [get(rep.es), get(rep.estar)];
+  if (es !== undefined && estar !== undefined && !close(estar, es * rel * rel))
+    out.push(`scaffold: E∗ = ${estar} is not E_s(ρ∗ ÷ ρ_s)² = ${es * rel * rel}`);
+  return out;
+}
+
 export function he4kIssues(rep: He4kSpec, val: Val): string[] {
   switch (rep.kind) {
     case 'dialyzer':
       return dialyzerIssues(rep, val);
     case 'attenuation':
       return attenuationIssues(rep, val);
+    case 'scaffold':
+      return scaffoldIssues(rep, val);
   }
 }
