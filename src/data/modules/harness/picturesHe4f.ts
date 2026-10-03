@@ -21,7 +21,9 @@ import {
   magnitudeOf,
   momentOf,
   normalize,
+  OMEGA_EARTH,
   fossilWindow,
+  geostrophic,
   ruptureRect,
   ternaryField,
 } from '@/components/module/reps/he4fMath';
@@ -42,6 +44,7 @@ import {
 } from '@/components/module/reps/michelLevyMath';
 import type {
   He4fSpec,
+  OceanSlopeSpec,
   MichelLevySpec,
   RockRangesSpec,
   RuptureSpec,
@@ -69,6 +72,8 @@ export function he4fIssues(rep: He4fSpec, val: Val): string[] {
       return rangesIssues(rep, num);
     case 'michelLevy':
       return michelLevyIssues(rep, num);
+    case 'oceanProfile':
+      return slopeIssues(rep, num);
   }
 }
 
@@ -235,5 +240,38 @@ function michelLevyIssues(rep: MichelLevySpec, num: Num): string[] {
   const hex = interferenceColor(5000);
   const ch = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
   if (Math.min(...ch) < 150) out.push(`michelLevy: high-order white draws ${hex}`);
+  return out;
+}
+
+function slopeIssues(rep: OceanSlopeSpec, num: Num): string[] {
+  const out: string[] = [];
+  const [rise, dx, phi] = [num(rep.rise), num(rep.width), num(rep.latitude)];
+  const g = num(rep.g ?? 9.81);
+  if (rise === undefined || dx === undefined || phi === undefined || g === undefined) return out;
+  if (Math.abs(phi) > 90) out.push(`slope: latitude ${phi}° is past a pole`);
+  if (Math.abs(phi) < 1 || dx <= 0) return out;
+  const omega = rep.omega ?? OMEGA_EARTH;
+  const { f, v } = geostrophic(rise, dx * 1000, phi, g, omega);
+  if (!near(f, 2 * omega * Math.sin((Math.abs(phi) * Math.PI) / 180), 1e-12))
+    out.push(`slope: f = ${f} is not 2Ω sin φ`);
+  // The balance: the Coriolis force fv equals the pressure gradient gΔη ÷ Δx.
+  if (!near(f * v, (g * Math.abs(rise)) / (dx * 1000), 1e-9))
+    out.push('slope: fv does not balance gΔη ÷ Δx');
+  const fPage = num(rep.coriolis);
+  if (fPage !== undefined && !near(Math.abs(fPage), f, 1e-6))
+    out.push(`slope: f ${fPage}, not ${f}`);
+  const vPage = num(rep.speed);
+  if (vPage !== undefined && !near(Math.abs(vPage), v, 1e-6))
+    out.push(`slope: v ${vPage}, not ${v}`);
+  // High sea level on the current's right in the north (into the page when it is on the right).
+  const south = rep.hemisphere === 'south' || phi < 0;
+  if (rise !== 0) {
+    const into = rise > 0 !== south;
+    const highOnRight = rise > 0;
+    if (!south && into !== highOnRight)
+      out.push('slope: in the north high sea level must be on the right');
+    if (south && into === highOnRight)
+      out.push('slope: in the south high sea level must be on the left');
+  }
   return out;
 }

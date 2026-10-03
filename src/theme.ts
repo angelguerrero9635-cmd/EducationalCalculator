@@ -413,6 +413,9 @@ const light = {
   he4fRupture: '#D9483B',
   /** HC120: an index fossil's range bar. */
   he4fRange: '#8B6BB8',
+  /** HC126: the pressure-gradient and Coriolis forces on a parcel. */
+  he4fPressureForce: '#C2410C',
+  he4fCoriolis: '#1D4ED8',
   /** HC121: lines and labels on the colour chart (dark in both themes), their halo. */
   he4fMlInk: '#1B1E28',
   he4fMlHalo: '#FFFFFF',
@@ -1151,6 +1154,8 @@ const dark: Palette = {
   he4fCrustDeep: '#4E3A2C',
   he4fRupture: '#F06A5C',
   he4fRange: '#B497E0',
+  he4fPressureForce: '#FB923C',
+  he4fCoriolis: '#60A5FA',
   he4fMlInk: '#14161C',
   he4fMlHalo: '#F5F6FA',
   atmoTropo: '#1C3446',

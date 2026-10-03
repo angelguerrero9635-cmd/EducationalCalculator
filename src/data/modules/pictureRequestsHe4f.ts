@@ -134,4 +134,25 @@ export const HE4F_REQUESTS: PictureRequest[] = [
     status: 'drawn',
     gallery: ['g.he-michelLevy-quartz', 'g.he-michelLevy-olivine', 'g.he-michelLevy-calcite'],
   },
+  {
+    ...ask(
+      'HC126',
+      'oceanProfile',
+      'A section across a geostrophic current: the sea surface tilted Δη over Δx (the vertical stretch written), the pressure-gradient force down the slope and the Coriolis force back, and the current into or out of the page by hemisphere',
+      [`${E}oceanography#2`],
+      [
+        'From EG-P14. New mode on oceanProfile (typesHe4f.ts OceanSlopeSpec, reps/OceanSlope.tsx; the balance in reps/he4fMath.ts). The other modes are unchanged.',
+        "Fields: { kind: 'oceanProfile', mode: 'slope', rise (Δη, m; negative: high on the left), width (Δx, km), latitude (φ, °; negative or hemisphere: 'south' for the south), speed? (v, m/s), coriolis? (f, s⁻¹), g? (default 9.81 m/s²), omega? (default 7.292 × 10⁻⁵ rad/s), hemisphere? }.",
+        'The water is painted, the forces flat and equal; ⊗ into the page when high sea level is on the current’s right in the north, ⊙ out of it in the south. Within 1° of the equator no balance is drawn and the caption says why. A "?" draws nothing for that value. No handles.',
+        "Example: { kind: 'oceanProfile', mode: 'slope', rise: 'eta', width: 'dx', latitude: 'phi', coriolis: 'f', speed: 'v' } (1 m over 100 km at 35° N → f = 8.37 × 10⁻⁵ s⁻¹, v = 1.17 m/s into the page).",
+        'Harness (harness/picturesHe4f.ts): f = 2Ω sin φ; fv = gΔη ÷ Δx (v = gΔη ÷ (fΔx)) and the page’s f and v agree; high sea level on the right in the north, on the left in the south.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-oceanProfile-slope',
+      'g.he-oceanProfile-slope-south',
+      'g.he-oceanProfile-slope-tropics',
+    ],
+  },
 ];

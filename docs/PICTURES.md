@@ -644,6 +644,11 @@ Mw on a bar against an M 6 (fields `length`, `width`, `slip`, `rigidity?`, `area
 rock column, their overlap shaded and bracketed (fields `ranges: { name, first, last }[]`,
 `oldest?`, `youngest?`, `window?`); no window when they never overlap.
 
+`oceanProfile` mode `slope` (HC126, `typesHe4f.ts`): a section across a geostrophic current, the sea
+surface tilted Δη over Δx (stretch written), the pressure-gradient and Coriolis forces on a parcel,
+the current into or out of the page by hemisphere (fields `rise`, `width`, `latitude`, `speed?`,
+`coriolis?`, `g?`, `omega?`, `hemisphere?`).
+
 `alleleFrequencies` (H38, a name too long for the table): 100 allele beads counted from p, a p
 scale to drag, and the bars p², 2pq and q², for Grade 9 population genetics.
 With `after` (p′; `change`, `fitness`, `mean`), a second tray for p′ after one generation of

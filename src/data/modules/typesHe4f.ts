@@ -9,6 +9,7 @@
  * - HC119 `earthLayers` mode `rupture`: the fault patch L × W to scale, slip, Mw against M 6.
  * - HC120 `rockLayers` `ranges`, and the cliff as a sequence `header` (layouts/types.ts).
  * - HC121 `michelLevy` (new kind): the interference colour chart, computed in code.
+ * - HC126 `oceanProfile` mode `slope`: a geostrophic current across a tilted sea surface.
  */
 import type { NumOrVar } from './typesGraphs';
 
@@ -147,14 +148,39 @@ export interface MichelLevySpec {
   order?: NumOrVar;
 }
 
+// ─── HC126: oceanProfile mode slope ────────────────────────────────────────────
+
+/**
+ * HC126 (EG-P14): a section across a geostrophic current. The sea surface tilted `rise` (Δη, m;
+ * negative when high on the left) over `width` (Δx, km), the vertical stretch written, the
+ * pressure-gradient force down the slope and the Coriolis force back, and the current into or
+ * out of the page: high sea level on its right in the north, its left in the south (`latitude`
+ * φ in degrees, negative or `hemisphere: 'south'` for the south). `speed` (v, m/s) and
+ * `coriolis` (f, s⁻¹) are the page's (checked: f = 2Ω sin φ, v = gΔη ÷ (fΔx)). `g` defaults
+ * to 9.81 m/s² and `omega` to 7.292 × 10⁻⁵ rad/s (the plan's values: pass the page's own).
+ */
+export interface OceanSlopeSpec {
+  kind: 'oceanProfile';
+  mode: 'slope';
+  rise: NumOrVar;
+  width: NumOrVar;
+  latitude: NumOrVar;
+  speed?: NumOrVar;
+  coriolis?: NumOrVar;
+  g?: NumOrVar;
+  omega?: number;
+  hemisphere?: 'north' | 'south';
+}
+
 /** Every picture of group HE4F (new kinds and options on drawn kinds). */
 export type He4fSpec =
-  TernarySpec | SilicateChainSpec | RuptureSpec | RockRangesSpec | MichelLevySpec;
+  TernarySpec | SilicateChainSpec | RuptureSpec | RockRangesSpec | MichelLevySpec | OceanSlopeSpec;
 
 /** Whether a picture is one of group HE4F's (a new kind, or an option on a drawn kind). */
 export function isHe4fSpec(r: { kind: string }): r is He4fSpec {
   const o = r as { kind: string; mode?: string };
   if (r.kind === 'earthLayers') return o.mode === 'rupture';
+  if (r.kind === 'oceanProfile') return o.mode === 'slope';
   if (r.kind === 'rockLayers') return 'ranges' in o;
   return r.kind === 'ternary' || r.kind === 'silicateChain' || r.kind === 'michelLevy';
 }
@@ -172,5 +198,7 @@ export function he4fSpecVars(r: He4fSpec): string[] {
       return ids(...r.ranges.flatMap((x) => [x.first, x.last]), r.oldest, r.youngest, r.window);
     case 'michelLevy':
       return ids(r.thickness, r.birefringence, r.retardation, r.order);
+    case 'oceanProfile':
+      return ids(r.rise, r.width, r.latitude, r.speed, r.coriolis, r.g);
   }
 }

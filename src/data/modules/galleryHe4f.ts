@@ -7,6 +7,7 @@
  * HC119: `earthLayers` mode `rupture` (he.earth-science.physical-geology#2).
  * HC120: `rockLayers` `ranges` (historical-geology#2) and the cliff header (#0).
  * HC121: `michelLevy`, the new kind (he.earth-science.mineralogy#2).
+ * HC126: `oceanProfile` mode `slope` (he.earth-science.oceanography#2).
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
@@ -763,6 +764,87 @@ const CALCITE = michelLevyPage(
   { t: 30, d: 0.172 },
 );
 
+// ─── HC126: a geostrophic current from the sea-surface slope (oceanography#2) ──
+
+const fOf = (v: Values) => 2 * 7.292e-5 * Math.sin((v.phi! * Math.PI) / 180);
+const vOf = (v: Values) => (9.81 * v.eta!) / (v.f! * v.dx! * 1000);
+
+const slopePage = (id: string, title: string, use: string, typed: Values, hemisphere?: 'south') =>
+  page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'Steady flow with no friction, below the wind-driven top layer: the pressure gradient and the Coriolis force balance.',
+      'g = 9.81 m/s² and Ω = 7.292 × 10⁻⁵ rad/s.',
+      hemisphere === 'south'
+        ? 'In the south the current keeps high sea level on its left.'
+        : 'In the north the current keeps high sea level on its right.',
+    ],
+    variables: [
+      num('eta', 'Δη', 'Sea-surface rise', 'm', 0.01, 3, { step: 0.01 }),
+      num('dx', 'Δx', 'Distance across', 'km', 10, 1000, { step: 1 }),
+      num('phi', 'φ', 'Latitude', '°', 5, 90, { step: 1 }),
+      out('f', 'f', 'Coriolis parameter', 's⁻¹', { scientific: true }),
+      out('v', 'v', 'Current speed', 'm/s'),
+    ],
+    rules: [
+      derive(
+        'f',
+        'f',
+        ['phi'],
+        '{f} = 2 × 7.292 × 10⁻⁵ × sin({phi}°)',
+        fOf,
+        '2 × 7.292 × 10⁻⁵ × sin({phi}°)',
+        'The Coriolis parameter is twice Earth’s spin rate times the sine of the latitude.',
+      ),
+      derive(
+        'v',
+        'v',
+        ['eta', 'f', 'dx'],
+        '{v} = 9.81 × {eta} ÷ ({f} × {dx} × 1000)',
+        vOf,
+        '9.81 × {eta} ÷ ({f} × {dx} × 1000)',
+        'The current runs fast enough for its Coriolis force to balance the slope’s push (Δx in m).',
+      ),
+    ],
+    example: example(typed, ['f', fOf], ['v', vOf]),
+    startWith: ['eta', 'dx', 'phi'],
+    representation: {
+      kind: 'oceanProfile',
+      mode: 'slope',
+      rise: 'eta',
+      width: 'dx',
+      latitude: 'phi',
+      coriolis: 'f',
+      speed: 'v',
+      ...(hemisphere ? { hemisphere } : {}),
+    },
+  });
+
+const GULF_STREAM = slopePage(
+  'g.he-oceanProfile-slope',
+  'A geostrophic current from the sea-surface slope',
+  'Use this for “The sea surface rises 1 m over 100 km at 35° N. How fast is the current?”',
+  { eta: 1, dx: 100, phi: 35 },
+);
+
+const AGULHAS = slopePage(
+  'g.he-oceanProfile-slope-south',
+  'A geostrophic current in the southern hemisphere',
+  'Use this for “Across the Agulhas Current at 34° S the sea rises 1.2 m over 150 km. Find its speed.”',
+  { eta: 1.2, dx: 150, phi: 34 },
+  'south',
+);
+
+/** Near the equator f is small: a gentle slope drives a fast current. */
+const SLOPE_LOW = slopePage(
+  'g.he-oceanProfile-slope-tropics',
+  'A geostrophic current near the equator',
+  'Use this for “At 5° N the sea rises 0.2 m over 200 km. How fast is the current?”',
+  { eta: 0.2, dx: 200, phi: 5 },
+);
+
 export const HE4F_GALLERY_MODULES: ModuleDef[] = [
   QAP,
   QAP_DIORITE,
@@ -776,6 +858,9 @@ export const HE4F_GALLERY_MODULES: ModuleDef[] = [
   QUARTZ,
   OLIVINE,
   CALCITE,
+  GULF_STREAM,
+  AGULHAS,
+  SLOPE_LOW,
 ];
 
 export const HE4F_GALLERY_LAYOUTS: LayoutDef[] = [CLIFF_STAGES, CLIFF_OLD_DIKE];

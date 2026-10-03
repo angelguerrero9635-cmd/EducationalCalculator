@@ -232,3 +232,17 @@ export function fossilWindow(ranges: [number, number][]) {
   const youngest = Math.max(...ranges.map((r) => r[1]));
   return oldest >= youngest ? { oldest, youngest } : undefined;
 }
+
+// ─── HC126: oceanProfile slope ──────────────────────────────────────────────────
+
+/** Earth's rotation rate Ω, rad/s (the plan's value; a page may pass its own). */
+export const OMEGA_EARTH = 7.292e-5;
+
+/**
+ * The geostrophic balance: f = 2Ω sin |φ| and v = gΔη ÷ (fΔx), the rise Δη and Δx in m.
+ * The speed is a magnitude; the picture sets its direction from the slope and the hemisphere.
+ */
+export function geostrophic(rise: number, dx: number, phi: number, g: number, omega: number) {
+  const f = 2 * omega * Math.sin((Math.abs(phi) * Math.PI) / 180);
+  return { f, v: (g * Math.abs(rise)) / (f * dx) };
+}
