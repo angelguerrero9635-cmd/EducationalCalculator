@@ -17,6 +17,7 @@ const C = valueOf('c'); // 2.998 × 10⁸ m/s
 const NA = valueOf('NA'); // 6.022 × 10²³ mol⁻¹
 const E_CHARGE = valueOf('e'); // 1.602 × 10⁻¹⁹ C
 const RINF = valueOf('Rinf'); // 1.097 × 10⁷ m⁻¹
+const R_LATM = 0.08206; // L·atm/(mol·K)
 
 // Wavelengths 10 nm to 100 μm; the other ranges follow from them, so every chain meets.
 const F_MIN = C / 1e-4;
@@ -754,4 +755,176 @@ export const COLLEGE_CHEMISTRY_MODULES: ModuleDef[] = [
       },
     },
   },
+  (() => {
+    // General Chemistry I → Gases: the molar mass from a gas's density, M = dRT ÷ P.
+    // A 1.00 L sample at 25 °C and 1.00 atm: n = 1.00 ÷ (0.08206 × 298.15), m = 1.31 g, so
+    // M = 32.1 g/mol (O₂ is 32.00).
+    const [d, t, P, vol] = [1.31, 25, 1, 1];
+    const T = t + 273.15;
+    const n = (P * vol) / (R_LATM * T);
+    const m = d * vol;
+    return {
+      id: 'he.chemistry.gen-chem-1#2',
+      // As the data are given (1.31 g/L): 32.1 g/mol.
+      workedFigures: 3,
+      use: 'Use this for “A gas has a density of 1.31 g/L at 25 °C and 1.00 atm. Find its molar mass.”',
+      assumptions: [
+        'The gas is ideal: low pressure and high temperature, so its particles take up no room and do not attract each other.',
+        'R = 0.08206 L·atm/(mol·K), so the pressure is in atm, the volume in liters and the temperature in kelvins (°C + 273.15).',
+        'Any sample gives the same molar mass. Take 1.00 L: it holds d grams, and PV = nRT counts its moles.',
+      ],
+      variables: [
+        V('d', 'd', 'Density', {
+          unit: 'g/L',
+          units: ['g/L'],
+          min: 1e-4,
+          max: 1e4,
+          step: 0.001,
+          figures: 4,
+        }),
+        V('t', 't', 'Temperature in °C', {
+          unit: '°C',
+          units: ['°C'],
+          min: -272.15,
+          max: 4726.85,
+          step: 0.01,
+        }),
+        V('T', 'T', 'Temperature', {
+          unit: 'K',
+          units: ['K'],
+          min: 1,
+          max: 5000,
+          step: 0.01,
+          figures: 5,
+        }),
+        V('P', 'P', 'Pressure', {
+          unit: 'atm',
+          units: ['atm'],
+          min: 0.001,
+          max: 1000,
+          step: 0.001,
+          figures: 4,
+        }),
+        V('V', 'V', 'Sample volume', {
+          unit: 'L',
+          units: ['L'],
+          min: 0.001,
+          max: 1e4,
+          step: 0.001,
+          figures: 4,
+        }),
+        V('n', 'n', 'Amount of gas', { unit: 'mol', min: 1e-9, max: 4e4, figures: 4 }),
+        V('m', 'm', 'Sample mass', {
+          unit: 'g',
+          units: ['g'],
+          min: 1e-7,
+          max: 1e8,
+          step: 0.0001,
+          figures: 4,
+        }),
+        V('M', 'M', 'Molar mass', {
+          unit: 'g/mol',
+          units: ['g/mol'],
+          min: 1,
+          max: 1000,
+          step: 0.01,
+          figures: 4,
+        }),
+      ],
+      ...rels(
+        rel('T = t + 273.15', '{T} = {t} + 273.15', ['T', 't'], (v) => v.T! - (v.t! + 273.15), {
+          T: [
+            (v) => exact(v.t! + 273.15),
+            '{t} + 273.15',
+            'The gas laws use kelvins, which start 273.15 degrees below 0 °C.',
+          ],
+          t: [(v) => exact(v.T! - 273.15), '{T} − 273.15', 'Take 273.15 off the kelvins for °C.'],
+        }),
+        rel(
+          'M = dRT ÷ P',
+          '{M} = {d} × 0.08206 × {T} ÷ {P}',
+          ['M', 'd', 'T', 'P'],
+          (v) => v.M! * v.P! - v.d! * R_LATM * v.T!,
+          {
+            M: [
+              (v) => (v.d! * R_LATM * v.T!) / v.P!,
+              '{d} × 0.08206 × {T} ÷ {P}',
+              'Put n = m ÷ M into PV = nRT: then M = (m ÷ V)RT ÷ P, and m ÷ V is the density.',
+            ],
+            d: [
+              (v) => (v.M! * v.P!) / (R_LATM * v.T!),
+              '{M} × {P} ÷ (0.08206 × {T})',
+              'Turn M = dRT ÷ P around: d = MP ÷ (RT).',
+            ],
+            P: [
+              (v) => (v.d! * R_LATM * v.T!) / v.M!,
+              '{d} × 0.08206 × {T} ÷ {M}',
+              'Turn M = dRT ÷ P around: P = dRT ÷ M.',
+            ],
+            T: [
+              (v) => (v.M! * v.P!) / (R_LATM * v.d!),
+              '{M} × {P} ÷ (0.08206 × {d})',
+              'Turn M = dRT ÷ P around: T = MP ÷ (dR).',
+            ],
+          },
+        ),
+        rel(
+          'PV = nRT',
+          '{P} × {V} = {n} × 0.08206 × {T}',
+          ['P', 'V', 'n', 'T'],
+          (v) => v.P! * v.V! - v.n! * R_LATM * v.T!,
+          {
+            n: [
+              (v) => (v.P! * v.V!) / (R_LATM * v.T!),
+              '{P} × {V} ÷ (0.08206 × {T})',
+              'Divide both sides by RT to count the moles in the sample.',
+            ],
+            V: [
+              (v) => (v.n! * R_LATM * v.T!) / v.P!,
+              '{n} × 0.08206 × {T} ÷ {P}',
+              'Divide both sides by P; with R in L·atm/(mol·K) the volume comes out in liters.',
+            ],
+            P: [
+              (v) => (v.n! * R_LATM * v.T!) / v.V!,
+              '{n} × 0.08206 × {T} ÷ {V}',
+              'Divide both sides by V; the pressure comes out in atm.',
+            ],
+            T: [
+              (v) => (v.P! * v.V!) / (v.n! * R_LATM),
+              '{P} × {V} ÷ ({n} × 0.08206)',
+              'Divide both sides by nR.',
+            ],
+          },
+        ),
+        rel('d = m ÷ V', '{d} = {m} ÷ {V}', ['d', 'm', 'V'], (v) => v.d! * v.V! - v.m!, {
+          m: [(v) => v.d! * v.V!, '{d} × {V}', 'Each liter of the gas weighs d grams.'],
+          d: [(v) => v.m! / v.V!, '{m} ÷ {V}', 'Density is the mass of each liter.'],
+          V: [(v) => v.m! / v.d!, '{m} ÷ {d}', 'Divide the mass by the grams in each liter.'],
+        }),
+        rel('n = m ÷ M', '{n} = {m} ÷ {M}', ['n', 'm', 'M'], (v) => v.n! * v.M! - v.m!, {
+          n: [(v) => v.m! / v.M!, '{m} ÷ {M}', 'Divide the grams by the grams in each mole.'],
+          m: [(v) => v.n! * v.M!, '{n} × {M}', 'Moles times the grams in each mole.'],
+          M: [
+            (v) => v.m! / v.n!,
+            '{m} ÷ {n}',
+            'The molar mass is the grams for each mole: a check on M = dRT ÷ P.',
+          ],
+        }),
+      ),
+      example: { d, t, T, P, V: vol, n, m, M: m / n },
+      startWith: ['d', 't', 'P', 'V'],
+      unitSystems: ['metric'],
+      pictureLabels: ['t'],
+      representation: {
+        kind: 'gasPiston',
+        law: 'ideal',
+        pressure: 'P',
+        volume: 'V',
+        temperature: 'T',
+        moles: 'n',
+        R: R_LATM,
+        keep: ['n', 'T'],
+      },
+    } satisfies ModuleDef;
+  })(),
 ];
