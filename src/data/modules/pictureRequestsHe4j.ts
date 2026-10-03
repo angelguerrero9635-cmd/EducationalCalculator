@@ -25,6 +25,7 @@ const ask = (
 });
 
 const B = 'he.biology.';
+const E = 'he.engineering.';
 
 export const HE4J_REQUESTS: PictureRequest[] = [
   {
@@ -63,6 +64,30 @@ export const HE4J_REQUESTS: PictureRequest[] = [
       'g.he-heartPump-exercise',
       'g.he-heartPump-ejection',
       'g.he-heartPump-failure',
+    ],
+  },
+  {
+    ...ask(
+      'HC156',
+      'footprints',
+      'Gait: footprints to scale with the step and stride bracketed and a tick a step at the cadence, the Froude number against the walk–run line; card figure gait, a stick walker at each of six phases',
+      {
+        [`${E}biomechanics#2`]: '"footprints"',
+        [`${E}biomechanics#2~phases`]: '"gait"',
+      },
+      [
+        'From B-P24. New kind (typesHe4j.ts FootprintsSpec, reps/Footprints.tsx) and card figure gait (typesHe4j.ts GaitCard, layouts/gaitCard.tsx, 112 × 76, registered in layouts/types.ts and CardFigure.tsx).',
+        "Main: { kind: 'footprints', step, cadence?, stride?, speed?, leg?, froude?, runSpeed?, g? (default 9.81), foot? (m, default 0.26), keep?, fixed? }; lengths in m, cadence in steps a minute, speeds in m/s. Five bare prints on a sand walkway, left and right in turn, foot and steps to one scale; the step bracketed heel to heel and the stride (2 × step) over the prints; a tick a step, labelled with its time (60 ÷ cadence s apart), and v; with leg, a bar of Fr = v² ÷ (gL) against 0.5, the run speed √(0.5gL) in the caption. Drag the second print to change the step. Example: { kind: 'footprints', step: 'step', cadence: 'cadence', stride: 'stride', speed: 'v', leg: 'leg', froude: 'fr', runSpeed: 'vrun', g: 9.81 }.",
+        "~phases: a sequence whose stages carry { kind: 'gait', phase } with phase 'heelStrike', 'footFlat', 'midstance', 'heelOff', 'toeOff', 'midswing' (spans 2, 10, 20, 20, 8, 40 % of the cycle); g.he-gait-phases is the page, ready to copy.",
+        'Harness: the prints alternate a step apart and the drawn stride is 2 × step; stride = 2 × step; v = step × cadence ÷ 60; Fr = v² ÷ (gL); the run speed gives Fr = 0.5 (harness/picturesHe4j.ts); gait cards come in the cycle’s order (harness/layoutFiguresHe4j.ts).',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-footprints-walk',
+      'g.he-footprints-run',
+      'g.he-footprints-toddler',
+      'g.he-gait-phases',
     ],
   },
 ];

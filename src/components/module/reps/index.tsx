@@ -215,6 +215,7 @@ import { FluidSystem } from './FluidSystem';
 import { ControlVolume } from './ControlVolume';
 import { VelocityProfile } from './VelocityProfile';
 import { HeartPump } from './HeartPump';
+import { Footprints } from './Footprints';
 import { ComplexPlaneHe2a } from './ComplexPlaneHe2a';
 import { Bode } from './Bode';
 import { StreamChannelHe } from './StreamChannelHe';
@@ -453,6 +454,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <VelocityProfile spec={spec} calc={calc} />;
     case 'heartPump':
       return <HeartPump spec={spec} calc={calc} />; // HC155
+    case 'footprints':
+      return <Footprints spec={spec} calc={calc} />; // HC156
     case 'potentialWell':
       return <PotentialWell spec={spec} calc={calc} />;
     case 'phaseSpace':

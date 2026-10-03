@@ -2402,6 +2402,7 @@ export function repIssues(
       out.push(...he1fIssues(rep, (id) => (val(id) ?? NaN) * (byId.get(id)?.unitFactor ?? 1)));
       break;
     case 'heartPump':
+    case 'footprints':
       out.push(...he4jIssues(rep, val, byId)); // HC155–HC159
       break;
     case 'potentialWell':

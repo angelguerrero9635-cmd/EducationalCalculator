@@ -6,6 +6,8 @@
  *
  * - HC155 `heartPump`: the left ventricle filling and emptying, a beat counter, the outflow
  *   per minute and a pressure gauge.
+ * - HC156 `footprints`: prints to scale, step and stride bracketed, a tick a step; card figure
+ *   `gait`, a stick leg in one of the six phases.
  */
 import type { NumOrVar } from './typesGraphs';
 
@@ -37,13 +39,59 @@ export interface HeartPumpSpec {
   tpr?: NumOrVar;
 }
 
+// ─── HC156: footprints (new kind) and the gait card ────────────────────────────
+
+/**
+ * HC156 (B-P24): five footprints on a sand walkway, left and right in turn, drawn to scale (the
+ * foot `foot` m long, 0.26 by default) with their heels `step` apart; the step bracketed under
+ * the prints and the stride (heel to heel of one foot, two steps) over them; under them a tick
+ * a step at the cadence, each at its time (60 ÷ cadence s apart). With `leg` (L, m) a bar of the
+ * Froude number v² ÷ (gL) against the walk–run line at 0.5, the run speed √(0.5gL) named. `g`
+ * is the page's (9.81 m/s² by default). Drag the second print to change `step` (`keep` pins
+ * typed values; `fixed` draws no handle). Lengths in m, cadence in steps per minute, speeds in
+ * m/s.
+ */
+export interface FootprintsSpec {
+  kind: 'footprints';
+  step: NumOrVar;
+  cadence?: NumOrVar;
+  stride?: NumOrVar;
+  speed?: NumOrVar;
+  leg?: NumOrVar;
+  froude?: NumOrVar;
+  runSpeed?: NumOrVar;
+  g?: NumOrVar;
+  foot?: number;
+  keep?: string[];
+  fixed?: boolean;
+}
+
+/** The gait cycle's six phases, in order (heel strike at 0%, toe off at 60%). */
+export const GAIT_PHASES = [
+  'heelStrike',
+  'footFlat',
+  'midstance',
+  'heelOff',
+  'toeOff',
+  'midswing',
+] as const;
+export type GaitPhase = (typeof GAIT_PHASES)[number];
+
+/** HC156 card figure (112 × 76): a stick walker, the right leg lit, at one phase of its cycle. */
+export interface GaitCard {
+  kind: 'gait';
+  phase: GaitPhase;
+}
+
 /** Every group J picture kind. */
-export type He4jSpec = HeartPumpSpec;
+export type He4jSpec = HeartPumpSpec | FootprintsSpec;
 
 /** The variable ids a group J spec names. */
 export function he4jSpecVars(r: He4jSpec): string[] {
   switch (r.kind) {
     case 'heartPump':
       return ids(r.edv, r.esv, r.sv, r.ef, r.hr, r.co, r.sbp, r.dbp, r.map, r.tpr);
+    case 'footprints':
+      return ids(r.step, r.cadence, r.stride, r.speed, r.leg, r.froude, r.runSpeed, r.g);
   }
 }

@@ -6,15 +6,21 @@
  * - HC155 `heartPump`: SV = EDV − ESV; EF = SV ÷ EDV; CO = HR × SV; MAP = DBP + (SBP − DBP) ÷ 3
  *   and its needle a third of the way round the band; TPR = MAP ÷ CO; each fill level's volume
  *   share (an independent integral of the cavity) is its volume over the cavity's; a tick a beat.
+ * - HC156 `footprints`: the prints alternate left and right a step apart, heel to heel; the
+ *   stride (one foot's heels) is 2 × step; v = step × cadence ÷ 60; Fr = v² ÷ (gL); the run speed
+ *   is √(0.5gL), where Fr = 0.5.
  */
 import type { VariableDef } from '@/engine/types';
 import {
+  PRINTS,
   beatsDrawn,
   cavityCap,
   cavityLevel,
   DIAL_MAX,
   dialAngle,
+  froudeOf,
   inUnit,
+  printHeels,
 } from '@/components/module/reps/he4jMath';
 
 import type { Representation } from '../types';
@@ -113,6 +119,43 @@ export function he4jIssues(
       }
       if (tpr !== undefined && map !== undefined && co !== undefined && !close(tpr, map / co, 1e-4))
         out.push(`heartPump: TPR ${tpr} is not MAP ÷ CO = ${map / co}`);
+      break;
+    }
+    case 'footprints': {
+      const step = get(rep.step, 'm');
+      const cadence = get(rep.cadence, 'min⁻¹');
+      const stride = get(rep.stride, 'm');
+      const v = get(rep.speed, 'm/s');
+      const leg = get(rep.leg, 'm');
+      const fr = get(rep.froude, '');
+      const run = get(rep.runSpeed, 'm/s');
+      const g = get(rep.g, 'm/s²') ?? 9.81;
+      if (step !== undefined && step > 0) {
+        const heels = printHeels(step);
+        if (heels.length !== PRINTS) out.push(`footprints: ${heels.length} prints`);
+        heels.forEach((h, i) => {
+          if (i > 0 && !close(h.x - heels[i - 1]!.x, step))
+            out.push(`footprints: prints ${i} and ${i + 1} are not a step apart`);
+          if (i > 0 && h.side === heels[i - 1]!.side)
+            out.push('footprints: two prints of one foot in a row');
+        });
+        const drawnStride = heels[2]!.x - heels[0]!.x;
+        if (!close(drawnStride, 2 * step))
+          out.push(`footprints: the drawn stride is ${drawnStride}`);
+        if (stride !== undefined && !close(stride, 2 * step, 1e-4))
+          out.push(`footprints: stride ${stride} is not 2 × step = ${2 * step}`);
+        if (v !== undefined && cadence !== undefined && !close(v, (step * cadence) / 60, 1e-4))
+          out.push(`footprints: v ${v} is not step × cadence ÷ 60 = ${(step * cadence) / 60}`);
+      }
+      if (
+        fr !== undefined &&
+        v !== undefined &&
+        leg !== undefined &&
+        !close(fr, froudeOf(v, g, leg), 1e-4)
+      )
+        out.push(`footprints: Fr ${fr} is not v² ÷ (gL) = ${froudeOf(v, g, leg)}`);
+      if (run !== undefined && leg !== undefined && !close(froudeOf(run, g, leg), 0.5, 1e-4))
+        out.push(`footprints: the run speed ${run} does not give Fr = 0.5`);
       break;
     }
   }

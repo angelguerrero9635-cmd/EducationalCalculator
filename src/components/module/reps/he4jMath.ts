@@ -59,3 +59,19 @@ export const meanPressure = (sbp: number, dbp: number) => dbp + (sbp - dbp) / 3;
 
 /** The whole beats drawn in a minute at HR (at most 250). */
 export const beatsDrawn = (hr: number) => Math.min(250, Math.max(0, Math.round(hr)));
+
+// ─── HC156: footprints ────────────────────────────────────────────────────────
+
+/** How many prints the walkway shows: left, right, left, right, left (two strides). */
+export const PRINTS = 5;
+
+/** Each print's heel (m from the first heel) and side, left first. */
+export const printHeels = (step: number) =>
+  Array.from({ length: PRINTS }, (_, k) => ({ x: k * step, side: k % 2 ? 'R' : 'L' }) as const);
+
+/** Walking speed (m/s) from the step (m) and the cadence (steps a minute). */
+export const walkSpeed = (step: number, cadence: number) => (step * cadence) / 60;
+
+/** The Froude number v² ÷ (gL), and the speed where it reaches 0.5 (people switch to a run). */
+export const froudeOf = (v: number, g: number, leg: number) => (v * v) / (g * leg);
+export const runSpeedOf = (g: number, leg: number) => Math.sqrt(0.5 * g * leg);

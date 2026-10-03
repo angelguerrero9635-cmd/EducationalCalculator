@@ -664,6 +664,7 @@ function representationVars(r: Representation): string[] {
     case 'velocityProfile':
       return he1fSpecVars(r);
     case 'heartPump':
+    case 'footprints':
       return he4jSpecVars(r); // HC155–HC159
     case 'potentialWell':
     case 'unitCell':

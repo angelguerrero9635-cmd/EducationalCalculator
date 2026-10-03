@@ -398,11 +398,173 @@ const HEART_FAILURE = ejectionPage(
   { edv: 220, esv: 165, hr: 90 },
 );
 
+// ─── HC156: gait (biomechanics#2, ~phases) ──────────────────────────────────────
+
+/** The page's g (m/s²), written into its relations. */
+const G = 9.81;
+
+const vOf = (v: Values) => (v.step! * v.cadence!) / 60;
+const frOf = (v: Values) => (v.v! * v.v!) / (G * v.leg!);
+const runOf = (v: Values) => Math.sqrt(0.5 * G * v.leg!);
+
+const gaitPage = (id: string, title: string, use: string, typed: Values) =>
+  page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'Steady walking on level ground; a step is heel to heel of opposite feet, a stride heel to heel of the same foot, so two steps.',
+      'The Froude number compares the speed with the leg’s pendulum: people switch to a run near Fr = 0.5.',
+      'g = 9.81 m/s².',
+    ],
+    variables: [
+      num('step', 'step', 'Step length', 'm', 0.1, 3, { step: 0.01 }),
+      num('cadence', 'cadence', 'Cadence', 'steps/min', 20, 250, { step: 1 }),
+      num('v', 'v', 'Walking speed', 'm/s', 0.01, 15, { step: 0.01 }),
+      num('stride', 'stride', 'Stride length', 'm', 0.2, 6, { step: 0.01 }),
+      num('leg', 'L', 'Leg length', 'm', 0.3, 1.2, { step: 0.01 }),
+      num('fr', 'Fr', 'Froude number', undefined, 0.0001, 50, { step: 0.001 }),
+      num('vrun', 'v_run', 'Walk–run speed', 'm/s', 0.5, 5, { step: 0.01 }),
+    ],
+    rules: [
+      rule(
+        'speed',
+        '{v} = {step} × {cadence} ÷ 60',
+        ['v', 'step', 'cadence'],
+        (v) => v.v! - vOf(v),
+        {
+          v: [
+            vOf,
+            '{step} × {cadence} ÷ 60',
+            'Each step moves the body one step length; cadence counts the steps a minute, and a minute is 60 s.',
+          ],
+          step: [
+            (v) => (v.v! * 60) / v.cadence!,
+            '{v} × 60 ÷ {cadence}',
+            'The meters a minute shared over the steps in that minute.',
+          ],
+          cadence: [
+            (v) => (v.v! * 60) / v.step!,
+            '{v} × 60 ÷ {step}',
+            'The meters a minute divided by the meters a step.',
+          ],
+        },
+      ),
+      rule('stride', '{stride} = 2 × {step}', ['stride', 'step'], (v) => v.stride! - 2 * v.step!, {
+        stride: [(v) => 2 * v.step!, '2 × {step}', 'A stride is two steps: left then right.'],
+        step: [(v) => v.stride! / 2, '{stride} ÷ 2', 'A step is half a stride.'],
+      }),
+      rule('froude', '{fr} = {v}² ÷ (9.81 × {leg})', ['fr', 'v', 'leg'], (v) => v.fr! - frOf(v), {
+        fr: [
+          frOf,
+          '{v}² ÷ (9.81 × {leg})',
+          'The speed squared over g times the leg length: how fast the walk is for the leg.',
+        ],
+        v: [
+          (v) => Math.sqrt(v.fr! * G * v.leg!),
+          '√({fr} × 9.81 × {leg})',
+          'Undo the square: the square root of Fr times g times L.',
+        ],
+        leg: [
+          (v) => (v.v! * v.v!) / (G * v.fr!),
+          '{v}² ÷ (9.81 × {fr})',
+          'Swap Fr and L: the speed squared over g times Fr.',
+        ],
+      }),
+      rule(
+        'walk-run speed',
+        '{vrun} = √(0.5 × 9.81 × {leg})',
+        ['vrun', 'leg'],
+        (v) => v.vrun! - runOf(v),
+        {
+          vrun: [
+            runOf,
+            '√(0.5 × 9.81 × {leg})',
+            'The speed where Fr reaches 0.5: v² = 0.5gL, so v is its square root.',
+          ],
+          leg: [
+            (v) => (v.vrun! * v.vrun!) / (0.5 * G),
+            '{vrun}² ÷ (0.5 × 9.81)',
+            'Square the speed and divide by 0.5g.',
+          ],
+        },
+      ),
+    ],
+    example: example(
+      typed,
+      ['v', vOf],
+      ['stride', (v) => 2 * v.step!],
+      ['fr', frOf],
+      ['vrun', runOf],
+    ),
+    startWith: ['step', 'cadence', 'leg'],
+    representation: {
+      kind: 'footprints',
+      step: 'step',
+      cadence: 'cadence',
+      stride: 'stride',
+      speed: 'v',
+      leg: 'leg',
+      froude: 'fr',
+      runSpeed: 'vrun',
+      g: G,
+    },
+  });
+
+const GAIT_WALK = gaitPage(
+  'g.he-footprints-walk',
+  'Walking speed from step length and cadence',
+  'Use this for “A person takes 0.70 m steps at 110 steps a minute with 0.9 m legs. How fast are they walking, and when would they break into a run?”',
+  { step: 0.7, cadence: 110, leg: 0.9 },
+);
+
+/** A run: long steps at a high cadence, well past Fr = 0.5. */
+const GAIT_RUN = gaitPage(
+  'g.he-footprints-run',
+  'Running: long steps, high cadence',
+  'Use this for “A runner takes 1.6 m steps at 180 steps a minute with 0.9 m legs. How fast, and what is the Froude number?”',
+  { step: 1.6, cadence: 180, leg: 0.9 },
+);
+
+/** A toddler: short legs, short quick steps. */
+const GAIT_TODDLER = gaitPage(
+  'g.he-footprints-toddler',
+  'A toddler’s short quick steps',
+  'Use this for “A toddler with 0.35 m legs takes 0.25 m steps at 170 a minute. How fast is that, and how close to a run?”',
+  { step: 0.25, cadence: 170, leg: 0.35 },
+);
+
+const gaitPhases: LayoutDef = {
+  kind: 'sequence',
+  id: 'g.he-gait-phases',
+  title: 'The phases of the gait cycle',
+  use: 'Use this for naming and ordering the phases of the gait cycle, and how long each lasts.',
+  assumptions: [
+    'One cycle runs from one heel strike to the next of the same foot: one stride.',
+    'The lit leg is the one the phase names: it stands for about 60% of the cycle (stance) and swings for 40%.',
+    'Each span is the share of the cycle from that event to the next, in a typical walk.',
+  ],
+  question: 'Put the phases of one leg’s gait cycle in order.',
+  stages: [
+    { label: 'Heel strike', span: 2, figure: { kind: 'gait', phase: 'heelStrike' } },
+    { label: 'Foot flat', span: 10, figure: { kind: 'gait', phase: 'footFlat' } },
+    { label: 'Midstance', span: 20, figure: { kind: 'gait', phase: 'midstance' } },
+    { label: 'Heel off', span: 20, figure: { kind: 'gait', phase: 'heelOff' } },
+    { label: 'Toe off', span: 8, figure: { kind: 'gait', phase: 'toeOff' } },
+    { label: 'Midswing', span: 40, figure: { kind: 'gait', phase: 'midswing' } },
+  ],
+  unit: '% of the cycle',
+  totalLabel: 'Gait cycle',
+};
+
 export const HE4J_GALLERY_MODULES: ModuleDef[] = [
   HEART_OUTPUT,
   HEART_EXERCISE,
   HEART_EJECTION,
   HEART_FAILURE,
+  GAIT_WALK,
+  GAIT_RUN,
+  GAIT_TODDLER,
 ];
 
-export const HE4J_GALLERY_LAYOUTS: LayoutDef[] = [sortTissues, sortEpithelia];
+export const HE4J_GALLERY_LAYOUTS: LayoutDef[] = [sortTissues, sortEpithelia, gaitPhases];

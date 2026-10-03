@@ -232,6 +232,10 @@ stains: `simple squamous epithelium`, `simple cuboidal epithelium`, `simple colu
 `stratified squamous epithelium`, `compact bone`, `hyaline cartilage`, `blood smear`, `adipose
 tissue`, `skeletal muscle tissue`, `cardiac muscle tissue`, `smooth muscle tissue`, `neuron with
 glia`.
+Card figure `gait` (HC156, `layouts/gaitCard.tsx`, 112 × 76, for sequence stages): `{ kind:
+'gait', phase }`, a stick walker side on with the right leg lit at `heelStrike`, `footFlat`,
+`midstance`, `heelOff`, `toeOff` or `midswing`, standing on its lowest foot; a sequence's gait
+cards must come in that order.
 
 Observe figures: an observation can set `figure: { kind: 'shadowStick', stick: 100 }`
 (`layouts/ShadowStick.tsx`): a meter stick and its noon shadow for the column tapped last, to
