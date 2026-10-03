@@ -11,6 +11,8 @@
  *   is √(0.5gL), where Fr = 0.5.
  * - HC157 `springDashpot`: τ = η ÷ E; the drawn curve at τ reads 1 ÷ e ≈ 37% of σ₀ (relaxation)
  *   or 1 − 1 ÷ e ≈ 63% of σ ÷ E (creep); σ₀ = Eε₀ and σ = σ₀e^(−t/τ); ε = (σ ÷ E)(1 − e^(−t/τ)).
+ * - HC159 `diffusionProfile`: t = L² ÷ (2D); the drawn profile is half of C₀ at its ticked depth
+ *   (an independent erfc); √(2Dt) is L, within the drawn depth and past the half depth.
  */
 import type { VariableDef } from '@/engine/types';
 import {
@@ -19,12 +21,15 @@ import {
   cavityCap,
   cavityLevel,
   creepShare,
+  depthSpan,
   DIAL_MAX,
   dialAngle,
   froudeOf,
+  halfDepth,
   inUnit,
   printHeels,
   relaxShare,
+  spreadDepth,
 } from '@/components/module/reps/he4jMath';
 
 import type { Representation } from '../types';
@@ -221,6 +226,38 @@ export function he4jIssues(
             `springDashpot: ε ${e} is not (σ ÷ E)(1 − e^(−t/τ)) = ${fin * (1 - Math.exp(-t / tau))}`,
           );
       }
+      break;
+    }
+    case 'diffusionProfile': {
+      // D in μm²/s, depths in μm, times in s.
+      const D = get(rep.D, 'm²/s');
+      const Dum = D === undefined ? undefined : D * 1e12;
+      const L = get(rep.L, 'μm');
+      const t = get(rep.t, 's');
+      if (Dum === undefined || !(Dum > 0)) break;
+      if (L !== undefined && t !== undefined && !close(t, (L * L) / (2 * Dum), 1e-4))
+        out.push(`diffusionProfile: t ${t} s is not L² ÷ (2D) = ${(L * L) / (2 * Dum)} s`);
+      const tt = t ?? (L !== undefined ? (L * L) / (2 * Dum) : undefined);
+      if (tt === undefined || !(tt > 0)) break;
+      // The half-concentration depth on the drawn profile, against an independent erfc
+      // (Simpson's rule on e^(−u²)): erfc(x½ ÷ 2√(Dt)) = ½, so x½ ≈ 0.954√(Dt).
+      const x = halfDepth(Dum, tt);
+      const z = x / (2 * Math.sqrt(Dum * tt));
+      const n = 400;
+      let sum = 0;
+      for (let i = 0; i <= n; i++) {
+        const u = (z * i) / n;
+        sum += (i === 0 || i === n ? 1 : i % 2 ? 4 : 2) * Math.exp(-u * u);
+      }
+      const erfcZ = 1 - ((2 / Math.sqrt(Math.PI)) * sum * z) / (3 * n);
+      if (Math.abs(erfcZ - 0.5) > 1e-6)
+        out.push(`diffusionProfile: the half-concentration depth reads ${erfcZ} of C₀`);
+      // √(2Dt) is the page's L, on the drawn scale, and lies past the half depth (1.48 × x½).
+      const spread = spreadDepth(Dum, tt);
+      if (L !== undefined && !close(spread, L, 1e-4))
+        out.push(`diffusionProfile: √(2Dt) ${spread} is not L ${L}`);
+      if (spread > depthSpan(L ?? spread)) out.push('diffusionProfile: L is past the drawn depth');
+      if (!(spread > x)) out.push('diffusionProfile: L is not past the half depth');
       break;
     }
   }

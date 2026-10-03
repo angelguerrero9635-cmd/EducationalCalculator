@@ -128,4 +128,26 @@ export const HE4J_REQUESTS: PictureRequest[] = [
     status: 'drawn',
     gallery: ['g.he-cardIcons-biomaterials', 'g.he-cardIcons-imaging'],
   },
+  {
+    ...ask(
+      'HC159',
+      'diffusionProfile',
+      'Diffusion in tissue: a slab fed from one face, shaded by concentration, over its profile at t, with L = √(2Dt) and the half-concentration depth marked',
+      [`${E}biotransport#0`],
+      [
+        'From B-P27. New kind (typesHe4j.ts DiffusionProfileSpec, reps/DiffusionProfile.tsx, the profile in reps/he4jMath.ts).',
+        "Fields: { kind: 'diffusionProfile', D (cm²/s; a registered diffusivity unit converts), L? (μm), t? (s), keep?, fixed? }. With t the profile is drawn at t; with L only, at L² ÷ (2D).",
+        'Draws the source face (C₀) and the slab shaded by C ÷ C₀ = erfc(x ÷ 2√(Dt)), the profile under it on a depth axis in μm to about 2.5L, the half depth (0.954√(Dt)) ringed and L dashed through slab and profile with its C there. Drag the L line to change L. A "?" D draws nothing.',
+        'One correction to the plan’s check: with the source face held at C₀ (erfc), the concentration at L = √(2Dt) is 32% of C₀, not half; half of C₀ is at 0.67L. The picture marks both and the caption says so, so “L marked where it reaches about half” reads as “L is the typical spread; half of C₀ is a little short of it”.',
+        "Example: { kind: 'diffusionProfile', D: 'D', L: 'L', t: 't' }.",
+        'Harness (harness/picturesHe4j.ts): t = L² ÷ (2D); the drawn profile is ½ at the ringed depth by an independent erfc (Simpson on e^(−u²)); √(2Dt) is L, within the drawn depth and past the half depth.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-diffusionProfile-oxygen',
+      'g.he-diffusionProfile-centimeter',
+      'g.he-diffusionProfile-protein',
+    ],
+  },
 ];

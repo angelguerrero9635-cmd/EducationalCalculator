@@ -4,6 +4,8 @@
  */
 import { convert, getUnit } from '@/engine/units';
 
+import { erf } from './functionGraphHe1e';
+
 /** `x` in unit `from` read in unit `to` (a registered unit converts; any other is taken as `to`). */
 export function inUnit(x: number, from: string | undefined, to: string): number {
   if (!from || from === to || !getUnit(from) || !getUnit(to)) return x;
@@ -86,3 +88,30 @@ export const creepShare = (t: number, tau: number) => 1 - Math.exp(-t / tau);
 
 /** The time axis: a round span past 3τ and past t. */
 export const springSpan = (tau: number, t?: number) => niceUp(Math.max(3 * tau, 1.15 * (t ?? 0)));
+
+// ─── HC159: diffusionProfile ──────────────────────────────────────────────────
+
+/**
+ * C ÷ C₀ at depth x into a slab whose face is held at C₀ from t = 0 (one-dimensional, D in the
+ * same length unit squared per second): erfc(x ÷ (2√(Dt))).
+ */
+export const profileShare = (x: number, D: number, t: number) =>
+  t > 0 && D > 0 ? 1 - erf(x / (2 * Math.sqrt(D * t))) : x > 0 ? 0 : 1;
+
+/** The typical distance spread in t: √(2Dt). */
+export const spreadDepth = (D: number, t: number) => Math.sqrt(2 * D * t);
+
+/** The depth where the profile reaches C₀ ÷ 2 (bisection on the drawn profile). */
+export function halfDepth(D: number, t: number): number {
+  let lo = 0;
+  let hi = 4 * Math.sqrt(D * t) || 1;
+  for (let i = 0; i < 80; i++) {
+    const mid = (lo + hi) / 2;
+    if (profileShare(mid, D, t) > 0.5) lo = mid;
+    else hi = mid;
+  }
+  return (lo + hi) / 2;
+}
+
+/** The depth axis: a round span about 2.5 times the spread. */
+export const depthSpan = (L: number) => niceUp(2.5 * L);

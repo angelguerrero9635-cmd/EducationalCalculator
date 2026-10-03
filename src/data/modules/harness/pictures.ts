@@ -2404,6 +2404,7 @@ export function repIssues(
     case 'heartPump':
     case 'footprints':
     case 'springDashpot':
+    case 'diffusionProfile':
       out.push(...he4jIssues(rep, val, byId)); // HC155–HC159
       break;
     case 'potentialWell':

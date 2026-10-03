@@ -666,6 +666,7 @@ function representationVars(r: Representation): string[] {
     case 'heartPump':
     case 'footprints':
     case 'springDashpot':
+    case 'diffusionProfile':
       return he4jSpecVars(r); // HC155–HC159
     case 'potentialWell':
     case 'unitCell':

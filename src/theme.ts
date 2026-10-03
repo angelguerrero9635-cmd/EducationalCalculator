@@ -600,6 +600,8 @@ const light = {
   he4jScanner: '#E5E7EB',
   he4jBeam: 'rgba(56, 189, 248, 0.35)',
   he4jGamma: '#DB2777',
+  /** HC159: the solute diffusing into tissue, its source and its profile. */
+  he4jSolute: '#0E7490',
   /**
    * College HC24, HC30, HC31 (round 2, group H): the relative wind, lift and drag, tip vortices;
    * the gas in a duct, a hot chamber or exhaust; a shock and an expansion fan's Mach lines.
@@ -1321,6 +1323,7 @@ const dark: Palette = {
   he4jScanner: '#4B5563',
   he4jBeam: 'rgba(125, 211, 252, 0.35)',
   he4jGamma: '#F472B6',
+  he4jSolute: '#22D3EE',
   aeroWind: '#7FB0DA',
   aeroLift: '#6EA3FF',
   aeroDrag: '#FB8A4C',

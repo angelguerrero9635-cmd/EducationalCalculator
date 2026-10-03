@@ -9,6 +9,7 @@
  * - HC156 `footprints`: prints to scale, step and stride bracketed, a tick a step; card figure
  *   `gait`, a stick leg in one of the six phases.
  * - HC157 `springDashpot`: a Maxwell or Kelvin–Voigt model beside its relaxation or creep curve.
+ * - HC159 `diffusionProfile`: a tissue slab shaded by concentration over its erfc profile.
  */
 import type { NumOrVar } from './typesGraphs';
 
@@ -115,8 +116,28 @@ export interface SpringDashpotSpec {
   fixed?: boolean;
 }
 
+// ─── HC159: diffusionProfile (new kind) ────────────────────────────────────────
+
+/**
+ * HC159 (B-P27): a tissue slab fed from its left face, held at C₀ from t = 0. The slab is shaded
+ * by concentration and, under it, the profile C ÷ C₀ = erfc(x ÷ (2√(Dt))) is drawn to scale on a
+ * depth axis in μm, the half-concentration depth (0.95√(Dt)) ticked and L = √(2Dt) dashed through
+ * both, where C is 32% of C₀. Fields: `D` (cm²/s by default; a registered diffusivity unit
+ * converts), `L?` (μm by default; a registered length converts), `t?` (s). With `t` the profile
+ * is drawn at t; with only L, at the t that L takes (L² ÷ 2D). Drag the L line to change `L`
+ * (`keep` pins typed values; `fixed` no handle).
+ */
+export interface DiffusionProfileSpec {
+  kind: 'diffusionProfile';
+  D: NumOrVar;
+  L?: NumOrVar;
+  t?: NumOrVar;
+  keep?: string[];
+  fixed?: boolean;
+}
+
 /** Every group J picture kind. */
-export type He4jSpec = HeartPumpSpec | FootprintsSpec | SpringDashpotSpec;
+export type He4jSpec = HeartPumpSpec | FootprintsSpec | SpringDashpotSpec | DiffusionProfileSpec;
 
 /** The variable ids a group J spec names. */
 export function he4jSpecVars(r: He4jSpec): string[] {
@@ -127,5 +148,7 @@ export function he4jSpecVars(r: He4jSpec): string[] {
       return ids(r.step, r.cadence, r.stride, r.speed, r.leg, r.froude, r.runSpeed, r.g);
     case 'springDashpot':
       return ids(r.E, r.eta, r.tau, r.t, r.strain0, r.stress0, r.stress, r.load, r.strain, r.final);
+    case 'diffusionProfile':
+      return ids(r.D, r.L, r.t);
   }
 }

@@ -783,6 +783,79 @@ const CREEP_EARLY = creepPage(
   { sigma: 0.5, E: 10, tau: 50, t: 10 },
 );
 
+// ─── HC159: diffusion in tissue (biotransport#0) ────────────────────────────────
+
+/** t = L² ÷ (2D) with L in μm (10,000 μm to the cm) and D in cm²/s. */
+const tOf = (v: Values) => (v.L! / 10000) ** 2 / (2 * v.D!);
+
+const diffusionPage = (id: string, title: string, use: string, typed: Values) =>
+  page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'One-dimensional spread from a face held at a fixed concentration, into tissue with none at first.',
+      't = L² ÷ (2D) is a typical time to spread a distance L, not an exact arrival: at L the concentration is about a third of the source’s.',
+      'The time grows with the square of the distance: doubling L takes four times as long.',
+    ],
+    variables: [
+      num('D', 'D', 'Diffusivity', 'cm²/s', 1e-10, 0.1, { scientific: true, step: 1e-7 }),
+      num('L', 'L', 'Distance', 'μm', 0.01, 100000, { step: 1 }),
+      num('t', 't', 'Time to spread', 's', 1e-6, 1e10, { step: 0.1 }),
+    ],
+    rules: [
+      rule(
+        'diffusion time',
+        '{t} = ({L} ÷ 10000)² ÷ (2 × {D})',
+        ['t', 'L', 'D'],
+        (v) => v.t! - tOf(v),
+        {
+          t: [
+            tOf,
+            '({L} ÷ 10000)² ÷ (2 × {D})',
+            'Change L to cm (10,000 μm to the cm), square it, and divide by twice the diffusivity.',
+          ],
+          L: [
+            (v) => 10000 * Math.sqrt(2 * v.D! * v.t!),
+            '10000 × √(2 × {D} × {t})',
+            'The distance in cm is √(2Dt); times 10,000 gives μm.',
+          ],
+          D: [
+            (v) => (v.L! / 10000) ** 2 / (2 * v.t!),
+            '({L} ÷ 10000)² ÷ (2 × {t})',
+            'Swap D and t: the squared distance in cm over twice the time.',
+          ],
+        },
+      ),
+    ],
+    example: example(typed, ['t', tOf]),
+    startWith: ['D', 'L'],
+    representation: { kind: 'diffusionProfile', D: 'D', L: 'L', t: 't' },
+  });
+
+const DIFFUSE = diffusionPage(
+  'g.he-diffusionProfile-oxygen',
+  'Oxygen diffusing into tissue',
+  'Use this for “Oxygen diffuses through tissue at 2 × 10⁻⁵ cm²/s. About how long does it take to spread 100 μm?”',
+  { D: 2e-5, L: 100 },
+);
+
+/** A centimeter: 10,000 times the time of 100 μm. */
+const DIFFUSE_FAR = diffusionPage(
+  'g.he-diffusionProfile-centimeter',
+  'Why diffusion cannot feed a centimeter of tissue',
+  'Use this for “How long does oxygen take to diffuse 1 cm through tissue, at 2 × 10⁻⁵ cm²/s?”',
+  { D: 2e-5, L: 10000 },
+);
+
+/** A large protein diffuses 200 times more slowly than oxygen. */
+const DIFFUSE_PROTEIN = diffusionPage(
+  'g.he-diffusionProfile-protein',
+  'A growth factor spreading through a gel',
+  'Use this for “A growth factor diffuses at 1 × 10⁻⁷ cm²/s. How long does it take to spread 100 μm?”',
+  { D: 1e-7, L: 100 },
+);
+
 export const HE4J_GALLERY_MODULES: ModuleDef[] = [
   HEART_OUTPUT,
   HEART_EXERCISE,
@@ -795,6 +868,9 @@ export const HE4J_GALLERY_MODULES: ModuleDef[] = [
   RELAX_LATE,
   CREEP,
   CREEP_EARLY,
+  DIFFUSE,
+  DIFFUSE_FAR,
+  DIFFUSE_PROTEIN,
 ];
 
 // ─── HC158: biomaterials and imaging (biomaterials#1~classes, bioinstrumentation#2~modalities) ─

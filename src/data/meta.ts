@@ -152,6 +152,7 @@ const PICTURE_NAMES: Record<string, string> = {
   footprints: 'footprints to scale with the step and stride bracketed and a tick a step',
   springDashpot:
     'a spring and a dashpot in series or side by side, with the stress relaxing or the strain creeping',
+  diffusionProfile: 'a solute spreading into a tissue slab: its profile and the distance √(2Dt)',
   bode: 'a Bode plot: gain in dB and phase over log frequency, corners, margins',
   roadCurve: 'a road: stopping distance, a horizontal curve, or a crest curve and its sight line',
   connection:
