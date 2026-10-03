@@ -1,0 +1,180 @@
+/**
+ * The sums behind group H's college pictures of round 4 (typesHe4h.ts), kept apart from the
+ * drawings so the harness checks the same numbers the pictures draw.
+ */
+export type Pt = { x: number; y: number };
+
+/** A random number source in [0, 1) that depends only on the seed (mulberry32). */
+export function seeded(seed: number) {
+  let a = seed >>> 0;
+  return () => {
+    a = (a + 0x6d2b79f5) >>> 0;
+    let t = a;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+/** 0 … n − 1 in an order that depends only on the seed. */
+export function shuffled(n: number, seed: number): number[] {
+  const r = seeded(seed);
+  const out = Array.from({ length: n }, (_, i) => i);
+  for (let i = n - 1; i > 0; i--) {
+    const j = Math.floor(r() * (i + 1));
+    [out[i], out[j]] = [out[j]!, out[i]!];
+  }
+  return out;
+}
+
+/** Shoelace area of a closed polygon. */
+export const polygonArea = (p: Pt[]) =>
+  Math.abs(
+    p.reduce((s, a, i) => {
+      const b = p[(i + 1) % p.length]!;
+      return s + a.x * b.y - b.x * a.y;
+    }, 0),
+  ) / 2;
+
+/** Whether a point lies inside a closed polygon (even–odd rule). */
+export function inside(p: Pt, poly: Pt[]) {
+  let hit = false;
+  for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+    const a = poly[i]!;
+    const b = poly[j]!;
+    if (a.y > p.y !== b.y > p.y && p.x < ((b.x - a.x) * (p.y - a.y)) / (b.y - a.y) + a.x)
+      hit = !hit;
+  }
+  return hit;
+}
+
+/** The nearest point on a polyline, and its distance. */
+export function nearestOn(p: Pt, line: Pt[]): { at: Pt; d: number } {
+  let best = { at: line[0]!, d: Infinity };
+  for (let i = 0; i + 1 < line.length; i++) {
+    const a = line[i]!;
+    const b = line[i + 1]!;
+    const dx = b.x - a.x;
+    const dy = b.y - a.y;
+    const t = Math.max(0, Math.min(1, ((p.x - a.x) * dx + (p.y - a.y) * dy) / (dx * dx + dy * dy)));
+    const at = { x: a.x + t * dx, y: a.y + t * dy };
+    const d = Math.hypot(p.x - at.x, p.y - at.y);
+    if (d < best.d) best = { at, d };
+  }
+  return best;
+}
+
+/** A smooth path through points (Catmull–Rom as cubic Béziers), open or closed. */
+export function smoothPath(p: Pt[], closed = false, f = (q: Pt) => q): string {
+  const n = p.length;
+  const at = (i: number) => f(closed ? p[((i % n) + n) % n]! : p[Math.max(0, Math.min(n - 1, i))]!);
+  const r = (x: number) => x.toFixed(1);
+  let d = `M${r(at(0).x)},${r(at(0).y)}`;
+  for (let i = 0; i < (closed ? n : n - 1); i++) {
+    const [a, b, c, e] = [at(i - 1), at(i), at(i + 1), at(i + 2)];
+    const c1 = { x: b.x + (c.x - a.x) / 6, y: b.y + (c.y - a.y) / 6 };
+    const c2 = { x: c.x - (e.x - b.x) / 6, y: c.y - (e.y - b.y) / 6 };
+    d += `C${r(c1.x)},${r(c1.y)} ${r(c2.x)},${r(c2.y)} ${r(c.x)},${r(c.y)}`;
+  }
+  return closed ? `${d}Z` : d;
+}
+
+// ─── HC129: catchment ──────────────────────────────────────────────────────────
+
+/** Drops drawn on the basin: round(40C) of them run off, so the drawn share is C to 1/80. */
+export const CATCHMENT_DROPS = 40;
+
+/**
+ * The made-up basin in unit coordinates (y down, about 2 wide): a pear narrowing to its outlet
+ * at the bottom, 72 points round.
+ */
+export const BASIN: Pt[] = Array.from({ length: 72 }, (_, i) => {
+  const t = (i / 72) * 2 * Math.PI;
+  let dt = Math.abs(t - Math.PI / 2);
+  dt = Math.min(dt, 2 * Math.PI - dt);
+  const r =
+    (1 + 0.12 * Math.sin(2 * t + 0.8) + 0.08 * Math.cos(3 * t + 0.3) + 0.05 * Math.sin(5 * t)) *
+    (1 - 0.42 * Math.exp(-((dt / 0.45) ** 2)));
+  return { x: r * Math.cos(t), y: 0.78 * r * Math.sin(t) };
+});
+
+/** The outlet: the basin's lowest point (the outline at 90°). */
+export const OUTLET: Pt = BASIN[18]!;
+
+/** The streams, each ending on the one it joins; the first is the main channel to the outlet. */
+export const STREAMS: Pt[][] = [
+  [
+    { x: 0.08, y: -0.62 },
+    { x: -0.05, y: -0.38 },
+    { x: 0.04, y: -0.12 },
+    { x: -0.03, y: 0.14 },
+    { x: 0.02, y: 0.36 },
+    OUTLET,
+  ],
+  [
+    { x: -0.78, y: -0.28 },
+    { x: -0.5, y: -0.3 },
+    { x: -0.24, y: -0.16 },
+    { x: 0.04, y: -0.12 },
+  ],
+  [
+    { x: 0.82, y: -0.12 },
+    { x: 0.55, y: 0.0 },
+    { x: 0.28, y: 0.04 },
+    { x: -0.03, y: 0.14 },
+  ],
+  [
+    { x: -0.62, y: 0.3 },
+    { x: -0.34, y: 0.3 },
+    { x: 0.02, y: 0.36 },
+  ],
+  [
+    { x: 0.5, y: -0.58 },
+    { x: 0.28, y: -0.42 },
+    { x: -0.05, y: -0.38 },
+  ],
+];
+
+/** The basin's area in unit coordinates (squared units). */
+export const BASIN_AREA = polygonArea(BASIN);
+
+/**
+ * Where the 40 drops fall (unit coordinates): spread over the basin, clear of its edge and the
+ * streams, the same every time.
+ */
+export const CATCHMENT_DROP_AT: Pt[] = (() => {
+  const shrunk = BASIN.map((p) => ({ x: p.x * 0.88, y: p.y * 0.88 }));
+  for (let gap = 0.2; gap > 0.02; gap *= 0.92) {
+    const r = seeded(129);
+    const out: Pt[] = [];
+    for (let k = 0; k < 6000 && out.length < CATCHMENT_DROPS; k++) {
+      const p = { x: -1.2 + 2.4 * r(), y: -1 + 2 * r() };
+      if (!inside(p, shrunk)) continue;
+      if (STREAMS.some((s) => nearestOn(p, s).d < 0.07)) continue;
+      if (out.some((q) => Math.hypot(q.x - p.x, q.y - p.y) < gap)) continue;
+      out.push(p);
+    }
+    if (out.length === CATCHMENT_DROPS) return out;
+  }
+  return [];
+})();
+
+/** How many of the 40 drops run off for a runoff coefficient C (0 to 1). */
+export const runoffDrops = (C: number) =>
+  Math.max(0, Math.min(CATCHMENT_DROPS, Math.round(C * CATCHMENT_DROPS)));
+
+/** Which drops run off: the first round(40C) of a fixed order, so they are spread out. */
+export const RUNOFF_ORDER = shuffled(CATCHMENT_DROPS, 31);
+
+/** The rational method's peak flow (m³/s) from C, i (mm/h) and A (km²). */
+export const rationalPeak = (C: number, i: number, A: number) => (C * i * A) / 3.6;
+
+/** Rain streaks drawn for an intensity i (mm/h): more for harder rain, 3 to 40. */
+export const rainStreaks = (i: number) => Math.max(3, Math.min(40, Math.round(3 * Math.sqrt(i))));
+
+/** A round length (1, 2 or 5 × 10ⁿ) near `x`, not above it. */
+export function niceBelow(x: number) {
+  const e = 10 ** Math.floor(Math.log10(x));
+  const m = x / e;
+  return (m >= 5 ? 5 : m >= 2 ? 2 : 1) * e;
+}
