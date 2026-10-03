@@ -114,9 +114,9 @@ export const HE3C_REQUESTS: PictureRequest[] = [
       'rectangle',
       'The product rule as a growing rectangle (strips u′Δt × v and u × v′Δt, the corner second order), and on a circle the area under the arc split into a triangle and a sector (trig substitution) and the tangent at a point',
       {
-        [`${M}calc-1#1~product-quotient`]: 'rectangle grow',
-        [`${M}calc-1#1~implicit`]: 'conicGraph circle tangent',
-        [`${M}calc-2#0~trig-sub`]: 'conicGraph circle under',
+        [`${M}calc-1#1~product-quotient`]: '"grow"',
+        [`${M}calc-1#1~implicit`]: '"tangent"',
+        [`${M}calc-2#0~trig-sub`]: '"under"',
       },
       [
         'From M-P18. Options on rectangle and the conicGraph circle (typesHe3c.ts; drawn by reps/RectangleGrowHe3c.tsx and reps/ConicCircleHe3c.tsx, sums in reps/growCircleHe3cMath.ts); each is off unless a page sets it.',

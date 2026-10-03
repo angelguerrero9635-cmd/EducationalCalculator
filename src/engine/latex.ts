@@ -262,7 +262,12 @@ function italics(segs: Seg[], symbols: string[], products: boolean): Seg[] {
 /** Divisions drawn stacked (a ÷ b), inside `segs`. */
 function divisions(segs: Seg[], band: MathBand, symbols: string[]): Seg[] {
   // (never from the bottom of a fraction: 1/2 ÷ 3 is not 1 over 2 ÷ 3)
-  const div = new RegExp(String.raw`(?<![\d/.,])(?<a>${OPERAND}) ÷ (?<b>${OPERAND})`, 'gu');
+  // Each side may be raised to a power (v² ÷ r, (a − b) ÷ t²): the power stays inside its side,
+  // so t² is the bottom, never the whole fraction squared.
+  const div = new RegExp(
+    String.raw`(?<![\d/.,])(?<a>(?:${OPERAND})(?:${SUP})?) ÷ (?<b>(?:${OPERAND})(?:${SUP})?)(?![\d^])`,
+    'gu',
+  );
   return pass(segs, div, (m) =>
     // A long top (a sum of eight distances) stays plain text that wraps: stacked, it is
     // wider than a phone.
