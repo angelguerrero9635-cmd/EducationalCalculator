@@ -635,6 +635,8 @@ search or the sitemap, but the module tests and the harness run over it):
 | `plume`            | stack, rise to H, ±σ_z widening downwind; ground profile and C         | College environmental eng. (HC177)  |
 | `pedigree`         | a family in pedigree symbols; p₁, p₂ written; the child P = p₁p₂ ÷ 4   | College genetics (HC144)            |
 | `linkageMap`       | genes on a chromosome to scale in cM; homologs crossed once or twice   | College genetics, mapping (HC145)   |
+| `gravityProfile`   | buried sphere under its Δg(x), peak, x½ = 0.766z; Airy root, columns   | College geophysics (HC131)          |
+| `electrodeArray`   | Wenner: 4 electrodes a apart, current arcs, equipotentials, V, I; ρₐ   | College geophysics (HC132)          |
 | `globe`            | sun rays, noon angle, day dial; great circle; Euler pole; dipole; air  | College earth and geography (HC36)  |
 | `stressStrain`     | σ–ε curve: E, 0.2% offset, UTS, necking; specimen; tube; two members   | College materials, biomech. (HC28)  |
 | `stressElement`    | element, turned to θ_p; Mohr's circle; 3 circles; loci, n; soil line   | College stress, soil (HC33)         |
@@ -979,6 +981,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `wave`             | `standing`, `doppler`                    | string or pipe harmonic n, nodes and antinodes; Doppler fronts, cone (H65)    |
 | `wave`             | `em: { amplitude, … }`, `line`           | E and B (or H) in step, E₀, B₀, λ, S; a line's envelope and VSWR (HC93)       |
 | `rayDiagram`       | `singleSlit`, `grating`, `thinFilm`      | sinc² band, w; orders at true angles, m_max; film rays, 2nt, flips (HC68)     |
+| `rayDiagram`       | refraction `speeds: { v1, v2 }`          | seismic ray, sin r = (v₂ ÷ v₁) sin i; wavefronts ∝ v; i_c; reflected (HC130)  |
 | `circuit`          | `mixed: { layout, resistors }`           | R₁ + R₂ ∥ R₃ or (R₁ + R₂) ∥ R₃; V, I, P at each resistor (H68)                |
 | `seriesCircuit`    | `net: { topology, elements, … }`         | a schematic in textbook symbols; node V, mesh and branch I; KCL, KVL (HC7)    |
 | `circuit`          | `net` (the same renderer)                | capacitor networks (Q, V at each), two batteries, internal r (HC7)            |
@@ -1019,6 +1022,11 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `oceanProfile`     | `mode: 'stripes'`, `distance`, `age`, …  | ridge from above: stripes mirrored, hatched past 12 Ma; a rock x km, t (H103) |
 | `atmosphereLayers` | `mode: 'parcel'`, `temperature`, …       | a parcel cooling 10 °C/km, dew point 2 °C/km, meeting at a cloud base (H103)  |
 | `atmosphereLayers` | `mode: 'balance'`, `albedo`, `sunlight`  | S ÷ 4 in, α reflected, F absorbed and sent out as σTₑ⁴; a thermometer (H103)  |
+| `atmosphereLayers` | `mode: 'thickness'`, `lower`, `upper`    | log p against height: the T̄ column straight, p₁, p₂, Δz; H at p₁ ÷ e (HC122)  |
+| `atmosphereLayers` | `mode: 'adiabat'`, `temperature`, …      | T against log p, dry adiabats labelled θ; the parcel's to 1,000 hPa (HC123)   |
+| `atmosphereLayers` | `mode: 'saturation'`, `dewPoint`, …      | Tetens eₛ(T) −40 to 50 °C; air at (T, e), up to eₛ, across to T_d; RH (HC123) |
+| `atmosphereLayers` | parcel `dry`, `dewLapse`, `baseUnit`     | the parcel with the page's lapse rates (9.8, 1.8 °C/km); base in m (HC124)    |
+| `atmosphereLayers` | balance `layer: { emissivity, surface }` | one-layer greenhouse: εG absorbed, εG ÷ 2 up and down to scale; Tₛ (HC125)    |
 | `rockLayers`       | `dating.sample.second: { name, share }`  | a parent that decays two ways: the decayed atoms split by share (K-40) (H103) |
 | `hrDiagram`        | `mass`, `luminosity?`, `lifetime?`       | a main-sequence star placed by mass, L = M^3.5; 3, 10, 30 M☉ marked (H103)    |
 | `circularMotion`   | kepler `starMass`                        | round another star: a³ = M × T², star, closest and farthest labels (H110)     |

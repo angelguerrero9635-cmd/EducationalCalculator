@@ -128,6 +128,8 @@ import { isHe4hSpec } from '../typesHe4h';
 import { he4hIssues } from './picturesHe4h';
 import { isHe4k } from '../typesHe4k';
 import { he4kIssues } from './picturesHe4k';
+import { he4gIssues } from './picturesHe4g';
+import { isHe4gOption } from '../typesHe4g';
 import {
   driftPathsIssues,
   he4eAlleleIssues,
@@ -186,6 +188,7 @@ export function repIssues(
   if (isHe4fSpec(rep)) return [...out, ...he4fIssues(rep, siOf(val, byId))]; // HC116–HC128, group F
   if (isHe4hSpec(rep)) return [...out, ...he4hIssues(rep, val, byId)]; // group H, round 4
   if (isHe4k(rep)) return [...out, ...he4kIssues(rep, val)]; // HC160–HC164, HC176, HC177
+  if (isHe4gOption(rep)) return [...out, ...he4gIssues(rep, siOf(val, byId))]; // HC122–HC125, HC130
   switch (rep.kind) {
     case 'tenFrame': {
       const cap = 10 * (rep.frames ?? 1);
@@ -2592,6 +2595,10 @@ export function repIssues(
       break;
     case 'spacetime':
       out.push(...he4cIssues(rep, siOf(val, byId))); // HC104
+      break;
+    case 'gravityProfile':
+    case 'electrodeArray':
+      out.push(...he4gIssues(rep, siOf(val, byId))); // HC131, HC132
       break;
     case 'fieldPlot':
       out.push(...fieldPlotIssues(rep, val)); // HC21

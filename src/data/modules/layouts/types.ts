@@ -37,6 +37,7 @@ import type { He4lFigure, OrthoScene } from '../typesHe4l';
 import type { He4nFigure, He4nScene } from '../typesHe4n';
 import type { CodonsCard, PedigreeCard } from '../typesHe4i';
 import type { He4mFigure, OrbitScene, PfdSymbolCard } from '../typesHe4m';
+import type { CirculationScene, He4gFigure } from '../typesHe4g';
 import type { GelScene, Hs3dCard, Hs3dFigure, ObserveScale, ReflexScene } from '../typesHs3d';
 import type { Round3Icon } from './icons';
 import type { StrobeCard } from './strobeCard';
@@ -354,6 +355,8 @@ export type Figure =
   | He4nFigure
   /** College round 4, group M (`typesHe4m.ts`): the orbital elements, one lit (HC173). */
   | He4mFigure
+  /** College round 4, group G (`typesHe4g.ts`): the three-cell circulation (HC140). */
+  | He4gFigure
   /** Biology round 3, group H3D (`typesHs3d.ts`): a gel of fixed samples. */
   | Hs3dFigure
   /** College round 3, group D (`typesHe3d.ts`): a code trace (HC48). */
@@ -597,6 +600,8 @@ export interface Scene {
   ortho?: OrthoScene;
   /** An `orbitElements` figure (`typesHe4m.ts`): the orbit's elements and the one lit. */
   orbit?: OrbitScene;
+  /** A `circulationCells` figure (`typesHe4g.ts`): the cell, wind or belt lit. */
+  circulation?: CirculationScene;
   /** The part to highlight (a `parts` figure). */
   part?: string;
   /** More parts lit with `part`, on a drawn `parts` figure (a stamen: anther and filament). */

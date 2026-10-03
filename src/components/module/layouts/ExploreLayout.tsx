@@ -35,6 +35,7 @@ import { Hs3cFigureView } from './hs3cFigures';
 import { SymmetryFigure } from './symmetryFigure';
 import { OrthographicFigure } from './orthographicFigure';
 import { OrbitElementsFigure } from './orbitElementsFigure';
+import { CirculationFigure } from './circulationFigure';
 import { BodyFigure } from './bodyFigure';
 import { ContinentsFigure } from './continentsFigure';
 import { FrontFigure } from './frontFigure';
@@ -134,6 +135,8 @@ function FigureView({
       return (
         <OrbitElementsFigure scene={scene.orbit ?? { i: 30, raan: 40, argp: 60, nu: 90, e: 0.5 }} />
       ); // HC173
+    case 'circulationCells':
+      return <CirculationFigure scene={scene.circulation ?? {}} />; // HC140
     case 'parts':
       if (figure.drawing) {
         return (

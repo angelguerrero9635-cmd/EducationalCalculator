@@ -68,6 +68,7 @@ import { he4cSpecVars, isHe4cOption } from '../typesHe4c';
 import { he4fSpecVars, isHe4fSpec } from '../typesHe4f';
 import { he4hSpecVars, isHe4hSpec } from '../typesHe4h';
 import { he4kSpecVars, isHe4k } from '../typesHe4k';
+import { he4gSpecVars, isHe4gOption } from '../typesHe4g';
 import { he1hSpecVars } from '../typesHe1h';
 import { he2dSpecVars } from '../typesHe2d';
 import { hs2cSpecVars } from '../typesHs2c';
@@ -98,6 +99,7 @@ function representationVars(r: Representation): string[] {
   if (isHe4fSpec(r)) return he4fSpecVars(r); // HC116–HC128, group F
   if (isHe4hSpec(r)) return he4hSpecVars(r); // group H, round 4
   if (isHe4k(r)) return he4kSpecVars(r); // HC160–HC164, HC176, HC177
+  if (isHe4gOption(r)) return he4gSpecVars(r); // HC122–HC125, HC130
   switch (r.kind) {
     case 'none':
       return [];
@@ -701,6 +703,9 @@ function representationVars(r: Representation): string[] {
       return he3iSpecVars(r);
     case 'spacetime':
       return he4cSpecVars(r); // HC104
+    case 'gravityProfile':
+    case 'electrodeArray':
+      return he4gSpecVars(r); // HC131, HC132
     case 'globe':
       return globeVars(r);
     case 'instrumentTrace':
