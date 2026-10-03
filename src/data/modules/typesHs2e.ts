@@ -4,6 +4,7 @@
  * so those files only name them.
  */
 import type { MacroKind } from './typesHsg';
+import type { CellDivisionHe4i } from './typesHe4i'; // HC142
 
 /** A fixed number or a variable id (as in `typesGraphs.ts`). */
 type NumOrVar = number | string;
@@ -173,7 +174,7 @@ export function keyPath(steps: KeyStep[], name: string) {
  * `chromatids` (2 × 2n, at metaphase), `zygote` (n + n) and `combinations` (2ⁿ gametes by
  * independent assortment, no crossing over).
  */
-export interface CellDivisionCalcSpec {
+export interface CellDivisionCalcSpec extends CellDivisionHe4i {
   kind: 'cellDivision';
   diploid: NumOrVar;
   haploid?: string;

@@ -18,7 +18,7 @@ import { physics8SpecVars } from '../typesPhysics8';
 import { hscSpecVars } from '../typesHsc';
 import { hsbSpecVars } from '../typesHsb';
 import { alleleHe4eVars, driftPathsVars, normalCurveHe4eVars } from '../typesHe4e';
-import { curvedSolidHe4iVars } from '../typesHe4i';
+import { cellDivisionHe4iVars, curvedSolidHe4iVars } from '../typesHe4i';
 import { hs2aSpecVars } from '../typesHs2a';
 import { hs2eSpecVars } from '../typesHs2e';
 import { hs3dSpecVars } from '../typesHs3d';
@@ -610,6 +610,7 @@ function representationVars(r: Representation): string[] {
       return hsgSpecVars(r);
     case 'macromolecules':
     case 'cellDivision':
+      if (r.kind === 'cellDivision') return [...hs2eSpecVars(r), ...cellDivisionHe4iVars(r)]; // HC142
       return hs2eSpecVars(r);
     case 'neuron':
       return hs3dSpecVars(r);

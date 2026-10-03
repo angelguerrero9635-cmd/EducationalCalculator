@@ -5,6 +5,8 @@
  */
 import { cellRatio } from '@/components/module/reps/he4iMath';
 
+import { divisionStages } from '../typesHe4i';
+
 import type { Representation } from '../types';
 
 type Val = (x: string | number) => number | undefined;
@@ -36,5 +38,37 @@ export function cellRatioIssues(rep: Representation, val: Val): string[] {
   check(q.area, m.area, 'A = 4πr² is');
   check(q.volume, m.volume, 'V = 4/3 πr³ is');
   check(q.ratio, m.ratio, 'A ÷ V = 3 ÷ r is');
+  return out;
+}
+
+/**
+ * HC142 on `cellDivision` `content`: chromatids = 2 × chromosomes from S to metaphase II (the
+ * page's chromatids after S are 2 × 2n), and c halves at each meiotic division (the gamete's
+ * content is the G₁ content ÷ 2, after S doubled it).
+ */
+export function divisionContentIssues(rep: Representation, val: Val): string[] {
+  if (rep.kind !== 'cellDivision' || !rep.content) return [];
+  const out: string[] = [];
+  const k = rep.content;
+  const d = val(rep.diploid);
+  const g1 = k.dna === undefined ? 2 : val(k.dna);
+  if (g1 !== undefined && !(g1 > 0)) out.push(`content: G₁ DNA ${g1}c is not positive`);
+  if (d !== undefined && Number.isInteger(d / 2) && d >= 2) {
+    const s = divisionStages(d, g1 ?? 2);
+    // Duplicated (2 chromatids each) after S and after meiosis I; single in G₁ and the gamete.
+    s.forEach((x, i) => {
+      const per = i === 1 || i === 2 ? 2 : 1;
+      if (x.chromatids !== per * x.chromosomes)
+        out.push(`content: ${x.stage} has ${x.chromatids} chromatids on ${x.chromosomes}`);
+    });
+    if (s[2]!.dna * 2 !== s[1]!.dna || s[3]!.dna * 2 !== s[2]!.dna)
+      out.push('content: c does not halve at each meiotic division');
+    const ct = k.chromatids ? val(k.chromatids) : undefined;
+    if (ct !== undefined && ct !== 2 * d)
+      out.push(`content: ${ct} chromatids after S, 2 × 2n is ${2 * d}`);
+  }
+  const gam = k.gamete ? val(k.gamete) : undefined;
+  if (gam !== undefined && g1 !== undefined && Math.abs(gam - g1 / 2) > 1e-9)
+    out.push(`content: a gamete holds ${gam}c, half of G₁'s ${g1}c is ${g1 / 2}c`);
   return out;
 }

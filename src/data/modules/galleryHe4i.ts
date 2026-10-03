@@ -2,6 +2,7 @@
  * College gallery demos, round 4, group I (docs/RENDERINGS_HE.md). Each stands in for the
  * college page that waits, built from the plan's worked example. Spread into gallery.ts.
  * HC141: `curvedSolid` `ratio` (he.biology.principles-1#1).
+ * HC142: `cellDivision` `content` (he.biology.principles-1#3).
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
@@ -163,6 +164,120 @@ const CELL_RATIO_SMALL = cellPage(
   1000,
 );
 
-export const HE4I_GALLERY_MODULES: ModuleDef[] = [CELL_RATIO, CELL_RATIO_SMALL];
+// ─── HC142: chromosomes, chromatids and DNA by stage (principles-1#3) ──────────────
+
+/** A value worked out from others, never solved backwards. */
+const derive = (
+  x: string,
+  inputs: string[],
+  display: string,
+  f: (v: Values) => number,
+  expr: string,
+  how: string,
+): Rule =>
+  rule(x, display, [x, ...inputs], (v) => v[x]! - f(v), {
+    [x]: [(v) => fin(f(v)), expr, how],
+  });
+
+const contentPage = (id: string, title: string, use: string, D: number, extra: string) =>
+  page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'A G₁ cell holds 2n chromosomes of one chromatid each: its DNA content is called 2c.',
+      'S copies every chromosome (4c); meiosis I parts the pairs (2c), meiosis II the sisters (1c).',
+      extra,
+    ],
+    variables: [
+      num('D', '2n', 'Chromosomes in a body cell', undefined, 2, 100, {
+        integer: true,
+        step: 2,
+        multipleOf: 2,
+      }),
+      out('n', 'n', 'Chromosomes in a gamete', undefined, { integer: true }),
+      out('X', 'X', 'Chromatids after S', undefined, { integer: true }),
+      num('c1', 'DNA₁', 'DNA in G₁ (c)', undefined, 2, 2),
+      out('c2', 'DNA₂', 'DNA after S (c)'),
+      out('c4', 'DNA₄', 'DNA in a gamete (c)'),
+      out('C', 'C', 'Kinds of gamete', undefined, { integer: true }),
+    ],
+    rules: [
+      derive(
+        'n',
+        ['D'],
+        '{n} = {D} ÷ 2',
+        (v) => v.D! / 2,
+        '{D} ÷ 2',
+        'A gamete keeps one of each pair.',
+      ),
+      derive(
+        'X',
+        ['D'],
+        '{X} = 2 × {D}',
+        (v) => 2 * v.D!,
+        '2 × {D}',
+        'S copies each chromosome into two sister chromatids.',
+      ),
+      derive(
+        'c2',
+        ['c1', 'X', 'D'],
+        '{c2} = {c1} × {X} ÷ {D}',
+        (v) => (v.c1! * v.X!) / v.D!,
+        '{c1} × {X} ÷ {D}',
+        'DNA goes with the chromatids: S doubles them, so it doubles the DNA.',
+      ),
+      derive(
+        'c4',
+        ['c2'],
+        '{c4} = {c2} ÷ 2 ÷ 2',
+        (v) => v.c2! / 2 / 2,
+        '{c2} ÷ 2 ÷ 2',
+        'Each of the two meiotic divisions halves the DNA.',
+      ),
+      derive(
+        'C',
+        ['n'],
+        '{C} = 2^{n}',
+        (v) => 2 ** v.n!,
+        '2^{n}',
+        'Each pair lines up either way round, so every pair doubles the kinds of gamete.',
+      ),
+    ],
+    example: { D, n: D / 2, X: 2 * D, c1: 2, c2: 4, c4: 1, C: 2 ** (D / 2) },
+    startWith: ['D', 'c1'],
+    representation: {
+      kind: 'cellDivision',
+      diploid: 'D',
+      haploid: 'n',
+      chromatids: 'X',
+      combinations: 'C',
+      content: { chromatids: 'X', dna: 'c1', gamete: 'c4' },
+    },
+  });
+
+const DIVISION_CONTENT = contentPage(
+  'g.he-cellDivision-content',
+  'Chromosomes, chromatids and DNA through meiosis',
+  'Use this for “A human cell has 2n = 46. How many chromosomes, chromatids and c of DNA are there in G₁, after S and in a gamete?”',
+  46,
+  'Humans have 2n = 46; crossing over is left out of the count of gametes.',
+);
+
+/** 2n = 4: every chromosome drawn in each stage. */
+const DIVISION_CONTENT_SMALL = contentPage(
+  'g.he-cellDivision-content-four',
+  'Meiosis in a cell with 2n = 4',
+  'Use this for “A cell with 2n = 4 goes through meiosis. How many chromatids does it hold after S, and after meiosis I?”',
+  4,
+  'With 2n = 4 every chromosome is drawn: two pairs, one of each pair from each parent.',
+);
+
+export const HE4I_GALLERY_MODULES: ModuleDef[] = [
+  CELL_RATIO,
+  CELL_RATIO_SMALL,
+  DIVISION_CONTENT,
+  DIVISION_CONTENT_SMALL,
+];
 
 export const HE4I_GALLERY_LAYOUTS: LayoutDef[] = [];

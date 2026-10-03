@@ -128,7 +128,7 @@ import {
   he4eGraphIssues,
   he4eNormalIssues,
 } from './picturesHe4e';
-import { cellRatioIssues } from './picturesHe4i';
+import { cellRatioIssues, divisionContentIssues } from './picturesHe4i';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -2305,6 +2305,7 @@ export function repIssues(
     case 'macromolecules':
     case 'cellDivision':
       out.push(...hs2eIssues(rep, (id) => val(id)));
+      out.push(...divisionContentIssues(rep, val)); // HC142
       if (rep.kind === 'macromolecules') out.push(...proteinLevelIssues(rep, siHe4d(val, byId))); // HC115
       break;
     case 'neuron':
