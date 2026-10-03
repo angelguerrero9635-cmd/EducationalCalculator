@@ -413,6 +413,8 @@ const light = {
   he4fRupture: '#D9483B',
   /** HC120: an index fossil's range bar. */
   he4fRange: '#8B6BB8',
+  /** HC128: water particles' orbits under a wave. */
+  he4fOrbit: '#0B3D66',
   /** HC127: isopycnals, and ice under the freezing line. */
   he4fIsopycnal: '#4B5B78',
   he4fIce: '#DDEFFB',
@@ -1158,6 +1160,7 @@ const dark: Palette = {
   he4fCrustDeep: '#4E3A2C',
   he4fRupture: '#F06A5C',
   he4fRange: '#B497E0',
+  he4fOrbit: '#E6F2FF',
   he4fIsopycnal: '#A9B6CF',
   he4fIce: '#1E3346',
   he4fIceLine: '#6FB2EA',

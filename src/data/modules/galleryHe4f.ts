@@ -9,6 +9,7 @@
  * HC121: `michelLevy`, the new kind (he.earth-science.mineralogy#2).
  * HC126: `oceanProfile` mode `slope` (he.earth-science.oceanography#2).
  * HC127: `tsDiagram`, the new kind (he.earth-science.oceanography#1).
+ * HC128: `wave` option `depth` (he.earth-science.oceanography#3, ~tsunami).
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
@@ -87,8 +88,10 @@ const derive = (
   const r = rule(id, display, [x, ...inputs], (v) => v[x]! - (f(v) ?? NaN), {
     [x]: [(v) => fin(f(v) ?? NaN), expr, how],
   });
-  // A display in words ("log₁₀(…)") is checked as the step's arithmetic.
-  if (/[A-Za-z]{3,}/.test(display.replace(/\{\w+\}/g, '')))
+  // A display in words is checked as the step's arithmetic.
+  // (sin, log₁₀, min, max, floor are read by the harness itself: no check line.)
+  const words = display.replace(/\{\w+\}/g, '').replace(/\b(sin|log|min|max|floor)\b/g, '');
+  if (/[A-Za-z]{3,}/.test(words))
     r.relation.check = (v) =>
       `${fill(typeof expr === 'string' ? expr : expr(v), v)} = ${lit(v[x]!)}`;
   return r;
@@ -920,6 +923,124 @@ const BRACKISH = tsPage(
   { T: 5, S: 7 },
 );
 
+// ─── HC128: water waves over the floor (oceanography#3, ~tsunami) ───────────────
+
+const lOf = (v: Values) => (9.81 * v.T! ** 2) / (2 * Math.PI);
+
+const swellPage = (id: string, title: string, use: string, typed: Values) =>
+  page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'Deep water means d > L ÷ 2, where the floor doesn’t touch the wave’s orbits.',
+      'Storm swell sorts itself by period: the longer waves run ahead.',
+      'g = 9.81 m/s²; in shallower water the deep-water rules no longer apply.',
+    ],
+    variables: [
+      num('T', 'T', 'Period', 's', 1, 25, { step: 0.1 }),
+      num('d', 'd', 'Water depth', 'm', 1, 11000, { step: 1 }),
+      out('L', 'L', 'Wavelength', 'm'),
+      out('c', 'c', 'Wave speed', 'm/s'),
+      out('ratio', 'd ÷ L', 'Depth ÷ wavelength'),
+    ],
+    rules: [
+      derive(
+        'L',
+        'L',
+        ['T'],
+        '{L} = 9.81 × {T}² ÷ (2 × π)',
+        lOf,
+        '9.81 × {T}² ÷ (2 × π)',
+        'In deep water the wavelength grows with the square of the period.',
+      ),
+      derive(
+        'c',
+        'c',
+        ['L', 'T'],
+        '{c} = {L} ÷ {T}',
+        (v) => v.L! / v.T!,
+        '{L} ÷ {T}',
+        'A wave moves one wavelength each period.',
+      ),
+      derive(
+        'ratio',
+        'ratio',
+        ['d', 'L'],
+        '{ratio} = {d} ÷ {L}',
+        (v) => v.d! / v.L!,
+        '{d} ÷ {L}',
+        'Depth over wavelength says whether the floor feels the wave: deep past ½, shallow under 1/20.',
+      ),
+    ],
+    example: example(typed, ['L', lOf], ['c', (v) => v.L! / v.T!], ['ratio', (v) => v.d! / v.L!]),
+    startWith: ['T', 'd'],
+    representation: {
+      kind: 'wave',
+      depth: { depth: 'd', wavelength: 'L', speed: 'c' },
+    },
+  });
+
+const SWELL = swellPage(
+  'g.he-wave-depth',
+  'Deep-water swell and the floor beneath it',
+  'Use this for “A 10-second swell crosses water 500 m deep. Find its wavelength and speed. Is it deep water?”',
+  { T: 10, d: 500 },
+);
+
+const SWELL_SHELF = swellPage(
+  'g.he-wave-depth-shelf',
+  'Swell reaching the continental shelf',
+  'Use this for “The same 10-second swell reaches water 40 m deep. Does the floor feel it?”',
+  { T: 10, d: 40 },
+);
+
+const cTsunami = (v: Values) => Math.sqrt(9.81 * v.d!);
+const hTsunami = (v: Values) => (v.x! * 1000) / v.c! / 3600;
+
+const TSUNAMI = page({
+  id: 'g.he-wave-depth-tsunami',
+  title: 'A tsunami’s speed across the ocean',
+  use: 'Use this for “A tsunami crosses 3,000 km of ocean 4,000 m deep. How fast is it, and how long does it take?”',
+  assumptions: [
+    'A tsunami is a shallow-water wave: its wavelength (here 200 km) is far longer than the ocean is deep.',
+    'Its speed depends on the depth alone: c = √(gd), with g = 9.81 m/s².',
+    'The depth is taken as the same all the way across.',
+  ],
+  variables: [
+    num('d', 'd', 'Ocean depth', 'm', 1, 8000, { step: 1 }),
+    num('x', 'x', 'Distance', 'km', 1, 20000, { step: 1 }),
+    out('c', 'c', 'Wave speed', 'm/s'),
+    out('t', 't', 'Travel time', 'h'),
+  ],
+  rules: [
+    derive(
+      'c',
+      'c',
+      ['d'],
+      '{c} = √(9.81 × {d})',
+      cTsunami,
+      '√(9.81 × {d})',
+      'A shallow-water wave’s speed depends only on the depth.',
+    ),
+    derive(
+      't',
+      't',
+      ['x', 'c'],
+      '{t} = {x} × 1000 ÷ {c} ÷ 3600',
+      hTsunami,
+      '{x} × 1000 ÷ {c} ÷ 3600',
+      'Time is distance over speed, in metres and seconds, then seconds to hours.',
+    ),
+  ],
+  example: example({ d: 4000, x: 3000 }, ['c', cTsunami], ['t', hTsunami]),
+  startWith: ['d', 'x'],
+  representation: {
+    kind: 'wave',
+    depth: { depth: 'd', wavelength: 200000, speed: 'c' },
+  },
+});
+
 export const HE4F_GALLERY_MODULES: ModuleDef[] = [
   QAP,
   QAP_DIORITE,
@@ -939,6 +1060,9 @@ export const HE4F_GALLERY_MODULES: ModuleDef[] = [
   DEEP_WATER,
   SURFACE_WATER,
   BRACKISH,
+  SWELL,
+  SWELL_SHELF,
+  TSUNAMI,
 ];
 
 export const HE4F_GALLERY_LAYOUTS: LayoutDef[] = [CLIFF_STAGES, CLIFF_OLD_DIKE];

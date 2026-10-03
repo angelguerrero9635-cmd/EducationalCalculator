@@ -297,3 +297,23 @@ export function isopycnal(win: ReturnType<typeof tsWindow>, st: SeawaterState) {
   }
   return out;
 }
+
+// ─── HC128: wave depth ─────────────────────────────────────────────────────────
+
+/** Deep past d ÷ L = ½, shallow under 1/20, intermediate between. */
+export function waterDepthClass(d: number, L: number): 'deep' | 'intermediate' | 'shallow' {
+  const r = d / L;
+  return r > 0.5 ? 'deep' : r < 0.05 ? 'shallow' : 'intermediate';
+}
+
+/**
+ * A water particle's orbit at depth z under a wave of amplitude a (linear wave theory):
+ * horizontal a cosh(k(d − z)) ÷ sinh(kd), vertical a sinh(k(d − z)) ÷ sinh(kd), k = 2π ÷ L.
+ * In deep water both are a e^(−kz) (circles); at the floor the vertical one is 0.
+ */
+export function orbitAxes(a: number, L: number, d: number, z: number): [number, number] {
+  const k = (2 * Math.PI) / L;
+  if (k * d > 20) return [a * Math.exp(-k * z), a * Math.exp(-k * z)];
+  const s = Math.sinh(k * d);
+  return [(a * Math.cosh(k * (d - z))) / s, (a * Math.sinh(k * (d - z))) / s];
+}

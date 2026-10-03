@@ -24,6 +24,8 @@ import {
   OMEGA_EARTH,
   TS_STATE,
   fossilWindow,
+  orbitAxes,
+  waterDepthClass,
   isopycnal,
   seawaterDensity,
   tsWindow,
@@ -48,6 +50,7 @@ import {
 } from '@/components/module/reps/michelLevyMath';
 import type {
   He4fSpec,
+  WaveDepthSpec,
   TsDiagramSpec,
   OceanSlopeSpec,
   MichelLevySpec,
@@ -81,6 +84,8 @@ export function he4fIssues(rep: He4fSpec, val: Val): string[] {
       return slopeIssues(rep, num);
     case 'tsDiagram':
       return tsIssues(rep, num);
+    case 'wave':
+      return waveDepthIssues(rep, num);
   }
 }
 
@@ -303,5 +308,28 @@ function tsIssues(rep: TsDiagramSpec, num: Num): string[] {
     for (const [s, t] of [l.a, l.b])
       if (Math.abs(seawaterDensity(t, s, st) - l.rho) > 1e-6)
         out.push(`tsDiagram: the ${l.rho} line passes ${seawaterDensity(t, s, st)}`);
+  return out;
+}
+
+function waveDepthIssues(rep: WaveDepthSpec, num: Num): string[] {
+  const out: string[] = [];
+  const [d, L] = [num(rep.depth.depth), num(rep.depth.wavelength)];
+  if (d === undefined || L === undefined) return out;
+  if (!(d > 0 && L > 0)) {
+    out.push(`wave depth: d = ${d} and L = ${L} must be above 0`);
+    return out;
+  }
+  const cls = waterDepthClass(d, L);
+  const want = d / L > 0.5 ? 'deep' : d / L < 1 / 20 ? 'shallow' : 'intermediate';
+  if (cls !== want) out.push(`wave depth: labelled ${cls} at d ÷ L = ${d / L}`);
+  // The orbits: circles shrinking with depth in deep water; flat at the floor otherwise.
+  const [ax0, az0] = orbitAxes(1, L, d, 0);
+  const [ax1, az1] = orbitAxes(1, L, d, Math.min(d, L / 2) / 2);
+  if (!(ax1 < ax0 + 1e-12 && az1 < az0 + 1e-12)) out.push('wave depth: orbits grow with depth');
+  if (cls === 'deep' && Math.abs(ax1 - az1) > 0.15 * ax1)
+    out.push('wave depth: deep orbits are not circles');
+  const [, azFloor] = orbitAxes(1, L, d, d);
+  if (cls !== 'deep' && azFloor > 1e-9)
+    out.push('wave depth: the orbit at the floor still moves up and down');
   return out;
 }

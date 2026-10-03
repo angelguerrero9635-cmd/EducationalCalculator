@@ -11,6 +11,7 @@
  * - HC121 `michelLevy` (new kind): the interference colour chart, computed in code.
  * - HC126 `oceanProfile` mode `slope`: a geostrophic current across a tilted sea surface.
  * - HC127 `tsDiagram` (new kind): temperature against salinity with isopycnals.
+ * - HC128 `wave` option `depth`: the floor under a water wave, orbits, deep or shallow.
  */
 import type { NumOrVar } from './typesGraphs';
 
@@ -192,6 +193,20 @@ export interface TsDiagramSpec {
   freezeSlope?: number;
 }
 
+// ─── HC128: wave depth ─────────────────────────────────────────────────────────
+
+/**
+ * HC128 (EG-P16): one wavelength of a water wave over the floor at `depth` (d, m), drawn to
+ * the `wavelength`'s scale (L, m: a variable, or a number such as a tsunami's 200,000), L ÷ 2
+ * dashed, the particles' orbits (circles shrinking with depth in deep water, ellipses flattening
+ * to the floor otherwise), and the label deep (d > L ÷ 2), intermediate or shallow
+ * (d < L ÷ 20). `speed` (c, m/s) goes in the caption. Kept apart from the wave's other fields.
+ */
+export interface WaveDepthSpec {
+  kind: 'wave';
+  depth: { depth: NumOrVar; wavelength: NumOrVar; speed?: NumOrVar };
+}
+
 /** Every picture of group HE4F (new kinds and options on drawn kinds). */
 export type He4fSpec =
   | TernarySpec
@@ -200,12 +215,14 @@ export type He4fSpec =
   | RockRangesSpec
   | MichelLevySpec
   | OceanSlopeSpec
-  | TsDiagramSpec;
+  | TsDiagramSpec
+  | WaveDepthSpec;
 
 /** Whether a picture is one of group HE4F's (a new kind, or an option on a drawn kind). */
 export function isHe4fSpec(r: { kind: string }): r is He4fSpec {
   const o = r as { kind: string; mode?: string };
   if (r.kind === 'earthLayers') return o.mode === 'rupture';
+  if (r.kind === 'wave') return 'depth' in o;
   if (r.kind === 'oceanProfile') return o.mode === 'slope';
   if (r.kind === 'rockLayers') return 'ranges' in o;
   return (
@@ -233,5 +250,7 @@ export function he4fSpecVars(r: He4fSpec): string[] {
       return ids(r.rise, r.width, r.latitude, r.speed, r.coriolis, r.g);
     case 'tsDiagram':
       return ids(r.temperature, r.salinity, r.density, r.freezing);
+    case 'wave':
+      return ids(r.depth.depth, r.depth.wavelength, r.depth.speed);
   }
 }

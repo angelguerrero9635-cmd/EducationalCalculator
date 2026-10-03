@@ -650,6 +650,11 @@ surface tilted Δη over Δx (stretch written), the pressure-gradient and Coriol
 the current into or out of the page by hemisphere (fields `rise`, `width`, `latitude`, `speed?`,
 `coriolis?`, `g?`, `omega?`, `hemisphere?`).
 
+`wave` option `depth` (HC128, `typesHe4f.ts`): one wavelength over the floor at depth d to the
+wavelength’s scale, L ÷ 2 dashed, particle orbits (circles in deep water, flat ellipses to the floor
+in shallow), labelled deep, intermediate or shallow by d ÷ L (fields `depth: { depth, wavelength,
+speed? }`).
+
 `alleleFrequencies` (H38, a name too long for the table): 100 allele beads counted from p, a p
 scale to drag, and the bars p², 2pq and q², for Grade 9 population genetics.
 With `after` (p′; `change`, `fitness`, `mean`), a second tray for p′ after one generation of

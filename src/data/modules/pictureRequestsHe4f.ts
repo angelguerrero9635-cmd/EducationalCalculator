@@ -172,4 +172,21 @@ export const HE4F_REQUESTS: PictureRequest[] = [
     status: 'drawn',
     gallery: ['g.he-tsDiagram', 'g.he-tsDiagram-surface', 'g.he-tsDiagram-brackish'],
   },
+  {
+    ...ask(
+      'HC128',
+      'wave',
+      'One wavelength of a water wave over the floor at depth d (to the wavelength’s scale), L ÷ 2 dashed, the particles’ orbits as circles shrinking with depth (deep) or flat ellipses reaching the floor (intermediate, shallow), labelled deep, intermediate or shallow',
+      [`${E}oceanography#3`, `${E}oceanography#3~tsunami`],
+      [
+        'From EG-P16. New option on wave (typesHe4f.ts WaveDepthSpec, reps/WaveDepth.tsx; the orbits and the class in reps/he4fMath.ts). The other wave options are unchanged.',
+        "Fields: { kind: 'wave', depth: { depth (d, m), wavelength (L, m: a variable, or a number such as 200,000 for a tsunami), speed? (c, m/s, in the caption) } }.",
+        'Deep where d > L ÷ 2, shallow where d < L ÷ 20. A floor deeper than about 0.6L is cut off with its depth written; a layer too thin to see is stretched and the caption says by how much; wave heights are not to scale. A "?" depth or wavelength draws no floor. No handles.',
+        "Example (main): { kind: 'wave', depth: { depth: 'd', wavelength: 'L', speed: 'c' } } (T = 10 s → L = 156 m; d = 500 m: deep). Example (~tsunami): { kind: 'wave', depth: { depth: 'd', wavelength: 200000, speed: 'c' } } (4,000 m → c = 198 m/s; d ÷ L = 0.02: shallow).",
+        'Harness (harness/picturesHe4f.ts): the label matches d ÷ L (½ and 1/20); orbits shrink with depth, are circles in deep water and lose their vertical motion at the floor otherwise.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: ['g.he-wave-depth', 'g.he-wave-depth-shelf', 'g.he-wave-depth-tsunami'],
+  },
 ];
