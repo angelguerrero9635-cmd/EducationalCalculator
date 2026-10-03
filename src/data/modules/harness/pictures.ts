@@ -2556,7 +2556,8 @@ export function repIssues(
       out.push(...he4cIssues(rep, siOf(val, byId))); // HC104
       break;
     case 'gravityProfile':
-      out.push(...he4gIssues(rep, siOf(val, byId))); // HC131
+    case 'electrodeArray':
+      out.push(...he4gIssues(rep, siOf(val, byId))); // HC131, HC132
       break;
     case 'fieldPlot':
       out.push(...fieldPlotIssues(rep, val)); // HC21

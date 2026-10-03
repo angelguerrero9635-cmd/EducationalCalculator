@@ -145,4 +145,21 @@ export const HE4G_REQUESTS: PictureRequest[] = [
       'g.he-gravityProfile-airy-high',
     ],
   },
+  {
+    ...ask(
+      'HC132',
+      'electrodeArray',
+      'A Wenner survey: four steel electrodes a apart, an ammeter on C₁ and C₂ and a voltmeter on P₁ and P₂, the current’s paths through the ground and the equipotentials (those through P₁ and P₂ lit), the ground sampled to about a ÷ 2 shaded',
+      { [`${GEO}#3`]: '"electrodeArray"' },
+      [
+        'From EG-P23. New kind electrodeArray (typesHe4g.ts ElectrodeArraySpec, reps/ElectrodeArray.tsx, wennerOf in reps/he4gMath.ts).',
+        "Fields: { kind: 'electrodeArray', spacing (a, m), voltage (V, V), current (I, A), resistance? (R, Ω), resistivity? (ρ_a, Ω·m), fixed? }.",
+        "Example (#3): { kind: 'electrodeArray', spacing: 'a', voltage: 'V', current: 'I', resistance: 'R', resistivity: 'rho' } (10 m, 0.30 V, 0.20 A → 1.5 Ω, 94.25 Ω·m).",
+        'The array always spans the same width (the drawing is the same shape at any a, as the physics is); the brackets, the sampled depth and the caption carry a. The current paths are the circles through C₁ and C₂; the equipotentials are contours of 1 ÷ r₁ − 1 ÷ r₂. Drag C₂ for a (the scale holds while dragging, so the array spreads). A "?" V or I reads "?" on its meter and the caption waits.',
+        'Harness (harness/picturesHe4g.ts): R = V ÷ I; ρ_a = 2πaV ÷ I; a > 0.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: ['g.he-electrodeArray', 'g.he-electrodeArray-wide'],
+  },
 ];

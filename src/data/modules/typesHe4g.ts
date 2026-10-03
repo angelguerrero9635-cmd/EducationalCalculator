@@ -205,8 +205,27 @@ export interface GravityAirySpec {
 
 export type GravityProfileSpec = GravitySphereSpec | GravityAirySpec;
 
+// ─── HC132 electrodeArray (new kind) ─────────────────────────────────────────
+
+/**
+ * A Wenner survey (EG-P23): four electrodes `spacing` a apart, current I in at C₁ and out at C₂,
+ * the current's paths and the equipotentials through the ground, V read across P₁ and P₂, the
+ * ground sampled to about a ÷ 2 shaded; ρ_a = 2πaV ÷ I. Drag C₂ for a.
+ */
+export interface ElectrodeArraySpec {
+  kind: 'electrodeArray';
+  /** The spacing a (m), the voltage V (V) and the current I (A). */
+  spacing: NumOrVar;
+  voltage: NumOrVar;
+  current: NumOrVar;
+  /** R = V ÷ I (Ω) and ρ_a (Ω·m), when the page works them out. */
+  resistance?: NumOrVar;
+  resistivity?: NumOrVar;
+  fixed?: boolean;
+}
+
 /** Every round 4 group G calculator picture. */
-export type He4gSpec = He4gOptionSpec | GravityProfileSpec;
+export type He4gSpec = He4gOptionSpec | GravityProfileSpec | ElectrodeArraySpec;
 
 const MODES = ['thickness', 'adiabat', 'saturation'];
 
@@ -227,6 +246,8 @@ const ids = (...xs: (NumOrVar | undefined)[]) =>
 
 /** Every variable id a group-G picture reads (modules.test.ts). */
 export function he4gSpecVars(r: He4gSpec): string[] {
+  if (r.kind === 'electrodeArray')
+    return ids(r.spacing, r.voltage, r.current, r.resistance, r.resistivity);
   switch (r.mode) {
     case 'thickness':
       return ids(r.lower, r.upper, r.temperature, r.thickness, r.scaleHeight, r.g, r.gasConstant);

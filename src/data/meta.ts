@@ -159,6 +159,7 @@ const PICTURE_NAMES: Record<string, string> = {
   phaseSpace: 'phase space: an energy curve, the state and its flow; a bead on a hoop',
   spacetime: 'a spacetime diagram: light lines, a moving frame’s tilted axes, an event',
   gravityProfile: 'gravity over a buried sphere, or a mountain floating on its root',
+  electrodeArray: 'a Wenner survey: four electrodes, current paths, equipotentials, V and I',
   unitCell: 'a cubic unit cell, its lattice planes and Bragg reflection',
   instrumentTrace: 'an NMR spectrum, a chromatogram or a rotational spectrum from its peaks',
   aquifer:

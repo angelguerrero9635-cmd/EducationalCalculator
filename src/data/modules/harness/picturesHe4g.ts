@@ -10,6 +10,7 @@ import {
   lclOf,
   mixingOf,
   R_DRY,
+  wennerOf,
   airyRootOf,
   G_NEWTON,
   HALF_WIDTH,
@@ -41,6 +42,19 @@ const read = (val: Val, x: number | string | undefined, fallback?: number) => {
 export function he4gIssues(rep: He4gSpec, val: Val): string[] {
   const out: string[] = [];
   const n = (x: number | string | undefined, d?: number) => read(val, x, d);
+  if (rep.kind === 'electrodeArray') {
+    // R = V ÷ I; ρ_a = 2πaV ÷ I; the electrodes are drawn a apart, equally.
+    const [a, v, i] = [n(rep.spacing), n(rep.voltage), n(rep.current)];
+    if (a !== undefined && a <= 0) out.push(`electrodeArray: spacing ${a} m is not positive`);
+    if (a === undefined || v === undefined || i === undefined || a <= 0 || i <= 0) return out;
+    const r = n(rep.resistance);
+    if (r !== undefined && !near(r, v / i))
+      out.push(`electrodeArray: R ${r}, but V ÷ I = ${v / i}`);
+    const rho = n(rep.resistivity);
+    if (rho !== undefined && !near(rho, wennerOf(a, v, i)))
+      out.push(`electrodeArray: ρ_a ${rho}, but 2πaV ÷ I = ${wennerOf(a, v, i)}`);
+    return out;
+  }
   switch (rep.mode) {
     case 'thickness': {
       // Δz = (R_d T̄ ÷ g) ln(p₁ ÷ p₂) to 1 m (p₂ at or above p₁ draws no layer); H = R_d T̄ ÷ g.

@@ -7,7 +7,7 @@
  * ~humidity; EG-P11); HC124 parcel `dry` and `dewLapse` (meteorology#1~lcl; EG-P12); HC125
  * balance `layer` (climatology#0; EG-P13); HC130 `rayDiagram` Snell `speeds`
  * (geophysics#0~critical-angle; EG-P21); HC131 `gravityProfile` (geophysics#1~sphere, ~isostasy;
- * EG-P22).
+ * EG-P22); HC132 `electrodeArray` (geophysics#3; EG-P23).
  */
 import type { Relation } from '@/engine/types';
 
@@ -970,6 +970,94 @@ const airyHigh = airyDemo(
   [8, 35],
 );
 
+// ── HC132: a Wenner resistivity survey (geophysics#3) ──
+
+const wennerDemo = (id: string, title: string, use: string, [a, v, i]: [number, number, number]) =>
+  demo({
+    id,
+    title,
+    use,
+    assumptions: [
+      'Four electrodes evenly spaced in a line; the current goes in and out through the outer two.',
+      'Wider spacing samples deeper (about a ÷ 2); ρ_a is the true resistivity only for uniform ground.',
+    ],
+    variables: [
+      quantity('a', 'a', 'Spacing', 'm', 0.1, 500, 0.01),
+      quantity('V', 'V', 'Voltage', 'V', 0.0001, 100, 0.0001),
+      quantity('I', 'I', 'Current', 'A', 0.0001, 10, 0.0001),
+      quantity('R', 'R', 'Resistance', 'Ω', 0.00001, 100000, 0.0001),
+      quantity('rho', 'ρ_a', 'Apparent resistivity', 'Ω·m', 0.001, 1000000, 0.01),
+    ],
+    ...rules(
+      {
+        relation: {
+          id: 'R = V ÷ I',
+          display: '{R} = {V} ÷ {I}',
+          vars: ['R', 'V', 'I'],
+          residual: (x) => x.R! * x.I! - x.V!,
+          solve: {
+            R: (x) => div(x.V!, x.I!),
+            V: (x) => x.R! * x.I!,
+            I: (x) => div(x.V!, x.R!),
+          },
+        },
+        steps: {
+          R: st(
+            '{V} ÷ {I}',
+            'The voltage across the inner pair over the current through the outer pair.',
+          ),
+          V: st('{R} × {I}', 'Multiply the resistance by the current.'),
+          I: st('{V} ÷ {R}', 'Divide the voltage by the resistance.'),
+        },
+      },
+      {
+        relation: {
+          id: 'ρ_a = 2πaR',
+          display: '{rho} = 2 × π × {a} × {R}',
+          vars: ['rho', 'a', 'R'],
+          residual: (x) => x.rho! - 2 * Math.PI * x.a! * x.R!,
+          solve: {
+            rho: (x) => 2 * Math.PI * x.a! * x.R!,
+            a: (x) => div(x.rho!, 2 * Math.PI * x.R!),
+            R: (x) => div(x.rho!, 2 * Math.PI * x.a!),
+          },
+        },
+        steps: {
+          rho: st(
+            '2 × π × {a} × {R}',
+            'The Wenner geometric factor 2πa turns the resistance into a resistivity.',
+          ),
+          a: st('{rho} ÷ (2 × π × {R})', 'Divide ρ_a by 2πR.'),
+          R: st('{rho} ÷ (2 × π × {a})', 'Divide ρ_a by 2πa.'),
+        },
+      },
+    ),
+    example: { a, V: v, I: i, R: v / i, rho: 2 * Math.PI * a * (v / i) },
+    startWith: ['a', 'V', 'I'],
+    representation: {
+      kind: 'electrodeArray',
+      spacing: 'a',
+      voltage: 'V',
+      current: 'I',
+      resistance: 'R',
+      resistivity: 'rho',
+    },
+  });
+
+const wenner = wennerDemo(
+  'g.he-electrodeArray',
+  'Apparent resistivity from a Wenner survey',
+  'Use this for electrodes 10 m apart reading 0.30 V at 0.20 A: the resistance and the apparent resistivity.',
+  [10, 0.3, 0.2],
+);
+
+const wennerWide = wennerDemo(
+  'g.he-electrodeArray-wide',
+  'A wide spread looks deep: salty groundwater',
+  'Use this for electrodes 100 m apart reading 0.012 V at 0.50 A: a low resistivity about 50 m down.',
+  [100, 0.012, 0.5],
+);
+
 export const HE4G_GALLERY_MODULES: ModuleDef[] = [
   thickness,
   pressureAltitude,
@@ -988,6 +1076,8 @@ export const HE4G_GALLERY_MODULES: ModuleDef[] = [
   sphereSalt,
   airy,
   airyHigh,
+  wenner,
+  wennerWide,
 ];
 
 export const HE4G_GALLERY_LAYOUTS: LayoutDef[] = [];

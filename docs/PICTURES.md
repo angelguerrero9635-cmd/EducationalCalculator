@@ -599,6 +599,7 @@ search or the sitemap, but the module tests and the harness run over it):
 | `phaseSpace`       | oscillator ellipse, flow (ẋ, ṗ), area; pendulum θ–ω; bead on a hoop    | College classical mech. (HC69)      |
 | `driftPaths`       | 12 Wright–Fisher paths of p over t; expected H dashed on a 2nd axis    | College evolution, drift (HC153)    |
 | `gravityProfile`   | buried sphere under its Δg(x), peak, x½ = 0.766z; Airy root, columns   | College geophysics (HC131)          |
+| `electrodeArray`   | Wenner: 4 electrodes a apart, current arcs, equipotentials, V, I; ρₐ   | College geophysics (HC132)          |
 | `globe`            | sun rays, noon angle, day dial; great circle; Euler pole; dipole; air  | College earth and geography (HC36)  |
 | `stressStrain`     | σ–ε curve: E, 0.2% offset, UTS, necking; specimen; tube; two members   | College materials, biomech. (HC28)  |
 | `stressElement`    | element, turned to θ_p; Mohr's circle; 3 circles; loci, n; soil line   | College stress, soil (HC33)         |

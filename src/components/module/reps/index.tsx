@@ -262,6 +262,7 @@ import { He2fView } from './He2fView';
 import { He4cView } from './He4cView';
 import { He4gView } from './He4gView';
 import { GravityProfile } from './GravityProfile';
+import { ElectrodeArray } from './ElectrodeArray';
 import { Spacetime } from './Spacetime';
 import { RayHe3l } from './RayHe3l';
 import { PhaseSpace } from './PhaseSpace';
@@ -462,6 +463,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <Spacetime spec={spec} calc={calc} />; // HC104
     case 'gravityProfile':
       return <GravityProfile spec={spec} calc={calc} />; // HC131
+    case 'electrodeArray':
+      return <ElectrodeArray spec={spec} calc={calc} />; // HC132
     case 'unitCell':
       return <UnitCell spec={spec} calc={calc} />;
     case 'binaryPhase':
