@@ -22,6 +22,12 @@ const RINF = valueOf('Rinf'); // 1.097 × 10⁷ m⁻¹
 const F_MIN = C / 1e-4;
 const F_MAX = C / 1e-8;
 
+/** A figure-only relation (never shown or stepped). */
+const hide = <R extends { relation: { hidden?: boolean } }>(r: R): R => ({
+  ...r,
+  relation: { ...r.relation, hidden: true },
+});
+
 /** 1/n₁² − 1/n₂² for a drop from n₂ to n₁. */
 const levelGap = (upper: number, lower: number) => 1 / (lower * lower) - 1 / (upper * upper);
 
@@ -172,6 +178,97 @@ export const COLLEGE_CHEMISTRY_MODULES: ModuleDef[] = [
       energy: 'Ev',
       wavelength: 'w',
       levels: 8,
+    },
+  },
+  {
+    // A moving mass's wavelength: p = mv, λ = h ÷ p (slow next to light).
+    id: 'he.chemistry.gen-chem-1#0~de-broglie',
+    title: 'The de Broglie wavelength of a moving mass',
+    // As the data are given (2.00 × 10⁶ m/s): 0.364 nm, 1.14 × 10⁻³⁴ m.
+    workedFigures: 3,
+    use: 'Use this for “Find the de Broglie wavelength of an electron moving at 2.00 × 10⁶ m/s.”',
+    assumptions: [
+      'The speed is below a tenth of light’s, so p = mv holds without relativity.',
+      'Any moving mass has a wavelength λ = h ÷ p, but a ball’s is far too small to see or measure.',
+      'An electron’s mass is 9.109 × 10⁻³¹ kg; h = 6.626 × 10⁻³⁴ J·s.',
+    ],
+    variables: [
+      V('m', 'm', 'Mass', {
+        unit: 'kg',
+        units: ['kg', 'g'],
+        min: 1e-31,
+        max: 10,
+        scientific: true,
+      }),
+      V('v', 'v', 'Speed', {
+        unit: 'm/s',
+        units: ['m/s', 'km/s'],
+        min: 0.01,
+        max: 3e7,
+        figures: 4,
+      }),
+      V('p', 'p', 'Momentum', { unit: 'kg·m/s', min: 1e-33, max: 3e8, scientific: true }),
+      // In picometers, so the drawn wave (one period per λ) reads on plain ticks, not π's.
+      V('w', 'λ', 'Wavelength', {
+        unit: 'pm',
+        units: ['nm', 'pm'],
+        shownIn: 'pm',
+        min: (H / 3e8) * 1e12,
+        max: (H / 1e-33) * 1e12,
+        scientific: true,
+      }),
+      // Figure-only: 2π ÷ λ, so one period of the sine is λ. A wave under 1 pm (a ball's) is
+      // far too fine to draw, so it is left unknown and the graph waits.
+      V('k', 'k', 'Wavenumber', { min: 0, max: 2 * Math.PI, derived: true, hidden: true }),
+    ],
+    ...rels(
+      rel('p = mv', '{p} = {m} × {v}', ['p', 'm', 'v'], (v) => v.p! - v.m! * v.v!, {
+        p: [(v) => v.m! * v.v!, '{m} × {v}', 'Momentum is mass times speed.'],
+        m: [(v) => v.p! / v.v!, '{p} ÷ {v}', 'Divide the momentum by the speed.'],
+        v: [(v) => v.p! / v.m!, '{p} ÷ {m}', 'Divide the momentum by the mass.'],
+      }),
+      rel(
+        'λ = h/p',
+        '{w} = 6.626 × 10⁻³⁴ ÷ {p} × 10¹²',
+        ['w', 'p'],
+        (v) => v.w! - (H / v.p!) * 1e12,
+        {
+          w: [
+            (v) => (H / v.p!) * 1e12,
+            '6.626 × 10⁻³⁴ ÷ {p} × 10¹²',
+            'de Broglie: Planck’s constant over the momentum is λ in meters; × 10¹² turns it into picometers.',
+          ],
+          p: [
+            (v) => (H / v.w!) * 1e12,
+            '6.626 × 10⁻³⁴ ÷ {w} × 10¹²',
+            'Turn λ = h ÷ p around: p = h ÷ λ, with λ in meters (pm × 10⁻¹²).',
+          ],
+        },
+      ),
+      hide(
+        rel('k = 2π/λ', '{k} = 2π ÷ {w}', ['k', 'w'], (v) => v.k! - (2 * Math.PI) / v.w!, {
+          k: [(v) => (v.w! >= 1 ? (2 * Math.PI) / v.w! : undefined), '2π ÷ {w}', ''],
+        }),
+      ),
+    ),
+    example: (() => {
+      const m = valueOf('me');
+      const p = m * 2e6;
+      const w = (H / p) * 1e12;
+      return { m, v: 2e6, p, w, k: (2 * Math.PI) / w };
+    })(),
+    startWith: ['m', 'v'],
+    representation: {
+      kind: 'functionGraph',
+      family: 'sin',
+      b: 'k',
+      name: 'ψ',
+      input: 'x',
+      shows: { period: 'w' },
+      marks: ['period'],
+      xMin: 0,
+      axes: { x: 'Position x', y: 'Wave ψ' },
+      unitsOf: { x: 'w' },
     },
   },
 ];
