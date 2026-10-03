@@ -242,6 +242,13 @@ const rightSum = (v: Values) => {
   return w * (n * a * a + a * w * n * (n + 1) + (w * w * n * (n + 1) * (2 * n + 1)) / 6);
 };
 
+/** f(t) = mt + c and its antiderivative G(t) = mt² ÷ 2 + ct, written in t: "2t + 1", "t² + t". */
+const lineForm = (v: Values) => polyForm([v.m!, v.c!], 't');
+const lineAnti = (v: Values) => antiForm({ p: 0, q: v.m!, r: v.c! }).replace(/x/g, 't');
+
+/** F(x) = ∫ from a to x of (mt + c) dt = m(x² − a²) ÷ 2 + c(x − a). */
+const areaSoFar = (v: Values) => (v.m! * (v.x! ** 2 - v.a! ** 2)) / 2 + v.c! * (v.x! - v.a!);
+
 export const COLLEGE_MATH_MODULES: ModuleDef[] = [
   {
     // Calculus I → Limits and continuity: a quotient at x = a, 0/0 or k/0.
@@ -2316,6 +2323,85 @@ export const COLLEGE_MATH_MODULES: ModuleDef[] = [
       shade: { from: 'a', to: 'b' },
       riemann: { n: 'n', from: 'a', to: 'b', side: 'right', sum: 'S' },
       fixed: true,
+    },
+  },
+  {
+    // Calculus I → Definite integrals: the area function F(x) = ∫ from a to x of (mt + c) dt and F′(x) = f(x).
+    id: 'he.math.calc-1#3~accumulation',
+    title: 'The area function and the Fundamental Theorem, part 1',
+    use: 'Use this for “F(x) is the integral of 3t − 2 from 1 to x. Find F(4) and F′(4).”',
+    assumptions: [
+      'F(x) = ∫ from a to x of f(t) dt collects the signed area under f(t) = mt + c from a up to x. The letter t runs along the axis; x is where it stops.',
+      'An antiderivative of mt + c is G(t) = mt² ÷ 2 + ct, so F(x) = G(x) − G(a), by the Fundamental Theorem (part 2).',
+      'The Fundamental Theorem (part 1): F′(x) = f(x). Moving x on adds a thin strip as tall as f(x), so the area grows at that rate.',
+      'Area below the t-axis counts as negative, and F(a) = 0. When x is left of a, F(x) is minus the area from x to a.',
+    ],
+    variables: [
+      V('m', 'm', 'Slope of f(t) = mt + c', { min: -50, max: 50, step: 0.1 }),
+      V('c', 'c', 'Intercept of f(t) = mt + c', { min: -50, max: 50, step: 0.1 }),
+      V('a', 'a', 'Start of the area (lower limit)', { min: -100, max: 100, step: 0.1 }),
+      V('x', 'x', 'End of the area (upper limit)', { min: -100, max: 100, step: 0.1 }),
+      V('F', 'F(x)', 'Area function at x', { min: -1e7, max: 1e7, step: 0.0001, derived: true }),
+      V('Fp', 'F′(x)', 'Slope of the area function at x', {
+        min: -1e4,
+        max: 1e4,
+        step: 0.0001,
+        derived: true,
+      }),
+    ],
+    ...rels(
+      withStep(
+        derive(
+          'F(x) = m(x² − a²) ÷ 2 + c(x − a)',
+          '{F} = {m} × ({x}² − {a}²) ÷ 2 + {c} × ({x} − {a})',
+          'F',
+          ['m', 'c', 'a', 'x'],
+          areaSoFar,
+          '{m} × ({x}² − {a}²) ÷ 2 + {c} × ({x} − {a})',
+          (v) =>
+            `An antiderivative of f(t) = ${lineForm(v)} is G(t) = ${lineAnti(v)}. Take G at x less G at a: m(x² − a²) ÷ 2 + c(x − a).`,
+        ),
+        'F',
+        {
+          work: (v) => {
+            const [a, x] = [formatNumber(v.a!), formatNumber(v.x!)];
+            const F = formatNumber(exact(areaSoFar(v)));
+            const head = `∫ from ${a} to ${x} of (${lineForm(v)}) dt`;
+            return [
+              v.m === 0 && v.c === 0
+                ? `${head} = ${F}`
+                : `${head} = [${lineAnti(v)}] from ${a} to ${x} = ${F}`,
+            ];
+          },
+          note: (v) =>
+            v.x! < v.a!
+              ? '→ x is left of a, so the area is counted backwards: F(x) is minus the area from x to a'
+              : '',
+        },
+      ),
+      derive(
+        'F′(x) = mx + c',
+        '{Fp} = {m} × {x} + {c}',
+        'Fp',
+        ['m', 'x', 'c'],
+        (v) => v.m! * v.x! + v.c!,
+        '{m} × {x} + {c}',
+        'By the Fundamental Theorem (part 1), the slope of F at x is the height of f at x: put t = x into mt + c. No integral is needed.',
+      ),
+    ),
+    // m = 2, c = 1, a = 0, x = 3: G(t) = t² + t, F(3) = (9 + 3) − 0 = 12; F′(3) = 2 × 3 + 1 = 7.
+    example: { m: 2, c: 1, a: 0, x: 3, F: 12, Fp: 7 },
+    startWith: ['m', 'c', 'a', 'x'],
+    // f(t) = mt + c shaded from a to x, the point (x, f(x)); under it the panel of F with its
+    // tangent at x of slope f(x).
+    representation: {
+      kind: 'functionGraph',
+      family: 'linear',
+      m: 'm',
+      b: 'c',
+      input: 't',
+      at: { x: 'x', y: 'Fp' },
+      accumulation: { from: 'a', x: 'x', value: 'F' },
     },
   },
 ];
