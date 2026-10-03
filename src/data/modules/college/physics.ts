@@ -2587,15 +2587,13 @@ export const COLLEGE_PHYSICS_MODULES: ModuleDef[] = [
     })(),
     startWith: ['m', 'k', 'x0', 'v0', 't'],
     // The x–t trace from x₀ with the start slope v₀ dashed, ±A marked, the first crest's shift
-    // −φ ÷ ω bracketed and the moment t with x. (φ is not passed as the shift's label: the
-    // picture check reads x(0) = A cos φ with an absolute 10⁻¹² floor, which a shown φ of
-    // ±1.5708 misses when x₀ = 0.)
+    // −φ ÷ ω bracketed and the moment t with x.
     representation: {
       kind: 'oscillator',
       mass: 'm',
       spring: 'k',
       amplitude: 'A',
-      phase: { x0: 'x0', v0: 'v0', amplitude: 'A', omega: 'w', t: 't', x: 'x' },
+      phase: { x0: 'x0', v0: 'v0', amplitude: 'A', omega: 'w', phase: 'phi', t: 't', x: 'x' },
     },
   },
 ];

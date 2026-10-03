@@ -114,8 +114,10 @@ export function oscillatorIssues(
       same(p.amplitude, A, 'A');
       same(p.phase, phi, 'φ');
       const [Ap, phip] = [si(p.amplitude) ?? A, si(p.phase) ?? phi];
-      if (!near(Ap * Math.cos(phip), x0, 1e-12)) out.push('oscillator: x(0) ≠ A cos φ');
-      if (!near(-Ap * wn * Math.sin(phip), v0, 1e-12)) out.push('oscillator: the slope at 0 ≠ v₀');
+      // (a floor scaled by A: a shown φ of ±1.5708 puts A cos φ about 10⁻⁵ A off a zero x₀)
+      if (!near(Ap * Math.cos(phip), x0, 1e-4 * Ap)) out.push('oscillator: x(0) ≠ A cos φ');
+      if (!near(-Ap * wn * Math.sin(phip), v0, 1e-4 * Ap * wn))
+        out.push('oscillator: the slope at 0 ≠ v₀');
       const tt = si(p.t);
       if (tt !== undefined) same(p.x, A * Math.cos(wn * tt + phi), 'x at the marked t', 1e-3 * A);
     }
