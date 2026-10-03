@@ -6,6 +6,7 @@
  * HC162: `scaffold` (he.engineering.tissue-engineering#0).
  * HC163: `ligandGrid` (he.engineering.tissue-engineering#1).
  * HC164: `bioreactor` (he.engineering.tissue-engineering#2).
+ * HC176: `settlingTank` (he.engineering.environmental#0).
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
@@ -687,6 +688,146 @@ const BIOREACTOR_CROWDED = bioreactorPage(
   { cStar: 0.21, kla: 5, q: 0.2, x: 5e6 },
 );
 
+// ─── HC176: an ideal settling basin (environmental#0) ──────────────────────────
+
+const v0Of = (v: Values) => v.q! / (v.len! * v.wid!);
+const tOf = (v: Values) => (v.len! * v.wid! * v.dep!) / v.q! / 3600;
+/** Stokes: sand (2650 kg/m³) in water at 20 °C (998.2 kg/m³, 0.001002 Pa·s), g = 9.81 m/s². */
+const vsOf = (v: Values) => (9.81 * (2650 - 998.2) * (v.d! * 1e-6) ** 2) / (18 * 0.001002);
+const removalOf = (v: Values) => Math.min(100, (100 * v.vs!) / v.v0!);
+
+const settlingRules = [
+  rule(
+    'overflow',
+    '{v0} = {q} ÷ ({len} × {wid})',
+    ['v0', 'q', 'len', 'wid'],
+    (v) => v.v0! * v.len! * v.wid! - v.q!,
+    {
+      v0: [
+        (v) => posOf(v0Of(v)),
+        '{q} ÷ ({len} × {wid})',
+        'The overflow rate: the flow spread over the basin’s surface.',
+      ],
+      q: [
+        (v) => posOf(v.v0! * v.len! * v.wid!),
+        '{v0} × {len} × {wid}',
+        'The overflow rate times the surface it rises through.',
+      ],
+      len: [
+        (v) => posOf(v.q! / (v.v0! * v.wid!)),
+        '{q} ÷ ({v0} × {wid})',
+        'The surface the flow needs at this overflow rate, over the width.',
+      ],
+      wid: [
+        (v) => posOf(v.q! / (v.v0! * v.len!)),
+        '{q} ÷ ({v0} × {len})',
+        'The surface the flow needs at this overflow rate, over the length.',
+      ],
+    },
+  ),
+  rule(
+    'detention',
+    '{t} = {len} × {wid} × {dep} ÷ {q} ÷ 3600',
+    ['t', 'len', 'wid', 'dep', 'q'],
+    (v) => v.t! - tOf(v),
+    {
+      t: [
+        (v) => posOf(tOf(v)),
+        '{len} × {wid} × {dep} ÷ {q} ÷ 3600',
+        'The basin’s volume over the flow is the time the water stays (3600 s in an hour).',
+      ],
+      dep: [
+        (v) => posOf((3600 * v.t! * v.q!) / (v.len! * v.wid!)),
+        '3600 × {t} × {q} ÷ ({len} × {wid})',
+        'The volume the flow fills in t, over the surface.',
+      ],
+    },
+  ),
+  rule(
+    'stokes',
+    '{vs} = 9.81 × (2650 − 998.2) × ({d} ÷ 1000000)² ÷ (18 × 0.001002)',
+    ['vs', 'd'],
+    (v) => v.vs! - vsOf(v),
+    {
+      vs: [
+        (v) => posOf(vsOf(v)),
+        '9.81 × (2650 − 998.2) × ({d} ÷ 1000000)^2 ÷ (18 × 0.001002)',
+        'Stokes’ law: weight less buoyancy against drag, for a sand grain in water at 20 °C.',
+      ],
+      d: [
+        (v) => posOf(1e6 * Math.sqrt((18 * 0.001002 * v.vs!) / (9.81 * (2650 - 998.2)))),
+        '1000000 × sqrt(18 × 0.001002 × {vs} ÷ (9.81 × (2650 − 998.2)))',
+        'Undo Stokes’ law: the speed grows as the diameter squared.',
+      ],
+    },
+  ),
+  rule(
+    'removal',
+    '{removal} = min(100, 100 × {vs} ÷ {v0})',
+    ['removal', 'vs', 'v0'],
+    (v) => v.removal! - removalOf(v),
+    {
+      removal: [
+        (v) => fin(removalOf(v)),
+        'min(100, 100 × {vs} ÷ {v0})',
+        'A particle settles if it enters low enough: the share v_s ÷ v₀ of the depth, all of it once v_s ≥ v₀.',
+      ],
+    },
+  ),
+];
+
+const settlingPage = (id: string, title: string, use: string, typed: Values) =>
+  page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'An ideal (Camp) basin: the water moves evenly from inlet to outlet.',
+      'Discrete particles that don’t flocculate: sand at 2650 kg/m³.',
+      'Water at 20 °C: 998.2 kg/m³ and 0.001002 Pa·s; g = 9.81 m/s².',
+    ],
+    variables: [
+      num('q', 'Q', 'Flow', 'm³/s', 0.001, 10, { step: 0.001 }),
+      num('len', 'L', 'Length', 'm', 1, 200, { step: 0.5 }),
+      num('wid', 'W', 'Width', 'm', 1, 100, { step: 0.5 }),
+      num('dep', 'D', 'Depth', 'm', 0.5, 10, { step: 0.1 }),
+      num('v0', 'v₀', 'Overflow rate', 'm/s', 1e-7, 1, { step: 1e-6, scientific: true }),
+      out('t', 't', 'Detention time', 'h'),
+      num('d', 'd', 'Particle diameter', 'μm', 1, 200, { step: 1 }),
+      num('vs', 'v_s', 'Settling speed', 'm/s', 1e-9, 1, { step: 1e-6, scientific: true }),
+      out('removal', 'R', 'Share removed', '%'),
+    ],
+    rules: settlingRules,
+    example: example(typed, ['v0', v0Of], ['t', tOf], ['vs', vsOf], ['removal', removalOf]),
+    startWith: ['q', 'len', 'wid', 'dep', 'd'],
+    representation: {
+      kind: 'settlingTank',
+      length: 'len',
+      width: 'wid',
+      depth: 'dep',
+      q: 'q',
+      vs: 'vs',
+      v0: 'v0',
+      removal: 'removal',
+      t: 't',
+    },
+  });
+
+const SETTLING = settlingPage(
+  'g.he-settlingTank-partial',
+  'A settling basin: overflow rate and the share removed',
+  'Use this for “0.1 m³/s flows through a 30 m × 10 m × 3 m basin. What are the overflow rate and detention time, and what share of 15 μm sand settles?”',
+  { q: 0.1, len: 30, wid: 10, dep: 3, d: 15 },
+);
+
+/** Big enough grains: 20 μm settle faster than v₀, so all of them land. */
+const SETTLING_ALL = settlingPage(
+  'g.he-settlingTank-all',
+  'Particles that all settle',
+  'Use this for “In the same basin, do 20 μm sand grains all settle?”',
+  { q: 0.1, len: 30, wid: 10, dep: 3, d: 20 },
+);
+
 export const HE4K_GALLERY_MODULES: ModuleDef[] = [
   DIALYZER,
   DIALYZER_HIGH,
@@ -702,6 +843,8 @@ export const HE4K_GALLERY_MODULES: ModuleDef[] = [
   LIGAND_DENSE,
   BIOREACTOR,
   BIOREACTOR_CROWDED,
+  SETTLING,
+  SETTLING_ALL,
 ];
 
 export const HE4K_GALLERY_LAYOUTS: LayoutDef[] = [];

@@ -184,6 +184,7 @@ const PICTURE_NAMES: Record<string, string> = {
   scaffold: 'a porous scaffold: an open-cell cube, struts as thick as its relative density',
   ligandGrid: 'adhesion ligands on a grid under a cell’s edge; focal adhesions when close enough',
   bioreactor: 'a sparged bioreactor: cells by density, a dissolved-oxygen gauge from 0 to C∗',
+  settlingTank: 'a settling basin to scale: a particle falling at v_s as the flow carries it',
   propertyDiagram: 'a T–v, P–v or T–s plane with the vapor dome, states and a cycle',
   elementChain: 'finite elements: springs or bars between nodes, loads, displacements; a mesh',
   fatigueDiagram: 'fatigue: a Goodman diagram, an S–N line on log axes, a Miner damage bar',

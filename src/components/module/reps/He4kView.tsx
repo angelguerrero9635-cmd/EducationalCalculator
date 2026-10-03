@@ -1,7 +1,8 @@
 /**
  * Group K's college kinds (round 4, typesHe4k.ts), one line in `RepresentationView`:
  * HC160 `dialyzer`, HC161 `attenuation`, HC162 `scaffold`,
- * HC163 `ligandGrid`, HC164 `bioreactor`.
+ * HC163 `ligandGrid`, HC164 `bioreactor`,
+ * HC176 `settlingTank`.
  */
 import type { He4kSpec } from '@/data/modules/typesHe4k';
 
@@ -11,6 +12,7 @@ import { Bioreactor } from './Bioreactor';
 import { Dialyzer } from './Dialyzer';
 import { LigandGrid } from './LigandGrid';
 import { Scaffold } from './Scaffold';
+import { SettlingTank } from './SettlingTank';
 
 export function He4kView({ spec, calc }: { spec: He4kSpec; calc: Calculator }) {
   switch (spec.kind) {
@@ -24,5 +26,7 @@ export function He4kView({ spec, calc }: { spec: He4kSpec; calc: Calculator }) {
       return <LigandGrid spec={spec} calc={calc} />; // HC163
     case 'bioreactor':
       return <Bioreactor spec={spec} calc={calc} />; // HC164
+    case 'settlingTank':
+      return <SettlingTank spec={spec} calc={calc} />; // HC176
   }
 }

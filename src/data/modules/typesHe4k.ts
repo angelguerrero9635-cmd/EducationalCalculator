@@ -1,7 +1,7 @@
 /**
  * College pictures, round 4, group K (docs/RENDERINGS_HE.md): the new kinds HC160 `dialyzer`,
  * HC161 `attenuation`, HC162 `scaffold`,
- * HC163 `ligandGrid`, HC164 `bioreactor`.
+ * HC163 `ligandGrid`, HC164 `bioreactor`, HC176 `settlingTank`.
  * Kept apart from `types.ts` so the union only names them.
  *
  * Every string is a variable id; a `NumOrVar` is a fixed number or one. A value is read in its
@@ -129,9 +129,38 @@ export interface BioreactorSpec {
   xMax?: string;
 }
 
+// ─── HC176: settlingTank ───────────────────────────────────────────────────────
+
+/**
+ * HC176 (ACC-P25): an ideal (Camp) rectangular settling basin in side view, painted concrete
+ * and water, `length` × `depth` (m) to scale (the depth stretched by a whole factor when the
+ * basin is too shallow to read, and the factor written). A particle enters at the surface and
+ * falls at `vs` (m/s) while the water carries it at Q ÷ (width × depth): it lands inside exactly
+ * when v_s ≥ v₀ = Q ÷ (length × width). The critical path (v₀, surface to the far corner) is
+ * dashed; particles entering below min(1, v_s ÷ v₀) of the depth settle, that band shaded at
+ * the inlet. `q` m³/s, `width` m (into the page). `v0`, `removal` (% or a share) and `t`
+ * (detention, h) are the page's, checked.
+ */
+export interface SettlingTankSpec {
+  kind: 'settlingTank';
+  length: NumOrVar;
+  width: NumOrVar;
+  depth: NumOrVar;
+  q: NumOrVar;
+  vs: NumOrVar;
+  v0?: string;
+  removal?: string;
+  t?: string;
+}
+
 /** Every new kind of group K. */
 export type He4kSpec =
-  DialyzerSpec | AttenuationSpec | ScaffoldSpec | LigandGridSpec | BioreactorSpec;
+  | DialyzerSpec
+  | AttenuationSpec
+  | ScaffoldSpec
+  | LigandGridSpec
+  | BioreactorSpec
+  | SettlingTankSpec;
 
 const HE4K_KINDS = new Set<string>([
   'dialyzer',
@@ -139,6 +168,7 @@ const HE4K_KINDS = new Set<string>([
   'scaffold',
   'ligandGrid',
   'bioreactor',
+  'settlingTank',
 ]);
 
 /** Whether a picture is one of group K's new kinds. */
@@ -157,5 +187,7 @@ export function he4kSpecVars(r: He4kSpec): string[] {
       return ids(r.density, r.spacing, r.threshold);
     case 'bioreactor':
       return ids(r.cStar, r.kla, r.q, r.x, r.our, r.c, r.xMax);
+    case 'settlingTank':
+      return ids(r.length, r.width, r.depth, r.q, r.vs, r.v0, r.removal, r.t);
   }
 }

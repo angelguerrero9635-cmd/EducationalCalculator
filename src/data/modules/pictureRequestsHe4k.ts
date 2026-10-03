@@ -118,4 +118,21 @@ export const HE4K_REQUESTS: PictureRequest[] = [
     status: 'drawn',
     gallery: ['g.he-bioreactor-steady', 'g.he-bioreactor-crowded'],
   },
+  {
+    ...ask(
+      'HC176',
+      'settlingTank',
+      'An ideal settling basin in side view to scale: a particle entering at the surface falls at v_s while the flow carries it, landing inside exactly when v_s ≥ v₀ = Q ÷ LW; the critical path dashed and the settled share of the inlet shaded',
+      [`${E}environmental#0`],
+      [
+        'From ACC-P25. New kind (typesHe4k.ts SettlingTankSpec, reps/SettlingTank.tsx, reps/he4kMath.ts).',
+        "Fields: { kind: 'settlingTank', length, width, depth (m), q (Q, m³/s), vs (v_s, m/s), v0? (m/s, checked), removal? (% or a share, checked), t? (detention, h, checked) }.",
+        'Painted concrete walls and floor, the water deepening down, inflow over the inlet wall and outflow over the weir; length and depth to scale, the depth stretched by a whole factor (1, 2, 3, 4, 5, 10 …) when the basin would be under 70 px deep, and the factor written (“depth ×3”). The particle (a sand grain) enters at the surface and runs straight to where it lands, Q ÷ (W·v_s) downstream, or to the outlet wall; the critical path at v₀ (surface to the far corner) dashed; when v_s < v₀, the band of the inlet below v_s ÷ v₀ of the depth shaded and its limiting path dotted. Q, v₀ and v_s at the top, L and D dimensioned, removal and W along the bottom. A "?" value draws no path. No handles. The page passes v_s (its own Stokes constants: ρ_p, water at 20 °C and g stay in the page’s relation, never the picture).',
+        "Example: { kind: 'settlingTank', length: 'len', width: 'wid', depth: 'dep', q: 'q', vs: 'vs', v0: 'v0', removal: 'removal', t: 't' } (0.1 m³/s, 30 × 10 × 3 m → v₀ = 3.33 × 10⁻⁴ m/s, t = 2.5 h; 15 μm → v_s = 2.02 × 10⁻⁴ m/s → 60.6% removed; 20 μm → 100%).",
+        'Harness (harness/picturesHe4k.ts): stepping the particle across at Q ÷ WD and down at v_s lands it inside exactly when v_s ≥ v₀, as drawn; v₀, t and removal = min(1, v_s ÷ v₀) as written.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: ['g.he-settlingTank-partial', 'g.he-settlingTank-all'],
+  },
 ];

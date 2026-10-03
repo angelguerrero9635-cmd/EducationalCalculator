@@ -1,6 +1,7 @@
 /**
  * The arithmetic group K's college pictures draw from (round 4: HC160 dialyzer, HC161 attenuation, HC162
- * scaffold, HC163 ligandGrid, HC164 bioreactor), shared by the
+ * scaffold, HC163 ligandGrid, HC164 bioreactor,
+ * HC176 settlingTank), shared by the
  * pictures and their harness checks.
  */
 
@@ -151,4 +152,32 @@ export function halton(n: number): [number, number][] {
     return r;
   };
   return Array.from({ length: n }, (_, i) => [h(i + 1, 2), h(i + 1, 3)]);
+}
+
+// ─── HC176: settlingTank ───────────────────────────────────────────────────────
+
+/**
+ * A particle entering an ideal basin at the surface: the water carries it at Q ÷ (W·D) while
+ * it falls at v_s, so it reaches the floor `reach` = Q ÷ (W·v_s) m downstream. It lands inside
+ * when reach ≤ L (exactly when v_s ≥ v₀ = Q ÷ (L·W)); else it leaves over the weir at `exitDepth`
+ * (m below the surface). `removal` = min(1, v_s ÷ v₀).
+ */
+export function settlingPath(L: number, W: number, D: number, Q: number, vs: number) {
+  const v0 = Q / (L * W);
+  const reach = Q / (W * vs);
+  const lands = reach <= L * (1 + 1e-12);
+  return {
+    v0,
+    reach,
+    lands,
+    exitDepth: lands ? D : (D * L) / reach,
+    removal: Math.min(1, vs / v0),
+  };
+}
+
+/** The whole factor the depth is stretched by so a basin D deep in L reads (about 70 px of 260). */
+export function depthStretch(L: number, D: number, px: number, want = 70) {
+  const raw = (D / L) * px;
+  for (const e of [1, 2, 3, 4, 5, 10, 20, 50, 100]) if (raw * e >= want) return e;
+  return 100;
 }

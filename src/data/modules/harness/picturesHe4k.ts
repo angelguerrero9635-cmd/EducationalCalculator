@@ -12,6 +12,7 @@ import {
   PHOTONS,
   photonDepths,
   photonRows,
+  settlingPath,
   strutFor,
   ureaDots,
 } from '@/components/module/reps/he4kMath';
@@ -209,6 +210,49 @@ function bioreactorIssues(rep: Extract<He4kSpec, { kind: 'bioreactor' }>, val: V
   return out;
 }
 
+/**
+ * HC176 `settlingTank`: stepping the particle through the basin (the flow's speed Q ÷ WD across,
+ * v_s down, 2000 steps) lands it inside exactly when v_s ≥ v₀ = Q ÷ LW, and the drawn path
+ * agrees; the page's v₀, detention LWD ÷ Q (h) and removal min(1, v_s ÷ v₀).
+ */
+function settlingIssues(rep: Extract<He4kSpec, { kind: 'settlingTank' }>, val: Val): string[] {
+  const out: string[] = [];
+  const get = (x: string | number | undefined) => (x === undefined ? undefined : val(x));
+  const [L, W, D, Q, vs] = [
+    get(rep.length),
+    get(rep.width),
+    get(rep.depth),
+    get(rep.q),
+    get(rep.vs),
+  ];
+  if ([L, W, D, Q, vs].some((x) => x === undefined || x <= 0)) return out;
+  const v0 = Q! / (L! * W!);
+  const page0 = get(rep.v0);
+  if (page0 !== undefined && !close(page0, v0))
+    out.push(`settlingTank: v₀ = ${page0} is not Q ÷ LW = ${v0}`);
+  const t = get(rep.t);
+  if (t !== undefined && !close(t, (L! * W! * D!) / Q! / 3600))
+    out.push(`settlingTank: t = ${t} h is not LWD ÷ Q`);
+  // March the particle: across at Q ÷ WD, down at v_s, until the floor or the outlet wall.
+  const u = Q! / (W! * D!);
+  const dt = Math.min(D! / vs!, L! / u) / 2000;
+  let [x, y] = [0, 0];
+  while (x < L! && y < D!) [x, y] = [x + u * dt, y + vs! * dt];
+  const landsBySteps = y >= D! && x <= L! * (1 + 2e-3);
+  const drawn = settlingPath(L!, W!, D!, Q!, vs!);
+  const clear = Math.abs(vs! - v0) > 2e-3 * v0;
+  if (clear && landsBySteps !== drawn.lands)
+    out.push(
+      `settlingTank: the particle ${landsBySteps ? 'lands' : 'leaves'}, but is drawn the other way`,
+    );
+  if (clear && drawn.lands !== vs! >= v0)
+    out.push(`settlingTank: lands is ${drawn.lands} with v_s = ${vs}, v₀ = ${v0}`);
+  const removal = get(rep.removal);
+  if (removal !== undefined && !sameShare(removal, Math.min(1, vs! / v0)))
+    out.push(`settlingTank: removal ${removal} is not min(1, v_s ÷ v₀)`);
+  return out;
+}
+
 export function he4kIssues(rep: He4kSpec, val: Val): string[] {
   switch (rep.kind) {
     case 'dialyzer':
@@ -221,5 +265,7 @@ export function he4kIssues(rep: He4kSpec, val: Val): string[] {
       return ligandIssues(rep, val);
     case 'bioreactor':
       return bioreactorIssues(rep, val);
+    case 'settlingTank':
+      return settlingIssues(rep, val);
   }
 }
