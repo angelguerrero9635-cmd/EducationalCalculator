@@ -564,3 +564,19 @@ with 5–6 domains, mole maps, aquifers, refraction, GIS shoelace and buffers, p
 potentials, dilution series, limbs, binary phase diagrams, machining, linkages, materials icons,
 laminae, rockets, open channels, hydrographs, block diagrams, dB budgets, quantizers and EM waves).
 Tracker entries are in `pictureRequestsHe3<x>.ts`, demos in `galleryHe3<x>.ts`.
+
+2026-10-03, college round 4: HC94–HC191 are drawn, so every college request is drawn (groups
+A–N; earth and ocean: ternary, silicate chains, rupture, fossil ranges and the cliff sequence,
+interference colours, T–S, sea-surface slope, wave depth; atmosphere and geophysics: thickness,
+adiabats, saturation, lapse rates, the greenhouse layer, seismic rays by speed, gravity profiles,
+electrode arrays, circulation cells; GIS and geography: catchments, contour profiles, rasters,
+point patterns, herd immunity, pyramids, sensor geometry, spectral curves; biology and
+bioengineering: surface to volume, chromosome counts, evolution and Gram icons, pedigrees,
+linkage maps, codons, the trp operon, resolution, tissues, the heart as a pump, gait, spring and
+dashpot, implant and scanner icons, diffusion, dialysis, attenuation and echo, scaffolds, ligand
+spacing, bioreactors, settling tanks, plumes; engineering: the Moody chart, gears, printed
+layers, fits, orthographic views, line types and GD&T, casting, soil phases, LOS, one-line
+diagrams, RF spectra, constellations, bases and two's complement, orbital elements, PFD symbols;
+computing: K-maps, state diagrams, pipelines, data structures, three-set Venn diagrams, memory
+maps, datapaths). Tracker entries are in `pictureRequestsHe4<x>.ts`, demos in
+`galleryHe4<x>.ts`; every demo was screenshotted at 390 px in light and dark.

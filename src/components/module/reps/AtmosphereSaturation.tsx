@@ -71,9 +71,11 @@ export function AtmosphereSaturation({
   const tVar = typeof spec.temperature === 'string' ? spec.temperature : undefined;
   const tdVar = typeof spec.dewPoint === 'string' ? spec.dewPoint : undefined;
   const keep = [spec.temperature, spec.dewPoint, spec.pressure];
-  // The labels: eₛ beside the curve's point, T_d above-left of the dew point, e right of the
+  // The labels: eₛ beside the curve's point, T_d by the dew point, e right of the
   // air's point (or under the line across when there is no room) and T under it.
   const eRight = ok && X(t!) + 14 + tagW(eText ?? '') < R;
+  // T_d goes above-left of the dew point while it clears the axis numbers, else at the foot of its line.
+  const tdLeft = !ok || X(td!) - 8 - tagW(tdText ?? '') > L + 4;
 
   const lines: string[] = [];
   if (!ok) lines.push('Type the temperature and the dew point to place the air.');
@@ -256,10 +258,10 @@ export function AtmosphereSaturation({
                       ) : null}
                       {tdText ? (
                         <Tag
-                          x={X(td!) - 8}
-                          y={Y(e!) - 8}
+                          x={tdLeft ? X(td!) - 8 : X(td!) + 6}
+                          y={tdLeft ? Y(e!) - 8 : BASE - 8}
                           text={tdText}
-                          anchor="end"
+                          anchor={tdLeft ? 'end' : 'start'}
                           color={c.fnSecond}
                           w={BW}
                         />
