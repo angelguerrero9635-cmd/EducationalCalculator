@@ -364,6 +364,10 @@ const light = {
   landMagma: '#D9381E',
   landSand: '#E9CE8E',
   landClay: '#B98568',
+  /** College round 4, group M (HC174): a soil's air and water phases and the cuts between. */
+  he4mAir: '#E4EAF1',
+  he4mWater: '#86BEEA',
+  he4mPhaseLine: '#5B6470',
   landGrass: '#8CC26B',
   /** HC27 truss (college): tension and compression members, the free body of a section. */
   trussTension: '#B91C1C',
@@ -1103,6 +1107,9 @@ const dark: Palette = {
   landMagma: '#B8321B',
   landSand: '#A8905C',
   landClay: '#86604B',
+  he4mAir: '#2B323C',
+  he4mWater: '#2F6CA3',
+  he4mPhaseLine: '#A3ACB9',
   landGrass: '#5E8C45',
   trussTension: '#F87171',
   trussCompression: '#2DD4BF',

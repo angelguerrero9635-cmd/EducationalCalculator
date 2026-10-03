@@ -128,6 +128,7 @@ import {
   he4eGraphIssues,
   he4eNormalIssues,
 } from './picturesHe4e';
+import { he4mIssues } from './picturesHe4m';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -2560,6 +2561,9 @@ export function repIssues(
       break;
     case 'driftPaths':
       out.push(...driftPathsIssues(rep, val)); // HC153
+      break;
+    case 'soilPhases':
+      out.push(...he4mIssues(rep, val)); // HC174–HC181, group M
       break;
     case 'solidOfRevolution':
       out.push(...solidIssues(rep, val)); // HC65

@@ -120,6 +120,7 @@ search or the sitemap, but the module tests and the harness run over it):
 | `coralSection`     | a fossil coral's daily lines across yearly bands; D beside 24 hours    | Earth science history (H110)        |
 | `transit`          | a planet crossing its star to scale; the light curve dipping by δ      | Earth and space exoplanets (H110)   |
 | `habitableZone`    | a star's zone 0.95√L to 1.37√L AU, green; the planet at a with T       | Earth and space exoplanets (H110)   |
+| `soilPhases`       | air, water and solids to scale (Vₛ = 1, Vᵥ = e); volumes, weights      | College soil mechanics (HC174)      |
 | `parallax`         | Earth in January and July, a near star shifting on far stars; p, d     | Earth and space stars (H110)        |
 | `controlVolume`    | a unit or steel device in a control volume; streams, Q̇, Ẇ, in = out    | College balances, devices (HC5)     |
 | `velocityProfile`  | tube, vessel, plates or film: v arrows, v_max = 2v_avg, τ_w; c lines   | College transport, blood (HC13)     |
