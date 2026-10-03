@@ -231,6 +231,17 @@ const antiAt = (v: Values, x: number) =>
     }),
   );
 
+/** The right ends a + iΔx, i = 1 to n, and x² at each (the rectangles' heights). */
+const rightEnds = (v: Values) =>
+  Array.from({ length: v.n! }, (_, i) => exact(v.a! + (i + 1) * v.dx!));
+const rightHeights = (v: Values) => rightEnds(v).map((x) => exact(x * x));
+
+/** The right sum of x² on [a, b] with n strips: Δx(na² + aΔx·n(n + 1) + Δx²·n(n + 1)(2n + 1) ÷ 6). */
+const rightSum = (v: Values) => {
+  const [n, a, w] = [v.n!, v.a!, v.dx!];
+  return w * (n * a * a + a * w * n * (n + 1) + (w * w * n * (n + 1) * (2 * n + 1)) / 6);
+};
+
 export const COLLEGE_MATH_MODULES: ModuleDef[] = [
   {
     // Calculus I → Limits and continuity: a quotient at x = a, 0/0 or k/0.
@@ -2175,6 +2186,136 @@ export const COLLEGE_MATH_MODULES: ModuleDef[] = [
       b: 'q',
       c: 'r',
       area: { from: 'a', to: 'b', value: 'I', signed: true },
+    },
+  },
+  {
+    // Calculus I → Definite integrals: the right Riemann sum of x² on [a, b] against the exact value.
+    id: 'he.math.calc-1#3~riemann',
+    title: 'Riemann sums',
+    use: 'Use this for “Estimate the integral of x² from 1 to 4 with 6 right-endpoint rectangles, then find the error.”',
+    assumptions: [
+      'Cut a to b into n strips of width Δx = (b − a) ÷ n. Each rectangle is as tall as f(x) = x² at its right end, x = a + iΔx.',
+      'The rectangles’ total area Sₙ estimates the integral; the exact value is I = (b³ − a³) ÷ 3, by the Fundamental Theorem.',
+      'Where x² rises across a strip (x ≥ 0), the right end is the tallest point, so Sₙ is too big; where it falls, too small.',
+      'The more strips, the closer Sₙ comes to I: the integral is the limit of Sₙ as n → ∞.',
+    ],
+    variables: [
+      V('a', 'a', 'Lower limit', { min: -100, max: 100, step: 0.1 }),
+      V('b', 'b', 'Upper limit', { min: -100, max: 100, step: 0.1 }),
+      V('n', 'n', 'Number of rectangles', { integer: true, min: 1, max: 100 }),
+      V('dx', 'Δx', 'Width of each rectangle', { min: 0, max: 200, step: 0.0001, derived: true }),
+      V('S', 'Sₙ', 'Right Riemann sum', { min: 0, max: 1e7, step: 0.0001, derived: true }),
+      V('I', 'I', 'Exact value of the integral', {
+        min: -1e7,
+        max: 1e7,
+        derived: true,
+        ...sixths,
+      }),
+      V('E', 'E', 'Error of the sum, Sₙ − I', {
+        min: -1e7,
+        max: 1e7,
+        step: 0.0001,
+        derived: true,
+      }),
+    ],
+    ...rels(
+      rule(
+        'a < b',
+        'The lower limit {a} is below the upper limit {b}',
+        ['a', 'b'],
+        (v) => v.a! < v.b!,
+        'Pick a lower limit a below the upper limit b, so the strips run left to right.',
+      ),
+      derive(
+        'Δx = (b − a) ÷ n',
+        '{dx} = ({b} − {a}) ÷ {n}',
+        'dx',
+        ['b', 'a', 'n'],
+        (v) => (v.b! - v.a!) / v.n!,
+        '({b} − {a}) ÷ {n}',
+        'Cut the interval from a to b into n strips of equal width.',
+      ),
+      withStep(
+        derive(
+          'Sₙ = Δx × (f(a + Δx) + f(a + 2Δx) + … + f(b))',
+          '{S} = {dx} × ({n} × {a}² + 2 × {a} × {dx} × {n} × ({n} + 1) ÷ 2 + {dx}² × {n} × ({n} + 1) × (2 × {n} + 1) ÷ 6)',
+          'S',
+          ['dx', 'a', 'n'],
+          rightSum,
+          // Few strips: the right ends squared, as a student adds them; many: the sum formula.
+          (v) =>
+            v.n! <= 6
+              ? `(${rightEnds(v)
+                  .map((x) => `${signed(x)}²`)
+                  .join(' + ')}) × ${formatNumber(v.dx!)}`
+              : '{dx} × ({n} × {a}² + 2 × {a} × {dx} × {n} × ({n} + 1) ÷ 2 + {dx}² × {n} × ({n} + 1) × (2 × {n} + 1) ÷ 6)',
+          (v) =>
+            v.n! <= 6
+              ? 'Square each right end to get the rectangle’s height, add the heights, then multiply by the width Δx.'
+              : 'Each height is (a + iΔx)² = a² + 2aiΔx + i²Δx². Adding them needs the sums 1 + 2 + … + n and 1² + 2² + … + n², worked out below.',
+        ),
+        'S',
+        {
+          // The heights added; or the sums of i and i² the formula holds, worked out.
+          work: (v) => {
+            const n = v.n!;
+            if (n <= 6)
+              return [
+                `Sₙ = (${rightHeights(v)
+                  .map((h) => formatNumber(h))
+                  .join(' + ')}) × ${formatNumber(v.dx!)}`,
+              ];
+            return [
+              `1 + 2 + … + ${n} = (${n} × ${n + 1}) ÷ 2 = ${(n * (n + 1)) / 2}`,
+              `1² + 2² + … + ${n}² = (${n} × ${n + 1} × ${2 * n + 1}) ÷ 6 = ${(n * (n + 1) * (2 * n + 1)) / 6}`,
+            ];
+          },
+        },
+      ),
+      derive(
+        'I = (b³ − a³) ÷ 3',
+        '{I} = ({b}³ − {a}³) ÷ 3',
+        'I',
+        ['b', 'a'],
+        (v) => (v.b! ** 3 - v.a! ** 3) / 3,
+        '({b}³ − {a}³) ÷ 3',
+        'F(x) = x³ ÷ 3 is an antiderivative of x², so the integral is F(b) − F(a).',
+      ),
+      withStep(
+        derive(
+          'E = Sₙ − I',
+          '{E} = {S} − {I}',
+          'E',
+          ['S', 'I'],
+          (v) => v.S! - v.I!,
+          '{S} − {I}',
+          'Subtract the exact value from the sum: how far the rectangles miss.',
+        ),
+        'E',
+        {
+          note: (v) =>
+            v.E === undefined
+              ? ''
+              : Math.abs(v.E) < 1e-9
+                ? '→ The sum hits the exact value: the overs and unders cancel'
+                : `→ The sum is ${v.E > 0 ? 'too big' : 'too small'}; more rectangles bring it closer to I`,
+        },
+      ),
+    ),
+    // [0, 2], n = 4: Δx = 0.5, S₄ = (0.25 + 1 + 2.25 + 4) × 0.5 = 3.75; I = 8/3 = 2.667; E = 1.083.
+    example: { a: 0, b: 2, n: 4, dx: 0.5, S: 3.75, I: 8 / 3, E: 3.75 - 8 / 3 },
+    startWith: ['a', 'b', 'n'],
+    // y = x² with a to b shaded and the n right-end rectangles over it, their sum Sₙ written.
+    representation: {
+      kind: 'functionGraph',
+      family: 'quadratic',
+      form: 'standard',
+      a: 1,
+      b: 0,
+      c: 0,
+      shade: { from: 'a', to: 'b' },
+      riemann: { n: 'n', from: 'a', to: 'b', side: 'right', sum: 'S' },
+      fixed: true,
     },
   },
 ];
