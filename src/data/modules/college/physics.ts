@@ -564,4 +564,84 @@ export const COLLEGE_PHYSICS_MODULES: ModuleDef[] = [
       pulley: { layout: 'table', m1: 'm1', m2: 'm2', mu: 'mu', a: 'a', T: 'T' },
     },
   },
+  {
+    // University Physics I → Newton's laws: an Atwood machine, both blocks hanging.
+    id: 'he.physics.university-1#1~atwood',
+    title: 'An Atwood machine: two hanging blocks',
+    use: 'Use this for “Blocks of 3 kg and 5 kg hang from the two ends of a string over a pulley. Find their acceleration and the string’s tension.”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'A light string over a light, frictionless pulley, so the tension T is the same on both sides; g = 9.81 m/s².',
+      'The string doesn’t stretch, so the blocks move together: as m₂ goes down by some distance, m₁ goes up by the same.',
+      'a > 0 means the heavier m₂ goes down; with equal masses a = 0 and the blocks stay as they are.',
+    ],
+    variables: [
+      V('m1', 'm₁', 'Left mass', { unit: 'kg', min: 0.01, max: 1000, step: 0.1 }),
+      V('m2', 'm₂', 'Right mass', { unit: 'kg', min: 0.01, max: 1000, step: 0.1 }),
+      V('a', 'a', 'Acceleration (m₂ down)', {
+        unit: 'm/s²',
+        min: -G,
+        max: G,
+        derived: true,
+      }),
+      V('T', 'T', 'Tension', { unit: 'N', min: 0, max: 1e5, derived: true }),
+    ],
+    ...rels(
+      rel(
+        'a = (m₂ − m₁)g ÷ (m₁ + m₂)',
+        '{a} = ({m2} − {m1}) × 9.81 ÷ ({m1} + {m2})',
+        ['a', 'm1', 'm2'],
+        (v) => v.a! * (v.m1! + v.m2!) - (v.m2! - v.m1!) * G,
+        {
+          a: [
+            (v) => exact(((v.m2! - v.m1!) * G) / (v.m1! + v.m2!)),
+            '({m2} − {m1}) × 9.81 ÷ ({m1} + {m2})',
+            'Add m₂g − T = m₂a and T − m₁g = m₁a: T cancels. The difference in weight moves both masses.',
+          ],
+          m2: [
+            (v) => div(v.m1! * (G + v.a!), G - v.a!),
+            '{m1} × (9.81 + {a}) ÷ (9.81 − {a})',
+            'Gather the m₂ terms of a(m₁ + m₂) = (m₂ − m₁)g on one side, then divide by g − a.',
+          ],
+          m1: [
+            (v) => div(v.m2! * (G - v.a!), G + v.a!),
+            '{m2} × (9.81 − {a}) ÷ (9.81 + {a})',
+            'Gather the m₁ terms of a(m₁ + m₂) = (m₂ − m₁)g on one side, then divide by g + a.',
+          ],
+        },
+      ),
+      rel(
+        'T = 2m₁m₂g ÷ (m₁ + m₂)',
+        '{T} = 2 × {m1} × {m2} × 9.81 ÷ ({m1} + {m2})',
+        ['T', 'm1', 'm2'],
+        (v) => v.T! * (v.m1! + v.m2!) - 2 * v.m1! * v.m2! * G,
+        {
+          T: [
+            (v) => exact((2 * v.m1! * v.m2! * G) / (v.m1! + v.m2!)),
+            '2 × {m1} × {m2} × 9.81 ÷ ({m1} + {m2})',
+            'Put a into T − m₁g = m₁a: T = m₁(g + a), which simplifies to 2m₁m₂g over m₁ + m₂.',
+          ],
+          m1: [
+            (v) => div(v.T! * v.m2!, 2 * v.m2! * G - v.T!),
+            '{T} × {m2} ÷ (2 × {m2} × 9.81 − {T})',
+            'Gather the m₁ terms of T(m₁ + m₂) = 2m₁m₂g on one side, then divide by 2m₂g − T.',
+          ],
+          m2: [
+            (v) => div(v.T! * v.m1!, 2 * v.m1! * G - v.T!),
+            '{T} × {m1} ÷ (2 × {m1} × 9.81 − {T})',
+            'Gather the m₂ terms of T(m₁ + m₂) = 2m₁m₂g on one side, then divide by 2m₁g − T.',
+          ],
+        },
+      ),
+    ),
+    // m₁ = 3 kg, m₂ = 5 kg: a = 2 × 9.81 ÷ 8 = 2.4525 m/s², T = 2 × 3 × 5 × 9.81 ÷ 8 = 36.79 N
+    // (on m₁: 36.79 − 29.43 = 7.358 = 3 × 2.4525; on m₂: 49.05 − 36.79 = 12.26 = 5 × 2.4525).
+    example: { m1: 3, m2: 5, a: 2.4525, T: 36.7875 },
+    startWith: ['m1', 'm2'],
+    representation: {
+      kind: 'freeBody',
+      g: G,
+      pulley: { layout: 'atwood', m1: 'm1', m2: 'm2', a: 'a', T: 'T' },
+    },
+  },
 ];
