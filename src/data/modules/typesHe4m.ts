@@ -10,6 +10,7 @@
  * - HC181 `rfSpectrum` (new kind): an AM or FM signal in time and its spectrum.
  * - HC182 `complexPlane` `constellation`: M-PSK or M-QAM points, Gray-coded, with boundaries.
  * - HC183 `placeValueChart` `base` 2, 8, 16: columns weighted bᵏ, a two's complement row.
+ * - HC173 explore figure `orbitElements`: the equatorial plane, the tilted orbit, one element lit.
  */
 import type { NumOrVar } from './typesGraphs';
 
@@ -253,6 +254,32 @@ export interface PlaceValueBaseHe4m {
 
 /** The variable ids HC183's fields name. */
 export const placeValueBaseVars = (r: PlaceValueBaseHe4m): string[] => ids(r.width, r.twos);
+
+// ─── HC173: explore figure orbitElements ────────────────────────────────────────
+
+/**
+ * An `orbitElements` scene (HC173, ACC-P13): Earth in its equatorial plane with the vernal
+ * equinox direction, the orbit tilted through the node line (the half below the plane dashed),
+ * periapsis and the satellite marked, and one element lit: `'i'` the tilt across the node line,
+ * `'raan'` Ω in the equatorial plane from the vernal equinox to the ascending node, `'argp'` ω in
+ * the orbit plane from the node to periapsis, `'nu'` ν from periapsis to the satellite, `'shape'`
+ * the major axis 2a with e. Angles in degrees; with i = 0 there is no node line and Ω (and ω)
+ * are undefined, which the figure says.
+ */
+export interface OrbitScene {
+  i: number;
+  raan: number;
+  argp: number;
+  nu: number;
+  e: number;
+  lit?: 'i' | 'raan' | 'argp' | 'nu' | 'shape';
+}
+
+/** The round 4 group M explore figures (listed in `layouts/types.ts`). */
+export type He4mFigure = { kind: 'orbitElements' };
+
+/** The scene field each group M figure reads (for the layout tests). */
+export const HE4M_SCENE_FIELD = { orbitElements: 'orbit' } as const;
 
 // ─── The new kinds together ──────────────────────────────────────────────────────
 

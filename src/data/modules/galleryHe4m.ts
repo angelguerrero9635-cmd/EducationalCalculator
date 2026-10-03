@@ -7,6 +7,7 @@
  * HC181: `rfSpectrum`, the new kind (he.engineering.communication-systems#0, ~fm).
  * HC182: `complexPlane` `constellation` (he.engineering.communication-systems#1).
  * HC183: `placeValueChart` `base` 2, 8, 16 (he.engineering.digital-logic#0).
+ * HC173: explore figure `orbitElements` (he.engineering.orbital-mechanics#1~elements).
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
@@ -1043,4 +1044,102 @@ export const HE4M_GALLERY_MODULES: ModuleDef[] = [
   BASE8,
 ];
 
-export const HE4M_GALLERY_LAYOUTS: LayoutDef[] = [];
+// ─── HC173: the orbital elements (orbital-mechanics#1~elements, explore) ──────
+
+/** An orbit from Cape Canaveral, i = 28.5°, drawn with e = 0.5 so periapsis clears Earth. */
+const GTO = { i: 28.5, raan: 110, argp: 270, nu: 200, e: 0.5 };
+
+const ORBIT_ELEMENTS: LayoutDef = {
+  kind: 'explore',
+  id: 'g.he-orbitElements',
+  title: 'What i, Ω, ω and ν describe',
+  use: 'Use this for “What does the argument of perigee measure, and in which plane?”',
+  assumptions: [
+    'Two-body motion: the orbit is a fixed ellipse with Earth’s centre at one focus.',
+    'Angles are measured from Earth’s centre; x points to the vernal equinox and z north.',
+    'The drawing is not to scale; the angles are.',
+  ],
+  figure: { kind: 'orbitElements' },
+  scenes: [
+    {
+      label: 'Inclination i',
+      lines: [
+        'i is the tilt of the orbit plane from the equatorial plane, measured across the node line.',
+        'A launch due east from 28.5° N gives i = 28.5°, the smallest that site can reach.',
+      ],
+      orbit: { ...GTO, lit: 'i' },
+    },
+    {
+      label: 'Right ascension Ω',
+      lines: [
+        'Ω is measured in the equatorial plane, east from the vernal equinox to the ascending node.',
+        'The ascending node is where the satellite crosses the equator going north.',
+      ],
+      orbit: { ...GTO, lit: 'raan' },
+    },
+    {
+      label: 'Argument of perigee ω',
+      lines: [
+        'ω is measured in the orbit plane, from the ascending node to periapsis, the way the satellite moves.',
+        'With i and Ω it fixes how the ellipse sits in space.',
+      ],
+      orbit: { ...GTO, lit: 'argp' },
+    },
+    {
+      label: 'True anomaly ν',
+      lines: [
+        'ν is measured in the orbit plane from periapsis to the satellite.',
+        'It is the one element that changes as the satellite moves; the other five stay fixed.',
+      ],
+      orbit: { ...GTO, lit: 'nu' },
+    },
+    {
+      label: 'Size and shape a, e',
+      lines: [
+        'a is half the long axis, from periapsis to apoapsis; it sets the period.',
+        'e = (rₐ − rₚ) ÷ (rₐ + rₚ) sets the shape: 0 is a circle, near 1 a long ellipse.',
+      ],
+      orbit: { ...GTO, lit: 'shape' },
+    },
+  ],
+};
+
+const ORBIT_ELEMENTS_EDGE: LayoutDef = {
+  kind: 'explore',
+  id: 'g.he-orbitElements-equatorial',
+  title: 'When an element is undefined',
+  use: 'Use this for “Why does a geostationary orbit have no right ascension of the ascending node?”',
+  assumptions: [
+    'Two-body motion: the orbit is a fixed ellipse with Earth’s centre at one focus.',
+    'The drawing is not to scale; the angles are.',
+  ],
+  figure: { kind: 'orbitElements' },
+  scenes: [
+    {
+      label: 'i = 0: no node',
+      lines: [
+        'With i = 0 the orbit lies in the equatorial plane and never crosses it.',
+        'There is no ascending node, so Ω is undefined; ω is then measured from the vernal equinox instead.',
+      ],
+      orbit: { i: 0, raan: 0, argp: 50, nu: 120, e: 0.3, lit: 'raan' },
+    },
+    {
+      label: 'i = 0: ν still works',
+      lines: [
+        'ν needs only periapsis and the satellite, so it is defined in any orbit that is not a circle.',
+        'Here the satellite is 120° past periapsis.',
+      ],
+      orbit: { i: 0, raan: 0, argp: 50, nu: 120, e: 0.3, lit: 'nu' },
+    },
+    {
+      label: 'i above 90°',
+      lines: [
+        'An inclination above 90° is retrograde: the satellite moves west, against Earth’s spin.',
+        'Sun-synchronous orbits use i near 98° so the orbit plane turns with the Sun.',
+      ],
+      orbit: { i: 98, raan: 30, argp: 90, nu: 160, e: 0.05, lit: 'i' },
+    },
+  ],
+};
+
+export const HE4M_GALLERY_LAYOUTS: LayoutDef[] = [ORBIT_ELEMENTS, ORBIT_ELEMENTS_EDGE];

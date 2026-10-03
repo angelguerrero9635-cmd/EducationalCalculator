@@ -196,3 +196,77 @@ export function twosSteps(
 /** The value of digits in a base. */
 export const valueOf = (digits: number[], base: number) =>
   digits.reduce((acc, d) => acc * base + d, 0);
+
+// ─── HC173: the classical orbital elements ───────────────────────────────────────
+
+export type Vec3 = [number, number, number];
+const D2R = Math.PI / 180;
+
+/**
+ * An orbit's frame from its elements (degrees): `n` the ascending node's direction (in the
+ * equatorial plane), `up` the orbit plane's direction 90° ahead of the node, `P` toward
+ * periapsis and `Q` 90° ahead of it in the direction of motion, `h` the orbit's normal. The
+ * reference frame: x toward the vernal equinox, z north, the equatorial plane z = 0.
+ */
+export function orbitFrame(iDeg: number, raanDeg: number, argpDeg: number) {
+  const [i, O, w] = [iDeg * D2R, raanDeg * D2R, argpDeg * D2R];
+  const n: Vec3 = [Math.cos(O), Math.sin(O), 0];
+  const up: Vec3 = [-Math.sin(O) * Math.cos(i), Math.cos(O) * Math.cos(i), Math.sin(i)];
+  const along = (t: number): Vec3 => [
+    Math.cos(t) * n[0] + Math.sin(t) * up[0],
+    Math.cos(t) * n[1] + Math.sin(t) * up[1],
+    Math.cos(t) * n[2] + Math.sin(t) * up[2],
+  ];
+  const P = along(w);
+  const Q = along(w + Math.PI / 2);
+  const h: Vec3 = [Math.sin(O) * Math.sin(i), -Math.cos(O) * Math.sin(i), Math.cos(i)];
+  return { n, up, P, Q, h, along };
+}
+
+/** The position at true anomaly ν (degrees) on an orbit of semi-major axis a. */
+export function orbitPoint(
+  f: ReturnType<typeof orbitFrame>,
+  a: number,
+  e: number,
+  nuDeg: number,
+): Vec3 {
+  const nu = nuDeg * D2R;
+  const r = (a * (1 - e * e)) / (1 + e * Math.cos(nu));
+  return [
+    r * (Math.cos(nu) * f.P[0] + Math.sin(nu) * f.Q[0]),
+    r * (Math.cos(nu) * f.P[1] + Math.sin(nu) * f.Q[1]),
+    r * (Math.cos(nu) * f.P[2] + Math.sin(nu) * f.Q[2]),
+  ];
+}
+
+export const dot3 = (a: Vec3, b: Vec3) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+
+/**
+ * The arcs an `orbitElements` figure lights, as unit directions from the centre: Ω from the
+ * vernal equinox to the node in the equatorial plane; i from the equatorial plane up to the
+ * orbit plane, across the node line; ω from the node to periapsis and ν from periapsis to the
+ * satellite, both in the orbit plane.
+ */
+export function elementArc(
+  which: 'raan' | 'i' | 'argp' | 'nu',
+  iDeg: number,
+  raanDeg: number,
+  argpDeg: number,
+  nuDeg: number,
+  steps = 32,
+): Vec3[] {
+  const f = orbitFrame(iDeg, raanDeg, argpDeg);
+  const O = raanDeg * D2R;
+  const out: Vec3[] = [];
+  for (let k = 0; k <= steps; k++) {
+    const s = k / steps;
+    if (which === 'raan') out.push([Math.cos(s * O), Math.sin(s * O), 0]);
+    else if (which === 'i') {
+      // From the equatorial plane's direction 90° ahead of the node, tilted up by s·i.
+      const t = s * iDeg * D2R;
+      out.push([-Math.sin(O) * Math.cos(t), Math.cos(O) * Math.cos(t), Math.sin(t)]);
+    } else if (which === 'argp') out.push(f.along(s * argpDeg * D2R));
+    else out.push(f.along((argpDeg + s * nuDeg) * D2R));
+  }
+  return out;
+}

@@ -16,10 +16,16 @@
  * - HC183 `placeValueChart` `base`: Σ digit × weight = N in the columns drawn (N fits them);
  *   the twos rows invert every bit and add 1, giving 2ⁿ − N, the page's `twos`; −N needs
  *   N < 2ⁿ⁻¹.
+ * - HC173 explore figure `orbitElements`: every scene has its elements in range; Ω's arc lies in
+ *   the equatorial plane, ω's and ν's in the orbit plane, i's ends at i from the equator in the
+ *   orbit plane; a scene lighting Ω or ω with i = 0 says Ω is undefined.
  */
 import {
   constellation,
   digitsIn,
+  dot3,
+  elementArc,
+  orbitFrame,
   twosSteps,
   valueOf,
   widthFor,
@@ -29,6 +35,7 @@ import {
   spectrumLines,
 } from '@/components/module/reps/he4mMath';
 
+import type { LayoutDef } from '../layouts';
 import type { Representation } from '../types';
 
 type Val = (x: string | number) => number | undefined;
@@ -297,6 +304,55 @@ export function placeValueBaseIssues(rep: Representation, val: Val): string[] {
     if (T !== undefined && T !== 2 ** n - N)
       out.push(`twos: the page's ${T} is not 2ⁿ − N = ${2 ** n - N}`);
     if (N >= 2 ** (n - 1)) out.push(`twos: −${N} does not fit in ${n} signed bits`);
+  }
+  return out;
+}
+
+/** HC173 (and HC178's cards): group M's layout figures. */
+export function he4mLayoutIssues(l: LayoutDef): string[] {
+  const out: string[] = [];
+  if (l.kind !== 'explore') return out;
+  for (const sc of l.scenes) {
+    const at = `scene "${sc.label}"`;
+    if (sc.orbit && l.figure.kind !== 'orbitElements')
+      out.push(`${at}: an orbit scene on a ${l.figure.kind} figure`);
+    if (l.figure.kind !== 'orbitElements') continue;
+    const o = sc.orbit;
+    if (!o) {
+      out.push(`${at}: no orbit`);
+      continue;
+    }
+    if (o.i < 0 || o.i > 180) out.push(`${at}: i = ${o.i}° outside 0–180°`);
+    if (o.e < 0 || o.e >= 1) out.push(`${at}: e = ${o.e} is not an ellipse's`);
+    for (const [k, v] of [
+      ['Ω', o.raan],
+      ['ω', o.argp],
+      ['ν', o.nu],
+    ] as const)
+      if (v < 0 || v >= 360) out.push(`${at}: ${k} = ${v}° outside 0–360°`);
+    const f = orbitFrame(o.i, o.raan, o.argp);
+    const flat = o.i === 0 || o.i === 180;
+    // Ω is measured in the equatorial plane (z = 0) …
+    if (elementArc('raan', o.i, o.raan, o.argp, o.nu).some((v) => Math.abs(v[2]) > 1e-9))
+      out.push(`${at}: Ω's arc leaves the equatorial plane`);
+    // … ω and ν in the orbit plane (normal h).
+    for (const w of ['argp', 'nu'] as const)
+      if (elementArc(w, o.i, o.raan, o.argp, o.nu).some((v) => Math.abs(dot3(v, f.h)) > 1e-9))
+        out.push(`${at}: ${w === 'argp' ? 'ω' : 'ν'}'s arc leaves the orbit plane`);
+    // i: the arc ends in the orbit plane, i above the equatorial plane.
+    const iArc = elementArc('i', o.i, o.raan, o.argp, o.nu);
+    const end = iArc[iArc.length - 1]!;
+    if (Math.abs(dot3(end, f.h)) > 1e-9) out.push(`${at}: i's arc does not reach the orbit plane`);
+    const tilt = (Math.asin(Math.min(1, Math.abs(end[2]))) * 180) / Math.PI;
+    if (Math.abs(tilt - Math.min(o.i, 180 - o.i)) > 1e-6) out.push(`${at}: i's arc is not ${o.i}°`);
+    if (
+      flat &&
+      (o.lit === 'raan' || o.lit === 'argp') &&
+      !sc.lines.some((t) => /undefined/.test(t))
+    )
+      out.push(
+        `${at}: i = 0 lights ${o.lit === 'raan' ? 'Ω' : 'ω'} without saying it is undefined`,
+      );
   }
   return out;
 }

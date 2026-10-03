@@ -143,4 +143,21 @@ export const HE4M_REQUESTS: PictureRequest[] = [
       'g.he-placeValueChart-base-8',
     ],
   },
+  {
+    ...ask(
+      'HC173',
+      'orbitElements',
+      'Explore figure: Earth in its equatorial plane, the vernal-equinox direction, the orbit tilted through the node line, periapsis, the ascending node and the satellite, with one element lit (i, Ω, ω, ν, or a and e)',
+      [`${E}orbital-mechanics#1~elements`],
+      [
+        'From ACC-P13. New explore figure (typesHe4m.ts OrbitScene and He4mFigure, layouts/orbitElementsFigure.tsx, geometry in reps/he4mMath.ts).',
+        "Scene field: orbit: { i, raan, argp, nu, e (angles in degrees), lit? ('i' | 'raan' | 'argp' | 'nu' | 'shape') }.",
+        'Earth painted, the plane and orbit flat; the half of the orbit below the plane dashed; the lit angle drawn as an arc with its value, the others summarised under the figure. i = 0: no node line, and a scene lighting Ω or ω says it is undefined (the check requires the word). Not to scale (said in the assumptions); the angles are.',
+        "Example: { kind: 'explore', figure: { kind: 'orbitElements' }, scenes: [{ label: 'Inclination i', lines: […], orbit: { i: 28.5, raan: 110, argp: 270, nu: 200, e: 0.5, lit: 'i' } }, …] }.",
+        'Layout check (harness/picturesHe4m.ts he4mLayoutIssues): elements in range; Ω’s arc in the equatorial plane, ω’s and ν’s in the orbit plane, i’s arc ending in the orbit plane at i from the equator; i = 0 with Ω or ω lit says undefined.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: ['g.he-orbitElements', 'g.he-orbitElements-equatorial'],
+  },
 ];

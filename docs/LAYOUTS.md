@@ -145,6 +145,15 @@ College inorganic chemistry, round 4 (group D, HC113): `symmetryElements`
 turn, a mirror pane, the centre with the atom pairs it swaps, or an axis with a pane across it.
 The layout check applies the element and requires every atom to land on a like atom.
 
+College orbital mechanics, round 4 (group M, HC173): `orbitElements`
+(`layouts/orbitElementsFigure.tsx`), Earth in its equatorial plane with the vernal-equinox
+direction, the orbit tilted through the dashed node line (the half below the plane dashed),
+periapsis, the ascending node and the satellite marked; `orbit: { i, raan, argp, nu, e, lit? }`
+(degrees) lights `i` (across the node line), `raan` (Ω in the equatorial plane), `argp` (ω in
+the orbit plane), `nu` (ν from periapsis) or `shape` (2a with e). With i = 0 there is no node
+line and the figure says Ω is undefined. Not to scale; the angles are. The layout check keeps Ω's
+arc in the equatorial plane and ω's and ν's in the orbit plane.
+
 Grade 9 biology (HS group G): `macromolecules` (`layouts/macroFigure.tsx`): monomers on their own
 cards joining into a polymer, the joining groups and new bonds lit and one water molecule drawn per
 bond; `macro: { kind, count?, split? }` builds starch, a polypeptide (folded), a DNA strand or a fat
