@@ -10,10 +10,12 @@ import { COLLEGE_MATH_MODULES } from './math';
 import { COLLEGE_PHYSICS_MODULES } from './physics';
 import { COLLEGE_GEOGRAPHY_MODULES } from './geography';
 import { COLLEGE_ELECTRICAL_MODULES } from './electrical';
+import { COLLEGE_CHEMISTRY_MODULES } from './chemistry';
 
 export const COLLEGE_MODULES: ModuleDef[] = [
   ...COLLEGE_MATH_MODULES,
   ...COLLEGE_PHYSICS_MODULES,
   ...COLLEGE_GEOGRAPHY_MODULES,
   ...COLLEGE_ELECTRICAL_MODULES,
+  ...COLLEGE_CHEMISTRY_MODULES,
 ];
