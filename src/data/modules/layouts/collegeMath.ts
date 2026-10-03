@@ -90,4 +90,29 @@ export const COLLEGE_MATH_LAYOUTS: LayoutDef[] = [
       { label: 'x² at x = 5', bin: 'continuous' },
     ],
   },
+  {
+    // Calculus I → Related rates and optimization: the steps of an optimization problem.
+    kind: 'sequence',
+    id: 'he.math.calc-1#2~steps',
+    title: 'The steps of an optimization problem',
+    use: 'Use this for “A closed can must hold 1000 cm³. What radius and height use the least metal?”',
+    assumptions: [
+      'Optimization finds where a quantity is largest or smallest, which is where its derivative is 0 or at an end.',
+      'A constraint ties the variables together, so the quantity can be written with one variable.',
+      'Check the answer is a maximum or a minimum: compare the ends, or use the sign of the second derivative.',
+    ],
+    question: 'Put the steps for the can of 1000 cm³ with the least metal in order.',
+    stages: [
+      {
+        label: 'Draw it and name the quantities: radius r, height h, volume V = 1000 cm³, area A',
+      },
+      { label: 'Write the quantity to make smallest: A = 2πr² + 2πrh' },
+      {
+        label: 'Use the constraint πr²h = 1000 to leave one variable: A = 2πr² + 2000 ÷ r',
+      },
+      { label: 'Differentiate and set dA/dr = 4πr − 2000 ÷ r² to 0, so r³ = 500 ÷ π' },
+      { label: 'Check the second derivative: 4π + 4000 ÷ r³ > 0, so this is a minimum' },
+      { label: 'Answer with units: r ≈ 5.42 cm and h ≈ 10.84 cm, twice the radius' },
+    ],
+  },
 ];
