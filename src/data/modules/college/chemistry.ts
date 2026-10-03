@@ -927,4 +927,206 @@ export const COLLEGE_CHEMISTRY_MODULES: ModuleDef[] = [
       },
     } satisfies ModuleDef;
   })(),
+  (() => {
+    // Gases → van der Waals: 1.00 mol CO₂ (a = 3.59, b = 0.0427) in 0.500 L at 300 K.
+    // P_id = 49.2 atm; P = 53.8 − 14.4 = 39.5 atm; Z = 0.802 (attraction wins).
+    const [n, vol, T, a, b] = [1, 0.5, 300, 3.59, 0.0427];
+    const Pid = (n * R_LATM * T) / vol;
+    const Pf = (n * R_LATM * T) / (vol - n * b);
+    const Pa = (a * n * n) / (vol * vol);
+    const P = Pf - Pa;
+    return {
+      id: 'he.chemistry.gen-chem-1#2~real-gas',
+      title: 'Real gases: the van der Waals pressure',
+      // As the data are given (1.00 mol, 0.500 L, 3.59): 39.5 atm.
+      workedFigures: 3,
+      use: 'Use this for “Find the pressure of 1.00 mol of CO₂ in 0.500 L at 300 K with the van der Waals equation (a = 3.59 L²·atm/mol², b = 0.0427 L/mol). Compare it with the ideal pressure.”',
+      assumptions: [
+        'b is the room one mole of the molecules takes up itself, so they move in only V − nb. a measures their pull on each other, which takes an² ÷ V² off the push on the walls.',
+        'R = 0.08206 L·atm/(mol·K), so the volume is in liters, the pressures in atm and the temperature in kelvins. Read a and b for your gas from a table.',
+        'The compressibility factor Z = PV ÷ nRT is the real pressure over the ideal one: Z < 1 means attraction wins, Z > 1 means the molecules’ own volume wins.',
+      ],
+      variables: [
+        V('n', 'n', 'Amount of gas', {
+          unit: 'mol',
+          units: ['mol'],
+          min: 0.001,
+          max: 100,
+          step: 0.001,
+          figures: 4,
+        }),
+        V('V', 'V', 'Volume', {
+          unit: 'L',
+          units: ['L'],
+          min: 0.01,
+          max: 1000,
+          step: 0.001,
+          figures: 4,
+        }),
+        V('T', 'T', 'Temperature', {
+          unit: 'K',
+          units: ['K'],
+          min: 1,
+          max: 5000,
+          step: 0.01,
+          figures: 5,
+        }),
+        V('a', 'a', 'Attraction constant', {
+          unit: 'L²·atm/mol²',
+          units: ['L²·atm/mol²'],
+          min: 0,
+          max: 50,
+          step: 0.001,
+          figures: 4,
+        }),
+        V('b', 'b', 'Excluded volume', {
+          unit: 'L/mol',
+          units: ['L/mol'],
+          min: 0,
+          max: 0.5,
+          step: 0.0001,
+          figures: 4,
+        }),
+        V('Pid', 'P_id', 'Ideal pressure', { unit: 'atm', min: 1e-6, max: 1e6, figures: 4 }),
+        V('Pf', 'P_free', 'Pressure in the free volume', {
+          unit: 'atm',
+          min: 1e-6,
+          max: 1e6,
+          figures: 4,
+        }),
+        V('Pa', 'P_att', 'Pressure lost to attraction', {
+          unit: 'atm',
+          min: 0,
+          max: 1e6,
+          figures: 4,
+        }),
+        V('P', 'P', 'Van der Waals pressure', { unit: 'atm', min: 1e-6, max: 1e6, figures: 4 }),
+        V('Z', 'Z', 'Compressibility factor', { min: 0.001, max: 100, figures: 4 }),
+      ],
+      ...rels(
+        rel(
+          'P_id = nRT ÷ V',
+          '{Pid} = {n} × 0.08206 × {T} ÷ {V}',
+          ['Pid', 'n', 'T', 'V'],
+          (v) => v.Pid! * v.V! - v.n! * R_LATM * v.T!,
+          {
+            Pid: [
+              (v) => (v.n! * R_LATM * v.T!) / v.V!,
+              '{n} × 0.08206 × {T} ÷ {V}',
+              'The ideal gas law solved for P: the pressure if the molecules had no size and no pull.',
+            ],
+            n: [
+              (v) => (v.Pid! * v.V!) / (R_LATM * v.T!),
+              '{Pid} × {V} ÷ (0.08206 × {T})',
+              'Turn the ideal gas law around: n = PV ÷ RT.',
+            ],
+            T: [
+              (v) => (v.Pid! * v.V!) / (v.n! * R_LATM),
+              '{Pid} × {V} ÷ ({n} × 0.08206)',
+              'Turn the ideal gas law around: T = PV ÷ nR.',
+            ],
+            V: [
+              (v) => (v.n! * R_LATM * v.T!) / v.Pid!,
+              '{n} × 0.08206 × {T} ÷ {Pid}',
+              'Turn the ideal gas law around: V = nRT ÷ P.',
+            ],
+          },
+        ),
+        rule(
+          'nb < V',
+          '{n} × {b} < {V}',
+          ['n', 'b', 'V'],
+          (v) => v.n! * v.b! < v.V!,
+          'The molecules’ own volume nb must be less than the container’s volume V.',
+        ),
+        rel(
+          'P_free = nRT ÷ (V − nb)',
+          '{Pf} = {n} × 0.08206 × {T} ÷ ({V} − {n} × {b})',
+          ['Pf', 'n', 'T', 'V', 'b'],
+          (v) => v.Pf! * (v.V! - v.n! * v.b!) - v.n! * R_LATM * v.T!,
+          {
+            Pf: [
+              (v) =>
+                v.V! > v.n! * v.b! ? (v.n! * R_LATM * v.T!) / (v.V! - v.n! * v.b!) : undefined,
+              '{n} × 0.08206 × {T} ÷ ({V} − {n} × {b})',
+              'The ideal gas law in the room the molecules leave free, V − nb: less room, more hits on the walls.',
+            ],
+            V: [
+              (v) => v.n! * v.b! + (v.n! * R_LATM * v.T!) / v.Pf!,
+              '{n} × {b} + {n} × 0.08206 × {T} ÷ {Pf}',
+              'The free volume is nRT ÷ P_free; add back the molecules’ own volume nb.',
+            ],
+            b: [
+              (v) => (v.V! - (v.n! * R_LATM * v.T!) / v.Pf!) / v.n!,
+              '({V} − {n} × 0.08206 × {T} ÷ {Pf}) ÷ {n}',
+              'Take the free volume nRT ÷ P_free from V, then share what is left among the moles.',
+            ],
+            T: [
+              (v) => (v.Pf! * (v.V! - v.n! * v.b!)) / (v.n! * R_LATM),
+              '{Pf} × ({V} − {n} × {b}) ÷ ({n} × 0.08206)',
+              'Multiply by the free volume and divide by nR.',
+            ],
+          },
+        ),
+        rel(
+          'P_att = an² ÷ V²',
+          '{Pa} = {a} × {n}² ÷ {V}²',
+          ['Pa', 'a', 'n', 'V'],
+          (v) => v.Pa! * v.V! * v.V! - v.a! * v.n! * v.n!,
+          {
+            Pa: [
+              (v) => (v.a! * v.n! * v.n!) / (v.V! * v.V!),
+              '{a} × {n}² ÷ {V}²',
+              'A molecule about to hit the wall is pulled back by its neighbors. Both counts grow with n ÷ V, so the loss goes as a(n ÷ V)².',
+            ],
+            a: [
+              (v) => (v.Pa! * v.V! * v.V!) / (v.n! * v.n!),
+              '{Pa} × {V}² ÷ {n}²',
+              'Turn P_att = an² ÷ V² around: a = P_att × V² ÷ n².',
+            ],
+          },
+        ),
+        rel(
+          'P = P_free − P_att',
+          '{P} = {Pf} − {Pa}',
+          ['P', 'Pf', 'Pa'],
+          (v) => v.P! - (v.Pf! - v.Pa!),
+          {
+            P: [
+              (v) => exact(v.Pf! - v.Pa!),
+              '{Pf} − {Pa}',
+              'The van der Waals equation: the push in the free volume, less what the attraction takes off.',
+            ],
+            Pf: [(v) => exact(v.P! + v.Pa!), '{P} + {Pa}', 'Add the attraction back on.'],
+            Pa: [
+              (v) => exact(v.Pf! - v.P!),
+              '{Pf} − {P}',
+              'The attraction takes off the difference.',
+            ],
+          },
+        ),
+        rel('Z = P ÷ P_id', '{Z} = {P} ÷ {Pid}', ['Z', 'P', 'Pid'], (v) => v.Z! * v.Pid! - v.P!, {
+          Z: [
+            (v) => v.P! / v.Pid!,
+            '{P} ÷ {Pid}',
+            'Z = PV ÷ nRT is the real pressure over the ideal one at the same n, V and T.',
+          ],
+          P: [(v) => v.Z! * v.Pid!, '{Z} × {Pid}', 'Multiply the ideal pressure by Z.'],
+          Pid: [(v) => v.P! / v.Z!, '{P} ÷ {Z}', 'Divide the real pressure by Z.'],
+        }),
+      ),
+      example: { n, V: vol, T, a, b, Pid, Pf, Pa, P, Z: P / Pid },
+      startWith: ['n', 'V', 'T', 'a', 'b'],
+      unitSystems: ['metric'],
+      representation: {
+        kind: 'gasPiston',
+        law: 'ideal',
+        volume: 'V',
+        temperature: 'T',
+        moles: 'n',
+        R: R_LATM,
+        real: { a: 'a', b: 'b', ideal: 'Pid', pressure: 'P', z: 'Z', gas: 'CO₂' },
+      },
+    } satisfies ModuleDef;
+  })(),
 ];
