@@ -147,6 +147,17 @@ const boxWork = (s: number, x: number) => {
   ];
 };
 
+/** The field's area x(P − 2x) multiplied out (−2x² + Px), its slope P − 4x, then A′ at the side. */
+const fenceWork = (P: number, x: number) => {
+  const A = [-2, P, 0];
+  const dA = polyDerivative(A);
+  return [
+    `A(x) = x(${formatNumber(P)} − 2x) = ${polyForm(A)}`,
+    `A′(x) = ${polyForm(dA)}`,
+    `A′(${formatNumber(x)}) = ${polyAt(dA, x)} = ${formatNumber(exact(P - 4 * x))}`,
+  ];
+};
+
 export const COLLEGE_MATH_MODULES: ModuleDef[] = [
   {
     // Calculus I → Limits and continuity: a quotient at x = a, 0/0 or k/0.
@@ -1471,6 +1482,133 @@ export const COLLEGE_MATH_MODULES: ModuleDef[] = [
       marks: ['extrema'],
       xMin: 0,
       axes: { x: 'Cut x (cm)', y: 'Volume V (cm³)' },
+    },
+  },
+  {
+    // Calculus I → Related rates and optimization: a field on a river, A = x(P − 2x), best x = P/4.
+    id: 'he.math.calc-1#2~fence',
+    title: 'The largest field along a river',
+    use: 'Use this for “A gardener has 16 m of fence for a plot along a straight river, with no fence on the river side. What sides give the largest area?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'The field is a rectangle with one long side on the river, so the fence P runs on the other three sides: two sides x away from the river and one side y along it.',
+      'So y = P − 2x and the area is A(x) = x(P − 2x), which makes sense for 0 < x < P ÷ 2. At both ends A = 0.',
+      'A′(x) = P − 4x is 0 only at x = P ÷ 4, and A″ = −4 < 0, so that side gives the largest area.',
+      'Lengths are in m and areas in m²; the slope A′ is in m² per m of side, which is m.',
+    ],
+    variables: [
+      V('P', 'P', 'Length of fence', fixed('m', 1, 10000, 0.1)),
+      V('x', 'x', 'Side away from the river', fixed('m', 0.01, 5000, 0.01)),
+      V('y', 'y', 'Side along the river', fixed('m', 0, 10000, 0.01)),
+      V('A', 'A', 'Area of the field', fixed('m²', 0, 2e7, 0.01)),
+      V('dA', 'm', 'Slope of the area A′(x) at that side', fixed('m', -1e4, 1e4, 0.01)),
+      V('xs', 'xₘₐₓ', 'Best side away from the river', fixed('m', 0, 2500, 0.0001, true)),
+      V('As', 'Aₘₐₓ', 'Largest area', fixed('m²', 0, 2e7, 0.01, true)),
+      V('h', 'h', 'Half the fence', { min: 0, max: 5000, derived: true, hidden: true }),
+    ],
+    ...rels(
+      rule(
+        '0 < x < P ÷ 2',
+        'The side {x} is between 0 and half the fence {P}',
+        ['x', 'P'],
+        (v) => v.x! > 0 && 2 * v.x! < v.P!,
+        'The side away from the river must be above 0 and less than half the fence, or no fence is left along the river.',
+      ),
+      rel('y = P − 2x', '{y} = {P} − 2 × {x}', ['y', 'P', 'x'], (v) => v.y! - (v.P! - 2 * v.x!), {
+        y: [
+          (v) => exact(v.P! - 2 * v.x!),
+          (v) => `${formatNumber(v.P!)} − 2 × ${formatNumber(v.x!)}`,
+          'Two sides of length x use 2x of the fence; the rest runs along the river.',
+        ],
+        x: [
+          (v) => exact((v.P! - v.y!) / 2),
+          (v) => `(${formatNumber(v.P!)} − ${formatNumber(v.y!)}) ÷ 2`,
+          'Take the side along the river from the fence, then share the rest between the two sides.',
+        ],
+        P: [
+          (v) => exact(v.y! + 2 * v.x!),
+          (v) => `${formatNumber(v.y!)} + 2 × ${formatNumber(v.x!)}`,
+          'The fence is the side along the river and the two sides away from it.',
+        ],
+      }),
+      rel('A = xy', '{A} = {x} × {y}', ['A', 'x', 'y'], (v) => v.A! - v.x! * v.y!, {
+        A: [
+          (v) => exact(v.x! * v.y!),
+          (v) => `${formatNumber(v.x!)} × ${formatNumber(v.y!)}`,
+          'A rectangle’s area is one side times the other.',
+        ],
+        y: [
+          (v) => (v.x! > 0 ? exact(v.A! / v.x!) : undefined),
+          (v) => `${formatNumber(v.A!)} ÷ ${formatNumber(v.x!)}`,
+          'Divide the area by the side away from the river.',
+        ],
+      }),
+      withStep(
+        derive(
+          'm = A′(x) = P − 4x',
+          '{dA} = {P} − 4 × {x}',
+          'dA',
+          ['P', 'x'],
+          (v) => v.P! - 4 * v.x!,
+          (v) => `${formatNumber(v.P!)} − 4 × ${formatNumber(v.x!)}`,
+          (v) =>
+            v.P! - 4 * v.x! > 0
+              ? 'Multiply A out and use the power rule. A′ > 0 here, so a longer side x still adds area.'
+              : v.P! - 4 * v.x! < 0
+                ? 'Multiply A out and use the power rule. A′ < 0 here, so x is already past the best side.'
+                : 'Multiply A out and use the power rule. A′ = 0 here: this is the best side.',
+        ),
+        'dA',
+        { work: (v) => fenceWork(v.P!, v.x!) },
+      ),
+      derive(
+        'xₘₐₓ = P ÷ 4',
+        '{xs} = {P} ÷ 4',
+        'xs',
+        ['P'],
+        (v) => v.P! / 4,
+        (v) => `${formatNumber(v.P!)} ÷ 4`,
+        'Set A′ = 0: P − 4x = 0, so x = P ÷ 4. Half the fence then runs along the river.',
+      ),
+      derive(
+        'Aₘₐₓ = xₘₐₓ(P − 2xₘₐₓ)',
+        '{As} = {xs} × ({P} − 2 × {xs})',
+        'As',
+        ['xs', 'P'],
+        (v) => exact(v.xs! * (v.P! - 2 * v.xs!)),
+        (v) => `${formatNumber(v.xs!)} × (${formatNumber(v.P!)} − 2 × ${formatNumber(v.xs!)})`,
+        'Put the best side into A. A″ = −4 < 0, so the graph is a hill and this is its top.',
+      ),
+      hide(
+        derive(
+          'h = P ÷ 2',
+          '{h} = {P} ÷ 2',
+          'h',
+          ['P'],
+          (v) => v.P! / 2,
+          '{P} ÷ 2',
+          'A = −2x(x − P ÷ 2) is 0 at half the fence.',
+        ),
+      ),
+    ),
+    // P = 20 m, x = 4 m: y = 12 m, A = 48 m², A′(4) = 20 − 16 = 4; xₘₐₓ = 5 m, Aₘₐₓ = 5 × 10 = 50 m².
+    // A small field keeps both zeros (0 and 10) in the graph's window, which can't follow P.
+    example: { P: 20, x: 4, y: 12, A: 48, dA: 4, xs: 5, As: 50, h: 10 },
+    startWith: ['P', 'x'],
+    // A = −2x(x − P/2): the field's area against the side, its top at x = P/4.
+    representation: {
+      kind: 'functionGraph',
+      family: 'quadratic',
+      form: 'factored',
+      a: -2,
+      p: 0,
+      q: 'h',
+      name: 'A',
+      at: { x: 'x', y: 'A' },
+      shows: { vertex: { x: 'xs', y: 'As' } },
+      marks: ['vertex'],
+      xMin: 0,
+      axes: { x: 'Side x (m)', y: 'Area A (m²)' },
     },
   },
 ];
