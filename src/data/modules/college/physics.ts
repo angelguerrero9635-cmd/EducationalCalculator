@@ -1961,4 +1961,128 @@ export const COLLEGE_PHYSICS_MODULES: ModuleDef[] = [
       axes: { x: 'Mass left m (kg)', y: 'Change in speed Δv (m/s)' },
     },
   },
+  {
+    // University Physics I → Rotation and torque: a round body rolls from rest down a drop h
+    // without slipping; the energy mgh is shared between moving along and spinning.
+    id: 'he.physics.university-1#4',
+    use: 'Use this for “A 3 kg disk of radius 0.2 m rolls from rest down a ramp that drops 2 m. How fast is it moving at the bottom, and how fast does it spin?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'It rolls without slipping, so v = rω, and static friction at the contact point does no work; g = 9.81 m/s².',
+      'I = cmr² with the shape factor c: hoop 1, hollow ball ⅔ (type 0.6667), disk ½, solid ball 0.4.',
+      'It starts from rest, so mgh = ½mv² + ½Iω² = ½(1 + c)mv²: the mass and the radius cancel from v.',
+    ],
+    variables: [
+      V('c', 'c', 'Shape factor (I = cmr²)', { min: 0.4, max: 1, step: 0.01 }),
+      V('m', 'm', 'Mass', { unit: 'kg', min: 0.001, max: 1e4, step: 0.1 }),
+      V('r', 'r', 'Radius', { unit: 'm', min: 0.001, max: 100, step: 0.01 }),
+      V('h', 'h', 'Drop', { unit: 'm', min: 0.01, max: 1000, step: 0.1 }),
+      V('v', 'v', 'Speed at the bottom', { unit: 'm/s', min: 0, max: 200, derived: true }),
+      V('w', 'ω', 'Spin at the bottom', { unit: 'rad/s', min: 0, max: 2e5, derived: true }),
+      V('Kt', 'K_t', 'Kinetic energy of moving along', {
+        unit: 'J',
+        min: 0,
+        max: 1e8,
+        derived: true,
+      }),
+      V('Kr', 'K_r', 'Kinetic energy of spinning', { unit: 'J', min: 0, max: 1e8, derived: true }),
+    ],
+    ...rels(
+      rel(
+        'v = √(2gh ÷ (1 + c))',
+        '{v} = √(2 × 9.81 × {h} ÷ (1 + {c}))',
+        ['v', 'h', 'c'],
+        (v) => v.v! ** 2 * (1 + v.c!) - 2 * G * v.h!,
+        {
+          v: [
+            (v) => exact(Math.sqrt((2 * G * v.h!) / (1 + v.c!))),
+            '√(2 × 9.81 × {h} ÷ (1 + {c}))',
+            'The drop’s energy mgh becomes ½(1 + c)mv². The mass cancels; solve for v.',
+          ],
+          h: [
+            (v) => exact((v.v! ** 2 * (1 + v.c!)) / (2 * G)),
+            '{v}² × (1 + {c}) ÷ (2 × 9.81)',
+            'Undo the energy balance gh = ½(1 + c)v²: multiply v² by 1 + c and divide by 2g.',
+          ],
+          c: [
+            (v) => (v.v! > 0 ? exact((2 * G * v.h!) / v.v! ** 2 - 1) : undefined),
+            '2 × 9.81 × {h} ÷ {v}² − 1',
+            'Undo gh = ½(1 + c)v²: 2gh ÷ v² is 1 + c, so take away 1.',
+          ],
+        },
+      ),
+      rel('ω = v ÷ r', '{w} = {v} ÷ {r}', ['w', 'v', 'r'], (v) => v.w! * v.r! - v.v!, {
+        w: [
+          (v) => div(v.v!, v.r!),
+          '{v} ÷ {r}',
+          'Rolling without slipping, the rim turns as fast as the body moves: v = rω.',
+        ],
+        v: [(v) => exact(v.w! * v.r!), '{w} × {r}', 'Rolling without slipping: v = rω.'],
+        r: [(v) => div(v.v!, v.w!), '{v} ÷ {w}', 'Undo v = rω: divide the speed by the spin.'],
+      }),
+      rel(
+        'K_t = ½mv²',
+        '{Kt} = 0.5 × {m} × {v}²',
+        ['Kt', 'm', 'v'],
+        (v) => v.Kt! - 0.5 * v.m! * v.v! ** 2,
+        {
+          Kt: [
+            (v) => exact(0.5 * v.m! * v.v! ** 2),
+            '0.5 × {m} × {v}²',
+            'The energy of moving along is half the mass times the speed squared.',
+          ],
+          m: [
+            (v) => div(2 * v.Kt!, v.v! ** 2),
+            '2 × {Kt} ÷ {v}²',
+            'Undo K_t = ½mv²: double the energy and divide by v².',
+          ],
+        },
+      ),
+      rel('K_r = cK_t', '{Kr} = {c} × {Kt}', ['Kr', 'c', 'Kt'], (v) => v.Kr! - v.c! * v.Kt!, {
+        Kr: [
+          (v) => exact(v.c! * v.Kt!),
+          '{c} × {Kt}',
+          'The spin energy ½Iω² is ½(cmr²)(v ÷ r)² = c × ½mv²: c times the energy of moving along.',
+        ],
+        Kt: [
+          (v) => div(v.Kr!, v.c!),
+          '{Kr} ÷ {c}',
+          'Undo K_r = cK_t: divide the spin energy by c.',
+        ],
+        c: [
+          (v) => div(v.Kr!, v.Kt!),
+          '{Kr} ÷ {Kt}',
+          'The shape factor is the spin energy over the energy of moving along.',
+        ],
+      }),
+    ),
+    // The plan's solid ball: c = 0.4, 2 kg, r = 0.1 m, h = 1.5 m →
+    // v² = 2 × 9.81 × 1.5 ÷ 1.4 = 21.021, v = 4.585 m/s, ω = 45.85 rad/s,
+    // K_t = 0.5 × 2 × 21.021 = 21.02 J, K_r = 0.4 × 21.02 = 8.409 J; sum 29.43 J = mgh.
+    example: (() => {
+      const [c, m, r, h] = [0.4, 2, 0.1, 1.5];
+      const v = exact(Math.sqrt((2 * G * h) / (1 + c)));
+      const Kt = exact(0.5 * m * v ** 2);
+      return { c, m, r, h, v, w: exact(v / r), Kt, Kr: exact(c * Kt) };
+    })(),
+    startWith: ['c', 'm', 'r', 'h'],
+    // The body faded at the top, solid at the bottom with v and ω; K_t and K_r stacked to mgh,
+    // and the race of the four shapes down the same drop.
+    representation: {
+      kind: 'rotor',
+      shape: 'c',
+      mass: 'm',
+      radius: 'r',
+      rolling: {
+        height: 'h',
+        g: G,
+        speed: 'v',
+        spin: 'w',
+        kt: 'Kt',
+        kr: 'Kr',
+        shapes: [1, 2 / 3, 0.5, 0.4],
+      },
+      fixed: true,
+    },
+  },
 ];
