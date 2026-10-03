@@ -1,10 +1,11 @@
 /**
  * College card icons, round 4, group L, 48 × 48 like every card icon: the line types of an
- * engineering drawing (HC169), each shown on a small part with the line in question lit. Flat
- * line work, as a drawing is. The names are listed in data/modules/layouts/icons/he4l.ts.
+ * engineering drawing (HC169), each shown on a small part with the line in question lit; and the
+ * 14 GD&T characteristic symbols (HC170), drawn by us to the standard's shapes in a feature
+ * control frame's first cell. Flat line work, as a drawing is. The names are listed in data/modules/layouts/icons/he4l.ts.
  */
 import type { ReactNode } from 'react';
-import { Circle, G, Line, Path, Rect } from 'react-native-svg';
+import { Circle, G, Line, Path, Rect, Text } from 'react-native-svg';
 
 import { usePalette } from '@/theme';
 
@@ -123,12 +124,9 @@ export function He4lIcon({ icon, ink }: IconProps): ReactNode {
           {head(9, 13, -1, 0, lit)}
           {head(39, 13, 1, 0, lit)}
           <Rect x={18} y={9} width={12} height={8} fill={c.card} />
-          <Path
-            d="M 20 15 L 22 10 M 24 10 h 4 l -4 5 h 4"
-            stroke={lit}
-            strokeWidth={1.2}
-            fill="none"
-          />
+          <Text x={24} y={16.5} fontSize={9} fontWeight="700" textAnchor="middle" fill={lit}>
+            20
+          </Text>
         </G>
       );
     case 'extension line':
@@ -168,6 +166,125 @@ export function He4lIcon({ icon, ink }: IconProps): ReactNode {
         </G>
       );
     default:
-      return null;
+      return gdt(icon);
+  }
+
+  /** A GD&T symbol in the first cell of a feature control frame. */
+  function gdt(name: string): ReactNode {
+    const sw = 2.4;
+    const line = (x1: number, y1: number, x2: number, y2: number, k: string) => (
+      <Line
+        key={k}
+        x1={x1}
+        y1={y1}
+        x2={x2}
+        y2={y2}
+        stroke={ink}
+        strokeWidth={sw}
+        strokeLinecap="round"
+      />
+    );
+    const arrow = (x1: number, y1: number, x2: number, y2: number, k: string) => (
+      <G key={k}>
+        {line(x1, y1, x2 - (x2 - x1) * 0.18, y2 - (y2 - y1) * 0.18, `${k}l`)}
+        {head(x2, y2, x2 - x1, y2 - y1, ink)}
+      </G>
+    );
+    const shape: Record<string, ReactNode> = {
+      'GD&T straightness': line(11, 24, 37, 24, 's'),
+      'GD&T flatness': (
+        <Path
+          d="M 9 32 L 32 32 L 39 16 L 16 16 Z"
+          fill="none"
+          stroke={ink}
+          strokeWidth={sw}
+          strokeLinejoin="round"
+        />
+      ),
+      'GD&T circularity': (
+        <Circle cx={24} cy={24} r={12} fill="none" stroke={ink} strokeWidth={sw} />
+      ),
+      'GD&T cylindricity': (
+        <G>
+          <Circle cx={24} cy={24} r={9} fill="none" stroke={ink} strokeWidth={sw} />
+          {line(11, 34.4, 20, 7.8, 'a')}
+          {line(28, 40.2, 37, 13.6, 'b')}
+        </G>
+      ),
+      'GD&T perpendicularity': (
+        <G>
+          {line(24, 10, 24, 36, 'a')}
+          {line(10, 36, 38, 36, 'b')}
+        </G>
+      ),
+      'GD&T parallelism': (
+        <G>
+          {line(12, 37, 22, 11, 'a')}
+          {line(26, 37, 36, 11, 'b')}
+        </G>
+      ),
+      'GD&T angularity': (
+        <G>
+          {line(10, 36, 38, 36, 'a')}
+          {line(10, 36, 34, 14, 'b')}
+        </G>
+      ),
+      'GD&T position': (
+        <G>
+          <Circle cx={24} cy={24} r={9} fill="none" stroke={ink} strokeWidth={sw} />
+          {line(9, 24, 39, 24, 'a')}
+          {line(24, 9, 24, 39, 'b')}
+        </G>
+      ),
+      'GD&T profile of a line': (
+        <Path d="M 8 32 A 16 16 0 0 1 40 32" fill="none" stroke={ink} strokeWidth={sw} />
+      ),
+      'GD&T profile of a surface': (
+        <Path
+          d="M 8 32 A 16 16 0 0 1 40 32 Z"
+          fill="none"
+          stroke={ink}
+          strokeWidth={sw}
+          strokeLinejoin="round"
+        />
+      ),
+      'GD&T circular runout': arrow(15, 37, 33, 11, 'a'),
+      'GD&T total runout': (
+        <G>
+          {arrow(10, 36, 23, 12, 'a')}
+          {arrow(24, 36, 37, 12, 'b')}
+          {line(10, 36, 24, 36, 'c')}
+        </G>
+      ),
+      'GD&T concentricity': (
+        <G>
+          <Circle cx={24} cy={24} r={13} fill="none" stroke={ink} strokeWidth={sw} />
+          <Circle cx={24} cy={24} r={6} fill="none" stroke={ink} strokeWidth={sw} />
+        </G>
+      ),
+      'GD&T symmetry': (
+        <G>
+          {line(15, 15, 33, 15, 'a')}
+          {line(8, 24, 40, 24, 'b')}
+          {line(15, 33, 33, 33, 'c')}
+        </G>
+      ),
+    };
+    if (!(name in shape)) return null;
+    return (
+      <G>
+        <Rect
+          x={2}
+          y={2}
+          width={44}
+          height={44}
+          rx={2}
+          fill={c.card}
+          stroke={ink}
+          strokeWidth={1.2}
+        />
+        {shape[name]}
+      </G>
+    );
   }
 }

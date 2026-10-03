@@ -8,6 +8,7 @@
  * HC167 `printLayers` (he.engineering.manufacturing#2, ~cusp, ME-P20).
  * HC168 `fitDiagram` (he.engineering.manufacturing#3, ~stack, ME-P21).
  * HC169 explore figure `orthographic` and line-type card icons (he.engineering.cad-graphics#0, ME-P22).
+ * HC170 card icons for the GD&T symbols (he.engineering.cad-graphics#1, ME-P23).
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 import { colebrookF } from '@/components/module/reps/he4lMath';
@@ -996,6 +997,52 @@ const ORTHO_LINES: LayoutDef = {
   ],
 };
 
+// ─── HC170: GD&T symbols (cad-graphics#1) ─────────────────────────────────────────
+
+const GDT_SORT: LayoutDef = {
+  id: 'g.he-cardIcons-gdt',
+  title: 'GD&T symbols by category',
+  kind: 'sort',
+  use: 'Use this for sorting the geometric tolerance symbols into form, orientation, location, profile and runout.',
+  assumptions: [
+    'Form controls need no datum; the other four are measured from datums.',
+    'Concentricity and symmetry were withdrawn from ASME Y14.5 in 2018; older drawings still carry them.',
+  ],
+  question: 'Which category does the symbol control?',
+  pickBar: true,
+  bins: [
+    { id: 'form', label: 'Form', why: 'The shape of one feature by itself, with no datum.' },
+    { id: 'orientation', label: 'Orientation', why: 'The angle of a feature to a datum.' },
+    { id: 'location', label: 'Location', why: 'Where a feature sits from its datums.' },
+    {
+      id: 'profile',
+      label: 'Profile',
+      why: 'A line or surface held within a band about its true shape.',
+    },
+    {
+      id: 'runout',
+      label: 'Runout',
+      why: 'The wobble of a surface as the part turns on its datum axis.',
+    },
+  ],
+  cards: [
+    lineIcon('Straightness', 'form', 'GD&T straightness'),
+    lineIcon('Flatness', 'form', 'GD&T flatness'),
+    lineIcon('Circularity', 'form', 'GD&T circularity'),
+    lineIcon('Cylindricity', 'form', 'GD&T cylindricity'),
+    lineIcon('Perpendicularity', 'orientation', 'GD&T perpendicularity'),
+    lineIcon('Parallelism', 'orientation', 'GD&T parallelism'),
+    lineIcon('Angularity', 'orientation', 'GD&T angularity'),
+    lineIcon('Position', 'location', 'GD&T position'),
+    lineIcon('Concentricity (before 2018)', 'location', 'GD&T concentricity'),
+    lineIcon('Symmetry (before 2018)', 'location', 'GD&T symmetry'),
+    lineIcon('Profile of a line', 'profile', 'GD&T profile of a line'),
+    lineIcon('Profile of a surface', 'profile', 'GD&T profile of a surface'),
+    lineIcon('Circular runout', 'runout', 'GD&T circular runout'),
+    lineIcon('Total runout', 'runout', 'GD&T total runout'),
+  ],
+};
+
 export const HE4L_GALLERY_MODULES: ModuleDef[] = [
   MOODY_STEEL,
   MOODY_ROUGH,
@@ -1014,4 +1061,4 @@ export const HE4L_GALLERY_MODULES: ModuleDef[] = [
   FIT_STACK,
 ];
 
-export const HE4L_GALLERY_LAYOUTS: LayoutDef[] = [ORTHO_MAIN, ORTHO_ANGLE, ORTHO_LINES];
+export const HE4L_GALLERY_LAYOUTS: LayoutDef[] = [ORTHO_MAIN, ORTHO_ANGLE, ORTHO_LINES, GDT_SORT];

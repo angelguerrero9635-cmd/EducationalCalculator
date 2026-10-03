@@ -131,4 +131,19 @@ export const HE4L_REQUESTS: PictureRequest[] = [
     status: 'drawn',
     gallery: ['g.he-orthographic', 'g.he-orthographic-angle', 'g.he-cardIcons-line-types'],
   },
+  {
+    ...ask(
+      'HC170',
+      'icon',
+      'Card icons: the 14 GD&T characteristic symbols, drawn by us to the standard’s shapes in a frame cell',
+      [`${E}cad-graphics#1`],
+      [
+        'From ME-P23. Card icons (layouts/icons/he4l.tsx; names in data/modules/layouts/icons/he4l.ts HE4L_GDT_ICONS).',
+        "Names: 'GD&T straightness', 'GD&T flatness', 'GD&T circularity', 'GD&T cylindricity', 'GD&T perpendicularity', 'GD&T parallelism', 'GD&T angularity', 'GD&T position', 'GD&T profile of a line', 'GD&T profile of a surface', 'GD&T circular runout', 'GD&T total runout', and the two withdrawn in 2018, 'GD&T concentricity', 'GD&T symmetry'.",
+        "Example card: { label: 'Flatness', bin: 'form', figure: { kind: 'icon', icon: 'GD&T flatness' } }. Only the symbol names come from ASME Y14.5; every shape is our own line work. No values, so no harness check.",
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: ['g.he-cardIcons-gdt'],
+  },
 ];

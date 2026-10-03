@@ -236,6 +236,10 @@ fusion`, `electron beam melting`, `PolyJet-style jetting`, `binder jet`, `wire-a
 `laminated sheets`.
 College card icons (HC169, `layouts/icons/he4l.tsx`): line types `visible line`, `hidden line`,
 `center line`, `dimension line`, `extension line`, `circle center lines`, each lit on a part.
+GD&T symbols (HC170, the same file), in a frame cell: `GD&T straightness`, `GD&T flatness`, `GD&T
+circularity`, `GD&T cylindricity`, `GD&T perpendicularity`, `GD&T parallelism`, `GD&T
+angularity`, `GD&T position`, `GD&T profile of a line`, `GD&T profile of a surface`, `GD&T
+circular runout`, `GD&T total runout`, `GD&T concentricity`, `GD&T symmetry`.
 
 Observe figures: an observation can set `figure: { kind: 'shadowStick', stick: 100 }`
 (`layouts/ShadowStick.tsx`): a meter stick and its noon shadow for the column tapped last, to
