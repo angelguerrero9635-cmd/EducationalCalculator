@@ -68,6 +68,7 @@ export type Dimension =
   | 'magneticMoment'
   | 'electricField'
   | 'lineCharge'
+  | 'surfaceCharge'
   | 'conductance'
   | 'conductivity'
   | 'resistivity'
@@ -599,6 +600,10 @@ export const UNITS: readonly UnitDef[] = [
   listed(u('nC/m', 'nanocoulombs per meter', 'lineCharge', 1e-9, 'both')),
   listed(u('μC/m', 'microcoulombs per meter', 'lineCharge', 1e-6, 'both')),
   listed(u('C/m', 'coulombs per meter', 'lineCharge', 1, 'both')),
+  // Charge per area (σ), for a charged sheet (Gauss's law)
+  listed(u('nC/m²', 'nanocoulombs per square meter', 'surfaceCharge', 1e-9, 'both')),
+  listed(u('μC/m²', 'microcoulombs per square meter', 'surfaceCharge', 1e-6, 'both')),
+  listed(u('C/m²', 'coulombs per square meter', 'surfaceCharge', 1, 'both')),
   listed(u('μS', 'microsiemens', 'conductance', 1e-6, 'both')),
   listed(u('mS', 'millisiemens', 'conductance', 1e-3, 'both')),
   listed(u('S', 'siemens', 'conductance', 1, 'both')),
