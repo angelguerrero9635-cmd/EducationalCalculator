@@ -142,4 +142,21 @@ export const HE4H_REQUESTS: PictureRequest[] = [
       'g.he-populationPyramid-young',
     ],
   },
+  {
+    ...ask(
+      'HC137',
+      'sensorGeometry',
+      'A satellite at H over flat ground, its field of view fanned to the swath, to scale; the nadir line with H; the one pixel below, far too small to see, enlarged in a box with its IFOV cone and led from the nadir point',
+      [`${GEO}remote-sensing#0`],
+      [
+        'From EG-P30. New kind (typesHe4h.ts SensorGeometrySpec, reps/SensorGeometry.tsx, sums and layout in reps/he4hMath.ts).',
+        "Fields: { kind: 'sensorGeometry', altitude (H, km), ifov (μrad), fov (°), pixel? (m), swath? (km) }.",
+        'One scale both ways: the satellite as high as fits and the swath within the width (a 110° fan is wider than tall). The satellite is painted (metal body, solar panels), the ground painted land; the fan and brackets flat. A "?" H or FOV draws no fan or swath; a "?" IFOV no pixel size. No handles; the interim triangleSolver can go.',
+        "Example: { kind: 'sensorGeometry', altitude: 'H', ifov: 'ifov', fov: 'fov', pixel: 'pixel', swath: 'swath' }.",
+        'Harness (harness/picturesHe4h.ts): pixel = H × IFOV (km × 1,000 × μrad × 10⁻⁶); swath = 2H tan(FOV ÷ 2); the drawn fan’s half-width over its height is tan(FOV ÷ 2) and it stays in the picture.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: ['g.he-sensorGeometry-landsat', 'g.he-sensorGeometry-wide'],
+  },
 ];

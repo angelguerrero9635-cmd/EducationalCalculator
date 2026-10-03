@@ -6,6 +6,7 @@
  * HC134: `rasterGrid` `extent` (he.geography.gis#0) and `window` (he.geography.gis#2).
  * HC135: `sample` `pattern` (he.geography.gis#3).
  * HC150: `sample` `herd` (he.biology.microbiology#3).
+ * HC137: `sensorGeometry` (he.geography.remote-sensing#0).
  * HC136: `populationPyramid` (he.geography.human-geography#0~dependency).
  */
 import type { Values, VariableDef } from '@/engine/types';
@@ -901,7 +902,105 @@ const PYRAMID_YOUNG = pyramidPage(
   'expansive',
 );
 
+// ─── HC137: sensor geometry (remote-sensing#0) ─────────────────────────────────
+
+const SENSOR_RULES = [
+  rule(
+    'pixel',
+    '{pixel} = {H} × {ifov} ÷ 1000',
+    ['pixel', 'H', 'ifov'],
+    (v) => v.pixel! - (v.H! * v.ifov!) / 1000,
+    {
+      pixel: [
+        (v) => (v.H! * v.ifov!) / 1000,
+        '{H} × {ifov} ÷ 1000',
+        'A small angle times the distance is the length it spans: H in m (× 1,000) times IFOV in radians (× 10⁻⁶).',
+      ],
+      H: [
+        (v) => (1000 * v.pixel!) / v.ifov!,
+        '1000 × {pixel} ÷ {ifov}',
+        'The height at which this IFOV spans this pixel.',
+      ],
+      ifov: [
+        (v) => (1000 * v.pixel!) / v.H!,
+        '1000 × {pixel} ÷ {H}',
+        'The angle one pixel spans from this height.',
+      ],
+    },
+  ),
+  rule(
+    'swath',
+    '{swath} = 2 × {H} × tan({fov} ÷ 2)',
+    ['swath', 'H', 'fov'],
+    (v) => v.swath! - 2 * v.H! * Math.tan((v.fov! * Math.PI) / 360),
+    {
+      swath: [
+        (v) => 2 * v.H! * Math.tan((v.fov! * Math.PI) / 360),
+        '2 × {H} × tan({fov} ÷ 2)',
+        'Each half of the fan reaches H tan(FOV ÷ 2) to the side of the point straight below.',
+      ],
+      H: [
+        (v) => v.swath! / (2 * Math.tan((v.fov! * Math.PI) / 360)),
+        '{swath} ÷ (2 × tan({fov} ÷ 2))',
+        'The height that spreads this fan over this swath.',
+      ],
+    },
+  ),
+];
+
+const sensorPage = (id: string, title: string, use: string, typed: Values) =>
+  page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'The sensor looks straight down over flat ground.',
+      'Pixels at the swath’s edges are larger than the one straight below.',
+      'The IFOV is small, so the pixel is H × IFOV (the angle in radians).',
+    ],
+    variables: [
+      num('H', 'H', 'Altitude', 'km', 100, 40000, { step: 1 }),
+      num('ifov', 'IFOV', 'Instantaneous field of view', 'μrad', 1, 10000, { step: 0.1 }),
+      num('pixel', 'p', 'Ground pixel', 'm', 0, 1e6, { derived: true }),
+      num('fov', 'FOV', 'Field of view', '°', 0.1, 120, { step: 0.1 }),
+      num('swath', 'S', 'Swath width', 'km', 0, 1e6, { derived: true }),
+    ],
+    rules: SENSOR_RULES,
+    example: example(
+      typed,
+      ['pixel', (v) => (v.H! * v.ifov!) / 1000],
+      ['swath', (v) => 2 * v.H! * Math.tan((v.fov! * Math.PI) / 360)],
+    ),
+    startWith: ['H', 'ifov', 'fov'],
+    representation: {
+      kind: 'sensorGeometry',
+      altitude: 'H',
+      ifov: 'ifov',
+      fov: 'fov',
+      pixel: 'pixel',
+      swath: 'swath',
+    },
+  });
+
+const SENSOR = sensorPage(
+  'g.he-sensorGeometry-landsat',
+  'Ground pixel and swath of a satellite sensor',
+  'Use this for “A sensor at 705 km has an IFOV of 42.5 μrad and a 15° field of view. What are the pixel size and swath?”',
+  { H: 705, ifov: 42.5, fov: 15 },
+);
+
+/** A wide-field sensor near the top of the FOV range: the fan is wider than it is tall. */
+const SENSOR_WIDE = sensorPage(
+  'g.he-sensorGeometry-wide',
+  'A wide-swath sensor',
+  'Use this for “A weather sensor at 820 km sees 110° across with a 1,300 μrad IFOV. How wide is its swath?”',
+  { H: 820, ifov: 1300, fov: 110 },
+);
+
 export const HE4H_GALLERY_MODULES: ModuleDef[] = [
+  SENSOR,
+  SENSOR_WIDE,
+
   PYRAMID,
   PYRAMID_AGING,
   PYRAMID_YOUNG,

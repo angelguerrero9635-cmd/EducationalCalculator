@@ -496,3 +496,22 @@ export function compactPeople(x: number) {
   const r = (v: number) => String(Number(v.toPrecision(3)));
   return x >= 1e6 ? `${r(x / 1e6)} M` : x >= 1e3 ? `${r(x / 1e3)} k` : r(x);
 }
+
+// ─── HC137: sensorGeometry ─────────────────────────────────────────────────────
+
+/** Ground pixel (m) from altitude H (km) and IFOV (μrad): H × IFOV. */
+export const sensorPixel = (H: number, ifov: number) => H * 1000 * ifov * 1e-6;
+
+/** Swath (km) from altitude H (km) and FOV (°): 2H tan(FOV ÷ 2). */
+export const sensorSwath = (H: number, fov: number) => 2 * H * Math.tan((fov * Math.PI) / 360);
+
+/**
+ * The side view at width w and height h, to scale: one px per k km both ways, the satellite
+ * as high as fits and the fan's swath within the width.
+ */
+export function sensorLayout(w: number, h: number, H: number, fov: number) {
+  const ground = h - 56;
+  const half = (Math.min(179, Math.max(0.01, fov)) * Math.PI) / 360;
+  const k = Math.min((ground - 40) / H, (w / 2 - 14) / (H * Math.tan(half)));
+  return { ground, half, k, cx: w / 2, satY: ground - H * k, halfSwath: H * Math.tan(half) * k };
+}

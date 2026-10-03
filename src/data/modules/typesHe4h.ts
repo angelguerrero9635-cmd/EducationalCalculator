@@ -10,6 +10,7 @@
  * - HC135 `sample` `pattern`: points with a nearest-neighbour index R.
  * - HC150 `sample` `herd`: 100 people, the immune shaded, one case's R₀ contacts.
  * - HC136 `populationPyramid` (new kind): age bars from three group totals, dependency ratio.
+ * - HC137 `sensorGeometry` (new kind): a satellite's FOV fan and swath, its pixel enlarged.
  */
 import type { NumOrVar } from './typesGraphs';
 
@@ -166,6 +167,24 @@ export interface PopulationPyramidSpec {
   oldAge?: string;
 }
 
+// ─── HC137: sensorGeometry (new kind) ──────────────────────────────────────────
+
+/**
+ * HC137 (EG-P30): a satellite at `altitude` H (km) over flat ground, its field of view `fov`
+ * (°) fanned to the swath, to scale (one scale both ways); the nadir line with H; the one
+ * pixel under it, far too small to see at that scale, enlarged in a box with its IFOV cone
+ * (`ifov`, μrad). `pixel` (m, H × IFOV) and `swath` (km, 2H tan(FOV ÷ 2)) are the page's values
+ * (checked). A "?" H or FOV draws no fan; a "?" IFOV no pixel size.
+ */
+export interface SensorGeometrySpec {
+  kind: 'sensorGeometry';
+  altitude: NumOrVar;
+  ifov: NumOrVar;
+  fov: NumOrVar;
+  pixel?: string;
+  swath?: string;
+}
+
 /** Every spec of group H. */
 export type He4hSpec =
   | CatchmentSpec
@@ -174,9 +193,16 @@ export type He4hSpec =
   | RasterWindowSpec
   | SamplePatternSpec
   | SampleHerdSpec
-  | PopulationPyramidSpec;
+  | PopulationPyramidSpec
+  | SensorGeometrySpec;
 
-const HE4H_KINDS = new Set<string>(['catchment', 'contourMap', 'rasterGrid', 'populationPyramid']);
+const HE4H_KINDS = new Set<string>([
+  'catchment',
+  'contourMap',
+  'rasterGrid',
+  'populationPyramid',
+  'sensorGeometry',
+]);
 
 /** Whether a picture spec is one of group H's (a new kind, or an option on `sample`). */
 export const isHe4hSpec = (r: { kind: string }): r is He4hSpec =>
@@ -229,5 +255,7 @@ export function he4hSpecVars(r: He4hSpec): string[] {
         : ids(r.herd.r0, r.herd.immune, r.herd.threshold);
     case 'populationPyramid':
       return ids(r.young, r.working, r.old, r.ratio, r.youth, r.oldAge);
+    case 'sensorGeometry':
+      return ids(r.altitude, r.ifov, r.fov, r.pixel, r.swath);
   }
 }

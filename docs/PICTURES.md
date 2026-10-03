@@ -602,6 +602,7 @@ search or the sitemap, but the module tests and the harness run over it):
 | `contourMap`       | contours at CI, every 5th bold; A–B across n; scale bar; profile under | College landforms, maps (HC133)     |
 | `rasterGrid`       | extent: a lake's cells filled, columns × rows; window: 3 × 3 z, aspect | College GIS, rasters (HC134)        |
 | populationPyramid  | age bars by sex from 3 group totals and a shape; bracketed; the ratio  | College human geography (HC136)     |
+| `sensorGeometry`   | satellite at H, FOV fanned to the swath to scale; H × IFOV pixel inset | College remote sensing (HC137)      |
 | `globe`            | sun rays, noon angle, day dial; great circle; Euler pole; dipole; air  | College earth and geography (HC36)  |
 | `stressStrain`     | σ–ε curve: E, 0.2% offset, UTS, necking; specimen; tube; two members   | College materials, biomech. (HC28)  |
 | `stressElement`    | element, turned to θ_p; Mohr's circle; 3 circles; loci, n; soil line   | College stress, soil (HC33)         |

@@ -18,6 +18,7 @@ import {
   patternPoints,
   pyramidBars,
   pyramidShape,
+  sensorLayout,
   downhillBearing,
   inside,
   rasterBlock,
@@ -46,6 +47,8 @@ export function he4hIssues(rep: He4hSpec, val: Val, byId: Map<string, VariableDe
       return 'pattern' in rep ? patternIssues(rep, get) : herdIssues(rep, get, byId);
     case 'populationPyramid':
       return pyramidIssues(rep, get);
+    case 'sensorGeometry':
+      return sensorIssues(rep, get);
   }
 }
 
@@ -357,5 +360,38 @@ function pyramidIssues(
     if (got !== undefined && !close(got, want, 1e-6))
       out.push(`pyramid: ${what} ${got} is not ${want}`);
   }
+  return out;
+}
+
+/**
+ * HC137: pixel = H × IFOV (km × 1,000 × μrad × 10⁻⁶ = m); swath = 2H tan(FOV ÷ 2); the drawn
+ * fan is to scale: its half-width over its height is tan(FOV ÷ 2), and it fits a phone's width.
+ */
+function sensorIssues(
+  rep: Extract<He4hSpec, { kind: 'sensorGeometry' }>,
+  get: (v: string | number | undefined) => number | undefined,
+): string[] {
+  const out: string[] = [];
+  const [H, ifov, fov] = [get(rep.altitude), get(rep.ifov), get(rep.fov)];
+  if (H !== undefined && H <= 0) out.push(`sensor: H = ${H} km is not positive`);
+  if (fov !== undefined && (fov <= 0 || fov >= 180))
+    out.push(`sensor: FOV ${fov}° is outside 0 to 180`);
+  const px = get(rep.pixel);
+  if (
+    px !== undefined &&
+    H !== undefined &&
+    ifov !== undefined &&
+    !close(px, (H * ifov) / 1000, 1e-6)
+  )
+    out.push(`sensor: pixel ${px} m is not H × IFOV = ${(H * ifov) / 1000} m`);
+  if (H === undefined || fov === undefined || H <= 0 || fov <= 0 || fov >= 180) return out;
+  const t = Math.tan((fov / 2) * (Math.PI / 180));
+  const sw = get(rep.swath);
+  if (sw !== undefined && !close(sw, 2 * H * t, 1e-6))
+    out.push(`sensor: swath ${sw} km is not 2H tan(FOV ÷ 2) = ${2 * H * t}`);
+  const L = sensorLayout(358, 330, H, fov);
+  if (!close(L.halfSwath / (L.ground - L.satY), t, 1e-9))
+    out.push('sensor: the fan is not to scale');
+  if (L.cx + L.halfSwath > 358 || L.satY < 0) out.push('sensor: the fan leaves the picture');
   return out;
 }

@@ -10,6 +10,7 @@ import { ContourMap } from './ContourMap';
 import { PopulationPyramid } from './PopulationPyramid';
 import { RasterGrid } from './RasterGrid';
 import { SampleHe4h } from './SampleHe4h';
+import { SensorGeometry } from './SensorGeometry';
 
 export function He4hView({ spec, calc }: { spec: He4hSpec; calc: Calculator }) {
   switch (spec.kind) {
@@ -23,5 +24,7 @@ export function He4hView({ spec, calc }: { spec: He4hSpec; calc: Calculator }) {
       return <SampleHe4h spec={spec} calc={calc} />; // HC135, HC150
     case 'populationPyramid':
       return <PopulationPyramid spec={spec} calc={calc} />; // HC136
+    case 'sensorGeometry':
+      return <SensorGeometry spec={spec} calc={calc} />; // HC137
   }
 }
