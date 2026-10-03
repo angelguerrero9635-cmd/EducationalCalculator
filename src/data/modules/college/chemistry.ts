@@ -7,6 +7,7 @@
 import { domainAngleOf } from '@/components/module/reps/vseprHe3eMath';
 import { valueOf } from '@/engine/constants';
 import { formatNumber } from '@/engine/format';
+import type { Values } from '@/engine/types';
 
 import type { ModuleDef } from '../types';
 
@@ -2793,6 +2794,137 @@ export const COLLEGE_CHEMISTRY_MODULES: ModuleDef[] = [
         output: 'r1',
         params: ['k', 'm', 'B', 'n'],
         rows: [0.05, 0.1, 0.2, 0.4],
+      },
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    // General Chemistry II → Kinetics: Eₐ from k at two temperatures (Arrhenius). k doubles,
+    // 1.00 × 10⁻³ → 2.00 × 10⁻³ s⁻¹, from 298.15 K to 308.15 K: 1/T₁ − 1/T₂ = 1.0885 × 10⁻⁴ K⁻¹,
+    // Eₐ = 8.314 × ln 2 ÷ (1.0885 × 10⁻⁴) = 52 946 J/mol = 52.9 kJ/mol;
+    // A = 1.00 × 10⁻³ × e^(52 946 ÷ (8.314 × 298.15)) = 1.00 × 10⁻³ × e^21.36 = 1.89 × 10⁶ s⁻¹.
+    const [k1, T1, k2, T2] = [1.0e-3, 298.15, 2.0e-3, 308.15];
+    const Ea = (R_J * Math.log(k2 / k1)) / (1 / T1 - 1 / T2) / 1000;
+    const rateK = (id: string, symbol: string, name: string) =>
+      V(id, symbol, name, {
+        unit: 's⁻¹',
+        units: ['s⁻¹'],
+        min: 1e-15,
+        max: 1e15,
+        step: 1e-15,
+        scientific: true,
+      });
+    const kelvin = (id: string, symbol: string, name: string) =>
+      V(id, symbol, name, { unit: 'K', units: ['K'], min: 1, max: 5000, step: 0.01 });
+    const pos = (x: number) => (x > 0 && Number.isFinite(x) ? x : undefined);
+    // ln(k₂ ÷ k₁) and the exponent Eₐ ÷ R × (1/T₁ − 1/T₂), Eₐ in kJ/mol.
+    const lnRatio = (v: Values) => Math.log(v.k2!) - Math.log(v.k1!);
+    const gap = (v: Values) => 1 / v.T1! - 1 / v.T2!;
+    return {
+      id: 'he.chemistry.gen-chem-2#0~arrhenius',
+      title: 'Activation energy from two temperatures',
+      workedFigures: 3,
+      use: 'Use this for “A rate constant doubles, from 1.00 × 10⁻³ s⁻¹ at 25 °C to 2.00 × 10⁻³ s⁻¹ at 35 °C. Find the activation energy and the frequency factor A.”',
+      assumptions: [
+        'Eₐ and A stay the same between the two temperatures, so ln k against 1/T is a straight line with slope −Eₐ ÷ R.',
+        'R = 8.314 J/(mol·K) and Eₐ is in kJ/mol, so Eₐ is multiplied by 1000 to put it in J/mol.',
+        'Temperatures are in kelvins (°C + 273.15): 25 °C is 298.15 K.',
+        'k₁, k₂ and A share one unit, s⁻¹ here; only the ratio k₂ ÷ k₁ sets Eₐ.',
+      ],
+      variables: [
+        rateK('k1', 'k₁', 'Rate constant at T₁'),
+        kelvin('T1', 'T₁', 'First temperature'),
+        rateK('k2', 'k₂', 'Rate constant at T₂'),
+        kelvin('T2', 'T₂', 'Second temperature'),
+        V('Ea', 'Eₐ', 'Activation energy', {
+          unit: 'kJ/mol',
+          units: ['kJ/mol'],
+          min: 0.1,
+          max: 1000,
+          step: 0.01,
+        }),
+        V('A', 'A', 'Frequency factor', {
+          unit: 's⁻¹',
+          units: ['s⁻¹'],
+          min: 1e-15,
+          max: 1e30,
+          step: 1e-15,
+          scientific: true,
+        }),
+      ],
+      ...rels(
+        rule(
+          'k rises with T',
+          '(ln({k2}) − ln({k1})) × ({T2} − {T1}) > 0',
+          ['k1', 'k2', 'T1', 'T2'],
+          (v) => lnRatio(v) * (v.T2! - v.T1!) > 0,
+          'With a positive Eₐ, k is larger at the higher temperature. Make the hotter run the faster one.',
+        ),
+        rel(
+          'ln(k₂ ÷ k₁) = (Eₐ ÷ R)(1/T₁ − 1/T₂)',
+          'ln({k2}) − ln({k1}) = {Ea} × 1000 ÷ 8.314 × (1 ÷ {T1} − 1 ÷ {T2})',
+          ['k1', 'k2', 'T1', 'T2', 'Ea'],
+          (v) => lnRatio(v) - ((v.Ea! * 1000) / R_J) * gap(v),
+          {
+            Ea: [
+              (v) => pos((R_J * lnRatio(v)) / gap(v) / 1000),
+              '8.314 × (ln({k2}) − ln({k1})) ÷ (1000 × (1 ÷ {T1} − 1 ÷ {T2}))',
+              'The rise in ln k over the change in 1/T is the slope, −Eₐ ÷ R. Multiply by R, then divide by 1000 for kJ.',
+            ],
+            k2: [
+              (v) => pos(v.k1! * Math.exp(((v.Ea! * 1000) / R_J) * gap(v))),
+              '{k1} × e^({Ea} × 1000 ÷ 8.314 × (1 ÷ {T1} − 1 ÷ {T2}))',
+              'Work out how much ln k rises, raise e to it, and scale k₁ by that.',
+            ],
+            k1: [
+              (v) => pos(v.k2! * Math.exp(((-v.Ea! * 1000) / R_J) * gap(v))),
+              '{k2} × e^(−{Ea} × 1000 ÷ 8.314 × (1 ÷ {T1} − 1 ÷ {T2}))',
+              'Work out how much ln k rises from T₁ to T₂, and scale k₂ back down by e raised to it.',
+            ],
+            T2: [
+              (v) => pos(1 / (1 / v.T1! - (R_J * lnRatio(v)) / (v.Ea! * 1000))),
+              '1 ÷ (1 ÷ {T1} − 8.314 × (ln({k2}) − ln({k1})) ÷ ({Ea} × 1000))',
+              'R ln(k₂ ÷ k₁) ÷ Eₐ is how much 1/T falls. Take it from 1/T₁, then flip it over.',
+            ],
+            T1: [
+              (v) => pos(1 / (1 / v.T2! + (R_J * lnRatio(v)) / (v.Ea! * 1000))),
+              '1 ÷ (1 ÷ {T2} + 8.314 × (ln({k2}) − ln({k1})) ÷ ({Ea} × 1000))',
+              'R ln(k₂ ÷ k₁) ÷ Eₐ is how much 1/T falls. Add it to 1/T₂, then flip it over.',
+            ],
+          },
+        ),
+        rel(
+          'k₁ = A e^(−Eₐ/RT₁)',
+          '{k1} = {A} × e^(−{Ea} × 1000 ÷ (8.314 × {T1}))',
+          ['k1', 'A', 'Ea', 'T1'],
+          (v) => Math.log(v.k1!) - Math.log(v.A!) + (v.Ea! * 1000) / (R_J * v.T1!),
+          {
+            A: [
+              (v) => pos(v.k1! * Math.exp((v.Ea! * 1000) / (R_J * v.T1!))),
+              '{k1} × e^({Ea} × 1000 ÷ (8.314 × {T1}))',
+              'Only the share e^(−Eₐ/RT) of collisions has energy Eₐ. Divide k₁ by that share.',
+            ],
+            k1: [
+              (v) => pos(v.A! * Math.exp((-v.Ea! * 1000) / (R_J * v.T1!))),
+              '{A} × e^(−{Ea} × 1000 ÷ (8.314 × {T1}))',
+              'Multiply the frequency factor by the share of collisions with energy Eₐ.',
+            ],
+          },
+        ),
+      ),
+      example: {
+        k1,
+        T1,
+        k2,
+        T2,
+        Ea,
+        A: k1 * Math.exp((Ea * 1000) / (R_J * T1)),
+      },
+      startWith: ['k1', 'T1', 'k2', 'T2'],
+      unitSystems: ['metric'],
+      representation: {
+        kind: 'chemDiagram',
+        mode: 'rate',
+        arrhenius: { k1: 'k1', T1: 'T1', k2: 'k2', T2: 'T2', Ea: 'Ea' },
       },
     } satisfies ModuleDef;
   })(),
