@@ -4,6 +4,7 @@
  * Spread into gallery.ts.
  *
  * HC165 `moodyChart` (he.engineering.fluid-mechanics#4, ME-P13).
+ * HC166 `gearPair` (he.engineering.machine-design#3, ~train, ME-P18).
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 import { colebrookF } from '@/components/module/reps/he4lMath';
@@ -251,6 +252,251 @@ const MOODY_LAMINAR = moodyDemo(
   true,
 );
 
-export const HE4L_GALLERY_MODULES: ModuleDef[] = [MOODY_STEEL, MOODY_ROUGH, MOODY_LAMINAR];
+// ─── HC166: spur gears (machine-design#3, ~train) ───────────────────────────────
+
+/** a = k × b × c …, solvable for each factor (`kText` writes k in the steps). */
+const product = (
+  id: string,
+  a: string,
+  bs: string[],
+  k: number,
+  kText: string,
+  how: string,
+): Rule => {
+  const prod = (v: Values, skip?: string) => bs.reduce((p, b) => (b === skip ? p : p * v[b]!), k);
+  const show = (skip?: string) =>
+    [kText, ...bs.filter((b) => b !== skip).map((b) => `{${b}}`)].filter(Boolean).join(' × ');
+  return rule(id, `{${a}} = ${show()}`, (v) => v[a]! - prod(v), {
+    [a]: [(v) => prod(v), show(), how],
+    ...Object.fromEntries(
+      bs.map((b) => [
+        b,
+        [
+          (v: Values) => div(v[a]!, prod(v, b)),
+          `{${a}} ÷ (${show(b)})`,
+          'Divide by the other factors.',
+        ] as [Solve, string, string],
+      ]),
+    ),
+  });
+};
+
+/** n_a N_a = n_b N_b: the pitch circles roll together, so teeth pass at one rate. */
+const meshRule = (na: string, Na: string, nb: string, Nb: string, label: string) =>
+  rule(label, `{${na}} × {${Na}} = {${nb}} × {${Nb}}`, (v) => v[na]! * v[Na]! - v[nb]! * v[Nb]!, {
+    [nb]: [
+      (v) => div(v[na]! * v[Na]!, v[Nb]!),
+      `{${na}} × {${Na}} ÷ {${Nb}}`,
+      'Teeth pass the mesh at one rate: the driver’s speed times its teeth, over the driven gear’s teeth.',
+    ],
+    [na]: [
+      (v) => div(v[nb]! * v[Nb]!, v[Na]!),
+      `{${nb}} × {${Nb}} ÷ {${Na}}`,
+      'The driven gear’s speed times its teeth, over the driver’s teeth.',
+    ],
+    [Nb]: [
+      (v) => div(v[na]! * v[Na]!, v[nb]!),
+      `{${na}} × {${Na}} ÷ {${nb}}`,
+      'Teeth passing per minute, over the driven gear’s speed.',
+    ],
+    [Na]: [
+      (v) => div(v[nb]! * v[Nb]!, v[na]!),
+      `{${nb}} × {${Nb}} ÷ {${na}}`,
+      'Teeth passing per minute, over the driver’s speed.',
+    ],
+  });
+
+const teethVar = (id: string, symbol: string, name: string, integer = true) =>
+  q(id, symbol, name, undefined, 8, 400, 1, { integer });
+const rpm = (id: string, symbol: string, name: string) => q(id, symbol, name, 'rpm', 0.1, 1e5, 0.1);
+
+/** The main page: a pinion driving a gear, d = mN, speeds, pitch-line speed and W_t. */
+function gearPairDemo(
+  id: string,
+  title: string,
+  use: string,
+  ex: { N1: number; N2: number; m: number; n1: number; P: number },
+): ModuleDef {
+  const d1 = ex.m * ex.N1;
+  const d2 = ex.m * ex.N2;
+  const n2 = (ex.n1 * ex.N1) / ex.N2;
+  const V = (Math.PI * d1 * ex.n1) / 60000;
+  return demo(id, title, use, {
+    assumptions: [
+      'Spur gears with standard teeth: both gears have the same module m, so d = mN.',
+      'The pitch circles roll without slipping; the power is passed without loss.',
+      'd in mm and n in rpm, so V = πd₁n₁ ÷ 60000 in m/s; P in kW, so W_t = 1000P ÷ V in N.',
+    ],
+    variables: [
+      teethVar('N1', 'N₁', 'Pinion teeth'),
+      teethVar('N2', 'N₂', 'Gear teeth'),
+      q('m', 'm', 'Module', 'mm', 0.5, 50, 0.5),
+      q('d1', 'd₁', 'Pinion pitch diameter', 'mm', 1, 10000, 0.1),
+      q('d2', 'd₂', 'Gear pitch diameter', 'mm', 1, 10000, 0.1),
+      rpm('n1', 'n₁', 'Pinion speed'),
+      rpm('n2', 'n₂', 'Gear speed'),
+      q('P', 'P', 'Power', 'kW', 0.01, 10000, 0.1),
+      q('V', 'V', 'Pitch-line speed', 'm/s', 0.001, 200, 0.01),
+      q('Wt', 'W_t', 'Tangential force', 'N', 0.1, 1e7, 1),
+    ],
+    ...rules(
+      product(
+        'd₁ = mN₁',
+        'd1',
+        ['m', 'N1'],
+        1,
+        '',
+        'The pitch diameter is the module times the teeth.',
+      ),
+      product(
+        'd₂ = mN₂',
+        'd2',
+        ['m', 'N2'],
+        1,
+        '',
+        'The pitch diameter is the module times the teeth.',
+      ),
+      meshRule('n1', 'N1', 'n2', 'N2', 'n₁N₁ = n₂N₂'),
+      product(
+        'V = πd₁n₁',
+        'V',
+        ['d1', 'n1'],
+        Math.PI / 60000,
+        'π ÷ 60000',
+        'The pitch circle’s rim speed: πd₁ per turn, n₁ turns a minute (mm to m, minutes to seconds).',
+      ),
+      rule('W_t = P ÷ V', '{Wt} = 1000 × {P} ÷ {V}', (v) => v.Wt! * v.V! - 1000 * v.P!, {
+        Wt: [
+          (v) => div(1000 * v.P!, v.V!),
+          '1000 × {P} ÷ {V}',
+          'Power is force times speed at the pitch line: the power in watts over V.',
+        ],
+        P: [(v) => (v.Wt! * v.V!) / 1000, '{Wt} × {V} ÷ 1000', 'Force times speed, in kW.'],
+        V: [
+          (v) => div(1000 * v.P!, v.Wt!),
+          '1000 × {P} ÷ {Wt}',
+          'The power in watts over the force.',
+        ],
+      }),
+    ),
+    example: { ...ex, d1, d2, n2, V, Wt: (1000 * ex.P) / V },
+    startWith: ['N1', 'N2', 'm', 'n1', 'P'],
+    representation: {
+      kind: 'gearPair',
+      teeth: ['N1', 'N2'],
+      module: 'm',
+      diameters: ['d1', 'd2'],
+      speeds: ['n1', 'n2'],
+      power: 'P',
+      pitchSpeed: 'V',
+      force: 'Wt',
+    },
+  });
+}
+
+const GEAR_PAIR = gearPairDemo(
+  'g.he-gearPair-pair',
+  'Spur gears: pitch diameters, speeds and the tooth load',
+  'Use this for “A 20-tooth pinion (m = 3 mm) at 1500 rpm drives a 60-tooth gear with 5 kW. Find d₁, d₂, n₂, V and W_t.”',
+  { N1: 20, N2: 60, m: 3, n1: 1500, P: 5 },
+);
+
+/** The small-pinion edge: 12 teeth (about the fewest a standard 20° pinion takes) into 84. */
+const GEAR_PAIR_SMALL = gearPairDemo(
+  'g.he-gearPair-small-pinion',
+  'A 12-tooth pinion: a 7-to-1 reduction in one mesh',
+  'Use this for “A 12-tooth pinion (m = 5 mm) at 3000 rpm drives an 84-tooth gear with 15 kW. Find n₂ and W_t.”',
+  { N1: 12, N2: 84, m: 5, n1: 3000, P: 15 },
+);
+
+/** A train: e = ΠN_driving ÷ ΠN_driven, n_out = e n_in. */
+function gearTrainDemo(
+  id: string,
+  title: string,
+  use: string,
+  teeth: number[],
+  nIn: number,
+): ModuleDef {
+  const ids = teeth.map((_, i) => `N${i + 1}`);
+  const subs = '₁₂₃₄';
+  const compound = teeth.length === 4;
+  const e = compound
+    ? (teeth[0]! * teeth[2]!) / (teeth[1]! * teeth[3]!)
+    : teeth[0]! / teeth[teeth.length - 1]!;
+  const eDisplay = compound ? '{e} = ({N1} × {N3}) ÷ ({N2} × {N4})' : '{e} = {N1} ÷ {N3}';
+  const eExpr = compound ? '({N1} × {N3}) ÷ ({N2} × {N4})' : '{N1} ÷ {N3}';
+  const eOf = (v: Values) => (compound ? div(v.N1! * v.N3!, v.N2! * v.N4!) : div(v.N1!, v.N3!));
+  return demo(id, title, use, {
+    assumptions: compound
+      ? [
+          'Gears 2 and 3 are keyed to one shaft, so they turn together.',
+          'Gears 1 and 3 drive; gears 2 and 4 are driven.',
+        ]
+      : [
+          'Gear 2 is an idler: it meshes with both, so its teeth cancel from the train value.',
+          'Each mesh reverses the direction of turning.',
+        ],
+    variables: [
+      ...ids.map((x, i) => teethVar(x, `N${subs[i]}`, `Gear ${i + 1} teeth`, false)),
+      q('e', 'e', 'Train value', undefined, 1e-4, 1e4, 0.0001, { derived: true }),
+      rpm('nin', 'n_in', 'Input speed'),
+      rpm('nout', 'n_out', 'Output speed'),
+      ...(compound ? [] : [rpm('n2', 'n₂', 'Idler speed')]),
+    ],
+    ...rules(
+      rule('e = ΠN driving ÷ ΠN driven', eDisplay, (v) => v.e! - (eOf(v) ?? NaN), {
+        e: [
+          (v) => eOf(v),
+          eExpr,
+          compound
+            ? 'Multiply the driving gears’ teeth, and divide by the driven gears’ teeth.'
+            : 'The idler’s teeth cancel: the first gear’s teeth over the last gear’s.',
+        ],
+      }),
+      product('n_out = e n_in', 'nout', ['e', 'nin'], 1, '', 'The output turns e times as fast.'),
+      ...(compound ? [] : [meshRule('nin', 'N1', 'n2', 'N2', 'n₁N₁ = n₂N₂')]),
+    ),
+    example: {
+      ...Object.fromEntries(ids.map((x, i) => [x, teeth[i]!])),
+      e,
+      nin: nIn,
+      nout: e * nIn,
+      ...(compound ? {} : { n2: (nIn * teeth[0]!) / teeth[1]! }),
+    },
+    startWith: [...ids, 'nin'],
+    representation: {
+      kind: 'gearPair',
+      teeth: ids,
+      speeds: compound ? ['nin', null, null, 'nout'] : ['nin', 'n2', 'nout'],
+      value: 'e',
+    },
+  });
+}
+
+const GEAR_TRAIN = gearTrainDemo(
+  'g.he-gearPair-train',
+  'A compound gear train: the train value',
+  'Use this for “Gears of 20, 60, 18 and 54 teeth form a compound train (60 and 18 on one shaft). The input turns at 1800 rpm. Find e and the output speed.”',
+  [20, 60, 18, 54],
+  1800,
+);
+
+const GEAR_IDLER = gearTrainDemo(
+  'g.he-gearPair-idler',
+  'An idler gear: direction changes, ratio does not',
+  'Use this for “A 20-tooth gear at 1200 rpm drives a 35-tooth idler and a 40-tooth gear. Find e and the output speed.”',
+  [20, 35, 40],
+  1200,
+);
+
+export const HE4L_GALLERY_MODULES: ModuleDef[] = [
+  MOODY_STEEL,
+  MOODY_ROUGH,
+  MOODY_LAMINAR,
+  GEAR_PAIR,
+  GEAR_PAIR_SMALL,
+  GEAR_TRAIN,
+  GEAR_IDLER,
+];
 
 export const HE4L_GALLERY_LAYOUTS: LayoutDef[] = [];

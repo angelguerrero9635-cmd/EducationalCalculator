@@ -694,6 +694,7 @@ function representationVars(r: Representation): string[] {
     case 'driftPaths':
       return driftPathsVars(r); // HC153
     case 'moodyChart':
+    case 'gearPair':
       return he4lSpecVars(r); // HC165–HC172
     case 'propertyDiagram':
     case 'thermalWall':

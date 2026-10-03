@@ -746,6 +746,10 @@ const light = {
   /** HC165 Moody chart: the transition band; the page's point and its guides. */
   he4lMoodyBand: '#FDECC8',
   he4lMoodyPoint: '#C2410C',
+  /** HC166 gears: pitch circles (dashed), turning arrows and speeds, the force at the mesh. */
+  he4lPitch: '#2563EB',
+  he4lTurn: '#0F766E',
+  he4lForce: '#B91C1C',
   he3iSpeed: '#0F766E',
   he3iFeed: '#C2410C',
   he3iIc: '#B42318',
@@ -1398,6 +1402,9 @@ const dark: Palette = {
   he3iChipHot: '#E0A84A',
   he4lMoodyBand: '#3A2E14',
   he4lMoodyPoint: '#FB923C',
+  he4lPitch: '#60A5FA',
+  he4lTurn: '#2DD4BF',
+  he4lForce: '#F87171',
   he3iSpeed: '#2DD4BF',
   he3iFeed: '#F59E0B',
   he3iIc: '#F87171',

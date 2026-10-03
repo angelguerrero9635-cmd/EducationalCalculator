@@ -44,4 +44,26 @@ export const HE4L_REQUESTS: PictureRequest[] = [
     status: 'drawn',
     gallery: ['g.he-moodyChart-turbulent', 'g.he-moodyChart-rough', 'g.he-moodyChart-laminar'],
   },
+  {
+    ...ask(
+      'HC166',
+      'gearPair',
+      'Spur gears in steel with their teeth drawn and counted, pitch circles d = mN touching, speeds and the tangential force at the mesh; a train of up to four',
+      [`${E}machine-design#3`, `${E}machine-design#3~train`],
+      [
+        'From ME-P18. New kind (typesHe4l.ts GearPairSpec, reps/GearPair.tsx, the layout and tooth outline in reps/he4lMath.ts).',
+        "Fields: { kind: 'gearPair', teeth (2 a pair; 3 a simple train with gear 2 an idler; 4 a compound train, gears 2 and 3 on one shaft), module? (m, labels only: the drawing scales with m), diameters? (aligned with teeth, null to skip), speeds? (aligned, null to skip), power?, pitchSpeed? (V), force? (W_t), value? (the train value e) }.",
+        'Teeth to scale (addendum m, dedendum 1.25m), each gear’s teeth in its mate’s gaps, pitch circles dashed and touching at the pitch point; turning arrows alternate at each mesh; W_t is an arrow at the first pitch point; V, P and e are in the caption with the working. A "?" N leaves that gear out; a "?" speed draws no arrow or label. No handles.',
+        "Examples: main { kind: 'gearPair', teeth: ['N1', 'N2'], module: 'm', diameters: ['d1', 'd2'], speeds: ['n1', 'n2'], power: 'P', pitchSpeed: 'V', force: 'Wt' }; ~train { kind: 'gearPair', teeth: ['N1', 'N2', 'N3', 'N4'], speeds: ['nin', null, null, 'nout'], value: 'e' }.",
+        'Harness (harness/picturesHe4l.ts): at least 3 teeth; n_aN_a = n_bN_b at each mesh and gears on one shaft at one speed; meshing gears share a module (d ÷ N agree) and d = mN; e = ΠN driving ÷ ΠN driven and n_out = e n_in; V = πd₁n₁; W_t = P ÷ V.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-gearPair-pair',
+      'g.he-gearPair-small-pinion',
+      'g.he-gearPair-train',
+      'g.he-gearPair-idler',
+    ],
+  },
 ];

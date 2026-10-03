@@ -2563,6 +2563,7 @@ export function repIssues(
       out.push(...driftPathsIssues(rep, val)); // HC153
       break;
     case 'moodyChart':
+    case 'gearPair':
       out.push(...he4lIssues(rep, val, byId)); // HC165–HC172
       break;
     case 'solidOfRevolution':

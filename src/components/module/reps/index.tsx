@@ -72,6 +72,7 @@ import { FunctionGraphHe1d } from './FunctionGraphHe1d';
 import { NormalCurveHe4e } from './NormalCurveHe4e';
 import { DriftPaths } from './DriftPaths';
 import { MoodyChart } from './MoodyChart';
+import { GearPair } from './GearPair';
 import { FunctionGraphHe4e } from './FunctionGraphHe4e';
 import { AlleleFrequenciesAfterHe4e } from './AlleleFrequenciesAfterHe4e';
 import { BarsLogHe1d } from './BarsLogHe1d';
@@ -491,6 +492,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <DriftPaths spec={spec} calc={calc} />; // HC153
     case 'moodyChart':
       return <MoodyChart spec={spec} calc={calc} />; // HC165
+    case 'gearPair':
+      return <GearPair spec={spec} calc={calc} />; // HC166
     case 'solidOfRevolution':
       return <SolidOfRevolution spec={spec} calc={calc} />; // HC65
     case 'thermalWall':

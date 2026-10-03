@@ -6,6 +6,7 @@
  *
  * - HC165 `moodyChart` (ME-P13): f against Re on log–log axes, the ε ÷ D curves computed from
  *   Colebrook, the page's point on its lit curve.
+ * - HC166 `gearPair` (ME-P18): spur gears in steel, a pair or a train of up to four.
  */
 import type { NumOrVar } from './typesGraphs';
 
@@ -41,15 +42,57 @@ export interface MoodyChartSpec {
 export const moodyChartVars = (r: MoodyChartSpec): string[] =>
   ids(r.re, r.f, r.roughness, r.epsilon, r.diameter);
 
+// ─── HC166: gearPair (new kind) ────────────────────────────────────────────────
+
+/**
+ * HC166 (ME-P18): spur gears in steel, face on, their teeth counted and drawn (N teeth of
+ * module m: pitch circle d = mN dashed, addendum m, dedendum 1.25m), each pitch circle touching
+ * its mate's at the pitch point. `teeth` lists the gears: two make a pair; three a simple train
+ * (gear 2 an idler, all in a row); four a compound train (gears 2 and 3 keyed to one shaft,
+ * gear 3 drawn in front of gear 2, gear 4 meshing gear 3). Each gear's N (and d when the page
+ * passes `diameters`) is labelled; `speeds` (aligned with `teeth`, null to skip) are drawn as
+ * turning arrows, each mesh turning the next gear the other way; `force` (W_t) is an arrow at
+ * the first pitch point along the mesh; `pitchSpeed` (V), `power` and the train `value` e go
+ * in the caption. The drawing scales with m, so m only labels. A "?" N leaves that gear out; a
+ * "?" speed draws no arrow for it. No handles.
+ */
+export interface GearPairSpec {
+  kind: 'gearPair';
+  teeth: NumOrVar[];
+  module?: NumOrVar;
+  diameters?: (NumOrVar | null)[];
+  speeds?: (NumOrVar | null)[];
+  power?: NumOrVar;
+  pitchSpeed?: NumOrVar;
+  force?: NumOrVar;
+  /** The train value e = ΠN_driving ÷ ΠN_driven (n_out = e n_in). */
+  value?: NumOrVar;
+}
+
+/** The variable ids a gearPair spec names. */
+export const gearPairVars = (r: GearPairSpec): string[] =>
+  ids(
+    ...r.teeth,
+    r.module,
+    ...(r.diameters ?? []).map((x) => x ?? undefined),
+    ...(r.speeds ?? []).map((x) => x ?? undefined),
+    r.power,
+    r.pitchSpeed,
+    r.force,
+    r.value,
+  );
+
 // ─── Every group L spec ─────────────────────────────────────────────────────────
 
 /** The round 4 group L picture specs (listed once in `types.ts`). */
-export type He4lSpec = MoodyChartSpec;
+export type He4lSpec = MoodyChartSpec | GearPairSpec;
 
 /** The variable ids a group L spec names. */
 export function he4lSpecVars(r: He4lSpec): string[] {
   switch (r.kind) {
     case 'moodyChart':
       return moodyChartVars(r);
+    case 'gearPair':
+      return gearPairVars(r);
   }
 }
