@@ -57,4 +57,52 @@ export const COLLEGE_CHEMISTRY_LAYOUTS: LayoutDef[] = [
       { label: 'P (3p³) → S (3p⁴)', bin: 'paired' },
     ],
   },
+  {
+    // General Chemistry II → Kinetics: which rate law a mechanism gives, from its slow step.
+    kind: 'sort',
+    id: 'he.chemistry.gen-chem-2#0~mechanism',
+    title: 'Rate law from a mechanism',
+    use: 'Use this for “The slow step is NO₂ + NO₂ → NO₃ + NO, then NO₃ + CO → NO₂ + CO₂ is fast. What rate law fits?”',
+    assumptions: [
+      'The slowest step limits the rate, so the rate law is the rate law of that step alone.',
+      'An elementary step’s rate law comes from its reactants: each one’s order is its coefficient in that step.',
+      'Every slow step here comes first, so its reactants are all starting materials, never intermediates.',
+      'With real species, the first reactant named in the slow step plays A and the second plays B.',
+    ],
+    question: 'Which rate law does each mechanism give?',
+    intro:
+      'The slow step sets the rate: its reactants, counted by their coefficients, give the rate law.',
+    pickBar: true,
+    bins: [
+      {
+        id: 'aa',
+        label: 'rate = k[A]²',
+        why: 'Two particles of A collide in the slow step, so the rate goes up four times when [A] doubles.',
+      },
+      {
+        id: 'ab',
+        label: 'rate = k[A][B]',
+        why: 'One A and one B collide in the slow step, so the rate is first order in each.',
+      },
+      {
+        id: 'a',
+        label: 'rate = k[A]',
+        why: 'A alone reacts in the slow step; B joins only in a fast step after it, so B is not in the rate law.',
+      },
+    ],
+    cards: [
+      { label: 'slow: A + A → C + D; fast: D + B → A + E', bin: 'aa' },
+      { label: 'one step: 2A → C', bin: 'aa' },
+      { label: 'slow: NO₂ + NO₂ → NO₃ + NO; fast: NO₃ + CO → NO₂ + CO₂', bin: 'aa' },
+      { label: 'slow: A + B → C; fast: C + A → D', bin: 'ab' },
+      { label: 'one step: A + B → C', bin: 'ab' },
+      { label: 'one step: NO + O₃ → NO₂ + O₂', bin: 'ab' },
+      { label: 'slow: A → C + D; fast: C + B → E', bin: 'a' },
+      { label: 'slow: A → C; fast: C + B → D', bin: 'a' },
+      {
+        label: 'slow: (CH₃)₃CBr → (CH₃)₃C⁺ + Br⁻; fast: (CH₃)₃C⁺ + OH⁻ → (CH₃)₃COH',
+        bin: 'a',
+      },
+    ],
+  },
 ];
