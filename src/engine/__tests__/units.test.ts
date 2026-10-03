@@ -170,6 +170,7 @@ describe('unit conversions (exact definitions)', () => {
       'g/m²',
       // College kinematics from x(t): the t³ coefficient (no menu: the coefficients go together)
       'm/s³',
+      'kJ/°C',
       // College van der Waals constants (a, b), fixed with the gas data they come from
       'L²·atm/mol²',
       'L/mol',

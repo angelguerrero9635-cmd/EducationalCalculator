@@ -16,7 +16,6 @@ import { chart, usePalette } from '@/theme';
 import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, ChartText, niceCeil, useRep } from './common';
 import { bombSums } from './energyHe3gMath';
-import { fig3 } from './he1dText';
 import { MathChip } from './hsdText';
 import { Deepen, Metal, Sheen, url, usePaintIds } from './paint';
 
@@ -331,16 +330,16 @@ function captionOf(
 ): string {
   if (!sums || C === undefined || dT === undefined)
     return 'Type the calorimeter constant and ΔT to find the heat.';
-  const out = [`q = calorimeter constant × ΔT = ${f4(C)} × ${f4(dT)} = ${fig3(sums.q)} kJ`];
+  const out = [`q = calorimeter constant × ΔT = ${f4(C)} × ${f4(dT)} = ${f4(sums.q)} kJ`];
   if (n !== undefined && sums.dU !== undefined) {
     const name = spec.sample?.name ? ` of ${spec.sample.name}` : '';
     out.push(
-      `The volume is fixed, so no work is done and the heat is ΔU: ΔU = −q ÷ n = −${fig3(sums.q)} ÷ ${f4(n)} = ${fig3(sums.dU)} kJ/mol${name}.`,
+      `The volume is fixed, so no work is done and the heat is ΔU: ΔU = −q ÷ n = −${f4(sums.q)} ÷ ${f4(n)} = ${f4(sums.dU)} kJ/mol${name}.`,
     );
     const [dng, T] = [num(spec.gas), num(spec.temperature)];
     if (sums.dH !== undefined && dng !== undefined && T !== undefined)
       out.push(
-        `ΔH = ΔU + Δn(gas)RT = ${fig3(sums.dU)} + (${formatNumber(dng)}) × ${spec.R ?? 0.008314} × ${f4(T)} = ${fig3(sums.dH)} kJ/mol`,
+        `ΔH = ΔU + Δn(gas)RT = ${f4(sums.dU)} + (${formatNumber(dng)}) × ${spec.R ?? 0.008314} × ${formatNumber(T)} = ${f4(sums.dH)} kJ/mol`,
       );
   }
   void rep;
