@@ -65,4 +65,24 @@ export const HE4N_REQUESTS: PictureRequest[] = [
     status: 'drawn',
     gallery: ['g.he-stateDiagram-moore', 'g.he-stateDiagram-mealy'],
   },
+  {
+    ...ask(
+      'HC186',
+      'pipelineDiagram',
+      'A pipeline grid: instructions down the side, clock cycles across, each cell its stage (IF, ID, EX, MEM, WB) in its own fill; up to 8 rows, then “…” and the last instruction after a gap so its last cell sits at cycle k + n − 1, bracketed; stall bubbles and forwarding arrows when given',
+      [`${E}computer-architecture#2`],
+      [
+        'From EC-P23. New kind `pipelineDiagram` (typesHe4n.ts PipelineSpec; reps/PipelineDiagram.tsx; rows in reps/he4nMath.ts).',
+        "Fields: { kind: 'pipelineDiagram', k, n, ts?, t1?, cycles?, time?, speedup? (said in the caption), stages? (names; default IF ID EX MEM WB for k = 5, S1 … Sk otherwise), names? (instruction labels), stalls?: [{ instr, before? (default 'EX'), count }], forward?: [{ from, to, out? (default 'EX'), in? (default 'EX') }] }. Narrow cells write one-letter codes with a key (F D X M W), narrower still none.",
+        "Example (computer-architecture#2 main): { kind: 'pipelineDiagram', k: 'k', n: 'n', ts: 'ts', t1: 't1', cycles: 'cycles', time: 'time', speedup: 'speedup' } with 5, 100, 200 ps, 800 ps → 104 cycles, 20.8 ns, 3.85. A stall page (~hazard-cpi) can pass stalls: [{ instr: 2, before: 'EX', count: 's' }] and forward: [{ from: 1, to: 2, out: 'MEM', in: 'EX' }].",
+        'Harness (harness/picturesHe4n.ts): the last cell sits at cycle k + n − 1 plus the stalls (k + n − 1 with none); cycles equals it; speedup = n·t₁ ÷ (cycles·t_s); stalls name stages; forwarding goes to a later instruction.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-pipelineDiagram-hundred',
+      'g.he-pipelineDiagram-deep',
+      'g.he-pipelineDiagram-stall',
+    ],
+  },
 ];

@@ -392,7 +392,150 @@ const stateMealy: LayoutDef = {
   ],
 };
 
-export const HE4N_GALLERY_MODULES: ModuleDef[] = [KMAP_THREE, KMAP_FOUR];
+// ─── HC186: pipelines (computer-architecture#2) ───────────────────────────────
+
+const cyclesRule = derive(
+  'cycles',
+  'cycles',
+  ['k', 'n'],
+  '{cycles} = {k} + {n} − 1',
+  (v) => v.k! + v.n! - 1,
+  '{k} + {n} − 1',
+  'The first instruction takes k cycles to finish; each later one finishes one cycle after it.',
+);
+const timeRule = derive(
+  'time',
+  'time',
+  ['cycles', 'ts'],
+  '{time} = {cycles} × {ts} ÷ 1000',
+  (v) => (v.cycles! * v.ts!) / 1000,
+  '{cycles} × {ts} ÷ 1000',
+  'Every cycle lasts one stage time; 1000 ps make 1 ns.',
+);
+const speedupRule = derive(
+  'speedup',
+  'speedup',
+  ['n', 't1', 'time'],
+  '{speedup} = {n} × {t1} ÷ ({time} × 1000)',
+  (v) => (v.n! * v.t1!) / (v.time! * 1000),
+  '{n} × {t1} ÷ ({time} × 1000)',
+  'Without the pipeline each instruction takes the whole single-cycle period t₁.',
+);
+
+const pipelineVars = (): VariableDef[] => [
+  num('k', 'k', 'Stages', undefined, 2, 20, { integer: true, step: 1 }),
+  num('n', 'n', 'Instructions', undefined, 1, 1e9, { integer: true, step: 1 }),
+  num('ts', 't_s', 'Stage time', 'ps', 1, 1e6, { step: 10 }),
+  num('t1', 't₁', 'Single-cycle period', 'ps', 1, 1e7, { step: 10 }),
+  out('cycles', 'cycles', 'Clock cycles', undefined, { integer: true }),
+  out('time', 't', 'Pipelined time', 'ns'),
+  out('speedup', 'S', 'Speedup'),
+];
+
+const pipelinePage = (id: string, title: string, use: string, typed: Values) =>
+  page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'No stalls: a new instruction enters every cycle.',
+      'Every stage takes t_s, the slowest stage plus its register delay.',
+      'Speedup compares with a single-cycle machine whose period is t₁.',
+    ],
+    variables: pipelineVars(),
+    rules: [cyclesRule, timeRule, speedupRule],
+    example: example(
+      typed,
+      ['cycles', (v) => v.k! + v.n! - 1],
+      ['time', (v) => (v.cycles! * v.ts!) / 1000],
+      ['speedup', (v) => (v.n! * v.t1!) / (v.time! * 1000)],
+    ),
+    startWith: ['k', 'n', 'ts', 't1'],
+    representation: {
+      kind: 'pipelineDiagram',
+      k: 'k',
+      n: 'n',
+      ts: 'ts',
+      t1: 't1',
+      cycles: 'cycles',
+      time: 'time',
+      speedup: 'speedup',
+    },
+  });
+
+const PIPELINE = pipelinePage(
+  'g.he-pipelineDiagram-hundred',
+  'Time and speedup of a pipeline',
+  'Use this for “How long do 100 instructions take on a 5-stage pipeline with 200 ps stages?”',
+  { k: 5, n: 100, ts: 200, t1: 800 },
+);
+
+/** The edge: a deep pipeline of 12 short stages, its cells too narrow for names. */
+const PIPELINE_DEEP = pipelinePage(
+  'g.he-pipelineDiagram-deep',
+  'A deep pipeline',
+  'Use this for “A 12-stage pipeline with 80 ps stages runs 20 instructions. How many cycles?”',
+  { k: 12, n: 20, ts: 80, t1: 800 },
+);
+
+const PIPELINE_STALL = page({
+  id: 'g.he-pipelineDiagram-stall',
+  title: 'A load-use stall with forwarding',
+  use: 'Use this for “lw x1 is followed by add x3, x1, x4. How many cycles do three instructions take with one stall?”',
+  assumptions: [
+    'A load’s data is ready only after MEM, so the next instruction’s EX waits one cycle (a bubble).',
+    'Forwarding passes a result from the end of EX or MEM straight into a later EX.',
+    'Each stall cycle delays every instruction behind it by one cycle.',
+  ],
+  variables: [
+    num('k', 'k', 'Stages', undefined, 2, 20, { integer: true, step: 1 }),
+    num('n', 'n', 'Instructions', undefined, 1, 1e9, { integer: true, step: 1 }),
+    num('s', 's', 'Stall cycles', undefined, 0, 1000, { integer: true, step: 1 }),
+    num('ts', 't_s', 'Stage time', 'ps', 1, 1e6, { step: 10 }),
+    out('cycles', 'cycles', 'Clock cycles', undefined, { integer: true }),
+    out('time', 't', 'Pipelined time', 'ns'),
+  ],
+  rules: [
+    derive(
+      'cycles',
+      'cycles',
+      ['k', 'n', 's'],
+      '{cycles} = {k} + {n} − 1 + {s}',
+      (v) => v.k! + v.n! - 1 + v.s!,
+      '{k} + {n} − 1 + {s}',
+      'Without stalls the last instruction ends at k + n − 1; each bubble adds a cycle.',
+    ),
+    timeRule,
+  ],
+  example: example(
+    { k: 5, n: 3, s: 1, ts: 200 },
+    ['cycles', (v) => v.k! + v.n! - 1 + v.s!],
+    ['time', (v) => (v.cycles! * v.ts!) / 1000],
+  ),
+  startWith: ['k', 'n', 's', 'ts'],
+  representation: {
+    kind: 'pipelineDiagram',
+    k: 'k',
+    n: 'n',
+    ts: 'ts',
+    cycles: 'cycles',
+    time: 'time',
+    names: ['lw x1, 0(x2)', 'add x3, x1, x4', 'sub x5, x3, x6'],
+    stalls: [{ instr: 2, before: 'EX', count: 's' }],
+    forward: [
+      { from: 1, to: 2, out: 'MEM', in: 'EX' },
+      { from: 2, to: 3, out: 'EX', in: 'EX' },
+    ],
+  },
+});
+
+export const HE4N_GALLERY_MODULES: ModuleDef[] = [
+  KMAP_THREE,
+  KMAP_FOUR,
+  PIPELINE,
+  PIPELINE_DEEP,
+  PIPELINE_STALL,
+];
 
 export const HE4N_GALLERY_LAYOUTS: LayoutDef[] = [
   kmapExplore,

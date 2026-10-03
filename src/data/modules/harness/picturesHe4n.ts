@@ -13,10 +13,16 @@ import {
 import type { LayoutDef } from '../layouts';
 import type { Representation } from '../types';
 import type { NumOrVar } from '../typesGraphs';
-import { fsmReplay } from '@/components/module/reps/he4nMath';
+import {
+  fsmReplay,
+  pipelineCycles,
+  pipelineRow,
+  stageNames,
+} from '@/components/module/reps/he4nMath';
 import type {
   KarnaughScene,
   KarnaughSpec,
+  PipelineSpec,
   StateDiagramFigure,
   StateDiagramScene,
 } from '../typesHe4n';
@@ -33,9 +39,48 @@ export function he4nIssues(rep: Representation, get: Get): string[] {
   switch (rep.kind) {
     case 'karnaugh':
       return karnaughIssues(rep, get);
+    case 'pipelineDiagram':
+      return pipelineIssues(rep, get);
     default:
       return [];
   }
+}
+
+// ─── HC186 ───────────────────────────────────────────────────────────────────
+
+/** The last cell sits at k + n − 1 (+ stalls); cycles, and the speedup n·t₁ ÷ (cycles·t_s). */
+function pipelineIssues(s: PipelineSpec, get: Get): string[] {
+  const out: string[] = [];
+  const k = get(s.k);
+  const n = get(s.n);
+  if (k === undefined || n === undefined) return out;
+  if (!Number.isInteger(k) || k < 1) out.push(`pipeline: k = ${k} stages`);
+  if (!Number.isInteger(n) || n < 1) out.push(`pipeline: n = ${n} instructions`);
+  if (out.length) return out;
+  const stalls = (s.stalls ?? []).flatMap((x) => {
+    const count = get(x.count);
+    return count !== undefined && count > 0 && x.instr <= n ? [{ ...x, count }] : [];
+  });
+  const names = stageNames(k, s.stages);
+  for (const x of stalls)
+    if (x.before !== undefined && (k === 5 || s.stages) && !names.includes(x.before))
+      out.push(`pipeline: a stall before ${x.before}, not a stage`);
+  const last = pipelineRow(n, k, names, stalls);
+  const end = last[last.length - 1]!.cycle;
+  const want = pipelineCycles(k, n, stalls);
+  if (end !== want) out.push(`pipeline: the last cell is at cycle ${end}, not ${want}`);
+  if (!stalls.length && end !== k + n - 1) out.push(`pipeline: no stalls but ${end} ≠ k + n − 1`);
+  const cycles = opt(get, s.cycles);
+  if (cycles !== undefined && cycles !== want)
+    out.push(`pipeline: cycles ${cycles}, drawn ${want}`);
+  const [ts, t1, sp] = [opt(get, s.ts), opt(get, s.t1), opt(get, s.speedup)];
+  if (ts !== undefined && t1 !== undefined && sp !== undefined && ts > 0)
+    if (!near(sp, (n * t1) / (want * ts)))
+      out.push(`pipeline: speedup ${sp}, n·t₁ ÷ (cycles·t_s) = ${(n * t1) / (want * ts)}`);
+  for (const fw of s.forward ?? [])
+    if (!(fw.from >= 1 && fw.to > fw.from))
+      out.push(`pipeline: forwarding ${fw.from} → ${fw.to} is not to a later instruction`);
+  return out;
 }
 
 // ─── HC184 ───────────────────────────────────────────────────────────────────

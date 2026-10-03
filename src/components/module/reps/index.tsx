@@ -490,6 +490,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'driftPaths':
       return <DriftPaths spec={spec} calc={calc} />; // HC153
     case 'karnaugh':
+    case 'pipelineDiagram':
       return <He4nView spec={spec} calc={calc} />; // group N (HC184–HC191)
     case 'solidOfRevolution':
       return <SolidOfRevolution spec={spec} calc={calc} />; // HC65

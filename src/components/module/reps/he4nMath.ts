@@ -25,3 +25,53 @@ export function fsmReplay(f: StateDiagramFigure, input: string): FsmStep[] {
   }
   return steps;
 }
+
+// ─── HC186: pipelines ────────────────────────────────────────────────────────
+
+/** The stage names for k stages: the classic five, or S1 … Sk. */
+export const stageNames = (k: number, given?: string[]) =>
+  given && given.length === k
+    ? given
+    : k === 5
+      ? ['IF', 'ID', 'EX', 'MEM', 'WB']
+      : Array.from({ length: k }, (_, i) => `S${i + 1}`);
+
+/** A stage's index by name; a name the stages lack falls back to `fallback` (or the last). */
+export const stageIndex = (names: string[], name: string, fallback: number) => {
+  const i = names.indexOf(name);
+  return i >= 0 ? i : Math.min(fallback, names.length - 1);
+};
+
+/** A cell of the grid: instruction i (1-based) in stage p (0-based, −1 a bubble) at a cycle. */
+export interface PipeCell {
+  instr: number;
+  stage: number;
+  cycle: number;
+}
+
+/**
+ * Instruction i's cells: it enters IF at cycle i plus every earlier instruction's stalls, and
+ * its own stall bubbles sit before the stage they wait for.
+ */
+export function pipelineRow(
+  i: number,
+  k: number,
+  names: string[],
+  stalls: { instr: number; before?: string; count: number }[],
+): PipeCell[] {
+  const before = stalls.filter((s) => s.instr < i).reduce((a, s) => a + s.count, 0);
+  const own = stalls.filter((s) => s.instr === i);
+  const cells: PipeCell[] = [];
+  let cycle = i + before;
+  for (let p = 0; p < k; p++) {
+    for (const s of own)
+      if (stageIndex(names, s.before ?? 'EX', 2) === p)
+        for (let b = 0; b < s.count; b++) cells.push({ instr: i, stage: -1, cycle: cycle++ });
+    cells.push({ instr: i, stage: p, cycle: cycle++ });
+  }
+  return cells;
+}
+
+/** The cycle of the last cell: k + n − 1 plus every stall. */
+export const pipelineCycles = (k: number, n: number, stalls: { count: number }[]) =>
+  k + n - 1 + stalls.reduce((a, s) => a + s.count, 0);

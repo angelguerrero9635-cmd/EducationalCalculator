@@ -180,6 +180,8 @@ const PICTURE_NAMES: Record<string, string> = {
   solidOfRevolution: 'a region turned about an axis, with one disk, washer or shell',
   driftPaths: 'genetic drift: populations’ allele frequencies wandering, expected H falling',
   karnaugh: 'a K-map in Gray order beside its truth table, the groups of 1s ringed',
+  pipelineDiagram:
+    'a pipeline: instructions by clock cycles, each cell a stage; stalls, forwarding',
   propertyDiagram: 'a T–v, P–v or T–s plane with the vapor dome, states and a cycle',
   elementChain: 'finite elements: springs or bars between nodes, loads, displacements; a mesh',
   fatigueDiagram: 'fatigue: a Goodman diagram, an S–N line on log axes, a Miner damage bar',

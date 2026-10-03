@@ -2563,6 +2563,7 @@ export function repIssues(
       out.push(...driftPathsIssues(rep, val)); // HC153
       break;
     case 'karnaugh':
+    case 'pipelineDiagram':
       out.push(...he4nIssues(rep, val)); // group N
       break;
     case 'solidOfRevolution':

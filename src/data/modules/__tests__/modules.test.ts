@@ -694,6 +694,7 @@ function representationVars(r: Representation): string[] {
     case 'driftPaths':
       return driftPathsVars(r); // HC153
     case 'karnaugh':
+    case 'pipelineDiagram':
       return he4nSpecVars(r); // group N
     case 'propertyDiagram':
     case 'thermalWall':

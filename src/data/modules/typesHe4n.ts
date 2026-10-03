@@ -1,7 +1,7 @@
 /**
  * College pictures, round 4, group N (docs/RENDERINGS_HE.md): digital logic and computer
  * systems. HC184 `karnaugh` (calculator kind and explore figure, with its truth table); HC185
- * the `stateDiagram` explore figure.
+ * the `stateDiagram` explore figure; HC186 `pipelineDiagram`.
  */
 import type { NumOrVar } from './typesGraphs';
 
@@ -105,9 +105,37 @@ export const HE4N_SCENE_FIELD = { karnaugh: 'kmap', stateDiagram: 'fsm' } as con
 
 export type He4nFigure = KarnaughFigure | StateDiagramFigure;
 
+// ─── HC186: pipeline diagrams ────────────────────────────────────────────────
+
+/**
+ * A grid of instructions by clock cycles, each cell the stage the instruction is in (IF, ID,
+ * EX, MEM, WB for k = 5; S1 … Sk otherwise), from the page's k and n. Up to 8 rows; past 8,
+ * the first rows, “…”, and the last instruction, whose cycles are drawn after a gap so its last
+ * cell sits at cycle k + n − 1 (+ stalls), bracketed. Stall bubbles and forwarding arrows when
+ * given. `ts`, `t1`, `cycles`, `time` and `speedup` are said in the caption (and checked).
+ */
+export interface PipelineSpec {
+  kind: 'pipelineDiagram';
+  k: NumOrVar;
+  n: NumOrVar;
+  ts?: NumOrVar;
+  t1?: NumOrVar;
+  cycles?: NumOrVar;
+  time?: NumOrVar;
+  speedup?: NumOrVar;
+  /** The stage names (default IF, ID, EX, MEM, WB for 5 stages; S1 … Sk otherwise). */
+  stages?: string[];
+  /** The instructions' names (default i1, i2, …), written on their rows. */
+  names?: string[];
+  /** Instruction `instr` (1-based) waits `count` bubbles before stage `before` (default EX). */
+  stalls?: { instr: number; before?: string; count: NumOrVar }[];
+  /** A result forwarded from the end of `from`'s stage `out` (default EX) into `to`'s `in` (EX). */
+  forward?: { from: number; to: number; out?: string; in?: string }[];
+}
+
 // ─── The group's calculator pictures ─────────────────────────────────────────
 
-export type He4nSpec = KarnaughSpec;
+export type He4nSpec = KarnaughSpec | PipelineSpec;
 
 const ids = (xs: unknown[]): string[] =>
   xs.flat(4).filter((x): x is string => typeof x === 'string');
@@ -117,6 +145,17 @@ export function he4nSpecVars(r: He4nSpec): string[] {
   switch (r.kind) {
     case 'karnaugh':
       return ids([r.n, r.lit, r.rows, r.functions]);
+    case 'pipelineDiagram':
+      return ids([
+        r.k,
+        r.n,
+        r.ts,
+        r.t1,
+        r.cycles,
+        r.time,
+        r.speedup,
+        (r.stalls ?? []).map((s) => s.count),
+      ]);
   }
 }
 
