@@ -45,6 +45,31 @@ const powerWork = (c: number, n: number, x: number) => {
   ];
 };
 
+const PI = Math.PI;
+
+/** "6 cos(3x)": a number times a trig function of b·x ("−sin(x)" when the number is −1). */
+const trigTerm = (k: number, fn: 'sin' | 'cos', b: number) => {
+  const front = k === 1 ? '' : k === -1 ? '−' : `${formatNumber(k)} `;
+  const inside = b === 1 ? 'x' : b === -1 ? '−x' : `${formatNumber(b)}x`;
+  return `${front}${fn}(${inside})`;
+};
+
+/** An angle in radians as a fraction of π where it is one (π/2), else its decimal. */
+const radiansShown = (t: number) => formatNumber(t, { pi: 'fraction' });
+
+/** The derivative of A sin(bx) as a form line, then its value at x. */
+const sineWork = (A: number, b: number, x: number) => {
+  const t = b * x;
+  const m = exact(A * b * Math.cos(t));
+  return [
+    `y(x) = ${trigTerm(A, 'sin', b)} → dy/dx = ${trigTerm(exact(A * b), 'cos', b)}`,
+    `dy/dx at x = ${radiansShown(x)} = ${formatNumber(exact(A * b))} cos(${radiansShown(t)}) = ${formatNumber(Math.abs(m) < 1e-12 ? 0 : m)}`,
+  ];
+};
+
+/** A sine or cosine with rounding crumbs (cos(π/2) ≈ 6 × 10⁻¹⁷) read as 0. */
+const snap = (y: number) => (Math.abs(y) < 1e-9 ? 0 : y);
+
 /** A relation that only places the picture (its value is `hidden`): no row, step or check. */
 const hide = <R extends { relation: { hidden?: boolean } }>(r: R): R => ({
   ...r,
@@ -785,6 +810,100 @@ export const COLLEGE_MATH_MODULES: ModuleDef[] = [
       family: 'polynomial',
       a: 'A',
       zeros: [{ x: 'z', times: 'n' }],
+      at: { x: 'x', y: 'f' },
+      tangent: { x: 'x', slope: 'm', y: 'f' },
+    },
+  },
+  {
+    // Calculus I → Derivatives and differentiation rules: A sin(bx) and its slope Ab cos(bx).
+    id: 'he.math.calc-1#1~trig',
+    title: 'The derivative of A sin(bx)',
+    use: 'Use this for “Find the slope of y = 4 sin(2x) at x = π/3.”',
+    assumptions: [
+      'x is in radians; the slope of sin x is cos x only when x is measured in radians.',
+      'The slope of sin x is cos x, and the slope of cos x is −sin x.',
+      'For A sin(bx) the inside bx has slope b (chain rule), so f′(x) = A·b·cos(bx).',
+      'Where cos(bx) = 0 the tangent is flat: a top or a bottom of the wave.',
+    ],
+    variables: [
+      V('A', 'A', 'Number in front', { min: -50, max: 50, step: 0.5 }),
+      V('b', 'b', 'Number times x inside', { min: -10, max: 10, step: 0.25 }),
+      V('x', 'x', 'Point (radians)', { pi: 'fraction', min: -20, max: 20, step: PI / 12 }),
+      V('t', 'bx', 'Angle inside the sine', {
+        pi: 'fraction',
+        min: -200,
+        max: 200,
+        step: 0.0001,
+        derived: true,
+      }),
+      V('f', 'f(x)', 'Value there', { min: -50, max: 50, step: 0.0001 }),
+      V('m', 'f′(x)', 'Slope of the tangent', { min: -500, max: 500, step: 0.0001 }),
+    ],
+    ...rels(
+      rule(
+        'b ≠ 0',
+        'The number inside {b} is not 0',
+        ['b'],
+        (v) => v.b !== 0,
+        'With b = 0 the sine is sin 0 = 0 everywhere, a flat line. Pick a b that is not 0.',
+      ),
+      derive(
+        'bx = b × x',
+        '{t} = {b} × {x}',
+        't',
+        ['b', 'x'],
+        (v) => v.b! * v.x!,
+        '{b} × {x}',
+        'Work out the inside first: the angle the sine is taken of.',
+      ),
+      rel(
+        'f = A sin(bx)',
+        '{f} = {A} × sin({t})',
+        ['f', 'A', 't'],
+        (v) => v.f! - v.A! * Math.sin(v.t!),
+        {
+          f: [
+            (v) => v.A! * snap(Math.sin(v.t!)),
+            '{A} × sin({t})',
+            'Take the sine of the angle, then multiply by A.',
+          ],
+          A: [
+            (v) => {
+              const s = Math.sin(v.t!);
+              if (Math.abs(s) > 1e-12) return v.f! / s;
+              return Math.abs(v.f!) < 1e-9 ? undefined : [NaN];
+            },
+            '{f} ÷ sin({t})',
+            'Divide the value by the sine of the angle.',
+          ],
+        },
+      ),
+      withStep(
+        rel(
+          'f′ = A·b·cos(bx)',
+          '{m} = {A} × {b} × cos({t})',
+          ['m', 'A', 'b', 't'],
+          (v) => v.m! - v.A! * v.b! * Math.cos(v.t!),
+          {
+            m: [
+              (v) => v.A! * v.b! * snap(Math.cos(v.t!)),
+              '{A} × {b} × cos({t})',
+              'Chain rule: the slope of sin is cos at the angle, times the inside’s slope b; A stays in front.',
+            ],
+          },
+        ),
+        'm',
+        { work: (v) => sineWork(v.A!, v.b!, v.x!) },
+      ),
+    ),
+    example: { A: 2, b: 3, x: PI / 6, t: PI / 2, f: 2, m: 0 },
+    startWith: ['A', 'b', 'x'],
+    equation: 'f(x) = {A} sin({b}x)\nf′({x}) = {m}',
+    representation: {
+      kind: 'functionGraph',
+      family: 'sin',
+      a: 'A',
+      b: 'b',
       at: { x: 'x', y: 'f' },
       tangent: { x: 'x', slope: 'm', y: 'f' },
     },
