@@ -583,4 +583,84 @@ export const COLLEGE_MATH_MODULES: ModuleDef[] = [
       tangent: { x: 'x', slope: 'm', y: 'y' },
     },
   },
+  {
+    // Calculus I → Derivatives and differentiation rules: (uv)′ and (u/v)′ from values at one x.
+    id: 'he.math.calc-1#1~product-quotient',
+    title: 'The product and quotient rules from a table',
+    use: 'Use this for “f(2) = 3, f′(2) = −1, g(2) = 4, g′(2) = 5. Find (fg)′(2) and (f/g)′(2).”',
+    assumptions: [
+      'u, u′, v and v′ are the values of two functions and their slopes at one point x = a, read from a table.',
+      'Product rule: (uv)′ = u′v + uv′. In a short time Δt the u-by-v rectangle grows by a strip u′Δt by v and a strip u by v′Δt.',
+      'The corner u′v′Δt² shrinks faster than Δt, so it adds nothing to the slope.',
+      'Quotient rule: (u ÷ v)′ = (u′v − uv′) ÷ v², which needs v ≠ 0 at a.',
+    ],
+    variables: [
+      V('u', 'u', 'Value of u at a', { min: -1000, max: 1000, step: 0.1 }),
+      V('du', 'u′', 'Slope of u at a', { min: -1000, max: 1000, step: 0.1 }),
+      V('v', 'v', 'Value of v at a', { min: -1000, max: 1000, step: 0.1 }),
+      V('dv', 'v′', 'Slope of v at a', { min: -1000, max: 1000, step: 0.1 }),
+      V('P', 'P′', 'Slope of the product uv', { min: -2e6, max: 2e6, step: 0.0001 }),
+      V('Q', 'Q′', 'Slope of the quotient u ÷ v', { min: -1e9, max: 1e9, step: 0.0001 }),
+    ],
+    ...rels(
+      rule(
+        'v ≠ 0',
+        'The bottom {v} is not 0',
+        ['v'],
+        (v) => v.v !== 0,
+        'With v = 0 at a, u ÷ v has no value there, so it has no slope. Pick a v that is not 0.',
+      ),
+      rel(
+        'P′ = u′v + uv′',
+        '{P} = {du} × {v} + {u} × {dv}',
+        ['P', 'du', 'v', 'u', 'dv'],
+        (v) => v.P! - (v.du! * v.v! + v.u! * v.dv!),
+        {
+          P: [
+            (v) => v.du! * v.v! + v.u! * v.dv!,
+            '{du} × {v} + {u} × {dv}',
+            'Product rule: each strip is one factor’s slope times the other factor.',
+          ],
+          du: [
+            (v) => (v.v === 0 ? undefined : (v.P! - v.u! * v.dv!) / v.v!),
+            '({P} − {u} × {dv}) ÷ {v}',
+            'Take u·v′ from P′, then divide by v.',
+          ],
+          dv: [
+            (v) => (v.u === 0 ? undefined : (v.P! - v.du! * v.v!) / v.u!),
+            '({P} − {du} × {v}) ÷ {u}',
+            'Take u′·v from P′, then divide by u.',
+          ],
+        },
+      ),
+      rel(
+        'Q′ = (u′v − uv′) ÷ v²',
+        '{Q} = ({du} × {v} − {u} × {dv}) ÷ ({v}²)',
+        ['Q', 'du', 'v', 'u', 'dv'],
+        (v) => v.Q! * v.v! ** 2 - (v.du! * v.v! - v.u! * v.dv!),
+        {
+          Q: [
+            (v) => (v.v === 0 ? undefined : (v.du! * v.v! - v.u! * v.dv!) / v.v! ** 2),
+            '({du} × {v} − {u} × {dv}) ÷ ({v} × {v})',
+            'Quotient rule: bottom times the top’s slope, minus top times the bottom’s slope, all over the bottom squared.',
+          ],
+          du: [
+            (v) => (v.v === 0 ? undefined : (v.Q! * v.v! ** 2 + v.u! * v.dv!) / v.v!),
+            '({Q} × {v}² + {u} × {dv}) ÷ {v}',
+            'Multiply Q′ by v², add u·v′, then divide by v.',
+          ],
+        },
+      ),
+    ),
+    example: { u: 3, du: -1, v: 4, dv: 5, P: 11, Q: -1.1875 },
+    startWith: ['u', 'du', 'v', 'dv'],
+    representation: {
+      kind: 'rectangle',
+      length: 'u',
+      width: 'v',
+      extent: 4,
+      grow: { du: 'du', dv: 'dv', product: 'P', quotient: 'Q' },
+      fixed: true,
+    },
+  },
 ];
