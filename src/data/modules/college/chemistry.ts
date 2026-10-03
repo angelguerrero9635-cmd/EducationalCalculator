@@ -271,4 +271,88 @@ export const COLLEGE_CHEMISTRY_MODULES: ModuleDef[] = [
       unitsOf: { x: 'w' },
     },
   },
+  {
+    // Heisenberg: the least spread in speed for a mass held to Δx (the equality, "at least").
+    id: 'he.chemistry.gen-chem-1#0~uncertainty',
+    title: 'The least uncertainty in speed',
+    // As the data are given (0.100 nm): 5.79 × 10⁵ m/s.
+    workedFigures: 3,
+    use: 'Use this for “An electron is located to within 0.100 nm. What is the least uncertainty in its speed?”',
+    assumptions: [
+      'Heisenberg: Δx·Δp ≥ h ÷ (4π). The page works the equality, so Δp and Δv are the least uncertainties possible.',
+      'The speed stays well below light’s, so p = mv and the spread in momentum is Δp = mΔv.',
+      'An electron’s mass is 9.109 × 10⁻³¹ kg; h = 6.626 × 10⁻³⁴ J·s.',
+    ],
+    variables: [
+      V('m', 'm', 'Mass', {
+        unit: 'kg',
+        units: ['kg', 'g'],
+        min: 9e-31,
+        max: 10,
+        scientific: true,
+      }),
+      V('x', 'Δx', 'Position uncertainty', {
+        unit: 'nm',
+        units: ['m', 'nm', 'pm'],
+        min: 0.01,
+        max: 1e10,
+        figures: 4,
+      }),
+      V('p', 'Δp', 'Least momentum uncertainty', {
+        unit: 'kg·m/s',
+        min: H / (4 * Math.PI * 10),
+        max: H / (4 * Math.PI * 1e-11),
+        scientific: true,
+      }),
+      V('v', 'Δv', 'Least speed uncertainty', {
+        unit: 'm/s',
+        units: ['m/s', 'km/s'],
+        min: H / (4 * Math.PI * 10) / 10,
+        max: H / (4 * Math.PI * 1e-11) / 9e-31,
+        scientific: true,
+      }),
+    ],
+    ...rels(
+      rel(
+        'Δx·Δp = h/(4π)',
+        '{p} = (6.626 × 10⁻³⁴) ÷ (4π × {x} × 10⁻⁹)',
+        ['p', 'x'],
+        (v) => v.x! - (H / (4 * Math.PI * v.p!)) * 1e9,
+        {
+          p: [
+            (v) => H / (4 * Math.PI * v.x! * 1e-9),
+            '(6.626 × 10⁻³⁴) ÷ (4π × {x} × 10⁻⁹)',
+            'Heisenberg at its limit: Δp = h ÷ (4πΔx), with Δx in meters (nm × 10⁻⁹).',
+          ],
+          x: [
+            (v) => (H / (4 * Math.PI * v.p!)) * 1e9,
+            '(6.626 × 10⁻³⁴) ÷ (4π × {p}) × 10⁹',
+            'Turn it around: Δx = h ÷ (4πΔp) in meters; × 10⁹ turns it into nanometers.',
+          ],
+        },
+      ),
+      rel('Δv = Δp/m', '{v} = {p} ÷ {m}', ['v', 'p', 'm'], (v) => v.p! - v.m! * v.v!, {
+        v: [
+          (v) => v.p! / v.m!,
+          '{p} ÷ {m}',
+          'Δp = mΔv, so divide the momentum spread by the mass.',
+        ],
+        p: [
+          (v) => v.m! * v.v!,
+          '{m} × {v}',
+          'The momentum spread is the mass times the speed spread.',
+        ],
+        m: [(v) => v.p! / v.v!, '{p} ÷ {v}', 'Divide the momentum spread by the speed spread.'],
+      }),
+    ),
+    example: (() => {
+      const m = valueOf('me');
+      const x = 0.1;
+      const p = H / (4 * Math.PI * x * 1e-9);
+      return { m, x, p, v: p / m };
+    })(),
+    startWith: ['m', 'x'],
+    unitSystems: ['metric'],
+    representation: { kind: 'none' },
+  },
 ];
