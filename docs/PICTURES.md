@@ -955,6 +955,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `oceanProfile`     | `mode: 'stripes'`, `distance`, `age`, …  | ridge from above: stripes mirrored, hatched past 12 Ma; a rock x km, t (H103) |
 | `atmosphereLayers` | `mode: 'parcel'`, `temperature`, …       | a parcel cooling 10 °C/km, dew point 2 °C/km, meeting at a cloud base (H103)  |
 | `atmosphereLayers` | `mode: 'balance'`, `albedo`, `sunlight`  | S ÷ 4 in, α reflected, F absorbed and sent out as σTₑ⁴; a thermometer (H103)  |
+| `atmosphereLayers` | `mode: 'thickness'`, `lower`, `upper`    | log p against height: the T̄ column straight, p₁, p₂, Δz; H at p₁ ÷ e (HC122)  |
 | `rockLayers`       | `dating.sample.second: { name, share }`  | a parent that decays two ways: the decayed atoms split by share (K-40) (H103) |
 | `hrDiagram`        | `mass`, `luminosity?`, `lifetime?`       | a main-sequence star placed by mass, L = M^3.5; 3, 10, 30 M☉ marked (H103)    |
 | `circularMotion`   | kepler `starMass`                        | round another star: a³ = M × T², star, closest and farthest labels (H110)     |

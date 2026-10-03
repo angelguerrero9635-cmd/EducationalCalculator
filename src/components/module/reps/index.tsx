@@ -4,6 +4,7 @@ import { isHe2fSpec } from '@/data/modules/typesHe2f';
 import { isHe3lSpec } from '@/data/modules/typesHe3l';
 import { isVectorHe4b } from '@/data/modules/typesHe4b'; // HC96–HC171, group B
 import { isHe4cOption } from '@/data/modules/typesHe4c';
+import { isHe4gOption } from '@/data/modules/typesHe4g'; // HC122–HC130, group G
 import { isFamilyHe4e, isNormalHe4e } from '@/data/modules/typesHe4e';
 
 import type { Calculator } from '../useCalculator';
@@ -259,6 +260,7 @@ import { MotionGraphHs } from './MotionGraphHs';
 import { HskView } from './HskView';
 import { He2fView } from './He2fView';
 import { He4cView } from './He4cView';
+import { He4gView } from './He4gView';
 import { Spacetime } from './Spacetime';
 import { RayHe3l } from './RayHe3l';
 import { PhaseSpace } from './PhaseSpace';
@@ -305,6 +307,7 @@ export const representationTitle = (r: Representation) =>
 export function RepresentationView({ spec, calc }: { spec: Representation; calc: Calculator }) {
   if (isHe2fSpec(spec)) return <He2fView spec={spec} calc={calc} />; // HC20, HC25, HC35
   if (isHe4cOption(spec)) return <He4cView spec={spec} calc={calc} />; // HC99, HC101, HC103, HC105, HC118
+  if (isHe4gOption(spec)) return <He4gView spec={spec} calc={calc} />; // HC122–HC125, HC130
   switch (spec.kind) {
     case 'none':
       return null; // H105: an equation-only page (ModuleSections leaves out the section)
