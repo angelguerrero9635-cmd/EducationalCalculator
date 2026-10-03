@@ -62,10 +62,10 @@ export const HE3C_REQUESTS: PictureRequest[] = [
       'rightTriangle',
       'Related rates and pumping work: a right triangle with each side’s rate as an arrow at its moving end (a ladder against a wall, two cars on crossing roads), a cone tank on its apex filling to depth h, and a full cylinder with a thin slab lifted to the outlet',
       {
-        [`${M}calc-1#2~ladder`]: 'rightTriangle rates, scene ladder',
-        [`${M}calc-1#2~two-cars`]: 'rightTriangle rates, scene roads',
-        [`${M}calc-1#2~cone-tank`]: 'curvedSolid cone fill',
-        [`${M}calc-2#2~pump-work`]: 'curvedSolid cylinder slab',
+        [`${M}calc-1#2~ladder`]: '"ladder"',
+        [`${M}calc-1#2~two-cars`]: '"roads"',
+        [`${M}calc-1#2~cone-tank`]: '"fill"',
+        [`${M}calc-2#2~pump-work`]: '"slab"',
       },
       [
         'From M-P16. Options on rightTriangle and curvedSolid (typesHe3c.ts; drawn by reps/RightTriangleRatesHe3c.tsx and reps/TankHe3c.tsx, sums in reps/ratesHe3cMath.ts); each is off unless a page sets it.',

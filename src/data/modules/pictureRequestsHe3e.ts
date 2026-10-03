@@ -33,10 +33,10 @@ export const HE3E_REQUESTS: PictureRequest[] = [
       'instrumentTrace',
       'Instrument traces computed from peak lists: a ¹H NMR spectrum with n + 1 multiplets and integrals, a chromatogram with R, a rotational spectrum 2B apart; and the `ir` card',
       {
-        [`${C}organic-1#4`]: 'mode nmr: the multiplets, the integral trace with H per signal',
-        [`${C}organic-1#4~ir-bands`]: 'card figure ir on each sort card',
-        [`${C}analytical#3`]: 'mode chromatogram: peaks, tangents, Δt, w, R',
-        [`${C}physical-2#4`]: 'mode rotational: lines at 2B(J + 1), the lit J line',
+        [`${C}organic-1#4`]: '"nmr"',
+        [`${C}organic-1#4~ir-bands`]: '"ir"',
+        [`${C}analytical#3`]: '"chromatogram"',
+        [`${C}physical-2#4`]: '"rotational"',
       },
       [
         'From C-P5 (typesHe3e.ts, reps/InstrumentTrace.tsx, the sums in reps/instrumentTraceMath.ts; the card in layouts/irCard.tsx). Every trace is computed from its values, never traced from a real spectrum.',
@@ -119,9 +119,9 @@ export const HE3E_REQUESTS: PictureRequest[] = [
       'moleMap',
       'Mole-map boxes for a solution (M × L → mol) and a gas (V = nRT ÷ P at any T and P) at either end of the chain; and the combustion train with the CₓHᵧO_z formula worked out from the values',
       {
-        [`${C}gen-chem-1#1~solution-stoich`]: 'moleMap solution boxes at both ends',
-        [`${C}gen-chem-1#2~gas-stoich`]: 'moleMap gas box for the product',
-        [`${C}gen-chem-1#1`]: 'reaction combustion (replaces the interim bars)',
+        [`${C}gen-chem-1#1~solution-stoich`]: '"solution"',
+        [`${C}gen-chem-1#2~gas-stoich`]: '"gas"',
+        [`${C}gen-chem-1#1`]: '"combustion"',
       },
       [
         'From C-P24 (typesHe3e.ts MoleMapHe3e and CombustionTrain, reps/MoleMapHe3e.tsx, reps/CombustionTrain.tsx, the sums in reps/moleHe3eMath.ts; one dispatch line each in reps/hsi.tsx and reps/index.tsx). Off unless a page sets solution, gas or combustion; the Grades 9–12 mole map, limiting map and reaction are unchanged.',
