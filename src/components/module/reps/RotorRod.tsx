@@ -8,9 +8,12 @@ import type { Calculator } from '../useCalculator';
 import { Canvas, Caption } from './common';
 import { rodOf } from './he4bMath';
 import { useValues } from './he4bKit';
-import { short } from './hsdKit';
+import { formatNumber } from '@/engine/format';
 import { SubLabel, Vec } from './hskKit';
 import { Sheen, TopLight, url, usePaintIds } from './paint';
+
+/** Three significant figures: I = 0.081 and 0.324 (two places read 0.08 and 0.32). */
+const sig = (x: number) => formatNumber(Number(x.toPrecision(3)) || 0);
 
 const H = 250;
 
@@ -34,8 +37,8 @@ export function RotorRod({ spec, calc }: { spec: RotorSpec; calc: Calculator }) 
   if (!ready) lines.push('I is the center’s ML² ÷ 12 plus Md²: ? until M, L and d are known.');
   else
     lines.push(
-      `About the center: ML² ÷ 12 = ${short(M)} × ${short(L)}² ÷ 12 = ${short(s.icm)} ${unitI}.`,
-      `Moved d = ${short(d)} m: I = ${short(s.icm)} + ${short(M)} × ${short(d)}² = ${short(s.icm)} + ${short(s.shift)} = ${short(s.I)} ${unitI}.`,
+      `About the center: ML² ÷ 12 = ${sig(M)} × ${sig(L)}² ÷ 12 = ${sig(s.icm)} ${unitI}.`,
+      `Moved d = ${sig(d)} m: I = ${sig(s.icm)} + ${sig(M)} × ${sig(d)}² = ${sig(s.icm)} + ${sig(s.shift)} = ${sig(s.I)} ${unitI}.`,
       Math.abs(d - L / 2) < 1e-9
         ? 'At the end, I = ML² ÷ 3: four times the center’s.'
         : d === 0
@@ -93,7 +96,7 @@ export function RotorRod({ spec, calc }: { spec: RotorSpec; calc: Calculator }) 
                 <SubLabel
                   x={X(L / 2) - xa > xa - X(-L / 2) ? (xa + X(L / 2)) / 2 : (X(-L / 2) + xa) / 2}
                   y={rodY - 40}
-                  text={`L = ${short(L)} m`}
+                  text={`L = ${sig(L)} m`}
                   w={w}
                 />
               ) : null}
@@ -184,7 +187,7 @@ export function RotorRod({ spec, calc }: { spec: RotorSpec; calc: Calculator }) 
                   <SubLabel
                     x={d !== 0 ? (xc + xa) / 2 : xc}
                     y={rodY + 54}
-                    text={`d = ${short(d)} m`}
+                    text={`d = ${sig(d)} m`}
                     w={w}
                   />
                   {/* I = I_cm + Md², in proportion. */}
@@ -200,14 +203,14 @@ export function RotorRod({ spec, calc }: { spec: RotorSpec; calc: Calculator }) 
                   <SubLabel
                     x={20}
                     y={barY - 8}
-                    text={`I_cm = ${short(s.icm)}`}
+                    text={`I_cm = ${sig(s.icm)}`}
                     anchor="start"
                     w={w}
                   />
                   <SubLabel
                     x={20 + barW}
                     y={barY - 8}
-                    text={`Md² = ${short(s.shift)}`}
+                    text={`Md² = ${sig(s.shift)}`}
                     anchor="end"
                     color={c.chartHighlight}
                     w={w}
@@ -215,7 +218,7 @@ export function RotorRod({ spec, calc }: { spec: RotorSpec; calc: Calculator }) 
                   <SubLabel
                     x={20 + barW / 2}
                     y={barY + 38}
-                    text={`I = ${short(s.I)} ${unitI}`}
+                    text={`I = ${sig(s.I)} ${unitI}`}
                     w={w}
                   />
                 </G>

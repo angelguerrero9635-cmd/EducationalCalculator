@@ -244,7 +244,7 @@ function Expanded({ spec, calc }: { spec: VseprExpandedSpec; calc: Calculator })
       <Canvas aspect={(w) => height / w}>{({ w }) => art(w)}</Canvas>
       <Caption>
         {[
-          `${b} bonded atoms and ${l} lone pair${l === 1 ? '' : 's'}: ${d} electron domains in a ${shape.domains} arrangement, ${shape.hybrid} hybrid orbitals.`,
+          `${b} bonded atoms and ${l} lone pair${l === 1 ? '' : 's'}: ${d} electron domains in ${/^[aeiou]/i.test(shape.domains) ? 'an' : 'a'} ${shape.domains} arrangement, ${shape.hybrid} hybrid orbitals.`,
           `The shape is ${shape.name} (for example ${shape.example.formula}); the domains are ${formatNumber(shape.domainAngle)}° apart at the closest.`,
           d === 5 && l > 0
             ? 'Lone pairs sit equatorial: there they have two neighbors at 90° instead of three.'

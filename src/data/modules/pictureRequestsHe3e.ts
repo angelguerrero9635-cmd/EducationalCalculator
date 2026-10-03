@@ -90,8 +90,8 @@ export const HE3E_REQUESTS: PictureRequest[] = [
       'vsepr',
       'Molecular shape with 5–6 electron domains (lone pairs equatorial in 5, trans in 6) and the hybrid named; a metal complex with its ligands placed cis, trans, fac or mer',
       {
-        [`${C}gen-chem-1#4`]: "mode 'expanded': the shape, θ and the hybrid from V, b and o",
-        [`${C}inorganic#1`]: "mode 'complex': the metal, its ligands and the coordination number",
+        [`${C}gen-chem-1#4`]: '"expanded"',
+        [`${C}inorganic#1`]: '"complex"',
         [`${C}inorganic#1~isomers`]:
           "mode 'complex' with isomer (the sort's cards stay text until a complex card is asked for)",
       },
