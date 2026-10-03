@@ -168,6 +168,8 @@ describe('unit conversions (exact definitions)', () => {
       'light-years',
       // s.9 pyramid of biomass (dry mass per square meter)
       'g/m²',
+      // College kinematics from x(t): the t³ coefficient (no menu: the coefficients go together)
+      'm/s³',
     ];
     const unknown = new Set(
       MODULES.flatMap((m) =>
