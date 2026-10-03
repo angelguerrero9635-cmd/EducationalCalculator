@@ -6,6 +6,7 @@ import { isVectorHe4b } from '@/data/modules/typesHe4b'; // HC96–HC171, group 
 import { isHe4cOption } from '@/data/modules/typesHe4c';
 import { isHe4fSpec } from '@/data/modules/typesHe4f';
 import { isHe4hSpec } from '@/data/modules/typesHe4h';
+import { isHe4k } from '@/data/modules/typesHe4k';
 import { isFamilyHe4e, isNormalHe4e } from '@/data/modules/typesHe4e';
 
 import type { Calculator } from '../useCalculator';
@@ -274,6 +275,7 @@ import { He2fView } from './He2fView';
 import { He4cView } from './He4cView';
 import { He4fView } from './He4fView';
 import { He4hView } from './He4hView';
+import { He4kView } from './He4kView';
 import { Spacetime } from './Spacetime';
 import { RayHe3l } from './RayHe3l';
 import { PhaseSpace } from './PhaseSpace';
@@ -322,6 +324,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
   if (isHe4cOption(spec)) return <He4cView spec={spec} calc={calc} />; // HC99, HC101, HC103, HC105, HC118
   if (isHe4fSpec(spec)) return <He4fView spec={spec} calc={calc} />; // HC116–HC128, group F
   if (isHe4hSpec(spec)) return <He4hView spec={spec} calc={calc} />; // group H, round 4 (HC129–HC138, HC150)
+  if (isHe4k(spec)) return <He4kView spec={spec} calc={calc} />; // HC160–HC164, HC176, HC177
   switch (spec.kind) {
     case 'none':
       return null; // H105: an equation-only page (ModuleSections leaves out the section)

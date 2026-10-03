@@ -622,6 +622,13 @@ search or the sitemap, but the module tests and the harness run over it):
 | `dataStructure`    | sorted n: binary search halvings as bars, ⌊log₂n⌋ + 1; linear n        | College data structures (HC187)     |
 | `memoryMap`        | VA → page table → frame, PA = f·S + d; inode pointers to k, k², k³     | College operating systems (HC189)   |
 | `datapath`         | IM, registers, ALU, DM, write back; a class lit, its delays summed     | College architecture (HC191)        |
+| `dialyzer`         | hollow fibers: blood C_in → C_out, dialysate counterflow; cleared K    | College biotransport (HC160)        |
+| `attenuation`      | X-rays through a slab: tracks, HVLs ½ ¼ …, e^(−μx); `echo`: d = ct ÷ 2 | College bioinstrumentation (HC161)  |
+| `scaffold`         | open-cell cube, 3 cells a side: struts 3s² − 2s³ = ρ∗ ÷ ρ_s; pore bar  | College tissue engineering (HC162)  |
+| `ligandGrid`       | RGD dots on a grid at d under a cell, 70 nm ring; plaques if d ≤ 70    | College tissue engineering (HC163)  |
+| `bioreactor`       | glass vessel, sparger, cells as dots by X; O₂ gauge 0 to C∗ at C       | College tissue engineering (HC164)  |
+| `settlingTank`     | basin to scale, a particle at v_s vs v₀ = Q ÷ LW; removed band shaded  | College environmental eng. (HC176)  |
+| `plume`            | stack, rise to H, ±σ_z widening downwind; ground profile and C         | College environmental eng. (HC177)  |
 | `globe`            | sun rays, noon angle, day dial; great circle; Euler pole; dipole; air  | College earth and geography (HC36)  |
 | `stressStrain`     | σ–ε curve: E, 0.2% offset, UTS, necking; specimen; tube; two members   | College materials, biomech. (HC28)  |
 | `stressElement`    | element, turned to θ_p; Mohr's circle; 3 circles; loci, n; soil line   | College stress, soil (HC33)         |

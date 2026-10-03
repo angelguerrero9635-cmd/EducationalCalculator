@@ -59,6 +59,7 @@ import { he3lSpecVars, isHe3lSpec } from '../typesHe3l';
 import { he4cSpecVars, isHe4cOption } from '../typesHe4c';
 import { he4fSpecVars, isHe4fSpec } from '../typesHe4f';
 import { he4hSpecVars, isHe4hSpec } from '../typesHe4h';
+import { he4kSpecVars, isHe4k } from '../typesHe4k';
 import { he1hSpecVars } from '../typesHe1h';
 import { he2dSpecVars } from '../typesHe2d';
 import { hs2cSpecVars } from '../typesHs2c';
@@ -88,6 +89,7 @@ function representationVars(r: Representation): string[] {
   if (isHe4cOption(r)) return he4cSpecVars(r); // HC99, HC101, HC103, HC105, HC118
   if (isHe4fSpec(r)) return he4fSpecVars(r); // HC116–HC128, group F
   if (isHe4hSpec(r)) return he4hSpecVars(r); // group H, round 4
+  if (isHe4k(r)) return he4kSpecVars(r); // HC160–HC164, HC176, HC177
   switch (r.kind) {
     case 'none':
       return [];

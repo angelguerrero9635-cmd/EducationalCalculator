@@ -36,6 +36,7 @@ import type { He3lSpec } from './typesHe3l';
 import type { He4cSpec } from './typesHe4c';
 import type { He4fSpec } from './typesHe4f';
 import type { He4hSpec } from './typesHe4h';
+import type { He4kSpec } from './typesHe4k';
 import type { Hs2cSpec } from './typesHs2c';
 import type { Hs3aSpec } from './typesHs3a';
 import type { He1bSpec } from './typesHe1b';
@@ -1204,6 +1205,8 @@ export type Representation =
   | He4fSpec
   /** College round 4, group H: HC129–HC138, HC150 (`typesHe4h.ts`). */
   | He4hSpec
+  /** College round 4, group K: HC160–HC164, HC176, HC177 (`typesHe4k.ts`). */
+  | He4kSpec
   /** Grades 9–12 physics round 2, group H2C: impulse, … (specs in typesHs2c.ts). */
   | Hs2cSpec
   /** Grades 9–12 physics round 3, group H3A: torque, rotor, … (specs in typesHs3a.ts). */
