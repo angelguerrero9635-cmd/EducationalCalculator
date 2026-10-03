@@ -67,6 +67,7 @@ export type Dimension =
   | 'magneticFieldStrength'
   | 'magneticMoment'
   | 'electricField'
+  | 'lineCharge'
   | 'conductance'
   | 'conductivity'
   | 'resistivity'
@@ -594,6 +595,10 @@ export const UNITS: readonly UnitDef[] = [
   listed(u('kV/m', 'kilovolts per meter', 'electricField', 1e3, 'both')),
   listed(u('kV/cm', 'kilovolts per centimeter', 'electricField', 1e5, 'both')),
   listed(u('MV/m', 'megavolts per meter', 'electricField', 1e6, 'both')),
+  // Charge per length (λ), for a long line of charge (Gauss's law)
+  listed(u('nC/m', 'nanocoulombs per meter', 'lineCharge', 1e-9, 'both')),
+  listed(u('μC/m', 'microcoulombs per meter', 'lineCharge', 1e-6, 'both')),
+  listed(u('C/m', 'coulombs per meter', 'lineCharge', 1, 'both')),
   listed(u('μS', 'microsiemens', 'conductance', 1e-6, 'both')),
   listed(u('mS', 'millisiemens', 'conductance', 1e-3, 'both')),
   listed(u('S', 'siemens', 'conductance', 1, 'both')),
