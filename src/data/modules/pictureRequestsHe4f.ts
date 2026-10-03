@@ -155,4 +155,21 @@ export const HE4F_REQUESTS: PictureRequest[] = [
       'g.he-oceanProfile-slope-tropics',
     ],
   },
+  {
+    ...ask(
+      'HC127',
+      'tsDiagram',
+      'A T–S diagram: temperature up, salinity across, the isopycnals of the page’s equation of state every 0.5 kg/m³, the freezing line with ice below it, the water’s point with its density',
+      [`${E}oceanography#1`],
+      [
+        'From EG-P15. New kind (typesHe4f.ts TsDiagramSpec, reps/TsDiagram.tsx; the state, window and isopycnals in reps/he4fMath.ts).',
+        "Fields: { kind: 'tsDiagram', temperature (T, °C), salinity (S, g/kg), density? (ρ, kg/m³), freezing? (T_f, °C), state? ({ rho0, alpha, beta, t0, s0 }: the page's linear equation of state; default 1,027, 1.7 × 10⁻⁴, 7.6 × 10⁻⁴, 10, 35), freezeSlope? (default 0.054 °C per g/kg) }.",
+        'The chart is S 30–40 g/kg by T −2.5–30 °C, widened to hold the point (brackish water down to 0 g/kg); isopycnals labelled where they leave it, every 1 or more kg/m³ as room allows. Water below its freezing point draws faded and says so. A "?" draws no point. No handles.',
+        "Example: { kind: 'tsDiagram', temperature: 'T', salinity: 'S', density: 'rho', freezing: 'tf' } (2 °C, 34.7 g/kg → ρ = 1,028.2 kg/m³, T_f = −1.87 °C).",
+        'Harness (harness/picturesHe4f.ts): the point’s density by the relation is the page’s within 0.01 kg/m³; every isopycnal’s two ends hold its density by the same relation; T_f = −0.054S; the point is on the chart.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: ['g.he-tsDiagram', 'g.he-tsDiagram-surface', 'g.he-tsDiagram-brackish'],
+  },
 ];

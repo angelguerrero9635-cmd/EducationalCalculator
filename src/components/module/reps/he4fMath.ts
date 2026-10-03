@@ -246,3 +246,54 @@ export function geostrophic(rise: number, dx: number, phi: number, g: number, om
   const f = 2 * omega * Math.sin((Math.abs(phi) * Math.PI) / 180);
   return { f, v: (g * Math.abs(rise)) / (f * dx) };
 }
+
+// ─── HC127: tsDiagram ───────────────────────────────────────────────────────────
+
+/** A linear equation of state: ρ = ρ₀(1 − α(T − T₀) + β(S − S₀)). */
+export interface SeawaterState {
+  rho0: number;
+  alpha: number;
+  beta: number;
+  t0: number;
+  s0: number;
+}
+
+/** The plan's fit near 10 °C and 35 g/kg. */
+export const TS_STATE: SeawaterState = { rho0: 1027, alpha: 1.7e-4, beta: 7.6e-4, t0: 10, s0: 35 };
+
+export const seawaterDensity = (T: number, S: number, st: SeawaterState) =>
+  st.rho0 * (1 - st.alpha * (T - st.t0) + st.beta * (S - st.s0));
+
+/** The chart's window: S 30–40 g/kg and T −2.5–30 °C, widened to hold the water's point. */
+export function tsWindow(T?: number, S?: number) {
+  const s0 = S === undefined ? 30 : Math.max(0, Math.min(30, 2 * Math.floor((S - 2) / 2)));
+  const s1 = S === undefined ? 40 : Math.max(40, 2 * Math.ceil((S + 2) / 2));
+  const t0 = T === undefined ? -2.5 : Math.min(-2.5, Math.floor(T - 1));
+  const t1 = T === undefined ? 30 : Math.max(30, 5 * Math.ceil((T + 2) / 5));
+  return { s0, s1, t0, t1 };
+}
+
+/** The temperature on the isopycnal ρ at salinity S. */
+export const isopycnalT = (rho: number, S: number, st: SeawaterState) =>
+  st.t0 + (1 - rho / st.rho0 + st.beta * (S - st.s0)) / st.alpha;
+
+/**
+ * The isopycnals every 0.5 kg/m³ across a window, each from its low (left or bottom) end `a` to
+ * its high end `b` as [S, T]; `exitTop` when it leaves through the top.
+ */
+export function isopycnal(win: ReturnType<typeof tsWindow>, st: SeawaterState) {
+  const lo = seawaterDensity(win.t1, win.s0, st);
+  const hi = seawaterDensity(win.t0, win.s1, st);
+  const out: { rho: number; a: [number, number]; b: [number, number]; exitTop: boolean }[] = [];
+  for (let r = Math.ceil(lo * 2) / 2; r <= hi + 1e-9; r += 0.5) {
+    const tl = isopycnalT(r, win.s0, st);
+    const tr = isopycnalT(r, win.s1, st);
+    if (tr < win.t0 || tl > win.t1) continue;
+    const sAt = (t: number) => win.s0 + ((win.s1 - win.s0) * (t - tl)) / (tr - tl);
+    const a: [number, number] = tl >= win.t0 ? [win.s0, tl] : [sAt(win.t0), win.t0];
+    const exitTop = tr > win.t1;
+    const b: [number, number] = exitTop ? [sAt(win.t1), win.t1] : [win.s1, tr];
+    out.push({ rho: r, a, b, exitTop });
+  }
+  return out;
+}

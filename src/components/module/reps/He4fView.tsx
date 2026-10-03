@@ -5,6 +5,7 @@
 import type { He4fSpec } from '@/data/modules/typesHe4f';
 
 import type { Calculator } from '../useCalculator';
+import { TsDiagram } from './TsDiagram';
 import { OceanSlope } from './OceanSlope';
 import { MichelLevy } from './MichelLevy';
 import { EarthRupture } from './EarthRupture';
@@ -26,5 +27,7 @@ export function He4fView({ spec, calc }: { spec: He4fSpec; calc: Calculator }) {
       return <MichelLevy spec={spec} calc={calc} />; // HC121
     case 'oceanProfile':
       return <OceanSlope spec={spec} calc={calc} />; // HC126
+    case 'tsDiagram':
+      return <TsDiagram spec={spec} calc={calc} />; // HC127
   }
 }

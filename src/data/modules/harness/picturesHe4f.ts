@@ -22,7 +22,11 @@ import {
   momentOf,
   normalize,
   OMEGA_EARTH,
+  TS_STATE,
   fossilWindow,
+  isopycnal,
+  seawaterDensity,
+  tsWindow,
   geostrophic,
   ruptureRect,
   ternaryField,
@@ -44,6 +48,7 @@ import {
 } from '@/components/module/reps/michelLevyMath';
 import type {
   He4fSpec,
+  TsDiagramSpec,
   OceanSlopeSpec,
   MichelLevySpec,
   RockRangesSpec,
@@ -74,6 +79,8 @@ export function he4fIssues(rep: He4fSpec, val: Val): string[] {
       return michelLevyIssues(rep, num);
     case 'oceanProfile':
       return slopeIssues(rep, num);
+    case 'tsDiagram':
+      return tsIssues(rep, num);
   }
 }
 
@@ -273,5 +280,28 @@ function slopeIssues(rep: OceanSlopeSpec, num: Num): string[] {
     if (south && into === highOnRight)
       out.push('slope: in the south high sea level must be on the left');
   }
+  return out;
+}
+
+function tsIssues(rep: TsDiagramSpec, num: Num): string[] {
+  const out: string[] = [];
+  const [T, S] = [num(rep.temperature), num(rep.salinity)];
+  if (T === undefined || S === undefined) return out;
+  const st = { ...TS_STATE, ...rep.state };
+  const rho = seawaterDensity(T, S, st);
+  const rhoPage = num(rep.density);
+  if (rhoPage !== undefined && Math.abs(rhoPage - rho) > 0.01)
+    out.push(`tsDiagram: the point's ρ ${rho} is not the page's ${rhoPage}`);
+  const tf = num(rep.freezing);
+  if (tf !== undefined && !near(tf, -(rep.freezeSlope ?? 0.054) * S, 1e-6))
+    out.push(`tsDiagram: T_f ${tf}, not −${rep.freezeSlope ?? 0.054}S`);
+  const win = tsWindow(T, S);
+  if (S < win.s0 || S > win.s1 || T < win.t0 || T > win.t1)
+    out.push(`tsDiagram: the point (${S}, ${T}) is off the chart`);
+  // Every isopycnal drawn holds its density at both ends, by the same relation.
+  for (const l of isopycnal(win, st))
+    for (const [s, t] of [l.a, l.b])
+      if (Math.abs(seawaterDensity(t, s, st) - l.rho) > 1e-6)
+        out.push(`tsDiagram: the ${l.rho} line passes ${seawaterDensity(t, s, st)}`);
   return out;
 }

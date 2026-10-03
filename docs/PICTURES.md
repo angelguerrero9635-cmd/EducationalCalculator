@@ -601,6 +601,7 @@ search or the sitemap, but the module tests and the harness run over it):
 | `ternary`          | a triangle of 3 amounts, 10% grid; QAP fields or feldspars named       | College rocks, minerals (HC116)     |
 | `silicateChain`    | SiO₄ tetrahedra from above: shared O ringed, repeat unit boxed         | College minerals (HC117)            |
 | `michelLevy`       | interference colours computed by Γ; δ lines; the grain's order named   | College optical mineralogy (HC121)  |
+| `tsDiagram`        | T against S: isopycnals every 0.5 kg/m³, freezing line, ρ of a point   | College oceanography (HC127)        |
 | `globe`            | sun rays, noon angle, day dial; great circle; Euler pole; dipole; air  | College earth and geography (HC36)  |
 | `stressStrain`     | σ–ε curve: E, 0.2% offset, UTS, necking; specimen; tube; two members   | College materials, biomech. (HC28)  |
 | `stressElement`    | element, turned to θ_p; Mohr's circle; 3 circles; loci, n; soil line   | College stress, soil (HC33)         |

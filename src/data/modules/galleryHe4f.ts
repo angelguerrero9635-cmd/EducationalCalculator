@@ -8,6 +8,7 @@
  * HC120: `rockLayers` `ranges` (historical-geology#2) and the cliff header (#0).
  * HC121: `michelLevy`, the new kind (he.earth-science.mineralogy#2).
  * HC126: `oceanProfile` mode `slope` (he.earth-science.oceanography#2).
+ * HC127: `tsDiagram`, the new kind (he.earth-science.oceanography#1).
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
@@ -845,6 +846,80 @@ const SLOPE_LOW = slopePage(
   { eta: 0.2, dx: 200, phi: 5 },
 );
 
+// ─── HC127: seawater density on a T–S diagram (oceanography#1) ─────────────────
+
+const rhoOf = (v: Values) => 1027 * (1 - 0.00017 * (v.T! - 10) + 0.00076 * (v.S! - 35));
+const tfOf = (v: Values) => -0.054 * v.S!;
+
+const tsPage = (id: string, title: string, use: string, typed: Values) =>
+  page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'A straight-line fit near 10 °C and 35 g/kg: cold water’s density changes less with temperature than this says.',
+      'Pressure is ignored (surface water).',
+      'Colder or saltier water is denser and sinks; below its freezing point seawater is ice.',
+    ],
+    variables: [
+      num('T', 'T', 'Temperature', '°C', -2, 35, { step: 0.1 }),
+      num('S', 'S', 'Salinity', 'g/kg', 0, 42, { step: 0.1 }),
+      out('rho', 'ρ', 'Density', 'kg/m³'),
+      out('tf', 'T_f', 'Freezing point', '°C'),
+    ],
+    rules: [
+      derive(
+        'rho',
+        'rho',
+        ['T', 'S'],
+        '{rho} = 1027 × (1 − 0.00017 × ({T} − 10) + 0.00076 × ({S} − 35))',
+        rhoOf,
+        '1027 × (1 − 0.00017 × ({T} − 10) + 0.00076 × ({S} − 35))',
+        'Warmer water is lighter and saltier water heavier, each by a fixed share per degree or g/kg.',
+      ),
+      derive(
+        'tf',
+        'tf',
+        ['S'],
+        '{tf} = −0.054 × {S}',
+        tfOf,
+        '−0.054 × {S}',
+        'Salt lowers the freezing point by about 0.054 °C per g/kg.',
+      ),
+    ],
+    example: example(typed, ['rho', rhoOf], ['tf', tfOf]),
+    startWith: ['T', 'S'],
+    representation: {
+      kind: 'tsDiagram',
+      temperature: 'T',
+      salinity: 'S',
+      density: 'rho',
+      freezing: 'tf',
+    },
+  });
+
+const DEEP_WATER = tsPage(
+  'g.he-tsDiagram',
+  'Seawater density on a T–S diagram',
+  'Use this for “Deep water is 2 °C with salinity 34.7 g/kg. Find its density and freezing point.”',
+  { T: 2, S: 34.7 },
+);
+
+const SURFACE_WATER = tsPage(
+  'g.he-tsDiagram-surface',
+  'Warm, salty surface water on a T–S diagram',
+  'Use this for “Subtropical surface water is 25 °C and 36.5 g/kg. Is it denser than deep water?”',
+  { T: 25, S: 36.5 },
+);
+
+/** Brackish water (the Baltic): the chart widens to fresh salinities. */
+const BRACKISH = tsPage(
+  'g.he-tsDiagram-brackish',
+  'Brackish water on a T–S diagram',
+  'Use this for “Baltic surface water is 5 °C and 7 g/kg. Find its density and freezing point.”',
+  { T: 5, S: 7 },
+);
+
 export const HE4F_GALLERY_MODULES: ModuleDef[] = [
   QAP,
   QAP_DIORITE,
@@ -861,6 +936,9 @@ export const HE4F_GALLERY_MODULES: ModuleDef[] = [
   GULF_STREAM,
   AGULHAS,
   SLOPE_LOW,
+  DEEP_WATER,
+  SURFACE_WATER,
+  BRACKISH,
 ];
 
 export const HE4F_GALLERY_LAYOUTS: LayoutDef[] = [CLIFF_STAGES, CLIFF_OLD_DIKE];

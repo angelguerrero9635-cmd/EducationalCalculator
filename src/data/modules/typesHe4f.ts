@@ -10,6 +10,7 @@
  * - HC120 `rockLayers` `ranges`, and the cliff as a sequence `header` (layouts/types.ts).
  * - HC121 `michelLevy` (new kind): the interference colour chart, computed in code.
  * - HC126 `oceanProfile` mode `slope`: a geostrophic current across a tilted sea surface.
+ * - HC127 `tsDiagram` (new kind): temperature against salinity with isopycnals.
  */
 import type { NumOrVar } from './typesGraphs';
 
@@ -172,9 +173,34 @@ export interface OceanSlopeSpec {
   hemisphere?: 'north' | 'south';
 }
 
+// ─── HC127: tsDiagram (new kind) ───────────────────────────────────────────────
+
+/**
+ * HC127 (EG-P15): a T–S diagram, temperature (°C) up and salinity (g/kg) across, the
+ * isopycnals of the page's linear equation of state (`state`: ρ = ρ₀(1 − α(T − T₀) + β(S − S₀)),
+ * default the plan's 1,027, 1.7 × 10⁻⁴, 7.6 × 10⁻⁴, 10, 35) every 0.5 kg/m³, the freezing line
+ * T = −`freezeSlope` × S (default 0.054) with ice below it, and the water's point with its
+ * density. `density` (kg/m³) and `freezing` (°C) are the page's (checked within 0.01 kg/m³).
+ */
+export interface TsDiagramSpec {
+  kind: 'tsDiagram';
+  temperature: NumOrVar;
+  salinity: NumOrVar;
+  density?: NumOrVar;
+  freezing?: NumOrVar;
+  state?: Partial<{ rho0: number; alpha: number; beta: number; t0: number; s0: number }>;
+  freezeSlope?: number;
+}
+
 /** Every picture of group HE4F (new kinds and options on drawn kinds). */
 export type He4fSpec =
-  TernarySpec | SilicateChainSpec | RuptureSpec | RockRangesSpec | MichelLevySpec | OceanSlopeSpec;
+  | TernarySpec
+  | SilicateChainSpec
+  | RuptureSpec
+  | RockRangesSpec
+  | MichelLevySpec
+  | OceanSlopeSpec
+  | TsDiagramSpec;
 
 /** Whether a picture is one of group HE4F's (a new kind, or an option on a drawn kind). */
 export function isHe4fSpec(r: { kind: string }): r is He4fSpec {
@@ -182,7 +208,12 @@ export function isHe4fSpec(r: { kind: string }): r is He4fSpec {
   if (r.kind === 'earthLayers') return o.mode === 'rupture';
   if (r.kind === 'oceanProfile') return o.mode === 'slope';
   if (r.kind === 'rockLayers') return 'ranges' in o;
-  return r.kind === 'ternary' || r.kind === 'silicateChain' || r.kind === 'michelLevy';
+  return (
+    r.kind === 'ternary' ||
+    r.kind === 'silicateChain' ||
+    r.kind === 'tsDiagram' ||
+    r.kind === 'michelLevy'
+  );
 }
 
 /** Every variable id a group-HE4F picture reads (modules.test.ts). */
@@ -200,5 +231,7 @@ export function he4fSpecVars(r: He4fSpec): string[] {
       return ids(r.thickness, r.birefringence, r.retardation, r.order);
     case 'oceanProfile':
       return ids(r.rise, r.width, r.latitude, r.speed, r.coriolis, r.g);
+    case 'tsDiagram':
+      return ids(r.temperature, r.salinity, r.density, r.freezing);
   }
 }

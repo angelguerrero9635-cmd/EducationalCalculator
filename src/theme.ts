@@ -413,6 +413,10 @@ const light = {
   he4fRupture: '#D9483B',
   /** HC120: an index fossil's range bar. */
   he4fRange: '#8B6BB8',
+  /** HC127: isopycnals, and ice under the freezing line. */
+  he4fIsopycnal: '#4B5B78',
+  he4fIce: '#DDEFFB',
+  he4fIceLine: '#2B7BB9',
   /** HC126: the pressure-gradient and Coriolis forces on a parcel. */
   he4fPressureForce: '#C2410C',
   he4fCoriolis: '#1D4ED8',
@@ -1154,6 +1158,9 @@ const dark: Palette = {
   he4fCrustDeep: '#4E3A2C',
   he4fRupture: '#F06A5C',
   he4fRange: '#B497E0',
+  he4fIsopycnal: '#A9B6CF',
+  he4fIce: '#1E3346',
+  he4fIceLine: '#6FB2EA',
   he4fPressureForce: '#FB923C',
   he4fCoriolis: '#60A5FA',
   he4fMlInk: '#14161C',
