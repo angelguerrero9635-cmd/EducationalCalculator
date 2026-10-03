@@ -133,6 +133,83 @@ export const COLLEGE_MATH_MODULES: ModuleDef[] = [
     },
   },
   {
+    // Calculus I → Limits and continuity: choose k so a two-piece function joins up.
+    id: 'he.math.calc-1#0~continuity',
+    title: 'Make a piecewise function continuous',
+    use: 'Use this for “Find k so that f(x) = 3x + k (x < 2), x² + 1 (x ≥ 2) is continuous.”',
+    assumptions: [
+      'f(x) = mx + k for x < c, and x² + d for x ≥ c.',
+      'f is continuous at c when the limit from the left equals f(c): the two pieces meet.',
+      'Each piece is continuous on its own, so x = c is the only place to check.',
+    ],
+    variables: [
+      V('c', 'c', 'Where the pieces meet', { min: -10, max: 10, step: 0.5 }),
+      V('m', 'm', 'Slope of the left piece', { min: -20, max: 20, step: 0.5 }),
+      V('k', 'k', 'Constant of the left piece', { min: -200, max: 200, step: 0.5 }),
+      V('d', 'd', 'Constant of the right piece', { min: -100, max: 100, step: 0.5 }),
+      V('Lm', 'L⁻', 'Limit from the left at c', { min: -300, max: 300, step: 0.01 }),
+      V('fc', 'f(c)', 'Value at c (right piece)', { min: -300, max: 300, step: 0.01 }),
+    ],
+    ...rels(
+      rel(
+        'L⁻ = mc + k',
+        '{Lm} = {m} × {c} + {k}',
+        ['Lm', 'm', 'c', 'k'],
+        (v) => v.Lm! - (v.m! * v.c! + v.k!),
+        {
+          Lm: [
+            (v) => v.m! * v.c! + v.k!,
+            (v) => `${signed(v.m!)} × ${signed(v.c!)} + ${signed(v.k!)}`,
+            'The left piece is a line, so its limit at c is its value there: m·c + k.',
+          ],
+          k: [
+            (v) => v.Lm! - v.m! * v.c!,
+            (v) => `${signed(v.Lm!)} − ${signed(v.m!)} × ${signed(v.c!)}`,
+            'Subtract m·c from the left limit.',
+          ],
+          m: [
+            (v) => (v.c === 0 ? undefined : (v.Lm! - v.k!) / v.c!),
+            (v) => `(${signed(v.Lm!)} − ${signed(v.k!)}) ÷ ${signed(v.c!)}`,
+            'Subtract k, then divide by c.',
+          ],
+        },
+      ),
+      rel(
+        'f(c) = c² + d',
+        '{fc} = {c}² + {d}',
+        ['fc', 'c', 'd'],
+        (v) => v.fc! - (v.c! * v.c! + v.d!),
+        {
+          fc: [
+            (v) => v.c! * v.c! + v.d!,
+            (v) => `${signed(v.c!)}² + ${signed(v.d!)}`,
+            'Put x = c into the right piece, which holds at c.',
+          ],
+          d: [
+            (v) => v.fc! - v.c! * v.c!,
+            (v) => `${signed(v.fc!)} − ${signed(v.c!)}²`,
+            'Subtract c² from f(c).',
+          ],
+        },
+      ),
+      rel('L⁻ = f(c)', '{Lm} = {fc}', ['Lm', 'fc'], (v) => v.Lm! - v.fc!, {
+        Lm: [(v) => v.fc!, '{fc}', 'Continuous at c: the left limit must equal f(c).'],
+        fc: [(v) => v.Lm!, '{Lm}', 'Continuous at c: f(c) must equal the left limit.'],
+      }),
+    ),
+    example: { c: 2, m: 3, d: 1, fc: 5, Lm: 5, k: -1 },
+    startWith: ['c', 'm', 'd'],
+    representation: {
+      kind: 'functionGraph',
+      family: 'piecewise',
+      pieces: [
+        { f: { family: 'linear', m: 'm', b: 'k' }, to: 'c', ends: '()' },
+        { f: { family: 'quadratic', form: 'standard', a: 1, b: 0, c: 'd' }, from: 'c', ends: '[)' },
+      ],
+      limit: { x: 'c' },
+    },
+  },
+  {
     // Calculus I → Derivatives and differentiation rules
     id: 'he.math.calc-1#1',
     use: 'Use this for “Find the slope of y = 3x⁴ at x = −1.”',
