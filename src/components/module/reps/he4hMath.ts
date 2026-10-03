@@ -215,3 +215,44 @@ export function transectCrossings(n: number): number[] {
   }
   return out;
 }
+
+// ─── HC134: rasterGrid ─────────────────────────────────────────────────────────
+
+/** The lake on the extent, in shares of its width and height (y down). */
+export const LAKE: Pt[] = Array.from({ length: 48 }, (_, i) => {
+  const t = (i / 48) * 2 * Math.PI;
+  const r = 1 + 0.16 * Math.sin(2 * t + 0.5) + 0.1 * Math.cos(3 * t);
+  return { x: 0.46 + 0.3 * r * Math.cos(t), y: 0.52 + 0.26 * r * Math.sin(t) };
+});
+
+/** Columns (or rows) for an extent side in km and a cell in m: 1,000 × side ÷ c. */
+export const rasterCount = (km: number, cellM: number) => (1000 * km) / cellM;
+
+/** The most squares drawn along a side; past it each square is b × b cells. */
+export const RASTER_MAX_DRAWN = 40;
+
+/** Cells per drawn square side: 1, or the least 1, 2 or 5 × 10ⁿ that keeps ≤ 40 a side. */
+export function rasterBlock(cols: number, rows: number) {
+  const most = Math.max(Math.ceil(cols - 1e-9), Math.ceil(rows - 1e-9));
+  if (most <= RASTER_MAX_DRAWN) return 1;
+  for (let e = 1; ; e *= 10)
+    for (const m of [1, 2, 5])
+      if (Math.ceil(most / (m * e) - 1e-9) <= RASTER_MAX_DRAWN) return m * e;
+}
+
+/** Slope from the east and north gradients (rise per metre): degrees and percent. */
+export const slopeOf = (ex: number, ny: number) => {
+  const g = Math.hypot(ex, ny);
+  return { deg: (Math.atan(g) * 180) / Math.PI, percent: 100 * g };
+};
+
+/** The compass bearing (0–360°, clockwise from north) the ground falls toward; none if flat. */
+export function downhillBearing(ex: number, ny: number): number | undefined {
+  if (Math.hypot(ex, ny) < 1e-12) return undefined;
+  const b = (Math.atan2(-ex, -ny) * 180) / Math.PI;
+  return b < 0 ? b + 360 : b;
+}
+
+/** The 8-point name of a bearing: N, NE, E … */
+export const aspectName = (b: number) =>
+  ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'][Math.round(b / 45) % 8]!;

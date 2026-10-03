@@ -27,6 +27,7 @@ import { HE3C_PHRASES } from './phrasesHe3c';
 import { HE3D_PHRASES } from './phrasesHe3d';
 import { HE3K_PHRASES } from './phrasesHe3k';
 import { HE4D_PHRASES } from './phrasesHe4d';
+import { HE4H_PHRASES } from './phrasesHe4h';
 import { M9_PHRASES } from './phrasesM9';
 import { M10_PHRASES } from './phrasesM10';
 import { M11_PHRASES } from './phrasesM11';
@@ -119,6 +120,7 @@ export const PHRASES: [RegExp, (...xs: number[]) => number][] = [
   ...HE1E_PHRASES, // college round 1, group E (erf)
   ...HE2A_PHRASES, // college round 2, group A (atan2)
   ...HE4D_PHRASES, // college round 4, group D (crystal-field filling)
+  ...HE4H_PHRASES, // college round 4, group H (the bearing downhill)
   // Grade 3 clock times ("3:45"), as minutes past 12:00 on a 12-hour clock. Phrases that start
   // with a bracket are tried first, so these come before "35 minutes".
   [

@@ -6,6 +6,7 @@
  *
  * - HC129 `catchment` (new kind): the rational method, Qₚ = CiA ÷ 3.6.
  * - HC133 `contourMap` (new kind): a hill's contours, a transect and its profile.
+ * - HC134 `rasterGrid` (new kind): a raster's extent and cells; a 3 × 3 slope window.
  */
 import type { NumOrVar } from './typesGraphs';
 
@@ -58,10 +59,56 @@ export interface ContourMapSpec {
   angle?: string;
 }
 
-/** Every spec of group H. */
-export type He4hSpec = CatchmentSpec | ContourMapSpec;
+// ─── HC134: rasterGrid (new kind) ──────────────────────────────────────────────
 
-const HE4H_KINDS = new Set<string>(['catchment', 'contourMap']);
+/**
+ * HC134 (EG-P25) `extent`: a lake (a vector feature, dashed) on a raster `width` × `height` km
+ * at cell size `cell` m, the cells whose centres fall in it filled, columns (1,000 × width ÷ c)
+ * and rows counted. Past 40 cells a side each drawn square is b × b cells (b = 1, 2 or 5 × 10ⁿ,
+ * named under the grid). `columns`, `rows`, `cells` and `size` (MB, cells × `bytes` ÷ 10⁶) are
+ * the page's values (checked). The caption says what halving c does (four times the cells).
+ */
+export interface RasterExtentSpec {
+  kind: 'rasterGrid';
+  mode: 'extent';
+  width: NumOrVar;
+  height: NumOrVar;
+  cell: NumOrVar;
+  bytes?: NumOrVar;
+  columns?: string;
+  rows?: string;
+  cells?: string;
+  size?: string;
+}
+
+/**
+ * HC134 (EG-P25) `window`: a 3 × 3 window of a DEM, cell size `cell` m, the elevations (m) east,
+ * west, north and south of the centre cell (and the centre's own, `center?`, which the slope
+ * doesn't use), each cell shaded by height; the arrow downhill from the centre and a compass
+ * with the aspect swept from north. `dzdx` = (z_E − z_W) ÷ 2c and `dzdy` = (z_N − z_S) ÷ 2c,
+ * `slope` (°), `percent` and `aspect` (° from north, the way the ground falls) are the page's
+ * values (checked). A flat window draws no arrow.
+ */
+export interface RasterWindowSpec {
+  kind: 'rasterGrid';
+  mode: 'window';
+  cell: NumOrVar;
+  east: NumOrVar;
+  west: NumOrVar;
+  north: NumOrVar;
+  south: NumOrVar;
+  center?: NumOrVar;
+  dzdx?: string;
+  dzdy?: string;
+  slope?: string;
+  percent?: string;
+  aspect?: string;
+}
+
+/** Every spec of group H. */
+export type He4hSpec = CatchmentSpec | ContourMapSpec | RasterExtentSpec | RasterWindowSpec;
+
+const HE4H_KINDS = new Set<string>(['catchment', 'contourMap', 'rasterGrid']);
 
 /** Whether a picture spec is one of group H's (a new kind, or an option on `sample`). */
 export const isHe4hSpec = (r: { kind: string }): r is He4hSpec => HE4H_KINDS.has(r.kind);
@@ -83,5 +130,21 @@ export function he4hSpecVars(r: He4hSpec): string[] {
         r.gradient,
         r.angle,
       );
+    case 'rasterGrid':
+      return r.mode === 'window'
+        ? ids(
+            r.cell,
+            r.east,
+            r.west,
+            r.north,
+            r.south,
+            r.center,
+            r.dzdx,
+            r.dzdy,
+            r.slope,
+            r.percent,
+            r.aspect,
+          )
+        : ids(r.width, r.height, r.cell, r.bytes, r.columns, r.rows, r.cells, r.size);
   }
 }

@@ -3,6 +3,7 @@
  * college page that waits, built from the plan's worked example. Spread into gallery.ts.
  * HC129: `catchment` (he.earth-science.hydrology#1).
  * HC133: `contourMap` (he.geography.physical-geography#2).
+ * HC134: `rasterGrid` `extent` (he.geography.gis#0) and `window` (he.geography.gis#2).
  */
 import type { Values, VariableDef } from '@/engine/types';
 
@@ -289,7 +290,316 @@ const CONTOUR_STEEP = contourPage(
   { CI: 10, n: 25, map: 2, denom: 25000 },
 );
 
+// ─── HC134: raster size (gis#0) ────────────────────────────────────────────────
+
+const RASTER_RULES = [
+  rule(
+    'cols',
+    '{cols} = 1000 × {W} ÷ {c}',
+    ['cols', 'W', 'c'],
+    (v) => v.cols! - (1000 * v.W!) / v.c!,
+    {
+      cols: [
+        (v) => (1000 * v.W!) / v.c!,
+        '1000 × {W} ÷ {c}',
+        'The width in metres, cut into cells c wide.',
+      ],
+      W: [
+        (v) => (v.cols! * v.c!) / 1000,
+        '{cols} × {c} ÷ 1000',
+        'The columns times the cell size, in km.',
+      ],
+      c: [
+        (v) => (1000 * v.W!) / v.cols!,
+        '1000 × {W} ÷ {cols}',
+        'The width in metres shared over the columns.',
+      ],
+    },
+  ),
+  rule(
+    'rows',
+    '{rows} = 1000 × {H} ÷ {c}',
+    ['rows', 'H', 'c'],
+    (v) => v.rows! - (1000 * v.H!) / v.c!,
+    {
+      rows: [
+        (v) => (1000 * v.H!) / v.c!,
+        '1000 × {H} ÷ {c}',
+        'The height in metres, cut into cells c tall.',
+      ],
+      H: [
+        (v) => (v.rows! * v.c!) / 1000,
+        '{rows} × {c} ÷ 1000',
+        'The rows times the cell size, in km.',
+      ],
+    },
+  ),
+  rule(
+    'cells',
+    '{cells} = {cols} × {rows}',
+    ['cells', 'cols', 'rows'],
+    (v) => v.cells! - v.cols! * v.rows!,
+    {
+      cells: [(v) => v.cols! * v.rows!, '{cols} × {rows}', 'A cell for every column in every row.'],
+    },
+  ),
+  rule(
+    'size',
+    '{size} = {cells} × {bytes} ÷ 1000000',
+    ['size', 'cells', 'bytes'],
+    (v) => v.size! - (v.cells! * v.bytes!) / 1e6,
+    {
+      size: [
+        (v) => (v.cells! * v.bytes!) / 1e6,
+        '{cells} × {bytes} ÷ 1000000',
+        'Each cell takes the bytes of one value; a megabyte is a million bytes.',
+      ],
+    },
+  ),
+];
+
+const rasterPage = (id: string, title: string, use: string, typed: Values) =>
+  page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'No compression and one band: every cell stores one value.',
+      'The cell size is the same across and down (square cells).',
+      'Halving the cell size makes four times the cells, and four times the file.',
+    ],
+    variables: [
+      num('W', 'W', 'Extent width', 'km', 0.01, 20000, { step: 0.01 }),
+      num('H', 'H', 'Extent height', 'km', 0.01, 20000, { step: 0.01 }),
+      num('c', 'c', 'Cell size', 'm', 0.1, 100000, { step: 0.1 }),
+      num('cols', 'n_c', 'Columns', undefined, 1, 1e9, { derived: true, integer: true }),
+      num('rows', 'n_r', 'Rows', undefined, 1, 1e9, { derived: true, integer: true }),
+      num('cells', 'N', 'Cells', undefined, 1, 1e18, { derived: true, integer: true }),
+      num('bytes', 'B', 'Bytes per cell', undefined, 1, 8, { allowed: [1, 2, 4, 8] }),
+      num('size', 'S', 'File size', 'MB', 0, 1e12, { derived: true }),
+    ],
+    rules: RASTER_RULES,
+    example: example(
+      typed,
+      ['cols', (v) => (1000 * v.W!) / v.c!],
+      ['rows', (v) => (1000 * v.H!) / v.c!],
+      ['cells', (v) => v.cols! * v.rows!],
+      ['size', (v) => (v.cells! * v.bytes!) / 1e6],
+    ),
+    startWith: ['W', 'H', 'c', 'bytes'],
+    representation: {
+      kind: 'rasterGrid',
+      mode: 'extent',
+      width: 'W',
+      height: 'H',
+      cell: 'c',
+      bytes: 'bytes',
+      columns: 'cols',
+      rows: 'rows',
+      cells: 'cells',
+      size: 'size',
+    },
+  });
+
+const RASTER = rasterPage(
+  'g.he-rasterGrid-extent',
+  'Rows, columns and file size of a raster',
+  'Use this for “A 30 km × 30 km scene at 30 m cells, 2 bytes a cell: how many cells, and how big is the file?”',
+  { W: 30, H: 30, c: 30, bytes: 2 },
+);
+
+/** The plan's second case: a third of the cell size, nine times the cells. */
+const RASTER_FINE = rasterPage(
+  'g.he-rasterGrid-fine',
+  'A finer raster of the same scene',
+  'Use this for “The same 30 km scene at 10 m cells: how many cells now, and how big is the file?”',
+  { W: 30, H: 30, c: 10, bytes: 2 },
+);
+
+/** A small site at coarse cells: every cell drawn. */
+const RASTER_SITE = rasterPage(
+  'g.he-rasterGrid-cells',
+  'A small raster cell by cell',
+  'Use this for “A 0.6 km × 0.4 km site at 20 m cells, 1 byte a cell: how many rows and columns?”',
+  { W: 0.6, H: 0.4, c: 20, bytes: 1 },
+);
+
+// ─── HC134: slope and aspect from a 3 × 3 window (gis#2) ───────────────────────
+
+const RAD = Math.PI / 180;
+const bearingDown = (ex: number, ny: number) => {
+  if (Math.hypot(ex, ny) < 1e-12) return undefined;
+  const b = Math.atan2(-ex, -ny) / RAD;
+  return b < 0 ? b + 360 : b;
+};
+
+const WINDOW_RULES = [
+  rule(
+    'ex',
+    '{ex} = ({zE} − {zW}) ÷ (2 × {c})',
+    ['ex', 'zE', 'zW', 'c'],
+    (v) => v.ex! - (v.zE! - v.zW!) / (2 * v.c!),
+    {
+      ex: [
+        (v) => (v.zE! - v.zW!) / (2 * v.c!),
+        '({zE} − {zW}) ÷ (2 × {c})',
+        'East minus west, over the two cells between them.',
+      ],
+      zE: [
+        (v) => v.zW! + 2 * v.c! * v.ex!,
+        '{zW} + 2 × {c} × {ex}',
+        'West plus the climb over two cells.',
+      ],
+      zW: [
+        (v) => v.zE! - 2 * v.c! * v.ex!,
+        '{zE} − 2 × {c} × {ex}',
+        'East less the climb over two cells.',
+      ],
+      c: [
+        (v) => (v.zE! - v.zW!) / (2 * v.ex!),
+        '({zE} − {zW}) ÷ (2 × {ex})',
+        'Half the run that climbs east minus west.',
+      ],
+    },
+  ),
+  rule(
+    'ny',
+    '{ny} = ({zN} − {zS}) ÷ (2 × {c})',
+    ['ny', 'zN', 'zS', 'c'],
+    (v) => v.ny! - (v.zN! - v.zS!) / (2 * v.c!),
+    {
+      ny: [
+        (v) => (v.zN! - v.zS!) / (2 * v.c!),
+        '({zN} − {zS}) ÷ (2 × {c})',
+        'North minus south, over the two cells between them.',
+      ],
+      zN: [
+        (v) => v.zS! + 2 * v.c! * v.ny!,
+        '{zS} + 2 × {c} × {ny}',
+        'South plus the climb over two cells.',
+      ],
+      zS: [
+        (v) => v.zN! - 2 * v.c! * v.ny!,
+        '{zN} − 2 × {c} × {ny}',
+        'North less the climb over two cells.',
+      ],
+    },
+  ),
+  rule(
+    'pct',
+    '{pct} = 100 × √({ex}² + {ny}²)',
+    ['pct', 'ex', 'ny'],
+    (v) => v.pct! - 100 * Math.hypot(v.ex!, v.ny!),
+    {
+      pct: [
+        (v) => 100 * Math.hypot(v.ex!, v.ny!),
+        '100 × √({ex}² + {ny}²)',
+        'The steepest climb per metre, the two gradients added as a vector, as a percent.',
+      ],
+    },
+  ),
+  rule(
+    'slope',
+    '{slope} = tan⁻¹(√({ex}² + {ny}²))',
+    ['slope', 'ex', 'ny'],
+    (v) => Math.tan(v.slope! * RAD) - Math.hypot(v.ex!, v.ny!),
+    {
+      slope: [
+        (v) => Math.atan(Math.hypot(v.ex!, v.ny!)) / RAD,
+        'tan⁻¹(√({ex}² + {ny}²))',
+        'The angle whose tangent is the steepest climb per metre.',
+      ],
+    },
+  ),
+  rule(
+    'aspect',
+    '{aspect} = the bearing downhill for east {ex} and north {ny}',
+    ['aspect', 'ex', 'ny'],
+    (v) => {
+      const b = bearingDown(v.ex!, v.ny!);
+      return b === undefined ? NaN : ((v.aspect! - b + 540) % 360) - 180;
+    },
+    {
+      aspect: [
+        (v) => bearingDown(v.ex!, v.ny!) ?? NaN,
+        'the bearing downhill for east {ex} and north {ny}',
+        'The way the ground falls: against both gradients, as a bearing clockwise from north.',
+      ],
+    },
+  ),
+];
+
+const windowPage = (id: string, title: string, use: string, typed: Values) => {
+  const page_ = page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'The centre cell’s own height does not enter: its four neighbours set the slope.',
+      'The ground is a plane across the window.',
+      'Aspect is the way the slope faces (downhill), clockwise from north.',
+    ],
+    variables: [
+      num('c', 'c', 'Cell size', 'm', 0.1, 10000, { step: 0.1 }),
+      num('zE', 'z_E', 'Elevation east', 'm', -500, 9000, { step: 1 }),
+      num('zW', 'z_W', 'Elevation west', 'm', -500, 9000, { step: 1 }),
+      num('zN', 'z_N', 'Elevation north', 'm', -500, 9000, { step: 1 }),
+      num('zS', 'z_S', 'Elevation south', 'm', -500, 9000, { step: 1 }),
+      num('ex', '∂z/∂x', 'East gradient', undefined, -100, 100, { derived: true }),
+      num('ny', '∂z/∂y', 'North gradient', undefined, -100, 100, { derived: true }),
+      num('slope', 'θ', 'Slope', '°', 0, 90, { derived: true }),
+      num('pct', 's', 'Slope (percent)', '%', 0, 1e6, { derived: true }),
+      num('aspect', 'α', 'Aspect', '°', 0, 360, { derived: true }),
+    ],
+    rules: WINDOW_RULES,
+    example: example(
+      typed,
+      ['ex', (v) => (v.zE! - v.zW!) / (2 * v.c!)],
+      ['ny', (v) => (v.zN! - v.zS!) / (2 * v.c!)],
+      ['slope', (v) => Math.atan(Math.hypot(v.ex!, v.ny!)) / RAD],
+      ['pct', (v) => 100 * Math.hypot(v.ex!, v.ny!)],
+      ['aspect', (v) => bearingDown(v.ex!, v.ny!)!],
+    ),
+    startWith: ['c', 'zE', 'zW', 'zN', 'zS'],
+    representation: {
+      kind: 'rasterGrid',
+      mode: 'window',
+      cell: 'c',
+      east: 'zE',
+      west: 'zW',
+      north: 'zN',
+      south: 'zS',
+      dzdx: 'ex',
+      dzdy: 'ny',
+      slope: 'slope',
+      percent: 'pct',
+      aspect: 'aspect',
+    },
+  });
+  return page_;
+};
+
+const WINDOW = windowPage(
+  'g.he-rasterGrid-window',
+  'Slope and aspect of a DEM cell',
+  'Use this for “10 m cells; east 112, west 100, north 106, south 98 m. What are the slope and aspect?”',
+  { c: 10, zE: 112, zW: 100, zN: 106, zS: 98 },
+);
+
+/** Gentle ground on 30 m cells falling to the east-northeast. */
+const WINDOW_GENTLE = windowPage(
+  'g.he-rasterGrid-window-gentle',
+  'A gentle slope on a coarse DEM',
+  'Use this for “30 m cells; east 250, west 254, north 249, south 251 m. Which way does the cell face?”',
+  { c: 30, zE: 250, zW: 254, zN: 249, zS: 251 },
+);
+
 export const HE4H_GALLERY_MODULES: ModuleDef[] = [
+  RASTER,
+  RASTER_FINE,
+  RASTER_SITE,
+  WINDOW,
+  WINDOW_GENTLE,
   CATCHMENT,
   CATCHMENT_PAVED,
   CATCHMENT_WOODS,

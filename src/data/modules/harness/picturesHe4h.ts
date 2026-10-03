@@ -11,7 +11,10 @@ import {
   CATCHMENT_DROPS,
   contourCount,
   contourShare,
+  RASTER_MAX_DRAWN,
+  downhillBearing,
   inside,
+  rasterBlock,
   runoffDrops,
   transectCrossings,
   transectEnds,
@@ -32,6 +35,8 @@ export function he4hIssues(rep: He4hSpec, val: Val, byId: Map<string, VariableDe
       return catchmentIssues(rep, get);
     case 'contourMap':
       return contourIssues(rep, get);
+    case 'rasterGrid':
+      return rasterIssues(rep, get);
   }
 }
 
@@ -127,6 +132,86 @@ function contourIssues(
       (Math.abs(sa - contourShare(0, K)) > 1e-12 || Math.abs(sb - contourShare(k, K)) > 1e-12)
     )
       out.push('contour: A or B is not on its contour');
+  }
+  return out;
+}
+
+/**
+ * HC134 `extent`: columns = 1,000 × width ÷ c, rows likewise, cells = columns × rows, size =
+ * cells × bytes ÷ 10⁶ (bytes 1, 2, 4 or 8); the drawn squares (b cells a side) cover the columns
+ * and rows with less than one square over, at most 40 a side. `window`: east = (z_E − z_W) ÷ 2c,
+ * north = (z_N − z_S) ÷ 2c, slope = tan⁻¹ of their length, percent = 100 × it; the aspect is the
+ * way downhill: a step from the centre that way lowers the plane z = east·x + north·y.
+ */
+function rasterIssues(
+  rep: Extract<He4hSpec, { kind: 'rasterGrid' }>,
+  get: (v: string | number | undefined) => number | undefined,
+): string[] {
+  const out: string[] = [];
+  const c = get(rep.cell);
+  if (c !== undefined && c <= 0) out.push(`raster: cell size ${c} m is not positive`);
+  if (rep.mode === 'extent') {
+    const [W, H, bytes] = [get(rep.width), get(rep.height), get(rep.bytes)];
+    if (bytes !== undefined && ![1, 2, 4, 8].includes(bytes))
+      out.push(`raster: ${bytes} bytes a cell is not 1, 2, 4 or 8`);
+    if (W === undefined || H === undefined || c === undefined || c <= 0) return out;
+    const cols = (W * 1000) / c;
+    const rows = (H * 1000) / c;
+    const pairs: [string | undefined, number, string][] = [
+      [rep.columns, cols, 'columns'],
+      [rep.rows, rows, 'rows'],
+      [rep.cells, cols * rows, 'cells'],
+      [rep.size, bytes !== undefined ? (cols * rows * bytes) / 1e6 : NaN, 'size (MB)'],
+    ];
+    for (const [id, want, what] of pairs) {
+      const got = get(id);
+      if (got !== undefined && Number.isFinite(want) && !close(got, want, 1e-6))
+        out.push(`raster: ${what} ${got} is not ${want}`);
+    }
+    const b = rasterBlock(cols, rows);
+    for (const n of [cols, rows]) {
+      const drawn = Math.ceil(n / b - 1e-9);
+      if (drawn > RASTER_MAX_DRAWN) out.push(`raster: ${drawn} squares drawn a side`);
+      if (drawn * b < n - 1e-9 || (drawn - 1) * b >= n - 1e-9)
+        out.push(`raster: ${drawn} squares of ${b} cells do not just cover ${n}`);
+    }
+    return out;
+  }
+  const [E, Wz, N, S] = [get(rep.east), get(rep.west), get(rep.north), get(rep.south)];
+  if (
+    c === undefined ||
+    c <= 0 ||
+    E === undefined ||
+    Wz === undefined ||
+    N === undefined ||
+    S === undefined
+  )
+    return out;
+  const ex = (E - Wz) / (2 * c);
+  const ny = (N - S) / (2 * c);
+  const g = Math.sqrt(ex * ex + ny * ny);
+  const checks: [string | undefined, number, string][] = [
+    [rep.dzdx, ex, 'east gradient'],
+    [rep.dzdy, ny, 'north gradient'],
+    [rep.slope, (Math.atan(g) * 180) / Math.PI, 'slope (°)'],
+    [rep.percent, 100 * g, 'slope (%)'],
+  ];
+  for (const [id, want, what] of checks) {
+    const got = get(id);
+    if (got !== undefined && !close(got, want, 1e-6))
+      out.push(`raster: ${what} ${got} is not ${want}`);
+  }
+  const b = downhillBearing(ex, ny);
+  if (g > 1e-12) {
+    if (b === undefined) out.push('raster: a sloping window draws no downhill arrow');
+    else {
+      const t = (b * Math.PI) / 180;
+      // A unit step that way (east = sin, north = cos) changes z by east·sin + north·cos = −g.
+      const dz = ex * Math.sin(t) + ny * Math.cos(t);
+      if (!close(dz, -g, 1e-9)) out.push(`raster: the arrow at ${b}° is not straight downhill`);
+      const a = get(rep.aspect);
+      if (a !== undefined && !close(a, b, 1e-6)) out.push(`raster: aspect ${a}° is not ${b}°`);
+    }
   }
   return out;
 }

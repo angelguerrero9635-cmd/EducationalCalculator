@@ -62,4 +62,28 @@ export const HE4H_REQUESTS: PictureRequest[] = [
     status: 'drawn',
     gallery: ['g.he-contourMap-profile', 'g.he-contourMap-steep'],
   },
+  {
+    ...ask(
+      'HC134',
+      'rasterGrid',
+      'A raster: a lake (a vector feature) on the grid with the cells it covers filled, columns and rows counted, past 40 a side each square b × b cells; and a 3 × 3 DEM window with the four neighbours’ elevations, the arrow downhill and a compass with the aspect',
+      [`${GEO}gis#0`, `${GEO}gis#2`],
+      [
+        'From EG-P25. New kind (typesHe4h.ts RasterExtentSpec and RasterWindowSpec, reps/RasterGrid.tsx, sums in reps/he4hMath.ts); a step phrase "the bearing downhill for east … and north …" in harness/phrasesHe4h.ts.',
+        "Fields, extent (gis#0): { kind: 'rasterGrid', mode: 'extent', width (km), height (km), cell (c, m), bytes? (1, 2, 4 or 8), columns?, rows?, cells?, size? (MB) }. The grid keeps the extent's shape; a cell (or a b × b block) is outlined and named; the caption says halving c makes four times the cells.",
+        "Fields, window (gis#2): { kind: 'rasterGrid', mode: 'window', cell (m), east, west, north, south (m), center?, dzdx?, dzdy?, slope? (°), percent?, aspect? (°) }. Cells shaded by height, the centre lit; a flat window draws no arrow and says so.",
+        'A "?" draws nothing for its value (no grid without the extent and c; no number in a cell; no arrow until all four elevations and c are known). No handles; the interim rectangle and vectorDiagram can go.',
+        "Examples: { kind: 'rasterGrid', mode: 'extent', width: 'W', height: 'H', cell: 'c', bytes: 'bytes', columns: 'cols', rows: 'rows', cells: 'cells', size: 'size' }; { kind: 'rasterGrid', mode: 'window', cell: 'c', east: 'zE', west: 'zW', north: 'zN', south: 'zS', dzdx: 'ex', dzdy: 'ny', slope: 'slope', percent: 'pct', aspect: 'aspect' }.",
+        'Harness (harness/picturesHe4h.ts): columns = 1,000 × width ÷ c, rows likewise, cells = columns × rows, size = cells × bytes ÷ 10⁶; the drawn squares just cover each side, at most 40; east and north gradients over 2c, slope = tan⁻¹ of their length, percent = 100 × it; a unit step along the aspect lowers the plane by the full gradient (straight downhill).',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-rasterGrid-extent',
+      'g.he-rasterGrid-fine',
+      'g.he-rasterGrid-cells',
+      'g.he-rasterGrid-window',
+      'g.he-rasterGrid-window-gentle',
+    ],
+  },
 ];

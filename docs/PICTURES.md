@@ -600,6 +600,7 @@ search or the sitemap, but the module tests and the harness run over it):
 | `driftPaths`       | 12 Wright–Fisher paths of p over t; expected H dashed on a 2nd axis    | College evolution, drift (HC153)    |
 | `catchment`        | basin to scale by its km bar: rain at i, 40 drops, round(40C) run off  | College hydrology, runoff (HC129)   |
 | `contourMap`       | contours at CI, every 5th bold; A–B across n; scale bar; profile under | College landforms, maps (HC133)     |
+| `rasterGrid`       | extent: a lake's cells filled, columns × rows; window: 3 × 3 z, aspect | College GIS, rasters (HC134)        |
 | `globe`            | sun rays, noon angle, day dial; great circle; Euler pole; dipole; air  | College earth and geography (HC36)  |
 | `stressStrain`     | σ–ε curve: E, 0.2% offset, UTS, necking; specimen; tube; two members   | College materials, biomech. (HC28)  |
 | `stressElement`    | element, turned to θ_p; Mohr's circle; 3 circles; loci, n; soil line   | College stress, soil (HC33)         |
