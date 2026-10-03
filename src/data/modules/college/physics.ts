@@ -2954,4 +2954,62 @@ export const COLLEGE_PHYSICS_MODULES: ModuleDef[] = [
       k: K,
     },
   },
+  {
+    // University Physics II → Electric fields and Gauss's law: a long straight line of charge;
+    // a Gaussian cylinder round it gives E × 2πrℓ = λℓ ÷ ε₀, so E = λ ÷ (2πε₀r) = 2kλ ÷ r.
+    id: 'he.physics.university-2#0~line',
+    title: 'Gauss’s law: the field of a long line of charge',
+    use: 'Use this for “A long wire carries 3 nC/m. Find the field 0.15 m from it, and how far out the field drops to 100 N/C.”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'The line is straight and much longer than r, so E points straight out from it and is the same all round a cylinder of radius r.',
+      'Gauss’s law on that cylinder, length ℓ: E × 2πrℓ = λℓ ÷ ε₀, and no flux leaves its flat ends.',
+      'So E = λ ÷ (2πε₀r) = 2kλ ÷ r, with k = 8.99 × 10⁹ N·m²/C²; a negative λ gives a negative E, pointing in.',
+    ],
+    variables: [
+      V('lam', 'λ', 'Charge per length', {
+        unit: 'C/m',
+        units: ['C/m'],
+        min: -1e-3,
+        max: 1e-3,
+        scientific: true,
+      }),
+      V('r', 'r', 'Distance from the line', { unit: 'm', min: 0.0001, max: 1000, step: 0.01 }),
+      V('E', 'E', 'Electric field at r', { unit: 'N/C', min: -1e15, max: 1e15, scientific: true }),
+    ],
+    ...rels(
+      rel(
+        'E = 2kλ ÷ r',
+        '{E} = 2 × 8.99 × 10⁹ × {lam} ÷ {r}',
+        ['E', 'lam', 'r'],
+        (v) => v.E! * v.r! - 2 * K * v.lam!,
+        {
+          E: [
+            (v) => div(2 * K * v.lam!, v.r!),
+            '2 × 8.99 × 10⁹ × {lam} ÷ {r}',
+            'Gauss’s law on a cylinder round the line: λ ÷ (2πε₀) = 2kλ, spread over the distance r.',
+          ],
+          lam: [
+            (v) => (v.E! * v.r!) / (2 * K),
+            '{E} × {r} ÷ (2 × 8.99 × 10⁹)',
+            'Undo E = 2kλ ÷ r: times r, divide by 2k.',
+          ],
+          r: [
+            (v) => positive(div(2 * K * v.lam!, v.E!) ?? 0),
+            '2 × 8.99 × 10⁹ × {lam} ÷ {E}',
+            'Undo E = 2kλ ÷ r for the distance: 2kλ divided by E (λ and E share a sign).',
+          ],
+        },
+      ),
+    ),
+    // The plan's wire: λ = 5.0 nC/m, r = 0.20 m: 2kλ = 2 × 8.99 × 10⁹ × 5 × 10⁻⁹ = 89.9 N·m/C;
+    // E = 89.9 ÷ 0.2 = 449.5 N/C (twice as far, half the field: 224.75 N/C at 0.40 m).
+    example: (() => {
+      const [lam, r] = [5e-9, 0.2];
+      return { lam, r, E: exact((2 * K * lam) / r) };
+    })(),
+    startWith: ['lam', 'r'],
+    // The line with the dashed Gaussian cylinder at r and E arrows straight out on it.
+    representation: { kind: 'charges', gauss: { shape: 'line', Q: 'lam', r: 'r', E: 'E' }, k: K },
+  },
 ];
