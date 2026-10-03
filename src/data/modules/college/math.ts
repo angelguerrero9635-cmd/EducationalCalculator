@@ -277,6 +277,15 @@ const averageAt = (v: Values) => {
     .map(exact);
 };
 
+/** Where y = mx + c meets y = x²: (m ∓ √(m² + 4c)) ÷ 2, the left crossing for side −1. */
+const crossAt = (v: Values, side: -1 | 1) => {
+  const d = v.m! ** 2 + 4 * v.c!;
+  return d > 0 ? (v.m! + side * Math.sqrt(d)) / 2 : undefined;
+};
+
+/** True when a number is short enough (three decimals) to write as an integral's limit. */
+const tidy = (x: number) => Math.abs(x * 1000 - Math.round(x * 1000)) < 1e-6;
+
 export const COLLEGE_MATH_MODULES: ModuleDef[] = [
   {
     // Calculus I → Limits and continuity: a quotient at x = a, 0/0 or k/0.
@@ -2700,6 +2709,103 @@ export const COLLEGE_MATH_MODULES: ModuleDef[] = [
       start: 'v0',
       distance: 'dx',
       kinematics: { view: 'velocity' },
+    },
+  },
+  {
+    // Calculus I → Definite integrals: the area between the line y = mx + c and the parabola y = x² below it.
+    id: 'he.math.calc-1#3~area-between',
+    title: 'Area between a line and a parabola',
+    use: 'Use this for “Find the area of the region between y = 2x + 3 and y = x².”',
+    assumptions: [
+      'The line y = mx + c and the parabola y = x² meet where x² = mx + c, at the crossings x₁ and x₂. Between them the line is on top.',
+      'A thin strip at x is as tall as the top curve less the bottom one, (mx + c) − x², so A = ∫ from x₁ to x₂ of (mx + c − x²) dx.',
+      'Top less bottom keeps every strip positive, so the area is never negative, even where the region lies below the x-axis.',
+      'A shortcut: mx + c − x² = (x − x₁)(x₂ − x), and its integral from x₁ to x₂ is (x₂ − x₁)³ ÷ 6.',
+    ],
+    variables: [
+      V('m', 'm', 'Slope of the line y = mx + c', { min: -50, max: 50, step: 0.1 }),
+      V('c', 'c', 'Intercept of the line y = mx + c', { min: -50, max: 50, step: 0.1 }),
+      V('x1', 'x₁', 'Left crossing of the curves', {
+        min: -100,
+        max: 100,
+        step: 0.0001,
+        derived: true,
+      }),
+      V('x2', 'x₂', 'Right crossing of the curves', {
+        min: -100,
+        max: 100,
+        step: 0.0001,
+        derived: true,
+      }),
+      V('A', 'A', 'Area between the line and the parabola', {
+        min: 0,
+        max: 1e6,
+        derived: true,
+        ...sixths,
+      }),
+    ],
+    ...rels(
+      rule(
+        'm² + 4c > 0',
+        'The line crosses the parabola twice: {m}² + 4 × {c} > 0',
+        ['m', 'c'],
+        (v) => v.m! ** 2 + 4 * v.c! > 0,
+        'The line must cross the parabola at two points to close a region. Raise c to lift the line.',
+      ),
+      derive(
+        'x₁ = (m − √(m² + 4c)) ÷ 2',
+        '{x1} = ({m} − √({m}² + 4 × {c})) ÷ 2',
+        'x1',
+        ['m', 'c'],
+        (v) => crossAt(v, -1),
+        '({m} − √({m}² + 4 × {c})) ÷ 2',
+        'Set the curves equal: x² = mx + c, so x² − mx − c = 0. The quadratic formula’s smaller root is the left crossing.',
+      ),
+      derive(
+        'x₂ = (m + √(m² + 4c)) ÷ 2',
+        '{x2} = ({m} + √({m}² + 4 × {c})) ÷ 2',
+        'x2',
+        ['m', 'c'],
+        (v) => crossAt(v, 1),
+        '({m} + √({m}² + 4 × {c})) ÷ 2',
+        'The larger root of x² − mx − c = 0 is the right crossing.',
+      ),
+      withStep(
+        derive(
+          'A = (x₂ − x₁)³ ÷ 6',
+          '{A} = ({x2} − {x1})³ ÷ 6',
+          'A',
+          ['x2', 'x1'],
+          (v) => (v.x2! - v.x1!) ** 3 / 6,
+          '({x2} − {x1})³ ÷ 6',
+          (v) =>
+            `Integrate the line less the parabola, ${polyForm([v.m!, v.c!])} − x², from x₁ to x₂: an antiderivative is ${antiForm({ p: -1, q: v.m!, r: v.c! })}. It comes to (x₂ − x₁)³ ÷ 6.`,
+        ),
+        'A',
+        {
+          // The integral itself, when the crossings are short enough to write as its limits.
+          work: (v) => {
+            if (!tidy(v.x1!) || !tidy(v.x2!)) return [];
+            const [lo, hi] = [formatNumber(exact(v.x1!)), formatNumber(exact(v.x2!))];
+            return [
+              `∫ from ${lo} to ${hi} of (${polyForm([v.m!, v.c!])} − x²) dx = [${antiForm({ p: -1, q: v.m!, r: v.c! })}] from ${lo} to ${hi} = ${inSixths(exact(v.A!))}`,
+            ];
+          },
+        },
+      ),
+    ),
+    // y = x + 2 over y = x²: x² − x − 2 = (x + 1)(x − 2) = 0, so x₁ = −1, x₂ = 2;
+    // A = ∫ from −1 to 2 of (x + 2 − x²) dx = 3³ ÷ 6 = 27/6 = 4.5.
+    example: { m: 1, c: 2, x1: -1, x2: 2, A: 4.5 },
+    startWith: ['m', 'c'],
+    // The line over the parabola, the region between the crossings shaded and ∫|f − g| written.
+    representation: {
+      kind: 'functionGraph',
+      family: 'linear',
+      m: 'm',
+      b: 'c',
+      other: { family: 'quadratic', form: 'standard', a: 1, b: 0, c: 0 },
+      between: { from: 'x1', to: 'x2', value: 'A' },
     },
   },
 ];
