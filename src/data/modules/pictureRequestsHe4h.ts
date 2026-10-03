@@ -159,4 +159,21 @@ export const HE4H_REQUESTS: PictureRequest[] = [
     status: 'drawn',
     gallery: ['g.he-sensorGeometry-landsat', 'g.he-sensorGeometry-wide'],
   },
+  {
+    ...ask(
+      'HC138',
+      'spectralCurve',
+      'Reflectance against wavelength (0.4–2.5 μm) for vegetation, soil and water, the bands the index uses boxed, the pixel’s reflectances as dots and the NDVI or NBR they make; with a burn, the burned curve and the post-fire dots beside the healthy ones',
+      [`${GEO}remote-sensing#1~ndvi`, `${GEO}remote-sensing#3`],
+      [
+        'From EG-P31. New kind (typesHe4h.ts SpectralCurveSpec, reps/SpectralCurve.tsx, the spectra in reps/he4hMath.ts SPECTRA: our own smooth functions with the taught shapes, green bump, red trough, red edge, NIR plateau, water dips; never digitized from a spectral library).',
+        "Fields: { kind: 'spectralCurve', red?, nir, swir? (reflectances 0 to 1; with swir the index is NBR and the NIR and SWIR bands are boxed, else NDVI with red and NIR), index? (the page's NDVI or NBR), after?: { nir, swir, index? } (a burn: the burned curve and open squares), change? (dNBR) }.",
+        'Curves keyed by name and dash (solid vegetation, dashed soil, dotted water, dash-dot burned); filled dots before, open squares after, each with its value; the index written top right. A "?" reflectance draws no dot and no index. No handles; the interim bars can go (the #3 page keeps its bars and adds this beside them).',
+        "Examples: { kind: 'spectralCurve', red: 'red', nir: 'nir', index: 'ndvi' } (~ndvi); { kind: 'spectralCurve', nir: 'nir1', swir: 'swir1', index: 'nbr1', after: { nir: 'nir2', swir: 'swir2', index: 'nbr2' }, change: 'dnbr' } (#3).",
+        'Harness (harness/picturesHe4h.ts): reflectances in [0, 1]; the index from the dots equals the page’s (NDVI or NBR), the post-fire NBR likewise, dNBR = before − after; the reference curves stay in [0, 1] and vegetation keeps its red edge.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: ['g.he-spectralCurve-ndvi', 'g.he-spectralCurve-ndvi-soil', 'g.he-spectralCurve-burn'],
+  },
 ];

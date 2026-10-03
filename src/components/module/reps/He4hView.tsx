@@ -11,6 +11,7 @@ import { PopulationPyramid } from './PopulationPyramid';
 import { RasterGrid } from './RasterGrid';
 import { SampleHe4h } from './SampleHe4h';
 import { SensorGeometry } from './SensorGeometry';
+import { SpectralCurve } from './SpectralCurve';
 
 export function He4hView({ spec, calc }: { spec: He4hSpec; calc: Calculator }) {
   switch (spec.kind) {
@@ -26,5 +27,7 @@ export function He4hView({ spec, calc }: { spec: He4hSpec; calc: Calculator }) {
       return <PopulationPyramid spec={spec} calc={calc} />; // HC136
     case 'sensorGeometry':
       return <SensorGeometry spec={spec} calc={calc} />; // HC137
+    case 'spectralCurve':
+      return <SpectralCurve spec={spec} calc={calc} />; // HC138
   }
 }

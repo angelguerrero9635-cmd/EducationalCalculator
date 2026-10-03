@@ -19,6 +19,7 @@ import {
   pyramidBars,
   pyramidShape,
   sensorLayout,
+  SPECTRA,
   downhillBearing,
   inside,
   rasterBlock,
@@ -49,6 +50,8 @@ export function he4hIssues(rep: He4hSpec, val: Val, byId: Map<string, VariableDe
       return pyramidIssues(rep, get);
     case 'sensorGeometry':
       return sensorIssues(rep, get);
+    case 'spectralCurve':
+      return spectralIssues(rep, get);
   }
 }
 
@@ -393,5 +396,50 @@ function sensorIssues(
   if (!close(L.halfSwath / (L.ground - L.satY), t, 1e-9))
     out.push('sensor: the fan is not to scale');
   if (L.cx + L.halfSwath > 358 || L.satY < 0) out.push('sensor: the fan leaves the picture');
+  return out;
+}
+
+/**
+ * HC138: reflectances in [0, 1]; the index from the dots (written out here) equals the page's
+ * (NDVI from red and NIR, NBR from NIR and SWIR), the post-fire NBR likewise, dNBR = before −
+ * after; the reference curves stay in [0, 1] and keep vegetation's red edge (NIR well above red).
+ */
+function spectralIssues(
+  rep: Extract<He4hSpec, { kind: 'spectralCurve' }>,
+  get: (v: string | number | undefined) => number | undefined,
+): string[] {
+  const out: string[] = [];
+  const [red, nir, swir] = [get(rep.red), get(rep.nir), get(rep.swir)];
+  const [nir2, swir2] = [get(rep.after?.nir), get(rep.after?.swir)];
+  for (const [x, what] of [
+    [red, 'red'],
+    [nir, 'NIR'],
+    [swir, 'SWIR'],
+    [nir2, 'NIR after'],
+    [swir2, 'SWIR after'],
+  ] as const)
+    if (x !== undefined && (x < 0 || x > 1)) out.push(`spectral: ${what} ${x} is outside 0 to 1`);
+  const nd = (a?: number, b?: number) =>
+    a === undefined || b === undefined || a + b === 0 ? undefined : (a - b) / (a + b);
+  const before = rep.swir !== undefined ? nd(nir, swir) : nd(nir, red);
+  const after = nd(nir2, swir2);
+  const pairs: [string | undefined, number | undefined, string][] = [
+    [rep.index, before, rep.swir !== undefined ? 'NBR' : 'NDVI'],
+    [rep.after?.index, after, 'NBR after'],
+    [rep.change, before !== undefined && after !== undefined ? before - after : undefined, 'dNBR'],
+  ];
+  for (const [id, want, what] of pairs) {
+    const got = get(id);
+    if (got !== undefined && want !== undefined && !close(got, want, 1e-6))
+      out.push(`spectral: ${what} ${got} is not ${want} from the dots`);
+  }
+  for (let l = 0.4; l <= 2.5; l += 0.01)
+    for (const [name, f] of Object.entries(SPECTRA))
+      if (!(f(l) >= 0 && f(l) <= 1)) {
+        out.push(`spectral: the ${name} curve leaves 0 to 1 at ${l.toFixed(2)} μm`);
+        return out;
+      }
+  if (!(SPECTRA.vegetation(0.83) > 4 * SPECTRA.vegetation(0.66)))
+    out.push('spectral: vegetation lacks its red edge');
   return out;
 }

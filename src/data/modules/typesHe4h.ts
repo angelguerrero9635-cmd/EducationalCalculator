@@ -11,6 +11,7 @@
  * - HC150 `sample` `herd`: 100 people, the immune shaded, one case's R₀ contacts.
  * - HC136 `populationPyramid` (new kind): age bars from three group totals, dependency ratio.
  * - HC137 `sensorGeometry` (new kind): a satellite's FOV fan and swath, its pixel enlarged.
+ * - HC138 `spectralCurve` (new kind): reflectance spectra, bands boxed, a pixel's NDVI or NBR.
  */
 import type { NumOrVar } from './typesGraphs';
 
@@ -185,6 +186,27 @@ export interface SensorGeometrySpec {
   swath?: string;
 }
 
+// ─── HC138: spectralCurve (new kind) ───────────────────────────────────────────
+
+/**
+ * HC138 (EG-P31): reflectance against wavelength (0.4–2.5 μm) for vegetation, soil and water,
+ * typical shapes from our own smooth functions (never digitized), the bands the index uses
+ * boxed (red and NIR, or NIR and SWIR when `swir` is given), the pixel's reflectances (0 to 1)
+ * as dots and the index they make: NDVI = (NIR − red) ÷ (NIR + red), or NBR = (NIR − SWIR) ÷
+ * (NIR + SWIR). `after` (a burn) adds the burned curve and the post-fire NIR and SWIR as open
+ * squares; `change` is dNBR = NBR before − NBR after. `index`, `after.index` and `change` are
+ * the page's values (checked). A "?" reflectance draws no dot.
+ */
+export interface SpectralCurveSpec {
+  kind: 'spectralCurve';
+  red?: NumOrVar;
+  nir: NumOrVar;
+  swir?: NumOrVar;
+  index?: string;
+  after?: { nir: NumOrVar; swir: NumOrVar; index?: string };
+  change?: string;
+}
+
 /** Every spec of group H. */
 export type He4hSpec =
   | CatchmentSpec
@@ -194,7 +216,8 @@ export type He4hSpec =
   | SamplePatternSpec
   | SampleHerdSpec
   | PopulationPyramidSpec
-  | SensorGeometrySpec;
+  | SensorGeometrySpec
+  | SpectralCurveSpec;
 
 const HE4H_KINDS = new Set<string>([
   'catchment',
@@ -202,6 +225,7 @@ const HE4H_KINDS = new Set<string>([
   'rasterGrid',
   'populationPyramid',
   'sensorGeometry',
+  'spectralCurve',
 ]);
 
 /** Whether a picture spec is one of group H's (a new kind, or an option on `sample`). */
@@ -257,5 +281,16 @@ export function he4hSpecVars(r: He4hSpec): string[] {
       return ids(r.young, r.working, r.old, r.ratio, r.youth, r.oldAge);
     case 'sensorGeometry':
       return ids(r.altitude, r.ifov, r.fov, r.pixel, r.swath);
+    case 'spectralCurve':
+      return ids(
+        r.red,
+        r.nir,
+        r.swir,
+        r.index,
+        r.after?.nir,
+        r.after?.swir,
+        r.after?.index,
+        r.change,
+      );
   }
 }

@@ -6,6 +6,7 @@
  * HC134: `rasterGrid` `extent` (he.geography.gis#0) and `window` (he.geography.gis#2).
  * HC135: `sample` `pattern` (he.geography.gis#3).
  * HC150: `sample` `herd` (he.biology.microbiology#3).
+ * HC138: `spectralCurve` (he.geography.remote-sensing#1~ndvi, #3).
  * HC137: `sensorGeometry` (he.geography.remote-sensing#0).
  * HC136: `populationPyramid` (he.geography.human-geography#0~dependency).
  */
@@ -997,7 +998,141 @@ const SENSOR_WIDE = sensorPage(
   { H: 820, ifov: 1300, fov: 110 },
 );
 
+// ─── HC138: NDVI and NBR (remote-sensing#1~ndvi, #3) ──────────────────────────
+
+const nd = (a: number, b: number) => (a - b) / (a + b);
+
+const NDVI_RULE = rule(
+  'ndvi',
+  '{ndvi} = ({nir} − {red}) ÷ ({nir} + {red})',
+  ['ndvi', 'nir', 'red'],
+  (v) => v.ndvi! - nd(v.nir!, v.red!),
+  {
+    ndvi: [
+      (v) => nd(v.nir!, v.red!),
+      '({nir} − {red}) ÷ ({nir} + {red})',
+      'Leaves reflect near infrared and absorb red: the wider the gap, the greener the pixel.',
+    ],
+    nir: [
+      (v) => (v.red! * (1 + v.ndvi!)) / (1 - v.ndvi!),
+      '{red} × (1 + {ndvi}) ÷ (1 − {ndvi})',
+      'The NIR reflectance that makes this NDVI with this red.',
+    ],
+    red: [
+      (v) => (v.nir! * (1 - v.ndvi!)) / (1 + v.ndvi!),
+      '{nir} × (1 − {ndvi}) ÷ (1 + {ndvi})',
+      'The red reflectance that makes this NDVI with this NIR.',
+    ],
+  },
+);
+
+const ndviPage = (id: string, title: string, use: string, typed: Values) =>
+  page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'Healthy leaves reflect near infrared strongly and absorb red light for photosynthesis.',
+      'Water and bare soil give NDVI near or below 0.2.',
+      'The reflectances are surface reflectances from 0 to 1.',
+    ],
+    variables: [
+      num('red', 'ρ_red', 'Red reflectance', undefined, 0, 1, { step: 0.01 }),
+      num('nir', 'ρ_NIR', 'Near-infrared reflectance', undefined, 0, 1, { step: 0.01 }),
+      num('ndvi', 'NDVI', 'NDVI', undefined, -1, 1, { derived: true }),
+    ],
+    rules: [NDVI_RULE],
+    example: example(typed, ['ndvi', (v) => nd(v.nir!, v.red!)]),
+    startWith: ['red', 'nir'],
+    representation: { kind: 'spectralCurve', red: 'red', nir: 'nir', index: 'ndvi' },
+  });
+
+const NDVI = ndviPage(
+  'g.he-spectralCurve-ndvi',
+  'NDVI of a pixel',
+  'Use this for “A pixel reflects 0.08 in red and 0.45 in near infrared. What is its NDVI?”',
+  { red: 0.08, nir: 0.45 },
+);
+
+const NDVI_SOIL = ndviPage(
+  'g.he-spectralCurve-ndvi-soil',
+  'NDVI of a sparsely vegetated pixel',
+  'Use this for “A field reflects 0.2 in red and 0.28 in near infrared. Is it mostly bare soil?”',
+  { red: 0.2, nir: 0.28 },
+);
+
+const nbrRule = (id: string, nirId: string, swirId: string, when: string) =>
+  rule(
+    id,
+    `{${id}} = ({${nirId}} − {${swirId}}) ÷ ({${nirId}} + {${swirId}})`,
+    [id, nirId, swirId],
+    (v) => v[id]! - nd(v[nirId]!, v[swirId]!),
+    {
+      [id]: [
+        (v) => nd(v[nirId]!, v[swirId]!),
+        `({${nirId}} − {${swirId}}) ÷ ({${nirId}} + {${swirId}})`,
+        `The normalized burn ratio ${when}: high for healthy plants, low or negative for char.`,
+      ],
+    },
+  );
+
+const NBR = page({
+  id: 'g.he-spectralCurve-burn',
+  title: 'Burn severity from NBR',
+  use: 'Use this for “Before a fire a pixel had NIR 0.4 and SWIR 0.15; after, 0.2 and 0.25. What is dNBR?”',
+  assumptions: [
+    'Burning drops near-infrared and raises shortwave-infrared reflectance.',
+    'Severity classes are thresholds on dNBR: above 0.66 high, 0.44 to 0.66 moderate-high.',
+    'Both images are corrected to surface reflectance on the same dates of the year.',
+  ],
+  variables: [
+    num('nir1', 'NIR₁', 'NIR before', undefined, 0, 1, { step: 0.01 }),
+    num('swir1', 'SWIR₁', 'SWIR before', undefined, 0, 1, { step: 0.01 }),
+    num('nir2', 'NIR₂', 'NIR after', undefined, 0, 1, { step: 0.01 }),
+    num('swir2', 'SWIR₂', 'SWIR after', undefined, 0, 1, { step: 0.01 }),
+    num('nbr1', 'NBR₁', 'NBR before', undefined, -1, 1, { derived: true }),
+    num('nbr2', 'NBR₂', 'NBR after', undefined, -1, 1, { derived: true }),
+    num('dnbr', 'dNBR', 'Change in NBR', undefined, -2, 2, { derived: true }),
+  ],
+  rules: [
+    nbrRule('nbr1', 'nir1', 'swir1', 'before the fire'),
+    nbrRule('nbr2', 'nir2', 'swir2', 'after the fire'),
+    rule(
+      'dnbr',
+      '{dnbr} = {nbr1} − {nbr2}',
+      ['dnbr', 'nbr1', 'nbr2'],
+      (v) => v.dnbr! - v.nbr1! + v.nbr2!,
+      {
+        dnbr: [
+          (v) => v.nbr1! - v.nbr2!,
+          '{nbr1} − {nbr2}',
+          'How far the burn ratio fell: the larger, the more severe.',
+        ],
+      },
+    ),
+  ],
+  example: example(
+    { nir1: 0.4, swir1: 0.15, nir2: 0.2, swir2: 0.25 },
+    ['nbr1', (v) => nd(v.nir1!, v.swir1!)],
+    ['nbr2', (v) => nd(v.nir2!, v.swir2!)],
+    ['dnbr', (v) => v.nbr1! - v.nbr2!],
+  ),
+  startWith: ['nir1', 'swir1', 'nir2', 'swir2'],
+  representation: {
+    kind: 'spectralCurve',
+    nir: 'nir1',
+    swir: 'swir1',
+    index: 'nbr1',
+    after: { nir: 'nir2', swir: 'swir2', index: 'nbr2' },
+    change: 'dnbr',
+  },
+});
+
 export const HE4H_GALLERY_MODULES: ModuleDef[] = [
+  NDVI,
+  NDVI_SOIL,
+  NBR,
+
   SENSOR,
   SENSOR_WIDE,
 

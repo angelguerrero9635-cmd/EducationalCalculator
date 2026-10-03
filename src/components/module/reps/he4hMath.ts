@@ -515,3 +515,42 @@ export function sensorLayout(w: number, h: number, H: number, fov: number) {
   const k = Math.min((ground - 40) / H, (w / 2 - 14) / (H * Math.tan(half)));
   return { ground, half, k, cx: w / 2, satY: ground - H * k, halfSwath: H * Math.tan(half) * k };
 }
+
+// ─── HC138: spectralCurve ──────────────────────────────────────────────────────
+
+const gauss = (x: number, m: number, s: number) => Math.exp(-(((x - m) / s) ** 2) / 2);
+const step = (x: number) => 1 / (1 + Math.exp(-x));
+
+/**
+ * Typical reflectance spectra from our own smooth functions of wavelength λ (μm, 0.4 to 2.5):
+ * the shapes the courses teach (vegetation's green bump, red trough, red edge, NIR plateau and
+ * water dips; soil rising; water falling to nothing; a burn scar low in NIR, higher in SWIR),
+ * not digitized from any library.
+ */
+export const SPECTRA = {
+  vegetation: (l: number) =>
+    (0.04 +
+      0.07 * gauss(l, 0.55, 0.035) +
+      0.44 * step((l - 0.715) / 0.02) * (1 - 0.45 * step((l - 1.35) / 0.1))) *
+    (1 - 0.55 * gauss(l, 1.45, 0.05)) *
+    (1 - 0.75 * gauss(l, 1.94, 0.07)) *
+    (1 - 0.5 * step((l - 2.0) / 0.15)),
+  soil: (l: number) =>
+    (0.08 + 0.22 * step((l - 0.9) / 0.35)) *
+    (1 - 0.15 * gauss(l, 1.42, 0.05)) *
+    (1 - 0.2 * gauss(l, 1.92, 0.06)) *
+    (1 - 0.15 * step((l - 2.2) / 0.1)),
+  water: (l: number) => 0.005 + 0.07 * Math.exp(-(l - 0.4) / 0.25),
+  burned: (l: number) =>
+    (0.05 + 0.03 * (l - 0.4) + 0.13 * step((l - 1.2) / 0.3)) * (1 - 0.2 * gauss(l, 1.92, 0.06)),
+};
+
+/** The bands boxed (μm) and where a pixel's dot sits in each. */
+export const SPECTRAL_BANDS = {
+  red: { from: 0.63, to: 0.69, at: 0.66 },
+  nir: { from: 0.76, to: 0.9, at: 0.83 },
+  swir: { from: 2.08, to: 2.35, at: 2.215 },
+};
+
+/** A normalized difference: (a − b) ÷ (a + b), the form of NDVI and NBR. */
+export const normDiff = (a: number, b: number) => (a + b === 0 ? NaN : (a - b) / (a + b));
