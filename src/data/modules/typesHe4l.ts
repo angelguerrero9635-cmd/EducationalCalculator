@@ -9,6 +9,8 @@
  * - HC166 `gearPair` (ME-P18): spur gears in steel, a pair or a train of up to four.
  * - HC167 `printLayers` (ME-P20): a part sliced into layers; the stair and cusp on a slope.
  * - HC168 `fitDiagram` (ME-P21): hole and shaft tolerance zones and the fit; a stack-up.
+ * - HC169 explore figure `orthographic` (ME-P22) and HC170 card icons (layouts/icons/he4l).
+ * - HC172 `casting` (ME-P30): a sand mould with the casting, a riser, Chvorinov times.
  */
 import type { NumOrVar } from './typesGraphs';
 
@@ -175,6 +177,44 @@ export const fitDiagramVars = (r: FitDiagramSpec): string[] =>
     r.rss,
   );
 
+// ─── HC172: casting (new kind) ──────────────────────────────────────────────────
+
+/**
+ * HC172 (ME-P30): a sand mould cut open (cope over drag in a wooden flask, sand painted), the
+ * casting in its cavity drawn to scale from V (`shape`: a cube of side ∛V, a sphere, or a
+ * plate eight times as wide as it is thick), the sprue and runner, and a side riser (a
+ * cylinder with H = D) on a neck when `riser` is given; V, A and M = V ÷ A named on the
+ * casting; Chvorinov's solidification times t = BM² as bars, the riser's beside the casting's
+ * (with no B, the bars compare M² and the riser's reads 1.25 × the casting's). A "?" V draws no
+ * casting; a "?" riser D no riser.
+ */
+export interface CastingSpec {
+  kind: 'casting';
+  shape?: 'cube' | 'sphere' | 'plate';
+  /** The casting's volume, area and modulus (cm³, cm², cm); `modulus` alone sizes a cube (s = 6M). */
+  volume?: NumOrVar;
+  area?: NumOrVar;
+  modulus?: NumOrVar;
+  /** The mould constant B (min/cm²) and the casting's time t = BM². */
+  moldConstant?: NumOrVar;
+  time?: NumOrVar;
+  /** A cylindrical side riser, H = D (M = D ÷ 6), and how much longer it must take (1.25). */
+  riser?: { modulus?: NumOrVar; diameter?: NumOrVar; time?: NumOrVar; ratio?: number };
+}
+
+/** The variable ids a casting spec names. */
+export const castingVars = (r: CastingSpec): string[] =>
+  ids(
+    r.volume,
+    r.area,
+    r.modulus,
+    r.moldConstant,
+    r.time,
+    r.riser?.modulus,
+    r.riser?.diameter,
+    r.riser?.time,
+  );
+
 // ─── HC169: explore figure `orthographic` ────────────────────────────────────────
 
 /** What an `orthographic` scene shows (the views of one stepped block with a through hole). */
@@ -216,7 +256,8 @@ export const ORTHO_VIEWS: OrthoView[] = [
 // ─── Every group L spec ─────────────────────────────────────────────────────────
 
 /** The round 4 group L picture specs (listed once in `types.ts`). */
-export type He4lSpec = MoodyChartSpec | GearPairSpec | PrintLayersSpec | FitDiagramSpec;
+export type He4lSpec =
+  MoodyChartSpec | GearPairSpec | PrintLayersSpec | FitDiagramSpec | CastingSpec;
 
 /** The variable ids a group L spec names. */
 export function he4lSpecVars(r: He4lSpec): string[] {
@@ -229,5 +270,7 @@ export function he4lSpecVars(r: He4lSpec): string[] {
       return printLayersVars(r);
     case 'fitDiagram':
       return fitDiagramVars(r);
+    case 'casting':
+      return castingVars(r);
   }
 }

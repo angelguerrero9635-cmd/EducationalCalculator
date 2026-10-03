@@ -5,7 +5,10 @@
  */
 import type { VariableDef } from '@/engine/types';
 import {
+  chvorinov,
   cuspOf,
+  riserDiameter,
+  riserModulus,
   MOODY_LAMINAR,
   si4l,
   stackRss,
@@ -17,6 +20,7 @@ import type { LayoutDef } from '../layouts';
 import type { Representation } from '../types';
 import { siOf } from './picturesHs2c';
 import type {
+  CastingSpec,
   FitDiagramSpec,
   GearPairSpec,
   He4lSpec,
@@ -31,7 +35,7 @@ type X = string | number | undefined;
 const close = (a: number, b: number, rel = 1e-6) =>
   Math.abs(a - b) <= rel * Math.max(1e-12, Math.abs(a), Math.abs(b));
 
-const HE4L_KINDS: string[] = ['moodyChart', 'gearPair', 'printLayers', 'fitDiagram'];
+const HE4L_KINDS: string[] = ['moodyChart', 'gearPair', 'printLayers', 'fitDiagram', 'casting'];
 const isHe4l = (r: Representation): r is He4lSpec => HE4L_KINDS.includes(r.kind);
 
 /** The group L checks, by kind. */
@@ -59,6 +63,8 @@ export function he4lIssues(
       return printIssues(rep, get, si);
     case 'fitDiagram':
       return fitIssues(rep, si);
+    case 'casting':
+      return castingIssues(rep, get);
   }
 }
 
@@ -265,6 +271,38 @@ export function orthoFigureIssues(l: LayoutDef): string[] {
     if (l.figure.kind !== 'orthographic') continue;
     if (!s.ortho) out.push(`${at}: no view`);
     else if (!ORTHO_VIEWS.includes(s.ortho.view)) out.push(`${at}: no view ${s.ortho.view}`);
+  }
+  return out;
+}
+
+/**
+ * HC172: M = V ÷ A; t = BM²; a riser's modulus is √ratio × the casting's (so its time is ratio ×
+ * as long) and, with H = D, D = 6M_r; the riser's time is ratio × the casting's.
+ */
+function castingIssues(rep: CastingSpec, get: (x: X) => number | undefined): string[] {
+  const out: string[] = [];
+  const [V, A, M, B, t] = [
+    get(rep.volume),
+    get(rep.area),
+    get(rep.modulus),
+    get(rep.moldConstant),
+    get(rep.time),
+  ];
+  if (V !== undefined && A !== undefined && M !== undefined && !close(M, V / A))
+    out.push(`casting: M = ${M} is not V ÷ A = ${V / A}`);
+  const Mc = M ?? (V !== undefined && A !== undefined ? V / A : undefined);
+  if (B !== undefined && Mc !== undefined && t !== undefined && !close(t, chvorinov(B, Mc)))
+    out.push(`casting: t = ${t} is not BM² = ${chvorinov(B, Mc)}`);
+  const R = rep.riser;
+  if (R) {
+    const ratio = R.ratio ?? 1.25;
+    const [Mr, D, tr] = [get(R.modulus), get(R.diameter), get(R.time)];
+    if (Mr !== undefined && Mc !== undefined && !close(Mr, riserModulus(Mc, ratio)))
+      out.push(`riser: M_r = ${Mr} is not √${ratio} × M_c = ${riserModulus(Mc, ratio)}`);
+    if (Mr !== undefined && D !== undefined && !close(D, riserDiameter(Mr)))
+      out.push(`riser: D = ${D} is not 6M_r = ${riserDiameter(Mr)}`);
+    if (tr !== undefined && t !== undefined && !close(tr, ratio * t))
+      out.push(`riser: its time ${tr} is not ${ratio} × the casting's ${t}`);
   }
   return out;
 }

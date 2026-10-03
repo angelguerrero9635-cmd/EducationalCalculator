@@ -147,3 +147,14 @@ export const fitName = (cMax: number, cMin: number) =>
 /** A stack-up's worst case ΣTᵢ and its root sum of squares √(ΣTᵢ²). */
 export const stackWorst = (ts: number[]) => ts.reduce((s, t) => s + Math.abs(t), 0);
 export const stackRss = (ts: number[]) => Math.sqrt(ts.reduce((s, t) => s + t * t, 0));
+
+// ─── HC172: casting ─────────────────────────────────────────────────────────────
+
+/** Chvorinov's rule with n = 2: t = BM². */
+export const chvorinov = (B: number, M: number) => B * M * M;
+
+/** A side riser's modulus: it must take `ratio` times as long, so M_r = √ratio × M_c. */
+export const riserModulus = (Mc: number, ratio = 1.25) => Math.sqrt(ratio) * Mc;
+
+/** A cylinder with H = D has V = πD³ ÷ 4 and A = 1.5πD², so M = D ÷ 6. */
+export const riserDiameter = (Mr: number) => 6 * Mr;

@@ -2566,6 +2566,7 @@ export function repIssues(
     case 'gearPair':
     case 'printLayers':
     case 'fitDiagram':
+    case 'casting':
       out.push(...he4lIssues(rep, val, byId)); // HC165–HC172
       break;
     case 'solidOfRevolution':

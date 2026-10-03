@@ -697,6 +697,7 @@ function representationVars(r: Representation): string[] {
     case 'gearPair':
     case 'printLayers':
     case 'fitDiagram':
+    case 'casting':
       return he4lSpecVars(r); // HC165–HC172
     case 'propertyDiagram':
     case 'thermalWall':

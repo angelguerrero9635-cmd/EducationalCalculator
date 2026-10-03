@@ -146,4 +146,21 @@ export const HE4L_REQUESTS: PictureRequest[] = [
     status: 'drawn',
     gallery: ['g.he-cardIcons-gdt'],
   },
+  {
+    ...ask(
+      'HC172',
+      'casting',
+      'A sand mould cut open with the casting and a side riser to scale, V and A named, Chvorinov solidification time bars',
+      [`${E}manufacturing#0`, `${E}manufacturing#0~riser`],
+      [
+        'From ME-P30 (low priority, drawn last). New kind (typesHe4l.ts CastingSpec, reps/Casting.tsx, chvorinov and the riser sizing in reps/he4lMath.ts).',
+        "Fields: { kind: 'casting', shape? ('cube' default, 'sphere', 'plate' eight times as wide as thick), volume? (V, cm³), area? (A, cm²), modulus? (M = V ÷ A, cm; alone it sizes a cube of side 6M), moldConstant? (B, min/cm²), time? (t), riser? { modulus? (M_r), diameter? (D, with H = D), time?, ratio? (default 1.25) } }.",
+        'A wooden flask, cope over drag with the parting line dashed, sand painted with grains; the casting in its cavity to scale from V, the sprue and runner filled; a side riser (H = D) on a neck at the same scale, open to the top. V and A (or M) labelled on the casting, D under the riser. Time bars: t = BM² for the casting and the riser’s 1.25t beside it (without B, the bars compare the two). A "?" V draws no casting; a "?" D no riser. No handles.',
+        "Examples: main { kind: 'casting', shape: 'cube', volume: 'V', area: 'A', modulus: 'M', moldConstant: 'B', time: 't' }; ~riser { kind: 'casting', shape: 'cube', modulus: 'Mc', riser: { modulus: 'Mr', diameter: 'D' } }.",
+        'Harness (harness/picturesHe4l.ts): M = V ÷ A; t = BM²; M_r = √1.25 M_c; D = 6M_r; the riser’s time is 1.25 × the casting’s.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: ['g.he-casting-cube', 'g.he-casting-plate', 'g.he-casting-riser'],
+  },
 ];

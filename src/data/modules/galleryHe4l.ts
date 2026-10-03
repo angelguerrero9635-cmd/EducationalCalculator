@@ -9,6 +9,7 @@
  * HC168 `fitDiagram` (he.engineering.manufacturing#3, ~stack, ME-P21).
  * HC169 explore figure `orthographic` and line-type card icons (he.engineering.cad-graphics#0, ME-P22).
  * HC170 card icons for the GD&T symbols (he.engineering.cad-graphics#1, ME-P23).
+ * HC172 `casting` (he.engineering.manufacturing#0, ~riser, ME-P30).
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 import { colebrookF } from '@/components/module/reps/he4lMath';
@@ -1043,6 +1044,132 @@ const GDT_SORT: LayoutDef = {
   ],
 };
 
+// ─── HC172: casting (manufacturing#0, ~riser) ───────────────────────────────────
+
+/** Chvorinov's main page: M = V ÷ A, t = BM². */
+function castingDemo(
+  id: string,
+  title: string,
+  use: string,
+  shape: 'cube' | 'plate' | 'sphere',
+  ex: { V: number; A: number; B: number },
+): ModuleDef {
+  const M = ex.V / ex.A;
+  return demo(id, title, use, {
+    assumptions: [
+      'Chvorinov’s rule with n = 2: the time to freeze grows as the square of V ÷ A.',
+      'B depends on the metal and the mould; 2 min/cm² is a typical sand-cast steel value.',
+    ],
+    variables: [
+      q('V', 'V', 'Casting volume', 'cm³', 0.1, 1e7, 1),
+      q('A', 'A', 'Casting surface area', 'cm²', 0.1, 1e6, 1),
+      q('M', 'M', 'Modulus V ÷ A', 'cm', 0.001, 1000, 0.001),
+      q('B', 'B', 'Mould constant', 'min/cm²', 0.01, 100, 0.01),
+      q('t', 't', 'Solidification time', 'min', 0.001, 1e6, 0.01),
+    ],
+    ...rules(
+      rule('M = V ÷ A', '{M} = {V} ÷ {A}', (v) => v.M! * v.A! - v.V!, {
+        M: [
+          (v) => div(v.V!, v.A!),
+          '{V} ÷ {A}',
+          'The modulus: volume over the surface it loses heat through.',
+        ],
+        V: [(v) => v.M! * v.A!, '{M} × {A}', 'The modulus times the area.'],
+        A: [(v) => div(v.V!, v.M!), '{V} ÷ {M}', 'The volume over the modulus.'],
+      }),
+      rule('t = BM²', '{t} = {B} × {M}²', (v) => v.t! - v.B! * v.M! ** 2, {
+        t: [
+          (v) => v.B! * v.M! ** 2,
+          '{B} × {M}²',
+          'Chvorinov: the mould constant times the modulus squared.',
+        ],
+        B: [(v) => div(v.t!, v.M! ** 2), '{t} ÷ {M}²', 'The time over the modulus squared.'],
+        M: [
+          (v) => root(div(v.t!, v.B!) ?? NaN),
+          '√({t} ÷ {B})',
+          'The square root of the time over B.',
+        ],
+      }),
+    ),
+    example: { ...ex, M, t: ex.B * M * M },
+    startWith: ['V', 'A', 'B'],
+    representation: {
+      kind: 'casting',
+      shape,
+      volume: 'V',
+      area: 'A',
+      modulus: 'M',
+      moldConstant: 'B',
+      time: 't',
+    },
+  });
+}
+
+const CAST_CUBE = castingDemo(
+  'g.he-casting-cube',
+  'Solidification time of a cube casting',
+  'Use this for “A 10 cm steel cube is sand cast with B = 2 min/cm². How long does it take to freeze?”',
+  'cube',
+  { V: 1000, A: 600, B: 2 },
+);
+
+/** A plate of the same volume freezes far sooner: more surface for its volume. */
+const CAST_PLATE = castingDemo(
+  'g.he-casting-plate',
+  'A thin plate of the same volume freezes sooner',
+  'Use this for “A 20 × 20 × 2.5 cm plate (1000 cm³, 1000 cm²) is cast with B = 2 min/cm². Find t.”',
+  'plate',
+  { V: 1000, A: 1000, B: 2 },
+);
+
+/** The riser page: M_r = √1.25 M_c, and a cylinder with H = D has M = D ÷ 6. */
+const CAST_RISER = (() => {
+  const Mc = 1.667;
+  const Mr = Math.sqrt(1.25) * Mc;
+  return demo(
+    'g.he-casting-riser',
+    'Sizing a riser that freezes last',
+    'Use this for “A casting has M = 1.667 cm. Size a cylindrical side riser (H = D) that freezes 25% later.”',
+    {
+      assumptions: [
+        'The riser must stay liquid 1.25 times as long as the casting, so it feeds the casting as it shrinks.',
+        'A cylinder with H = D has V = πD³ ÷ 4 and A = 1.5πD², so its modulus is D ÷ 6.',
+      ],
+      variables: [
+        q('Mc', 'M_c', 'Casting modulus', 'cm', 0.01, 100, 0.001),
+        q('Mr', 'M_r', 'Riser modulus', 'cm', 0.01, 200, 0.001),
+        q('D', 'D', 'Riser diameter (= height)', 'cm', 0.06, 1200, 0.01),
+      ],
+      ...rules(
+        rule('M_r = √1.25 M_c', '{Mr} = √1.25 × {Mc}', (v) => v.Mr! - Math.sqrt(1.25) * v.Mc!, {
+          Mr: [
+            (v) => Math.sqrt(1.25) * v.Mc!,
+            '√1.25 × {Mc}',
+            'Times grow as M², so 1.25 times the time needs √1.25 times the modulus.',
+          ],
+          Mc: [
+            (v) => v.Mr! / Math.sqrt(1.25),
+            '{Mr} ÷ √1.25',
+            'Divide the riser’s modulus by √1.25.',
+          ],
+        }),
+        rule('D = 6M_r', '{D} = 6 × {Mr}', (v) => v.D! - 6 * v.Mr!, {
+          D: [(v) => 6 * v.Mr!, '6 × {Mr}', 'A cylinder with H = D has M = D ÷ 6.'],
+          Mr: [(v) => v.D! / 6, '{D} ÷ 6', 'A cylinder with H = D has M = D ÷ 6.'],
+        }),
+      ),
+      example: { Mc, Mr, D: 6 * Mr },
+      startWith: ['Mc'],
+      representation: {
+        kind: 'casting',
+        shape: 'cube',
+        modulus: 'Mc',
+        riser: { modulus: 'Mr', diameter: 'D' },
+      },
+    },
+  );
+})();
+
 export const HE4L_GALLERY_MODULES: ModuleDef[] = [
   MOODY_STEEL,
   MOODY_ROUGH,
@@ -1059,6 +1186,9 @@ export const HE4L_GALLERY_MODULES: ModuleDef[] = [
   FIT_TRANSITION,
   FIT_INTERFERENCE,
   FIT_STACK,
+  CAST_CUBE,
+  CAST_PLATE,
+  CAST_RISER,
 ];
 
 export const HE4L_GALLERY_LAYOUTS: LayoutDef[] = [ORTHO_MAIN, ORTHO_ANGLE, ORTHO_LINES, GDT_SORT];

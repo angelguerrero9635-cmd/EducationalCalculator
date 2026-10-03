@@ -769,6 +769,9 @@ const light = {
   he4lIsoSide: '#94A3B8',
   he4lIsoFront: '#CBD5E1',
   he4lIsoHole: '#475569',
+  /** HC172 the sand mould and its grains. */
+  he4lSand: '#E3CF9F',
+  he4lSandGrain: '#B89B5E',
   he3iSpeed: '#0F766E',
   he3iFeed: '#C2410C',
   he3iIc: '#B42318',
@@ -1440,6 +1443,8 @@ const dark: Palette = {
   he4lIsoSide: '#334155',
   he4lIsoFront: '#475569',
   he4lIsoHole: '#0F172A',
+  he4lSand: '#6B5A36',
+  he4lSandGrain: '#9C8556',
   he3iSpeed: '#2DD4BF',
   he3iFeed: '#F59E0B',
   he3iIc: '#F87171',
