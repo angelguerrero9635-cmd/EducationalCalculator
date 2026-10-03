@@ -2596,4 +2596,119 @@ export const COLLEGE_PHYSICS_MODULES: ModuleDef[] = [
       phase: { x0: 'x0', v0: 'v0', amplitude: 'A', omega: 'w', phase: 'phi', t: 't', x: 'x' },
     },
   },
+  {
+    // University Physics I → Oscillations: a light dashpot on the spring; the swing rings a
+    // little slower than √(k/m) while its amplitude fades as A₀e^(−bt/2m).
+    id: 'he.physics.university-1#5~damped',
+    title: 'A damped oscillator: its frequency, Q and fading amplitude',
+    use: 'Use this for “A 2 kg block on a 200 N/m spring has damping b = 1 kg/s and starts with a 0.1 m amplitude. Find ω′, Q and the amplitude after 4 s.”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'A drag force −bv acts on the block, so mẍ = −kx − bẋ, solved by x = A₀e^(−bt/2m) cos(ω′t) when the damping is light.',
+      'Underdamped only: b < 2√(mk). At b = 2√(mk) the block is critically damped and returns without swinging, so ω′ has no value.',
+      'Q = mω₀ ÷ b with ω₀ = √(k/m), which is √(mk) ÷ b; Q above 0.5 means it swings.',
+    ],
+    variables: [
+      V('m', 'm', 'Mass', { unit: 'kg', min: 0.001, max: 1000, step: 0.1 }),
+      V('k', 'k', 'Spring constant', { unit: 'N/m', min: 0.1, max: 1e6, step: 1 }),
+      V('b', 'b', 'Damping constant', fixed('kg/s', 0.001, 1e4, 0.01)),
+      V('wp', 'ω′', 'Damped angular frequency', fixed('rad/s', 0.0001, 1e5, 0.1, true)),
+      V('Q', 'Q', 'Quality factor', { min: 0.5, max: 1e7, derived: true }),
+      V('A0', 'A₀', 'Start amplitude', { unit: 'm', min: 0.001, max: 10, step: 0.01 }),
+      V('t', 't', 'Time', { unit: 's', min: 0, max: 600, step: 0.1 }),
+      V('A', 'A', 'Amplitude at t', { unit: 'm', min: 0, max: 10, derived: true }),
+    ],
+    ...rels(
+      rel(
+        'ω′ = √(k ÷ m − (b ÷ 2m)²)',
+        '{wp} = √({k} ÷ {m} − ({b} ÷ (2 × {m}))²)',
+        ['wp', 'k', 'm', 'b'],
+        (v) => v.wp! ** 2 * v.m! - v.k! + v.b! ** 2 / (4 * v.m!),
+        {
+          wp: [
+            (v) => {
+              const s = v.k! / v.m! - (v.b! / (2 * v.m!)) ** 2;
+              return s > 0 ? exact(Math.sqrt(s)) : undefined;
+            },
+            '√({k} ÷ {m} − ({b} ÷ (2 × {m}))²)',
+            'Damping slows the swing a little below ω₀ = √(k/m); there is no swing once b ÷ 2m reaches ω₀.',
+          ],
+          k: [
+            (v) => exact(v.m! * (v.wp! ** 2 + (v.b! / (2 * v.m!)) ** 2)),
+            '{m} × ({wp}² + ({b} ÷ (2 × {m}))²)',
+            'Undo ω′ = √(k ÷ m − (b ÷ 2m)²) for k: square ω′, add (b ÷ 2m)², times m.',
+          ],
+        },
+      ),
+      rel(
+        'Q = √(mk) ÷ b',
+        '{Q} = √({m} × {k}) ÷ {b}',
+        ['Q', 'm', 'k', 'b'],
+        (v) => v.Q! * v.b! - Math.sqrt(v.m! * v.k!),
+        {
+          Q: [
+            (v) => div(Math.sqrt(v.m! * v.k!), v.b!),
+            '√({m} × {k}) ÷ {b}',
+            'Q = mω₀ ÷ b, and mω₀ = m√(k/m) = √(mk): a high Q rings for many cycles.',
+          ],
+          b: [
+            (v) => div(Math.sqrt(v.m! * v.k!), v.Q!),
+            '√({m} × {k}) ÷ {Q}',
+            'Undo Q = √(mk) ÷ b for b: divide √(mk) by Q.',
+          ],
+        },
+      ),
+      rel(
+        'A = A₀e^(−bt ÷ 2m)',
+        '{A} = {A0} × e^(−{b} × {t} ÷ (2 × {m}))',
+        ['A', 'A0', 'b', 't', 'm'],
+        (v) => v.A! - v.A0! * Math.exp((-v.b! * v.t!) / (2 * v.m!)),
+        {
+          A: [
+            (v) => exact(v.A0! * Math.exp((-v.b! * v.t!) / (2 * v.m!))),
+            '{A0} × e^(−{b} × {t} ÷ (2 × {m}))',
+            'The envelope of the swing: the amplitude falls by a factor e every 2m ÷ b seconds.',
+          ],
+          A0: [
+            (v) => exact(v.A! * Math.exp((v.b! * v.t!) / (2 * v.m!))),
+            '{A} × e^({b} × {t} ÷ (2 × {m}))',
+            'Undo the decay: multiply A by e^(bt ÷ 2m).',
+          ],
+          b: [
+            (v) =>
+              v.t! > 0 && v.A! > 0 && v.A! < v.A0!
+                ? (2 * v.m! * Math.log(v.A0! / v.A!)) / v.t!
+                : undefined,
+            '2 × {m} × ln({A0} ÷ {A}) ÷ {t}',
+            'Take ln of A₀ ÷ A = e^(bt ÷ 2m), then solve for b.',
+          ],
+          t: [
+            (v) =>
+              v.A! > 0 && v.A! <= v.A0! ? (2 * v.m! * Math.log(v.A0! / v.A!)) / v.b! : undefined,
+            '2 × {m} × ln({A0} ÷ {A}) ÷ {b}',
+            'Take ln of A₀ ÷ A = e^(bt ÷ 2m), then solve for t.',
+          ],
+        },
+      ),
+    ),
+    // The plan's block: m = 0.5 kg, k = 50 N/m, b = 0.4 kg/s: k ÷ m = 100, b ÷ 2m = 0.4, so
+    // ω′ = √(100 − 0.16) = √99.84 = 9.992 rad/s; Q = √25 ÷ 0.4 = 12.5; A₀ = 0.05 m, t = 5 s:
+    // A = 0.05 × e^(−0.4 × 5 ÷ 1) = 0.05 × e⁻² = 0.006767 m.
+    example: (() => {
+      const [m, k, b, A0, t] = [0.5, 50, 0.4, 0.05, 5];
+      const wp = exact(Math.sqrt(k / m - (b / (2 * m)) ** 2));
+      const Q = Math.sqrt(m * k) / b;
+      return { m, k, b, wp, Q, A0, t, A: exact(A0 * Math.exp((-b * t) / (2 * m))) };
+    })(),
+    startWith: ['m', 'k', 'b', 'A0', 't'],
+    // The block with its spring and dashpot (b), the x–t trace from A₀ inside the dashed fading
+    // envelope ±A₀e^(−bt/2m), ω′ written, and the moment t on the trace.
+    representation: {
+      kind: 'oscillator',
+      mass: 'm',
+      spring: 'k',
+      amplitude: 'A0',
+      damping: { c: 'b', letter: 'b', x0: 'A0', damped: 'wp', t: 't' },
+    },
+  },
 ];
