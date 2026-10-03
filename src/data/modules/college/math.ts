@@ -309,6 +309,23 @@ const uIntegrand = (n: number) => `${n === 0 ? '1' : n === 1 ? 'u' : `u${raised(
 /** "u⁴ ÷ 8": its antiderivative uⁿ⁺¹ ÷ (2(n + 1)). */
 const uAnti = (n: number) => `${n === 0 ? 'u' : `u${raised(n + 1)}`} ÷ ${2 * (n + 1)}`;
 
+/** u = mx + c at x, the inside of (mx + c)ⁿ. */
+const lineAt = (v: Values, x: number) => v.m! * x + v.c!;
+
+/** ∫ from a to b of (mx + c)ⁿ dx = (u(b)ⁿ⁺¹ − u(a)ⁿ⁺¹) ÷ (m(n + 1)), with u = mx + c. */
+const linearIntegral = (v: Values) =>
+  (v.ub! ** (v.n! + 1) - v.ua! ** (v.n! + 1)) / (v.m! * (v.n! + 1));
+
+/** "u³ ÷ 2", "u³ ÷ (−2)", "u³": uⁿ divided by a number (left out when it is 1). */
+const uOver = (power: number, d: number) =>
+  `${power === 1 ? 'u' : `u${raised(power)}`}${d === 1 ? '' : ` ÷ ${signed(d)}`}`;
+
+/** "(2x + 1)⁴ ÷ 8": the antiderivative (mx + c)ⁿ⁺¹ ÷ (m(n + 1)) back in x. */
+const linearAnti = (v: Values) => {
+  const d = exact(v.m! * (v.n! + 1));
+  return `(${polyForm([v.m!, v.c!])})${raised(v.n! + 1)}${d === 1 ? '' : ` ÷ ${signed(d)}`}`;
+};
+
 export const COLLEGE_MATH_MODULES: ModuleDef[] = [
   {
     // Calculus I → Limits and continuity: a quotient at x = a, 0/0 or k/0.
@@ -2924,6 +2941,113 @@ export const COLLEGE_MATH_MODULES: ModuleDef[] = [
       kind: 'functionGraph',
       family: 'expr',
       expr: 'x * (x^2 + c)^n',
+      window: { x: ['a', 'b'] },
+      area: { from: 'a', to: 'b', value: 'I', signed: true },
+    },
+  },
+  {
+    // Calculus I → u-substitution: ∫ from a to b of (mx + c)ⁿ dx with u = mx + c, du = m dx.
+    id: 'he.math.calc-1#4~linear-inner',
+    title: 'A linear inside: (mx + c)ⁿ',
+    use: 'Use this for “Evaluate the integral of (3x − 2)² from 1 to 2.”',
+    assumptions: [
+      'Pick u as the linear inside, u = mx + c. Then du = m dx, so dx = du ÷ m: the outside needs no factor of x.',
+      'Change the limits with u: x = a becomes u(a) = ma + c and x = b becomes u(b) = mb + c.',
+      'In u the integral is (1 ÷ m) × ∫ uⁿ du, so an antiderivative is uⁿ⁺¹ ÷ (m(n + 1)). Putting u back gives (mx + c)ⁿ⁺¹ ÷ (m(n + 1)), the indefinite answer up to + C.',
+      'The slope m cannot be 0, and area below the x-axis counts as negative.',
+    ],
+    variables: [
+      V('m', 'm', 'Slope of the inside u = mx + c', { min: -10, max: 10, step: 0.1 }),
+      V('c', 'c', 'Constant of the inside', { min: -10, max: 10, step: 0.1 }),
+      V('n', 'n', 'Power on the inside', { integer: true, min: 1, max: 6 }),
+      V('a', 'a', 'Lower limit', { min: -10, max: 10, step: 0.1 }),
+      V('b', 'b', 'Upper limit', { min: -10, max: 10, step: 0.1 }),
+      V('ua', 'u(a)', 'New lower limit, ma + c', {
+        min: -110,
+        max: 110,
+        step: 0.0001,
+        derived: true,
+      }),
+      V('ub', 'u(b)', 'New upper limit, mb + c', {
+        min: -110,
+        max: 110,
+        step: 0.0001,
+        derived: true,
+      }),
+      V('I', 'I', 'Value of the integral', {
+        min: -1e14,
+        max: 1e14,
+        derived: true,
+        ...fourteenths,
+      }),
+    ],
+    ...rels(
+      rule(
+        'm ≠ 0',
+        'The slope of the inside {m} is not 0',
+        ['m'],
+        (v) => v.m !== 0,
+        'With m = 0 the inside is a constant and du = 0: pick another m.',
+      ),
+      derive(
+        'u(a) = ma + c',
+        '{ua} = {m} × {a} + {c}',
+        'ua',
+        ['m', 'a', 'c'],
+        (v) => lineAt(v, v.a!),
+        '{m} × {a} + {c}',
+        'Put the lower limit x = a into the inside, u = mx + c: the integral in u starts there.',
+      ),
+      derive(
+        'u(b) = mb + c',
+        '{ub} = {m} × {b} + {c}',
+        'ub',
+        ['m', 'b', 'c'],
+        (v) => lineAt(v, v.b!),
+        '{m} × {b} + {c}',
+        'Put the upper limit x = b into the inside: the integral in u ends there.',
+      ),
+      withStep(
+        derive(
+          'I = (u(b)ⁿ⁺¹ − u(a)ⁿ⁺¹) ÷ (m(n + 1))',
+          '{I} = ({ub}^({n} + 1) − {ua}^({n} + 1)) ÷ ({m} × ({n} + 1))',
+          'I',
+          ['ub', 'ua', 'm', 'n'],
+          linearIntegral,
+          (v) => {
+            const p = raised(v.n! + 1);
+            return `(${signed(v.ub!)}${p} − ${signed(v.ua!)}${p}) ÷ ${signed(exact(v.m! * (v.n! + 1)))}`;
+          },
+          'Since du = m dx, dx is du ÷ m: the integral becomes the integral of uⁿ from u(a) to u(b), divided by m. Raise the power by 1, then divide by the new power and by m.',
+        ),
+        'I',
+        {
+          // The integral in x and in u with the new limits, then back in x (when short to write).
+          work: (v) => {
+            if (![v.a!, v.b!, v.ua!, v.ub!].every(tidy)) return [];
+            const [a, b] = [formatNumber(v.a!), formatNumber(v.b!)];
+            const [ua, ub] = [formatNumber(exact(v.ua!)), formatNumber(exact(v.ub!))];
+            const n = v.n!;
+            const I = formatNumber(exact(v.I!), fourteenths);
+            const inU = uOver(n, v.m!);
+            return [
+              `∫ from ${a} to ${b} of (${polyForm([v.m!, v.c!])})${raised(n)} dx = ∫ from ${ua} to ${ub} of (${inU}) du`,
+              `∫ from ${ua} to ${ub} of (${inU}) du = [${uOver(n + 1, exact(v.m! * (n + 1)))}] from ${ua} to ${ub} = ${I}`,
+              `[${linearAnti(v)}] from ${a} to ${b} = ${I}`,
+            ];
+          },
+        },
+      ),
+    ),
+    // ∫ from 0 to 1 of (2x + 1)³ dx: u = 2x + 1 runs from 1 to 3, dx = du ÷ 2, so
+    // I = [u⁴ ÷ 8] from 1 to 3 = (81 − 1) ÷ 8 = 10.
+    example: { m: 2, c: 1, n: 3, a: 0, b: 1, ua: 1, ub: 3, I: 10 },
+    startWith: ['m', 'c', 'n', 'a', 'b'],
+    // y = (mx + c)ⁿ with a to b shaded, the part above the axis + and below it −, ∫ written.
+    representation: {
+      kind: 'functionGraph',
+      family: 'expr',
+      expr: '(m * x + c)^n',
       window: { x: ['a', 'b'] },
       area: { from: 'a', to: 'b', value: 'I', signed: true },
     },
