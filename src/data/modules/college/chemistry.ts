@@ -2437,4 +2437,115 @@ export const COLLEGE_CHEMISTRY_MODULES: ModuleDef[] = [
       },
     } satisfies ModuleDef;
   })(),
+  (() => {
+    // General Chemistry II → Kinetics: a second-order reaction, [A] after a time and t½.
+    // k = 0.500 M⁻¹s⁻¹, [A]₀ = 0.100 M, t = 60.0 s: 1/[A] = 1 ÷ 0.100 + 0.500 × 60.0 =
+    // 10.0 + 30.0 = 40.0 M⁻¹, [A] = 0.0250 M; t½ = 1 ÷ (0.500 × 0.100) = 20.0 s.
+    const [k, A0, t] = [0.5, 0.1, 60];
+    const conc = (id: string, symbol: string, name: string) =>
+      V(id, symbol, name, { unit: 'M', units: ['M'], min: 1e-9, max: 20, step: 0.0001 });
+    const time = (id: string, symbol: string, name: string) =>
+      V(id, symbol, name, { unit: 's', units: ['s'], min: 1e-6, max: 1e10, step: 0.01 });
+    const pos = (x: number) => (x > 0 && Number.isFinite(x) ? x : undefined);
+    return {
+      id: 'he.chemistry.gen-chem-2#0~second-order',
+      title: 'A second-order reaction',
+      workedFigures: 3,
+      use: 'Use this for “A second-order reaction has k = 0.500 M⁻¹s⁻¹. Starting at 0.100 M, find the concentration after 60 s and the first half-life.”',
+      assumptions: [
+        'The reaction is second order in A: rate = k[A]². So it slows down much faster than a first-order reaction as A is used up.',
+        'The half-life t½ = 1 ÷ (k[A]₀) depends on [A]₀: each half-life is twice as long as the one before.',
+        'A straight line of 1/[A] against t, with slope +k, is the test for second order.',
+        'k, [A] and t use the same units: M and seconds here.',
+      ],
+      variables: [
+        V('k', 'k', 'Rate constant', {
+          unit: 'M⁻¹s⁻¹',
+          units: ['M⁻¹s⁻¹'],
+          min: 1e-10,
+          max: 1e10,
+          step: 0.0001,
+          scientific: true,
+        }),
+        conc('A0', '[A]₀', 'Starting concentration'),
+        time('t', 't', 'Time'),
+        conc('A', '[A]', 'Concentration at time t'),
+        time('half', 't½', 'First half-life'),
+      ],
+      ...rels(
+        rel(
+          '1/[A] = 1/[A]₀ + kt',
+          '1 ÷ {A} = 1 ÷ {A0} + {k} × {t}',
+          ['A', 'A0', 'k', 't'],
+          (v) => 1 / v.A! - 1 / v.A0! - v.k! * v.t!,
+          {
+            A: [
+              (v) => pos(1 / (1 / v.A0! + v.k! * v.t!)),
+              '1 ÷ (1 ÷ {A0} + {k} × {t})',
+              'Add kt to 1/[A]₀ to get 1/[A], then flip it over.',
+            ],
+            A0: [
+              (v) => pos(1 / (1 / v.A! - v.k! * v.t!)),
+              '1 ÷ (1 ÷ {A} − {k} × {t})',
+              'Take kt away from 1/[A] to get 1/[A]₀, then flip it over.',
+            ],
+            k: [
+              (v) => pos((1 / v.A! - 1 / v.A0!) / v.t!),
+              '(1 ÷ {A} − 1 ÷ {A0}) ÷ {t}',
+              'Find how much 1/[A] rose, then divide by the time.',
+            ],
+            t: [
+              (v) => pos((1 / v.A! - 1 / v.A0!) / v.k!),
+              '(1 ÷ {A} − 1 ÷ {A0}) ÷ {k}',
+              'Find how much 1/[A] rose, then divide by k.',
+            ],
+          },
+        ),
+        rel(
+          't½ = 1 ÷ (k[A]₀)',
+          '{half} = 1 ÷ ({k} × {A0})',
+          ['half', 'k', 'A0'],
+          (v) => v.half! - 1 / (v.k! * v.A0!),
+          {
+            half: [
+              (v) => pos(1 / (v.k! * v.A0!)),
+              '1 ÷ ({k} × {A0})',
+              'At t½, [A] = [A]₀ ÷ 2, so 1/[A] rises by 1/[A]₀. Divide 1 by k times [A]₀.',
+            ],
+            k: [
+              (v) => pos(1 / (v.half! * v.A0!)),
+              '1 ÷ ({half} × {A0})',
+              'kt½[A]₀ = 1, so divide 1 by the half-life times [A]₀.',
+            ],
+            A0: [
+              (v) => pos(1 / (v.k! * v.half!)),
+              '1 ÷ ({k} × {half})',
+              'kt½[A]₀ = 1, so divide 1 by k times the half-life.',
+            ],
+          },
+        ),
+        rule(
+          '0.05 ≤ kt½ ≤ 10⁹',
+          '0.05 ≤ {k} × {half} ≤ 1 × 10⁹',
+          ['k', 'half'],
+          (v) => v.k! * v.half! >= 0.05 * (1 - 1e-9) && v.k! * v.half! <= 1e9 * (1 + 1e-9),
+          'k × t½ is 1 ÷ [A]₀, so it sets [A]₀. Keep it from 0.05 to 1 × 10⁹ per M, for [A]₀ from 1 × 10⁻⁹ to 20 M.',
+        ),
+      ),
+      example: {
+        k,
+        A0,
+        t,
+        A: 1 / (1 / A0 + k * t),
+        half: 1 / (k * A0),
+      },
+      startWith: ['k', 'A0', 't'],
+      unitSystems: ['metric'],
+      representation: {
+        kind: 'chemDiagram',
+        mode: 'rate',
+        integrated: { order: 2, k: 'k', start: 'A0', t: 't', conc: 'A', half: 'half' },
+      },
+    } satisfies ModuleDef;
+  })(),
 ];
