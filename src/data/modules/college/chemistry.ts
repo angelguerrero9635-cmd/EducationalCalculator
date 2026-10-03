@@ -1927,4 +1927,128 @@ export const COLLEGE_CHEMISTRY_MODULES: ModuleDef[] = [
       },
     } satisfies ModuleDef;
   })(),
+  (() => {
+    // General Chemistry I → Thermochemistry: ΔH estimated from average bond enthalpies.
+    // CH₄ + 2O₂ → CO₂ + 2H₂O(g). Broken: 4 C–H and 2 O=O, 4 × 413 + 2 × 495 = 2642 kJ.
+    // Formed: 2 C=O and 4 O–H, 2 × 799 + 4 × 463 = 3450 kJ. ΔH = 2642 − 3450 = −808 kJ/mol.
+    const [ch, oo, co, oh] = [413, 495, 799, 463];
+    const B = 4 * ch + 2 * oo;
+    const F = 2 * co + 4 * oh;
+    const bond = (id: string, symbol: string, name: string) =>
+      V(id, symbol, name, {
+        unit: 'kJ/mol',
+        units: ['kJ/mol'],
+        min: 1,
+        max: 2000,
+        step: 1,
+      });
+    const sum = (id: string, symbol: string, name: string) =>
+      V(id, symbol, name, {
+        unit: 'kJ/mol',
+        units: ['kJ/mol'],
+        min: 1,
+        max: 20000,
+        step: 1,
+      });
+    return {
+      id: 'he.chemistry.gen-chem-1#3~bond-enthalpy',
+      title: 'ΔH from bond enthalpies',
+      use: 'Use this for “Estimate ΔH for CH₄ + 2O₂ → CO₂ + 2H₂O(g) from the average bond enthalpies C–H 413, O=O 495, C=O 799 and O–H 463 kJ/mol.”',
+      assumptions: [
+        'Bond enthalpies are averages over many molecules in the gas phase, so the answer is an estimate, often a few percent off the measured ΔH.',
+        'Every substance is a gas: the water is steam. Liquid water would also give off its heat of condensation.',
+        'Breaking a bond takes in its enthalpy and forming one gives the same amount back. CH₄ has 4 C–H bonds, O₂ one O=O, CO₂ two C=O and H₂O two O–H.',
+      ],
+      variables: [
+        bond('ch', 'D(C–H)', 'Bond enthalpy of C–H'),
+        bond('oo', 'D(O=O)', 'Bond enthalpy of O=O'),
+        bond('co', 'D(C=O)', 'Bond enthalpy of C=O'),
+        bond('oh', 'D(O–H)', 'Bond enthalpy of O–H'),
+        sum('B', 'B', 'Energy taken in to break the bonds'),
+        sum('F', 'F', 'Energy given off forming the bonds'),
+        V('dH', 'ΔH', 'Enthalpy change of the reaction', {
+          unit: 'kJ/mol',
+          units: ['kJ/mol'],
+          min: -20000,
+          max: 20000,
+          step: 1,
+        }),
+      ],
+      ...rels(
+        rel(
+          'B = 4D(C–H) + 2D(O=O)',
+          '{B} = 4 × {ch} + 2 × {oo}',
+          ['B', 'ch', 'oo'],
+          (v) => v.B! - (4 * v.ch! + 2 * v.oo!),
+          {
+            B: [
+              (v) => 4 * v.ch! + 2 * v.oo!,
+              '4 × {ch} + 2 × {oo}',
+              'Break every bond in the reactants: four C–H in CH₄ and one O=O in each of the two O₂.',
+            ],
+            ch: [
+              (v) => (v.B! - 2 * v.oo!) / 4,
+              '({B} − 2 × {oo}) ÷ 4',
+              'Take the two O=O bonds off and share the rest among the four C–H bonds.',
+            ],
+            oo: [
+              (v) => (v.B! - 4 * v.ch!) / 2,
+              '({B} − 4 × {ch}) ÷ 2',
+              'Take the four C–H bonds off and share the rest between the two O=O bonds.',
+            ],
+          },
+        ),
+        rel(
+          'F = 2D(C=O) + 4D(O–H)',
+          '{F} = 2 × {co} + 4 × {oh}',
+          ['F', 'co', 'oh'],
+          (v) => v.F! - (2 * v.co! + 4 * v.oh!),
+          {
+            F: [
+              (v) => 2 * v.co! + 4 * v.oh!,
+              '2 × {co} + 4 × {oh}',
+              'Form every bond in the products: two C=O in CO₂ and two O–H in each of the two H₂O.',
+            ],
+            co: [
+              (v) => (v.F! - 4 * v.oh!) / 2,
+              '({F} − 4 × {oh}) ÷ 2',
+              'Take the four O–H bonds off and share the rest between the two C=O bonds.',
+            ],
+            oh: [
+              (v) => (v.F! - 2 * v.co!) / 4,
+              '({F} − 2 × {co}) ÷ 4',
+              'Take the two C=O bonds off and share the rest among the four O–H bonds.',
+            ],
+          },
+        ),
+        rel('ΔH = B − F', '{dH} = {B} − {F}', ['dH', 'B', 'F'], (v) => v.dH! - (v.B! - v.F!), {
+          dH: [
+            (v) => v.B! - v.F!,
+            '{B} − {F}',
+            'Energy in to break bonds less energy out from forming them. More out than in means ΔH < 0.',
+          ],
+          B: [(v) => v.dH! + v.F!, '{dH} + {F}', 'Add the energy given off back to ΔH.'],
+          F: [(v) => v.B! - v.dH!, '{B} − {dH}', 'The energy taken in less ΔH.'],
+        }),
+      ),
+      example: { ch, oo, co, oh, B, F, dH: B - F },
+      startWith: ['ch', 'oo', 'co', 'oh'],
+      unitSystems: ['metric'],
+      representation: {
+        kind: 'energyProfile',
+        mode: 'ladder',
+        unit: 'kJ/mol',
+        levels: [
+          { name: 'CH₄ + 2O₂', value: 0 },
+          { name: 'C + 4H + 4O', value: 'B' },
+          { name: 'CO₂ + 2H₂O', value: 'dH' },
+        ],
+        steps: [
+          { from: 0, to: 1, value: 'B', label: 'Bonds broken' },
+          { from: 1, to: 2, label: 'Bonds formed' },
+        ],
+        total: { from: 0, to: 2, value: 'dH' },
+      },
+    } satisfies ModuleDef;
+  })(),
 ];
