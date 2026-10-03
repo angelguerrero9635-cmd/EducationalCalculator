@@ -4,7 +4,7 @@
  * after it), in taxonomy order. Course and topic titles come from taxonomy.ts. Layout pages are
  * in `../layouts/collegePhysics.ts`. Rules: docs/MODULE_GUIDE.md.
  */
-import { atan2D, atanD, cosD, sinD, tanD } from '@/engine/angles';
+import { asinD, atan2D, atanD, cosD, sinD, tanD } from '@/engine/angles';
 import { formatNumber } from '@/engine/format';
 import type { Values } from '@/engine/types';
 
@@ -1178,6 +1178,166 @@ export const COLLEGE_PHYSICS_MODULES: ModuleDef[] = [
       tangent: { x: 'x', y: 'U' },
       marks: ['extrema'],
       axes: { x: 'Position x (m)', y: 'Potential energy U (J)' },
+    },
+  },
+  {
+    // University Physics I → Work and energy: a sled down a rough slope; the height it drops
+    // gives energy, friction turns some of it into heat.
+    id: 'he.physics.university-1#2~friction-energy',
+    title: 'Energy down a rough slope: heat and the end speed',
+    use: 'Use this for “A 40 kg sled starts down a 50 m slope at 20° moving at 3 m/s, with μₖ = 0.08. How much heat does friction make, and how fast is the sled at the bottom?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'The slope is straight, and the sled slides the whole length d without leaving it; g = 9.81 m/s².',
+      'Kinetic friction μₖN acts all the way down, where the normal force is N = mg cos θ.',
+      'Friction’s work turns into heat Q = fd; no other force does work (no push, no air drag).',
+      'Energy: ½mv² = ½mv₀² + mgh − Q, where h = d sin θ is the height the sled drops.',
+    ],
+    variables: [
+      V('m', 'm', 'Mass of the sled', { unit: 'kg', min: 0.01, max: 1e4, step: 0.1 }),
+      V('d', 'd', 'Slope length', { unit: 'm', min: 0, max: 1e4, step: 0.1 }),
+      V('theta', 'θ', 'Slope angle', { unit: '°', min: 0, max: 89, step: 0.5 }),
+      V('mu', 'μₖ', 'Kinetic friction coefficient', { min: 0, max: 1.5, step: 0.01 }),
+      V('v0', 'v₀', 'Start speed', { unit: 'm/s', min: 0, max: 1000, step: 0.1 }),
+      V('h', 'h', 'Height drop', { unit: 'm', min: 0, max: 1e4, derived: true }),
+      V('f', 'f', 'Friction force', { unit: 'N', min: 0, max: 2e5, derived: true }),
+      V('Q', 'Q', 'Heat from friction', { unit: 'J', min: 0, max: 2e9, derived: true }),
+      V('v', 'v', 'End speed', { unit: 'm/s', min: 0, max: 1e4, derived: true }),
+    ],
+    ...rels(
+      rel(
+        'h = d sin θ',
+        '{h} = {d} × sin({theta})',
+        ['h', 'd', 'theta'],
+        (v) => v.h! - v.d! * sinD(v.theta!),
+        {
+          h: [
+            (v) => exact(v.d! * sinD(v.theta!)),
+            '{d} × sin({theta})',
+            'The slope is the long side of a right triangle; the drop is the side opposite θ.',
+          ],
+          d: [
+            (v) => div(v.h!, sinD(v.theta!)),
+            '{h} ÷ sin({theta})',
+            'Undo h = d sin θ for the length: divide the drop by sin θ.',
+          ],
+          theta: [
+            (v) => {
+              const r = div(v.h!, v.d!);
+              return r === undefined ? undefined : (asinD(r) ?? NaN);
+            },
+            'sin⁻¹({h} ÷ {d})',
+            'The sine of the slope angle is the drop over the length.',
+          ],
+        },
+      ),
+      rel(
+        'f = μₖmg cos θ',
+        '{f} = {mu} × {m} × 9.81 × cos({theta})',
+        ['f', 'mu', 'm', 'theta'],
+        (v) => v.f! - v.mu! * v.m! * G * cosD(v.theta!),
+        {
+          f: [
+            (v) => exact(v.mu! * v.m! * G * cosD(v.theta!)),
+            '{mu} × {m} × 9.81 × cos({theta})',
+            'Into the slope the forces balance, so N = mg cos θ. Kinetic friction is μₖ times N.',
+          ],
+          mu: [
+            (v) => div(v.f!, v.m! * G * cosD(v.theta!)),
+            '{f} ÷ ({m} × 9.81 × cos({theta}))',
+            'Friction over the normal force mg cos θ gives the coefficient.',
+          ],
+          m: [
+            (v) => div(v.f!, v.mu! * G * cosD(v.theta!)),
+            '{f} ÷ ({mu} × 9.81 × cos({theta}))',
+            'Undo f = μₖmg cos θ for the mass: divide f by μₖg cos θ.',
+          ],
+        },
+      ),
+      rel('Q = fd', '{Q} = {f} × {d}', ['Q', 'f', 'd'], (v) => v.Q! - v.f! * v.d!, {
+        Q: [
+          (v) => exact(v.f! * v.d!),
+          '{f} × {d}',
+          'Friction pushes against the motion the whole length d, so its work, −fd, becomes heat fd.',
+        ],
+        f: [(v) => div(v.Q!, v.d!), '{Q} ÷ {d}', 'Divide the heat by the length of the slope.'],
+        d: [(v) => div(v.Q!, v.f!), '{Q} ÷ {f}', 'Divide the heat by the friction force.'],
+      }),
+      rel(
+        '½mv² = ½mv₀² + mgh − Q',
+        '½ × {m} × {v}² = ½ × {m} × {v0}² + {m} × 9.81 × {h} − {Q}',
+        ['v', 'v0', 'm', 'h', 'Q'],
+        (v) => 0.5 * v.m! * v.v! ** 2 - 0.5 * v.m! * v.v0! ** 2 - v.m! * G * v.h! + v.Q!,
+        {
+          v: [
+            (v) =>
+              exact(
+                rootOf(v.v0! ** 2 + 2 * G * v.h! - (2 * v.Q!) / v.m!, v.v0! ** 2 + 2 * G * v.h!),
+              ),
+            '√({v0}² + 2 × 9.81 × {h} − 2 × {Q} ÷ {m})',
+            'The kinetic energy at the bottom is the start’s, plus mgh from the drop, less the heat. Solve ½mv² for v.',
+          ],
+          v0: [
+            (v) => rootOf(v.v! ** 2 - 2 * G * v.h! + (2 * v.Q!) / v.m!, v.v! ** 2 + 2 * G * v.h!),
+            '√({v}² − 2 × 9.81 × {h} + 2 × {Q} ÷ {m})',
+            'Take the drop’s mgh off the kinetic energy at the bottom and give back the heat, then solve ½mv₀² for v₀.',
+          ],
+          Q: [
+            (v) => exact(0.5 * v.m! * v.v0! ** 2 + v.m! * G * v.h! - 0.5 * v.m! * v.v! ** 2),
+            '½ × {m} × {v0}² + {m} × 9.81 × {h} − ½ × {m} × {v}²',
+            'The heat is the energy the sled had, ½mv₀² + mgh, less the kinetic energy it ends with.',
+          ],
+          h: [
+            (v) => div(0.5 * v.v! ** 2 - 0.5 * v.v0! ** 2 + v.Q! / v.m!, G),
+            '(½ × {v}² − ½ × {v0}² + {Q} ÷ {m}) ÷ 9.81',
+            'Divide the energy balance by m, gather the gh term, then divide by g.',
+          ],
+        },
+        {
+          message: (v) =>
+            v.v0 !== undefined &&
+            v.h !== undefined &&
+            v.Q !== undefined &&
+            v.m !== undefined &&
+            v.v0 ** 2 + 2 * G * v.h - (2 * v.Q) / v.m < -1e-9
+              ? 'Friction takes more energy than the sled has: it stops on the slope before the bottom.'
+              : undefined,
+        },
+      ),
+    ),
+    // m = 5 kg at v₀ = 2 m/s, d = 20 m at 30°, μₖ = 0.1: h = 20 × 0.5 = 10 m;
+    // f = 0.1 × 5 × 9.81 × 0.86603 = 4.2479 N, Q = 4.2479 × 20 = 84.957 J;
+    // v = √(4 + 2 × 9.81 × 10 − 2 × 84.957 ÷ 5) = √(200.2 − 33.983) = √166.22 = 12.893 m/s
+    // (energy check: 10 J + 490.5 J = 415.54 J kinetic + 84.957 J heat).
+    example: (() => {
+      const [m, d, theta, mu, v0] = [5, 20, 30, 0.1, 2];
+      const h = exact(d * sinD(theta));
+      const f = exact(mu * m * G * cosD(theta));
+      const Q = exact(f * d);
+      return {
+        m,
+        d,
+        theta,
+        mu,
+        v0,
+        h,
+        f,
+        Q,
+        v: exact(Math.sqrt(v0 ** 2 + 2 * G * h - (2 * Q) / m)),
+      };
+    })(),
+    startWith: ['m', 'd', 'theta', 'mu', 'v0'],
+    // The sled on the slope, sliding down: its weight, the normal force and kinetic friction
+    // μₖN up the slope, to scale (friction's f times d is the heat).
+    representation: {
+      kind: 'freeBody',
+      support: 'incline',
+      moving: 'down',
+      g: G,
+      mass: 'm',
+      incline: 'theta',
+      mu: 'mu',
+      friction: 'f',
     },
   },
 ];
