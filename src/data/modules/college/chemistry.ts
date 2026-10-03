@@ -2161,4 +2161,75 @@ export const COLLEGE_CHEMISTRY_MODULES: ModuleDef[] = [
       },
     } satisfies ModuleDef;
   })(),
+  (() => {
+    // General Chemistry I → Bonding and molecular geometry: formal charge.
+    // Nitrate, N with one double and two single bonds and no lone pairs: 5 − 0 − 8 ÷ 2 = +1.
+    // (A single-bonded O: 6 − 6 − 2 ÷ 2 = −1; +1 − 1 − 1 + 0 = −1, the ion's charge.)
+    const [v, N, B] = [5, 0, 8];
+    const count = (id: string, symbol: string, name: string, min: number, max: number) =>
+      V(id, symbol, name, { min, max, step: 1, integer: true });
+    return {
+      id: 'he.chemistry.gen-chem-1#4~formal-charge',
+      title: 'Formal charge',
+      use: 'Use this for “In one resonance form of nitrate, NO₃⁻, nitrogen has one double bond, two single bonds and no lone pairs. Find its formal charge.”',
+      assumptions: [
+        'An atom owns all its nonbonding electrons and half of each bonding pair. A single bond is 2 bonding electrons, a double bond 4 and a triple bond 6.',
+        'The formal charges in one structure add to the ion’s charge, or to 0 for a molecule. In nitrate: +1 on N, −1 on each single-bonded O and 0 on the double-bonded O.',
+        'The best structure has formal charges nearest zero, with any negative one on the more electronegative atom.',
+        'Resonance forms move electrons, never atoms. Nitrate’s three forms differ only in which O holds the double bond.',
+      ],
+      variables: [
+        count('v', 'v', 'Valence electrons of the free atom', 1, 8),
+        count('N', 'N', 'Nonbonding electrons on the atom', 0, 8),
+        count('B', 'B', 'Bonding electrons around the atom', 0, 12),
+        V('FC', 'FC', 'Formal charge', { min: -4, max: 4, step: 1, integer: true }),
+      ],
+      ...rels(
+        rel(
+          'FC = v − N − B ÷ 2',
+          '{FC} = {v} − {N} − {B} ÷ 2',
+          ['FC', 'v', 'N', 'B'],
+          (x) => x.FC! - (x.v! - x.N! - x.B! / 2),
+          {
+            FC: [
+              (x) => x.v! - x.N! - x.B! / 2,
+              '{v} − {N} − {B} ÷ 2',
+              'Start from the electrons the free atom brings. Take off the ones it keeps as lone pairs and half of the ones it shares.',
+            ],
+            v: [
+              (x) => x.FC! + x.N! + x.B! / 2,
+              '{FC} + {N} + {B} ÷ 2',
+              'The electrons the atom owns in the structure, plus its formal charge, give what the free atom brings.',
+            ],
+            N: [
+              (x) => x.v! - x.FC! - x.B! / 2,
+              '{v} − {FC} − {B} ÷ 2',
+              'Take the formal charge and half the bonding electrons off the free atom’s count.',
+            ],
+            B: [
+              (x) => 2 * (x.v! - x.N! - x.FC!),
+              '2 × ({v} − {N} − {FC})',
+              'What the atom owns beyond its lone pairs is half its bonding electrons, so double it.',
+            ],
+          },
+        ),
+        rule(
+          'B is even',
+          '{B} is even',
+          ['B'],
+          (x) => x.B! % 2 === 0,
+          'Bonding electrons come in pairs, two for each bond.',
+        ),
+      ),
+      example: { v, N, B, FC: v - N - B / 2 },
+      startWith: ['v', 'N', 'B'],
+      representation: {
+        kind: 'lewisStructure',
+        mode: 'molecule',
+        formula: 'NO3-',
+        resonance: true,
+        formal: { valence: 'v', nonbonding: 'N', bonding: 'B', charge: 'FC' },
+      },
+    } satisfies ModuleDef;
+  })(),
 ];
