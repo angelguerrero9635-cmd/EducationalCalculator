@@ -83,6 +83,19 @@ const expWork = (A: number, k: number, x: number) => {
   ];
 };
 
+/** "3x": a number times x ("x", "−x" for 1 and −1). */
+const timesX = (m: number) => (m === 1 ? 'x' : m === -1 ? '−x' : `${formatNumber(m)}x`);
+
+/**
+ * L’Hôpital on (e^(kx) − 1) ÷ (mx) at 0: the top and the bottom as forms with their slopes at 0,
+ * then the limit itself read as the ratio of the slopes.
+ */
+const lhopitalWork = (k: number, m: number) => [
+  `f(x) = e^(${timesX(k)}) − 1 → f′(x) = ${expTerm(k, k)} → f′(0) = ${formatNumber(k)} × e^(0) = ${formatNumber(k)}`,
+  `g(x) = ${timesX(m)} → g′(0) = ${formatNumber(m)}`,
+  `lim x → 0 of (e^(${timesX(k)}) − 1) ÷ (${timesX(m)}) = ${formatNumber(k)} ÷ ${signed(m)}`,
+];
+
 /** A sine or cosine with rounding crumbs (cos(π/2) ≈ 6 × 10⁻¹⁷) read as 0. */
 const snap = (y: number) => (Math.abs(y) < 1e-9 ? 0 : y);
 
@@ -1225,6 +1238,85 @@ export const COLLEGE_MATH_MODULES: ModuleDef[] = [
       family: 'root',
       index: 2,
       tangent: { x: 'a', slope: 'fpa', y: 'fa', at: 'X', value: 'L' },
+    },
+  },
+  {
+    // Calculus I → Derivatives and differentiation rules: L’Hôpital on a 0/0 quotient at 0.
+    id: 'he.math.calc-1#1~lhopital',
+    title: 'L’Hôpital’s rule on (e^(kx) − 1) ÷ (mx)',
+    use: 'Use this for “Find the limit of (e^(4x) − 1) ÷ (5x) as x → 0.”',
+    assumptions: [
+      'L’Hôpital’s rule: if the top f and the bottom g both → 0 as x → a, then lim f ÷ g = lim f′ ÷ g′ when that limit exists.',
+      'Here f(x) = e^(kx) − 1 and g(x) = mx. At x = 0 the top is e⁰ − 1 = 0 and the bottom is 0, the 0/0 form the rule needs.',
+      'Chain rule: f′(x) = k·e^(kx), which is k at x = 0, and g′(x) = m. So the limit is k ÷ m.',
+      'x is a plain number, and the table checks the answer with x on both sides of 0.',
+    ],
+    variables: [
+      V('k', 'k', 'Rate in the power on top', { min: -10, max: 10, step: 0.5 }),
+      V('m', 'm', 'Number times x below', { min: -10, max: 10, step: 0.5 }),
+      V('L', 'L', 'The limit', { min: -100, max: 100, step: 0.0001, derived: true }),
+      V('x', 'x', 'An x close to 0', { min: -1, max: 1, step: 0.001 }),
+      V('r', 'r', '(e^(kx) − 1) ÷ (mx) there', { min: -1e6, max: 1e6, step: 0.00001 }),
+    ],
+    ...rels(
+      rule(
+        'k ≠ 0',
+        'The rate in the power {k} is not 0',
+        ['k'],
+        (v) => v.k !== 0,
+        'With k = 0 the top is e⁰ − 1 = 0 everywhere, so the quotient is 0 and there is nothing to find: pick another k.',
+      ),
+      rule(
+        'm ≠ 0',
+        'The number below {m} is not 0',
+        ['m'],
+        (v) => v.m !== 0,
+        'With m = 0 the bottom is 0 everywhere and the quotient has no value: pick another m.',
+      ),
+      rule(
+        'x ≠ 0',
+        'The quotient has no value at x = {x}',
+        ['x'],
+        (v) => v.x !== 0,
+        'The quotient is 0/0 at x = 0: pick an x close to 0.',
+      ),
+      withStep(
+        derive(
+          'L = k ÷ m',
+          '{L} = {k} ÷ {m}',
+          'L',
+          ['k', 'm'],
+          (v) => (v.m === 0 ? undefined : v.k! / v.m!),
+          (v) => `${signed(v.k!)} ÷ ${signed(v.m!)}`,
+          'Top and bottom are both 0 at x = 0, so take the slope of each: k·e^(kx) is k at 0, and the slope of mx is m.',
+        ),
+        'L',
+        { work: (v) => lhopitalWork(v.k!, v.m!) },
+      ),
+      rel(
+        'r = (e^(kx) − 1) ÷ (mx)',
+        '{r} = (e^({k} × {x}) − 1) ÷ ({m} × {x})',
+        ['r', 'k', 'x', 'm'],
+        (v) => v.r! * v.m! * v.x! - (Math.exp(v.k! * v.x!) - 1),
+        {
+          r: [
+            (v) =>
+              v.x === 0 || v.m === 0 ? undefined : (Math.exp(v.k! * v.x!) - 1) / (v.m! * v.x!),
+            (v) =>
+              `(e^(${signed(v.k!)} × ${signed(v.x!)}) − 1) ÷ (${signed(v.m!)} × ${signed(v.x!)})`,
+            'Raise e to the power kx, take away 1, then divide by mx. The closer x is to 0, the closer r is to k ÷ m.',
+          ],
+        },
+      ),
+    ),
+    example: { k: 2, m: 3, L: 2 / 3, x: 0.01, r: (Math.exp(0.02) - 1) / 0.03 },
+    startWith: ['k', 'm', 'x'],
+    representation: {
+      kind: 'table',
+      sweep: 'x',
+      output: 'r',
+      params: ['k', 'm'],
+      rows: [0.1, 0.01, 0.001, -0.001, -0.01, -0.1],
     },
   },
 ];
