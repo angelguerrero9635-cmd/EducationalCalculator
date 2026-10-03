@@ -2284,4 +2284,134 @@ export const COLLEGE_PHYSICS_MODULES: ModuleDef[] = [
       acceleration: 'al',
     },
   },
+  {
+    // University Physics I → Rotation and torque: a spinning body changes its moment of
+    // inertia with no outside torque, so L = Iω is kept while the kinetic energy changes.
+    id: 'he.physics.university-1#4~angular-momentum',
+    title: 'A spinning skater pulls in her arms',
+    use: 'Use this for “A skater spinning at 3 rad/s with her arms out (I = 5 kg·m²) pulls them in to I = 2 kg·m². Find her new spin and the work her arms do.”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'No outside torque acts about the spin axis (the ice’s friction is left out), so the angular momentum L = Iω is kept.',
+      'Pulling the arms in moves mass closer to the axis: I falls, and ω rises by the same factor.',
+      'The kinetic energy ½Iω² is not kept: the arms do work W = K₂ − K₁ pulling in, and W is negative letting them out.',
+    ],
+    variables: [
+      V('I1', 'I₁', 'Moment of inertia before', fixed('kg·m²', 0.001, 1e6, 0.1)),
+      V('w1', 'ω₁', 'Spin before', fixed('rad/s', 0.001, 1e4, 0.1)),
+      V('I2', 'I₂', 'Moment of inertia after', fixed('kg·m²', 0.001, 1e6, 0.1)),
+      V('L', 'L', 'Angular momentum', fixed('kg·m²/s', 0, 1e10, 0.1, true)),
+      V('w2', 'ω₂', 'Spin after', fixed('rad/s', 0, 1e7, 0.1, true)),
+      V('K1', 'K₁', 'Kinetic energy before', { unit: 'J', min: 0, max: 1e12, derived: true }),
+      V('K2', 'K₂', 'Kinetic energy after', { unit: 'J', min: 0, max: 1e12, derived: true }),
+      V('W', 'W', 'Work done by the arms', { unit: 'J', min: -1e12, max: 1e12, derived: true }),
+    ],
+    ...rels(
+      rel('L = I₁ω₁', '{L} = {I1} × {w1}', ['L', 'I1', 'w1'], (v) => v.L! - v.I1! * v.w1!, {
+        L: [
+          (v) => exact(v.I1! * v.w1!),
+          '{I1} × {w1}',
+          'The angular momentum is the moment of inertia times the spin.',
+        ],
+        I1: [(v) => div(v.L!, v.w1!), '{L} ÷ {w1}', 'Undo L = I₁ω₁: divide L by ω₁.'],
+        w1: [(v) => div(v.L!, v.I1!), '{L} ÷ {I1}', 'Undo L = I₁ω₁: divide L by I₁.'],
+      }),
+      rel('L = I₂ω₂', '{L} = {I2} × {w2}', ['L', 'I2', 'w2'], (v) => v.L! - v.I2! * v.w2!, {
+        w2: [
+          (v) => div(v.L!, v.I2!),
+          '{L} ÷ {I2}',
+          'No outside torque, so L is the same after: the new spin is L divided by the new I.',
+        ],
+        I2: [(v) => div(v.L!, v.w2!), '{L} ÷ {w2}', 'Undo L = I₂ω₂: divide L by ω₂.'],
+        L: [
+          (v) => exact(v.I2! * v.w2!),
+          '{I2} × {w2}',
+          'The angular momentum after is I₂ times ω₂, the same as before.',
+        ],
+      }),
+      rel(
+        'K₁ = ½I₁ω₁²',
+        '{K1} = 0.5 × {I1} × {w1}²',
+        ['K1', 'I1', 'w1'],
+        (v) => v.K1! - 0.5 * v.I1! * v.w1! ** 2,
+        {
+          K1: [
+            (v) => exact(0.5 * v.I1! * v.w1! ** 2),
+            '0.5 × {I1} × {w1}²',
+            'The energy of spinning is half the moment of inertia times the spin squared.',
+          ],
+          I1: [
+            (v) => div(2 * v.K1!, v.w1! ** 2),
+            '2 × {K1} ÷ {w1}²',
+            'Undo K₁ = ½I₁ω₁²: double the energy and divide by ω₁².',
+          ],
+          w1: [
+            (v) => (v.I1! > 0 ? exact(Math.sqrt((2 * v.K1!) / v.I1!)) : undefined),
+            '√(2 × {K1} ÷ {I1})',
+            'Undo K₁ = ½I₁ω₁²: double the energy, divide by I₁ and take the square root.',
+          ],
+        },
+      ),
+      rel(
+        'K₂ = ½I₂ω₂²',
+        '{K2} = 0.5 × {I2} × {w2}²',
+        ['K2', 'I2', 'w2'],
+        (v) => v.K2! - 0.5 * v.I2! * v.w2! ** 2,
+        {
+          K2: [
+            (v) => exact(0.5 * v.I2! * v.w2! ** 2),
+            '0.5 × {I2} × {w2}²',
+            'The energy of spinning after: half of I₂ times ω₂ squared.',
+          ],
+          I2: [
+            (v) => div(2 * v.K2!, v.w2! ** 2),
+            '2 × {K2} ÷ {w2}²',
+            'Undo K₂ = ½I₂ω₂²: double the energy and divide by ω₂².',
+          ],
+          w2: [
+            (v) => (v.I2! > 0 ? exact(Math.sqrt((2 * v.K2!) / v.I2!)) : undefined),
+            '√(2 × {K2} ÷ {I2})',
+            'Undo K₂ = ½I₂ω₂²: double the energy, divide by I₂ and take the square root.',
+          ],
+        },
+      ),
+      rel('W = K₂ − K₁', '{W} = {K2} − {K1}', ['W', 'K2', 'K1'], (v) => v.W! - v.K2! + v.K1!, {
+        W: [
+          (v) => exact(v.K2! - v.K1!),
+          '{K2} − {K1}',
+          'The work-energy theorem: the arms’ work is the change in kinetic energy.',
+        ],
+        K2: [
+          (v) => exact(v.K1! + v.W!),
+          '{K1} + {W}',
+          'The energy after is the energy before plus the work the arms do.',
+        ],
+        K1: [
+          (v) => exact(v.K2! - v.W!),
+          '{K2} − {W}',
+          'The energy before is the energy after less the work the arms do.',
+        ],
+      }),
+    ),
+    // The plan's skater: 4 kg·m² at 2 rad/s pulls in to 1.6 kg·m² → L = 4 × 2 = 8 kg·m²/s,
+    // ω₂ = 8 ÷ 1.6 = 5 rad/s, K₁ = 0.5 × 4 × 4 = 8 J, K₂ = 0.5 × 1.6 × 25 = 20 J,
+    // W = 20 − 8 = 12 J done by the arms.
+    example: { I1: 4, w1: 2, I2: 1.6, L: 8, w2: 5, K1: 8, K2: 20, W: 12 },
+    startWith: ['I1', 'w1', 'I2'],
+    // The spins that keep L the same, ω = L ÷ I: the dashed level ω₁ meets the curve at the
+    // start (I₁, ω₁) and the skater slides along it to (I₂, ω₂) as she pulls in.
+    representation: {
+      kind: 'functionGraph',
+      family: 'expr',
+      expr: 'L/x',
+      from: 0,
+      name: 'ω',
+      input: 'I',
+      at: { x: 'I2', y: 'w2' },
+      other: { family: 'linear', m: 0, b: 'w1', name: 'ω₁' },
+      crossing: { x: 'I1', y: 'w1' },
+      xMin: 0,
+      axes: { x: 'Moment of inertia I (kg·m²)', y: 'Spin ω (rad/s)' },
+    },
+  },
 ];
