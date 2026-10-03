@@ -2167,4 +2167,121 @@ export const COLLEGE_PHYSICS_MODULES: ModuleDef[] = [
       fixed: true,
     },
   },
+  {
+    // University Physics I → Rotation and torque: a block hangs from a rope wound round a
+    // uniform disk pulley on a fixed, frictionless axle; the rope turns the pulley as it falls.
+    id: 'he.physics.university-1#4~pulley-inertia',
+    title: 'A block falling from a pulley with mass',
+    use: 'Use this for “A 3 kg bucket hangs from a rope wound round a 5 kg solid disk pulley of radius 0.2 m. Find the bucket’s acceleration, the rope’s tension and the pulley’s angular acceleration.”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'The pulley is a uniform solid disk on a frictionless axle, so I = ½Mr²; g = 9.81 m/s².',
+      'The rope is light and doesn’t slip or stretch, so the rim moves with the block: a = rα.',
+      'The block obeys mg − T = ma and the pulley Tr = Iα; together they give a = mg ÷ (m + I ÷ r²).',
+    ],
+    variables: [
+      V('m', 'm', 'Block mass', { unit: 'kg', min: 0.001, max: 1e4, step: 0.1 }),
+      V('M', 'M', 'Pulley mass', { unit: 'kg', min: 0.001, max: 1e4, step: 0.1 }),
+      V('r', 'r', 'Pulley radius', { unit: 'm', min: 0.001, max: 100, step: 0.01 }),
+      V('I', 'I', 'Pulley’s moment of inertia', fixed('kg·m²', 0, 1e9, 0.001, true)),
+      V('a', 'a', 'Block’s acceleration (down)', {
+        unit: 'm/s²',
+        min: 0,
+        max: G,
+        derived: true,
+      }),
+      V('al', 'α', 'Pulley’s angular acceleration', fixed('rad/s²', 0, 1e5, 0.01, true)),
+      V('tau', 'τ', 'Torque on the pulley', fixed('N·m', 0, 1e8, 0.001, true)),
+      V('T', 'T', 'Rope tension', { unit: 'N', min: 0, max: 1e6, derived: true }),
+    ],
+    ...rels(
+      rel(
+        'I = ½Mr²',
+        '{I} = 0.5 × {M} × {r}²',
+        ['I', 'M', 'r'],
+        (v) => 2 * v.I! - v.M! * v.r! ** 2,
+        {
+          I: [
+            (v) => exact(0.5 * v.M! * v.r! ** 2),
+            '0.5 × {M} × {r}²',
+            'A uniform solid disk about its axle: half the mass times the radius squared.',
+          ],
+          M: [
+            (v) => div(2 * v.I!, v.r! ** 2),
+            '2 × {I} ÷ {r}²',
+            'Undo I = ½Mr²: double I and divide by r².',
+          ],
+        },
+      ),
+      rel(
+        'a = mg ÷ (m + I ÷ r²)',
+        '{a} = ({m} × 9.81) ÷ ({m} + {I} ÷ {r}²)',
+        ['a', 'm', 'I', 'r'],
+        (v) => v.a! * (v.m! * v.r! ** 2 + v.I!) - v.m! * G * v.r! ** 2,
+        {
+          a: [
+            (v) => exact((v.m! * G) / (v.m! + v.I! / v.r! ** 2)),
+            '({m} × 9.81) ÷ ({m} + {I} ÷ {r}²)',
+            'Put T = Iα ÷ r = Ia ÷ r² into mg − T = ma: the pulley adds I ÷ r² to the mass that the weight speeds up.',
+          ],
+          m: [
+            (v) =>
+              v.a! < G ? positive(exact((v.a! * v.I!) / ((G - v.a!) * v.r! ** 2))) : undefined,
+            '{a} × {I} ÷ ((9.81 − {a}) × {r}²)',
+            'Gather the m terms of ma + Ia ÷ r² = mg: m(g − a) = Ia ÷ r², then divide by g − a.',
+          ],
+          I: [
+            (v) => (v.a! > 0 ? positive(exact((v.m! * v.r! ** 2 * (G - v.a!)) / v.a!)) : undefined),
+            '{m} × {r}² × (9.81 − {a}) ÷ {a}',
+            'Undo the block’s law: Ia ÷ r² = m(g − a), so multiply by r² and divide by a.',
+          ],
+        },
+      ),
+      rel('α = a ÷ r', '{al} = {a} ÷ {r}', ['al', 'a', 'r'], (v) => v.al! * v.r! - v.a!, {
+        al: [
+          (v) => div(v.a!, v.r!),
+          '{a} ÷ {r}',
+          'The rope doesn’t slip, so the rim speeds up as fast as the block: a = rα.',
+        ],
+        a: [(v) => exact(v.al! * v.r!), '{al} × {r}', 'The rope doesn’t slip: a = rα.'],
+        r: [(v) => div(v.a!, v.al!), '{a} ÷ {al}', 'Undo a = rα: divide a by α.'],
+      }),
+      rel('τ = Iα', '{tau} = {I} × {al}', ['tau', 'I', 'al'], (v) => v.tau! - v.I! * v.al!, {
+        tau: [
+          (v) => exact(v.I! * v.al!),
+          '{I} × {al}',
+          'Newton’s second law for turning: the torque is I times α.',
+        ],
+        I: [(v) => div(v.tau!, v.al!), '{tau} ÷ {al}', 'Undo τ = Iα: divide τ by α.'],
+        al: [(v) => div(v.tau!, v.I!), '{tau} ÷ {I}', 'Undo τ = Iα: divide τ by I.'],
+      }),
+      rel('τ = Tr', '{tau} = {T} × {r}', ['tau', 'T', 'r'], (v) => v.tau! - v.T! * v.r!, {
+        T: [
+          (v) => div(v.tau!, v.r!),
+          '{tau} ÷ {r}',
+          'Only the rope turns the pulley, pulling at the rim: τ = Tr, so divide τ by r.',
+        ],
+        tau: [
+          (v) => exact(v.T! * v.r!),
+          '{T} × {r}',
+          'The rope pulls at the rim, a lever arm r from the axle: τ = Tr.',
+        ],
+      }),
+    ),
+    // The plan's 2 kg block on a 4 kg, 0.1 m disk: I = 0.5 × 4 × 0.01 = 0.02 kg·m²,
+    // a = 2 × 9.81 ÷ (2 + 0.02 ÷ 0.01) = 19.62 ÷ 4 = 4.905 m/s², α = 4.905 ÷ 0.1 = 49.05 rad/s²,
+    // τ = 0.02 × 49.05 = 0.981 N·m, T = 0.981 ÷ 0.1 = 9.81 N (check: 19.62 − 9.81 = 2 × 4.905).
+    example: { m: 2, M: 4, r: 0.1, I: 0.02, a: 4.905, al: 49.05, tau: 0.981, T: 9.81 },
+    startWith: ['m', 'M', 'r'],
+    // The disk pulley with its I, the rope's torque τ = Tr as a curved arrow at the rim and
+    // α = τ ÷ I. No `mass`: the rotor labels it m, which here is the block's.
+    representation: {
+      kind: 'rotor',
+      shape: 0.5,
+      radius: 'r',
+      inertia: 'I',
+      torque: 'tau',
+      acceleration: 'al',
+    },
+  },
 ];
