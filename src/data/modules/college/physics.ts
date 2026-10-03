@@ -1501,4 +1501,184 @@ export const COLLEGE_PHYSICS_MODULES: ModuleDef[] = [
       axes: { x: 'east', y: 'north' },
     },
   },
+  {
+    // University Physics I → Momentum: a 1D elastic collision with both objects moving, worked
+    // in the center-of-mass frame, where each velocity simply reverses.
+    id: 'he.physics.university-1#3~elastic',
+    title: 'An elastic collision in 1D, both moving',
+    use: 'Use this for “A 0.5 kg puck sliding east at 3 m/s catches a 1.5 kg puck sliding east at 1 m/s, and they bounce apart elastically. What are their velocities after?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'The collision is head-on along one line and elastic: total momentum and total kinetic energy are both kept.',
+      '+ points from object 1 toward object 2; a velocity the other way is negative. No outside force acts during the short contact.',
+      'The center of mass moves at v_cm = p ÷ (m₁ + m₂) throughout. Seen riding along with it, each object’s velocity just reverses, so v′ = 2v_cm − v.',
+    ],
+    variables: [
+      V('m1', 'm₁', 'Mass of object 1', { unit: 'kg', min: 0.001, max: 1e5, step: 0.1 }),
+      V('v1', 'v₁', 'Velocity of object 1 before', { unit: 'm/s', min: -500, max: 500, step: 0.1 }),
+      V('m2', 'm₂', 'Mass of object 2', { unit: 'kg', min: 0.001, max: 1e5, step: 0.1 }),
+      V('v2', 'v₂', 'Velocity of object 2 before', { unit: 'm/s', min: -500, max: 500, step: 0.1 }),
+      V('p', 'p', 'Total momentum', { unit: 'kg·m/s', min: -1e8, max: 1e8, derived: true }),
+      V('vcm', 'v_cm', 'Velocity of the center of mass', {
+        unit: 'm/s',
+        min: -500,
+        max: 500,
+        derived: true,
+      }),
+      V('v1p', 'v₁′', 'Velocity of object 1 after', {
+        unit: 'm/s',
+        min: -1500,
+        max: 1500,
+        derived: true,
+      }),
+      V('v2p', 'v₂′', 'Velocity of object 2 after', {
+        unit: 'm/s',
+        min: -1500,
+        max: 1500,
+        derived: true,
+      }),
+      V('K', 'K', 'Kinetic energy before', { unit: 'J', min: 0, max: 2.5e10, derived: true }),
+      V('Kp', 'K′', 'Kinetic energy after', { unit: 'J', min: 0, max: 2.5e10, derived: true }),
+    ],
+    ...rels(
+      rule(
+        'v₁ > v₂',
+        'Object 1 catches object 2: {v1} is more than {v2}',
+        ['v1', 'v2'],
+        (v) => v.v1! > v.v2!,
+        'Object 1 is behind object 2, so it must move faster toward +, or the two never meet.',
+      ),
+      rel(
+        'p = m₁v₁ + m₂v₂',
+        '{p} = {m1} × {v1} + {m2} × {v2}',
+        ['p', 'm1', 'v1', 'm2', 'v2'],
+        (v) => v.p! - v.m1! * v.v1! - v.m2! * v.v2!,
+        {
+          p: [
+            (v) => exact(v.m1! * v.v1! + v.m2! * v.v2!),
+            '{m1} × {v1} + {m2} × {v2}',
+            'Each object’s momentum is its mass times its velocity, sign included; the total is their sum.',
+          ],
+          v1: [
+            (v) => div(v.p! - v.m2! * v.v2!, v.m1!),
+            '({p} − {m2} × {v2}) ÷ {m1}',
+            'Take object 2’s momentum from the total, then divide by object 1’s mass.',
+          ],
+          v2: [
+            (v) => div(v.p! - v.m1! * v.v1!, v.m2!),
+            '({p} − {m1} × {v1}) ÷ {m2}',
+            'Take object 1’s momentum from the total, then divide by object 2’s mass.',
+          ],
+          m1: [
+            (v) => div(v.p! - v.m2! * v.v2!, v.v1!),
+            '({p} − {m2} × {v2}) ÷ {v1}',
+            'Object 1’s momentum is the total less object 2’s; divide it by object 1’s velocity.',
+          ],
+          m2: [
+            (v) => div(v.p! - v.m1! * v.v1!, v.v2!),
+            '({p} − {m1} × {v1}) ÷ {v2}',
+            'Object 2’s momentum is the total less object 1’s; divide it by object 2’s velocity.',
+          ],
+        },
+      ),
+      rel(
+        'v_cm = p ÷ (m₁ + m₂)',
+        '{vcm} = {p} ÷ ({m1} + {m2})',
+        ['vcm', 'p', 'm1', 'm2'],
+        (v) => v.vcm! * (v.m1! + v.m2!) - v.p!,
+        {
+          vcm: [
+            (v) => div(v.p!, v.m1! + v.m2!),
+            '{p} ÷ ({m1} + {m2})',
+            'The center of mass carries the total momentum as if all the mass were there, so divide p by m₁ + m₂.',
+          ],
+          p: [
+            (v) => exact(v.vcm! * (v.m1! + v.m2!)),
+            '{vcm} × ({m1} + {m2})',
+            'The total mass times the center of mass’s velocity is the total momentum.',
+          ],
+        },
+      ),
+      rel(
+        'v₁′ = 2v_cm − v₁',
+        '{v1p} = 2 × {vcm} − {v1}',
+        ['v1p', 'vcm', 'v1'],
+        (v) => v.v1p! - 2 * v.vcm! + v.v1!,
+        {
+          v1p: [
+            (v) => exact(2 * v.vcm! - v.v1!),
+            '2 × {vcm} − {v1}',
+            'Relative to the center of mass, object 1 moves at v₁ − v_cm before and the reverse after. Add v_cm back: v₁′ = 2v_cm − v₁.',
+          ],
+          vcm: [
+            (v) => exact((v.v1! + v.v1p!) / 2),
+            '({v1} + {v1p}) ÷ 2',
+            'The velocity reverses about v_cm, so v_cm is halfway between object 1’s velocities before and after.',
+          ],
+          v1: [
+            (v) => exact(2 * v.vcm! - v.v1p!),
+            '2 × {vcm} − {v1p}',
+            'Reversing about v_cm works both ways: v₁ = 2v_cm − v₁′.',
+          ],
+        },
+      ),
+      rel(
+        'v₂′ = 2v_cm − v₂',
+        '{v2p} = 2 × {vcm} − {v2}',
+        ['v2p', 'vcm', 'v2'],
+        (v) => v.v2p! - 2 * v.vcm! + v.v2!,
+        {
+          v2p: [
+            (v) => exact(2 * v.vcm! - v.v2!),
+            '2 × {vcm} − {v2}',
+            'Object 2’s velocity reverses about v_cm the same way. Written out, this is ((m₂ − m₁)v₂ + 2m₁v₁) ÷ (m₁ + m₂).',
+          ],
+          vcm: [
+            (v) => exact((v.v2! + v.v2p!) / 2),
+            '({v2} + {v2p}) ÷ 2',
+            'The velocity reverses about v_cm, so v_cm is halfway between object 2’s velocities before and after.',
+          ],
+          v2: [
+            (v) => exact(2 * v.vcm! - v.v2p!),
+            '2 × {vcm} − {v2p}',
+            'Reversing about v_cm works both ways: v₂ = 2v_cm − v₂′.',
+          ],
+        },
+      ),
+      derive(
+        'K = ½m₁v₁² + ½m₂v₂²',
+        '{K} = ½ × {m1} × {v1}² + ½ × {m2} × {v2}²',
+        'K',
+        ['m1', 'v1', 'm2', 'v2'],
+        (v) => 0.5 * v.m1! * v.v1! ** 2 + 0.5 * v.m2! * v.v2! ** 2,
+        '½ × {m1} × {v1}² + ½ × {m2} × {v2}²',
+        'Add the two objects’ kinetic energies before the collision.',
+      ),
+      derive(
+        'K′ = ½m₁v₁′² + ½m₂v₂′²',
+        '{Kp} = ½ × {m1} × {v1p}² + ½ × {m2} × {v2p}²',
+        'Kp',
+        ['m1', 'v1p', 'm2', 'v2p'],
+        (v) => 0.5 * v.m1! * v.v1p! ** 2 + 0.5 * v.m2! * v.v2p! ** 2,
+        '½ × {m1} × {v1p}² + ½ × {m2} × {v2p}²',
+        'Add the kinetic energies after. In an elastic collision K′ equals K: the check that the velocities are right.',
+      ),
+    ),
+    // m₁ = 2 kg at 6 m/s meets m₂ = 4 kg coming back at 1.5 m/s: p = 12 − 6 = 6 kg·m/s,
+    // v_cm = 6 ÷ 6 = 1 m/s; v₁′ = 2 × 1 − 6 = −4 m/s (it bounces back), v₂′ = 2 × 1 + 1.5 =
+    // 3.5 m/s; K = 36 + 4.5 = 40.5 J, K′ = ½ × 2 × 16 + ½ × 4 × 12.25 = 16 + 24.5 = 40.5 J.
+    example: { m1: 2, v1: 6, m2: 4, v2: -1.5, p: 6, vcm: 1, v1p: -4, v2p: 3.5, K: 40.5, Kp: 40.5 },
+    startWith: ['m1', 'v1', 'm2', 'v2'],
+    // The two carts before and after, p = mv arrows tip to tail (the same total), and the
+    // kinetic energy before and after (equal: elastic).
+    representation: {
+      kind: 'collision',
+      type: 'elastic',
+      masses: ['m1', 'm2'],
+      before: ['v1', 'v2'],
+      after: ['v1p', 'v2p'],
+      momentum: 'p',
+      energy: ['K', 'Kp'],
+    },
+  },
 ];
