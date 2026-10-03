@@ -32,6 +32,10 @@ const G = 9.81;
 /** Coulomb's constant k = 8.99 × 10⁹ N·m²/C² (the plan's constants). */
 const K = 8.99e9;
 
+/** The permittivity of free space ε₀ = 8.85 × 10⁻¹² F/m (the plan's constants), as pages print it. */
+const EPS0 = 8.85e-12;
+const EPS = '8.85 × 10⁻¹²';
+
 /** cos θ in degrees, exactly 0 straight up or down (cos 90° is 6 × 10⁻¹⁷ in floating point). */
 const levelCos = (q: number) => (Math.abs(Math.abs(q) - 90) < 1e-12 ? 0 : cosD(q));
 
@@ -3011,5 +3015,70 @@ export const COLLEGE_PHYSICS_MODULES: ModuleDef[] = [
     startWith: ['lam', 'r'],
     // The line with the dashed Gaussian cylinder at r and E arrows straight out on it.
     representation: { kind: 'charges', gauss: { shape: 'line', Q: 'lam', r: 'r', E: 'E' }, k: K },
+  },
+  {
+    // University Physics II → Electric fields and Gauss's law: a large flat sheet of charge; a
+    // pillbox through it gives E × 2A = σA ÷ ε₀, so E = σ ÷ (2ε₀) at every distance. Two opposite
+    // sheets: their fields add between them (σ ÷ ε₀) and cancel outside.
+    id: 'he.physics.university-2#0~plane',
+    title: 'Gauss’s law: the field of a charged sheet',
+    use: 'Use this for “A large flat sheet carries 4 nC/m². Find the field beside it, and between two sheets carrying +4 and −4 nC/m².”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'The sheet is flat and much wider than the distance to it, so E points straight out from it, the same on both sides.',
+      `Gauss’s law on a pillbox through the sheet, faces of area A: E × 2A = σA ÷ ε₀, so E = σ ÷ (2ε₀), with ε₀ = ${EPS} F/m.`,
+      'E does not depend on the distance from the sheet, as long as the sheet still looks endless from there.',
+      'Two sheets with +σ and −σ: their fields add between them, E_b = σ ÷ ε₀, and cancel outside.',
+    ],
+    variables: [
+      V('s', 'σ', 'Charge per area', {
+        unit: 'C/m²',
+        units: ['C/m²'],
+        min: -1e-3,
+        max: 1e-3,
+        scientific: true,
+      }),
+      // Plain numbers (500 N/C, not 5 × 10²): a sheet's field is hundreds to millions of N/C.
+      V('E', 'E', 'Field of one sheet', { unit: 'N/C', min: -1e15, max: 1e15 }),
+      V('Eb', 'E_b', 'Field between two opposite sheets', { unit: 'N/C', min: -1e15, max: 1e15 }),
+    ],
+    ...rels(
+      rel(
+        'E = σ ÷ (2ε₀)',
+        `{E} = {s} ÷ (2 × ${EPS})`,
+        ['E', 's'],
+        (v) => v.E! - v.s! / (2 * EPS0),
+        {
+          E: [
+            (v) => v.s! / (2 * EPS0),
+            `{s} ÷ (2 × ${EPS})`,
+            'Gauss’s law on the pillbox: the flux leaves through both faces, so 2EA = σA ÷ ε₀; a negative σ gives E pointing in.',
+          ],
+          s: [(v) => v.E! * 2 * EPS0, `{E} × 2 × ${EPS}`, 'Undo E = σ ÷ (2ε₀): times 2ε₀.'],
+        },
+      ),
+      rel('E_b = σ ÷ ε₀', `{Eb} = {s} ÷ (${EPS})`, ['Eb', 's'], (v) => v.Eb! - v.s! / EPS0, {
+        Eb: [
+          (v) => v.s! / EPS0,
+          `{s} ÷ (${EPS})`,
+          'Between the +σ and −σ sheets both fields point the same way, from + to −, so they add: twice one sheet’s field.',
+        ],
+        s: [(v) => v.Eb! * EPS0, `{Eb} × ${EPS}`, 'Undo E_b = σ ÷ ε₀: times ε₀.'],
+      }),
+    ),
+    // The plan's sheet: σ = 8.85 nC/m²: E = 8.85 × 10⁻⁹ ÷ (2 × 8.85 × 10⁻¹²) = 10³ ÷ 2 = 500 N/C;
+    // between +σ and −σ sheets, E_b = 8.85 × 10⁻⁹ ÷ 8.85 × 10⁻¹² = 1000 N/C.
+    example: (() => {
+      const s = 8.85e-9;
+      return { s, E: exact(s / (2 * EPS0)), Eb: exact(s / EPS0) };
+    })(),
+    startWith: ['s'],
+    // The sheet edge-on with the dashed pillbox through it and E arrows out of both faces; the
+    // two opposite sheets beside it with E_b between them and none outside.
+    representation: {
+      kind: 'charges',
+      gauss: { shape: 'plane', Q: 's', E: 'E', between: 'Eb' },
+      eps0: EPS0,
+    },
   },
 ];
