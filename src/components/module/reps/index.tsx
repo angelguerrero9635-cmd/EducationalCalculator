@@ -220,6 +220,7 @@ import { ControlVolume } from './ControlVolume';
 import { VelocityProfile } from './VelocityProfile';
 import { ComplexPlaneHe2a } from './ComplexPlaneHe2a';
 import { ConstellationHe4m } from './ConstellationHe4m';
+import { PlaceValueBaseHe4m } from './PlaceValueBaseHe4m';
 import { Bode } from './Bode';
 import { StreamChannelHe } from './StreamChannelHe';
 import { RoadCurve } from './RoadCurve';
@@ -787,6 +788,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'unitCubes':
       return <UnitCubes spec={spec} calc={calc} />;
     case 'placeValueChart':
+      if (spec.base) return <PlaceValueBaseHe4m spec={spec} calc={calc} />; // HC183
       return <PlaceValueChart spec={spec} calc={calc} />;
     case 'factorTree':
       return <FactorTree spec={spec} calc={calc} />;

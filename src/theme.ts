@@ -379,6 +379,9 @@ const light = {
   he4mCar: '#2F6FD0',
   he4mCarGlass: '#BFD8F2',
   he4mLaneLine: '#F4F1E6',
+  /** HC183: a 1 bit's (or nonzero digit's) cell and the hex digits under the groups. */
+  he4mBitOn: '#DCE7FB',
+  he4mHex: '#7C3AED',
   /** HC182: a constellation's points and its dashed decision boundaries. */
   he4mSymbol: '#1D4ED8',
   he4mBoundary: '#C2410C',
@@ -1141,6 +1144,8 @@ const dark: Palette = {
   he4mCar: '#5B8FE0',
   he4mCarGlass: '#1E3550',
   he4mLaneLine: '#D9D6CC',
+  he4mBitOn: '#1F3358',
+  he4mHex: '#C4B5FD',
   he4mSymbol: '#7DB4FF',
   he4mBoundary: '#FB923C',
   he4mCarrierLine: '#EEF0F6',

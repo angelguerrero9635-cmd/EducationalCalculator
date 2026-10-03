@@ -48,7 +48,7 @@ import type { FieldPlotSpec } from './typesHe2g';
 import type { He3bSpec } from './typesHe3b';
 import type { ChainTreeHe4a, ScatterClassesSpec } from './typesHe4a'; // HC139, HC98
 import type { DriftPathsSpec } from './typesHe4e';
-import type { He4mSpec } from './typesHe4m'; // HC174–HC181, group M
+import type { He4mSpec, PlaceValueBaseHe4m } from './typesHe4m'; // HC174–HC183, group M
 import type { CardIcon } from './layouts/types';
 import type { TreeChances, TwoWaySpec, VennChances } from './typesHse';
 import type { IntegerLineHs2a } from './typesHs2a';
@@ -1334,7 +1334,7 @@ export type Representation =
    * digits are seen moving; `compare` draws a second number under it and outlines the first
    * place where the two differ.
    */
-  | {
+  | (PlaceValueBaseHe4m & {
       kind: 'placeValueChart';
       value: string;
       decimals: number;
@@ -1353,7 +1353,7 @@ export type Representation =
        * Numbers to the millions draw as without it. Only with `decimals` 0.
        */
       periods?: boolean;
-    }
+    })
   /** Factor tree of `value` down to its prime factors; `count` is how many primes (with repeats). */
   | {
       kind: 'factorTree';

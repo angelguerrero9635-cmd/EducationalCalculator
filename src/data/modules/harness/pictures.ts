@@ -128,7 +128,7 @@ import {
   he4eGraphIssues,
   he4eNormalIssues,
 } from './picturesHe4e';
-import { constellationIssues, he4mIssues } from './picturesHe4m';
+import { constellationIssues, he4mIssues, placeValueBaseIssues } from './picturesHe4m';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -1092,6 +1092,10 @@ export function repIssues(
       break;
     }
     case 'placeValueChart': {
+      if (rep.base) {
+        out.push(...placeValueBaseIssues(rep, val)); // HC183: bases 2, 8 and 16
+        break;
+      }
       // Adding: the sum's row is the two rows added, place by place (PlaceValueChart.tsx).
       if (rep.plus && rep.total) {
         const [a, b, t] = [rep.value, rep.plus, rep.total].map(val);

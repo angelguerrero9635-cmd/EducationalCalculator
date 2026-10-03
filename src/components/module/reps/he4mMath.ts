@@ -154,3 +154,45 @@ export function constellation(M: number, kind?: 'psk' | 'qam'): ConstellationPoi
     return { i: Math.cos(a), q: Math.sin(a), bits: bitsOf(gray(k), n) };
   });
 }
+
+// ─── HC183: numbers in base 2, 8 and 16 ──────────────────────────────────────────
+
+/** The digits of a whole number x ≥ 0 in a base, most significant first, `width` of them. */
+export function digitsIn(x: number, base: number, width: number): number[] {
+  const out: number[] = [];
+  let v = Math.round(x);
+  for (let i = 0; i < width; i++) {
+    out.unshift(v % base);
+    v = Math.floor(v / base);
+  }
+  return out;
+}
+
+/** The columns a whole number needs in a base (at least 1). */
+export const widthFor = (x: number, base: number) =>
+  Math.max(1, Math.floor(Math.log(Math.max(1, Math.round(x))) / Math.log(base) + 1e-9) + 1);
+
+/** A digit as written: 0–9, then A–F. */
+export const digitText = (d: number) => '0123456789ABCDEF'[d] ?? '?';
+
+/** The two's complement of x in n bits, step by step: the bits, inverted, and plus 1. */
+export function twosSteps(
+  x: number,
+  n: number,
+): { bits: number[]; inverted: number[]; result: number[] } {
+  const bits = digitsIn(x, 2, n);
+  const inverted = bits.map((b) => 1 - b);
+  const result = [...inverted];
+  for (let i = n - 1; i >= 0; i--) {
+    if (result[i] === 0) {
+      result[i] = 1;
+      break;
+    }
+    result[i] = 0;
+  }
+  return { bits, inverted, result };
+}
+
+/** The value of digits in a base. */
+export const valueOf = (digits: number[], base: number) =>
+  digits.reduce((acc, d) => acc * base + d, 0);

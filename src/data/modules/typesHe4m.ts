@@ -9,6 +9,7 @@
  * - HC180 `oneLine` (new kind): a power system's one-line diagram with a fault on a bus.
  * - HC181 `rfSpectrum` (new kind): an AM or FM signal in time and its spectrum.
  * - HC182 `complexPlane` `constellation`: M-PSK or M-QAM points, Gray-coded, with boundaries.
+ * - HC183 `placeValueChart` `base` 2, 8, 16: columns weighted bᵏ, a two's complement row.
  */
 import type { NumOrVar } from './typesGraphs';
 
@@ -229,6 +230,29 @@ export function complexPlaneHe4mVars(r: ComplexPlaneHe4m): string[] {
   const k = r.constellation;
   return k ? ids(k.M, k.symbolRate, k.bitRate, k.rolloff, k.bandwidth, k.efficiency) : [];
 }
+
+// ─── HC183: placeValueChart base 2, 8, 16 ───────────────────────────────────────
+
+/**
+ * HC183 (EC-P17): a whole number's place-value chart in base 2, 8 or 16 (drawn by
+ * `reps/PlaceValueBaseHe4m.tsx` whenever `base` is set; `decimals` is 0). Columns weighted
+ * bᵏ (the weight written over each column when it fits, else the exponent over each group of
+ * four), the digits in them (A–F past 9), and under the chart the weights of the digits added
+ * to the number. In base 2 each group of four bits has its hex digit under it. `width` is the
+ * number of columns (the bit width n in base 2; left out, as many as the number needs).
+ *
+ * `twos` (base 2) adds the two's complement of the number: the bits inverted, then 1 added, the
+ * n-bit pattern of −N with its hex digits; `twos` is the page's value of that pattern read as an
+ * unsigned number, 2ⁿ − N (checked). A "?" value draws empty columns.
+ */
+export interface PlaceValueBaseHe4m {
+  base?: 2 | 8 | 16;
+  width?: NumOrVar;
+  twos?: string;
+}
+
+/** The variable ids HC183's fields name. */
+export const placeValueBaseVars = (r: PlaceValueBaseHe4m): string[] => ids(r.width, r.twos);
 
 // ─── The new kinds together ──────────────────────────────────────────────────────
 

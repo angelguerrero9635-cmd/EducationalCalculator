@@ -13,9 +13,16 @@
  * - HC182 `complexPlane` `constellation`: M points drawn, all apart, each label log₂M bits and
  *   all different; nearest neighbours differ in one bit (Gray); R_b = R_s log₂M,
  *   B = R_s(1 + α), η = R_b ÷ B.
+ * - HC183 `placeValueChart` `base`: Σ digit × weight = N in the columns drawn (N fits them);
+ *   the twos rows invert every bit and add 1, giving 2ⁿ − N, the page's `twos`; −N needs
+ *   N < 2ⁿ⁻¹.
  */
 import {
   constellation,
+  digitsIn,
+  twosSteps,
+  valueOf,
+  widthFor,
   LOS_BOUNDS,
   losOf,
   soilPhaseParts,
@@ -254,5 +261,42 @@ export function constellationIssues(rep: Representation, val: Val): string[] {
     out.push(`constellation: B = ${B}, not R_s(1 + α) = ${Rs * (1 + a)}`);
   if (Rb !== undefined && B !== undefined && eta !== undefined && !close(eta, Rb / B))
     out.push(`constellation: η = ${eta}, not R_b ÷ B = ${Rb / B}`);
+  return out;
+}
+
+/** HC183: the place-value chart in base 2, 8 or 16. */
+export function placeValueBaseIssues(rep: Representation, val: Val): string[] {
+  if (rep.kind !== 'placeValueChart' || !rep.base) return [];
+  const out: string[] = [];
+  const get = (v: string | number | undefined) => (v === undefined ? undefined : val(v));
+  const base = rep.base;
+  if (rep.decimals) out.push(`base ${base} chart with decimal places`);
+  const N = get(rep.value);
+  const wv = get(rep.width);
+  if (wv !== undefined && (wv < 1 || wv > 32 || !Number.isInteger(wv)))
+    out.push(`base ${base} chart: width ${wv} is not 1 to 32 columns`);
+  // A "?" width draws no chart to check.
+  if (N === undefined || (rep.width !== undefined && wv === undefined)) return out;
+  if (N < 0 || !Number.isInteger(N))
+    return [...out, `base ${base} chart of ${N}: not a whole number`];
+  const n = Math.round(wv ?? widthFor(N, base));
+  if (N >= base ** n) return [...out, `base ${base} chart: ${N} needs more than ${n} columns`];
+  const ds = digitsIn(N, base, n);
+  // Σ digit × weight, column by column from the left (weight base^(n − 1 − i)).
+  const sum = ds.reduce((a, d, i) => a + d * base ** (n - 1 - i), 0);
+  if (sum !== N) out.push(`base ${base} chart: the columns add to ${sum}, not ${N}`);
+  if (ds.some((d) => d < 0 || d >= base))
+    out.push(`base ${base} chart: a digit outside 0–${base - 1}`);
+  if (rep.twos !== undefined) {
+    if (base !== 2) out.push('two’s complement rows on a chart not in base 2');
+    const T = get(rep.twos);
+    const st = twosSteps(N, n);
+    if (st.inverted.some((b, i) => b + st.bits[i]! !== 1)) out.push('twos: a bit not inverted');
+    const made = valueOf(st.result, 2);
+    if (N > 0 && made !== 2 ** n - N) out.push(`twos: invert and add 1 gives ${made}, not 2ⁿ − N`);
+    if (T !== undefined && T !== 2 ** n - N)
+      out.push(`twos: the page's ${T} is not 2ⁿ − N = ${2 ** n - N}`);
+    if (N >= 2 ** (n - 1)) out.push(`twos: −${N} does not fit in ${n} signed bits`);
+  }
   return out;
 }

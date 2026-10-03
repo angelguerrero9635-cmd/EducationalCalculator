@@ -121,4 +121,26 @@ export const HE4M_REQUESTS: PictureRequest[] = [
       'g.he-complexPlane-constellation-256',
     ],
   },
+  {
+    ...ask(
+      'HC183',
+      'placeValueChart',
+      'A whole number’s place values in base 2, 8 or 16: columns weighted bᵏ, the digits in them, the hex digit under each group of four bits, the weights added; in base 2 the two’s complement under it (the bits inverted, then 1 added)',
+      [`${E}digital-logic#0`],
+      [
+        'From EC-P17. New option on placeValueChart (typesHe4m.ts PlaceValueBaseHe4m, reps/PlaceValueBaseHe4m.tsx, digits in reps/he4mMath.ts); without `base` the chart is unchanged.',
+        "Fields: { kind: 'placeValueChart', value (N), decimals: 0, base (2 | 8 | 16), width? (columns: the bit width n in base 2; a value id or a number; left out, as many as N needs), twos? (base 2: the page's value of −N's n-bit pattern read unsigned, 2ⁿ − N; adds the invert and + 1 rows) }.",
+        'The weight is written over each column when it fits (else the exponent over each group of four); the nonzero digits’ cells shaded; the caption adds the weights, works the repeated ÷ 2 and the hex grouping, and the two’s complement (or says why −N does not fit, faded). A "?" N draws empty columns; a "?" width draws no two’s complement. The page’s binary and hex boxes use the engine’s base display (HE-E21: `base: { radix: 2, bits: \'n\', group: true }`; hex with `prefix: true`, since the harness reads a hex value that starts with a letter only as 0x…).',
+        "Example: { kind: 'placeValueChart', value: 'N', decimals: 0, base: 2, width: 'n', twos: 'T' } with T = 2ⁿ − N and a constraint N < 2ⁿ⁻¹. Base 16: { kind: 'placeValueChart', value: 'N', decimals: 0, base: 16, width: 4 }.",
+        'Harness (harness/picturesHe4m.ts): N fits the columns and Σ digit × weight = N; the inverted bits and + 1 give 2ⁿ − N, equal to the page’s twos; −N needs N < 2ⁿ⁻¹.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-placeValueChart-base-2',
+      'g.he-placeValueChart-base-2-wide',
+      'g.he-placeValueChart-base-16',
+      'g.he-placeValueChart-base-8',
+    ],
+  },
 ];

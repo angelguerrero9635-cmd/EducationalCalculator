@@ -18,7 +18,7 @@ import { physics8SpecVars } from '../typesPhysics8';
 import { hscSpecVars } from '../typesHsc';
 import { hsbSpecVars } from '../typesHsb';
 import { alleleHe4eVars, driftPathsVars, normalCurveHe4eVars } from '../typesHe4e';
-import { complexPlaneHe4mVars, he4mSpecVars } from '../typesHe4m';
+import { complexPlaneHe4mVars, he4mSpecVars, placeValueBaseVars } from '../typesHe4m';
 import { hs2aSpecVars } from '../typesHs2a';
 import { hs2eSpecVars } from '../typesHs2e';
 import { hs3dSpecVars } from '../typesHs3d';
@@ -310,6 +310,7 @@ function representationVars(r: Representation): string[] {
       return [
         r.value,
         ...[r.highlight, r.from, r.compare, r.plus, r.total].filter((v): v is string => !!v),
+        ...placeValueBaseVars(r), // HC183
       ];
     case 'factorPairs':
       return [r.value, ...[r.first, r.second, r.count].filter((v): v is string => !!v)];

@@ -6,6 +6,7 @@
  * HC180: `oneLine`, the new kind (he.engineering.power-systems#2, ~slg).
  * HC181: `rfSpectrum`, the new kind (he.engineering.communication-systems#0, ~fm).
  * HC182: `complexPlane` `constellation` (he.engineering.communication-systems#1).
+ * HC183: `placeValueChart` `base` 2, 8, 16 (he.engineering.digital-logic#0).
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
@@ -861,6 +862,165 @@ const QAM256 = constellationPage(
   { M: 256, Rs: 5.36, alpha: 0.12 },
 );
 
+// ─── HC183: number systems and two's complement (digital-logic#0) ──────────────
+
+const twosOf = (v: Values) => 2 ** v.n! - v.N!;
+
+const basesPage = (id: string, title: string, use: string, typed: Values) =>
+  page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'N is a whole number; the binary digits are the remainders of repeated ÷ 2.',
+      'Hex groups the bits in fours from the right; each group is one hex digit.',
+      '−N in n bits is 2ⁿ − N: invert every bit, then add 1. It needs N < 2ⁿ⁻¹.',
+    ],
+    variables: [
+      num('N', 'N', 'Number', undefined, 1, 2 ** 32 - 1, { integer: true, step: 1 }),
+      num('n', 'n', 'Width in bits', undefined, 4, 32, {
+        integer: true,
+        allowed: [4, 8, 16, 32],
+      }),
+      out('bin', 'N₂', 'Binary', undefined, {
+        integer: true,
+        base: { radix: 2, bits: 'n', group: true },
+      }),
+      out('hex', 'N₁₆', 'Hexadecimal', undefined, {
+        integer: true,
+        base: { radix: 16, prefix: true },
+      }),
+      out('T', 'T', 'Pattern of −N (two’s complement)', undefined, {
+        integer: true,
+        base: { radix: 2, bits: 'n', group: true },
+      }),
+    ],
+    rules: [
+      {
+        relation: {
+          id: 'N fits',
+          constraint: true,
+          display: '{N} < 2^({n} − 1)',
+          vars: ['N', 'n'],
+          residual: (v: Values) => (v.N! < 2 ** (v.n! - 1) ? 0 : 1),
+          solve: {},
+        },
+        steps: {},
+      },
+      derive(
+        'bin',
+        'bin',
+        ['N'],
+        '{bin} = {N}',
+        (v) => v.N!,
+        '{N}',
+        'The binary digits are the remainders of repeated ÷ 2, read from the last.',
+      ),
+      derive(
+        'hex',
+        'hex',
+        ['N'],
+        '{hex} = {N}',
+        (v) => v.N!,
+        '{N}',
+        'Each group of four bits, from the right, is one hex digit (0–9, then A–F).',
+      ),
+      derive(
+        'T',
+        'T',
+        ['n', 'N'],
+        '{T} = 2^{n} − {N}',
+        twosOf,
+        '2^{n} − {N}',
+        'Inverting every bit gives 2ⁿ − 1 − N; adding 1 gives 2ⁿ − N.',
+      ),
+    ],
+    example: example(typed, ['bin', (v) => v.N!], ['hex', (v) => v.N!], ['T', twosOf]),
+    startWith: ['N', 'n'],
+    representation: {
+      kind: 'placeValueChart',
+      value: 'N',
+      decimals: 0,
+      base: 2,
+      width: 'n',
+      twos: 'T',
+    },
+  });
+
+const BASES = basesPage(
+  'g.he-placeValueChart-base-2',
+  'Binary, hex and two’s complement',
+  'Use this for “Write 45 in binary and hex, and −45 in 8-bit two’s complement.”',
+  { N: 45, n: 8 },
+);
+
+/** The widest: 32 bits, a number past a million. */
+const BASES_WIDE = basesPage(
+  'g.he-placeValueChart-base-2-wide',
+  'A 32-bit number and its negative',
+  'Use this for “Write 3,000,000 as a 32-bit pattern, and −3,000,000 in two’s complement.”',
+  { N: 3000000, n: 32 },
+);
+
+const BASE16 = page({
+  id: 'g.he-placeValueChart-base-16',
+  title: 'A number in hexadecimal place values',
+  use: 'Use this for “What is 2D₁₆ in decimal?” or “Write 4011 in hex.”',
+  assumptions: [
+    'Each hex column is 16 times the one to its right: 1, 16, 256, 4096.',
+    'Digits 10 to 15 are written A to F.',
+  ],
+  variables: [
+    num('N', 'N', 'Number', undefined, 0, 65535, { integer: true, step: 1 }),
+    out('hex', 'N₁₆', 'Hexadecimal', undefined, {
+      integer: true,
+      base: { radix: 16, prefix: true },
+    }),
+  ],
+  rules: [
+    derive(
+      'hex',
+      'hex',
+      ['N'],
+      '{hex} = {N}',
+      (v) => v.N!,
+      '{N}',
+      'Divide by 16 and keep the remainders, read from the last; 10 to 15 are A to F.',
+    ),
+  ],
+  example: { N: 4011, hex: 4011 },
+  startWith: ['N'],
+  representation: { kind: 'placeValueChart', value: 'N', decimals: 0, base: 16, width: 4 },
+});
+
+const BASE8 = page({
+  id: 'g.he-placeValueChart-base-8',
+  title: 'A number in octal place values',
+  use: 'Use this for “Write 45 in octal.”',
+  assumptions: [
+    'Each octal column is 8 times the one to its right: 1, 8, 64, 512.',
+    'Each octal digit is three bits.',
+  ],
+  variables: [
+    num('N', 'N', 'Number', undefined, 0, 4095, { integer: true, step: 1 }),
+    out('oct', 'N₈', 'Octal', undefined, { integer: true, base: { radix: 8 } }),
+  ],
+  rules: [
+    derive(
+      'oct',
+      'oct',
+      ['N'],
+      '{oct} = {N}',
+      (v) => v.N!,
+      '{N}',
+      'Divide by 8 and keep the remainders, read from the last.',
+    ),
+  ],
+  example: { N: 45, oct: 45 },
+  startWith: ['N'],
+  representation: { kind: 'placeValueChart', value: 'N', decimals: 0, base: 8, width: 4 },
+});
+
 export const HE4M_GALLERY_MODULES: ModuleDef[] = [
   PHASES,
   PHASES_SATURATED,
@@ -877,6 +1037,10 @@ export const HE4M_GALLERY_MODULES: ModuleDef[] = [
   QAM16,
   PSK8,
   QAM256,
+  BASES,
+  BASES_WIDE,
+  BASE16,
+  BASE8,
 ];
 
 export const HE4M_GALLERY_LAYOUTS: LayoutDef[] = [];
