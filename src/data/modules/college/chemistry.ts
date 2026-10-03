@@ -9,7 +9,7 @@ import { formatNumber } from '@/engine/format';
 
 import type { ModuleDef } from '../types';
 
-import { derive, rel, rels, rule, V } from './shared';
+import { derive, exact, rel, rels, rule, V } from './shared';
 
 // The constants as the steps print them (src/engine/constants.ts).
 const H = valueOf('h'); // 6.626 × 10⁻³⁴ J·s
@@ -354,5 +354,68 @@ export const COLLEGE_CHEMISTRY_MODULES: ModuleDef[] = [
     startWith: ['m', 'x'],
     unitSystems: ['metric'],
     representation: { kind: 'none' },
+  },
+  {
+    // Slater's rules for an s or p electron: the shielding S, then Z_eff = Z − S.
+    id: 'he.chemistry.gen-chem-1#0~zeff',
+    title: 'Effective nuclear charge (Slater’s rules)',
+    use: 'Use this for “Use Slater’s rules to find the effective nuclear charge on a 2p electron of nitrogen.”',
+    assumptions: [
+      'Slater’s rules for one s or p electron with n ≥ 2: each other electron in its (ns, np) group shields 0.35, each in shell n − 1 shields 0.85, each deeper one 1.00.',
+      'Shell n − 1 counts all its s, p and d electrons. A 1s electron’s partner shields 0.30, and d and f electrons follow other rules.',
+      'A higher Z_eff pulls the electron closer and holds it harder, so radii shrink and ionization energies rise across a period.',
+    ],
+    variables: [
+      V('Z', 'Z', 'Atomic number', { min: 3, max: 36, step: 1, integer: true }),
+      V('a', 'a', 'Other electrons in its (ns, np) group', {
+        min: 0,
+        max: 7,
+        step: 1,
+        integer: true,
+      }),
+      V('b', 'b', 'Electrons in shell n − 1', { min: 0, max: 18, step: 1, integer: true }),
+      V('c', 'c', 'Electrons in deeper shells', { min: 0, max: 28, step: 1, integer: true }),
+      V('S', 'S', 'Shielding constant', { min: 0, max: 35, step: 0.01 }),
+      V('Zf', 'Z_eff', 'Effective nuclear charge', { min: 0.5, max: 36, step: 0.01 }),
+    ],
+    ...rels(
+      rule(
+        'a + b + c < Z',
+        'The other electrons {a} + {b} + {c} are fewer than the protons {Z}',
+        ['a', 'b', 'c', 'Z'],
+        (v) => v.a! + v.b! + v.c! < v.Z!,
+        'The shielding electrons are the atom’s others: a + b + c is at most Z − 1.',
+      ),
+      rel(
+        'S = 0.35a + 0.85b + 1.00c',
+        '{S} = 0.35 × {a} + 0.85 × {b} + 1.00 × {c}',
+        ['S', 'a', 'b', 'c'],
+        (v) => v.S! - (0.35 * v.a! + 0.85 * v.b! + v.c!),
+        {
+          S: [
+            (v) => exact(0.35 * v.a! + 0.85 * v.b! + v.c!),
+            '0.35 × {a} + 0.85 × {b} + 1.00 × {c}',
+            'Slater: weight each group’s electrons by how well they shield, then add.',
+          ],
+        },
+      ),
+      rel('Z_eff = Z − S', '{Zf} = {Z} − {S}', ['Zf', 'Z', 'S'], (v) => v.Zf! - (v.Z! - v.S!), {
+        Zf: [
+          (v) => exact(v.Z! - v.S!),
+          '{Z} − {S}',
+          'The electron feels the protons less the charge the others screen off.',
+        ],
+        S: [
+          (v) => exact(v.Z! - v.Zf!),
+          '{Z} − {Zf}',
+          'The shielding is what the protons lose: Z − Z_eff.',
+        ],
+        Z: [(v) => exact(v.Zf! + v.S!), '{Zf} + {S}', 'Add the shielding back to Z_eff.'],
+      }),
+    ),
+    example: { Z: 7, a: 4, b: 2, c: 0, S: 3.1, Zf: 3.9 },
+    startWith: ['Z', 'a', 'b', 'c'],
+    sliders: true,
+    representation: { kind: 'orbitalDiagram', mode: 'boxes', element: 'Z' },
   },
 ];
