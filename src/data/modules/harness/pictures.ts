@@ -128,7 +128,12 @@ import {
   he4eGraphIssues,
   he4eNormalIssues,
 } from './picturesHe4e';
-import { cellRatioIssues, divisionContentIssues, pedigreeIssues } from './picturesHe4i';
+import {
+  cellRatioIssues,
+  divisionContentIssues,
+  linkageMapIssues,
+  pedigreeIssues,
+} from './picturesHe4i';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -2566,6 +2571,9 @@ export function repIssues(
       break;
     case 'pedigree':
       out.push(...pedigreeIssues(rep, val)); // HC144
+      break;
+    case 'linkageMap':
+      out.push(...linkageMapIssues(rep, val)); // HC145
       break;
     case 'solidOfRevolution':
       out.push(...solidIssues(rep, val)); // HC65

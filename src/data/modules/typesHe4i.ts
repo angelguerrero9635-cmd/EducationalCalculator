@@ -7,6 +7,7 @@
  * - HC141 `curvedSolid` `ratio`: a cell as a sphere, A, V and A ÷ V, and a bigger cell beside it.
  * - HC142 `cellDivision` `content`: chromosomes, chromatids and DNA in c by stage.
  * - HC144 `pedigree`: a family in the standard symbols, as a calculator picture and a card.
+ * - HC145 `linkageMap`: loci on a chromosome to scale in cM, homologs with their crossovers.
  */
 import type { PedigreePerson } from './layouts/types';
 import type { NumOrVar } from './typesGraphs';
@@ -110,3 +111,42 @@ export interface PedigreeCard {
 
 export const PEDIGREE_CARD_W = 112;
 export const PEDIGREE_CARD_H = 76;
+
+// ─── HC145: linkageMap (new kind) ───────────────────────────────────────────────
+
+/**
+ * HC145 (B-P8): a genetic map. A chromosome bar with 2 or 3 `loci` (names, "A", "B", "C") at
+ * `distances` (cM between neighbours) to scale, a cM ruler under it; below, a pair of homologs
+ * (one parent's alleles A B C in red, the other's a b c in blue) with the recombinant strands
+ * crossed: one crossover between the first two loci, or with `doubles` two crossovers either
+ * side of the middle locus (the double crossover that swaps only the middle gene).
+ * `recombinant` is the page's recombination frequency between the first two loci in % (checked:
+ * 1% recombinants is 1 cM). With three loci, `offspring` (N), `expected` (d₁d₂N ÷ 10⁴ double
+ * crossovers), `doubles` (observed), `coincidence` (observed ÷ expected) and `interference`
+ * (1 − coincidence) are worked in the caption and checked. A distance over 50 cM draws faded:
+ * genes that far apart assort independently. A "?" distance draws no loci.
+ */
+export interface LinkageMapSpec {
+  kind: 'linkageMap';
+  loci: string[];
+  distances: NumOrVar[];
+  recombinant?: NumOrVar;
+  offspring?: NumOrVar;
+  expected?: string;
+  doubles?: NumOrVar;
+  coincidence?: string;
+  interference?: string;
+}
+
+/** The variable ids a linkageMap names (for the module tests). */
+export function linkageMapVars(r: LinkageMapSpec): string[] {
+  return ids(
+    ...r.distances,
+    r.recombinant,
+    r.offspring,
+    r.expected,
+    r.doubles,
+    r.coincidence,
+    r.interference,
+  );
+}

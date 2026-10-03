@@ -5,7 +5,7 @@
  * is the parents' × 1/4; a pedigree card is possible under its bin's mode and not another's. Called from `repIssues` in
  * `pictures.ts` (and the layout checks from `layoutFigures.ts`). Test-only.
  */
-import { cellRatio } from '@/components/module/reps/he4iMath';
+import { cellRatio, crossoverSpots } from '@/components/module/reps/he4iMath';
 import { modeOfBin, modePossible, type Mode } from '@/components/module/reps/pedigreeHe4iMath';
 
 import { divisionStages } from '../typesHe4i';
@@ -164,6 +164,54 @@ export function pedigreeIssues(rep: Representation, val: Val): string[] {
           `pedigree: the child's chance ${P}, the parents' ${ps[0]} × ${ps[1]} × 1/4 = ${want}`,
         );
     }
+  }
+  return out;
+}
+
+/**
+ * HC145 on `linkageMap`: 2 or 3 loci with one distance between each pair of neighbours, each
+ * positive and at most 50 cM; the loci drawn in order at their cumulative distances and the
+ * crossovers between them; RF (%) equals the first distance; with three loci the expected double
+ * crossovers d₁d₂N ÷ 10⁴, c.o.c. = observed ÷ expected and I = 1 − c.o.c.
+ */
+export function linkageMapIssues(rep: Representation, val: Val): string[] {
+  if (rep.kind !== 'linkageMap') return [];
+  const out: string[] = [];
+  const n = rep.loci.length;
+  if (n < 2 || n > 3) out.push(`linkageMap: ${n} loci (2 or 3 are drawn)`);
+  if (rep.distances.length !== n - 1)
+    out.push(`linkageMap: ${rep.distances.length} distances for ${n} loci`);
+  if (new Set(rep.loci.map((x) => x.toLowerCase())).size !== n)
+    out.push('linkageMap: two loci share a letter');
+  const d = rep.distances.map((x) => val(x));
+  d.forEach((x, i) => {
+    if (x !== undefined && !(x > 0)) out.push(`linkageMap: distance ${i + 1} is ${x}`);
+    if (x !== undefined && x > 50) out.push(`linkageMap: ${x} cM between neighbours (RF ≤ 50)`);
+  });
+  if (d.some((x) => x === undefined)) return out;
+  const pos = (d as number[]).reduce<number[]>((a, x) => [...a, a[a.length - 1]! + x], [0]);
+  // The drawn spacing: each crossover lies between the loci it separates.
+  const spots = crossoverSpots(pos, rep.doubles !== undefined && n === 3);
+  spots.forEach((s, i) => {
+    if (!(s > pos[i]! && s < pos[i + 1]!))
+      out.push(`linkageMap: crossover ${i + 1} off its interval`);
+  });
+  const near = (a: number, b: number) => Math.abs(a - b) <= 1e-6 * Math.max(1, Math.abs(b));
+  const rf = rep.recombinant === undefined ? undefined : val(rep.recombinant);
+  if (rf !== undefined && !near(rf, d[0]!)) out.push(`linkageMap: RF ${rf}% drawn as ${d[0]} cM`);
+  if (n === 3) {
+    const N = rep.offspring === undefined ? undefined : val(rep.offspring);
+    const exp = N === undefined ? undefined : (d[0]! * d[1]! * N) / 1e4;
+    const e = rep.expected ? val(rep.expected) : undefined;
+    if (e !== undefined && exp !== undefined && !near(e, exp))
+      out.push(`linkageMap: expected doubles ${e}, d₁d₂N ÷ 10⁴ = ${exp}`);
+    const o = rep.doubles === undefined ? undefined : val(rep.doubles);
+    const coc = rep.coincidence ? val(rep.coincidence) : undefined;
+    if (coc !== undefined && o !== undefined && exp !== undefined && !near(coc, o / exp))
+      out.push(`linkageMap: c.o.c. ${coc}, observed ÷ expected = ${o / exp}`);
+    const I = rep.interference ? val(rep.interference) : undefined;
+    if (I !== undefined && coc !== undefined && !near(I, 1 - coc))
+      out.push(`linkageMap: I ${I}, 1 − c.o.c. = ${1 - coc}`);
   }
   return out;
 }

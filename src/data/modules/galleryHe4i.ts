@@ -5,6 +5,7 @@
  * HC142: `cellDivision` `content` (he.biology.principles-1#3).
  * HC143: card icons, evidence for evolution (he.biology.principles-2#0).
  * HC144: `pedigree`, the calculator picture and the card (he.biology.genetics#0, ~modes).
+ * HC145: `linkageMap`, the new kind (he.biology.genetics#1, ~three-point).
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
@@ -548,6 +549,145 @@ const MODES_SORT: LayoutDef = {
   ],
 };
 
+// ─── HC145: linkage and mapping (genetics#1, ~three-point) ─────────────────────────
+
+const twoPointPage = (id: string, title: string, use: string, typed: Values, extra: string) =>
+  page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'A test cross: every offspring shows which alleles came from the heterozygous parent.',
+      'Recombinant offspring come from a crossover between the genes; 1% recombinants is 1 cM.',
+      extra,
+    ],
+    variables: [
+      num('P', 'P', 'Parental offspring', undefined, 1, 1e6, { integer: true, step: 1 }),
+      num('R', 'R', 'Recombinant offspring', undefined, 1, 1e6, { integer: true, step: 1 }),
+      out('N', 'N', 'Offspring', undefined, { integer: true }),
+      out('rf', 'RF', 'Recombination frequency', '%', { min: 0, max: 50 }),
+      out('d', 'd', 'Map distance', 'cM'),
+    ],
+    rules: [
+      rule('total', '{N} = {P} + {R}', ['N', 'P', 'R'], (v) => v.N! - v.P! - v.R!, {
+        N: [(v) => v.P! + v.R!, '{P} + {R}', 'Every offspring is parental or recombinant.'],
+        P: [(v) => v.N! - v.R!, '{N} − {R}', 'The offspring that are not recombinant.'],
+        R: [(v) => v.N! - v.P!, '{N} − {P}', 'The offspring that are not parental.'],
+      }),
+      rule('rf', '{rf} = 100 × {R} ÷ {N}', ['rf', 'R', 'N'], (v) => v.rf! - (100 * v.R!) / v.N!, {
+        rf: [
+          (v) => fin((100 * v.R!) / v.N!),
+          '100 × {R} ÷ {N}',
+          'The share of offspring that are recombinant, as a percent.',
+        ],
+      }),
+      rule('map', '{d} = {rf}', ['d', 'rf'], (v) => v.d! - v.rf!, {
+        d: [(v) => v.rf!, '{rf}', 'One percent recombinants is one centimorgan.'],
+        rf: [(v) => v.d!, '{d}', 'One centimorgan is one percent recombinants.'],
+      }),
+    ],
+    example: example(
+      typed,
+      ['N', (v) => v.P! + v.R!],
+      ['rf', (v) => (100 * v.R!) / v.N!],
+      ['d', (v) => v.rf!],
+    ),
+    startWith: ['P', 'R'],
+    representation: { kind: 'linkageMap', loci: ['A', 'B'], distances: ['d'], recombinant: 'rf' },
+  });
+
+const LINKAGE_TWO = twoPointPage(
+  'g.he-linkageMap-two',
+  'Map distance from a test cross',
+  'Use this for “A test cross gives 418 + 422 parental and 78 + 82 recombinant offspring. How far apart are the genes?”',
+  { P: 840, R: 160 },
+  'The two parental classes are added, and so are the two recombinant ones.',
+);
+
+/** Near the limit: 48% recombinants, almost as if the genes assorted independently. */
+const LINKAGE_LOOSE = twoPointPage(
+  'g.he-linkageMap-loose',
+  'Genes far apart on a chromosome',
+  'Use this for “520 parental and 480 recombinant offspring: are the genes linked, and how far apart are they?”',
+  { P: 520, R: 480 },
+  'Past 50 cM a test cross can’t tell linked genes from unlinked ones: RF stops at 50%.',
+);
+
+const expOf = (v: Values) => (v.d1! * v.d2! * v.N!) / 1e4;
+
+const LINKAGE_THREE = page({
+  id: 'g.he-linkageMap-three',
+  title: 'Three-point cross: interference',
+  use: 'Use this for “Genes 12 cM and 20 cM apart give 15 double crossovers in 1000. What is the interference?”',
+  assumptions: [
+    'The middle gene is the one that switches in the double crossovers.',
+    'With no interference, crossovers in the two intervals are independent: expected doubles = (d₁ ÷ 100)(d₂ ÷ 100)N.',
+    'Interference I = 1 − c.o.c.: one crossover makes a second one nearby less likely.',
+  ],
+  variables: [
+    num('d1', 'd₁', 'Distance A–B', 'cM', 0.1, 50, { step: 0.1 }),
+    num('d2', 'd₂', 'Distance B–C', 'cM', 0.1, 50, { step: 0.1 }),
+    out('dAC', 'd_AC', 'Distance A–C', 'cM'),
+    num('N', 'N', 'Offspring', undefined, 1, 1e6, { integer: true, step: 1 }),
+    out('E', 'E', 'Expected double crossovers'),
+    num('O', 'O', 'Observed double crossovers', undefined, 0, 1e6, { integer: true, step: 1 }),
+    out('coc', 'c.o.c.', 'Coefficient of coincidence'),
+    out('I', 'I', 'Interference'),
+  ],
+  rules: [
+    rule('ac', '{dAC} = {d1} + {d2}', ['dAC', 'd1', 'd2'], (v) => v.dAC! - v.d1! - v.d2!, {
+      dAC: [(v) => v.d1! + v.d2!, '{d1} + {d2}', 'Map distances add along the chromosome.'],
+    }),
+    rule(
+      'expected',
+      '{E} = {d1} ÷ 100 × {d2} ÷ 100 × {N}',
+      ['E', 'd1', 'd2', 'N'],
+      (v) => v.E! - expOf(v),
+      {
+        E: [
+          expOf,
+          '{d1} ÷ 100 × {d2} ÷ 100 × {N}',
+          'Two independent crossovers: multiply the two chances, then the offspring.',
+        ],
+      },
+    ),
+    rule('coc', '{coc} = {O} ÷ {E}', ['coc', 'O', 'E'], (v) => v.coc! - v.O! / v.E!, {
+      coc: [
+        (v) => fin(v.O! / v.E!),
+        '{O} ÷ {E}',
+        'How many of the expected double crossovers turned up.',
+      ],
+      O: [(v) => v.coc! * v.E!, '{coc} × {E}', 'The coincidence times the doubles expected.'],
+    }),
+    rule('interference', '{I} = 1 − {coc}', ['I', 'coc'], (v) => v.I! - (1 - v.coc!), {
+      I: [
+        (v) => 1 - v.coc!,
+        '1 − {coc}',
+        'The share of expected doubles that a first crossover prevented.',
+      ],
+      coc: [(v) => 1 - v.I!, '1 − {I}', 'Turn I = 1 − c.o.c. round.'],
+    }),
+  ],
+  example: example(
+    { d1: 12, d2: 20, N: 1000, O: 15 },
+    ['dAC', (v) => v.d1! + v.d2!],
+    ['E', expOf],
+    ['coc', (v) => v.O! / v.E!],
+    ['I', (v) => 1 - v.coc!],
+  ),
+  startWith: ['d1', 'd2', 'N', 'O'],
+  representation: {
+    kind: 'linkageMap',
+    loci: ['A', 'B', 'C'],
+    distances: ['d1', 'd2'],
+    offspring: 'N',
+    expected: 'E',
+    doubles: 'O',
+    coincidence: 'coc',
+    interference: 'I',
+  },
+});
+
 export const HE4I_GALLERY_MODULES: ModuleDef[] = [
   CELL_RATIO,
   CELL_RATIO_SMALL,
@@ -555,6 +695,9 @@ export const HE4I_GALLERY_MODULES: ModuleDef[] = [
   DIVISION_CONTENT_SMALL,
   PEDIGREE_RISK,
   PEDIGREE_RISK_BOTH,
+  LINKAGE_TWO,
+  LINKAGE_LOOSE,
+  LINKAGE_THREE,
 ];
 
 export const HE4I_GALLERY_LAYOUTS: LayoutDef[] = [SORT_EVIDENCE, MODES_SORT];

@@ -48,7 +48,7 @@ import type { FieldPlotSpec } from './typesHe2g';
 import type { He3bSpec } from './typesHe3b';
 import type { ChainTreeHe4a, ScatterClassesSpec } from './typesHe4a'; // HC139, HC98
 import type { DriftPathsSpec } from './typesHe4e';
-import type { CurvedSolidHe4i, PedigreeSpec } from './typesHe4i'; // HC141–HC149, group I
+import type { CurvedSolidHe4i, LinkageMapSpec, PedigreeSpec } from './typesHe4i'; // HC141–HC149, group I
 import type { CardIcon } from './layouts/types';
 import type { TreeChances, TwoWaySpec, VennChances } from './typesHse';
 import type { IntegerLineHs2a } from './typesHs2a';
@@ -1223,8 +1223,9 @@ export type Representation =
   | He3bSpec
   /** College round 4, group E (HC153): genetic drift's paths (`typesHe4e.ts`). */
   | DriftPathsSpec
-  /** College round 4, group I (HC144): a pedigree with chances (`typesHe4i.ts`). */
+  /** College round 4, group I (HC144, HC145): a pedigree; a genetic map (`typesHe4i.ts`). */
   | PedigreeSpec
+  | LinkageMapSpec
   /** Grades 9–12 round 2 biology, group H2E (specs in `typesHs2e.ts`). */
   | Hs2eSpec
   | Hs3dSpec

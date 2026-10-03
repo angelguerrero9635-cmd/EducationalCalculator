@@ -13,3 +13,15 @@ export const cellRatio = (r: number) => ({
   volume: (4 / 3) * Math.PI * r ** 3,
   ratio: 3 / r,
 });
+
+/** HC145: where the crossovers go (cM): between the first two loci, or either side of the middle. */
+export const crossoverSpots = (pos: number[], doubles: boolean) =>
+  doubles && pos.length >= 3
+    ? [(pos[0]! + pos[1]!) / 2, (pos[1]! + pos[2]!) / 2]
+    : pos.length >= 2
+      ? [(pos[0]! + pos[1]!) / 2]
+      : [];
+
+/** HC145: the cM ruler's step: at most 8 steps along the map. */
+export const mapStep = (total: number) =>
+  [1, 2, 5, 10, 20, 25, 50, 100].find((s) => total / s <= 8) ?? 100;

@@ -90,4 +90,21 @@ export const HE4I_REQUESTS: PictureRequest[] = [
     status: 'drawn',
     gallery: ['g.he-pedigree-chance', 'g.he-pedigree-chance-both', 'g.he-pedigree-modes'],
   },
+  {
+    ...ask(
+      'HC145',
+      'linkageMap',
+      'A genetic map: a chromosome bar with 2 or 3 genes at their distances in cM to scale over a cM ruler, and under it two homologs crossed where the recombinants come from (once between two genes, or twice either side of the middle gene for a double crossover), each strand changing colour so the recombinant alleles read off',
+      [`${B}genetics#1`, `${B}genetics#1~three-point`],
+      [
+        'From B-P8. New kind (typesHe4i.ts LinkageMapSpec, reps/LinkageMap.tsx; crossovers and the ruler step in reps/he4iMath.ts).',
+        "Fields: { kind: 'linkageMap', loci: ['A', 'B'] or ['A', 'B', 'C'], distances: [cM ids or numbers, one per neighbouring pair], recombinant? (RF in %, the first pair), offspring? (N), expected?, doubles? (observed double crossovers; draws the double crossover), coincidence?, interference? }.",
+        'Alleles are written on the strands, one parent’s capitals in red and the other’s lower case in blue. Distances over 50 cM draw faded with “RF stops at 50%”. A "?" distance draws no genes. No handles; no sliders.',
+        "Examples: main { kind: 'linkageMap', loci: ['A', 'B'], distances: ['d'], recombinant: 'rf' } (840 parental + 160 recombinant → 16 cM); ~three-point { kind: 'linkageMap', loci: ['A', 'B', 'C'], distances: ['d1', 'd2'], offspring: 'N', expected: 'E', doubles: 'O', coincidence: 'coc', interference: 'I' } (12 and 20 cM, N = 1000 → 24 expected, 15 observed, c.o.c. 0.625, I = 0.375).",
+        'Harness (harness/picturesHe4i.ts): 2 or 3 loci, one distance per pair, each above 0 and at most 50 cM (RF ≤ 50); each crossover drawn inside its interval; RF = the first distance; expected = d₁d₂N ÷ 10⁴, c.o.c. = observed ÷ expected, I = 1 − c.o.c.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: ['g.he-linkageMap-two', 'g.he-linkageMap-loose', 'g.he-linkageMap-three'],
+  },
 ];
