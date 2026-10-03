@@ -2085,4 +2085,86 @@ export const COLLEGE_PHYSICS_MODULES: ModuleDef[] = [
       fixed: true,
     },
   },
+  {
+    // University Physics I → Rotation and torque: a uniform rod turned about an axis parallel
+    // to the one through its center, a distance d from it.
+    id: 'he.physics.university-1#4~parallel-axis',
+    title: 'The parallel-axis theorem for a rod',
+    use: 'Use this for “A 2 kg rod 1.5 m long turns about an axis 0.5 m from its center. Find its moment of inertia about that axis.”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'The rod is thin and uniform, so about its center I_cm = ML² ÷ 12.',
+      'The new axis is parallel to the one through the center, a distance d from it: I = I_cm + Md².',
+      'd = L ÷ 2 puts the axis at one end, where I = ML² ÷ 3; the axis may also lie past the rod.',
+    ],
+    variables: [
+      V('M', 'M', 'Rod mass', { unit: 'kg', min: 0.001, max: 1e4, step: 0.1 }),
+      V('L', 'L', 'Rod length', { unit: 'm', min: 0.001, max: 100, step: 0.01 }),
+      V('d', 'd', 'Distance between the axes', { unit: 'm', min: 0, max: 100, step: 0.01 }),
+      V('Icm', 'I_cm', 'Moment of inertia about the center', fixed('kg·m²', 0, 1e8, 0.001, true)),
+      V('I', 'I', 'Moment of inertia about the new axis', fixed('kg·m²', 0, 1e8, 0.001, true)),
+    ],
+    ...rels(
+      rel(
+        'I_cm = ML² ÷ 12',
+        '{Icm} = {M} × {L}² ÷ 12',
+        ['Icm', 'M', 'L'],
+        (v) => 12 * v.Icm! - v.M! * v.L! ** 2,
+        {
+          Icm: [
+            (v) => exact((v.M! * v.L! ** 2) / 12),
+            '{M} × {L}² ÷ 12',
+            'A uniform rod about its center: the mass times the length squared, over 12.',
+          ],
+          M: [
+            (v) => div(12 * v.Icm!, v.L! ** 2),
+            '12 × {Icm} ÷ {L}²',
+            'Undo I_cm = ML² ÷ 12: multiply by 12 and divide by L².',
+          ],
+          L: [
+            (v) => (v.M! > 0 ? exact(Math.sqrt((12 * v.Icm!) / v.M!)) : undefined),
+            '√(12 × {Icm} ÷ {M})',
+            'Undo I_cm = ML² ÷ 12: multiply by 12, divide by M and take the square root.',
+          ],
+        },
+      ),
+      rel(
+        'I = I_cm + Md²',
+        '{I} = {Icm} + {M} × {d}²',
+        ['I', 'Icm', 'M', 'd'],
+        (v) => v.I! - v.Icm! - v.M! * v.d! ** 2,
+        {
+          I: [
+            (v) => exact(v.Icm! + v.M! * v.d! ** 2),
+            '{Icm} + {M} × {d}²',
+            'The parallel-axis theorem: add the mass times the shift squared to the center’s I.',
+          ],
+          Icm: [
+            (v) => positive(exact(v.I! - v.M! * v.d! ** 2)),
+            '{I} − {M} × {d}²',
+            'Undo I = I_cm + Md²: take Md² off the new I.',
+          ],
+          d: [
+            (v) =>
+              v.M! > 0 && v.I! >= v.Icm! ? exact(Math.sqrt((v.I! - v.Icm!) / v.M!)) : undefined,
+            '√(({I} − {Icm}) ÷ {M})',
+            'Undo I = I_cm + Md²: what the shift adds, divided by M, then the square root.',
+          ],
+        },
+      ),
+    ),
+    // The plan's rod turned about its end: 1.2 kg, 0.9 m, d = 0.45 m →
+    // I_cm = 1.2 × 0.81 ÷ 12 = 0.081, I = 0.081 + 1.2 × 0.2025 = 0.081 + 0.243 = 0.324 kg·m²
+    // (= ML² ÷ 3, four times I_cm).
+    example: { M: 1.2, L: 0.9, d: 0.45, Icm: exact(0.081), I: exact(0.324) },
+    startWith: ['M', 'L', 'd'],
+    // The rod to scale with its center axis dashed and the turning axis lit d away; under it
+    // the bar I = I_cm + Md², the two parts in proportion.
+    representation: {
+      kind: 'rotor',
+      mass: 'M',
+      rod: { length: 'L', d: 'd', icm: 'Icm', inertia: 'I' },
+      fixed: true,
+    },
+  },
 ];
