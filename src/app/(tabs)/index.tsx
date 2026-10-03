@@ -2,8 +2,18 @@ import { router } from 'expo-router';
 import { useMemo } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import { Card, Icon, ListRow, Page, SectionHeader, ShowOn, Tile, TileGrid } from '@/components';
-import { ExploreCollege, ExploreK12, HomeHero } from '@/components/art';
+import {
+  Card,
+  Icon,
+  ListRow,
+  Logo,
+  Page,
+  SectionHeader,
+  ShowOn,
+  Tile,
+  TileGrid,
+} from '@/components';
+import { ExploreCollege, ExploreK12 } from '@/components/art';
 import { PageMeta } from '@/components/PageMeta';
 import { Text } from '@/components/Text';
 import { SITE_NAME, SITE_SLOGAN } from '@/config/site';
@@ -15,13 +25,13 @@ import { radius, space, type, usePalette } from '@/theme';
 /** Recently viewed items shown on Home (the full list is kept in app state). */
 const RECENT_LIMIT = 5;
 
-/** The top of Home: the slogan, what the app holds, and a search field that opens Search. */
+/** The top of Home: the seal, big, then the slogan, what the app holds, and a search field that opens Search. */
 function Hero() {
   const c = usePalette();
   return (
     <View style={[styles.hero, { backgroundColor: c.accentSoft }]}>
       <ShowOn size="narrow" style={styles.heroBand}>
-        <HomeHero band width={300} />
+        <Logo size={180} />
       </ShowOn>
       <View style={styles.heroText}>
         <Text accessibilityRole="header" style={[type.display, { color: c.text }]}>
@@ -46,7 +56,7 @@ function Hero() {
         </Pressable>
       </View>
       <ShowOn size="wide" style={styles.heroArt}>
-        <HomeHero width={420} />
+        <Logo size={260} />
       </ShowOn>
     </View>
   );
