@@ -249,6 +249,21 @@ const lineAnti = (v: Values) => antiForm({ p: 0, q: v.m!, r: v.c! }).replace(/x/
 /** F(x) = ∫ from a to x of (mt + c) dt = m(x² − a²) ÷ 2 + c(x − a). */
 const areaSoFar = (v: Values) => (v.m! * (v.x! ** 2 - v.a! ** 2)) / 2 + v.c! * (v.x! - v.a!);
 
+/** f(x) = px² as the main page's quadratic (q = r = 0), for its antiderivative helpers. */
+const squareOnly = (v: Values): Values => ({ p: v.p!, q: 0, r: 0 });
+
+/** The c in [a, b] where pc² = f_avg: ±√(f_avg ÷ p), the positive root first. */
+const averageAt = (v: Values) => {
+  if (v.p === 0) return undefined;
+  const k = v.favg! / v.p!;
+  if (k < -1e-12) return undefined;
+  const root = Math.sqrt(Math.max(k, 0));
+  const tol = 1e-9 * (1 + Math.abs(v.a!) + Math.abs(v.b!));
+  return (root === 0 ? [0] : [root, -root])
+    .filter((x) => x >= v.a! - tol && x <= v.b! + tol)
+    .map(exact);
+};
+
 export const COLLEGE_MATH_MODULES: ModuleDef[] = [
   {
     // Calculus I → Limits and continuity: a quotient at x = a, 0/0 or k/0.
@@ -2402,6 +2417,118 @@ export const COLLEGE_MATH_MODULES: ModuleDef[] = [
       input: 't',
       at: { x: 'x', y: 'Fp' },
       accumulation: { from: 'a', x: 'x', value: 'F' },
+    },
+  },
+  {
+    // Calculus I → Definite integrals: the average value of f(x) = px² on [a, b] and the c where f takes it.
+    id: 'he.math.calc-1#3~average-value',
+    title: 'Average value of a function',
+    use: 'Use this for “Find the average value of f(x) = 2x² on [1, 4], and the c in [1, 4] where f(c) equals it.”',
+    assumptions: [
+      'The average value of f on [a, b] is f_avg = I ÷ (b − a), where I is the integral of f from a to b: the area spread evenly across the interval.',
+      'An antiderivative of f(x) = px² is F(x) = px³ ÷ 3, so I = F(b) − F(a), by the Fundamental Theorem.',
+      'The Mean Value Theorem for integrals: a continuous f equals its average at some c in [a, b]. The rectangle of height f_avg over [a, b] has area I.',
+      'f(c) = pc² = f_avg gives c = √(f_avg ÷ p) or −√(f_avg ÷ p). Only a root inside [a, b] counts.',
+    ],
+    variables: [
+      V('p', 'p', 'Coefficient of x² in f(x) = px²', { min: -50, max: 50, step: 0.1 }),
+      V('a', 'a', 'Left end of the interval', { min: -100, max: 100, step: 0.1 }),
+      V('b', 'b', 'Right end of the interval', { min: -100, max: 100, step: 0.1 }),
+      V('I', 'I', 'Integral of f from a to b', { min: -2e8, max: 2e8, derived: true, ...sixths }),
+      V('favg', 'f_avg', 'Average value of f on [a, b]', {
+        min: -1e6,
+        max: 1e6,
+        derived: true,
+        ...sixths,
+      }),
+      V('c', 'c', 'Point where f(c) = f_avg', {
+        min: -100,
+        max: 100,
+        step: 0.0001,
+        derived: true,
+      }),
+    ],
+    ...rels(
+      rule(
+        'a < b',
+        'The left end {a} is below the right end {b}',
+        ['a', 'b'],
+        (v) => v.a! < v.b!,
+        'Pick a left end a below the right end b: the average is taken over an interval of positive width.',
+      ),
+      rule(
+        'p ≠ 0',
+        'The coefficient {p} is not 0',
+        ['p'],
+        (v) => v.p !== 0,
+        'With p = 0, f(x) is 0 everywhere: its average is 0 and every c in [a, b] works.',
+      ),
+      withStep(
+        derive(
+          'I = pb³ ÷ 3 − pa³ ÷ 3',
+          '{I} = {p} × {b}³ ÷ 3 − {p} × {a}³ ÷ 3',
+          'I',
+          ['p', 'b', 'a'],
+          (v) => antiQuad(squareOnly(v), v.b!) - antiQuad(squareOnly(v), v.a!),
+          (v) => {
+            const low = antiAt(squareOnly(v), v.a!);
+            return `${antiAt(squareOnly(v), v.b!)} − ${v.p! < 0 ? `(${low})` : low}`;
+          },
+          (v) =>
+            `Raise the power by 1 and divide by the new power: F(x) = ${antiForm(squareOnly(v))}. Take F(b) − F(a).`,
+        ),
+        'I',
+        {
+          work: (v) => [
+            `∫ from ${formatNumber(v.a!)} to ${formatNumber(v.b!)} of ${polyForm([v.p!, 0, 0])} dx = [${antiForm(squareOnly(v))}] from ${formatNumber(v.a!)} to ${formatNumber(v.b!)} = ${inSixths(exact(v.I!))}`,
+          ],
+        },
+      ),
+      derive(
+        'f_avg = I ÷ (b − a)',
+        '{favg} = {I} ÷ ({b} − {a})',
+        'favg',
+        ['I', 'b', 'a'],
+        (v) => v.I! / (v.b! - v.a!),
+        '{I} ÷ ({b} − {a})',
+        'Divide the integral by the width of the interval: the height of a rectangle over [a, b] with the same area.',
+      ),
+      withStep(
+        rel(
+          'f(c) = f_avg',
+          '{p} × {c}² = {favg}',
+          ['c', 'p', 'favg'],
+          (v) => v.p! * v.c! ** 2 - v.favg!,
+          {
+            c: [
+              averageAt,
+              (v) => (v.c! < 0 ? '−√({favg} ÷ {p})' : '√({favg} ÷ {p})'),
+              'Set f(c) = pc² equal to f_avg and divide by p, then take the square root. Keep the root that lies in [a, b].',
+            ],
+          },
+        ),
+        'c',
+        {
+          note: (v) =>
+            (averageAt(v) ?? []).length > 1
+              ? `→ ${formatNumber(exact(-v.c!))} is in [a, b] too: f takes its average value twice`
+              : '',
+        },
+      ),
+    ),
+    // x² on [0, 3]: F(x) = x³ ÷ 3, I = 27 ÷ 3 − 0 = 9; f_avg = 9 ÷ 3 = 3; c² = 3, c = √3 = 1.732.
+    example: { p: 1, a: 0, b: 3, I: 9, favg: 3, c: Math.sqrt(3) },
+    startWith: ['p', 'a', 'b'],
+    // f(x) = px² shaded from a to b with ∫ written; the dashed level y = f_avg meets f at c.
+    representation: {
+      kind: 'functionGraph',
+      family: 'quadratic',
+      form: 'standard',
+      a: 'p',
+      b: 0,
+      c: 0,
+      area: { from: 'a', to: 'b', value: 'I' },
+      level: { y: 'favg', label: 'f_avg', at: ['c'] },
     },
   },
 ];
