@@ -1959,4 +1959,88 @@ export const COLLEGE_MATH_MODULES: ModuleDef[] = [
       keep: ['dx', 'dy', 'y'],
     },
   },
+  {
+    // Calculus I → Related rates and optimization: water into a cone on its apex, dh/dt = (dV/dt) ÷ (πr²).
+    id: 'he.math.calc-1#2~cone-tank',
+    title: 'Filling a cone tank',
+    use: 'Use this for “Water pours at 0.03 m³/s into a cone tank, point down, 1.5 m in rim radius and 3 m deep. How fast does the level rise when the water is 1 m deep?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'The tank is a cone standing on its point, so the water is a smaller cone of the same shape: r ÷ h = R ÷ H by similar triangles.',
+      'The water’s volume is V = ⅓πr²h. Putting in r = Rh ÷ H and differentiating in time t gives dV/dt = πr²·(dh/dt).',
+      'So the inflow spreads over the water’s surface: the same inflow raises the level fast near the point and slowly near the rim.',
+      'Lengths are in m, the inflow in m³/s and the rise in m/s.',
+    ],
+    variables: [
+      V('R', 'R', 'Rim radius of the tank', fixed('m', 0.01, 100, 0.01)),
+      V('H', 'H', 'Height of the tank', fixed('m', 0.01, 100, 0.01)),
+      V('h', 'h', 'Depth of the water', fixed('m', 0.01, 100, 0.01)),
+      V('q', 'dV/dt', 'Inflow of water', fixed('m³/s', 0.0001, 100, 0.0001)),
+      V('r', 'r', 'Radius of the water’s surface', fixed('m', 0.0001, 100, 0.0001)),
+      V('dh', 'dh/dt', 'Rate the water level rises', fixed('m/s', 0, 1e4, 0.00001)),
+    ],
+    ...rels(
+      rule(
+        'h ≤ H',
+        'The water’s depth {h} is at most the tank’s height {H}',
+        ['h', 'H'],
+        (v) => v.h! <= v.H! * (1 + 1e-9),
+        'The water can’t be deeper than the tank is tall. Pick h no more than H.',
+      ),
+      rel(
+        'r = Rh ÷ H',
+        '{r} = {R} × {h} ÷ {H}',
+        ['r', 'R', 'h', 'H'],
+        (v) => v.r! * v.H! - v.R! * v.h!,
+        {
+          r: [
+            (v) => (v.H! > 0 ? exact((v.R! * v.h!) / v.H!) : undefined),
+            '{R} × {h} ÷ {H}',
+            'Similar triangles: the surface radius is to the depth as the rim radius is to the height.',
+          ],
+          h: [
+            (v) => (v.R! > 0 ? exact((v.r! * v.H!) / v.R!) : undefined),
+            '{r} × {H} ÷ {R}',
+            'Similar triangles, solved for the depth.',
+          ],
+        },
+      ),
+      rel(
+        'dV/dt = πr²·(dh/dt)',
+        '{q} = π × {r}² × {dh}',
+        ['q', 'r', 'dh'],
+        (v) => Math.PI * v.r! ** 2 * v.dh! - v.q!,
+        {
+          dh: [
+            (v) => (v.r! > 0 ? exact(v.q! / (Math.PI * v.r! ** 2)) : undefined),
+            '({q}) ÷ (π × {r}²)',
+            'Divide the inflow by the area of the water’s surface, πr².',
+          ],
+          q: [
+            (v) => exact(Math.PI * v.r! ** 2 * v.dh!),
+            'π × {r}² × {dh}',
+            'Multiply the surface’s area πr² by the rate the level rises.',
+          ],
+          r: [
+            (v) => (v.dh! > 0 ? exact(Math.sqrt(v.q! / (Math.PI * v.dh!))) : undefined),
+            '√(({q}) ÷ (π × {dh}))',
+            'Divide the inflow by π times the rise, then take the square root.',
+          ],
+        },
+      ),
+    ),
+    // R = 2 m, H = 4 m, h = 2 m, 0.05 m³/s: r = 2 × 2 ÷ 4 = 1 m,
+    // dh/dt = 0.05 ÷ (π × 1²) = 0.01592 m/s.
+    example: { R: 2, H: 4, h: 2, q: 0.05, r: 1, dh: 0.0159155 },
+    startWith: ['R', 'H', 'h', 'q'],
+    // The cone on its point, water to h with its surface radius r; the inflow poured in and the rise an arrow.
+    representation: {
+      kind: 'curvedSolid',
+      shape: 'cone',
+      radius: 'R',
+      height: 'H',
+      extent: 4,
+      fill: { depth: 'h', r: 'r', inflow: 'q', rise: 'dh' },
+    },
+  },
 ];
