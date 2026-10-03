@@ -5,11 +5,14 @@
 import type { He4fSpec } from '@/data/modules/typesHe4f';
 
 import type { Calculator } from '../useCalculator';
+import { SilicateChain } from './SilicateChain';
 import { Ternary } from './Ternary';
 
 export function He4fView({ spec, calc }: { spec: He4fSpec; calc: Calculator }) {
   switch (spec.kind) {
     case 'ternary':
       return <Ternary spec={spec} calc={calc} />; // HC116
+    case 'silicateChain':
+      return <SilicateChain spec={spec} calc={calc} />; // HC117
   }
 }

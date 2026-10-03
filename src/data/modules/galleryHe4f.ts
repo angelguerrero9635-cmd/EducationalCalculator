@@ -3,6 +3,7 @@
  * college page that waits, built from the plan's worked example (docs/plans/he.earth-geography.md).
  * Spread into gallery.ts.
  * HC116: `ternary`, the new kind (he.earth-science.physical-geology#0, mineralogy#1~plagioclase).
+ * HC117: `silicateChain`, the new kind (he.earth-science.physical-geology#0~silicates).
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
@@ -321,6 +322,132 @@ const ALBITE = plagPage(
   { ca: 0.05 },
 );
 
-export const HE4F_GALLERY_MODULES: ModuleDef[] = [QAP, QAP_DIORITE, PLAGIOCLASE, ALBITE];
+// ─── HC117: silicate structures (physical-geology#0~silicates) ──────────────────
+
+const silicatePage = (
+  id: string,
+  title: string,
+  use: string,
+  typed: Values,
+  form?: 'ring' | 'chain',
+) =>
+  page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'Each shared O is split between two tetrahedra, so it counts ½ in each.',
+      'Sharing more oxygens leaves less negative charge for metal ions to balance.',
+      'Ring and single-chain silicates both share 2 oxygens per tetrahedron.',
+    ],
+    variables: [
+      num('s', 's', 'Shared oxygens per tetrahedron', undefined, 0, 4, {
+        allowed: [0, 1, 2, 2.5, 3, 4],
+      }),
+      num('n', 'n', 'Si in the formula unit', undefined, 1, 6, { integer: true, step: 1 }),
+      out('perSi', 'O ÷ Si', 'Oxygens per Si'),
+      out('o', 'O', 'Oxygens in the unit'),
+      out('q', 'z', 'Charge of the unit'),
+    ],
+    rules: [
+      derive(
+        'perSi',
+        'perSi',
+        ['s'],
+        '{perSi} = 4 − {s} ÷ 2',
+        (v) => 4 - v.s! / 2,
+        '4 − {s} ÷ 2',
+        'Each tetrahedron keeps its unshared oxygens whole and half of each shared one.',
+      ),
+      derive(
+        'o',
+        'o',
+        ['n', 'perSi'],
+        '{o} = {n} × {perSi}',
+        (v) => v.n! * v.perSi!,
+        '{n} × {perSi}',
+        'The unit holds n tetrahedra’s worth of oxygens.',
+      ),
+      derive(
+        'q',
+        'q',
+        ['n', 's'],
+        '{q} = −{n} × (4 − {s})',
+        (v) => -v.n! * (4 - v.s!),
+        '−{n} × (4 − {s})',
+        'Each Si brings +4 and each O −2, so the unit is left −(4 − s) per Si.',
+      ),
+    ],
+    example: example(
+      typed,
+      ['perSi', (v) => 4 - v.s! / 2],
+      ['o', (v) => v.n! * v.perSi!],
+      ['q', (v) => -v.n! * (4 - v.s!)],
+    ),
+    startWith: ['s', 'n'],
+    representation: {
+      kind: 'silicateChain',
+      shared: 's',
+      units: 'n',
+      ...(form ? { form } : {}),
+      oxygens: 'o',
+      perSi: 'perSi',
+      charge: 'q',
+    },
+  });
+
+const SILICATES = [
+  silicatePage(
+    'g.he-silicateChain-double',
+    'A double chain silicate’s formula and charge',
+    'Use this for “Amphiboles are double chains sharing 2.5 oxygens per tetrahedron. Find the formula unit of 4 Si and its charge.”',
+    { s: 2.5, n: 4 },
+  ),
+  silicatePage(
+    'g.he-silicateChain-sheet',
+    'A sheet silicate’s formula and charge',
+    'Use this for “Micas are sheets sharing 3 oxygens per tetrahedron. What is the unit with 2 Si?”',
+    { s: 3, n: 2 },
+  ),
+  silicatePage(
+    'g.he-silicateChain-chain',
+    'A single chain silicate’s formula and charge',
+    'Use this for “Pyroxenes are single chains. Write the unit with 2 Si and its charge.”',
+    { s: 2, n: 2 },
+  ),
+  silicatePage(
+    'g.he-silicateChain-ring',
+    'A ring silicate’s formula and charge',
+    'Use this for “Beryl has rings of 6 tetrahedra, each sharing 2 oxygens. What is the ring’s formula and charge?”',
+    { s: 2, n: 6 },
+    'ring',
+  ),
+  silicatePage(
+    'g.he-silicateChain-pair',
+    'Paired tetrahedra: formula and charge',
+    'Use this for “Two tetrahedra share one oxygen. Write the pair’s formula and charge.”',
+    { s: 1, n: 2 },
+  ),
+  silicatePage(
+    'g.he-silicateChain-isolated',
+    'An isolated tetrahedron: SiO₄',
+    'Use this for “Olivine’s tetrahedra share no oxygens. What is the charge of one?”',
+    { s: 0, n: 1 },
+  ),
+  silicatePage(
+    'g.he-silicateChain-framework',
+    'A framework silicate: every oxygen shared',
+    'Use this for “Quartz shares all 4 oxygens of every tetrahedron. Why is it SiO₂ with no charge?”',
+    { s: 4, n: 1 },
+  ),
+];
+
+export const HE4F_GALLERY_MODULES: ModuleDef[] = [
+  QAP,
+  QAP_DIORITE,
+  PLAGIOCLASE,
+  ALBITE,
+  ...SILICATES,
+];
 
 export const HE4F_GALLERY_LAYOUTS: LayoutDef[] = [];

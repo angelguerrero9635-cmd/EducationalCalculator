@@ -49,4 +49,29 @@ export const HE4F_REQUESTS: PictureRequest[] = [
       'g.he-ternary-feldspar-albite',
     ],
   },
+  {
+    ...ask(
+      'HC117',
+      'silicateChain',
+      'SiO₄ tetrahedra from above as triangles, O at the corners and Si at the centre (the fourth O on top): isolated, pairs, a ring, a single chain, a double chain, a sheet or a framework; shared oxygens ringed, the repeat unit boxed and its O and charge counted',
+      [`${E}physical-geology#0~silicates`],
+      [
+        'From EG-P2. New kind (typesHe4f.ts SilicateChainSpec, reps/SilicateChain.tsx; the structures and the count in reps/silicateMath.ts).',
+        "Fields: { kind: 'silicateChain', shared (s: 0, 1, 2, 2.5, 3, 4), units (n, whole 1–6: the Si boxed), form?: 'ring' | 'chain' (s = 2; default chain; a ring of n tetrahedra when 3 ≤ n ≤ 6), oxygens? (O in the unit), perSi? (O per Si), charge? }.",
+        'Shared corner oxygens are ringed and count ½ in the box; a framework (s = 4) rings the apex too. Another s draws faded with the reason; a double chain with an odd n boxes part of a repeat, faded, and says to take an even n. A "?" s draws nothing; a "?" n draws no box. No handles.',
+        "Example: { kind: 'silicateChain', shared: 's', units: 'n', oxygens: 'o', perSi: 'perSi', charge: 'q' } (s = 2.5, n = 4 → O = 11, charge −6, Si₄O₁₁⁶⁻; s = 3, n = 2 → Si₂O₅²⁻). The ring: add form: 'ring' (s = 2, n = 6 → Si₆O₁₈¹²⁻).",
+        'Harness (harness/picturesHe4f.ts): the oxygens counted from the drawn corners equal n(4 − s ÷ 2); the boxed tetrahedra share s on average; 4n − 2O = −n(4 − s); the page’s O, O per Si and charge agree.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-silicateChain-double',
+      'g.he-silicateChain-sheet',
+      'g.he-silicateChain-chain',
+      'g.he-silicateChain-ring',
+      'g.he-silicateChain-pair',
+      'g.he-silicateChain-isolated',
+      'g.he-silicateChain-framework',
+    ],
+  },
 ];

@@ -5,6 +5,7 @@
  * is the page's own value, checked.
  *
  * - HC116 `ternary` (new kind): a triangle plot with a 10 % grid, QAP or feldspar fields.
+ * - HC117 `silicateChain` (new kind): SiO₄ tetrahedra from above, sharing oxygens.
  */
 import type { NumOrVar } from './typesGraphs';
 
@@ -43,12 +44,35 @@ export interface TernarySpec {
   normalized?: [NumOrVar, NumOrVar, NumOrVar];
 }
 
+// ─── HC117: silicateChain (new kind) ───────────────────────────────────────────
+
+/**
+ * HC117 (EG-P2): silicate structures from above, each SiO₄ tetrahedron a triangle with O at its
+ * three corners and Si at the centre (the fourth O on top of the Si, drawn as a ring round it).
+ * `shared` is the oxygens each tetrahedron shares, s: 0 isolated (olivine), 1 a pair (epidote),
+ * 2 a six-ring (`form: 'ring'`, beryl) or a single chain (the default, pyroxenes), 2.5 a double
+ * chain (amphiboles), 3 a sheet (micas, clays), 4 a framework corner (quartz). `units` is n, the
+ * Si in the boxed repeat unit (whole, 1–6; a ring of 3 to 6 is drawn with n tetrahedra), its
+ * tetrahedra lit; shared oxygens are ringed and count ½ in the box. `oxygens` is the page's O in
+ * the unit, `perSi` its O per Si, `charge` its charge (all checked: O = n(4 − s ÷ 2), charge =
+ * −n(4 − s)). Another s draws faded, the reason in the caption.
+ */
+export interface SilicateChainSpec {
+  kind: 'silicateChain';
+  shared: NumOrVar;
+  units: NumOrVar;
+  form?: 'ring' | 'chain';
+  oxygens?: NumOrVar;
+  perSi?: NumOrVar;
+  charge?: NumOrVar;
+}
+
 /** Every picture of group HE4F (new kinds and options on drawn kinds). */
-export type He4fSpec = TernarySpec;
+export type He4fSpec = TernarySpec | SilicateChainSpec;
 
 /** Whether a picture is one of group HE4F's (a new kind, or an option on a drawn kind). */
 export function isHe4fSpec(r: { kind: string }): r is He4fSpec {
-  return r.kind === 'ternary';
+  return r.kind === 'ternary' || r.kind === 'silicateChain';
 }
 
 /** Every variable id a group-HE4F picture reads (modules.test.ts). */
@@ -56,5 +80,7 @@ export function he4fSpecVars(r: He4fSpec): string[] {
   switch (r.kind) {
     case 'ternary':
       return ids(r.a, r.b, r.c, r.share, ...(r.normalized ?? []));
+    case 'silicateChain':
+      return ids(r.shared, r.units, r.oxygens, r.perSi, r.charge);
   }
 }

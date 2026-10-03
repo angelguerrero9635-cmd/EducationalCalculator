@@ -404,6 +404,10 @@ const light = {
   currentWarm: '#D93A3A',
   currentCold: '#2F6FD0',
   seafloor: '#9C8A77',
+  /** College round 4, group F (earth science). HC117: tetrahedra, the boxed ones, Si. */
+  he4fTetra: '#DCE6F0',
+  he4fTetraLit: '#C7CDFB',
+  he4fSilicon: '#6F819B',
   /** The atmosphere (H76): its four layers as bands, the ozone layer, and highs and lows. */
   atmoTropo: '#DCEFFB',
   atmoStrato: '#E6E9FB',
@@ -1133,6 +1137,9 @@ const dark: Palette = {
   currentWarm: '#F0625A',
   currentCold: '#5B9BFF',
   seafloor: '#6B5D50',
+  he4fTetra: '#2B3846',
+  he4fTetraLit: '#3A3F7C',
+  he4fSilicon: '#A3B1C6',
   atmoTropo: '#1C3446',
   atmoStrato: '#232A48',
   atmoMeso: '#2D2442',
