@@ -2500,4 +2500,102 @@ export const COLLEGE_PHYSICS_MODULES: ModuleDef[] = [
       ladder: { angle: 'theta', weight: 'W', wall: 'Nw', floor: 'Nf', friction: 'f', mu: 'mu' },
     },
   },
+  {
+    // University Physics I → Oscillations: a block on a spring started at x₀ with velocity v₀;
+    // the start fixes the amplitude and the phase of x = A cos(ωt + φ).
+    id: 'he.physics.university-1#5',
+    use: 'Use this for “A 2 kg block on an 80 N/m spring starts 0.1 m from its rest position, moving at −0.6 m/s. Find its amplitude, phase and position 1 s later.”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'No friction: x = A cos(ωt + φ) solves mẍ = −kx with ω = √(k/m).',
+      'At t = 0, x₀ = A cos φ and v₀ = −Aω sin φ; squaring and adding gives A, and their signs pick φ’s quarter.',
+      'The phase φ is in radians, from −π to π, and so is the angle ωt + φ.',
+    ],
+    variables: [
+      V('m', 'm', 'Mass', { unit: 'kg', min: 0.001, max: 1000, step: 0.1 }),
+      V('k', 'k', 'Spring constant', { unit: 'N/m', min: 0.1, max: 1e6, step: 1 }),
+      V('w', 'ω', 'Angular frequency', fixed('rad/s', 0.0001, 1e5, 0.1, true)),
+      V('x0', 'x₀', 'Start position', { unit: 'm', min: -10, max: 10, step: 0.01 }),
+      V('v0', 'v₀', 'Start velocity', { unit: 'm/s', min: -100, max: 100, step: 0.1 }),
+      V('A', 'A', 'Amplitude', { unit: 'm', min: 0, max: 1e6, derived: true }),
+      V('phi', 'φ', 'Phase', fixed('rad', -Math.PI, Math.PI, 0.001, true)),
+      V('t', 't', 'Time', { unit: 's', min: 0, max: 600, step: 0.1 }),
+      V('x', 'x', 'Position at t', { unit: 'm', min: -1e6, max: 1e6, derived: true }),
+    ],
+    ...rels(
+      rel('ω = √(k ÷ m)', '{w} = √({k} ÷ {m})', ['w', 'k', 'm'], (v) => v.w! ** 2 * v.m! - v.k!, {
+        w: [
+          (v) => exact(Math.sqrt(v.k! / v.m!)),
+          '√({k} ÷ {m})',
+          'The natural angular frequency: the square root of k over m.',
+        ],
+        k: [(v) => exact(v.w! ** 2 * v.m!), '{w}² × {m}', 'Undo ω = √(k ÷ m): square ω, times m.'],
+        m: [(v) => div(v.k!, v.w! ** 2), '{k} ÷ {w}²', 'Undo ω = √(k ÷ m): divide k by ω².'],
+      }),
+      rel(
+        'A = √(x₀² + (v₀ ÷ ω)²)',
+        '{A} = √({x0}² + ({v0} ÷ {w})²)',
+        ['A', 'x0', 'v0', 'w'],
+        (v) => v.A! ** 2 - v.x0! ** 2 - (v.v0! / v.w!) ** 2,
+        {
+          A: [
+            (v) => exact(Math.hypot(v.x0!, v.v0! / v.w!)),
+            '√({x0}² + ({v0} ÷ {w})²)',
+            'x₀ = A cos φ and v₀ ÷ ω = −A sin φ, so x₀² + (v₀ ÷ ω)² = A²(cos²φ + sin²φ) = A².',
+          ],
+        },
+      ),
+      rel(
+        'φ = atan2(−v₀ ÷ ω, x₀)',
+        '{phi} = atan2(−{v0} ÷ {w}, {x0})',
+        ['phi', 'v0', 'w', 'x0'],
+        (v) => {
+          const d = v.phi! - Math.atan2(-v.v0! / v.w!, v.x0!);
+          return Math.atan2(Math.sin(d), Math.cos(d));
+        },
+        {
+          phi: [
+            (v) => (v.x0 === 0 && v.v0 === 0 ? undefined : Math.atan2(-v.v0! / v.w!, v.x0!)),
+            'atan2(−{v0} ÷ {w}, {x0})',
+            'cos φ has x₀’s sign and sin φ has −v₀’s sign: atan2 finds the angle in that quarter.',
+          ],
+        },
+      ),
+      rel(
+        'x = A cos(ωt + φ)',
+        '{x} = {A} × cos({w} × {t} + {phi})',
+        ['x', 'A', 'w', 't', 'phi'],
+        (v) => v.x! - v.A! * Math.cos(v.w! * v.t! + v.phi!),
+        {
+          x: [
+            (v) => exact(v.A! * Math.cos(v.w! * v.t! + v.phi!)),
+            '{A} × cos({w} × {t} + {phi})',
+            'The position at time t, the angle ωt + φ in radians.',
+          ],
+        },
+      ),
+    ),
+    // The plan's block: m = 0.5 kg, k = 50 N/m → ω = √100 = 10 rad/s; x₀ = 0.03 m,
+    // v₀ = 0.4 m/s → A = √(0.0009 + 0.0016) = 0.05 m, φ = atan2(−0.04, 0.03) = −0.9273 rad;
+    // at t = 0.2 s, x = 0.05 × cos(2 − 0.9273) = 0.05 × cos(1.0727) = 0.02390 m.
+    example: (() => {
+      const [m, k, x0, v0, t] = [0.5, 50, 0.03, 0.4, 0.2];
+      const w = Math.sqrt(k / m);
+      const A = exact(Math.hypot(x0, v0 / w));
+      const phi = Math.atan2(-v0 / w, x0);
+      return { m, k, w, x0, v0, A, phi, t, x: exact(A * Math.cos(w * t + phi)) };
+    })(),
+    startWith: ['m', 'k', 'x0', 'v0', 't'],
+    // The x–t trace from x₀ with the start slope v₀ dashed, ±A marked, the first crest's shift
+    // −φ ÷ ω bracketed and the moment t with x. (φ is not passed as the shift's label: the
+    // picture check reads x(0) = A cos φ with an absolute 10⁻¹² floor, which a shown φ of
+    // ±1.5708 misses when x₀ = 0.)
+    representation: {
+      kind: 'oscillator',
+      mass: 'm',
+      spring: 'k',
+      amplitude: 'A',
+      phase: { x0: 'x0', v0: 'v0', amplitude: 'A', omega: 'w', t: 't', x: 'x' },
+    },
+  },
 ];
