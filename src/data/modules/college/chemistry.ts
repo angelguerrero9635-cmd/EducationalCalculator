@@ -5,6 +5,7 @@
  * `../layouts/collegeChemistry.ts`. Rules: docs/MODULE_GUIDE.md; plan: docs/plans/he.chemistry.md.
  */
 import { domainAngleOf } from '@/components/module/reps/vseprHe3eMath';
+import { rootRule } from '@/engine/cases';
 import { valueOf } from '@/engine/constants';
 import { formatNumber } from '@/engine/format';
 import type { Values } from '@/engine/types';
@@ -2925,6 +2926,113 @@ export const COLLEGE_CHEMISTRY_MODULES: ModuleDef[] = [
         kind: 'chemDiagram',
         mode: 'rate',
         arrhenius: { k1: 'k1', T1: 'T1', k2: 'k2', T2: 'T2', Ea: 'Ea' },
+      },
+    } satisfies ModuleDef;
+  })(),
+  (() => {
+    // General Chemistry II → Equilibrium: H₂ + I₂ ⇌ 2HI from K and the starting amounts.
+    // K = 50.5, [H₂]₀ = [I₂]₀ = 0.100 M, [HI]₀ = 0.0500 M: (0.0500 + 2x)² = 50.5(0.100 − x)²,
+    // so −46.5x² + 10.3x − 0.5025 = 0, x = 0.0725 (0.149 would leave [H₂] below 0);
+    // [H₂] = [I₂] = 0.0275 M, [HI] = 0.195 M.
+    const [K, h0, i0, p0] = [50.5, 0.1, 0.1, 0.05];
+    /** (p₀ + 2x)² = K(h₀ − x)(i₀ − x), as ax² + bx + c = 0. */
+    const quad = (v: Values) => [
+      4 - v.K!,
+      4 * v.p0! + v.K! * (v.h0! + v.i0!),
+      v.p0! ** 2 - v.K! * v.h0! * v.i0!,
+    ];
+    const slack = 1e-9;
+    const x =
+      (-quad({ K, h0, i0, p0 })[1]! +
+        Math.sqrt(quad({ K, h0, i0, p0 })[1]! ** 2 - 4 * (4 - K) * (p0 ** 2 - K * h0 * i0))) /
+      (2 * (4 - K));
+    const conc = (id: string, symbol: string, name: string, min: number) =>
+      V(id, symbol, name, { unit: 'M', units: ['M'], min, max: 10, step: 0.0001 });
+    const root = rootRule({
+      id: 'x from K',
+      out: 'x',
+      ins: ['K', 'h0', 'i0', 'p0'],
+      display: '({p0} + 2 × {x})² = {K} × ({h0} − {x}) × ({i0} − {x})',
+      letter: 'x',
+      coefficients: quad,
+      keep: (r, v) => r <= v.h0! + slack && r <= v.i0! + slack && v.p0! + 2 * r >= -slack,
+      rule: 'x must leave every concentration at least 0',
+      how: 'Put the equilibrium amounts into K: ([HI]₀ + 2x)² = K([H₂]₀ − x)([I₂]₀ − x). Expand it into ax² + bx + c = 0 and use the quadratic formula.',
+    });
+    const r = rels(
+      rel(
+        'K = [HI]² ÷ ([H₂][I₂])',
+        '{K} = {p}² ÷ ({h} × {i})',
+        ['K', 'p', 'h', 'i'],
+        (v) => v.K! * v.h! * v.i! - v.p! ** 2,
+        {
+          K: [
+            (v) => (v.h! * v.i! > 0 ? v.p! ** 2 / (v.h! * v.i!) : undefined),
+            '{p}² ÷ ({h} × {i})',
+            'Products over reactants, each to the power of its coefficient, at equilibrium.',
+          ],
+        },
+      ),
+      rel('[H₂] = [H₂]₀ − x', '{h} = {h0} − {x}', ['h', 'h0', 'x'], (v) => v.h! - (v.h0! - v.x!), {
+        h: [(v) => v.h0! - v.x!, '{h0} − {x}', 'One H₂ is used for each step of the reaction.'],
+        h0: [(v) => v.h! + v.x!, '{h} + {x}', 'Add back the H₂ the reaction used.'],
+        x: [(v) => v.h0! - v.h!, '{h0} − {h}', 'The change is how much the H₂ fell.'],
+      }),
+      rel('[I₂] = [I₂]₀ − x', '{i} = {i0} − {x}', ['i', 'i0', 'x'], (v) => v.i! - (v.i0! - v.x!), {
+        i: [(v) => v.i0! - v.x!, '{i0} − {x}', 'One I₂ is used with each H₂.'],
+        i0: [(v) => v.i! + v.x!, '{i} + {x}', 'Add back the I₂ the reaction used.'],
+      }),
+      rel(
+        '[HI] = [HI]₀ + 2x',
+        '{p} = {p0} + 2 × {x}',
+        ['p', 'p0', 'x'],
+        (v) => v.p! - (v.p0! + 2 * v.x!),
+        {
+          p: [(v) => v.p0! + 2 * v.x!, '{p0} + 2 × {x}', 'Two HI form for each H₂ used.'],
+          p0: [(v) => v.p! - 2 * v.x!, '{p} − 2 × {x}', 'Take away the HI the reaction made.'],
+        },
+      ),
+    );
+    return {
+      id: 'he.chemistry.gen-chem-2#1',
+      workedFigures: 3,
+      use: 'Use this for “K = 50.5 for H₂ + I₂ ⇌ 2HI. A flask starts with 0.100 M H₂, 0.100 M I₂ and 0.0500 M HI. Find every concentration at equilibrium.”',
+      assumptions: [
+        'Only the concentrations at equilibrium go into K, never the starting ones.',
+        'x is how far the reaction runs forward: each step uses one H₂ and one I₂ and makes two HI. A negative x runs it backward.',
+        'K = [HI]² ÷ ([H₂][I₂]) is a quadratic in x. Of its two roots, keep the one that leaves no concentration below 0.',
+        'One temperature throughout, so K stays the same. Concentrations are in mol/L (M).',
+      ],
+      variables: [
+        V('K', 'K', 'Equilibrium constant', { min: 1e-6, max: 1e6, step: 0.0001, figures: 3 }),
+        conc('h0', '[H₂]₀', 'Starting H₂', 0),
+        conc('i0', '[I₂]₀', 'Starting I₂', 0),
+        conc('p0', '[HI]₀', 'Starting HI', 0),
+        V('x', 'x', 'Change (forward)', {
+          unit: 'M',
+          units: ['M'],
+          min: -5,
+          max: 10,
+          step: 0.0001,
+          signed: true,
+        }),
+        conc('h', '[H₂]', 'H₂ at equilibrium', 1e-4),
+        conc('i', '[I₂]', 'I₂ at equilibrium', 1e-4),
+        conc('p', '[HI]', 'HI at equilibrium', 1e-4),
+      ],
+      relations: [...r.relations, ...root.relations],
+      steps: { ...r.steps, ...root.steps },
+      example: { K, h0, i0, p0, x, h: h0 - x, i: i0 - x, p: p0 + 2 * x },
+      startWith: ['K', 'h0', 'i0', 'p0'],
+      unitSystems: ['metric'],
+      representation: {
+        kind: 'equilibriumChart',
+        species: [
+          { formula: 'H₂', coef: 1, side: 'reactant', start: 'h0', eq: 'h' },
+          { formula: 'I₂', coef: 1, side: 'reactant', start: 'i0', eq: 'i' },
+          { formula: 'HI', coef: 2, side: 'product', start: 'p0', eq: 'p' },
+        ],
+        K: 'K',
       },
     } satisfies ModuleDef;
   })(),
