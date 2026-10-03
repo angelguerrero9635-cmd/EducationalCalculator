@@ -1505,7 +1505,8 @@ export const COLLEGE_MATH_MODULES: ModuleDef[] = [
       name: 'V',
       at: { x: 'x', y: 'V' },
       marks: ['extrema'],
-      xMin: 0,
+      // 0 to half the sheet, whatever its size.
+      window: { x: [0, 'h'] },
       axes: { x: 'Cut x (cm)', y: 'Volume V (cm³)' },
     },
   },
@@ -1617,7 +1618,6 @@ export const COLLEGE_MATH_MODULES: ModuleDef[] = [
       ),
     ),
     // P = 20 m, x = 4 m: y = 12 m, A = 48 m², A′(4) = 20 − 16 = 4; xₘₐₓ = 5 m, Aₘₐₓ = 5 × 10 = 50 m².
-    // A small field keeps both zeros (0 and 10) in the graph's window, which can't follow P.
     example: { P: 20, x: 4, y: 12, A: 48, dA: 4, xs: 5, As: 50, h: 10 },
     startWith: ['P', 'x'],
     // A = −2x(x − P/2): the field's area against the side, its top at x = P/4.
@@ -1632,7 +1632,8 @@ export const COLLEGE_MATH_MODULES: ModuleDef[] = [
       at: { x: 'x', y: 'A' },
       shows: { vertex: { x: 'xs', y: 'As' } },
       marks: ['vertex'],
-      xMin: 0,
+      // 0 to half the fence, whatever its length.
+      window: { x: [0, 'h'] },
       axes: { x: 'Side x (m)', y: 'Area A (m²)' },
     },
   },

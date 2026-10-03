@@ -154,8 +154,11 @@ export type FunctionGraphSpec = FunctionFamily & {
   secant?: { x: NumOrVar; h: NumOrVar; slope?: string };
   /** The window's left edge only, e.g. 0 on a time axis (the rest chosen from the values). */
   xMin?: number;
-  /** The window, when the page fixes it (otherwise chosen from the values). */
-  window?: { x?: [number, number]; y?: [number, number] };
+  /**
+   * The window, when the page fixes it (otherwise chosen from the values). An end may be a value
+   * id, so the window follows the page (0 to P ÷ 2 on a fence); unknown, that axis is chosen.
+   */
+  window?: { x?: [NumOrVar, NumOrVar]; y?: [NumOrVar, NumOrVar] };
   /** Axis names with units, e.g. { x: 'Time t (years)', y: 'Population P' }. */
   axes?: { x?: string; y?: string };
   /** Typed values held while a handle is dragged (default every other parameter). */
@@ -230,6 +233,7 @@ export function functionGraphVars(r: FunctionGraphSpec): string[] {
     ...ids(r.limit?.x, r.secant?.x, r.secant?.h, r.secant?.slope),
     ...ids(s?.vertex?.x, s?.vertex?.y, ...(s?.zeros ?? []), s?.intercept, s?.va, s?.ha),
     ...ids(s?.period, s?.amplitude),
+    ...ids(...(r.window?.x ?? []), ...(r.window?.y ?? [])),
     ...functionGraphHs3bVars(r),
     ...functionGraphHe1dVars(r),
     ...functionGraphHe1eVars(r), // HC10, HC12

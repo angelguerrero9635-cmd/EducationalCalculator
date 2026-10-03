@@ -1508,6 +1508,30 @@ export const tickText = (v: number, pi: boolean) =>
       : formatNumber(Number(v.toPrecision(12)));
 
 /**
+ * A page's fixed window with its value ids read. An axis whose ends aren't both known, or that
+ * reads backwards or empty, is left to be chosen from the values.
+ */
+export function resolveWindow(
+  w: FunctionGraphSpec['window'],
+  get: (v: NumOrVar) => number | undefined,
+): { x?: [number, number]; y?: [number, number] } | undefined {
+  if (!w) return undefined;
+  const axis = (a?: [NumOrVar, NumOrVar]): [number, number] | undefined => {
+    if (!a) return undefined;
+    const [lo, hi] = [get(a[0]), get(a[1])];
+    return lo !== undefined &&
+      hi !== undefined &&
+      Number.isFinite(lo) &&
+      Number.isFinite(hi) &&
+      hi > lo
+      ? [lo, hi]
+      : undefined;
+  };
+  const [x, y] = [axis(w.x), axis(w.y)];
+  return x || y ? { ...(x && { x }), ...(y && { y }) } : undefined;
+}
+
+/**
  * The window: every x and y of interest in view with a margin, the origin in view, and the
  * curve's sampled values within reason (a curve that climbs away is clipped). Its ends are
  * whole ticks of a nice step for a plot area of pw × ph pixels.

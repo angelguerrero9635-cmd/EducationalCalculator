@@ -34,7 +34,7 @@ import {
   niceEnd,
   stepFor,
 } from './functionGraphHe1dMath';
-import { buildCurve, numText, plain } from './functionGraphMath';
+import { buildCurve, numText, plain, resolveWindow } from './functionGraphMath';
 
 const SUB: Record<string, string> = { '1': '₁', '3': '₃', '6': '₆', '0': '₀' };
 const subs = (s: string) => [...s].map((ch) => SUB[ch] ?? ch).join('');
@@ -102,6 +102,9 @@ export function FunctionGraphScaledHe1d({
   const fy = uo?.y ? rep.factor(uo.y) : 1;
   const get = (v: NumOrVar | undefined, d: number) =>
     v === undefined ? d : typeof v === 'number' ? v : uo ? rep.val(v) : rep.shown(v);
+  const pageWindow = resolveWindow(spec.window, (v) =>
+    typeof v === 'number' || rep.known(v) ? get(v, 0) : undefined,
+  );
   const shownOf = (v: NumOrVar | undefined, d: number) =>
     v === undefined ? d : typeof v === 'number' ? v : rep.shown(v);
   const say = (v: NumOrVar | undefined, d: number) => (known(v) ? numText(get(v, d)) : '?');
@@ -154,7 +157,7 @@ export function FunctionGraphScaledHe1d({
       ...reads.map((r) => r.x),
     ];
     let inp: Range;
-    if (spec.window?.x) inp = spec.window.x;
+    if (pageWindow?.x) inp = pageWindow.x;
     else if (gradOk) inp = logRange([gradOk.lo, gradOk.hi]);
     else if (xLog)
       inp = logRange(inXs.length ? [Math.min(...inXs) / 3, Math.max(...inXs) * 3] : []);
@@ -173,7 +176,7 @@ export function FunctionGraphScaledHe1d({
     }
     for (const r of reads) outs.push(r.y);
     let out: Range;
-    if (spec.window?.y) out = spec.window.y;
+    if (pageWindow?.y) out = pageWindow.y;
     else if (gradOk) out = [0, 100];
     else if (yLog) out = logRange(outs);
     else

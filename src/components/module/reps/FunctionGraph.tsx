@@ -32,6 +32,7 @@ import {
   fieldAt,
   numText,
   plain,
+  resolveWindow,
   spans,
   tickText,
   ticks,
@@ -498,14 +499,20 @@ export function FunctionGraph({
       ? [get(shade.from, 0), get(shade.to, 1)].sort((a, b) => a - b)
       : undefined;
 
-  // The values of interest, found first in a wide provisional window.
-  const probe: [number, number] = [-10, 10];
+  // The page's own window (its ends may be value ids, so it follows the page).
+  const pageWindow = resolveWindow(spec.window, (v) => (known(v) ? get(v, 0) : undefined));
+  // The values of interest, found first in a wide provisional window: −10 to 10, or the page's.
+  const probe: [number, number] = pageWindow?.x ?? [-10, 10];
+  // How far a value of interest may sit and still be drawn: the page's window can reach far.
+  const reach = Math.max(60, ...(pageWindow?.x ?? []).map((v) => 1.5 * Math.abs(v)));
   const keyXs = [
     ...(main.key ? [main.key.x] : []),
     ...main.holes.map((h) => h.x),
     ...main.ends.map((e) => e.x),
     // Both branches beside a vertical asymptote (tan's are close already).
-    ...main.vas(-12, 12).flatMap((v) => (main.piX ? [v] : [v - 2.5, v, v + 2.5])),
+    ...main
+      .vas(probe[0] - 2, probe[1] + 2)
+      .flatMap((v) => (main.piX ? [v] : [v - 2.5, v, v + 2.5])),
     ...(main.inflection ? [main.inflection.x, 2 * main.inflection.x] : []),
     ...(atX !== undefined ? [atX] : []),
     ...(sec ? [sec.x, sec.x + sec.h] : []),
@@ -518,7 +525,7 @@ export function FunctionGraph({
     ...he3aXs(spec, main, get), // HC45
     ...main.domain
       .flatMap((i) => [i.lo, i.hi])
-      .filter((v) => Number.isFinite(v) && Math.abs(v) < 50),
+      .filter((v) => Number.isFinite(v) && Math.abs(v) < (5 / 6) * reach),
   ];
   const periodic = !!main.piX;
   const lo0 = Math.min(probe[0], ...keyXs.filter(Number.isFinite));
@@ -537,17 +544,17 @@ export function FunctionGraph({
   // point, as far left as the values of interest reach right (it was drawn from 0 only).
   const everyX = main.family === 'power' && main.key && main.domain.some((i) => i.lo === -Infinity);
   const mirrored = everyX
-    ? keyXs.filter((v) => Math.abs(v) < 60).map((v) => 2 * main.key!.x - v)
+    ? keyXs.filter((v) => Math.abs(v) < reach).map((v) => 2 * main.key!.x - v)
     : [];
   const xs = [
-    ...keyXs.filter((v) => Math.abs(v) < 60),
-    ...mirrored.filter((v) => Math.abs(v) < 60),
+    ...keyXs.filter((v) => Math.abs(v) < reach),
+    ...mirrored.filter((v) => Math.abs(v) < reach),
     ...zeros0.map((z) => z.x),
     ...ext0.map((e) => e.x),
     ...cross0.map((p) => p.x),
     ...trigSpan,
     ...(tfP ? [tfP.x, tfP.X] : []),
-    ...(rejX !== undefined && Math.abs(rejX) < 60 ? [rejX] : []),
+    ...(rejX !== undefined && Math.abs(rejX) < reach ? [rejX] : []),
   ];
   const ys = [
     ...(main.key ? [main.key.y] : []),
@@ -555,7 +562,9 @@ export function FunctionGraph({
     ...main.ends.map((e) => e.y),
     ...main.has,
     // Room above and below a horizontal asymptote for the branches beside a vertical one.
-    ...(main.vas(-12, 12).length && !main.piX ? main.has.flatMap((a) => [a - 3, a + 3]) : []),
+    ...(main.vas(probe[0] - 2, probe[1] + 2).length && !main.piX
+      ? main.has.flatMap((a) => [a - 3, a + 3])
+      : []),
     ...ext0.map((e) => e.y),
     ...cross0.map((p) => p.y),
     ...(tfP ? [tfP.y, tfP.Y] : []),
@@ -643,7 +652,7 @@ export function FunctionGraph({
       ys,
       pw,
       ph,
-      fixed: spec.window ?? he2gWindow(spec, get) ?? he3aWindow(spec, get, known, main), // HC37, HC42, HC92
+      fixed: pageWindow ?? he2gWindow(spec, get) ?? he3aWindow(spec, get, known, main), // HC37, HC42, HC92
       xMin: spec.xMin,
       square: !!spec.inverse,
     });

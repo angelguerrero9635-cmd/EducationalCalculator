@@ -9,6 +9,7 @@ import {
   crossings,
   curveOf,
   extremaIn,
+  resolveWindow,
   zerosIn,
   type Curve,
 } from '@/components/module/reps/functionGraphMath';
@@ -143,8 +144,9 @@ export function functionGraphIssues(
   if (rep.other) familyIssues(rep.other, val, out);
   if (out.length) return out;
   const c = curveOf(rep, val);
-  const lo = rep.window?.x?.[0] ?? -30;
-  const hi = rep.window?.x?.[1] ?? 30;
+  const win = resolveWindow(rep.window, (x) => val(x));
+  const lo = win?.x?.[0] ?? -30;
+  const hi = win?.x?.[1] ?? 30;
   featureIssues(c, lo, hi, out);
   const num = (id: string | undefined) => (id === undefined ? undefined : val(id));
   // The traced point is on the curve.
