@@ -122,7 +122,7 @@ function PhoneHeader({ navigation, route, options, back }: HeaderProps) {
           onPress={() => router.navigate('/')}
           hitSlop={8}
         >
-          <Logo size={28} />
+          <Logo size={52} />
         </Pressable>
         <View style={[styles.side, styles.right]}>{modal ? null : <HeaderActions />}</View>
       </View>
@@ -136,7 +136,7 @@ const SIDE = 128;
 const styles = StyleSheet.create({
   bar: { borderBottomWidth: StyleSheet.hairlineWidth },
   row: {
-    height: 56,
+    height: 64,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -149,5 +149,5 @@ const styles = StyleSheet.create({
 });
 
 /** The phone header's height without the safe area (for pages that lay out under it). */
-export const HEADER_HEIGHT = 56;
+export const HEADER_HEIGHT = 64;
 export const TOP_BAR_HEIGHT = layout.topBar;
