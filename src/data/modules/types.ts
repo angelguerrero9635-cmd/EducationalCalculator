@@ -34,6 +34,7 @@ import type { DopplerWave, HskSpec, StandingWave } from './typesHsk';
 import type { He2fSpec } from './typesHe2f';
 import type { He3lSpec } from './typesHe3l';
 import type { He4cSpec } from './typesHe4c';
+import type { He4kSpec } from './typesHe4k';
 import type { Hs2cSpec } from './typesHs2c';
 import type { Hs3aSpec } from './typesHs3a';
 import type { He1bSpec } from './typesHe1b';
@@ -1195,6 +1196,8 @@ export type Representation =
   | He3lSpec
   /** College round 4, group C: HC99, HC101, HC103–HC105, HC118 (`typesHe4c.ts`). */
   | He4cSpec
+  /** College round 4, group K: HC160–HC164, HC176, HC177 (`typesHe4k.ts`). */
+  | He4kSpec
   /** Grades 9–12 physics round 2, group H2C: impulse, … (specs in typesHs2c.ts). */
   | Hs2cSpec
   /** Grades 9–12 physics round 3, group H3A: torque, rotor, … (specs in typesHs3a.ts). */

@@ -122,6 +122,8 @@ import {
 } from './picturesHe4a';
 import { he4cIssues } from './picturesHe4c';
 import { isHe4cOption } from '../typesHe4c';
+import { isHe4k } from '../typesHe4k';
+import { he4kIssues } from './picturesHe4k';
 import {
   driftPathsIssues,
   he4eAlleleIssues,
@@ -166,6 +168,7 @@ export function repIssues(
     return (xs as number[]).sort((a, b) => a - b);
   };
   if (isHe4cOption(rep)) return [...out, ...he4cIssues(rep, siOf(val, byId))]; // HC99, HC101, HC103, HC105, HC118
+  if (isHe4k(rep)) return [...out, ...he4kIssues(rep, val)]; // HC160–HC164, HC176, HC177
   switch (rep.kind) {
     case 'tenFrame': {
       const cap = 10 * (rep.frames ?? 1);
