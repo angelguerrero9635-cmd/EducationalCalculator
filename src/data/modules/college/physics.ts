@@ -2711,4 +2711,124 @@ export const COLLEGE_PHYSICS_MODULES: ModuleDef[] = [
       damping: { c: 'b', letter: 'b', x0: 'A0', damped: 'wp', t: 't' },
     },
   },
+  {
+    // University Physics I → Oscillations: a uniform rod swinging from a pin at its end; gravity's
+    // torque mgd sin θ pulls it back, so T = 2π√(I ÷ (mgd)), the same as a simple pendulum of
+    // length I ÷ (md).
+    id: 'he.physics.university-1#5~physical-pendulum',
+    title: 'A physical pendulum: a rod swinging from its end',
+    use: 'Use this for “A 0.3 kg rod 1.2 m long swings from a pin at one end. Find its period and the length of a simple pendulum that keeps time with it.”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'A uniform rod swings through small angles about a fixed pin at its end, with no friction and g = 9.81 m/s².',
+      'I about the pin by parallel axes: I = mL² ÷ 12 + md², the rod’s own I about its middle plus md².',
+      'A simple pendulum of length I ÷ (md) keeps the same time; for this rod it is 2L ÷ 3.',
+    ],
+    variables: [
+      V('m', 'm', 'Mass of the rod', { unit: 'kg', min: 0.001, max: 1000, step: 0.1 }),
+      V('L', 'L', 'Length of the rod', { unit: 'm', min: 0.01, max: 100, step: 0.01 }),
+      V('d', 'd', 'Pin to center of mass', { unit: 'm', min: 0.005, max: 50, step: 0.01 }),
+      V('I', 'I', 'Moment of inertia about the pin', {
+        unit: 'kg·m²',
+        min: 1e-9,
+        max: 1e7,
+        step: 0.001,
+      }),
+      V('T', 'T', 'Period', { unit: 's', min: 0.001, max: 1000, step: 0.01 }),
+      V('Leq', 'L_eq', 'Equivalent simple length', {
+        unit: 'm',
+        min: 0.0001,
+        max: 1e5,
+        derived: true,
+      }),
+    ],
+    ...rels(
+      rel('d = L ÷ 2', '{d} = {L} ÷ 2', ['d', 'L'], (v) => v.d! - v.L! / 2, {
+        d: [
+          (v) => v.L! / 2,
+          '{L} ÷ 2',
+          'A uniform rod’s center of mass is at its middle, L ÷ 2 below the pin at its end.',
+        ],
+        L: [(v) => 2 * v.d!, '2 × {d}', 'The pin is at the end, so the rod is twice d long.'],
+      }),
+      rel(
+        'I = mL² ÷ 12 + md²',
+        '{I} = {m} × {L}² ÷ 12 + {m} × {d}²',
+        ['I', 'm', 'L', 'd'],
+        (v) => v.I! - v.m! * (v.L! ** 2 / 12 + v.d! ** 2),
+        {
+          I: [
+            (v) => exact(v.m! * (v.L! ** 2 / 12 + v.d! ** 2)),
+            '{m} × {L}² ÷ 12 + {m} × {d}²',
+            'Parallel axes: I about the middle, mL² ÷ 12, plus md² for the pin d away.',
+          ],
+          m: [
+            (v) => div(v.I!, v.L! ** 2 / 12 + v.d! ** 2),
+            '{I} ÷ ({L}² ÷ 12 + {d}²)',
+            'Both terms have m: divide I by what multiplies it.',
+          ],
+        },
+      ),
+      rel(
+        'T = 2π√(I ÷ (mgd))',
+        '{T} = 2π × √({I} ÷ ({m} × 9.81 × {d}))',
+        ['T', 'I', 'm', 'd'],
+        (v) => v.T! - 2 * Math.PI * Math.sqrt(v.I! / (v.m! * G * v.d!)),
+        {
+          T: [
+            (v) => exact(2 * Math.PI * Math.sqrt(v.I! / (v.m! * G * v.d!))),
+            '2π × √({I} ÷ ({m} × 9.81 × {d}))',
+            'Gravity’s torque mgd sin θ ≈ mgdθ pulls it back, so ω² = mgd ÷ I and T = 2π ÷ ω.',
+          ],
+          I: [
+            (v) => exact(v.m! * G * v.d! * (v.T! / (2 * Math.PI)) ** 2),
+            '{m} × 9.81 × {d} × ({T} ÷ 2π)²',
+            'Divide T by 2π, square it, then times mgd.',
+          ],
+          d: [
+            (v) => div(v.I!, v.m! * G * (v.T! / (2 * Math.PI)) ** 2),
+            '{I} ÷ ({m} × 9.81 × ({T} ÷ 2π)²)',
+            'Divide T by 2π and square it, then solve for d.',
+          ],
+        },
+      ),
+      rel(
+        'L_eq = I ÷ (md)',
+        '{Leq} = {I} ÷ ({m} × {d})',
+        ['Leq', 'I', 'm', 'd'],
+        (v) => v.Leq! * v.m! * v.d! - v.I!,
+        {
+          Leq: [
+            (v) => div(v.I!, v.m! * v.d!),
+            '{I} ÷ ({m} × {d})',
+            'A simple pendulum has T = 2π√(L ÷ g): set L = I ÷ (md) to keep the same time.',
+          ],
+        },
+      ),
+    ),
+    // The plan's rod: L = 1 m pinned at its end, m = 0.5 kg: d = 0.5 m;
+    // I = 0.5 × 1 ÷ 12 + 0.5 × 0.25 = 0.04167 + 0.125 = 0.1667 kg·m² (mL² ÷ 3);
+    // T = 2π√(0.1667 ÷ (0.5 × 9.81 × 0.5)) = 2π√0.06796 = 2π × 0.2607 = 1.638 s;
+    // L_eq = 0.1667 ÷ 0.25 = 0.6667 m = 2L ÷ 3.
+    example: (() => {
+      const [m, L] = [0.5, 1];
+      const d = L / 2;
+      const I = exact(m * (L ** 2 / 12 + d ** 2));
+      const T = exact(2 * Math.PI * Math.sqrt(I / (m * G * d)));
+      return { m, L, d, I, T, Leq: I / (m * d) };
+    })(),
+    startWith: ['m', 'L'],
+    // The rod on its pin, d bracketed to the center of mass, and the simple pendulum of length
+    // I ÷ (md) dashed beside it; the caption works d, I, T and L_eq.
+    representation: {
+      kind: 'pendulum',
+      rod: { length: 'L', pivot: 0 },
+      mass: 'm',
+      g: G,
+      inertia: 'I',
+      distance: 'd',
+      period: 'T',
+      equivalent: 'Leq',
+    },
+  },
 ];
