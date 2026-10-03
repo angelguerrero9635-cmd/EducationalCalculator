@@ -10,6 +10,7 @@ import {
   lclOf,
   mixingOf,
   R_DRY,
+  snellSpeeds,
   scaleHeightOf,
   TETENS,
   tetensOf,
@@ -117,6 +118,25 @@ export function he4gIssues(rep: He4gSpec, val: Val): string[] {
       if (!near(b.through + b.half, f, 1e-9)) out.push('balance: the top does not balance');
       if (!near(b.absorbed, 2 * b.half, 1e-9)) out.push('balance: the layer does not balance');
       if (!near(f + b.half, b.ground, 1e-9)) out.push('balance: the ground does not balance');
+      break;
+    }
+    case 'refraction': {
+      // sin r = (v₂ ÷ v₁) sin i; i_c = sin⁻¹(v₁ ÷ v₂) only into a faster layer; past it no r.
+      const [v1, v2, i] = [n(rep.speeds.v1), n(rep.speeds.v2), n(rep.angle)];
+      if (v1 !== undefined && v1 <= 0) out.push(`refraction: v₁ ${v1} m/s is not positive`);
+      if (v2 !== undefined && v2 <= 0) out.push(`refraction: v₂ ${v2} m/s is not positive`);
+      if (v1 === undefined || v2 === undefined || v1 <= 0 || v2 <= 0) break;
+      const ic = n(rep.critical);
+      const sn = snellSpeeds(v1, v2, i ?? 0);
+      if (ic !== undefined && sn.critical === undefined)
+        out.push(`refraction: a critical angle ${ic}° into a slower layer`);
+      if (ic !== undefined && sn.critical !== undefined && !near(ic, sn.critical))
+        out.push(`refraction: i_c ${ic}°, but sin⁻¹(v₁ ÷ v₂) = ${sn.critical}°`);
+      const r = n(rep.refracted);
+      if (i === undefined || r === undefined) break;
+      if (sn.total) out.push(`refraction: r ${r}° past the critical angle, where no ray enters`);
+      else if (!near(r, sn.refracted!))
+        out.push(`refraction: r ${r}°, but sin r = (v₂ ÷ v₁) sin i gives ${sn.refracted}°`);
       break;
     }
     case 'saturation': {

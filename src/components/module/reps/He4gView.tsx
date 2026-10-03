@@ -10,6 +10,7 @@ import { AtmosphereAdiabat } from './AtmosphereAdiabat';
 import { AtmosphereSaturation } from './AtmosphereSaturation';
 import { AtmosphereThickness } from './AtmosphereThickness';
 import { BalanceLayer } from './BalanceLayer';
+import { RaySpeeds } from './RaySpeeds';
 
 export function He4gView({ spec, calc }: { spec: He4gOptionSpec; calc: Calculator }) {
   switch (spec.mode) {
@@ -23,5 +24,7 @@ export function He4gView({ spec, calc }: { spec: He4gOptionSpec; calc: Calculato
       return <AirParcel spec={spec} calc={calc} />; // HC124: the page's lapse rates
     case 'balance':
       return <BalanceLayer spec={spec} calc={calc} />; // HC125
+    case 'refraction':
+      return <RaySpeeds spec={spec} calc={calc} />; // HC130
   }
 }

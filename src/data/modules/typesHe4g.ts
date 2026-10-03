@@ -132,13 +132,35 @@ export interface BalanceLayerSpec {
   layer: { emissivity: NumOrVar; surface?: NumOrVar };
 }
 
+// ─── HC130 rayDiagram Snell speeds ───────────────────────────────────────────
+
+/**
+ * A seismic ray (EG-P21) on `rayDiagram` mode `refraction`, the media named by their speeds
+ * instead of indices: sin r = (v₂ ÷ v₁) sin i, the critical angle sin⁻¹(v₁ ÷ v₂) marked when
+ * v₂ > v₁, total reflection past it; wavefront ticks spaced as each speed. Drag the ray.
+ */
+export interface RaySpeedsSpec {
+  kind: 'rayDiagram';
+  mode: 'refraction';
+  /** The upper and lower layers' speeds v₁ and v₂ (m/s). */
+  speeds: { v1: NumOrVar; v2: NumOrVar };
+  /** The incidence angle i (°) and, when the page works them out, r and i_c (°). */
+  angle: NumOrVar;
+  refracted?: NumOrVar;
+  critical?: NumOrVar;
+  /** Names of the two layers, top then bottom (default "upper layer", "lower layer"). */
+  media?: [string, string];
+  fixed?: boolean;
+}
+
 /** The round 4 group G options on existing kinds (drawn by `He4gView`). */
 export type He4gOptionSpec =
   | AtmosphereThicknessSpec
   | AtmosphereAdiabatSpec
   | AtmosphereSaturationSpec
   | ParcelLapseSpec
-  | BalanceLayerSpec;
+  | BalanceLayerSpec
+  | RaySpeedsSpec;
 
 /** Every round 4 group G calculator picture. */
 export type He4gSpec = He4gOptionSpec;
@@ -153,6 +175,7 @@ export function isHe4gOption(r: Representation): r is He4gOptionSpec {
       (r.mode === 'parcel' && ('dry' in r || 'dewLapse' in r)) ||
       (r.mode === 'balance' && 'layer' in r)
     );
+  if (r.kind === 'rayDiagram') return 'speeds' in r;
   return false;
 }
 
@@ -170,6 +193,8 @@ export function he4gSpecVars(r: He4gSpec): string[] {
       return ids(r.temperature, r.dewPoint, r.base, r.dry, r.dewLapse, r.baseTemperature);
     case 'saturation':
       return ids(r.temperature, r.dewPoint, r.saturation, r.vapor, r.rh, r.pressure, r.mixing);
+    case 'refraction':
+      return ids(r.speeds.v1, r.speeds.v2, r.angle, r.refracted, r.critical);
     case 'balance':
       return ids(
         r.albedo,

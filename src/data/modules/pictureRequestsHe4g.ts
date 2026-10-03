@@ -25,6 +25,7 @@ const ask = (
 });
 
 const MET = 'he.earth-science.meteorology';
+const GEO = 'he.earth-science.geophysics';
 
 export const HE4G_REQUESTS: PictureRequest[] = [
   {
@@ -104,5 +105,22 @@ export const HE4G_REQUESTS: PictureRequest[] = [
     ),
     status: 'drawn',
     gallery: ['g.he-atmosphereLayers-balance-layer', 'g.he-atmosphereLayers-balance-layer-opaque'],
+  },
+  {
+    ...ask(
+      'HC130',
+      'rayDiagram',
+      'A seismic ray crossing from a layer of speed v₁ into one of v₂, the layers named by speed, bent by sin r = (v₂ ÷ v₁) sin i, wavefront ticks spaced as each speed; the critical angle marked into a faster layer and total reflection past it',
+      { [`${GEO}#0~critical-angle`]: '"speeds"' },
+      [
+        'From EG-P21. New option on rayDiagram mode refraction (typesHe4g.ts RaySpeedsSpec, reps/RaySpeeds.tsx, snellSpeeds in reps/he4gMath.ts); refraction with n1 and n2 is unchanged.',
+        "Fields: { kind: 'rayDiagram', mode: 'refraction', speeds: { v1, v2 } (m/s), angle (i, °), refracted? (r, °), critical? (i_c, °), media?: [top, bottom] (names; default 'upper layer', 'lower layer'), fixed? }.",
+        "Example (~critical-angle): { kind: 'rayDiagram', mode: 'refraction', speeds: { v1: 'v1', v2: 'v2' }, angle: 'i', refracted: 'r', critical: 'ic', media: ['water-soaked sand', 'bedrock'] } (1,500 to 4,500 m/s at 10° → r = 31.4°, i_c = 19.47°).",
+        'The faint reflection is always drawn; past i_c it is the whole ray and "all reflected" is written. Into a slower layer no critical angle is drawn and the caption says so. Drag the incoming ray for i. A "?" speed draws no layers’ values; a "?" i draws no ray.',
+        'Harness (harness/picturesHe4g.ts): r by sin r = (v₂ ÷ v₁) sin i; i_c = sin⁻¹(v₁ ÷ v₂) only when v₂ > v₁; no r past i_c.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: ['g.he-rayDiagram-speeds', 'g.he-rayDiagram-speeds-near-critical'],
   },
 ];

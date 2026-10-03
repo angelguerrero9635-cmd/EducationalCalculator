@@ -5,7 +5,8 @@
  * Earth and geography (docs/plans/he.earth-geography.md): HC122 `atmosphereLayers` `thickness`
  * (meteorology#0, ~pressure-altitude; EG-P10); HC123 `adiabat` and `saturation` (meteorology#1,
  * ~humidity; EG-P11); HC124 parcel `dry` and `dewLapse` (meteorology#1~lcl; EG-P12); HC125
- * balance `layer` (climatology#0; EG-P13).
+ * balance `layer` (climatology#0; EG-P13); HC130 `rayDiagram` Snell `speeds`
+ * (geophysics#0~critical-angle; EG-P21).
  */
 import type { Relation } from '@/engine/types';
 
@@ -633,6 +634,100 @@ const greenhouseFull = greenhouseDemo(
   [1361, 0.3, 1],
 );
 
+// ── HC130: Snell's law with speeds (geophysics#0~critical-angle) ──
+
+const RAD = Math.PI / 180;
+const asind = (x: number) => (Math.abs(x) <= 1 ? Math.asin(x) / RAD : undefined);
+
+const snellDemo = (id: string, title: string, use: string, [v1, v2, i]: [number, number, number]) =>
+  demo({
+    id,
+    title,
+    use,
+    assumptions: [
+      'Flat layers; the ray bends at the boundary by Snell’s law written with speeds.',
+      'Into a faster layer, past the critical angle no ray gets through: it is all reflected.',
+    ],
+    variables: [
+      quantity('v1', 'v₁', 'Upper layer speed', 'm/s', 300, 6000, 1),
+      quantity('v2', 'v₂', 'Lower layer speed', 'm/s', 300, 8500, 1),
+      quantity('i', 'i', 'Incidence angle', '°', 0, 89.9, 0.01),
+      quantity('r', 'r', 'Refraction angle', '°', 0, 90, 0.01),
+      quantity('ic', 'i_c', 'Critical angle', '°', 0.1, 89.9, 0.01),
+    ],
+    ...rules(
+      {
+        relation: {
+          id: 'sin r = (v₂ ÷ v₁) sin i',
+          display: 'sin({r}°) = {v2} ÷ {v1} × sin({i}°)',
+          vars: ['r', 'v1', 'v2', 'i'],
+          residual: (v) => Math.sin(v.r! * RAD) - (v.v2! / v.v1!) * Math.sin(v.i! * RAD),
+          solve: {
+            r: (v) => asind((v.v2! / v.v1!) * Math.sin(v.i! * RAD)),
+            i: (v) => asind((v.v1! / v.v2!) * Math.sin(v.r! * RAD)),
+            v2: (v) => div(v.v1! * Math.sin(v.r! * RAD), Math.sin(v.i! * RAD)),
+            v1: (v) => div(v.v2! * Math.sin(v.i! * RAD), Math.sin(v.r! * RAD)),
+          },
+        },
+        steps: {
+          r: st(
+            'sin⁻¹({v2} ÷ {v1} × sin({i}°))',
+            'Snell’s law with speeds: the sine of the angle grows with the speed.',
+          ),
+          i: st('sin⁻¹({v1} ÷ {v2} × sin({r}°))', 'Run Snell’s law back up into the upper layer.'),
+          v2: st('{v1} × sin({r}°) ÷ sin({i}°)', 'The speeds are in the ratio of the sines.'),
+          v1: st('{v2} × sin({i}°) ÷ sin({r}°)', 'The speeds are in the ratio of the sines.'),
+        },
+      },
+      {
+        relation: {
+          id: 'sin i_c = v₁ ÷ v₂',
+          display: 'sin({ic}°) = {v1} ÷ {v2}',
+          vars: ['ic', 'v1', 'v2'],
+          residual: (v) => Math.sin(v.ic! * RAD) - v.v1! / v.v2!,
+          solve: {
+            ic: (v) => (v.v2! > v.v1! ? asind(v.v1! / v.v2!) : undefined),
+            v1: (v) => v.v2! * Math.sin(v.ic! * RAD),
+            v2: (v) => div(v.v1!, Math.sin(v.ic! * RAD)),
+          },
+        },
+        steps: {
+          ic: st(
+            'sin⁻¹({v1} ÷ {v2})',
+            'At the critical angle the ray runs along the boundary (r = 90°), so sin i_c = v₁ ÷ v₂.',
+          ),
+          v1: st('{v2} × sin({ic}°)', 'Multiply the lower speed by sin i_c.'),
+          v2: st('{v1} ÷ sin({ic}°)', 'Divide the upper speed by sin i_c.'),
+        },
+      },
+    ),
+    example: { v1, v2, i, r: asind((v2 / v1) * Math.sin(i * RAD))!, ic: asind(v1 / v2)! },
+    startWith: ['v1', 'v2', 'i'],
+    representation: {
+      kind: 'rayDiagram',
+      mode: 'refraction',
+      speeds: { v1: 'v1', v2: 'v2' },
+      angle: 'i',
+      refracted: 'r',
+      critical: 'ic',
+      media: ['water-soaked sand', 'bedrock'],
+    },
+  });
+
+const snell = snellDemo(
+  'g.he-rayDiagram-speeds',
+  'The critical angle; refraction of a seismic ray',
+  'Use this for a ray at 10° from 1,500 m/s sediment into 4,500 m/s rock: the refraction angle and the critical angle.',
+  [1500, 4500, 10],
+);
+
+const snellNear = snellDemo(
+  'g.he-rayDiagram-speeds-near-critical',
+  'Just under the critical angle',
+  'Use this for a ray at 19° into rock three times faster: it bends almost flat along the boundary.',
+  [1500, 4500, 19],
+);
+
 export const HE4G_GALLERY_MODULES: ModuleDef[] = [
   thickness,
   pressureAltitude,
@@ -645,6 +740,8 @@ export const HE4G_GALLERY_MODULES: ModuleDef[] = [
   lclDesert,
   greenhouse,
   greenhouseFull,
+  snell,
+  snellNear,
 ];
 
 export const HE4G_GALLERY_LAYOUTS: LayoutDef[] = [];

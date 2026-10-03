@@ -915,6 +915,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `wave`             | `standing`, `doppler`                    | string or pipe harmonic n, nodes and antinodes; Doppler fronts, cone (H65)    |
 | `wave`             | `em: { amplitude, … }`, `line`           | E and B (or H) in step, E₀, B₀, λ, S; a line's envelope and VSWR (HC93)       |
 | `rayDiagram`       | `singleSlit`, `grating`, `thinFilm`      | sinc² band, w; orders at true angles, m_max; film rays, 2nt, flips (HC68)     |
+| `rayDiagram`       | refraction `speeds: { v1, v2 }`          | seismic ray, sin r = (v₂ ÷ v₁) sin i; wavefronts ∝ v; i_c; reflected (HC130)  |
 | `circuit`          | `mixed: { layout, resistors }`           | R₁ + R₂ ∥ R₃ or (R₁ + R₂) ∥ R₃; V, I, P at each resistor (H68)                |
 | `seriesCircuit`    | `net: { topology, elements, … }`         | a schematic in textbook symbols; node V, mesh and branch I; KCL, KVL (HC7)    |
 | `circuit`          | `net` (the same renderer)                | capacitor networks (Q, V at each), two batteries, internal r (HC7)            |

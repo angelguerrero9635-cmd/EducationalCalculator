@@ -92,10 +92,12 @@ export function layerBudget(f: number, eps: number) {
 /** sin r = (v₂ ÷ v₁) sin i; the critical angle sin⁻¹(v₁ ÷ v₂) into a faster layer. */
 export function snellSpeeds(v1: number, v2: number, deg: number) {
   const s = (v2 / v1) * Math.sin((deg * Math.PI) / 180);
+  // At the critical angle itself (to rounding) the ray runs along the boundary, r = 90°.
+  const total = Math.abs(s) > 1 + 1e-4;
   return {
-    refracted: Math.abs(s) <= 1 ? (Math.asin(s) * 180) / Math.PI : undefined,
+    refracted: total ? undefined : (Math.asin(Math.max(-1, Math.min(1, s))) * 180) / Math.PI,
     critical: v2 > v1 ? (Math.asin(v1 / v2) * 180) / Math.PI : undefined,
-    total: Math.abs(s) > 1,
+    total,
   };
 }
 
