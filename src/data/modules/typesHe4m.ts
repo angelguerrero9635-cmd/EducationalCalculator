@@ -5,6 +5,7 @@
  * value, checked.
  *
  * - HC174 `soilPhases` (new kind): the three-phase block of a soil.
+ * - HC175 `losScale` (new kind): a freeway segment's density on the level-of-service bar.
  */
 import type { NumOrVar } from './typesGraphs';
 
@@ -69,15 +70,42 @@ export const soilPhasesVars = (r: SoilPhasesSpec): string[] =>
     r.dryDensity,
   );
 
+// ─── HC175: losScale (new kind) ─────────────────────────────────────────────────
+
+/**
+ * HC175 (ACC-P23): level of service by density. A bar from 0 past the last bound cut into bands
+ * A–F with the letters printed and the bounds under it (HCM basic freeway segment: A ≤ 11,
+ * B ≤ 18, C ≤ 26, D ≤ 35, E ≤ 45 pc/mi/ln, F above; `bounds` gives another table), the segment's
+ * `density` marked with its band outlined. Above it one mile of one lane with the density's
+ * cars spaced evenly along it. `flow` and `speed` are the page's v_p and S (checked:
+ * D = v_p ÷ S). A "?" density marks nothing and draws no cars.
+ */
+export interface LosScaleSpec {
+  kind: 'losScale';
+  density: NumOrVar;
+  flow?: NumOrVar;
+  speed?: NumOrVar;
+  /** The upper bounds of A–E, rising (F is everything above the last). */
+  bounds?: [number, number, number, number, number];
+  /** The density's unit (pc/mi/ln) and the length the cars stand on (1 mi). */
+  unit?: string;
+  length?: string;
+}
+
+/** The variable ids a losScale spec names. */
+export const losScaleVars = (r: LosScaleSpec): string[] => ids(r.density, r.flow, r.speed);
+
 // ─── The new kinds together ──────────────────────────────────────────────────────
 
 /** Group M's new picture kinds (one line in `types.ts`). */
-export type He4mSpec = SoilPhasesSpec;
+export type He4mSpec = SoilPhasesSpec | LosScaleSpec;
 
 /** The variable ids a group M new-kind spec names (one case in `modules.test.ts`). */
 export function he4mSpecVars(r: He4mSpec): string[] {
   switch (r.kind) {
     case 'soilPhases':
       return soilPhasesVars(r);
+    case 'losScale':
+      return losScaleVars(r);
   }
 }

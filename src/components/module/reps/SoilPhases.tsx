@@ -78,19 +78,10 @@ export function SoilPhases({ spec, calc }: { spec: SoilPhasesSpec; calc: Calcula
         `e = V_v ÷ V_s = ${n3(parts.Vv)} ÷ ${n3(parts.Vs)} = ${say(spec.e, e)}; S = V_w ÷ V_v = ${say(spec.S, S)}.`,
       );
     if (!over && !massMode) {
-      const nTxt =
-        spec.porosity && known(spec.porosity) ? rep.value(spec.porosity) : n3(e / (1 + e));
-      lines.push(`n = e ÷ (1 + e) = ${nTxt} of the volume is voids.`);
+      lines.push(`n = e ÷ (1 + e) = ${say(spec.porosity, e / (1 + e))} of the volume is voids.`);
       if (Ws !== undefined && Ww !== undefined && gw !== undefined) {
-        const u = spec.dryUnitWeight ? (rep.unit(spec.dryUnitWeight) ?? '') : '';
-        const gd =
-          spec.dryUnitWeight && known(spec.dryUnitWeight)
-            ? rep.value(spec.dryUnitWeight)
-            : `${n3(Ws / parts.V)} ${u}`.trim();
-        const g =
-          spec.unitWeight && known(spec.unitWeight)
-            ? rep.value(spec.unitWeight)
-            : `${n3((Ws + Ww) / parts.V)} ${u}`.trim();
+        const gd = say(spec.dryUnitWeight, Ws / parts.V, true);
+        const g = say(spec.unitWeight, (Ws + Ww) / parts.V, true);
         lines.push(
           `γ_d = W_s ÷ V = ${n3(Ws)} ÷ ${n3(parts.V)} = ${gd}; γ = (W_s + W_w) ÷ V = ${n3(Ws + Ww)} ÷ ${n3(parts.V)} = ${g}.`,
         );

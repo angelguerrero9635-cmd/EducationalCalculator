@@ -694,6 +694,7 @@ function representationVars(r: Representation): string[] {
     case 'driftPaths':
       return driftPathsVars(r); // HC153
     case 'soilPhases':
+    case 'losScale':
       return he4mSpecVars(r); // HC174–HC181, group M
     case 'propertyDiagram':
     case 'thermalWall':

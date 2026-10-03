@@ -61,3 +61,15 @@ export function spreadApart(want: number[], gap: number, lo: number, hi: number)
   order.forEach((o, k) => (out[o.i] = ys[k]!));
   return out;
 }
+
+// ─── HC175: level of service ─────────────────────────────────────────────────────
+
+/** HCM 7th edition, basic freeway segments: the upper densities of A–E (pc/mi/ln). */
+export const LOS_BOUNDS = [11, 18, 26, 35, 45] as const;
+export const LOS_LETTERS = ['A', 'B', 'C', 'D', 'E', 'F'] as const;
+
+/** The level of service for a density: the first band whose bound it does not pass. */
+export function losOf(d: number, bounds: readonly number[] = LOS_BOUNDS): number {
+  const i = bounds.findIndex((b) => d <= b);
+  return i === -1 ? bounds.length : i;
+}

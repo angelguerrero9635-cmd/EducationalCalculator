@@ -4,8 +4,9 @@
  *
  * - HC174 `soilPhases`: the drawn void height ÷ solid height is e and the water's share of the
  *   voids is S; Se = wG_s; n, γ_d and γ (or ρ and ρ_d for a sand cone) are the page's.
+ * - HC175 `losScale`: D = v_p ÷ S; the bounds rise; the letter marked is the band holding D.
  */
-import { soilPhaseParts } from '@/components/module/reps/he4mMath';
+import { LOS_BOUNDS, losOf, soilPhaseParts } from '@/components/module/reps/he4mMath';
 
 import type { Representation } from '../types';
 
@@ -19,6 +20,8 @@ export function he4mIssues(rep: Representation, val: Val): string[] {
   switch (rep.kind) {
     case 'soilPhases':
       return soilPhasesIssues(rep, val);
+    case 'losScale':
+      return losScaleIssues(rep, val);
     default:
       return [];
   }
@@ -73,5 +76,24 @@ function soilPhasesIssues(rep: Extract<Representation, { kind: 'soilPhases' }>, 
   const rd = get(rep.dryDensity);
   if (rd !== undefined && rho !== undefined && w !== undefined && !close(rd, rho / (1 + w)))
     out.push(`soil: ρ_d = ${rd}, not ρ ÷ (1 + w) = ${rho / (1 + w)}`);
+  return out;
+}
+
+function losScaleIssues(rep: Extract<Representation, { kind: 'losScale' }>, val: Val) {
+  const out: string[] = [];
+  const get = (v: string | number | undefined) => (v === undefined ? undefined : val(v));
+  const [D, vp, S] = [get(rep.density), get(rep.flow), get(rep.speed)];
+  const bounds = rep.bounds ?? LOS_BOUNDS;
+  if (bounds.some((b, i) => b <= (i ? bounds[i - 1]! : 0))) out.push('los: the bounds do not rise');
+  if (D !== undefined && D < 0) out.push(`los: density ${D} is negative`);
+  if (D !== undefined && vp !== undefined && S !== undefined && !close(D, vp / S))
+    out.push(`los: D = ${D}, not v_p ÷ S = ${vp / S}`);
+  if (D !== undefined) {
+    // The band drawn holds D: above the bound before it, not above its own.
+    const i = losOf(D, bounds);
+    const lo = i === 0 ? -Infinity : bounds[i - 1]!;
+    const hi = i === bounds.length ? Infinity : bounds[i]!;
+    if (!(D > lo && D <= hi)) out.push(`los: D = ${D} marked in band ${i}`);
+  }
   return out;
 }

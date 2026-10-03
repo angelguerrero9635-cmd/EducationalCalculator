@@ -44,4 +44,21 @@ export const HE4M_REQUESTS: PictureRequest[] = [
     status: 'drawn',
     gallery: ['g.he-soilPhases-main', 'g.he-soilPhases-saturated', 'g.he-soilPhases-sand-cone'],
   },
+  {
+    ...ask(
+      'HC175',
+      'losScale',
+      'Level of service by density: a bar cut into bands A–F with the letters and bounds printed, the segment’s density marked and its band outlined; above it a mile of one lane with that many cars',
+      [`${E}transportation#3`],
+      [
+        'From ACC-P23. New kind (typesHe4m.ts LosScaleSpec, reps/LosScale.tsx, the bands in reps/he4mMath.ts).',
+        "Fields: { kind: 'losScale', density (D), flow? (v_p), speed? (S), bounds? (A–E upper densities; default HCM 7th edition basic freeway 11, 18, 26, 35, 45 pc/mi/ln), unit? (default the density's unit), length? (default '1 mi') }.",
+        'The bar runs from 0 past the larger of 55 and D; the letter is printed in every band, the bounds under the cuts, the density marked by a triangle and ticks with its value, its band outlined and the others paler. The lane above shows round(D) painted cars evenly spaced (at most 90; past that the caption says the lane is full). A "?" density marks nothing and draws no cars. No handles. The page’s LOS letter is the picture’s (a letter value waits on N5).',
+        "Example: { kind: 'losScale', density: 'D', flow: 'vp', speed: 'S' } on a page with unitSystems ['us'] (v_p in pc/h/ln, S in mi/h, D in pc/mi/ln).",
+        'Harness (harness/picturesHe4m.ts): D = v_p ÷ S; the bounds rise; the band marked holds D.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: ['g.he-losScale-freeway', 'g.he-losScale-breakdown'],
+  },
 ];

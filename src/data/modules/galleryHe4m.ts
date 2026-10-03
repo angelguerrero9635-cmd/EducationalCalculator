@@ -2,6 +2,7 @@
  * College gallery demos, round 4, group M (docs/RENDERINGS_HE.md). Each stands in for the
  * college page that waits, built from the plan's worked example. Spread into gallery.ts.
  * HC174: `soilPhases`, the new kind (he.engineering.soil-mechanics#0, #1~sand-cone).
+ * HC175: `losScale`, the new kind (he.engineering.transportation#3).
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
@@ -303,6 +304,84 @@ const SAND_CONE = page({
   },
 });
 
-export const HE4M_GALLERY_MODULES: ModuleDef[] = [PHASES, PHASES_SATURATED, SAND_CONE];
+// ─── HC175: level of service on a basic freeway segment (transportation#3) ─────
+
+const fhvOf = (v: Values) => 1 / (1 + (v.PT! / 100) * (v.ET! - 1));
+const vpOf = (v: Values) => v.V! / (v.PHF! * v.N! * v.fhv!);
+const dOf = (v: Values) => v.vp! / v.S!;
+
+const losPage = (id: string, title: string, use: string, typed: Values) =>
+  page({
+    id,
+    title,
+    use,
+    // HCM pages are in US units, as the manual is.
+    unitSystems: ['us'],
+    assumptions: [
+      'A basic freeway segment (HCM 7th edition): A ≤ 11, B ≤ 18, C ≤ 26, D ≤ 35, E ≤ 45 pc/mi/ln, F above.',
+      'S is read from the speed–flow curve and typed here.',
+      'Each truck counts as E_T passenger cars.',
+    ],
+    variables: [
+      num('V', 'V', 'Hourly volume', 'veh/h', 1, 20000, { step: 10 }),
+      num('PHF', 'PHF', 'Peak-hour factor', undefined, 0.25, 1, { step: 0.01 }),
+      num('N', 'N', 'Lanes in one direction', undefined, 1, 6, { integer: true, step: 1 }),
+      num('PT', 'P_T', 'Truck share of traffic', '%', 0, 60, { step: 1 }),
+      num('ET', 'E_T', 'Truck equivalent', undefined, 1, 6, { step: 0.1 }),
+      out('fhv', 'f_HV', 'Heavy-vehicle factor'),
+      out('vp', 'v_p', 'Flow rate', 'pc/h/ln'),
+      num('S', 'S', 'Mean speed', 'mi/h', 5, 80, { step: 1 }),
+      out('D', 'D', 'Density', 'pc/mi/ln'),
+    ],
+    rules: [
+      derive(
+        'fhv',
+        'fhv',
+        ['PT', 'ET'],
+        '{fhv} = 1 ÷ (1 + {PT} ÷ 100 × ({ET} − 1))',
+        fhvOf,
+        '1 ÷ (1 + {PT} ÷ 100 × ({ET} − 1))',
+        'Each truck takes the room of E_T cars, so trucks add P_T(E_T − 1) to every car.',
+      ),
+      derive(
+        'vp',
+        'vp',
+        ['V', 'PHF', 'N', 'fhv'],
+        '{vp} = {V} ÷ ({PHF} × {N} × {fhv})',
+        vpOf,
+        '{V} ÷ ({PHF} × {N} × {fhv})',
+        'The peak 15 minutes as an hourly rate, shared by the lanes, in passenger cars.',
+      ),
+      derive(
+        'D',
+        'D',
+        ['vp', 'S'],
+        '{D} = {vp} ÷ {S}',
+        dOf,
+        '{vp} ÷ {S}',
+        'Cars passing an hour over miles driven an hour is cars per mile.',
+      ),
+    ],
+    example: example(typed, ['fhv', fhvOf], ['vp', vpOf], ['D', dOf]),
+    startWith: ['V', 'PHF', 'N', 'PT', 'ET', 'S'],
+    representation: { kind: 'losScale', density: 'D', flow: 'vp', speed: 'S' },
+  });
+
+const LOS = losPage(
+  'g.he-losScale-freeway',
+  'Flow rate, density and level of service',
+  'Use this for “4000 veh/h, PHF 0.92, 3 lanes, 10% trucks with E_T = 2, S = 70 mi/h. What is the level of service?”',
+  { V: 4000, PHF: 0.92, N: 3, PT: 10, ET: 2, S: 70 },
+);
+
+/** Just past E: the flow breaks down (LOS F). */
+const LOS_F = losPage(
+  'g.he-losScale-breakdown',
+  'A freeway segment past capacity',
+  'Use this for “4160 veh/h on 2 lanes, PHF 0.95, 5% trucks with E_T = 2, S = 50 mi/h. Is it LOS F?”',
+  { V: 4160, PHF: 0.95, N: 2, PT: 5, ET: 2, S: 50 },
+);
+
+export const HE4M_GALLERY_MODULES: ModuleDef[] = [PHASES, PHASES_SATURATED, SAND_CONE, LOS, LOS_F];
 
 export const HE4M_GALLERY_LAYOUTS: LayoutDef[] = [];
