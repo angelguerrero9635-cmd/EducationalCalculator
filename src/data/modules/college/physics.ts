@@ -4,13 +4,32 @@
  * after it), in taxonomy order. Course and topic titles come from taxonomy.ts. Layout pages are
  * in `../layouts/collegePhysics.ts`. Rules: docs/MODULE_GUIDE.md.
  */
+import { atan2D, cosD, sinD } from '@/engine/angles';
 import type { Values } from '@/engine/types';
 
 import { div } from '../helpers';
 import type { ModuleDef } from '../types';
 
 import { polyDerivative, polyForm } from './forms';
-import { atLeastZero, plusMinus, rel, rels, rootOf, signed, V, withStep } from './shared';
+import {
+  atLeastZero,
+  derive,
+  exact,
+  plusMinus,
+  rel,
+  rels,
+  rootOf,
+  rule,
+  signed,
+  V,
+  withStep,
+} from './shared';
+
+/** g on every college page (HE_NEEDS, Decisions 1). */
+const G = 9.81;
+
+/** cos θ in degrees, exactly 0 straight up or down (cos 90° is 6 × 10⁻¹⁷ in floating point). */
+const levelCos = (q: number) => (Math.abs(Math.abs(q) - 90) < 1e-12 ? 0 : cosD(q));
 
 /** x(t)'s coefficients, highest power first: [c₃, c₂, c₁, c₀]. */
 const cubic = (v: Values) => [v.c3!, v.c2!, v.c1!, v.c0!];
@@ -316,6 +335,150 @@ export const COLLEGE_PHYSICS_MODULES: ModuleDef[] = [
         velocity: 'v',
         acceleration: 'a',
       },
+    },
+  },
+  {
+    // University Physics I → Kinematics: a projectile's position and velocity at a time t.
+    id: 'he.physics.university-1#0~projectile-at-t',
+    title: 'A projectile’s position and velocity at a time',
+    use: 'Use this for “A ball is thrown from 2 m up at 20 m/s, 60° above level. Where is it 2.5 s later, and how fast and which way is it moving?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'No air resistance, and g = 9.81 m/s² downward; x is across from the launch point, y is height above level ground.',
+      'Across nothing pushes, so vₓ = v₀ cos θ stays the same; v_y starts at v₀ sin θ and drops by 9.81 m/s every second.',
+      'The angle θ is measured from level, + above and − below; φ is the direction of the velocity, measured the same way.',
+    ],
+    variables: [
+      V('v0', 'v₀', 'Launch speed', { unit: 'm/s', min: 0, max: 500, step: 0.1 }),
+      V('q', 'θ', 'Launch angle', { unit: '°', min: -90, max: 90, step: 0.1 }),
+      V('h', 'h', 'Launch height', { unit: 'm', min: 0, max: 1000, step: 0.1 }),
+      V('t', 't', 'Time after launch', { unit: 's', min: 0, max: 200, step: 0.01 }),
+      V('x', 'x', 'Distance across at t', { unit: 'm', min: 0, max: 1e5, step: 0.01 }),
+      V('y', 'y', 'Height at t', { unit: 'm', min: 0, max: 2e4, step: 0.01 }),
+      V('vx', 'vₓ', 'Horizontal velocity', { unit: 'm/s', min: 0, max: 500, derived: true }),
+      V('vy', 'v_y', 'Vertical velocity at t', {
+        unit: 'm/s',
+        min: -3000,
+        max: 500,
+        derived: true,
+      }),
+      V('v', 'v', 'Speed at t', { unit: 'm/s', min: 0, max: 3000, derived: true }),
+      V('phi', 'φ', 'Direction at t', { unit: '°', min: -90, max: 90, derived: true }),
+    ],
+    ...rels(
+      rule(
+        'y ≥ 0',
+        'The ball is still in the air: {y} is 0 or more',
+        ['y'],
+        (v) => v.y! >= -1e-9,
+        'The ball has landed by then (y would be below the ground): pick an earlier time t.',
+      ),
+      derive(
+        'vₓ = v₀ cos θ',
+        '{vx} = {v0} × cos({q}°)',
+        'vx',
+        ['v0', 'q'],
+        (v) => v.v0! * levelCos(v.q!),
+        '{v0} × cos({q}°)',
+        'The across part of the launch velocity. Nothing pushes across, so it stays the same all flight.',
+      ),
+      rule(
+        'x = 0 when vₓ = 0',
+        'Straight up or down, the ball never moves across: {x} = 0 when {vx} = 0',
+        ['x', 'vx'],
+        (v) => v.vx! !== 0 || Math.abs(v.x!) < 1e-9,
+        'Thrown straight up or down (vₓ = 0), the ball never moves across, so x stays 0.',
+      ),
+      derive(
+        'v_y = v₀ sin θ − gt',
+        '{vy} = {v0} × sin({q}°) − 9.81 × {t}',
+        'vy',
+        ['v0', 'q', 't'],
+        (v) => v.v0! * sinD(v.q!) - G * v.t!,
+        '{v0} × sin({q}°) − 9.81 × {t}',
+        'The up part of the launch velocity, less the 9.81 m/s gravity takes off it every second.',
+      ),
+      rel('x = vₓt', '{x} = {vx} × {t}', ['x', 'vx', 't'], (v) => v.x! - v.vx! * v.t!, {
+        x: [
+          (v) => v.vx! * v.t!,
+          '{vx} × {t}',
+          'Across, the ball moves at a steady vₓ, so the distance is vₓ times the time.',
+        ],
+        t: [
+          (v) => atLeastZero(div(v.x!, v.vx!)),
+          '{x} ÷ {vx}',
+          'Divide the distance across by the steady speed across.',
+        ],
+      }),
+      rel(
+        'y = h + v₀ sin θ · t − ½gt²',
+        '{y} = {h} + {v0} × sin({q}°) × {t} − ½ × 9.81 × {t}²',
+        ['y', 'h', 'v0', 'q', 't'],
+        (v) => v.y! - v.h! - v.v0! * sinD(v.q!) * v.t! + (G / 2) * v.t! ** 2,
+        {
+          y: [
+            (v) => exact(v.h! + v.v0! * sinD(v.q!) * v.t! - (G / 2) * v.t! ** 2),
+            '{h} + {v0} × sin({q}°) × {t} − ½ × 9.81 × {t}²',
+            'Start at h, rise at v₀ sin θ, and fall ½gt² below that.',
+          ],
+          h: [
+            (v) => exact(v.y! - v.v0! * sinD(v.q!) * v.t! + (G / 2) * v.t! ** 2),
+            '{y} − {v0} × sin({q}°) × {t} + ½ × 9.81 × {t}²',
+            'Undo the rise and the fall to get back to the launch height.',
+          ],
+        },
+      ),
+      derive(
+        'v = √(vₓ² + v_y²)',
+        '{v} = √({vx}² + {vy}²)',
+        'v',
+        ['vx', 'vy'],
+        (v) => Math.hypot(v.vx!, v.vy!),
+        '√({vx}² + {vy}²)',
+        'The two parts are at right angles, so the speed is their Pythagorean sum.',
+      ),
+      derive(
+        'φ = tan⁻¹(v_y ÷ vₓ)',
+        '{phi} = tan⁻¹({vy} ÷ {vx})',
+        'phi',
+        ['vx', 'vy'],
+        (v) => (v.vx! > 1e-9 ? atan2D(v.vy!, v.vx!) : undefined),
+        'tan⁻¹({vy} ÷ {vx})',
+        'The angle whose tangent is v_y over vₓ: + means still rising, − means falling.',
+      ),
+    ),
+    // 20 m/s at 60° from h = 2 m, t = 2.5 s: vₓ = 10 m/s, x = 25 m,
+    // y = 2 + 43.30 − 30.66 = 14.65 m, v_y = 17.32 − 24.53 = −7.205 m/s, v = 12.32 m/s at −35.77°
+    // (falling; it lands at T = 3.643 s, R = 36.43 m).
+    example: (() => {
+      const [v0, q, h, t] = [20, 60, 2, 2.5];
+      const vx = v0 * cosD(q);
+      const vy = v0 * sinD(q) - G * t;
+      return {
+        v0,
+        q,
+        h,
+        t,
+        vx,
+        vy,
+        x: vx * t,
+        y: h + v0 * sinD(q) * t - (G / 2) * t * t,
+        v: Math.hypot(vx, vy),
+        phi: atan2D(vy, vx)!,
+      };
+    })(),
+    startWith: ['v0', 'q', 'h', 't'],
+    representation: {
+      kind: 'projectile',
+      speed: 'v0',
+      angle: 'q',
+      height: 'h',
+      g: G,
+      at: 't',
+      x: 'x',
+      y: 'y',
+      vx: 'vx',
+      parametric: true,
     },
   },
 ];
