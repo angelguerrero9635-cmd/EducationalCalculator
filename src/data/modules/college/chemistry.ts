@@ -2321,4 +2321,120 @@ export const COLLEGE_CHEMISTRY_MODULES: ModuleDef[] = [
       },
     } satisfies ModuleDef;
   })(),
+  (() => {
+    // General Chemistry II → Kinetics: a first-order reaction, [A] after a time and t½.
+    // k = 5.00 × 10⁻⁴ s⁻¹, [A]₀ = 0.200 M, t = 1000 s: kt = 0.50, [A] = 0.200 × e^(−0.50) =
+    // 0.121 M, f = 0.607, t½ = 0.6931 ÷ (5.00 × 10⁻⁴) = 1386 s.
+    const [k, A0, t] = [5.0e-4, 0.2, 1000];
+    const conc = (id: string, symbol: string, name: string) =>
+      V(id, symbol, name, { unit: 'M', units: ['M'], min: 1e-9, max: 20, step: 0.0001 });
+    const time = (id: string, symbol: string, name: string) =>
+      V(id, symbol, name, { unit: 's', units: ['s'], min: 1e-6, max: 1e10, step: 0.01 });
+    const pos = (x: number) => (x > 0 && Number.isFinite(x) ? x : undefined);
+    return {
+      id: 'he.chemistry.gen-chem-2#0',
+      workedFigures: 3,
+      use: 'Use this for “A first-order reaction has k = 5.00 × 10⁻⁴ s⁻¹. Starting at 0.200 M, find the concentration after 1000 s and the half-life.”',
+      assumptions: [
+        'The reaction is first order in A: rate = k[A]. So [A] falls by the same fraction in every equal stretch of time.',
+        'The half-life t½ = ln 2 ÷ k does not depend on [A]₀: each half-life halves whatever is left.',
+        'A straight line of ln[A] against t, with slope −k, is the test for first order.',
+        'k and t use the same time unit, seconds here.',
+      ],
+      variables: [
+        V('k', 'k', 'Rate constant', {
+          unit: 's⁻¹',
+          units: ['s⁻¹'],
+          min: 1e-10,
+          max: 1e6,
+          step: 0.0001,
+          scientific: true,
+        }),
+        conc('A0', '[A]₀', 'Starting concentration'),
+        time('t', 't', 'Time'),
+        conc('A', '[A]', 'Concentration at time t'),
+        time('half', 't½', 'Half-life'),
+        V('f', 'f', 'Fraction left', { min: 0, max: 1, step: 0.001 }),
+      ],
+      ...rels(
+        rel(
+          'ln([A]₀ ÷ [A]) = kt',
+          'ln({A0} ÷ {A}) = {k} × {t}',
+          ['A', 'A0', 'k', 't'],
+          (v) => Math.log(v.A0! / v.A!) - v.k! * v.t!,
+          {
+            A: [
+              (v) => v.A0! * Math.exp(-v.k! * v.t!),
+              '{A0} × e^(−{k} × {t})',
+              'Undo the ln: [A] is [A]₀ times e raised to −kt.',
+            ],
+            A0: [
+              (v) => v.A! * Math.exp(v.k! * v.t!),
+              '{A} × e^({k} × {t})',
+              'Run the decay backward: multiply [A] by e raised to kt.',
+            ],
+            k: [
+              (v) => pos(Math.log(v.A0! / v.A!) / v.t!),
+              'ln({A0} ÷ {A}) ÷ {t}',
+              'Take ln of how many times smaller [A] got, then divide by the time.',
+            ],
+            t: [
+              (v) => pos(Math.log(v.A0! / v.A!) / v.k!),
+              'ln({A0} ÷ {A}) ÷ {k}',
+              'Take ln of how many times smaller [A] got, then divide by k.',
+            ],
+          },
+        ),
+        rel(
+          't½ = ln 2 ÷ k',
+          '{half} = ln(2) ÷ {k}',
+          ['half', 'k'],
+          (v) => v.half! - Math.LN2 / v.k!,
+          {
+            half: [
+              (v) => pos(Math.LN2 / v.k!),
+              'ln(2) ÷ {k}',
+              'At t½, [A]₀ ÷ [A] = 2, so kt½ = ln 2. Divide ln 2 by k.',
+            ],
+            k: [
+              (v) => pos(Math.LN2 / v.half!),
+              'ln(2) ÷ {half}',
+              'kt½ = ln 2, so divide ln 2 by the half-life.',
+            ],
+          },
+        ),
+        rel('f = [A] ÷ [A]₀', '{f} = {A} ÷ {A0}', ['f', 'A', 'A0'], (v) => v.f! * v.A0! - v.A!, {
+          f: [
+            (v) => pos(v.A! / v.A0!),
+            '{A} ÷ {A0}',
+            'Divide what is left by what there was at the start.',
+          ],
+          A: [(v) => v.f! * v.A0!, '{f} × {A0}', 'Take that fraction of [A]₀.'],
+          A0: [(v) => pos(v.A! / v.f!), '{A} ÷ {f}', 'Divide what is left by the fraction left.'],
+        }),
+        rule(
+          'kt ≤ 13',
+          '{k} × {t} ≤ 13',
+          ['k', 't'],
+          (v) => v.k! * v.t! <= 13,
+          'After kt = 13, less than 3 millionths of A is left. Pick a shorter time.',
+        ),
+      ),
+      example: {
+        k,
+        A0,
+        t,
+        A: A0 * Math.exp(-k * t),
+        half: Math.LN2 / k,
+        f: Math.exp(-k * t),
+      },
+      startWith: ['k', 'A0', 't'],
+      unitSystems: ['metric'],
+      representation: {
+        kind: 'chemDiagram',
+        mode: 'rate',
+        integrated: { order: 1, k: 'k', start: 'A0', t: 't', conc: 'A', half: 'half' },
+      },
+    } satisfies ModuleDef;
+  })(),
 ];
