@@ -300,6 +300,78 @@ export const COLLEGE_MATH_MODULES: ModuleDef[] = [
     },
   },
   {
+    // Calculus I → Limits and continuity: lim sin(kx) ÷ (mx) as x → 0.
+    id: 'he.math.calc-1#0~special-trig',
+    title: 'The limit of sin(kx) ÷ (mx)',
+    use: 'Use this for “Find the limit of sin(3x) ÷ (2x) as x → 0.”',
+    assumptions: [
+      'x is in radians.',
+      'sin θ ÷ θ → 1 as θ → 0 (squeeze: cos θ ≤ sin θ ÷ θ ≤ 1 near 0).',
+      'sin(kx) ÷ (mx) = (k ÷ m) × sin(kx) ÷ (kx), so the limit is k ÷ m.',
+    ],
+    variables: [
+      V('k', 'k', 'Number inside the sine', { min: -10, max: 10, step: 0.5 }),
+      V('m', 'm', 'Number times x below', { min: -10, max: 10, step: 0.5 }),
+      V('L', 'L', 'The limit', { min: -100, max: 100, step: 0.0001, derived: true }),
+      V('x', 'x', 'An x close to 0 (radians)', { min: -1, max: 1, step: 0.001 }),
+      V('r', 'r', 'sin(kx) ÷ (mx) there', { min: -100, max: 100, step: 0.00001 }),
+    ],
+    ...rels(
+      rule(
+        'k ≠ 0',
+        'The number inside the sine {k} is not 0',
+        ['k'],
+        (v) => v.k !== 0,
+        'With k = 0 the top is sin 0 = 0 everywhere: pick another k.',
+      ),
+      rule(
+        'm ≠ 0',
+        'The number below {m} is not 0',
+        ['m'],
+        (v) => v.m !== 0,
+        'With m = 0 the bottom is 0 everywhere: pick another m.',
+      ),
+      rule(
+        'x ≠ 0',
+        'The quotient has no value at x = {x}',
+        ['x'],
+        (v) => v.x !== 0,
+        'The quotient has no value at x = 0: pick an x close to 0.',
+      ),
+      derive(
+        'L = k ÷ m',
+        '{L} = {k} ÷ {m}',
+        'L',
+        ['k', 'm'],
+        (v) => (v.m === 0 ? undefined : v.k! / v.m!),
+        (v) => `${signed(v.k!)} ÷ ${signed(v.m!)}`,
+        'Write it as (k ÷ m) × sin(kx) ÷ (kx); the second factor → 1.',
+      ),
+      rel(
+        'r = sin(kx) ÷ (mx)',
+        '{r} = sin({k} × {x}) ÷ ({m} × {x})',
+        ['r', 'k', 'x', 'm'],
+        (v) => v.r! * v.m! * v.x! - Math.sin(v.k! * v.x!),
+        {
+          r: [
+            (v) => (v.x === 0 || v.m === 0 ? undefined : Math.sin(v.k! * v.x!) / (v.m! * v.x!)),
+            (v) => `sin(${signed(v.k!)} × ${signed(v.x!)}) ÷ (${signed(v.m!)} × ${signed(v.x!)})`,
+            'Work the sine in radians, then divide. The closer x is to 0, the closer r is to k ÷ m.',
+          ],
+        },
+      ),
+    ),
+    example: { k: 3, m: 2, L: 1.5, x: 0.1, r: Math.sin(0.3) / 0.2 },
+    startWith: ['k', 'm', 'x'],
+    representation: {
+      kind: 'table',
+      sweep: 'x',
+      output: 'r',
+      params: ['k', 'm'],
+      rows: [0.1, 0.01, 0.001, -0.001, -0.01, -0.1],
+    },
+  },
+  {
     // Calculus I → Derivatives and differentiation rules
     id: 'he.math.calc-1#1',
     use: 'Use this for “Find the slope of y = 3x⁴ at x = −1.”',
