@@ -1608,4 +1608,163 @@ export const COLLEGE_CHEMISTRY_MODULES: ModuleDef[] = [
       },
     } satisfies ModuleDef;
   })(),
+  (() => {
+    // General Chemistry I → Thermochemistry: ΔH per mole from a coffee-cup calorimeter.
+    // 50.0 mL of 1.00 M HCl + 50.0 mL of 1.00 M NaOH (100.0 g, 0.0500 mol of water formed)
+    // warm from 22.00 °C to 28.70 °C: q = 100.0 × 4.184 × 6.70 = 2803 J; ΔH = −56.1 kJ/mol.
+    const [m, c, T1, T2, n] = [100, 4.184, 22, 28.7, 0.05];
+    const dT = exact(T2 - T1);
+    const q = m * c * dT;
+    return {
+      id: 'he.chemistry.gen-chem-1#3',
+      // As the data are given (6.70 °C, 0.0500 mol): −56.1 kJ/mol.
+      workedFigures: 3,
+      use: 'Use this for “50 mL of 1.00 M HCl and 50 mL of 1.00 M NaOH are mixed in a coffee-cup calorimeter. The temperature rises from 22.00 °C to 28.70 °C. Find ΔH per mole of water formed.”',
+      assumptions: [
+        'The solution has water’s density (1.00 g/mL) and specific heat (4.184 J/(g·°C)), so 100 mL of it weighs 100 g.',
+        'No heat goes into the cup or the air: the solution takes in all the heat the reaction gives off.',
+        'The reaction’s heat is −q, so a temperature rise means ΔH < 0 (exothermic). ΔH is per mole of the reaction as written, here per mole of water formed.',
+      ],
+      variables: [
+        V('m', 'm', 'Mass of the solution', {
+          unit: 'g',
+          units: ['g'],
+          min: 1,
+          max: 5000,
+          step: 0.1,
+          figures: 4,
+        }),
+        V('c', 'c', 'Specific heat of the solution', {
+          unit: 'J/(g·°C)',
+          units: ['J/(g·°C)'],
+          min: 0.1,
+          max: 10,
+          step: 0.001,
+          figures: 4,
+        }),
+        V('T1', 'T₁', 'Starting temperature', {
+          unit: '°C',
+          units: ['°C'],
+          min: -20,
+          max: 100,
+          step: 0.01,
+        }),
+        V('T2', 'T₂', 'Final temperature', {
+          unit: '°C',
+          units: ['°C'],
+          min: -20,
+          max: 100,
+          step: 0.01,
+        }),
+        V('dT', 'ΔT', 'Change in temperature', {
+          unit: '°C',
+          units: ['°C'],
+          min: -120,
+          max: 120,
+          step: 0.01,
+        }),
+        V('q', 'q', 'Heat the solution takes in', {
+          unit: 'J',
+          units: ['J'],
+          min: -1e7,
+          max: 1e7,
+          step: 0.1,
+          figures: 4,
+        }),
+        V('n', 'n', 'Moles that react', {
+          unit: 'mol',
+          min: 1e-6,
+          max: 100,
+          step: 0.0001,
+          figures: 4,
+        }),
+        V('dH', 'ΔH', 'Enthalpy change per mole', {
+          unit: 'kJ/mol',
+          units: ['kJ/mol'],
+          min: -1e5,
+          max: 1e5,
+          step: 0.01,
+          figures: 4,
+        }),
+      ],
+      ...rels(
+        rel(
+          'ΔT = T₂ − T₁',
+          '{dT} = {T2} − {T1}',
+          ['dT', 'T2', 'T1'],
+          (v) => v.dT! - (v.T2! - v.T1!),
+          {
+            dT: [
+              (v) => exact(v.T2! - v.T1!),
+              '{T2} − {T1}',
+              'The change is the final temperature less the starting one: a rise is positive.',
+            ],
+            T2: [
+              (v) => exact(v.T1! + v.dT!),
+              '{T1} + {dT}',
+              'Add the change to the starting temperature.',
+            ],
+            T1: [
+              (v) => exact(v.T2! - v.dT!),
+              '{T2} − {dT}',
+              'Take the change off the final temperature.',
+            ],
+          },
+        ),
+        rel(
+          'q = mcΔT',
+          '{q} = {m} × {c} × {dT}',
+          ['q', 'm', 'c', 'dT'],
+          (v) => v.q! - v.m! * v.c! * v.dT!,
+          {
+            q: [
+              (v) => v.m! * v.c! * v.dT!,
+              '{m} × {c} × {dT}',
+              'The solution’s heat: its mass times its specific heat times how much it warmed.',
+            ],
+            m: [(v) => v.q! / (v.c! * v.dT!), '{q} ÷ ({c} × {dT})', 'Divide the heat by cΔT.'],
+            c: [(v) => v.q! / (v.m! * v.dT!), '{q} ÷ ({m} × {dT})', 'Divide the heat by mΔT.'],
+            dT: [(v) => v.q! / (v.m! * v.c!), '{q} ÷ ({m} × {c})', 'Divide the heat by mc.'],
+          },
+        ),
+        rel(
+          'ΔH = −q ÷ (1000n)',
+          '{dH} = −{q} ÷ (1000 × {n})',
+          ['dH', 'q', 'n'],
+          (v) => v.dH! * v.n! * 1000 + v.q!,
+          {
+            dH: [
+              (v) => -v.q! / (1000 * v.n!),
+              '−{q} ÷ (1000 × {n})',
+              'The reaction gave off what the solution took in, so its heat is −q. Share it among the moles; ÷ 1000 turns J into kJ.',
+            ],
+            q: [
+              (v) => -1000 * v.dH! * v.n!,
+              '−1000 × {dH} × {n}',
+              'The reaction’s heat is ΔH times the moles, in J; the solution takes in the opposite.',
+            ],
+            n: [
+              // No heat says nothing about the moles (0 ÷ ΔH would read as none reacting).
+              (v) => (v.q === 0 ? undefined : -v.q! / (1000 * v.dH!)),
+              '−{q} ÷ (1000 × {dH})',
+              'Divide the reaction’s heat, −q in kJ, by the heat for each mole.',
+            ],
+          },
+        ),
+      ),
+      example: { m, c, T1, T2, dT, q, n, dH: -q / (1000 * n) },
+      startWith: ['m', 'c', 'T1', 'T2', 'n'],
+      unitSystems: ['metric'],
+      representation: {
+        kind: 'energyProfile',
+        mode: 'calorimeter',
+        mass: 'm',
+        heat: 'c',
+        start: 'T1',
+        end: 'T2',
+        change: 'dT',
+        q: 'q',
+      },
+    } satisfies ModuleDef;
+  })(),
 ];
