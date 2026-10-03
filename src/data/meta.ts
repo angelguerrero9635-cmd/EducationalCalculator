@@ -180,6 +180,7 @@ const PICTURE_NAMES: Record<string, string> = {
   solidOfRevolution: 'a region turned about an axis, with one disk, washer or shell',
   driftPaths: 'genetic drift: populations’ allele frequencies wandering, expected H falling',
   dialyzer: 'a dialyzer: blood and dialysate in counterflow, urea cleared, the clearance K',
+  attenuation: 'a beam thinning through a slab with half-value layers, or an ultrasound echo',
   propertyDiagram: 'a T–v, P–v or T–s plane with the vapor dome, states and a cycle',
   elementChain: 'finite elements: springs or bars between nodes, loads, displacements; a mesh',
   fatigueDiagram: 'fatigue: a Goodman diagram, an S–N line on log axes, a Miner damage bar',

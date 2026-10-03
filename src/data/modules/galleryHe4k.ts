@@ -2,6 +2,7 @@
  * College gallery demos, round 4, group K (docs/RENDERINGS_HE.md). Each stands in for the
  * college page that waits, built from the plan's worked example. Spread into gallery.ts.
  * HC160: `dialyzer` (he.engineering.biotransport#2).
+ * HC161: `attenuation` (he.engineering.bioinstrumentation#2, ~ultrasound).
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
@@ -217,6 +218,174 @@ const DIALYZER_HIGH = dialyzerPage(
   { qb: 500, cin: 120, cout: 66, t: 240, v: 40 },
 );
 
-export const HE4K_GALLERY_MODULES: ModuleDef[] = [DIALYZER, DIALYZER_HIGH];
+// ─── HC161: X-rays through a slab and an ultrasound echo (bioinstrumentation#2) ─
+
+const shareOf = (v: Values) => 100 * Math.exp(-v.mu! * v.x!);
+
+const beamRules = [
+  rule(
+    'share',
+    '{share} = 100 ÷ e^({mu} × {x})',
+    ['share', 'mu', 'x'],
+    (v) => v.share! - shareOf(v),
+    {
+      share: [
+        (v) => fin(shareOf(v)),
+        '100 ÷ e^({mu} × {x})',
+        'Each centimetre keeps the same share of the beam, so what gets through is e^(−μx).',
+      ],
+      mu: [
+        (v) => posOf(Math.log(100 / v.share!) / v.x!),
+        'ln(100 ÷ {share}) ÷ {x}',
+        'Take the natural log of how many times the beam was cut, then share it over x.',
+      ],
+      x: [
+        (v) => posOf(Math.log(100 / v.share!) / v.mu!),
+        'ln(100 ÷ {share}) ÷ {mu}',
+        'Take the natural log of how many times the beam was cut, then divide by μ.',
+      ],
+    },
+  ),
+  rule('hvl', '{hvl} = ln(2) ÷ {mu}', ['hvl', 'mu'], (v) => v.hvl! * v.mu! - Math.LN2, {
+    hvl: [
+      (v) => posOf(Math.LN2 / v.mu!),
+      'ln(2) ÷ {mu}',
+      'The thickness that halves the beam: e^(−μ × HVL) = ½.',
+    ],
+    mu: [
+      (v) => posOf(Math.LN2 / v.hvl!),
+      'ln(2) ÷ {hvl}',
+      'One half-value layer cuts the beam by ln 2 in the exponent.',
+    ],
+  }),
+];
+
+const beamPage = (id: string, title: string, use: string, typed: Values) =>
+  page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'A narrow beam of one energy: a photon that is scattered leaves the beam.',
+      'The slab is one material, so μ is the same at every depth.',
+    ],
+    variables: [
+      num('mu', 'μ', 'Attenuation coefficient', 'cm⁻¹', 0.01, 10, { step: 0.01 }),
+      num('x', 'x', 'Thickness', 'cm', 0.01, 100, { step: 0.1 }),
+      num('share', 'I ÷ I₀', 'Share transmitted', '%', 0.0001, 100, { step: 0.1 }),
+      num('hvl', 'HVL', 'Half-value layer', 'cm', 0.01, 100, { step: 0.01 }),
+    ],
+    rules: beamRules,
+    example: example(typed, ['share', shareOf], ['hvl', (v) => Math.LN2 / v.mu!]),
+    startWith: ['mu', 'x'],
+    representation: { kind: 'attenuation', mu: 'mu', x: 'x', share: 'share', hvl: 'hvl' },
+  });
+
+const BEAM = beamPage(
+  'g.he-attenuation-beam',
+  'X-rays through tissue: e^(−μx) and the half-value layer',
+  'Use this for “Soft tissue has μ = 0.2 per cm. What share of the X-rays gets through 10 cm, and what is its half-value layer?”',
+  { mu: 0.2, x: 10 },
+);
+
+/** The top of the μ range: seven half-value layers in half a centimetre. */
+const BEAM_DENSE = beamPage(
+  'g.he-attenuation-dense',
+  'A strong absorber: many half-value layers',
+  'Use this for “A shield has μ = 10 per cm. What share of the beam gets through 0.5 cm?”',
+  { mu: 10, x: 0.5 },
+);
+
+const depthOf = (v: Values) => (v.c! * v.t!) / 20000;
+const rOf = (v: Values) => 100 * ((v.z2! - v.z1!) / (v.z2! + v.z1!)) ** 2;
+
+const ECHO = page({
+  id: 'g.he-attenuation-echo',
+  title: 'Ultrasound: the depth of a boundary from its echo',
+  use: 'Use this for “An echo returns after 130 μs. How deep is the boundary?”',
+  assumptions: [
+    'Sound travels at c = 1540 m/s in soft tissue.',
+    'The pulse goes straight down and straight back.',
+  ],
+  variables: [
+    num('t', 't', 'Echo time', 'μs', 1, 500, { step: 1 }),
+    num('c', 'c', 'Speed of sound', 'm/s', 300, 6000, { step: 10 }),
+    num('d', 'd', 'Depth of the boundary', 'cm', 0.01, 40, { step: 0.1 }),
+  ],
+  rules: [
+    rule('depth', '{d} = {c} × {t} ÷ 20000', ['d', 'c', 't'], (v) => 20000 * v.d! - v.c! * v.t!, {
+      d: [
+        (v) => posOf(depthOf(v)),
+        '{c} × {t} ÷ 20000',
+        'The pulse goes down and back, so the depth is half of c × t; m/s × μs ÷ 10,000 gives cm.',
+      ],
+      t: [
+        (v) => posOf((20000 * v.d!) / v.c!),
+        '20000 × {d} ÷ {c}',
+        'The round trip is twice the depth, travelled at c.',
+      ],
+      c: [
+        (v) => posOf((20000 * v.d!) / v.t!),
+        '20000 × {d} ÷ {t}',
+        'Twice the depth over the time of the round trip.',
+      ],
+    }),
+  ],
+  example: example({ t: 130, c: 1540 }, ['d', depthOf]),
+  startWith: ['t', 'c'],
+  representation: { kind: 'attenuation', mode: 'echo', t: 't', c: 'c', d: 'd' },
+});
+
+/** The share a boundary reflects, on the echo drawn for the page's 130 μs at 1540 m/s. */
+const ECHO_REFLECT = page({
+  id: 'g.he-attenuation-reflect',
+  title: 'Ultrasound: the share a boundary reflects',
+  use: 'Use this for “What share of the ultrasound does a fat–muscle boundary reflect (Z = 1.38 and 1.70 MRayl)?”',
+  assumptions: [
+    'The boundary is flat and meets the beam square on.',
+    'Each tissue is one acoustic impedance Z = ρc.',
+  ],
+  variables: [
+    num('z1', 'Z₁', 'Impedance above', 'MRayl', 0.0004, 10, { step: 0.01 }),
+    num('z2', 'Z₂', 'Impedance below', 'MRayl', 0.0004, 10, { step: 0.01 }),
+    out('r', 'R', 'Share reflected', '%'),
+  ],
+  rules: [
+    rule(
+      'reflect',
+      '{r} = 100 × (({z2} − {z1}) ÷ ({z2} + {z1}))²',
+      ['r', 'z1', 'z2'],
+      (v) => v.r! - rOf(v),
+      {
+        r: [
+          (v) => fin(rOf(v)),
+          '100 × (({z2} − {z1}) ÷ ({z2} + {z1}))^2',
+          'The mismatch of the impedances over their sum, squared, is the share of the intensity sent back.',
+        ],
+      },
+    ),
+  ],
+  example: example({ z1: 1.38, z2: 1.7 }, ['r', rOf]),
+  startWith: ['z1', 'z2'],
+  representation: {
+    kind: 'attenuation',
+    mode: 'echo',
+    t: 130,
+    c: 1540,
+    z1: 'z1',
+    z2: 'z2',
+    r: 'r',
+    layers: ['Fat', 'Muscle'],
+  },
+});
+
+export const HE4K_GALLERY_MODULES: ModuleDef[] = [
+  DIALYZER,
+  DIALYZER_HIGH,
+  BEAM,
+  BEAM_DENSE,
+  ECHO,
+  ECHO_REFLECT,
+];
 
 export const HE4K_GALLERY_LAYOUTS: LayoutDef[] = [];

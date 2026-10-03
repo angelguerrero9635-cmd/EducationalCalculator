@@ -23,15 +23,24 @@ export function useReader(calc: Calculator) {
     if (typeof x === 'number') return x;
     return rep.known(x) ? rep.shown(x) : undefined;
   };
-  /** "300 mL/min" (or the fixed number with `unit`); undefined for "?". */
+  /** A number with its unit: "12 cm", "13.5%". */
+  const withU = (s: string, unit: string | undefined) =>
+    !unit ? s : ['%', '°'].includes(unit) ? `${s}${unit}` : `${s} ${unit}`;
+  /**
+   * "300 mL/min" (or the fixed number with `unit`); undefined for "?". A typed value reads as
+   * typed, a worked-out one to 3 figures.
+   */
   const text = (x: NumOrVar | undefined, unit = '', withUnit = true): string | undefined => {
     if (x === undefined) return undefined;
-    if (typeof x === 'number') return `${n3(x)}${unit && withUnit ? ` ${unit}` : ''}`;
-    return rep.known(x) ? rep.value(x, withUnit) : undefined;
+    if (typeof x === 'number') return withUnit ? withU(n3(x), unit) : n3(x);
+    if (!rep.known(x)) return undefined;
+    if (rep.typed(x)) return rep.value(x, withUnit);
+    const s = n3(rep.shown(x));
+    return withUnit ? withU(s, rep.unit(x)) : s;
   };
   /** The value as text, a worked-out value the picture found when the field is left out. */
   const say = (x: NumOrVar | undefined, fallback: number, unit = '', withUnit = true) =>
-    text(x, unit, withUnit) ?? `${n3(fallback)}${unit && withUnit ? ` ${unit}` : ''}`;
+    text(x, unit, withUnit) ?? (withUnit ? withU(n3(fallback), unit) : n3(fallback));
   /** "Q_b = 300 mL/min", with the symbol given. */
   const label = (symbol: string, x: NumOrVar | undefined, unit = '') => {
     const t = text(x, unit);

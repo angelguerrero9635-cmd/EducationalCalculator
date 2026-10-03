@@ -3,7 +3,13 @@
  * in `pictures.ts`. Each recomputes what the picture draws by an independent route and compares
  * it with the page's values. Test-only.
  */
-import { meanShare, ureaDots } from '@/components/module/reps/he4kMath';
+import {
+  meanShare,
+  PHOTONS,
+  photonDepths,
+  photonRows,
+  ureaDots,
+} from '@/components/module/reps/he4kMath';
 
 import type { He4kSpec } from '../typesHe4k';
 
@@ -55,9 +61,59 @@ function dialyzerIssues(rep: Extract<He4kSpec, { kind: 'dialyzer' }>, val: Val):
   return out;
 }
 
+/**
+ * HC161 `attenuation`. Beam: the photons still going at each depth number e^(−μz) of the
+ * twenty to within one (counted, not from the formula's inverse), each row holds one track; the
+ * page's I ÷ I₀ is e^(−μx) and its HVL is the depth where e^(−μz) = ½ (bisected). Echo: the
+ * depth is c × t ÷ 2 (m/s × μs → cm); R = ((Z₂ − Z₁) ÷ (Z₂ + Z₁))² as Z₁Z₂'s mismatch,
+ * 1 − 4Z₁Z₂ ÷ (Z₁ + Z₂)².
+ */
+function attenuationIssues(rep: Extract<He4kSpec, { kind: 'attenuation' }>, val: Val): string[] {
+  const out: string[] = [];
+  const get = (x: string | number | undefined) => (x === undefined ? undefined : val(x));
+  if (rep.mode === 'echo') {
+    const [t, c, d] = [get(rep.t), get(rep.c ?? 1540), get(rep.d)];
+    if (t !== undefined && c !== undefined && d !== undefined && !close(d, (c * t * 1e-4) / 2))
+      out.push(`attenuation: d = ${d} cm is not ct ÷ 2 = ${(c * t * 1e-4) / 2} cm`);
+    const [z1, z2, r] = [get(rep.z1), get(rep.z2), get(rep.r)];
+    if (z1 !== undefined && z2 !== undefined && r !== undefined && z1 + z2 > 0) {
+      const R = 1 - (4 * z1 * z2) / (z1 + z2) ** 2;
+      if (!sameShare(r, R) && Math.abs(r - 100 * R) > 1e-9)
+        out.push(`attenuation: R = ${r} is not ((Z₂ − Z₁) ÷ (Z₂ + Z₁))² = ${R}`);
+    }
+    return out;
+  }
+  const [mu, x] = [get(rep.mu), get(rep.x)];
+  if (mu === undefined || mu <= 0) return out;
+  const depths = photonDepths(mu);
+  for (const z of [0.1, 0.5, 1, 2, 4].map((k) => k / mu)) {
+    const going = depths.filter((d) => d > z).length;
+    if (Math.abs(going - PHOTONS * Math.exp(-mu * z)) > 1)
+      out.push(`attenuation: ${going} tracks pass depth ${z}, not ${PHOTONS} × e^(−μz)`);
+  }
+  if (new Set(photonRows()).size !== PHOTONS) out.push('attenuation: two tracks share a row');
+  let [lo, hi] = [0, 100 / mu];
+  for (let i = 0; i < 80; i++) {
+    const mid = (lo + hi) / 2;
+    if (Math.exp(-mu * mid) > 0.5) lo = mid;
+    else hi = mid;
+  }
+  const hvl = get(rep.hvl);
+  if (hvl !== undefined && !close(hvl, lo)) out.push(`attenuation: HVL = ${hvl} is not ${lo}`);
+  const share = get(rep.share);
+  if (share !== undefined && x !== undefined) {
+    let T = 1;
+    for (let i = 0; i < 1000; i++) T *= Math.exp((-mu * x) / 1000);
+    if (!sameShare(share, T)) out.push(`attenuation: I ÷ I₀ = ${share} is not e^(−μx) = ${T}`);
+  }
+  return out;
+}
+
 export function he4kIssues(rep: He4kSpec, val: Val): string[] {
   switch (rep.kind) {
     case 'dialyzer':
       return dialyzerIssues(rep, val);
+    case 'attenuation':
+      return attenuationIssues(rep, val);
   }
 }

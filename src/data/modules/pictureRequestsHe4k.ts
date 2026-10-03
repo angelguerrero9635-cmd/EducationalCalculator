@@ -44,4 +44,27 @@ export const HE4K_REQUESTS: PictureRequest[] = [
     status: 'drawn',
     gallery: ['g.he-dialyzer-clearance', 'g.he-dialyzer-high-flow'],
   },
+  {
+    ...ask(
+      'HC161',
+      'attenuation',
+      'An X-ray beam through a slab: photon tracks stopping at their depths, half-value layers marked, I ÷ I₀ = e^(−μx) under it; `echo`: a probe over two tissues and the pulse’s round trip against time, d = ct ÷ 2',
+      [`${E}bioinstrumentation#2`, `${E}bioinstrumentation#2~ultrasound`],
+      [
+        'From B-P32. New kind (typesHe4k.ts AttenuationSpec, reps/Attenuation.tsx, reps/he4kMath.ts).',
+        "Main page (beam, the default): { kind: 'attenuation', mu (μ, cm⁻¹), x (cm), share? (I ÷ I₀, % or a share, checked), hvl? (cm, checked) }. Painted source, slab (to scale across) and detector; twenty tracks, track i stopping at −ln(1 − (i + ½) ÷ 20) ÷ μ, so the tracks still going at z are 20e^(−μz); those that cross reach the detector with arrowheads. Dashed lines at each HVL = ln 2 ÷ μ marked ½, ¼, ⅛ … (thinned when they crowd), and under the slab, on the same depth axis, the curve I ÷ I₀ = e^(−μz) with the exit share ringed and written.",
+        "~ultrasound (mode 'echo'): { kind: 'attenuation', mode: 'echo', t (μs), c? (m/s, default 1540; the page passes its own), d? (cm, checked), z1?, z2? (MRayl), r? (%, checked), layers? (the two tissues' names, default 'Tissue 1', 'Tissue 2') }. The tissues painted to scale in depth, the probe on the skin, the pulse drawn down to the boundary at t ÷ 2 and back at t (time along the bottom), the transmitted pulse dashed on, R written at the top.",
+        "Example (main): { kind: 'attenuation', mu: 'mu', x: 'x', share: 'share', hvl: 'hvl' } (0.2 cm⁻¹, 10 cm → 13.5%; HVL 3.47 cm). Example (~ultrasound): { kind: 'attenuation', mode: 'echo', t: 't', c: 'c', d: 'd', z1: 'z1', z2: 'z2', r: 'r', layers: ['Fat', 'Muscle'] } (130 μs → 10.0 cm; 1.38 and 1.70 MRayl → 1.08%).",
+        'A "?" μ or x draws no tracks, curve or HVLs; a "?" t draws no pulse. No handles.',
+        'Harness (harness/picturesHe4k.ts): the tracks past 0.1 to 4 mean free paths number 20e^(−μz) within one; one track a row; HVL by bisection; I ÷ I₀ as a product of slices; d = ct ÷ 2; R = 1 − 4Z₁Z₂ ÷ (Z₁ + Z₂)².',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-attenuation-beam',
+      'g.he-attenuation-dense',
+      'g.he-attenuation-echo',
+      'g.he-attenuation-reflect',
+    ],
+  },
 ];
