@@ -6,11 +6,132 @@
  */
 import { formatNumber } from '@/engine/format';
 
+import type { Values } from '@/engine/types';
+
 import type { ModuleDef } from '../types';
 
-import { powerRule, realRoots } from './shared';
+import { derive, powerRule, realRoots, rel, rels, rule, signed, V, withStep } from './shared';
+
+/** x² + bx + c at x. */
+const topAt = (v: Values, x: number) => x * x + v.b! * x + v.c!;
 
 export const COLLEGE_MATH_MODULES: ModuleDef[] = [
+  {
+    // Calculus I → Limits and continuity: a quotient at x = a, 0/0 or k/0.
+    id: 'he.math.calc-1#0',
+    use: 'Use this for “Find the limit of (x² + x − 6) ÷ (x − 2) as x → 2.”',
+    assumptions: [
+      'f(x) = (x² + bx + c) ÷ (x − a). The limit is the value f(x) approaches as x → a, not f(a).',
+      'Top 0 at a (0/0): x − a is a factor of the top. Cancel it (allowed, since x ≠ a) and put in x = a.',
+      'Top k ≠ 0 at a (k/0): f grows without bound near a, a vertical asymptote; there is no finite limit.',
+    ],
+    variables: [
+      V('a', 'a', 'Point x approaches', { min: -10, max: 10, step: 0.5 }),
+      V('b', 'b', 'Coefficient of x on top', { min: -50, max: 50, step: 0.5 }),
+      V('c', 'c', 'Constant on top', { min: -50, max: 50, step: 0.5 }),
+      V('N', 'N', 'Top at x = a', { min: -2700, max: 2700, derived: true }),
+      V('L', 'L', 'The limit', { min: -200, max: 200, step: 0.01, derived: true }),
+      V('x', 'x', 'An x close to a', { min: -20, max: 20, step: 0.01 }),
+      V('y', 'f(x)', 'f(x) there', { min: -100000, max: 100000, step: 0.0001 }),
+    ],
+    ...rels(
+      rule(
+        'x ≠ a',
+        'f has no value at x = {a}, so {x} is not {a}',
+        ['x', 'a'],
+        (v) => v.x !== v.a,
+        'f has no value at x = a (the bottom is 0 there): pick an x close to a instead.',
+      ),
+      derive(
+        'N = a² + ab + c',
+        '{N} = {a}² + {a} × {b} + {c}',
+        'N',
+        ['a', 'b', 'c'],
+        (v) => topAt(v, v.a!),
+        (v) => `${signed(v.a!)}² + ${signed(v.a!)} × ${signed(v.b!)} + ${signed(v.c!)}`,
+        'Put x = a into the top. If it is 0, x − a is a factor; if not, the quotient is k/0.',
+      ),
+      rule(
+        'N = 0',
+        'The top is 0 at x = {a}: N = {N}',
+        ['N', 'a'],
+        (v) => v.N === 0,
+        (v) => {
+          // k/0: the sign of N over the sign of x − a on each side.
+          const left = v.N! > 0 ? '−∞' : '+∞';
+          const right = v.N! > 0 ? '+∞' : '−∞';
+          return `The top is ${formatNumber(v.N!)} at x = ${formatNumber(v.a!)}, not 0: k/0. f has a vertical asymptote there and no finite limit: ${left} from the left, ${right} from the right.`;
+        },
+      ),
+      withStep(
+        rel(
+          'L = 2a + b',
+          '{L} = 2 × {a} + {b}',
+          ['L', 'a', 'b', 'N'],
+          (v) => v.L! - (2 * v.a! + v.b!),
+          {
+            L: [
+              (v) => (v.N === 0 ? 2 * v.a! + v.b! : undefined),
+              (v) => `2 × ${signed(v.a!)} + ${signed(v.b!)}`,
+              'Factor: x² + bx + c = (x − a)(x + a + b). Cancel x − a, then put in x = a: a + a + b.',
+            ],
+          },
+          {
+            // The limit exists only when the top is 0 at a (0/0); k/0 has none.
+            branches: [
+              {
+                name: '0/0, so factor and cancel',
+                when: '{N} = 0',
+                applies: (v) => v.N === 0,
+                residual: (v) => v.L! - (2 * v.a! + v.b!),
+                solve: { L: (v) => 2 * v.a! + v.b! },
+              },
+              {
+                name: 'k/0, so no finite limit',
+                when: '{N} ≠ 0',
+                applies: (v) => v.N !== undefined && v.N !== 0,
+                residual: () => NaN,
+                solve: { L: () => undefined },
+              },
+            ],
+          },
+        ),
+        'L',
+        {
+          work: (v) =>
+            [-0.1, -0.01, 0.01].map((d) => {
+              const x = Number((v.a! + d).toPrecision(12));
+              return `x = ${formatNumber(x)}: f(x) = ${signed(x)} + ${signed(v.a!)} + ${signed(v.b!)} = ${formatNumber(Number((x + v.a! + v.b!).toPrecision(12)))}`;
+            }),
+        },
+      ),
+      rel(
+        'f(x) = (x² + bx + c) ÷ (x − a)',
+        '{y} = ({x}² + {b} × {x} + {c}) ÷ ({x} − {a})',
+        ['y', 'x', 'a', 'b', 'c'],
+        (v) => v.y! * (v.x! - v.a!) - topAt(v, v.x!),
+        {
+          y: [
+            (v) => (v.x === v.a ? undefined : topAt(v, v.x!) / (v.x! - v.a!)),
+            (v) =>
+              `(${signed(v.x!)}² + ${signed(v.b!)} × ${signed(v.x!)} + ${signed(v.c!)}) ÷ (${signed(v.x!)} − ${signed(v.a!)})`,
+            'Put x into the top and the bottom, then divide.',
+          ],
+        },
+      ),
+    ),
+    example: { a: 2, b: 1, c: -6, N: 0, L: 5, x: 1.9, y: 4.9 },
+    startWith: ['a', 'b', 'c', 'x'],
+    representation: {
+      kind: 'functionGraph',
+      family: 'rational',
+      top: [1, 'b', 'c'],
+      poles: ['a'],
+      limit: { x: 'a' },
+      at: { x: 'x', y: 'y' },
+      marks: ['asymptotes'],
+    },
+  },
   {
     // Calculus I → Derivatives and differentiation rules
     id: 'he.math.calc-1#1',

@@ -868,7 +868,12 @@ describe.each(pages(TESTED_MODULES))('module %s', (id, m) => {
     expect(m.relations.length).toBeGreaterThan(0);
     for (const r of m.relations) {
       expect(r.vars.filter((v) => !ids.includes(v))).toEqual([]);
-      const inTemplate = [...r.display.matchAll(/\{(\w+)\}/g)].map((x) => x[1]);
+      // A switching relation's case lines ("{N} = 0: 0/0") show the values its cases test.
+      const templates = [
+        r.display,
+        ...(r.branches ?? []).flatMap((b) => [b.when, b.display ?? '']),
+      ];
+      const inTemplate = templates.flatMap((t) => [...t.matchAll(/\{(\w+)\}/g)].map((x) => x[1]));
       // A data set's values are named by its count ("the {n} values"), not one by one.
       const listed = r.vars.filter((id) => !m.variables.find((v) => v.id === id)?.countedBy);
       expect([...new Set(inTemplate)].sort()).toEqual([...listed, ...(r.shows ?? [])].sort());

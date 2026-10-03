@@ -1,3 +1,8 @@
+import { formatNumber } from '@/engine/format';
+import type { Relation, Values, VariableDef } from '@/engine/types';
+
+import type { StepText } from '../types';
+
 /**
  * Relation helpers the college field files share (`college/<field>.ts`). K–12 helpers
  * (`div`, `whole`, …) are in `../helpers.ts`.
@@ -32,3 +37,108 @@ export const realRoots = (v: number, k: number): number[] | undefined => {
 
 /** d/dx of c·xⁿ = n·c·xⁿ⁻¹ (0 when n = 0, avoiding 0⁻¹). */
 export const powerRule = (c: number, n: number, x: number) => (n === 0 ? 0 : n * c * x ** (n - 1));
+
+// ── Relation builders (the same shapes Grade 12 uses in math/12.ts) ──
+
+type Rel = { relation: Relation; steps: Record<string, StepText> };
+type Solver = (v: Values) => number | number[] | undefined;
+
+/** A value: id, symbol, name, and anything else (range, unit, derived). */
+export const V = (
+  id: string,
+  symbol: string,
+  name: string,
+  extra: Partial<VariableDef> = {},
+): VariableDef => ({ id, symbol, name, ...extra });
+
+/** Rounded to 12 significant figures, so 0.1 + 0.2 is 0.3 when a value is worked out. */
+export const exact = (x: number) => Number(x.toPrecision(12));
+
+/** The relations and their step text, as a page spreads them. */
+export const rels = (...rs: Rel[]) => ({
+  relations: rs.map((r) => r.relation),
+  steps: Object.fromEntries(
+    rs.filter((r) => !r.relation.hidden).map((r) => [r.relation.id, r.steps]),
+  ),
+});
+
+/**
+ * One relation: its display (`{id}` for each value), the residual, and each rearrangement as
+ * [solver, expression, why]. Values it names without a rearrangement are never solved from it.
+ */
+export function rel(
+  id: string,
+  display: string,
+  vars: string[],
+  residual: (v: Values) => number,
+  solves: Record<string, [Solver, StepText['expr'], StepText['how']]>,
+  extra: Partial<Relation> = {},
+): Rel {
+  return {
+    relation: {
+      id,
+      display,
+      vars,
+      residual,
+      solve: {
+        ...Object.fromEntries(vars.filter((x) => !(x in solves)).map((x) => [x, () => undefined])),
+        ...Object.fromEntries(Object.entries(solves).map(([x, [f]]) => [x, f])),
+      },
+      ...extra,
+    },
+    steps: Object.fromEntries(
+      Object.entries(solves).map(([x, [, expr, how]]) => [x, { expr, how }]),
+    ),
+  };
+}
+
+/** x = f(inputs), worked one way only (undefined when f has no value there). */
+export function derive(
+  id: string,
+  display: string,
+  x: string,
+  inputs: string[],
+  f: (v: Values) => number | undefined,
+  expr: StepText['expr'],
+  how: StepText['how'],
+): Rel {
+  return rel(id, display, [x, ...inputs], (v) => v[x]! - (f(v) ?? NaN), {
+    [x]: [
+      (v) => {
+        const y = f(v);
+        return y === undefined || !Number.isFinite(y) ? undefined : exact(y);
+      },
+      expr,
+      how,
+    ],
+  });
+}
+
+/** A relation with more said under one of its steps (work lines, a note). */
+export const withStep = (r: Rel, id: string, more: Partial<StepText>): Rel => ({
+  ...r,
+  steps: { ...r.steps, [id]: { ...r.steps[id]!, ...more } },
+});
+
+/** A rule that only checks (never solved): `why` is the reason shown when it does not hold. */
+export const rule = (
+  id: string,
+  display: string,
+  vars: string[],
+  ok: (v: Values) => boolean,
+  why: string | ((v: Values) => string),
+): Rel => ({
+  relation: {
+    id,
+    constraint: true,
+    display,
+    vars,
+    residual: (v) => (ok(v) ? 0 : 1),
+    solve: {},
+    message: (v) => (ok(v) ? undefined : typeof why === 'string' ? why : why(v)),
+  },
+  steps: {},
+});
+
+/** A number as a line prints it, in brackets when negative: "(−2)". */
+export const signed = (x: number) => (x < 0 ? `(${formatNumber(x)})` : formatNumber(x));

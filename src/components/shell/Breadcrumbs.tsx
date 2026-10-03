@@ -43,6 +43,8 @@ export function Breadcrumbs({ trail, scroll = false }: { trail: Crumb[]; scroll?
     <View role="navigation" aria-label="Breadcrumb">
       {scroll ? (
         <ScrollView
+          // A sideways scroll on purpose (the layout check allows it: review-shots.mjs).
+          testID="wide-frame"
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.row}
