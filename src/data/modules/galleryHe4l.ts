@@ -6,6 +6,7 @@
  * HC165 `moodyChart` (he.engineering.fluid-mechanics#4, ME-P13).
  * HC166 `gearPair` (he.engineering.machine-design#3, ~train, ME-P18).
  * HC167 `printLayers` (he.engineering.manufacturing#2, ~cusp, ME-P20).
+ * HC168 `fitDiagram` (he.engineering.manufacturing#3, ~stack, ME-P21).
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 import { colebrookF } from '@/components/module/reps/he4lMath';
@@ -652,6 +653,192 @@ const PRINT_CUSP_SHALLOW = cuspDemo(
   10,
 );
 
+// ─── HC168: limits, fits and stack-ups (manufacturing#3, ~stack) ─────────────────
+
+/** lo ≤ hi, checked only (a zone's limits); `why` is the reason a conflict is refused. */
+const notAbove = (lo: string, hi: string, display: string, why: string): Rule => ({
+  relation: {
+    id: `${lo} ≤ ${hi}`,
+    constraint: true,
+    display,
+    vars: [lo, hi],
+    residual: (v: Values) => (v[lo]! <= v[hi]! + 1e-12 ? 0 : 1),
+    solve: {},
+    message: () => why,
+  },
+  steps: {},
+});
+
+const size = (id: string, symbol: string, name: string) =>
+  q(id, symbol, name, 'mm', 0.1, 10000, 0.001);
+const gap = (id: string, symbol: string, name: string) => q(id, symbol, name, 'mm', -10, 10, 0.001);
+
+/** A difference a = b − c, solvable for each. */
+const difference = (id: string, a: string, b: string, c: string, how: string) =>
+  rule(id, `{${a}} = {${b}} − {${c}}`, (v) => v[a]! - (v[b]! - v[c]!), {
+    [a]: [(v) => v[b]! - v[c]!, `{${b}} − {${c}}`, how],
+    [b]: [(v) => v[a]! + v[c]!, `{${a}} + {${c}}`, 'Add back what was taken away.'],
+    [c]: [(v) => v[b]! - v[a]!, `{${b}} − {${a}}`, 'Take the difference from the first.'],
+  });
+
+/** A hole–shaft fit from the four limits (sizes), at a basic size. */
+function fitDemo(
+  id: string,
+  title: string,
+  use: string,
+  basic: number,
+  ex: { Hmax: number; Hmin: number; smax: number; smin: number },
+): ModuleDef {
+  const Cmax = Number((ex.Hmax - ex.smin).toFixed(6));
+  const Cmin = Number((ex.Hmin - ex.smax).toFixed(6));
+  return demo(id, title, use, {
+    assumptions: [
+      `Basic size ${basic} mm; each part may be made anywhere between its limits.`,
+      'A negative clearance is an interference: the shaft is bigger than the hole.',
+      'The fit tolerance C_max − C_min is the hole’s tolerance plus the shaft’s.',
+    ],
+    variables: [
+      size('Hmax', 'D_max', 'Largest hole'),
+      size('Hmin', 'D_min', 'Smallest hole'),
+      size('smax', 'd_max', 'Largest shaft'),
+      size('smin', 'd_min', 'Smallest shaft'),
+      gap('Cmax', 'C_max', 'Largest clearance'),
+      gap('Cmin', 'C_min', 'Smallest clearance'),
+      gap('Tf', 'T_f', 'Fit tolerance'),
+    ],
+    ...rules(
+      notAbove(
+        'Hmin',
+        'Hmax',
+        '{Hmin} ≤ {Hmax}',
+        'The smallest hole cannot be bigger than the largest.',
+      ),
+      notAbove(
+        'smin',
+        'smax',
+        '{smin} ≤ {smax}',
+        'The smallest shaft cannot be bigger than the largest.',
+      ),
+      difference(
+        'C_max = D_max − d_min',
+        'Cmax',
+        'Hmax',
+        'smin',
+        'The loosest pair: the largest hole with the smallest shaft.',
+      ),
+      difference(
+        'C_min = D_min − d_max',
+        'Cmin',
+        'Hmin',
+        'smax',
+        'The tightest pair: the smallest hole with the largest shaft.',
+      ),
+      difference(
+        'T_f = C_max − C_min',
+        'Tf',
+        'Cmax',
+        'Cmin',
+        'How much the clearance can vary from one pair to the next.',
+      ),
+    ),
+    example: { ...ex, Cmax, Cmin, Tf: Cmax - Cmin },
+    startWith: ['Hmax', 'Hmin', 'smax', 'smin'],
+    pictureLabels: ['Tf'],
+    representation: {
+      kind: 'fitDiagram',
+      basic,
+      hole: { max: 'Hmax', min: 'Hmin' },
+      shaft: { max: 'smax', min: 'smin' },
+      maxClearance: 'Cmax',
+      minClearance: 'Cmin',
+    },
+  });
+}
+
+const FIT_CLEARANCE = fitDemo(
+  'g.he-fitDiagram-clearance',
+  'A clearance fit: 25 H7/g6',
+  'Use this for “A 25 mm hole is 25.000–25.021 and its shaft 24.980–24.993. Find C_max and C_min and name the fit.”',
+  25,
+  { Hmax: 25.021, Hmin: 25, smax: 24.993, smin: 24.98 },
+);
+
+const FIT_TRANSITION = fitDemo(
+  'g.he-fitDiagram-transition',
+  'A transition fit: 25 H7/k6',
+  'Use this for “A 25.000–25.021 hole takes a 25.002–25.015 shaft. Will it slide or press?”',
+  25,
+  { Hmax: 25.021, Hmin: 25, smax: 25.015, smin: 25.002 },
+);
+
+const FIT_INTERFERENCE = fitDemo(
+  'g.he-fitDiagram-interference',
+  'An interference fit: 25 H7/s6',
+  'Use this for “A 25.000–25.021 hole takes a 25.035–25.048 shaft. Find the interference.”',
+  25,
+  { Hmax: 25.021, Hmin: 25, smax: 25.048, smin: 25.035 },
+);
+
+/** A stack-up of four toleranced dimensions: worst case and RSS. */
+const FIT_STACK = (() => {
+  const ts = [0.05, 0.1, 0.05, 0.02];
+  const ids = ts.map((_, i) => `T${i + 1}`);
+  const subs = '₁₂₃₄';
+  const sum = (v: Values) => ids.reduce((s, x) => s + v[x]!, 0);
+  const sq = (v: Values) => Math.sqrt(ids.reduce((s, x) => s + v[x]! ** 2, 0));
+  return demo(
+    'g.he-fitDiagram-stack',
+    'Tolerance stack-up: worst case and RSS',
+    'Use this for “Four parts in a row are ±0.05, ±0.10, ±0.05 and ±0.02 mm. Find the gap’s worst-case and RSS tolerance.”',
+    {
+      assumptions: [
+        'Each dimension is its nominal size ± Tᵢ; the gap’s nominal size is not needed for its tolerance.',
+        'Worst case: every part at its limit at once. RSS: the parts vary at random and independently.',
+      ],
+      variables: [
+        ...ids.map((x, i) =>
+          q(x, `T${subs[i]}`, `Tolerance of dimension ${i + 1}`, 'mm', 0.0001, 10, 0.001),
+        ),
+        q('wc', 'T_wc', 'Worst-case tolerance', 'mm', 0.0001, 100, 0.001, { derived: true }),
+        q('rss', 'T_rss', 'RSS tolerance', 'mm', 0.0001, 100, 0.001, { derived: true }),
+      ],
+      ...rules(
+        rule(
+          'T_wc = ΣTᵢ',
+          `{wc} = ${ids.map((x) => `{${x}}`).join(' + ')}`,
+          (v) => v.wc! - sum(v),
+          {
+            wc: [
+              (v) => sum(v),
+              ids.map((x) => `{${x}}`).join(' + '),
+              'Every tolerance adds at its worst.',
+            ],
+          },
+        ),
+        rule(
+          'T_rss = √(ΣTᵢ²)',
+          `{rss} = √(${ids.map((x) => `{${x}}²`).join(' + ')})`,
+          (v) => v.rss! - sq(v),
+          {
+            rss: [
+              (v) => sq(v),
+              `√(${ids.map((x) => `{${x}}²`).join(' + ')})`,
+              'Random variations add as squares: the root of the sum of squares.',
+            ],
+          },
+        ),
+      ),
+      example: {
+        ...Object.fromEntries(ids.map((x, i) => [x, ts[i]!])),
+        wc: ts.reduce((s, t) => s + t, 0),
+        rss: Math.sqrt(ts.reduce((s, t) => s + t * t, 0)),
+      },
+      startWith: ids,
+      representation: { kind: 'fitDiagram', stack: ids, worst: 'wc', rss: 'rss' },
+    },
+  );
+})();
+
 export const HE4L_GALLERY_MODULES: ModuleDef[] = [
   MOODY_STEEL,
   MOODY_ROUGH,
@@ -664,6 +851,10 @@ export const HE4L_GALLERY_MODULES: ModuleDef[] = [
   PRINT_FEW,
   PRINT_CUSP,
   PRINT_CUSP_SHALLOW,
+  FIT_CLEARANCE,
+  FIT_TRANSITION,
+  FIT_INTERFERENCE,
+  FIT_STACK,
 ];
 
 export const HE4L_GALLERY_LAYOUTS: LayoutDef[] = [];

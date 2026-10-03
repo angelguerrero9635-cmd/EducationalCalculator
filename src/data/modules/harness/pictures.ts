@@ -2565,6 +2565,7 @@ export function repIssues(
     case 'moodyChart':
     case 'gearPair':
     case 'printLayers':
+    case 'fitDiagram':
       out.push(...he4lIssues(rep, val, byId)); // HC165–HC172
       break;
     case 'solidOfRevolution':

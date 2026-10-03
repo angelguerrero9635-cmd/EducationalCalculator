@@ -137,3 +137,13 @@ export const si4l = (unit: string | undefined) =>
 
 /** The stair-step cusp on a face at θ (degrees) from the build plate: c = t cos θ. */
 export const cuspOf = (t: number, thetaDeg: number) => t * Math.cos((thetaDeg * Math.PI) / 180);
+
+// ─── HC168: limits, fits and stack-ups ──────────────────────────────────────────
+
+/** The fit a pair of clearances makes: clearance (C_min ≥ 0), interference (C_max ≤ 0), else transition. */
+export const fitName = (cMax: number, cMin: number) =>
+  cMin >= -1e-12 ? 'clearance' : cMax <= 1e-12 ? 'interference' : 'transition';
+
+/** A stack-up's worst case ΣTᵢ and its root sum of squares √(ΣTᵢ²). */
+export const stackWorst = (ts: number[]) => ts.reduce((s, t) => s + Math.abs(t), 0);
+export const stackRss = (ts: number[]) => Math.sqrt(ts.reduce((s, t) => s + t * t, 0));

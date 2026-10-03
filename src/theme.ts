@@ -756,6 +756,9 @@ const light = {
   he4lLaser: '#EA580C',
   he4lRecoat: '#64748B',
   he4lFace: '#7C3AED',
+  /** HC168 fits: the hole's and the shaft's tolerance zones. */
+  he4lHole: '#93C5FD',
+  he4lShaft: '#FCD34D',
   he3iSpeed: '#0F766E',
   he3iFeed: '#C2410C',
   he3iIc: '#B42318',
@@ -1416,6 +1419,8 @@ const dark: Palette = {
   he4lLaser: '#FB923C',
   he4lRecoat: '#94A3B8',
   he4lFace: '#A78BFA',
+  he4lHole: '#1E4A7A',
+  he4lShaft: '#7A5B12',
   he3iSpeed: '#2DD4BF',
   he3iFeed: '#F59E0B',
   he3iIc: '#F87171',

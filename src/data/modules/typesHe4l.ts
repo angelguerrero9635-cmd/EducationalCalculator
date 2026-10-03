@@ -8,6 +8,7 @@
  *   Colebrook, the page's point on its lit curve.
  * - HC166 `gearPair` (ME-P18): spur gears in steel, a pair or a train of up to four.
  * - HC167 `printLayers` (ME-P20): a part sliced into layers; the stair and cusp on a slope.
+ * - HC168 `fitDiagram` (ME-P21): hole and shaft tolerance zones and the fit; a stack-up.
  */
 import type { NumOrVar } from './typesGraphs';
 
@@ -127,10 +128,57 @@ export const printLayersVars = (r: PrintLayersSpec): string[] =>
     r.buildTime,
   );
 
+// ─── HC168: fitDiagram (new kind) ───────────────────────────────────────────────
+
+/** A tolerance zone's two limits: sizes (default) or deviations from the basic size. */
+export interface FitZone {
+  max: NumOrVar;
+  min: NumOrVar;
+}
+
+/**
+ * HC168 (ME-P21): limits and fits, flat. The basic-size zero line, the hole's tolerance zone
+ * as a bar and the shaft's beside it, deviations enlarged (in μm on the scale), each limit
+ * labelled; C_max (largest hole less smallest shaft) and C_min (smallest hole less largest
+ * shaft) bracketed at the right, negative as interference; the fit named (clearance,
+ * transition or interference). `hole` and `shaft` give sizes, or deviations (ES, EI and es, ei)
+ * when `deviations` is set. With `stack` instead, a chain of dimensions each ±Tᵢ, and the
+ * tolerance budget below it: the worst case ΣTᵢ as a stacked bar and the RSS √(ΣTᵢ²) under it,
+ * to one scale. A "?" limit leaves its zone out; a "?" T leaves the budget out.
+ */
+export interface FitDiagramSpec {
+  kind: 'fitDiagram';
+  basic?: NumOrVar;
+  hole?: FitZone;
+  shaft?: FitZone;
+  deviations?: boolean;
+  maxClearance?: NumOrVar;
+  minClearance?: NumOrVar;
+  /** A stack-up: each dimension's ± tolerance. */
+  stack?: NumOrVar[];
+  worst?: NumOrVar;
+  rss?: NumOrVar;
+}
+
+/** The variable ids a fitDiagram spec names. */
+export const fitDiagramVars = (r: FitDiagramSpec): string[] =>
+  ids(
+    r.basic,
+    r.hole?.max,
+    r.hole?.min,
+    r.shaft?.max,
+    r.shaft?.min,
+    r.maxClearance,
+    r.minClearance,
+    ...(r.stack ?? []),
+    r.worst,
+    r.rss,
+  );
+
 // ─── Every group L spec ─────────────────────────────────────────────────────────
 
 /** The round 4 group L picture specs (listed once in `types.ts`). */
-export type He4lSpec = MoodyChartSpec | GearPairSpec | PrintLayersSpec;
+export type He4lSpec = MoodyChartSpec | GearPairSpec | PrintLayersSpec | FitDiagramSpec;
 
 /** The variable ids a group L spec names. */
 export function he4lSpecVars(r: He4lSpec): string[] {
@@ -141,5 +189,7 @@ export function he4lSpecVars(r: He4lSpec): string[] {
       return gearPairVars(r);
     case 'printLayers':
       return printLayersVars(r);
+    case 'fitDiagram':
+      return fitDiagramVars(r);
   }
 }

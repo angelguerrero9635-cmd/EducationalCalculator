@@ -4,11 +4,24 @@
  * page's values to agree. Called from `repIssues` in `pictures.ts`. Test-only.
  */
 import type { VariableDef } from '@/engine/types';
-import { cuspOf, MOODY_LAMINAR, si4l, trainValue } from '@/components/module/reps/he4lMath';
+import {
+  cuspOf,
+  MOODY_LAMINAR,
+  si4l,
+  stackRss,
+  stackWorst,
+  trainValue,
+} from '@/components/module/reps/he4lMath';
 
 import type { Representation } from '../types';
 import { siOf } from './picturesHs2c';
-import type { GearPairSpec, He4lSpec, MoodyChartSpec, PrintLayersSpec } from '../typesHe4l';
+import type {
+  FitDiagramSpec,
+  GearPairSpec,
+  He4lSpec,
+  MoodyChartSpec,
+  PrintLayersSpec,
+} from '../typesHe4l';
 
 type Val = (x: string | number) => number | undefined;
 type X = string | number | undefined;
@@ -16,7 +29,7 @@ type X = string | number | undefined;
 const close = (a: number, b: number, rel = 1e-6) =>
   Math.abs(a - b) <= rel * Math.max(1e-12, Math.abs(a), Math.abs(b));
 
-const HE4L_KINDS: string[] = ['moodyChart', 'gearPair', 'printLayers'];
+const HE4L_KINDS: string[] = ['moodyChart', 'gearPair', 'printLayers', 'fitDiagram'];
 const isHe4l = (r: Representation): r is He4lSpec => HE4L_KINDS.includes(r.kind);
 
 /** The group L checks, by kind. */
@@ -42,6 +55,8 @@ export function he4lIssues(
       return gearIssues(rep, get, si);
     case 'printLayers':
       return printIssues(rep, get, si);
+    case 'fitDiagram':
+      return fitIssues(rep, si);
   }
 }
 
@@ -194,5 +209,45 @@ function printIssues(
   }
   if (n !== undefined && tl !== undefined && T !== undefined && !close(T, n * tl))
     out.push(`layers: T = ${T} s is not n t_layer = ${n * tl} s`);
+  return out;
+}
+
+/**
+ * HC168: each zone's upper limit is not below its lower; C_max = largest hole − smallest shaft
+ * and C_min = smallest hole − largest shaft (the same in sizes or deviations); the worst case is
+ * ΣTᵢ and the RSS √(ΣTᵢ²).
+ */
+function fitIssues(rep: FitDiagramSpec, si: (x: X, unit: string) => number | undefined): string[] {
+  const out: string[] = [];
+  const mm = (x: X) => {
+    const v = si(x, 'mm');
+    return v === undefined ? undefined : v * 1000;
+  };
+  const zone = (z: FitDiagramSpec['hole'], what: string) => {
+    if (!z) return undefined;
+    const [hi, lo] = [mm(z.max), mm(z.min)];
+    if (hi === undefined || lo === undefined) return undefined;
+    if (hi < lo - 1e-12) out.push(`fit: the ${what}'s upper limit ${hi} is below its lower ${lo}`);
+    return { hi, lo };
+  };
+  const hole = zone(rep.hole, 'hole');
+  const shaft = zone(rep.shaft, 'shaft');
+  const near = (a: number, b: number) =>
+    Math.abs(a - b) <= 1e-9 * Math.max(1, Math.abs(a), Math.abs(b));
+  const [cMax, cMin] = [mm(rep.maxClearance), mm(rep.minClearance)];
+  if (hole && shaft && cMax !== undefined && !near(cMax, hole.hi - shaft.lo))
+    out.push(`fit: C_max = ${cMax} mm is not ES − ei = ${hole.hi - shaft.lo} mm`);
+  if (hole && shaft && cMin !== undefined && !near(cMin, hole.lo - shaft.hi))
+    out.push(`fit: C_min = ${cMin} mm is not EI − es = ${hole.lo - shaft.hi} mm`);
+  if (rep.stack) {
+    const ts = rep.stack.map(mm);
+    if (ts.every((t) => t !== undefined)) {
+      const [wc, rss] = [mm(rep.worst), mm(rep.rss)];
+      if (wc !== undefined && !close(wc, stackWorst(ts as number[])))
+        out.push(`stack: the worst case ${wc} is not ΣTᵢ = ${stackWorst(ts as number[])}`);
+      if (rss !== undefined && !close(rss, stackRss(ts as number[])))
+        out.push(`stack: the RSS ${rss} is not √(ΣTᵢ²) = ${stackRss(ts as number[])}`);
+    }
+  }
   return out;
 }

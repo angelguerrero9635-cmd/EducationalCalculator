@@ -88,4 +88,26 @@ export const HE4L_REQUESTS: PictureRequest[] = [
       'g.he-printLayers-cusp-shallow',
     ],
   },
+  {
+    ...ask(
+      'HC168',
+      'fitDiagram',
+      'Limits and fits: the basic-size zero line, the hole’s and the shaft’s tolerance zones, C_max and C_min dimensioned and the fit named; a stack-up chain with its worst-case and RSS budget',
+      [`${E}manufacturing#3`, `${E}manufacturing#3~stack`],
+      [
+        'From ME-P21. New kind (typesHe4l.ts FitDiagramSpec, reps/FitDiagram.tsx, fitName and the stack sums in reps/he4lMath.ts).',
+        "Fields: { kind: 'fitDiagram', basic? (the basic size), hole? { max, min }, shaft? { max, min } (sizes, or deviations ES, EI and es, ei when deviations: true), deviations?, maxClearance? (C_max), minClearance? (C_min), stack? (each dimension's ± tolerance), worst? (ΣTᵢ), rss? (√(ΣTᵢ²)) }.",
+        'Fit: deviation runs across, enlarged (a μm scale bar), the zero line at the basic size; the zones as bars with their limits at the ends; C_max (largest hole − smallest shaft) and C_min (smallest hole − largest shaft) dimensioned under them from extension lines, green when positive, red when negative; the fit (clearance, transition, interference) named at the top. Stack: one box per dimension with its ±T, the worst case as a stacked bar and the RSS bar under it to one scale. A "?" limit leaves its zone out; a "?" T leaves the budget out. No handles.',
+        "Examples: main (the plan's ES, EI, es, ei typed as sizes, so no example value is 0) { kind: 'fitDiagram', basic: 25, hole: { max: 'Hmax', min: 'Hmin' }, shaft: { max: 'smax', min: 'smin' }, maxClearance: 'Cmax', minClearance: 'Cmin' }, pictureLabels Tf (the fit tolerance C_max − C_min joins the two clearances in one page); a page typing deviations passes deviations: true. ~stack { kind: 'fitDiagram', stack: ['T1', 'T2', 'T3', 'T4'], worst: 'wc', rss: 'rss' }.",
+        'Harness (harness/picturesHe4l.ts): each zone’s upper limit ≥ its lower; C_max = ES − ei and C_min = EI − es; worst case ΣTᵢ; RSS √(ΣTᵢ²).',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-fitDiagram-clearance',
+      'g.he-fitDiagram-transition',
+      'g.he-fitDiagram-interference',
+      'g.he-fitDiagram-stack',
+    ],
+  },
 ];
