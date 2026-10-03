@@ -76,10 +76,7 @@ export function Sidebar() {
         onPress={() => router.navigate('/')}
         style={styles.brand}
       >
-        <Logo size={32} />
-        <Text style={[type.title3, styles.name, { color: c.text }]} numberOfLines={2}>
-          {SITE_NAME}
-        </Text>
+        <Logo size={32} variant="lockup" />
       </Pressable>
       <ScrollView contentContainerStyle={styles.scroll}>
         <View style={styles.group}>
@@ -129,7 +126,6 @@ const styles = StyleSheet.create({
     height: layout.topBar,
     paddingHorizontal: space.lg,
   },
-  name: { flex: 1 },
   scroll: { paddingHorizontal: space.md, paddingBottom: space.xl, gap: space.xl },
   group: { gap: 2 },
   groupHead: {

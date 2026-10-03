@@ -21,11 +21,8 @@ export function Footer() {
     <View style={[styles.footer, { borderTopColor: c.border }]}>
       <View style={styles.inner}>
         <View style={styles.brand}>
-          <Logo size={24} />
-          <View>
-            <Text style={[type.footnote, styles.name, { color: c.text }]}>{SITE_NAME}</Text>
-            <Text style={[type.footnote, { color: c.textMuted }]}>{SITE_SLOGAN}</Text>
-          </View>
+          <Logo size={28} variant="lockup" />
+          <Text style={[type.footnote, { color: c.textMuted }]}>{SITE_SLOGAN}</Text>
         </View>
         <View style={styles.links}>
           {LINKS.map((l) => (
@@ -65,7 +62,6 @@ const styles = StyleSheet.create({
     gap: space.lg,
   },
   brand: { flexDirection: 'row', alignItems: 'center', gap: space.sm, flexGrow: 1 },
-  name: { fontWeight: '700' },
   links: { flexDirection: 'row', gap: space.lg, flexWrap: 'wrap' },
   copy: { fontWeight: '500' },
 });

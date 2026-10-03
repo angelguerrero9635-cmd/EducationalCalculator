@@ -6,7 +6,6 @@ import { Button, LevelPicker, Logo } from '@/components';
 import { OnboardingWelcome } from '@/components/art';
 import { PageMeta } from '@/components/PageMeta';
 import { Text } from '@/components/Text';
-import { SITE_NAME, SITE_SLOGAN } from '@/config/site';
 import type { LevelKey } from '@/data/selectors';
 import { useSelectedLevels } from '@/state';
 import { layout, space, type, usePalette } from '@/theme';
@@ -35,15 +34,8 @@ export default function OnboardingScreen() {
         {step === 'welcome' ? (
           <View style={styles.welcome}>
             <View style={styles.column}>
-              <Logo size={72} />
-              <Text style={[type.overline, { color: c.textMuted }]}>{SITE_NAME}</Text>
-              <OnboardingWelcome width={320} />
-              <Text
-                accessibilityRole="header"
-                style={[type.display, styles.center, { color: c.text }]}
-              >
-                {SITE_SLOGAN}
-              </Text>
+              <Logo size={120} variant="stacked" />
+              <OnboardingWelcome width={300} />
               <Text style={[type.body, styles.center, { color: c.textMuted }]}>
                 Lessons with pictures you can move, from Kindergarten to university.
               </Text>
