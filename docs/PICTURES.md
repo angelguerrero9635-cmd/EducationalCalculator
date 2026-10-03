@@ -829,6 +829,8 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `scatter`          | `residualOf: { point: k }`               | a value picks the point, counted from 1: its residual lit and worked (H105)   |
 | `scatter`          | `pointsFrom: '<group>'`                  | points typed as a value group x₁, y₁, …; axes grow to hold them (HC97)        |
 | `scatter`          | `classes`, `pixel`, `distances`          | class means as stars, the pixel's distance to each, the nearest lit (HC139)   |
+| `sample`           | `pattern: { n, index, area?, … }`        | n points (300 drawn) placed to index R; R gauge; neighbour links (HC135)      |
+| `sample`           | `herd: { r0, immune, threshold? }`       | 100 people, immune shaded; a case’s R₀ arrows, to immune ones stopped (HC150) |
 | `boxPlot`          | `fences`; `second`, `labels`             | 1.5 × IQR fences, outliers as open dots; two box plots on one scale (H19)     |
 | `dotPlot`          | `sd: { id, kind? }` (with `mean`)        | the mean as a line and a band one standard deviation either side (H19)        |
 | `table`            | `twoWay: { rows, cols, cells, … }`       | two-way table: totals, lit cell/row/column, segmented bars, chi-square (H20)  |

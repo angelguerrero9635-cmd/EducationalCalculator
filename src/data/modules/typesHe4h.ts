@@ -7,6 +7,8 @@
  * - HC129 `catchment` (new kind): the rational method, Qₚ = CiA ÷ 3.6.
  * - HC133 `contourMap` (new kind): a hill's contours, a transect and its profile.
  * - HC134 `rasterGrid` (new kind): a raster's extent and cells; a 3 × 3 slope window.
+ * - HC135 `sample` `pattern`: points with a nearest-neighbour index R.
+ * - HC150 `sample` `herd`: 100 people, the immune shaded, one case's R₀ contacts.
  */
 import type { NumOrVar } from './typesGraphs';
 
@@ -105,13 +107,56 @@ export interface RasterWindowSpec {
   aspect?: string;
 }
 
+// ─── HC135, HC150: sample options ─────────────────────────────────────────────
+
+/**
+ * HC135 (EG-P27) `pattern`: `n` points (2 to 10,000; at most 300 drawn, in the same pattern) in
+ * a square of `area` km², seeded and placed clustered, random or dispersed so that their own
+ * nearest-neighbour index is within 0.05 of R = `index` (0 to 2.15). Under the square a gauge
+ * from clustered (0) through random (1) to dispersed (2.15) with R marked; a button shows each
+ * point's segment to its nearest neighbour. `observed` (d̄, km), `expected` (0.5 ÷ √(n ÷ A)),
+ * `se` and `z` are the page's values (checked); `seed` changes the draw.
+ */
+export interface SamplePatternSpec {
+  kind: 'sample';
+  pattern: {
+    n: NumOrVar;
+    index: NumOrVar;
+    area?: NumOrVar;
+    observed?: NumOrVar;
+    expected?: string;
+    se?: string;
+    z?: string;
+    seed?: number;
+  };
+}
+
+/**
+ * HC150 (B-P15) `herd`: 100 people in a 10 × 10 crowd, round(100p) of them immune (shaded; p is
+ * `immune`, a share 0 to 1, or a percent when its variable's unit is %), one case with arrows
+ * to round(R₀) contacts (at most 20); arrows to immune people stop short at a bar, the others
+ * reach and mark the person infected. round(p × contacts) arrows stop: R₀ × p to rounding. The
+ * caption works R = R₀(1 − p). `threshold` is the page's 1 − 1 ÷ R₀ (checked, a share or %).
+ */
+export interface SampleHerdSpec {
+  kind: 'sample';
+  herd: { r0: NumOrVar; immune: NumOrVar; threshold?: string };
+}
+
 /** Every spec of group H. */
-export type He4hSpec = CatchmentSpec | ContourMapSpec | RasterExtentSpec | RasterWindowSpec;
+export type He4hSpec =
+  | CatchmentSpec
+  | ContourMapSpec
+  | RasterExtentSpec
+  | RasterWindowSpec
+  | SamplePatternSpec
+  | SampleHerdSpec;
 
 const HE4H_KINDS = new Set<string>(['catchment', 'contourMap', 'rasterGrid']);
 
 /** Whether a picture spec is one of group H's (a new kind, or an option on `sample`). */
-export const isHe4hSpec = (r: { kind: string }): r is He4hSpec => HE4H_KINDS.has(r.kind);
+export const isHe4hSpec = (r: { kind: string }): r is He4hSpec =>
+  HE4H_KINDS.has(r.kind) || (r.kind === 'sample' && ('pattern' in r || 'herd' in r));
 
 /** The variable ids a group-H spec names. */
 export function he4hSpecVars(r: He4hSpec): string[] {
@@ -146,5 +191,17 @@ export function he4hSpecVars(r: He4hSpec): string[] {
             r.aspect,
           )
         : ids(r.width, r.height, r.cell, r.bytes, r.columns, r.rows, r.cells, r.size);
+    case 'sample':
+      return 'pattern' in r
+        ? ids(
+            r.pattern.n,
+            r.pattern.index,
+            r.pattern.area,
+            r.pattern.observed,
+            r.pattern.expected,
+            r.pattern.se,
+            r.pattern.z,
+          )
+        : ids(r.herd.r0, r.herd.immune, r.herd.threshold);
   }
 }

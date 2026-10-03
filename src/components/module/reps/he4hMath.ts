@@ -256,3 +256,153 @@ export function downhillBearing(ex: number, ny: number): number | undefined {
 /** The 8-point name of a bearing: N, NE, E … */
 export const aspectName = (b: number) =>
   ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'][Math.round(b / 45) % 8]!;
+
+// ─── HC135: sample pattern ─────────────────────────────────────────────────────
+
+/** The most points drawn; more are drawn as this many in the same pattern. */
+export const PATTERN_MAX = 300;
+
+/** The largest nearest-neighbour index (a perfect triangular lattice). */
+export const NNI_MAX = 2.15;
+
+/** Each point's nearest other point (its index). */
+export function nearestNeighbours(p: Pt[]): number[] {
+  return p.map((a, i) => {
+    let best = -1;
+    let bd = Infinity;
+    for (let j = 0; j < p.length; j++) {
+      if (j === i) continue;
+      const d = (a.x - p[j]!.x) ** 2 + (a.y - p[j]!.y) ** 2;
+      if (d < bd) {
+        bd = d;
+        best = j;
+      }
+    }
+    return best;
+  });
+}
+
+/** The nearest-neighbour index of points in the unit square: d̄ over 0.5 ÷ √(n ÷ 1). */
+export function nniOf(p: Pt[]) {
+  if (p.length < 2) return NaN;
+  const near = nearestNeighbours(p);
+  const mean =
+    p.reduce((s, a, i) => s + Math.hypot(a.x - p[near[i]!]!.x, a.y - p[near[i]!]!.y), 0) / p.length;
+  return mean / (0.5 / Math.sqrt(p.length));
+}
+
+/** A coordinate folded back into the square (mirrored at its edges), so nothing piles on a side. */
+const clamp01 = (x: number) => {
+  let y = Math.abs(x) % 2;
+  if (y > 1) y = 2 - y;
+  return Math.min(0.995, Math.max(0.005, y));
+};
+
+/** n points on a triangular lattice filling the square, each moved up to `jitter` spacings. */
+function latticePoints(n: number, jitter: number, seed: number): Pt[] {
+  // The largest equilateral spacing whose sites in the square number at least n.
+  const sites = (a: number) => {
+    const out: Pt[] = [];
+    const h = (a * Math.sqrt(3)) / 2;
+    for (let j = 0; (j + 0.5) * h <= 1; j++)
+      for (let i = 0; (i + 0.5 + (j % 2) / 2) * a <= 1; i++)
+        out.push({ x: (i + 0.5 + (j % 2) / 2) * a, y: (j + 0.5) * h });
+    return out;
+  };
+  let a = Math.sqrt(2 / (Math.sqrt(3) * n));
+  let grid = sites(a);
+  while (grid.length < n) {
+    a *= 0.99;
+    grid = sites(a);
+  }
+  const r = seeded(seed);
+  return grid.slice(0, n).map((p) => {
+    const t = 2 * Math.PI * r();
+    const d = jitter * a * Math.sqrt(r());
+    return { x: clamp01(p.x + d * Math.cos(t)), y: clamp01(p.y + d * Math.sin(t)) };
+  });
+}
+
+/** n points in clusters (about one parent per 10 points), spread σ around their parents. */
+function clusterPoints(n: number, sigma: number, seed: number): Pt[] {
+  const r = seeded(seed);
+  const parents = Array.from({ length: Math.max(1, Math.round(n / 10)) }, () => ({
+    x: 0.1 + 0.8 * r(),
+    y: 0.1 + 0.8 * r(),
+  }));
+  return Array.from({ length: n }, (_, k) => {
+    const p = parents[k % parents.length]!;
+    // Box–Muller: a normal step each way.
+    const u = Math.max(1e-12, r());
+    const v = r();
+    const g = Math.sqrt(-2 * Math.log(u));
+    return {
+      x: clamp01(p.x + sigma * g * Math.cos(2 * Math.PI * v)),
+      y: clamp01(p.y + sigma * g * Math.sin(2 * Math.PI * v)),
+    };
+  });
+}
+
+const PATTERN_CACHE = new Map<string, { points: Pt[]; R: number }>();
+
+/**
+ * n points in the unit square whose nearest-neighbour index is as near R as the search finds:
+ * a jittered lattice for dispersed R, clusters for clustered R, scattered points near 1, from
+ * fixed seeds, so the same n and R always draw the same points.
+ */
+export function patternPoints(n: number, R: number, seed = 135): { points: Pt[]; R: number } {
+  const key = `${n} ${R} ${seed}`;
+  const hit = PATTERN_CACHE.get(key);
+  if (hit) return hit;
+  let best = { points: [] as Pt[], R: NaN };
+  const tryOne = (p: Pt[]) => {
+    const r = nniOf(p);
+    if (!(Math.abs(r - R) >= Math.abs(best.R - R))) best = { points: p, R: r };
+  };
+  for (let s = 0; s < 3; s++) {
+    const sd = seed + 101 * s;
+    for (let k = 0; k <= 24; k++) tryOne(latticePoints(n, (k / 24) * 1.6, sd));
+    for (let k = 0; k <= 28; k++) tryOne(clusterPoints(n, 0.002 * 1.25 ** k, sd));
+    const r = seeded(sd + 7);
+    tryOne(Array.from({ length: n }, () => ({ x: clamp01(r()), y: clamp01(r()) })));
+    if (Math.abs(best.R - R) <= 0.02) break;
+  }
+  // Scaling about the centre scales every nearest distance alike: close the last gap that way
+  // when the scaled points still fit the square.
+  if (Number.isFinite(best.R) && best.R > 0 && Math.abs(best.R - R) > 0.01) {
+    const k = R / best.R;
+    const cx = best.points.reduce((t, q) => t + q.x, 0) / best.points.length;
+    const cy = best.points.reduce((t, q) => t + q.y, 0) / best.points.length;
+    const moved = best.points.map((q) => ({ x: cx + k * (q.x - cx), y: cy + k * (q.y - cy) }));
+    if (moved.every((q) => q.x >= 0.005 && q.x <= 0.995 && q.y >= 0.005 && q.y <= 0.995))
+      best = { points: moved, R: nniOf(moved) };
+  }
+  if (PATTERN_CACHE.size > 50) PATTERN_CACHE.clear();
+  PATTERN_CACHE.set(key, best);
+  return best;
+}
+
+// ─── HC150: sample herd ────────────────────────────────────────────────────────
+
+/** People drawn: a 10 × 10 crowd. */
+export const HERD_PEOPLE = 100;
+
+/** The most contacts drawn (R₀ up to 20). */
+export const HERD_MAX_CONTACTS = 20;
+
+/**
+ * Who is who for R₀ and an immune share p (0 to 1): the case (person 44, never immune);
+ * round(R₀) contacts (at most 20) from a fixed order; round(100p) immune (at most 99), of whom
+ * round(p × contacts) are contacts, so the stopped arrows are R₀ × p to rounding.
+ */
+export function herdPlan(r0: number, p: number) {
+  const index = 44;
+  const others = shuffled(HERD_PEOPLE, 150).filter((k) => k !== index);
+  const k = Math.max(0, Math.min(HERD_MAX_CONTACTS, Math.round(r0)));
+  const contacts = others.slice(0, k);
+  const rest = others.slice(k);
+  const M = Math.max(0, Math.min(HERD_PEOPLE - 1, Math.round(p * HERD_PEOPLE)));
+  const s = Math.max(Math.max(0, k - (HERD_PEOPLE - 1 - M)), Math.min(k, M, Math.round(p * k)));
+  const immune = [...contacts.slice(0, s), ...rest.slice(0, M - s)];
+  return { index, contacts, immune, stopped: s };
+}

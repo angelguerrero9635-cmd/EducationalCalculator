@@ -732,6 +732,10 @@ const light = {
   /** HC133: a contour map's paper and its brown contour lines. */
   he4hMapPaper: '#FBF6EA',
   he4hContour: '#9A5B2E',
+  /** HC150: an infection's case and the people it reaches; the immune. */
+  he4hCase: '#C2410C',
+  he4hCaseSoft: '#FED7AA',
+  he4hImmune: '#0F766E',
   satellitePanel: '#2B4C8C',
   /**
    * College HC81–HC84 (round 3, group I): a muscle and its tendon; a binary diagram's α, β and
@@ -1391,6 +1395,9 @@ const dark: Palette = {
   he4hLandDeep: '#2A3F25',
   he4hMapPaper: '#24221D',
   he4hContour: '#D9A36F',
+  he4hCase: '#FB923C',
+  he4hCaseSoft: '#7C2D12',
+  he4hImmune: '#2DD4BF',
   satellitePanel: '#3D5FA3',
   he3iMuscle: '#D45A50',
   he3iTendon: '#B9AC97',

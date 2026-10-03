@@ -25,6 +25,7 @@ const ask = (
 });
 
 const E = 'he.earth-science.';
+const B = 'he.biology.';
 const GEO = 'he.geography.';
 
 export const HE4H_REQUESTS: PictureRequest[] = [
@@ -85,5 +86,39 @@ export const HE4H_REQUESTS: PictureRequest[] = [
       'g.he-rasterGrid-window',
       'g.he-rasterGrid-window-gentle',
     ],
+  },
+  {
+    ...ask(
+      'HC135',
+      'sample',
+      'n points in a square placed (seeded) clustered, random or dispersed so that their own nearest-neighbour index is the page’s R, a gauge from clustered through random to dispersed with R marked, and each point’s segment to its nearest neighbour on tap',
+      [`${GEO}gis#3`],
+      [
+        'From EG-P27. New option on sample (typesHe4h.ts SamplePatternSpec, reps/SampleHe4h.tsx, the search in reps/he4hMath.ts); a sample without `pattern` is unchanged (Sample.tsx only leaves the group-H specs out of its type).',
+        "Fields: { kind: 'sample', pattern: { n (whole, 2 to 10,000), index (R), area? (km²), observed? (d̄, km), expected?, se?, z?, seed? } }.",
+        'At most 300 points are drawn (more are drawn as 300 in the same pattern, said in the caption). The points come from a search over jittered triangular lattices (dispersed), clusters (about one parent per 10 points) and scattered points, from fixed seeds, keeping the one whose index is nearest R; the caption gives the drawn points’ own index. A "?" n or R draws no points. No handles; the interim normalCurve can go.',
+        "Example: { kind: 'sample', pattern: { n: 'n', index: 'R', area: 'A', observed: 'd', expected: 'exp', se: 'SE', z: 'z' } }.",
+        'Harness (harness/picturesHe4h.ts): the drawn points’ own index (worked out point by point) is within 0.05 of R for R from 0.1 to 2; all in the square; expected = 0.5 ÷ √(n ÷ A); R = d̄ ÷ expected; SE = 0.26136 ÷ √(n² ÷ A); z = (d̄ − expected) ÷ SE.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: ['g.he-sample-pattern', 'g.he-sample-pattern-clustered', 'g.he-sample-pattern-many'],
+  },
+  {
+    ...ask(
+      'HC150',
+      'sample',
+      'A crowd of 100 people with the immune share shaded and one case: arrows to its R₀ contacts, those to immune people stopped short at a bar, the rest marking the person infected; the caption works R₀(1 − p)',
+      [`${B}microbiology#3`],
+      [
+        'From B-P15. New option on sample (typesHe4h.ts SampleHerdSpec, reps/SampleHe4h.tsx, who is who in reps/he4hMath.ts herdPlan).',
+        "Fields: { kind: 'sample', herd: { r0, immune (a share 0 to 1, or a percent when its variable's unit is %), threshold? (the page's 1 − 1 ÷ R₀, share or %) } }.",
+        'round(100p) people shaded immune (never the case); round(R₀) contacts (at most 20) from a fixed order, round(p × contacts) of them immune, so the stopped arrows are R₀ × p to rounding; a key names case, infected, immune, not immune and the stopped arrow. A "?" R₀ or p draws the crowd with no contacts or shading. No handles.',
+        "Example: { kind: 'sample', herd: { r0: 'R0', immune: 'pc', threshold: 'pc' } } (pc in %).",
+        'Harness (harness/picturesHe4h.ts): shaded = round(100p), the case not among them; contacts = round(R₀), the case not among them; stopped arrows within one of R₀ × p; threshold = 1 − 1 ÷ R₀.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: ['g.he-sample-herd', 'g.he-sample-herd-low', 'g.he-sample-herd-high'],
   },
 ];

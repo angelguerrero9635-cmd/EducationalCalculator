@@ -11,7 +11,11 @@ import {
   CATCHMENT_DROPS,
   contourCount,
   contourShare,
+  HERD_PEOPLE,
+  PATTERN_MAX,
   RASTER_MAX_DRAWN,
+  herdPlan,
+  patternPoints,
   downhillBearing,
   inside,
   rasterBlock,
@@ -28,7 +32,6 @@ const close = (a: number, b: number, rel = 1e-3) =>
   Math.abs(a - b) <= rel * Math.max(1e-9, Math.abs(a), Math.abs(b));
 
 export function he4hIssues(rep: He4hSpec, val: Val, byId: Map<string, VariableDef>): string[] {
-  void byId;
   const get = (v: string | number | undefined) => (v === undefined ? undefined : val(v));
   switch (rep.kind) {
     case 'catchment':
@@ -37,6 +40,8 @@ export function he4hIssues(rep: He4hSpec, val: Val, byId: Map<string, VariableDe
       return contourIssues(rep, get);
     case 'rasterGrid':
       return rasterIssues(rep, get);
+    case 'sample':
+      return 'pattern' in rep ? patternIssues(rep, get) : herdIssues(rep, get, byId);
   }
 }
 
@@ -213,5 +218,95 @@ function rasterIssues(
       if (a !== undefined && !close(a, b, 1e-6)) out.push(`raster: aspect ${a}° is not ${b}°`);
     }
   }
+  return out;
+}
+
+/**
+ * HC135: the drawn points' own nearest-neighbour index (worked out here, point by point) is
+ * within 0.05 of R for R from 0.1 to 2 (past that the caption says how near they come); at most
+ * 300 drawn, all in the square; expected = 0.5 ÷ √(n ÷ A); R = d̄ ÷ expected; SE = 0.26136 ÷
+ * √(n² ÷ A); z = (d̄ − expected) ÷ SE.
+ */
+function patternIssues(
+  rep: Extract<He4hSpec, { pattern: unknown }>,
+  get: (v: string | number | undefined) => number | undefined,
+): string[] {
+  const out: string[] = [];
+  const p = rep.pattern;
+  const [n, R, A, d] = [get(p.n), get(p.index), get(p.area), get(p.observed)];
+  if (n !== undefined && (n < 2 || Math.abs(n - Math.round(n)) > 1e-9))
+    out.push(`pattern: n = ${n} is not a whole number of at least 2`);
+  if (R !== undefined && R < 0) out.push(`pattern: R = ${R} is negative`);
+  const exp = n !== undefined && A !== undefined && A > 0 ? 0.5 / Math.sqrt(n / A) : undefined;
+  const e = get(p.expected);
+  if (e !== undefined && exp !== undefined && !close(e, exp, 1e-6))
+    out.push(`pattern: expected ${e} km is not 0.5 ÷ √(n ÷ A) = ${exp}`);
+  if (R !== undefined && d !== undefined && exp !== undefined && !close(R, d / exp, 1e-6))
+    out.push(`pattern: R = ${R} is not d̄ ÷ expected = ${d / exp}`);
+  if (n !== undefined && A !== undefined && A > 0 && d !== undefined && exp !== undefined) {
+    const se = 0.26136 / Math.sqrt((n * n) / A);
+    const SE = get(p.se);
+    if (SE !== undefined && !close(SE, se, 1e-6)) out.push(`pattern: SE ${SE} is not ${se}`);
+    const z = get(p.z);
+    if (z !== undefined && !close(z, (d - exp) / se, 1e-6))
+      out.push(`pattern: z ${z} is not ${(d - exp) / se}`);
+  }
+  if (n === undefined || R === undefined || n < 2 || R <= 0) return out;
+  const m = Math.min(PATTERN_MAX, Math.round(n));
+  const pts = patternPoints(m, R, p.seed).points;
+  if (pts.length !== m) out.push(`pattern: ${pts.length} points drawn, not ${m}`);
+  if (pts.some((q) => q.x < 0 || q.x > 1 || q.y < 0 || q.y > 1))
+    out.push('pattern: a point lies outside the square');
+  let sum = 0;
+  for (let i = 0; i < pts.length; i++) {
+    let best = Infinity;
+    for (let j = 0; j < pts.length; j++)
+      if (j !== i) best = Math.min(best, Math.hypot(pts[i]!.x - pts[j]!.x, pts[i]!.y - pts[j]!.y));
+    sum += best;
+  }
+  const own = sum / pts.length / (0.5 / Math.sqrt(pts.length));
+  if (R >= 0.1 && R <= 2 && Math.abs(own - R) > 0.05)
+    out.push(`pattern: the drawn points' index is ${own.toFixed(3)}, not within 0.05 of R = ${R}`);
+  return out;
+}
+
+/**
+ * HC150: round(100p) people shaded, never the case; round(R₀) contacts (to 20), none of them the
+ * case; the stopped arrows (contacts who are immune) are R₀ × p within one; the threshold is
+ * 1 − 1 ÷ R₀ (as a share or a percent, by its unit).
+ */
+function herdIssues(
+  rep: Extract<He4hSpec, { herd: unknown }>,
+  get: (v: string | number | undefined) => number | undefined,
+  byId: Map<string, VariableDef>,
+): string[] {
+  const out: string[] = [];
+  const h = rep.herd;
+  const pctOf = (v: string | number | undefined) =>
+    typeof v === 'string' && byId.get(v)?.unit === '%';
+  const r0 = get(h.r0);
+  const raw = get(h.immune);
+  const p = raw === undefined ? undefined : pctOf(h.immune) ? raw / 100 : raw;
+  if (r0 !== undefined && (r0 < 1 || r0 > 20)) out.push(`herd: R₀ = ${r0} is outside 1 to 20`);
+  if (p !== undefined && (p < 0 || p > 1))
+    out.push(`herd: the immune share ${p} is outside 0 to 1`);
+  const t = get(h.threshold);
+  if (t !== undefined && r0 !== undefined) {
+    const want = (1 - 1 / r0) * (pctOf(h.threshold) ? 100 : 1);
+    if (!close(t, want, 1e-6)) out.push(`herd: threshold ${t} is not 1 − 1 ÷ R₀ = ${want}`);
+  }
+  if (r0 === undefined || p === undefined || p < 0 || p > 1) return out;
+  const plan = herdPlan(r0, p);
+  const imm = new Set(plan.immune);
+  const M = Math.min(HERD_PEOPLE - 1, Math.round(100 * p));
+  if (imm.size !== M) out.push(`herd: ${imm.size} shaded, not round(100p) = ${M}`);
+  if (imm.has(plan.index)) out.push('herd: the case is shaded immune');
+  const k = Math.min(20, Math.round(r0));
+  if (plan.contacts.length !== k) out.push(`herd: ${plan.contacts.length} contacts, not ${k}`);
+  if (plan.contacts.includes(plan.index)) out.push('herd: the case is its own contact');
+  const stopped = plan.contacts.filter((c) => imm.has(c)).length;
+  if (stopped !== plan.stopped) out.push('herd: the stopped arrows are miscounted');
+  if (Math.abs(stopped - Math.min(r0, 20) * p) > 1 + 1e-9)
+    out.push(`herd: ${stopped} arrows stop, not about R₀ × p = ${r0 * p}`);
   return out;
 }

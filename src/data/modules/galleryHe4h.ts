@@ -4,6 +4,8 @@
  * HC129: `catchment` (he.earth-science.hydrology#1).
  * HC133: `contourMap` (he.geography.physical-geography#2).
  * HC134: `rasterGrid` `extent` (he.geography.gis#0) and `window` (he.geography.gis#2).
+ * HC135: `sample` `pattern` (he.geography.gis#3).
+ * HC150: `sample` `herd` (he.biology.microbiology#3).
  */
 import type { Values, VariableDef } from '@/engine/types';
 
@@ -594,7 +596,194 @@ const WINDOW_GENTLE = windowPage(
   { c: 30, zE: 250, zW: 254, zN: 249, zS: 251 },
 );
 
+// ─── HC135: nearest-neighbour analysis (gis#3) ─────────────────────────────────
+
+const NN_RULES = [
+  rule(
+    'exp',
+    '{exp} = 0.5 ÷ √({n} ÷ {A})',
+    ['exp', 'n', 'A'],
+    (v) => v.exp! - 0.5 / Math.sqrt(v.n! / v.A!),
+    {
+      exp: [
+        (v) => 0.5 / Math.sqrt(v.n! / v.A!),
+        '0.5 ÷ √({n} ÷ {A})',
+        'Random points at this density sit, on average, half the square root of the area per point apart.',
+      ],
+      A: [
+        (v) => v.n! * (2 * v.exp!) ** 2,
+        '{n} × (2 × {exp})²',
+        'The area that spreads n points to this expected distance.',
+      ],
+    },
+  ),
+  rule('R', '{R} = {d} ÷ {exp}', ['R', 'd', 'exp'], (v) => v.R! - v.d! / v.exp!, {
+    R: [(v) => v.d! / v.exp!, '{d} ÷ {exp}', 'The observed mean distance over the random one.'],
+    d: [(v) => v.R! * v.exp!, '{R} × {exp}', 'The index times the random mean distance.'],
+  }),
+  rule(
+    'SE',
+    '{SE} = 0.26136 ÷ √({n}² ÷ {A})',
+    ['SE', 'n', 'A'],
+    (v) => v.SE! - 0.26136 / Math.sqrt(v.n! ** 2 / v.A!),
+    {
+      SE: [
+        (v) => 0.26136 / Math.sqrt(v.n! ** 2 / v.A!),
+        '0.26136 ÷ √({n}² ÷ {A})',
+        'The spread of the mean distance among random patterns of n points.',
+      ],
+    },
+  ),
+  rule(
+    'z',
+    '{z} = ({d} − {exp}) ÷ {SE}',
+    ['z', 'd', 'exp', 'SE'],
+    (v) => v.z! - (v.d! - v.exp!) / v.SE!,
+    {
+      z: [
+        (v) => (v.d! - v.exp!) / v.SE!,
+        '({d} − {exp}) ÷ {SE}',
+        'How many standard errors the observed distance is from random; past ±1.96 is significant at 5%.',
+      ],
+    },
+  ),
+];
+
+const nnPage = (id: string, title: string, use: string, typed: Values) =>
+  page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'R near 1 is random; toward 0, clustered; up to 2.15, dispersed (a perfect lattice).',
+      'Edge effects are ignored: points near the border have fewer neighbours.',
+      'The drawn points are one pattern with this R, seeded; the page’s points are its own.',
+    ],
+    variables: [
+      num('n', 'n', 'Points', undefined, 2, 10000, { integer: true, step: 1 }),
+      num('A', 'A', 'Study area', 'km²', 0.01, 1000000, { step: 1 }),
+      num('d', 'd̄', 'Observed mean distance', 'km', 0.0001, 10000, { step: 0.01 }),
+      num('exp', 'd̄ₑ', 'Expected mean distance', 'km', 0, 1e6, { derived: true }),
+      num('R', 'R', 'Nearest-neighbour index', undefined, 0, 1e6, { derived: true }),
+      num('SE', 'SE', 'Standard error', 'km', 0, 1e6, { derived: true }),
+      num('z', 'z', 'z-score', undefined, -1e6, 1e6, { derived: true }),
+    ],
+    rules: NN_RULES,
+    example: example(
+      typed,
+      ['exp', (v) => 0.5 / Math.sqrt(v.n! / v.A!)],
+      ['R', (v) => v.d! / v.exp!],
+      ['SE', (v) => 0.26136 / Math.sqrt(v.n! ** 2 / v.A!)],
+      ['z', (v) => (v.d! - v.exp!) / v.SE!],
+    ),
+    startWith: ['n', 'A', 'd'],
+    representation: {
+      kind: 'sample',
+      pattern: { n: 'n', index: 'R', area: 'A', observed: 'd', expected: 'exp', se: 'SE', z: 'z' },
+    },
+  });
+
+const PATTERN = nnPage(
+  'g.he-sample-pattern',
+  'Nearest-neighbour index of a point pattern',
+  'Use this for “50 points in 100 km² have a mean nearest-neighbour distance of 0.9 km. Clustered, random or dispersed?”',
+  { n: 50, A: 100, d: 0.9 },
+);
+
+const PATTERN_CLUSTERED = nnPage(
+  'g.he-sample-pattern-clustered',
+  'A clustered point pattern',
+  'Use this for “120 wells in 400 km² average 0.55 km to the nearest well. Are they clustered?”',
+  { n: 120, A: 400, d: 0.55 },
+);
+
+/** More points than are drawn: 300 shown in the same pattern. */
+const PATTERN_MANY = nnPage(
+  'g.he-sample-pattern-many',
+  'Nearest neighbours of a thousand points',
+  'Use this for “1,000 trees in 50 km² average 0.08 km apart. What is R, and is it significant?”',
+  { n: 1000, A: 50, d: 0.08 },
+);
+
+// ─── HC150: herd immunity (microbiology#3) ────────────────────────────────────
+
+const HERD_RULES = [
+  rule('pc', '{pc} = 100 × (1 − 1 ÷ {R0})', ['pc', 'R0'], (v) => v.pc! - 100 * (1 - 1 / v.R0!), {
+    pc: [
+      (v) => 100 * (1 - 1 / v.R0!),
+      '100 × (1 − 1 ÷ {R0})',
+      'With this share immune, each case meets on average one person it can infect: R₀(1 − p) = 1.',
+    ],
+    R0: [(v) => 1 / (1 - v.pc! / 100), '1 ÷ (1 − {pc} ÷ 100)', 'The R₀ whose threshold this is.'],
+  }),
+  rule('Vc', '{Vc} = 100 × {pc} ÷ {E}', ['Vc', 'pc', 'E'], (v) => v.Vc! - (100 * v.pc!) / v.E!, {
+    Vc: [
+      (v) => (100 * v.pc!) / v.E!,
+      '100 × {pc} ÷ {E}',
+      'A vaccine that protects only E% of those given it must reach more people than the threshold.',
+    ],
+    E: [
+      (v) => (100 * v.pc!) / v.Vc!,
+      '100 × {pc} ÷ {Vc}',
+      'The effectiveness this coverage needs.',
+    ],
+  }),
+];
+
+const herdPage = (id: string, title: string, use: string, typed: Values) =>
+  page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'People mix at random, and immunity (from vaccine or past infection) blocks infection fully.',
+      'R₀ counts the people one case would infect in a population with no immunity.',
+      'Coverage above 100% means vaccination alone cannot reach the threshold.',
+    ],
+    variables: [
+      num('R0', 'R₀', 'Basic reproduction number', undefined, 1, 20, { step: 0.1 }),
+      num('pc', 'p_c', 'Herd immunity threshold', '%', 0, 100, { derived: true }),
+      num('E', 'E', 'Vaccine effectiveness', '%', 1, 100, { step: 1 }),
+      num('Vc', 'V_c', 'Coverage needed', '%', 0, 10000, { derived: true }),
+    ],
+    rules: HERD_RULES,
+    example: example(
+      typed,
+      ['pc', (v) => 100 * (1 - 1 / v.R0!)],
+      ['Vc', (v) => (100 * v.pc!) / v.E!],
+    ),
+    startWith: ['R0', 'E'],
+    representation: { kind: 'sample', herd: { r0: 'R0', immune: 'pc', threshold: 'pc' } },
+  });
+
+const HERD = herdPage(
+  'g.he-sample-herd',
+  'Herd immunity threshold and vaccine coverage',
+  'Use this for “Measles has R₀ = 12 and the vaccine is 95% effective. What coverage stops it spreading?”',
+  { R0: 12, E: 95 },
+);
+
+const HERD_LOW = herdPage(
+  'g.he-sample-herd-low',
+  'Herd immunity for a slow-spreading disease',
+  'Use this for “A flu strain has R₀ = 1.5 and a 60% effective vaccine. What share must be vaccinated?”',
+  { R0: 1.5, E: 60 },
+);
+
+const HERD_HIGH = herdPage(
+  'g.he-sample-herd-high',
+  'Herd immunity at R₀ = 20',
+  'Use this for “R₀ = 20 and the vaccine is 97% effective. Can vaccination alone reach the threshold?”',
+  { R0: 20, E: 97 },
+);
+
 export const HE4H_GALLERY_MODULES: ModuleDef[] = [
+  PATTERN,
+  PATTERN_CLUSTERED,
+  PATTERN_MANY,
+  HERD,
+  HERD_LOW,
+  HERD_HIGH,
   RASTER,
   RASTER_FINE,
   RASTER_SITE,

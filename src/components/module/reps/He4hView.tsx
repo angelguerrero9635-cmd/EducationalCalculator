@@ -8,6 +8,7 @@ import type { Calculator } from '../useCalculator';
 import { Catchment } from './Catchment';
 import { ContourMap } from './ContourMap';
 import { RasterGrid } from './RasterGrid';
+import { SampleHe4h } from './SampleHe4h';
 
 export function He4hView({ spec, calc }: { spec: He4hSpec; calc: Calculator }) {
   switch (spec.kind) {
@@ -17,5 +18,7 @@ export function He4hView({ spec, calc }: { spec: He4hSpec; calc: Calculator }) {
       return <ContourMap spec={spec} calc={calc} />; // HC133
     case 'rasterGrid':
       return <RasterGrid spec={spec} calc={calc} />; // HC134
+    case 'sample':
+      return <SampleHe4h spec={spec} calc={calc} />; // HC135, HC150
   }
 }
