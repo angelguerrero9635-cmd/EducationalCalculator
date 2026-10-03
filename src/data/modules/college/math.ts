@@ -210,6 +210,96 @@ export const COLLEGE_MATH_MODULES: ModuleDef[] = [
     },
   },
   {
+    // Calculus I → Limits and continuity: the intermediate value theorem and one bisection step.
+    id: 'he.math.calc-1#0~ivt',
+    title: 'The intermediate value theorem',
+    use: 'Use this for “Show that x³ + x − 1 = 0 has a root between 0 and 1.”',
+    assumptions: [
+      'f(x) = x³ + px + q is a polynomial, so it is continuous on every interval [a, b].',
+      'Intermediate value theorem: if f(a) and f(b) have opposite signs, f(c) = 0 for some c between a and b.',
+      'One bisection step: check the midpoint m and keep the half where the sign still changes.',
+    ],
+    variables: [
+      V('p', 'p', 'Coefficient of x', { min: -20, max: 20, step: 0.5 }),
+      V('q', 'q', 'Constant', { min: -50, max: 50, step: 0.5 }),
+      V('a', 'a', 'Left end', { min: -10, max: 10, step: 0.5 }),
+      V('b', 'b', 'Right end', { min: -10, max: 10, step: 0.5 }),
+      V('fa', 'f(a)', 'f at the left end', { min: -2000, max: 2000, step: 0.0001, derived: true }),
+      V('fb', 'f(b)', 'f at the right end', { min: -2000, max: 2000, step: 0.0001, derived: true }),
+      V('m', 'm', 'Midpoint', { min: -10, max: 10, step: 0.0001, derived: true }),
+      V('fm', 'f(m)', 'f at the midpoint', { min: -2000, max: 2000, step: 0.0001, derived: true }),
+    ],
+    ...rels(
+      rule(
+        'a < b',
+        'The left end {a} is below the right end {b}',
+        ['a', 'b'],
+        (v) => v.a! < v.b!,
+        'Pick a left end a below the right end b.',
+      ),
+      derive(
+        'f(a) = a³ + pa + q',
+        '{fa} = {a}³ + {p} × {a} + {q}',
+        'fa',
+        ['a', 'p', 'q'],
+        (v) => v.a! ** 3 + v.p! * v.a! + v.q!,
+        (v) => `${signed(v.a!)}³ + ${signed(v.p!)} × ${signed(v.a!)} + ${signed(v.q!)}`,
+        'Put x = a into f.',
+      ),
+      derive(
+        'f(b) = b³ + pb + q',
+        '{fb} = {b}³ + {p} × {b} + {q}',
+        'fb',
+        ['b', 'p', 'q'],
+        (v) => v.b! ** 3 + v.p! * v.b! + v.q!,
+        (v) => `${signed(v.b!)}³ + ${signed(v.p!)} × ${signed(v.b!)} + ${signed(v.q!)}`,
+        'Put x = b into f.',
+      ),
+      rule(
+        'f(a) × f(b) < 0',
+        'The signs of {fa} and {fb} differ',
+        ['fa', 'fb'],
+        (v) => v.fa! * v.fb! <= 0,
+        'f(a) and f(b) have the same sign, so the theorem promises nothing here: there may be no root, or an even number. Try other ends.',
+      ),
+      derive(
+        'm = (a + b) ÷ 2',
+        '{m} = ({a} + {b}) ÷ 2',
+        'm',
+        ['a', 'b'],
+        (v) => (v.a! + v.b!) / 2,
+        (v) => `(${signed(v.a!)} + ${signed(v.b!)}) ÷ 2`,
+        'Halve the interval at its midpoint.',
+      ),
+      derive(
+        'f(m) = m³ + pm + q',
+        '{fm} = {m}³ + {p} × {m} + {q}',
+        'fm',
+        ['m', 'p', 'q'],
+        (v) => v.m! ** 3 + v.p! * v.m! + v.q!,
+        (v) => `${signed(v.m!)}³ + ${signed(v.p!)} × ${signed(v.m!)} + ${signed(v.q!)}`,
+        (v) =>
+          v.fm === 0
+            ? 'f(m) = 0: the midpoint is the root.'
+            : v.fm! < 0 === v.fa! < 0
+              ? `f(m) has the sign of f(a), so the root is in [${formatNumber(v.m!)}, ${formatNumber(v.b!)}].`
+              : `f(m) has the sign of f(b), so the root is in [${formatNumber(v.a!)}, ${formatNumber(v.m!)}].`,
+      ),
+    ),
+    example: { p: 1, q: -1, a: 0, b: 1, fa: -1, fb: 1, m: 0.5, fm: -0.375 },
+    startWith: ['p', 'q', 'a', 'b'],
+    representation: {
+      kind: 'functionGraph',
+      family: 'polynomial',
+      coefficients: [1, 0, 'p', 'q'],
+      input: 'x',
+      at: { x: 'm', y: 'fm' },
+      // The interval [a, b] the theorem is about.
+      shade: { from: 'a', to: 'b' },
+      marks: ['zeros'],
+    },
+  },
+  {
     // Calculus I → Derivatives and differentiation rules
     id: 'he.math.calc-1#1',
     use: 'Use this for “Find the slope of y = 3x⁴ at x = −1.”',
