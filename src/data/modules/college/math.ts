@@ -326,6 +326,12 @@ const linearAnti = (v: Values) => {
   return `(${polyForm([v.m!, v.c!])})${raised(v.n! + 1)}${d === 1 ? '' : ` ÷ ${signed(d)}`}`;
 };
 
+/** ∫ from a to b of m ÷ (mx + c) dx = ln|u(b)| − ln|u(a)|, with u = mx + c. */
+const logIntegral = (v: Values) => Math.log(Math.abs(v.ub!)) - Math.log(Math.abs(v.ua!));
+
+/** True when the inside mx + c is 0 at a, at b or between them: the integrand has its pole there. */
+const poleInside = (v: Values) => lineAt(v, v.a!) * lineAt(v, v.b!) <= 0;
+
 export const COLLEGE_MATH_MODULES: ModuleDef[] = [
   {
     // Calculus I → Limits and continuity: a quotient at x = a, 0/0 or k/0.
@@ -3049,6 +3055,125 @@ export const COLLEGE_MATH_MODULES: ModuleDef[] = [
       family: 'expr',
       expr: '(m * x + c)^n',
       window: { x: ['a', 'b'] },
+      area: { from: 'a', to: 'b', value: 'I', signed: true },
+    },
+  },
+  {
+    // Calculus I → u-substitution: ∫ from a to b of m ÷ (mx + c) dx with u = mx + c, the n = −1 case.
+    id: 'he.math.calc-1#4~log',
+    title: 'A log result: m ÷ (mx + c)',
+    use: 'Use this for “Evaluate the integral of 3 ÷ (3x − 1) from 1 to 2.”',
+    assumptions: [
+      'Pick u as the bottom, u = mx + c. Then du = m dx is exactly the top, so the integral is ∫ 1 ÷ u du.',
+      'The power rule fails for u⁻¹ (it would divide by 0). Instead an antiderivative of 1 ÷ u is ln|u|, so the indefinite answer is ln|mx + c| + C.',
+      'Change the limits with u: x = a becomes u(a) = ma + c and x = b becomes u(b) = mb + c.',
+      'The bottom cannot be 0 from a to b: m ≠ 0, and u(a) and u(b) have the same sign. The chart writes m ÷ (mx + c) as 1 ÷ (x + c ÷ m).',
+    ],
+    variables: [
+      V('m', 'm', 'Slope of the inside u = mx + c', { min: -10, max: 10, step: 0.1 }),
+      V('c', 'c', 'Constant of the inside', { min: -10, max: 10, step: 0.1 }),
+      V('a', 'a', 'Lower limit', { min: -10, max: 10, step: 0.1 }),
+      V('b', 'b', 'Upper limit', { min: -10, max: 10, step: 0.1 }),
+      V('ua', 'u(a)', 'New lower limit, ma + c', {
+        min: -110,
+        max: 110,
+        step: 0.0001,
+        derived: true,
+      }),
+      V('ub', 'u(b)', 'New upper limit, mb + c', {
+        min: -110,
+        max: 110,
+        step: 0.0001,
+        derived: true,
+      }),
+      V('I', 'I', 'Value of the integral', { min: -50, max: 50, derived: true }),
+      V('p', 'p', 'Pole of the integrand', { min: -1000, max: 1000, derived: true, hidden: true }),
+    ],
+    ...rels(
+      rule(
+        'm ≠ 0',
+        'The slope of the inside {m} is not 0',
+        ['m'],
+        (v) => v.m !== 0,
+        'With m = 0 the top is 0 and the inside is a constant: pick another m.',
+      ),
+      rule(
+        'no pole from a to b',
+        'The bottom {m}x + {c} is not 0 from {a} to {b}',
+        ['m', 'c', 'a', 'b'],
+        (v) => v.m === 0 || !poleInside(v),
+        (v) =>
+          `The bottom is 0 at x = ${formatNumber(exact(-v.c! / v.m!))}, at or between the limits: the integral is improper there. Move a and b to one side of it.`,
+      ),
+      derive(
+        'u(a) = ma + c',
+        '{ua} = {m} × {a} + {c}',
+        'ua',
+        ['m', 'a', 'c'],
+        (v) => lineAt(v, v.a!),
+        '{m} × {a} + {c}',
+        'Put the lower limit x = a into the inside, u = mx + c: the integral in u starts there.',
+      ),
+      derive(
+        'u(b) = mb + c',
+        '{ub} = {m} × {b} + {c}',
+        'ub',
+        ['m', 'b', 'c'],
+        (v) => lineAt(v, v.b!),
+        '{m} × {b} + {c}',
+        'Put the upper limit x = b into the inside: the integral in u ends there.',
+      ),
+      withStep(
+        derive(
+          'I = ln|u(b)| − ln|u(a)|',
+          '{I} = ln|{ub}| − ln|{ua}|',
+          'I',
+          ['ub', 'ua'],
+          (v) => (v.ua! * v.ub! > 0 ? logIntegral(v) : undefined),
+          (v) => `ln|${formatNumber(v.ub!)}| − ln|${formatNumber(v.ua!)}|`,
+          'Since du = m dx, the top m dx is du: the integral becomes the integral of 1 ÷ u from u(a) to u(b). An antiderivative of 1 ÷ u is ln|u|.',
+        ),
+        'I',
+        {
+          // The integral in x and in u with the new limits, then back in x (when short to write).
+          work: (v) => {
+            if (![v.a!, v.b!, v.ua!, v.ub!].every(tidy)) return [];
+            const [a, b] = [formatNumber(v.a!), formatNumber(v.b!)];
+            const [ua, ub] = [formatNumber(exact(v.ua!)), formatNumber(exact(v.ub!))];
+            const I = formatNumber(exact(v.I!));
+            const inside = polyForm([v.m!, v.c!]);
+            return [
+              `∫ from ${a} to ${b} of (${formatNumber(v.m!)} ÷ (${inside})) dx = ∫ from ${ua} to ${ub} of (1 ÷ u) du`,
+              `∫ from ${ua} to ${ub} of (1 ÷ u) du = [ln|u|] from ${ua} to ${ub} = ${I}`,
+              `[ln|${inside}|] from ${a} to ${b} = ${I}`,
+            ];
+          },
+        },
+      ),
+      // The pole −c ÷ m places the curve only while it lies outside [a, b] (no curve otherwise).
+      hide(
+        derive(
+          'p = −c ÷ m',
+          '{p} = −{c} ÷ {m}, outside {a} to {b}',
+          'p',
+          ['c', 'm', 'a', 'b'],
+          (v) => (v.m === 0 || poleInside(v) ? undefined : -v.c! / v.m!),
+          '−{c} ÷ {m}',
+          'The bottom mx + c is 0 at x = −c ÷ m.',
+        ),
+      ),
+    ),
+    // ∫ from 1 to 3 of 2 ÷ (2x + 1) dx: u = 2x + 1 runs from 3 to 7 and 2 dx = du, so
+    // I = [ln|u|] from 3 to 7 = ln 7 − ln 3 = ln(7/3) = 0.8473.
+    example: { m: 2, c: 1, a: 1, b: 3, ua: 3, ub: 7, I: Math.log(7 / 3), p: -0.5 },
+    startWith: ['m', 'c', 'a', 'b'],
+    // y = m ÷ (mx + c) = 1 ÷ (x − p), its asymptote at the pole p, a to b shaded and ∫ written.
+    representation: {
+      kind: 'functionGraph',
+      family: 'rational',
+      a: 1,
+      zeros: [],
+      poles: ['p'],
       area: { from: 'a', to: 'b', value: 'I', signed: true },
     },
   },
