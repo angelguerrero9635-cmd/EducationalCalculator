@@ -6,6 +6,7 @@
  * HC134: `rasterGrid` `extent` (he.geography.gis#0) and `window` (he.geography.gis#2).
  * HC135: `sample` `pattern` (he.geography.gis#3).
  * HC150: `sample` `herd` (he.biology.microbiology#3).
+ * HC136: `populationPyramid` (he.geography.human-geography#0~dependency).
  */
 import type { Values, VariableDef } from '@/engine/types';
 
@@ -777,7 +778,134 @@ const HERD_HIGH = herdPage(
   { R0: 20, E: 97 },
 );
 
+// ─── HC136: dependency ratio (human-geography#0~dependency) ───────────────────
+
+const PYRAMID_RULES = [
+  rule(
+    'youth',
+    '{youth} = 100 × {Y} ÷ {Wk}',
+    ['youth', 'Y', 'Wk'],
+    (v) => v.youth! - (100 * v.Y!) / v.Wk!,
+    {
+      youth: [
+        (v) => (100 * v.Y!) / v.Wk!,
+        '100 × {Y} ÷ {Wk}',
+        'Children under 15 for every 100 people aged 15 to 64.',
+      ],
+      Y: [
+        (v) => (v.youth! * v.Wk!) / 100,
+        '{youth} × {Wk} ÷ 100',
+        'The youth ratio’s share of the working ages.',
+      ],
+    },
+  ),
+  rule(
+    'oldr',
+    '{oldr} = 100 × {O} ÷ {Wk}',
+    ['oldr', 'O', 'Wk'],
+    (v) => v.oldr! - (100 * v.O!) / v.Wk!,
+    {
+      oldr: [
+        (v) => (100 * v.O!) / v.Wk!,
+        '100 × {O} ÷ {Wk}',
+        'People 65 and over for every 100 people aged 15 to 64.',
+      ],
+      O: [
+        (v) => (v.oldr! * v.Wk!) / 100,
+        '{oldr} × {Wk} ÷ 100',
+        'The old-age ratio’s share of the working ages.',
+      ],
+    },
+  ),
+  rule(
+    'ratio',
+    '{ratio} = {youth} + {oldr}',
+    ['ratio', 'youth', 'oldr'],
+    (v) => v.ratio! - v.youth! - v.oldr!,
+    {
+      ratio: [
+        (v) => v.youth! + v.oldr!,
+        '{youth} + {oldr}',
+        'All dependents, young and old, per 100 of working age.',
+      ],
+      youth: [(v) => v.ratio! - v.oldr!, '{ratio} − {oldr}', 'The dependents who are not old.'],
+      oldr: [(v) => v.ratio! - v.youth!, '{ratio} − {youth}', 'The dependents who are not young.'],
+    },
+  ),
+];
+
+const pyramidPage = (
+  id: string,
+  title: string,
+  use: string,
+  typed: Values,
+  shape?: 'expansive' | 'stationary' | 'constrictive',
+) =>
+  page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'Dependents are under 15 and 65 or over; 15 to 64 is the working age, whether or not people work.',
+      'The ratio counts heads, not earnings: it says how many each worker supports on average.',
+      'The bars inside each age group are drawn to the shape; only the three group totals are data.',
+    ],
+    variables: [
+      num('Y', 'P₀₋₁₄', 'People aged 0–14', undefined, 0, 2e9, { step: 1000, integer: true }),
+      num('Wk', 'P₁₅₋₆₄', 'People aged 15–64', undefined, 1, 5e9, { step: 1000, integer: true }),
+      num('O', 'P₆₅₊', 'People aged 65 and over', undefined, 0, 2e9, { step: 1000, integer: true }),
+      num('youth', 'YDR', 'Youth dependency ratio', undefined, 0, 1e6, { derived: true }),
+      num('oldr', 'ODR', 'Old-age dependency ratio', undefined, 0, 1e6, { derived: true }),
+      num('ratio', 'DR', 'Total dependency ratio', undefined, 0, 1e6, { derived: true }),
+    ],
+    rules: PYRAMID_RULES,
+    example: example(
+      typed,
+      ['youth', (v) => (100 * v.Y!) / v.Wk!],
+      ['oldr', (v) => (100 * v.O!) / v.Wk!],
+      ['ratio', (v) => v.youth! + v.oldr!],
+    ),
+    startWith: ['Y', 'Wk', 'O'],
+    representation: {
+      kind: 'populationPyramid',
+      young: 'Y',
+      working: 'Wk',
+      old: 'O',
+      ...(shape ? { shape } : {}),
+      youth: 'youth',
+      oldAge: 'oldr',
+      ratio: 'ratio',
+    },
+  });
+
+const PYRAMID = pyramidPage(
+  'g.he-populationPyramid-dependency',
+  'Dependency ratio from age groups',
+  'Use this for “A country has 2.4 million under 15, 6 million aged 15–64 and 1.2 million 65 and over. What is its dependency ratio?”',
+  { Y: 2400000, Wk: 6000000, O: 1200000 },
+);
+
+const PYRAMID_AGING = pyramidPage(
+  'g.he-populationPyramid-aging',
+  'An aging population',
+  'Use this for “1.5 million children, 7.4 million aged 15–64 and 3.6 million over 65: how heavy is the old-age burden?”',
+  { Y: 1500000, Wk: 7400000, O: 3600000 },
+  'constrictive',
+);
+
+const PYRAMID_YOUNG = pyramidPage(
+  'g.he-populationPyramid-young',
+  'A young, fast-growing population',
+  'Use this for “4.5 million under 15, 5.2 million aged 15–64 and 0.3 million over 65. What is the youth dependency ratio?”',
+  { Y: 4500000, Wk: 5200000, O: 300000 },
+  'expansive',
+);
+
 export const HE4H_GALLERY_MODULES: ModuleDef[] = [
+  PYRAMID,
+  PYRAMID_AGING,
+  PYRAMID_YOUNG,
+
   PATTERN,
   PATTERN_CLUSTERED,
   PATTERN_MANY,

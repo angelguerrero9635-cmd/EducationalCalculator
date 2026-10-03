@@ -121,4 +121,25 @@ export const HE4H_REQUESTS: PictureRequest[] = [
     status: 'drawn',
     gallery: ['g.he-sample-herd', 'g.he-sample-herd-low', 'g.he-sample-herd-high'],
   },
+  {
+    ...ask(
+      'HC136',
+      'populationPyramid',
+      'A population pyramid: five-year age bars, male left and female right, built from the three group totals and a shape, the dependent groups (0–14, 65+) shaded apart from the working ages and each group bracketed with its total, the dependency ratio over them',
+      [`${GEO}human-geography#0~dependency`],
+      [
+        'From EG-P29. New kind (typesHe4h.ts PopulationPyramidSpec, reps/PopulationPyramid.tsx, the bars in reps/he4hMath.ts).',
+        "Fields: { kind: 'populationPyramid', young (0–14), working (15–64), old (65+) (people), shape? ('expansive' | 'stationary' | 'constrictive'; left out, read from young against working per five-year bar), ratio?, youth?, oldAge? (per 100 of working age) }.",
+        'Each group’s bars add to its total exactly; the shape inside a group is drawn (said in the caption), with a male share falling from 0.512 to 0.47 in old age. Axis ticks in people (k, M). A "?" group draws no bars and no total. No handles; the interim pieChart can go.',
+        "Example: { kind: 'populationPyramid', young: 'Y', working: 'Wk', old: 'O', youth: 'youth', oldAge: 'oldr', ratio: 'ratio' }.",
+        'Harness (harness/picturesHe4h.ts): 18 bars, the 3, 10 and 5 of each group adding to its total, none negative; youth = 100 × young ÷ working, old-age = 100 × old ÷ working, ratio = 100 × (young + old) ÷ working.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-populationPyramid-dependency',
+      'g.he-populationPyramid-aging',
+      'g.he-populationPyramid-young',
+    ],
+  },
 ];

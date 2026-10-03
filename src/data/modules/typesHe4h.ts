@@ -9,6 +9,7 @@
  * - HC134 `rasterGrid` (new kind): a raster's extent and cells; a 3 × 3 slope window.
  * - HC135 `sample` `pattern`: points with a nearest-neighbour index R.
  * - HC150 `sample` `herd`: 100 people, the immune shaded, one case's R₀ contacts.
+ * - HC136 `populationPyramid` (new kind): age bars from three group totals, dependency ratio.
  */
 import type { NumOrVar } from './typesGraphs';
 
@@ -143,6 +144,28 @@ export interface SampleHerdSpec {
   herd: { r0: NumOrVar; immune: NumOrVar; threshold?: string };
 }
 
+// ─── HC136: populationPyramid (new kind) ───────────────────────────────────────
+
+/**
+ * HC136 (EG-P29): five-year age bars (0–4 to 85+), male left and female right, built from the
+ * page's group totals `young` (0–14), `working` (15–64) and `old` (65+) and a `shape`
+ * (expansive, stationary or constrictive; left out, read from young against working per bar):
+ * each group's bars add to its total, the shape inside a group is drawn. The dependent groups
+ * are shaded apart from the working ages and each group is bracketed with its total; `ratio`,
+ * `youth` and `oldAge` (per 100 of working age) are the page's values (checked). A "?" group
+ * draws no bars.
+ */
+export interface PopulationPyramidSpec {
+  kind: 'populationPyramid';
+  young: NumOrVar;
+  working: NumOrVar;
+  old: NumOrVar;
+  shape?: 'expansive' | 'stationary' | 'constrictive';
+  ratio?: string;
+  youth?: string;
+  oldAge?: string;
+}
+
 /** Every spec of group H. */
 export type He4hSpec =
   | CatchmentSpec
@@ -150,9 +173,10 @@ export type He4hSpec =
   | RasterExtentSpec
   | RasterWindowSpec
   | SamplePatternSpec
-  | SampleHerdSpec;
+  | SampleHerdSpec
+  | PopulationPyramidSpec;
 
-const HE4H_KINDS = new Set<string>(['catchment', 'contourMap', 'rasterGrid']);
+const HE4H_KINDS = new Set<string>(['catchment', 'contourMap', 'rasterGrid', 'populationPyramid']);
 
 /** Whether a picture spec is one of group H's (a new kind, or an option on `sample`). */
 export const isHe4hSpec = (r: { kind: string }): r is He4hSpec =>
@@ -203,5 +227,7 @@ export function he4hSpecVars(r: He4hSpec): string[] {
             r.pattern.z,
           )
         : ids(r.herd.r0, r.herd.immune, r.herd.threshold);
+    case 'populationPyramid':
+      return ids(r.young, r.working, r.old, r.ratio, r.youth, r.oldAge);
   }
 }

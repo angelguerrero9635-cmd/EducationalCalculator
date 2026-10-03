@@ -16,6 +16,8 @@ import {
   RASTER_MAX_DRAWN,
   herdPlan,
   patternPoints,
+  pyramidBars,
+  pyramidShape,
   downhillBearing,
   inside,
   rasterBlock,
@@ -42,6 +44,8 @@ export function he4hIssues(rep: He4hSpec, val: Val, byId: Map<string, VariableDe
       return rasterIssues(rep, get);
     case 'sample':
       return 'pattern' in rep ? patternIssues(rep, get) : herdIssues(rep, get, byId);
+    case 'populationPyramid':
+      return pyramidIssues(rep, get);
   }
 }
 
@@ -308,5 +312,50 @@ function herdIssues(
   if (stopped !== plan.stopped) out.push('herd: the stopped arrows are miscounted');
   if (Math.abs(stopped - Math.min(r0, 20) * p) > 1 + 1e-9)
     out.push(`herd: ${stopped} arrows stop, not about R₀ × p = ${r0 * p}`);
+  return out;
+}
+
+/**
+ * HC136: each group's bars (males and females) add to the page's total, every bar ≥ 0, 18 bars
+ * of which 3, 10 and 5 in the groups; youth = 100 × young ÷ working, old-age = 100 × old ÷
+ * working, ratio = 100 × (young + old) ÷ working.
+ */
+function pyramidIssues(
+  rep: Extract<He4hSpec, { kind: 'populationPyramid' }>,
+  get: (v: string | number | undefined) => number | undefined,
+): string[] {
+  const out: string[] = [];
+  const [Y, Wk, O] = [get(rep.young), get(rep.working), get(rep.old)];
+  for (const [x, name] of [
+    [Y, 'young'],
+    [Wk, 'working'],
+    [O, 'old'],
+  ] as const)
+    if (x !== undefined && x < 0) out.push(`pyramid: ${name} ${x} is negative`);
+  const shape =
+    rep.shape ?? (Y !== undefined && Wk !== undefined ? pyramidShape(Y, Wk) : 'stationary');
+  const bars = pyramidBars(Y, Wk, O, shape);
+  if (bars.length !== 18) out.push(`pyramid: ${bars.length} bars, not 18`);
+  const sumOf = (from: number, to: number) =>
+    bars.slice(from, to).reduce((s, b) => s + (b ? b.male + b.female : 0), 0);
+  for (const [T, from, to, name] of [
+    [Y, 0, 3, '0–14'],
+    [Wk, 3, 13, '15–64'],
+    [O, 13, 18, '65+'],
+  ] as const)
+    if (T !== undefined && T >= 0 && !close(sumOf(from, to), T, 1e-9))
+      out.push(`pyramid: the ${name} bars add to ${sumOf(from, to)}, not ${T}`);
+  if (bars.some((b) => b && (b.male < 0 || b.female < 0))) out.push('pyramid: a negative bar');
+  if (Y === undefined || Wk === undefined || O === undefined || Wk <= 0) return out;
+  const checks: [string | undefined, number, string][] = [
+    [rep.youth, (100 * Y) / Wk, 'youth ratio'],
+    [rep.oldAge, (100 * O) / Wk, 'old-age ratio'],
+    [rep.ratio, (100 * (Y + O)) / Wk, 'dependency ratio'],
+  ];
+  for (const [id, want, what] of checks) {
+    const got = get(id);
+    if (got !== undefined && !close(got, want, 1e-6))
+      out.push(`pyramid: ${what} ${got} is not ${want}`);
+  }
   return out;
 }

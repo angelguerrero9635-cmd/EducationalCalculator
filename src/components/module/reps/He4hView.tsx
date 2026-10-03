@@ -7,6 +7,7 @@ import type { He4hSpec } from '@/data/modules/typesHe4h';
 import type { Calculator } from '../useCalculator';
 import { Catchment } from './Catchment';
 import { ContourMap } from './ContourMap';
+import { PopulationPyramid } from './PopulationPyramid';
 import { RasterGrid } from './RasterGrid';
 import { SampleHe4h } from './SampleHe4h';
 
@@ -20,5 +21,7 @@ export function He4hView({ spec, calc }: { spec: He4hSpec; calc: Calculator }) {
       return <RasterGrid spec={spec} calc={calc} />; // HC134
     case 'sample':
       return <SampleHe4h spec={spec} calc={calc} />; // HC135, HC150
+    case 'populationPyramid':
+      return <PopulationPyramid spec={spec} calc={calc} />; // HC136
   }
 }

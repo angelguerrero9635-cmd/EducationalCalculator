@@ -406,3 +406,93 @@ export function herdPlan(r0: number, p: number) {
   const immune = [...contacts.slice(0, s), ...rest.slice(0, M - s)];
   return { index, contacts, immune, stopped: s };
 }
+
+// ─── HC136: populationPyramid ──────────────────────────────────────────────────
+
+/** The five-year age groups, youngest first. */
+export const PYRAMID_AGES = [
+  '0–4',
+  '5–9',
+  '10–14',
+  '15–19',
+  '20–24',
+  '25–29',
+  '30–34',
+  '35–39',
+  '40–44',
+  '45–49',
+  '50–54',
+  '55–59',
+  '60–64',
+  '65–69',
+  '70–74',
+  '75–79',
+  '80–84',
+  '85+',
+];
+
+/** Which dependency group each bar is in: 0 young (0–14), 1 working (15–64), 2 old (65+). */
+export const PYRAMID_GROUP = PYRAMID_AGES.map((_, i) => (i < 3 ? 0 : i < 13 ? 1 : 2));
+
+export type PyramidShape = 'expansive' | 'stationary' | 'constrictive';
+
+/** The shape a pyramid's young and working totals suggest (people per five-year bar). */
+export const pyramidShape = (young: number, working: number): PyramidShape => {
+  const r = young / 3 / (working / 10);
+  return r > 1.15 ? 'expansive' : r < 0.9 ? 'constrictive' : 'stationary';
+};
+
+/** Weights within each group by shape, youngest bar first (made up; only the totals are data). */
+function pyramidWeights(shape: PyramidShape): number[] {
+  const young =
+    shape === 'expansive'
+      ? [1.12, 1, 0.88]
+      : shape === 'constrictive'
+        ? [0.88, 1, 1.12]
+        : [1, 1, 1];
+  const working = Array.from({ length: 10 }, (_, k) => {
+    const t = k / 9;
+    return shape === 'expansive'
+      ? 1.3 - 0.6 * t
+      : shape === 'constrictive'
+        ? 0.85 + 0.3 * Math.sin(Math.PI * t) + 0.1 * t
+        : 1.05 - 0.1 * t;
+  });
+  const old =
+    shape === 'expansive'
+      ? [0.4, 0.27, 0.17, 0.1, 0.06]
+      : shape === 'constrictive'
+        ? [0.26, 0.23, 0.2, 0.17, 0.14]
+        : [0.3, 0.25, 0.2, 0.15, 0.1];
+  return [...young, ...working, ...old];
+}
+
+/**
+ * Each bar's males and females: the group totals shared over their bars by the shape's weights
+ * (so each group's bars add to its total exactly), each bar split by a male share falling from
+ * 0.512 to 0.47 in old age. A group whose total is unknown has no bars (undefined).
+ */
+export function pyramidBars(
+  young: number | undefined,
+  working: number | undefined,
+  old: number | undefined,
+  shape: PyramidShape,
+): ({ male: number; female: number } | undefined)[] {
+  const w = pyramidWeights(shape);
+  const totals = [young, working, old];
+  const sums = [0, 1, 2].map((g) => w.reduce((s, x, i) => s + (PYRAMID_GROUP[i] === g ? x : 0), 0));
+  return w.map((x, i) => {
+    const g = PYRAMID_GROUP[i]!;
+    const T = totals[g];
+    if (T === undefined || T < 0) return undefined;
+    const bar = (T * x) / sums[g]!;
+    const m = 0.512 - 0.006 * Math.max(0, i - 10);
+    return { male: bar * m, female: bar * (1 - m) };
+  });
+}
+
+/** People written short: 2.4 M, 350 k, 900. */
+export function compactPeople(x: number) {
+  const r = (v: number) => String(Number(v.toPrecision(3)));
+  return x >= 1e6 ? `${r(x / 1e6)} M` : x >= 1e3 ? `${r(x / 1e3)} k` : r(x);
+}
