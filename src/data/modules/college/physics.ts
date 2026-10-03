@@ -54,6 +54,9 @@ const powerWork = (v: Values) => (v.c! * (v.x2! ** (v.n! + 1) - v.x1! ** (v.n! +
 /** "6x²", "6x", "6" (n = 0): the force cxⁿ with the page's numbers. */
 const powerForce = (c: number, n: number) => polyForm([c, ...Array<number>(n).fill(0)]);
 
+/** U(x) = ax³ − bx²'s coefficients, highest power first: [a, −b, 0, 0]. */
+const potential = (v: Values) => [v.a!, -v.b!, 0, 0];
+
 export const COLLEGE_PHYSICS_MODULES: ModuleDef[] = [
   {
     // University Physics I: Mechanics → Kinematics
@@ -1031,6 +1034,150 @@ export const COLLEGE_PHYSICS_MODULES: ModuleDef[] = [
       area: { from: 'x1', to: 'x2', value: 'W' },
       xMin: 0,
       axes: { x: 'Position x (m)', y: 'Force F (N)' },
+    },
+  },
+  {
+    // University Physics I → Work and energy: the force from a potential energy curve
+    // U(x) = ax³ − bx², and its stable equilibrium.
+    id: 'he.physics.university-1#2~potential-curve',
+    title: 'Force and equilibrium from U(x) = ax³ − bx²',
+    use: 'Use this for “A particle has potential energy U(x) = 2x³ − 6x² (U in J, x in m). Find the force on it at x = 0.5 m, and where it can rest in stable equilibrium.”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'The force is conservative, with potential energy U(x) = ax³ − bx²: a in J/m³ and b in J/m², both positive.',
+      'The force is the downhill slope of U: F = −dU/dx, so F > 0 pushes toward +x.',
+      'Equilibrium is where F = 0. It is stable at a minimum of U (U″ > 0) and unstable at a maximum.',
+      'U″ = 6ax − 2b, so the minimum at x_s = 2b ÷ (3a) is stable (U″ = 2b) and x = 0 is unstable (U″ = −2b).',
+    ],
+    variables: [
+      V('a', 'a', 'Cubic coefficient', { min: 0.001, max: 1000, step: 0.01 }),
+      V('b', 'b', 'Square coefficient', { min: 0.001, max: 1000, step: 0.01 }),
+      V('x', 'x', 'Position', fixed('m', -100, 100, 0.01)),
+      V('U', 'U', 'Potential energy', fixed('J', -1e10, 1e10, 0.01, true)),
+      V('F', 'F', 'Force', fixed('N', -1e10, 1e10, 0.01, true)),
+      V('xs', 'x_s', 'Stable position', fixed('m', 0, 1e6, 0.01, true)),
+      V('Us', 'U_s', 'Energy at the stable position', fixed('J', -1e15, 0, 0.01, true)),
+    ],
+    ...rels(
+      withStep(
+        rel(
+          'U = ax³ − bx²',
+          '{U} = {a} × {x}³ − {b} × {x}²',
+          ['U', 'a', 'b', 'x'],
+          (v) => v.U! - (v.a! * v.x! ** 3 - v.b! * v.x! ** 2),
+          {
+            U: [
+              (v) => exact(v.a! * v.x! ** 3 - v.b! * v.x! ** 2),
+              (v) =>
+                `${formatNumber(v.a!)} × ${signed(v.x!)}³ − ${formatNumber(v.b!)} × ${signed(v.x!)}²`,
+              'Put the position into U(x), one term at a time.',
+            ],
+            a: [
+              (v) => div(v.U! + v.b! * v.x! ** 2, v.x! ** 3),
+              '({U} + {b} × {x}²) ÷ {x}³',
+              'Add bx² to U, then divide by x³.',
+            ],
+            b: [
+              (v) => div(v.a! * v.x! ** 3 - v.U!, v.x! ** 2),
+              '({a} × {x}³ − {U}) ÷ {x}²',
+              'Take U away from ax³, then divide by x².',
+            ],
+          },
+        ),
+        'U',
+        { work: (v) => [`U(x) = ${polyForm(potential(v))}`] },
+      ),
+      withStep(
+        rel(
+          'F = −3ax² + 2bx',
+          '{F} = −3 × {a} × {x}² + 2 × {b} × {x}',
+          ['F', 'a', 'b', 'x'],
+          (v) => v.F! - (-3 * v.a! * v.x! ** 2 + 2 * v.b! * v.x!),
+          {
+            F: [
+              (v) => exact(-3 * v.a! * v.x! ** 2 + 2 * v.b! * v.x!),
+              (v) =>
+                `−3 × ${formatNumber(v.a!)} × ${signed(v.x!)}² + 2 × ${formatNumber(v.b!)} × ${signed(v.x!)}`,
+              'F = −dU/dx. By the power rule dU/dx = 3ax² − 2bx; change its sign and put x in.',
+            ],
+            a: [
+              (v) => div(2 * v.b! * v.x! - v.F!, 3 * v.x! ** 2),
+              '(2 × {b} × {x} − {F}) ÷ (3 × {x}²)',
+              'Take F away from 2bx, then divide by 3x².',
+            ],
+            b: [
+              (v) => div(v.F! + 3 * v.a! * v.x! ** 2, 2 * v.x!),
+              '({F} + 3 × {a} × {x}²) ÷ (2 × {x})',
+              'Add 3ax² to F, then divide by 2x.',
+            ],
+          },
+        ),
+        'F',
+        {
+          // dU/dx by the power rule (checked by a finite difference); F is its negative.
+          work: (v) => [
+            `d/dx (${polyForm(potential(v))}) = ${polyForm(polyDerivative(potential(v)))}`,
+          ],
+        },
+      ),
+      withStep(
+        rel(
+          'x_s = 2b ÷ (3a)',
+          '{xs} = 2 × {b} ÷ (3 × {a})',
+          ['xs', 'a', 'b'],
+          (v) => v.xs! - (2 * v.b!) / (3 * v.a!),
+          {
+            xs: [
+              (v) => exact(div(2 * v.b!, 3 * v.a!) ?? NaN),
+              '2 × {b} ÷ (3 × {a})',
+              'F = 0 where 3ax² − 2bx = x(3ax − 2b) = 0: at x = 0 and at x = 2b ÷ (3a). U″ = 2b > 0 at the second, a minimum.',
+            ],
+            b: [
+              (v) => (3 * v.a! * v.xs!) / 2,
+              '3 × {a} × {xs} ÷ 2',
+              'Multiply x_s by 3a, then halve it.',
+            ],
+            a: [
+              (v) => div(2 * v.b!, 3 * v.xs!),
+              '2 × {b} ÷ (3 × {xs})',
+              'Double b, then divide by 3x_s.',
+            ],
+          },
+        ),
+        'xs',
+        {
+          work: (v) => {
+            const d1 = polyDerivative(potential(v));
+            return [`U′(x) = ${polyForm(d1)}`, `U″(x) = ${polyForm(polyDerivative(d1))}`];
+          },
+        },
+      ),
+      derive(
+        'U_s = ax_s³ − bx_s²',
+        '{Us} = {a} × {xs}³ − {b} × {xs}²',
+        'Us',
+        ['a', 'b', 'xs'],
+        (v) => v.a! * v.xs! ** 3 - v.b! * v.xs! ** 2,
+        (v) =>
+          `${formatNumber(v.a!)} × ${formatNumber(v.xs!)}³ − ${formatNumber(v.b!)} × ${formatNumber(v.xs!)}²`,
+        'Put the stable position into U(x): the bottom of the well.',
+      ),
+    ),
+    // U = x³ − 3x² at x = 1 m: U = 1 − 3 = −2 J, F = −3 + 6 = +3 N (toward the well);
+    // x_s = 2 × 3 ÷ 3 = 2 m, U_s = 8 − 12 = −4 J.
+    example: { a: 1, b: 3, x: 1, U: -2, F: 3, xs: 2, Us: -4 },
+    startWith: ['a', 'b', 'x'],
+    // The cubic U(x) with the point at x and its tangent (slope dU/dx = −F); the maximum at 0
+    // and the minimum at x_s ringed.
+    representation: {
+      kind: 'functionGraph',
+      family: 'expr',
+      expr: 'a*x^3 - b*x^2',
+      name: 'U',
+      at: { x: 'x', y: 'U' },
+      tangent: { x: 'x', y: 'U' },
+      marks: ['extrema'],
+      axes: { x: 'Position x (m)', y: 'Potential energy U (J)' },
     },
   },
 ];
