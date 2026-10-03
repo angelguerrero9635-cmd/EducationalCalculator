@@ -234,6 +234,7 @@ function FigureView({
     case 'codeTrace':
       return <CodeTraceFigureView figure={figure} scene={scene.trace ?? { rows: [] }} />;
     case 'karnaugh':
+    case 'stateDiagram':
       return <He4nFigureView figure={figure} scene={scene} />; // group N (HC184–HC187)
   }
 }

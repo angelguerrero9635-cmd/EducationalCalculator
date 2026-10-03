@@ -5,11 +5,15 @@
  * HC184: `karnaugh`, the calculator picture (he.engineering.digital-logic#1~mux-decoder's rows
  * and functions, with a 3- and a 4-variable function) and the explore figure
  * (digital-logic#1, discrete-math#0~truth-table).
+ *
+ * HC185: the `stateDiagram` explore figure (digital-logic#3): the Moore 101 detector traced on
+ * 110101, and at the edge the Mealy detector, one state fewer.
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
 import type { LayoutDef } from './layouts';
 import type { ModuleDef, Representation, StepText } from './types';
+import type { StateDiagramFigure } from './typesHe4n';
 
 type Solver = (v: Values) => number | number[] | undefined;
 type Rule = { relation: Relation; steps: Record<string, StepText> };
@@ -276,6 +280,123 @@ const truthExplore: LayoutDef = {
   ],
 };
 
+// ─── HC185: state machines (digital-logic#3) ─────────────────────────────────
+
+const MOORE_101: StateDiagramFigure = {
+  kind: 'stateDiagram',
+  machine: 'moore',
+  inputs: ['0', '1'],
+  start: 'S0',
+  tape: '110101',
+  states: [
+    { name: 'S0', output: '0', x: 0, y: 0.5, loop: 180 },
+    { name: 'S1', output: '0', x: 0.5, y: 0, loop: 270 },
+    { name: 'S2', output: '0', x: 0.5, y: 1 },
+    { name: 'S3', output: '1', x: 1, y: 0.5 },
+  ],
+  arrows: [
+    { from: 'S0', to: 'S1', input: '1' },
+    { from: 'S0', to: 'S0', input: '0' },
+    { from: 'S1', to: 'S1', input: '1' },
+    { from: 'S1', to: 'S2', input: '0' },
+    { from: 'S2', to: 'S3', input: '1' },
+    { from: 'S2', to: 'S0', input: '0' },
+    { from: 'S3', to: 'S1', input: '1' },
+    { from: 'S3', to: 'S2', input: '0' },
+  ],
+};
+
+const MOORE_TRACE: [string, string, string][] = [
+  ['Start', 'S0', 'The machine starts in S0, having seen nothing of 101 yet; its output is 0.'],
+  ['Bit 1: 1', 'S1', 'A 1 could begin 101, so the machine moves to S1, which remembers “1”.'],
+  ['Bit 2: 1', 'S1', 'Another 1 still only begins 101, so the machine stays in S1.'],
+  ['Bit 3: 0', 'S2', 'After 1 then 0 the machine is in S2, which remembers “10”.'],
+  ['Bit 4: 1', 'S3', 'The 1 completes 101: S3 outputs 1, the first detection.'],
+  ['Bit 5: 0', 'S2', 'The last 1 and this 0 make “10” again, so the machine goes to S2.'],
+  ['Bit 6: 1', 'S3', 'Overlapping 101 is found again: back in S3, the output is 1.'],
+];
+
+const stateMoore: LayoutDef = {
+  kind: 'explore',
+  id: 'g.he-stateDiagram-moore',
+  title: 'Trace a state diagram',
+  use: 'Use this for “Trace the 101 detector on the input 110101.”',
+  assumptions: [
+    'Each state remembers just enough of the input to decide what comes next.',
+    'A Moore machine writes its output in the state: S3/1 means S3 outputs 1.',
+    'Overlapping: the last 1 of one 101 may start the next.',
+  ],
+  figure: MOORE_101,
+  scenes: MOORE_TRACE.map(([label, state, line], k) => ({
+    label,
+    lines: [line],
+    fsm: { input: '110101'.slice(0, k), state },
+  })),
+};
+
+const stateMealy: LayoutDef = {
+  kind: 'explore',
+  id: 'g.he-stateDiagram-mealy',
+  title: 'A Mealy machine for 101',
+  use: 'Use this for “Draw the Mealy 101 detector and trace it on 10101.”',
+  assumptions: [
+    'A Mealy machine writes its output on the arrow: 1/1 reads input 1, output 1.',
+    'The output can change as soon as the input does, so 101 needs only three states.',
+  ],
+  figure: {
+    kind: 'stateDiagram',
+    machine: 'mealy',
+    inputs: ['0', '1'],
+    start: 'S0',
+    tape: '10101',
+    states: [
+      { name: 'S0', x: 0, y: 0.8, loop: 180 },
+      { name: 'S1', x: 0.5, y: 0, loop: 270 },
+      { name: 'S2', x: 1, y: 0.8 },
+    ],
+    arrows: [
+      { from: 'S0', to: 'S0', input: '0', output: '0' },
+      { from: 'S0', to: 'S1', input: '1', output: '0' },
+      { from: 'S1', to: 'S1', input: '1', output: '0' },
+      { from: 'S1', to: 'S2', input: '0', output: '0' },
+      { from: 'S2', to: 'S1', input: '1', output: '1' },
+      { from: 'S2', to: 'S0', input: '0', output: '0' },
+    ],
+  },
+  scenes: [
+    {
+      label: 'Start',
+      lines: ['The machine starts in S0 with nothing seen.'],
+      fsm: { input: '', state: 'S0' },
+    },
+    {
+      label: 'Read 1',
+      lines: ['A 1 begins 101: on to S1, output 0.'],
+      fsm: { input: '1', state: 'S1' },
+    },
+    {
+      label: 'Read 10',
+      lines: ['The 0 makes “10”: on to S2, output 0.'],
+      fsm: { input: '10', state: 'S2' },
+    },
+    {
+      label: 'Read 101',
+      lines: ['The arrow S2 to S1 on 1 outputs 1 while it is taken: 101 is found.'],
+      fsm: { input: '101', state: 'S1' },
+    },
+    {
+      label: 'Read 10101',
+      lines: ['The overlap finds 101 again on the fifth bit, with one state fewer than Moore.'],
+      fsm: { input: '10101', state: 'S1' },
+    },
+  ],
+};
+
 export const HE4N_GALLERY_MODULES: ModuleDef[] = [KMAP_THREE, KMAP_FOUR];
 
-export const HE4N_GALLERY_LAYOUTS: LayoutDef[] = [kmapExplore, truthExplore];
+export const HE4N_GALLERY_LAYOUTS: LayoutDef[] = [
+  kmapExplore,
+  truthExplore,
+  stateMoore,
+  stateMealy,
+];

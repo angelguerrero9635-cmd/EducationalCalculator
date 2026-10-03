@@ -49,4 +49,20 @@ export const HE4N_REQUESTS: PictureRequest[] = [
       'g.he-karnaugh-truth-table',
     ],
   },
+  {
+    ...ask(
+      'HC185',
+      'explore figure stateDiagram',
+      'A state diagram in a fixed layout: bubbles with Moore outputs (S3/1) or Mealy arrow labels (1/0), self-loops, an entry arrow at the start state; a scene’s input replayed, the state reached lit and the last arrow heavy, and an input tape with the state and output after each bit',
+      [`${E}digital-logic#3`],
+      [
+        'From EC-P21. New explore figure `stateDiagram` (typesHe4n.ts StateDiagramFigure; layouts/stateDiagramFigure.tsx; the replay in reps/he4nMath.ts).',
+        "Fields: figure { kind: 'stateDiagram', machine: 'moore' | 'mealy', inputs: ['0', '1'], start, states: [{ name, output? (Moore), x, y (a unit box), loop? (self-loop angle in degrees, default 270 = up) }], arrows: [{ from, to, input, output? (Mealy), bend? (two opposite arrows bend apart by themselves) }], tape? (the whole input) }; scene `fsm`: { input (the bits read so far), state? (checked) }.",
+        "Example (digital-logic#3): the Moore 101 detector with S0 (0, 0.5, loop 180), S1 (0.5, 0, loop 270), S2 (0.5, 1), S3/1 (1, 0.5), tape '110101', scenes { fsm: { input: '', state: 'S0' } } … { fsm: { input: '110101', state: 'S3' } }; a diamond keeps the arrows from crossing.",
+        'Layout test (harness/picturesHe4n.ts): every state has exactly one arrow per input value; arrows name states and inputs; Moore states have outputs and Mealy arrows have outputs; each scene’s input is the start of the tape and replays to the state it names.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: ['g.he-stateDiagram-moore', 'g.he-stateDiagram-mealy'],
+  },
 ];

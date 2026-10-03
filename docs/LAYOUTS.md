@@ -311,3 +311,8 @@ College explore figure `karnaugh` (HC184, `layouts/karnaughFigure.tsx`, `typesHe
 groups?, columns?, lit? }`: a 2–4 variable K-map in Gray order beside its truth table, each
 group ringed in its own outline style and f = Σm(…) = SOP written; or a truth table (T first)
 with a column per expression, up to two lit columns compared row by row (≠ where they differ).
+College explore figure `stateDiagram` (HC185, `layouts/stateDiagramFigure.tsx`, `typesHe4n.ts`):
+`{ kind: 'stateDiagram', machine: 'moore' | 'mealy', inputs, start, states: [{ name, output?,
+x, y, loop? }], arrows: [{ from, to, input, output?, bend? }], tape? }`, scene `fsm: { input,
+state? }`: bubbles and arrows in a fixed layout, the input replayed with the state reached and
+the last arrow lit, and a tape with the state and output after each bit.

@@ -626,6 +626,7 @@ export interface Scene {
   trace?: CodeTraceScene;
   /** Group N figures (`typesHe4n.ts`): a K-map or truth table, a state machine, a structure. */
   kmap?: He4nScene['kmap'];
+  fsm?: He4nScene['fsm'];
   /** The flashes, as "● ● ●" with "—" for a long one (a `flashes` figure). */
   flashes?: string;
   /**

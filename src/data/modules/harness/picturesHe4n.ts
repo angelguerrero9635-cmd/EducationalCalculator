@@ -13,7 +13,13 @@ import {
 import type { LayoutDef } from '../layouts';
 import type { Representation } from '../types';
 import type { NumOrVar } from '../typesGraphs';
-import type { KarnaughScene, KarnaughSpec } from '../typesHe4n';
+import { fsmReplay } from '@/components/module/reps/he4nMath';
+import type {
+  KarnaughScene,
+  KarnaughSpec,
+  StateDiagramFigure,
+  StateDiagramScene,
+} from '../typesHe4n';
 
 type Get = (x: NumOrVar) => number | undefined;
 
@@ -122,15 +128,60 @@ export function karnaughSceneIssues(mode: 'map' | 'table', s: KarnaughScene, whe
   return out;
 }
 
+// ─── HC185 ───────────────────────────────────────────────────────────────────
+
+/** A state machine: every state has one arrow per input value; Moore outputs in the states. */
+export function stateDiagramIssues(f: StateDiagramFigure, where: string): string[] {
+  const out: string[] = [];
+  const names = f.states.map((s) => s.name);
+  if (new Set(names).size !== names.length) out.push(`${where}: two states share a name`);
+  if (!names.includes(f.start)) out.push(`${where}: start ${f.start} is not a state`);
+  for (const s of f.states) {
+    if (!(s.x >= 0 && s.x <= 1 && s.y >= 0 && s.y <= 1))
+      out.push(`${where}: ${s.name} off the box`);
+    if (f.machine === 'moore' && s.output === undefined)
+      out.push(`${where}: ${s.name} has no output`);
+    for (const v of f.inputs) {
+      const n = f.arrows.filter((a) => a.from === s.name && a.input === v).length;
+      if (n !== 1) out.push(`${where}: ${s.name} has ${n} arrows on input ${v}`);
+    }
+  }
+  for (const a of f.arrows) {
+    if (!names.includes(a.from) || !names.includes(a.to))
+      out.push(`${where}: arrow ${a.from} → ${a.to} names a missing state`);
+    if (!f.inputs.includes(a.input)) out.push(`${where}: arrow on ${a.input}, not an input`);
+    if (f.machine === 'mealy' && a.output === undefined)
+      out.push(`${where}: Mealy arrow ${a.from} → ${a.to} has no output`);
+  }
+  for (const bit of f.tape ?? '')
+    if (!f.inputs.includes(bit)) out.push(`${where}: tape bit ${bit} is not an input`);
+  return out;
+}
+
+/** A scene's input replays from the start to the state it names, along the tape. */
+function stateSceneIssues(f: StateDiagramFigure, s: StateDiagramScene, where: string) {
+  const out: string[] = [];
+  if (f.tape !== undefined && !f.tape.startsWith(s.input))
+    out.push(`${where}: input ${s.input} is not the start of the tape ${f.tape}`);
+  const steps = fsmReplay(f, s.input);
+  if (steps.some((x) => !x.arrow)) out.push(`${where}: input ${s.input} leaves the machine`);
+  const end = steps.length ? steps[steps.length - 1]!.state : f.start;
+  if (s.state !== undefined && s.state !== end)
+    out.push(`${where}: the input ends in ${end}, not ${s.state}`);
+  return out;
+}
+
 /** Group N's explore figures (layout checks). */
 export function he4nFigureIssues(l: LayoutDef): string[] {
   const out: string[] = [];
   if (l.kind !== 'explore') return out;
   const f = l.figure;
+  if (f.kind === 'stateDiagram') out.push(...stateDiagramIssues(f, l.id));
   for (const s of l.scenes) {
     const where = `${l.id} ${s.label}`;
     if (f.kind === 'karnaugh' && s.kmap)
       out.push(...karnaughSceneIssues(f.mode ?? 'map', s.kmap, where));
+    if (f.kind === 'stateDiagram' && s.fsm) out.push(...stateSceneIssues(f, s.fsm, where));
   }
   return out;
 }
