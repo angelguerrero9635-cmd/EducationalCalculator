@@ -7,11 +7,13 @@
  * HC166 `gearPair` (he.engineering.machine-design#3, ~train, ME-P18).
  * HC167 `printLayers` (he.engineering.manufacturing#2, ~cusp, ME-P20).
  * HC168 `fitDiagram` (he.engineering.manufacturing#3, ~stack, ME-P21).
+ * HC169 explore figure `orthographic` and line-type card icons (he.engineering.cad-graphics#0, ME-P22).
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 import { colebrookF } from '@/components/module/reps/he4lMath';
 
 import type { LayoutDef } from './layouts';
+import type { CardIcon } from './layouts/types';
 import type { ModuleDef, StepText } from './types';
 
 /** g on the engineering pages, m/s². */
@@ -839,6 +841,161 @@ const FIT_STACK = (() => {
   );
 })();
 
+// ─── HC169: orthographic projection (cad-graphics#0, ~line-types) ─────────────────
+
+const ORTHO_MAIN: LayoutDef = {
+  kind: 'explore',
+  id: 'g.he-orthographic',
+  title: 'Orthographic views of a stepped block',
+  use: 'Use this for “Which view is the top view, and where do hidden and centre lines go?”',
+  assumptions: [
+    'Each view looks straight at one face of the glass box; edges parallel to the pane show true length.',
+    'US drawings use third-angle projection: the top view above the front, the right view to its right.',
+  ],
+  figure: { kind: 'orthographic' },
+  scenes: [
+    {
+      label: 'Glass box',
+      lines: [
+        'Put the part in a glass box and look straight through each pane.',
+        'What you see through the front, top and right panes are the three principal views.',
+      ],
+      ortho: { view: 'box' },
+    },
+    {
+      label: 'Unfold',
+      lines: [
+        'Hinge the top pane up and the right pane out, flat with the front.',
+        'The views stay lined up: widths match above and below, heights match across.',
+      ],
+      ortho: { view: 'unfold' },
+    },
+    {
+      label: 'Front',
+      lines: [
+        'The front view shows width and height: the step and the base in an L.',
+        'It is the view that tells the most about the shape.',
+      ],
+      ortho: { view: 'front' },
+    },
+    {
+      label: 'Top',
+      lines: [
+        'The top view shows width and depth, drawn above the front.',
+        'The hole shows as a true circle; the step’s edge is the line across.',
+      ],
+      ortho: { view: 'top' },
+    },
+    {
+      label: 'Right side',
+      lines: [
+        'The right side view shows depth and height, drawn to the right of the front.',
+        'Its line across is where the base meets the step behind it.',
+      ],
+      ortho: { view: 'right' },
+    },
+    {
+      label: 'Hidden',
+      lines: [
+        'The hole’s sides are behind the front face, so they are drawn dashed: hidden lines.',
+        'The same edges show dashed in the right view.',
+      ],
+      ortho: { view: 'hidden' },
+    },
+    {
+      label: 'Centre lines',
+      lines: [
+        'A long-short dashed line marks the hole’s axis in every view.',
+        'In the top view two cross at the circle’s centre.',
+      ],
+      ortho: { view: 'center' },
+    },
+    {
+      label: 'Isometric',
+      lines: [
+        'An isometric view shows three faces at once, its axes 120° apart.',
+        'True isometric projection shortens every edge to √(2/3) ≈ 0.816 of its length; an isometric drawing uses full size.',
+      ],
+      ortho: { view: 'isometric' },
+    },
+  ],
+};
+
+/** First angle against third: where the top and right views go (cad-graphics#0~angle). */
+const ORTHO_ANGLE: LayoutDef = {
+  kind: 'explore',
+  id: 'g.he-orthographic-angle',
+  title: 'First-angle and third-angle projection',
+  use: 'Use this for “Is this drawing first angle or third angle?”',
+  assumptions: [
+    'Third angle (US): the part is behind the pane; each view goes on the side it was seen from.',
+    'First angle (ISO): the part is in front of the pane; each view goes on the opposite side.',
+  ],
+  figure: { kind: 'orthographic' },
+  scenes: [
+    {
+      label: 'Third angle',
+      lines: [
+        'The top view sits above the front and the right view to its right.',
+        'This is the US convention.',
+      ],
+      ortho: { view: 'top', angle: 'third' },
+    },
+    {
+      label: 'First angle',
+      lines: [
+        'The top view sits below the front and the right view to its left.',
+        'This is the ISO convention, used across Europe and Asia.',
+      ],
+      ortho: { view: 'top', angle: 'first' },
+    },
+    {
+      label: 'First angle, right',
+      lines: [
+        'The view from the right is drawn on the left in first angle.',
+        'The symbol in the title block says which convention a drawing uses.',
+      ],
+      ortho: { view: 'right', angle: 'first' },
+    },
+  ],
+};
+
+const lineIcon = (label: string, bin: string, name: CardIcon) => ({
+  label,
+  bin,
+  figure: { kind: 'icon' as const, icon: name },
+});
+
+const ORTHO_LINES: LayoutDef = {
+  id: 'g.he-cardIcons-line-types',
+  title: 'Line types on a drawing',
+  kind: 'sort',
+  use: 'Use this for sorting the lines of an engineering drawing by type.',
+  assumptions: [
+    'Visible lines are thick and solid; hidden lines are thin dashes; centre lines are long and short dashes.',
+    'Dimension and extension lines are thin and solid; the size is written on the dimension line.',
+  ],
+  question: 'Which kind of line is lit?',
+  bins: [
+    { id: 'visible', label: 'Visible', why: 'An edge you can see from where you look.' },
+    { id: 'hidden', label: 'Hidden', why: 'An edge behind a face, drawn dashed.' },
+    { id: 'center', label: 'Center', why: 'The axis or symmetry line of a round feature.' },
+    {
+      id: 'dimension',
+      label: 'Dimension or extension',
+      why: 'The lines that carry a size: the dimension line and the extension lines out to it.',
+    },
+  ],
+  cards: [
+    lineIcon('An edge you can see', 'visible', 'visible line'),
+    lineIcon('An edge behind a face', 'hidden', 'hidden line'),
+    lineIcon('The axis of a hole', 'center', 'center line'),
+    lineIcon('The line a size is written on', 'dimension', 'dimension line'),
+    lineIcon('The short line carried out from an edge', 'dimension', 'extension line'),
+    lineIcon('A circle’s symmetry lines', 'center', 'circle center lines'),
+  ],
+};
+
 export const HE4L_GALLERY_MODULES: ModuleDef[] = [
   MOODY_STEEL,
   MOODY_ROUGH,
@@ -857,4 +1014,4 @@ export const HE4L_GALLERY_MODULES: ModuleDef[] = [
   FIT_STACK,
 ];
 
-export const HE4L_GALLERY_LAYOUTS: LayoutDef[] = [];
+export const HE4L_GALLERY_LAYOUTS: LayoutDef[] = [ORTHO_MAIN, ORTHO_ANGLE, ORTHO_LINES];

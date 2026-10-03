@@ -175,6 +175,44 @@ export const fitDiagramVars = (r: FitDiagramSpec): string[] =>
     r.rss,
   );
 
+// ─── HC169: explore figure `orthographic` ────────────────────────────────────────
+
+/** What an `orthographic` scene shows (the views of one stepped block with a through hole). */
+export type OrthoView =
+  'box' | 'unfold' | 'front' | 'top' | 'right' | 'hidden' | 'center' | 'isometric';
+
+/**
+ * An `orthographic` scene (HC169, ME-P22): a stepped block (a 60 × 40 × 15 base, a 30 × 40 × 20
+ * step on its left, a Ø12 hole through the base) in a glass box (`box`); the box unfolded into
+ * the three views with its hinge lines (`unfold`); the three views with one lit (`front`,
+ * `top`, `right`); the hole's hidden edges lit dashed (`hidden`); its centre lines lit
+ * (`center`); or the isometric view on its 120° axes (`isometric`). `angle` lays the views out
+ * in third angle (the US default: top above the front, right view on the right) or first angle
+ * (ISO: top below, right view on the left).
+ */
+export interface OrthoScene {
+  view: OrthoView;
+  angle?: 'third' | 'first';
+}
+
+/** The round 4 group L explore figures (listed in `layouts/types.ts`). */
+export type He4lFigure = { kind: 'orthographic' };
+
+/** The scene field each group L figure reads (for the layout tests). */
+export const HE4L_SCENE_FIELD = { orthographic: 'ortho' } as const;
+
+/** Every view an `orthographic` scene can name (the layout check). */
+export const ORTHO_VIEWS: OrthoView[] = [
+  'box',
+  'unfold',
+  'front',
+  'top',
+  'right',
+  'hidden',
+  'center',
+  'isometric',
+];
+
 // ─── Every group L spec ─────────────────────────────────────────────────────────
 
 /** The round 4 group L picture specs (listed once in `types.ts`). */

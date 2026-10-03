@@ -33,6 +33,7 @@ import { HslFigureView } from './hslFigures';
 import { SpectraFigure } from './spectraFigure';
 import { Hs3cFigureView } from './hs3cFigures';
 import { SymmetryFigure } from './symmetryFigure';
+import { OrthographicFigure } from './orthographicFigure';
 import { BodyFigure } from './bodyFigure';
 import { ContinentsFigure } from './continentsFigure';
 import { FrontFigure } from './frontFigure';
@@ -125,6 +126,8 @@ function FigureView({
       return <Hs3cFigureView figure={figure} scene={scene} />;
     case 'symmetryElements':
       return <SymmetryFigure scene={scene.symmetry ?? { molecule: 'H2O' }} />; // HC113
+    case 'orthographic':
+      return <OrthographicFigure scene={scene.ortho ?? { view: 'box' }} />; // HC169
     case 'parts':
       if (figure.drawing) {
         return (

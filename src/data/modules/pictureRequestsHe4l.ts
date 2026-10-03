@@ -110,4 +110,25 @@ export const HE4L_REQUESTS: PictureRequest[] = [
       'g.he-fitDiagram-stack',
     ],
   },
+  {
+    ...ask(
+      'HC169',
+      'orthographic',
+      'Explore figure: a stepped block with a through hole in a glass box, the box unfolded, the three views with one lit, hidden edges dashed and centre lines, the isometric view on 120° axes; card icons for the line types',
+      {
+        [`${E}cad-graphics#0`]: "figure: { kind: 'orthographic' }",
+        [`${E}cad-graphics#0~line-types`]: "icon: 'hidden line'",
+        [`${E}cad-graphics#0~angle`]: "angle: 'first'",
+      },
+      [
+        'From ME-P22. Explore figure (typesHe4l.ts OrthoScene and He4lFigure, layouts/orthographicFigure.tsx; card icons in layouts/icons/he4l.tsx, names in data/modules/layouts/icons/he4l.ts).',
+        "Scene field: ortho: { view: 'box' | 'unfold' | 'front' | 'top' | 'right' | 'hidden' | 'center' | 'isometric', angle?: 'third' (default) | 'first' }. One block, in mm: a 60 × 40 × 15 base, a 30 × 40 × 20 step on its left, a Ø12 hole through the base.",
+        'Views drawn as a drawing is: visible lines thick, hidden lines dashed, centre lines long-short; projection lines faint between views; the lit view on a tinted pane, the others faded; unfold adds the glass panes and their hinges; first angle puts the top view below the front and the right view on the left. The isometric block has flat shaded faces with the hole, and its three axes dashed from the near bottom corner.',
+        "Line-type card icons (each lit on a small part): 'visible line', 'hidden line', 'center line', 'dimension line', 'extension line', 'circle center lines'; a card is { label, bin, figure: { kind: 'icon', icon: 'hidden line' } }.",
+        "Examples: the main explore's scenes { ortho: { view: 'box' } } to { ortho: { view: 'isometric' } }; ~angle may use { ortho: { view: 'top', angle: 'first' } } beside its sort. Layout check (harness/picturesHe4l.ts orthoFigureIssues): every scene of the figure names a known view; no other figure carries one.",
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: ['g.he-orthographic', 'g.he-orthographic-angle', 'g.he-cardIcons-line-types'],
+  },
 ];

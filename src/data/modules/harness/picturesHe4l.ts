@@ -13,6 +13,7 @@ import {
   trainValue,
 } from '@/components/module/reps/he4lMath';
 
+import type { LayoutDef } from '../layouts';
 import type { Representation } from '../types';
 import { siOf } from './picturesHs2c';
 import type {
@@ -22,6 +23,7 @@ import type {
   MoodyChartSpec,
   PrintLayersSpec,
 } from '../typesHe4l';
+import { ORTHO_VIEWS } from '../typesHe4l';
 
 type Val = (x: string | number) => number | undefined;
 type X = string | number | undefined;
@@ -248,6 +250,21 @@ function fitIssues(rep: FitDiagramSpec, si: (x: X, unit: string) => number | und
       if (rss !== undefined && !close(rss, stackRss(ts as number[])))
         out.push(`stack: the RSS ${rss} is not √(ΣTᵢ²) = ${stackRss(ts as number[])}`);
     }
+  }
+  return out;
+}
+
+/** HC169: every scene of an `orthographic` figure names a view it draws; no other figure has one. */
+export function orthoFigureIssues(l: LayoutDef): string[] {
+  const out: string[] = [];
+  if (l.kind !== 'explore') return out;
+  for (const s of l.scenes) {
+    const at = `scene "${s.label}"`;
+    if (s.ortho && l.figure.kind !== 'orthographic')
+      out.push(`${at}: an orthographic scene on a ${l.figure.kind} figure`);
+    if (l.figure.kind !== 'orthographic') continue;
+    if (!s.ortho) out.push(`${at}: no view`);
+    else if (!ORTHO_VIEWS.includes(s.ortho.view)) out.push(`${at}: no view ${s.ortho.view}`);
   }
   return out;
 }
