@@ -418,4 +418,163 @@ export const COLLEGE_CHEMISTRY_MODULES: ModuleDef[] = [
     sliders: true,
     representation: { kind: 'orbitalDiagram', mode: 'boxes', element: 'Z' },
   },
+  {
+    // General Chemistry I → Stoichiometry: combustion analysis, the moles of C, H and O.
+    id: 'he.chemistry.gen-chem-1#1',
+    use: 'Use this for “A 0.2500 g sample of a compound of C, H and O burns to 0.3664 g of CO₂ and 0.1500 g of H₂O. Find its empirical formula.”',
+    assumptions: [
+      'All the C ends in CO₂ and all the H in H₂O. O is what is left of the sample’s mass, since the O₂ it burns in can’t be told apart.',
+      'Molar masses: CO₂ 44.01, H₂O 18.02, C 12.01, H 1.008 and O 16.00 g/mol.',
+      'Ratios within 0.05 of a whole number round; otherwise multiply them all by 2, 3 … until they are whole (1.33 × 3 = 4).',
+    ],
+    variables: [
+      V('m', 'm', 'Sample mass', {
+        unit: 'g',
+        units: ['g'],
+        min: 0.001,
+        max: 100,
+        step: 0.0001,
+        figures: 4,
+      }),
+      V('mc', 'm_CO₂', 'CO₂ mass', {
+        unit: 'g',
+        units: ['g'],
+        min: 0.0001,
+        max: 400,
+        step: 0.0001,
+        figures: 4,
+      }),
+      V('mh', 'm_H2O', 'H₂O mass', {
+        unit: 'g',
+        units: ['g'],
+        min: 0.0001,
+        max: 200,
+        step: 0.0001,
+        figures: 4,
+      }),
+      V('nC', 'n_C', 'Moles of C', { unit: 'mol', min: 1e-6, max: 10, step: 0.000001, figures: 4 }),
+      V('nH', 'n_H', 'Moles of H', { unit: 'mol', min: 1e-6, max: 25, step: 0.000001, figures: 4 }),
+      V('mO', 'm_O', 'Mass of O', {
+        unit: 'g',
+        units: ['g'],
+        min: 0,
+        max: 100,
+        step: 0.0001,
+        figures: 4,
+      }),
+      V('nO', 'n_O', 'Moles of O', { unit: 'mol', min: 0, max: 7, step: 0.000001, figures: 4 }),
+      V('rH', 'r_H', 'H per C', { min: 0, max: 10, step: 0.01, figures: 3 }),
+      V('rO', 'r_O', 'O per C', { min: 0, max: 10, step: 0.01, figures: 3 }),
+    ],
+    ...rels(
+      rule(
+        '12.01n_C + 1.008n_H ≤ m',
+        'The C and H, 12.01 × {nC} + 1.008 × {nH}, weigh no more than the sample {m}',
+        ['nC', 'nH', 'm'],
+        (v) => 12.01 * v.nC! + 1.008 * v.nH! <= v.m! * 1.0005,
+        'The C and H found weigh more than the sample: check the masses of CO₂ and H₂O.',
+      ),
+      rel(
+        'n_C = m_CO₂ ÷ 44.01',
+        '{nC} = {mc} ÷ 44.01',
+        ['nC', 'mc'],
+        (v) => 44.01 * v.nC! - v.mc!,
+        {
+          nC: [(v) => v.mc! / 44.01, '{mc} ÷ 44.01', 'Each mole of CO₂ holds one mole of C.'],
+          mc: [(v) => 44.01 * v.nC!, '{nC} × 44.01', 'One mole of CO₂ for each mole of C.'],
+        },
+      ),
+      rel(
+        'n_H = 2m_H₂O ÷ 18.02',
+        '{nH} = 2 × {mh} ÷ 18.02',
+        ['nH', 'mh'],
+        (v) => 18.02 * v.nH! - 2 * v.mh!,
+        {
+          nH: [
+            (v) => (2 * v.mh!) / 18.02,
+            '2 × {mh} ÷ 18.02',
+            'Each mole of H₂O holds two moles of H.',
+          ],
+          mh: [
+            (v) => (18.02 * v.nH!) / 2,
+            '{nH} × 18.02 ÷ 2',
+            'Half a mole of H₂O for each mole of H.',
+          ],
+        },
+      ),
+      rel(
+        'm_O = m − 12.01n_C − 1.008n_H',
+        '{mO} = {m} − 12.01 × {nC} − 1.008 × {nH}',
+        ['mO', 'm', 'nC', 'nH'],
+        (v) => v.mO! - (v.m! - 12.01 * v.nC! - 1.008 * v.nH!),
+        {
+          mO: [
+            // A hydrocarbon's last crumb of rounding reads as no O at all.
+            (v) => {
+              const o = v.m! - 12.01 * v.nC! - 1.008 * v.nH!;
+              return o < 0 && o > -5e-4 * v.m! ? 0 : o;
+            },
+            '{m} − 12.01 × {nC} − 1.008 × {nH}',
+            'Take the grams of C and of H from the sample: what is left is O.',
+          ],
+        },
+      ),
+      rel('n_O = m_O ÷ 16.00', '{nO} = {mO} ÷ 16.00', ['nO', 'mO'], (v) => 16 * v.nO! - v.mO!, {
+        nO: [(v) => v.mO! / 16, '{mO} ÷ 16.00', 'Divide the grams of O by 16.00 g/mol.'],
+        mO: [(v) => 16 * v.nO!, '{nO} × 16.00', 'Moles of O times 16.00 g/mol.'],
+      }),
+      rel(
+        'r_H = n_H ÷ n_C',
+        '{rH} = {nH} ÷ {nC}',
+        ['rH', 'nH', 'nC'],
+        (v) => v.rH! * v.nC! - v.nH!,
+        {
+          rH: [
+            (v) => v.nH! / v.nC!,
+            '{nH} ÷ {nC}',
+            'Divide by the moles of C to count the H atoms for each C.',
+          ],
+        },
+      ),
+      rel(
+        'r_O = n_O ÷ n_C',
+        '{rO} = {nO} ÷ {nC}',
+        ['rO', 'nO', 'nC'],
+        (v) => v.rO! * v.nC! - v.nO!,
+        {
+          rO: [
+            (v) => v.nO! / v.nC!,
+            '{nO} ÷ {nC}',
+            'Divide by the moles of C to count the O atoms for each C.',
+          ],
+        },
+      ),
+    ),
+    example: (() => {
+      const [m, mc, mh] = [0.25, 0.3664, 0.15];
+      const nC = mc / 44.01;
+      const nH = (2 * mh) / 18.02;
+      const mO = m - 12.01 * nC - 1.008 * nH;
+      const nO = mO / 16;
+      return { m, mc, mh, nC, nH, mO, nO, rH: nH / nC, rO: nO / nC };
+    })(),
+    startWith: ['m', 'mc', 'mh'],
+    unitSystems: ['metric'],
+    representation: {
+      kind: 'reaction',
+      reactants: [],
+      products: [],
+      combustion: {
+        sample: 'm',
+        co2: 'mc',
+        h2o: 'mh',
+        carbon: 'nC',
+        hydrogen: 'nH',
+        oxygenMass: 'mO',
+        oxygen: 'nO',
+        hPerC: 'rH',
+        oPerC: 'rO',
+      },
+    },
+  },
 ];
