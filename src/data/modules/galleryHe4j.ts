@@ -797,4 +797,84 @@ export const HE4J_GALLERY_MODULES: ModuleDef[] = [
   CREEP_EARLY,
 ];
 
-export const HE4J_GALLERY_LAYOUTS: LayoutDef[] = [sortTissues, sortEpithelia, gaitPhases];
+// ─── HC158: biomaterials and imaging (biomaterials#1~classes, bioinstrumentation#2~modalities) ─
+
+const sortBiomaterials: LayoutDef = {
+  id: 'g.he-cardIcons-biomaterials',
+  title: 'Metal, polymer or ceramic?',
+  kind: 'sort',
+  use: 'Use this for sorting implant materials into metals, polymers and ceramics, and why each class is chosen.',
+  assumptions: [
+    'Metals bear load, polymers bend or dissolve, ceramics wear little but crack.',
+    'A coating counts as its own material: the stem under it is still metal.',
+  ],
+  question: 'Which class of material is each implant made of?',
+  bins: [
+    {
+      id: 'metal',
+      label: 'Metal',
+      why: 'Strong and tough: stems, screws and heads that carry the body’s weight.',
+    },
+    {
+      id: 'polymer',
+      label: 'Polymer',
+      why: 'Long-chain molecules: a slippery liner, a grout, a thread that dissolves.',
+    },
+    {
+      id: 'ceramic',
+      label: 'Ceramic',
+      why: 'Hard and inert, or bone-like: wears little but cannot bend.',
+    },
+  ],
+  cards: [
+    icon('Ti-6Al-4V hip stem', 'metal', 'titanium hip stem'),
+    icon('CoCrMo femoral head', 'metal', 'CoCrMo femoral head'),
+    icon('316L bone screw', 'metal', 'steel bone screw'),
+    icon('UHMWPE cup liner', 'polymer', 'polyethylene cup liner'),
+    icon('PMMA bone cement', 'polymer', 'PMMA bone cement'),
+    icon('PLGA suture', 'polymer', 'PLGA suture'),
+    icon('Alumina femoral head', 'ceramic', 'alumina femoral head'),
+    icon('Hydroxyapatite coating', 'ceramic', 'hydroxyapatite-coated stem'),
+  ],
+};
+
+const sortModalities: LayoutDef = {
+  id: 'g.he-cardIcons-imaging',
+  title: 'Ionizing or not?',
+  kind: 'sort',
+  use: 'Use this for sorting medical imaging methods by whether they use ionizing radiation.',
+  assumptions: [
+    'Ionizing radiation (X-rays and gamma rays) carries enough energy to knock electrons off atoms, so its dose is kept low.',
+    'Magnetic fields, radio waves, sound and near-infrared light do not ionize.',
+  ],
+  question: 'Does each method expose the patient to ionizing radiation?',
+  bins: [
+    {
+      id: 'ionizing',
+      label: 'Ionizing',
+      why: 'X-rays pass through the body, or a tracer gives off gamma rays.',
+    },
+    {
+      id: 'non',
+      label: 'Non-ionizing',
+      why: 'Radio waves in a magnet, sound echoes or light: no ionizing dose.',
+    },
+  ],
+  cards: [
+    icon('X-ray', 'ionizing', 'X-ray tube'),
+    icon('CT', 'ionizing', 'CT scanner'),
+    icon('PET', 'ionizing', 'PET scanner'),
+    icon('SPECT', 'ionizing', 'SPECT camera'),
+    icon('MRI', 'non', 'MRI scanner'),
+    icon('Ultrasound', 'non', 'ultrasound probe'),
+    icon('Optical coherence tomography', 'non', 'OCT probe'),
+  ],
+};
+
+export const HE4J_GALLERY_LAYOUTS: LayoutDef[] = [
+  sortTissues,
+  sortEpithelia,
+  gaitPhases,
+  sortBiomaterials,
+  sortModalities,
+];

@@ -16,4 +16,21 @@ export const HE4J_ICONS = [
   'cardiac muscle tissue',
   'smooth muscle tissue',
   'neuron with glia',
+  // Biomaterials (biomaterials#1~classes): implants in their materials.
+  'titanium hip stem',
+  'CoCrMo femoral head',
+  'steel bone screw',
+  'polyethylene cup liner',
+  'PMMA bone cement',
+  'PLGA suture',
+  'alumina femoral head',
+  'hydroxyapatite-coated stem',
+  // Imaging (bioinstrumentation#2~modalities): the scanners.
+  'X-ray tube',
+  'CT scanner',
+  'MRI scanner',
+  'ultrasound probe',
+  'PET scanner',
+  'SPECT camera',
+  'OCT probe',
 ] as const;

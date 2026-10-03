@@ -112,4 +112,20 @@ export const HE4J_REQUESTS: PictureRequest[] = [
       'g.he-springDashpot-creep-early',
     ],
   },
+  {
+    ...ask(
+      'HC158',
+      'icon',
+      'Card icons, biomaterials and imaging: eight implants in their materials and seven scanners',
+      [`${E}biomaterials#1~classes`, `${E}bioinstrumentation#2~modalities`],
+      [
+        'From B-P26. Fifteen card icons (names in layouts/icons/he4j.ts, drawn in components/module/layouts/icons/he4jObjects.tsx through He4jIcon; a line in docs/LAYOUTS.md), painted in their materials.',
+        "Implants: 'titanium hip stem', 'CoCrMo femoral head', 'steel bone screw', 'polyethylene cup liner', 'PMMA bone cement', 'PLGA suture', 'alumina femoral head', 'hydroxyapatite-coated stem' (the plan's list plus the alumina head its cards name). Scanners: 'X-ray tube', 'CT scanner', 'MRI scanner', 'ultrasound probe', 'PET scanner', 'SPECT camera' (the page's cards name SPECT), 'OCT probe'.",
+        "A card passes { label, bin, figure: { kind: 'icon', icon: 'PET scanner' } }. ~classes: bins metal, polymer, ceramic, the eight cards of the plan; ~modalities: bins ionizing, non-ionizing, its seven cards. The gallery sorts are both pages, ready to copy; the drawn cards replace the text cards.",
+        'Check: the layout harness (layoutFigures.test.ts over the two gallery sorts).',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: ['g.he-cardIcons-biomaterials', 'g.he-cardIcons-imaging'],
+  },
 ];

@@ -589,6 +589,17 @@ const light = {
   he4jFroude: '#C2410C',
   he4jOil: '#E2B24A',
   he4jCurve: '#1D4ED8',
+  /** HC158: implants (titanium, polyethylene, bone cement, a PLGA suture, alumina, apatite);
+   * scanners (their housing, an X-ray or sound beam, a gamma ray). */
+  he4jTitanium: '#B9C0C9',
+  he4jPoly: '#F4F6F2',
+  he4jCement: '#EDE3C8',
+  he4jSuture: '#7C3AED',
+  he4jCeramic: '#F3EBD3',
+  he4jApatite: '#CDBF9A',
+  he4jScanner: '#E5E7EB',
+  he4jBeam: 'rgba(56, 189, 248, 0.35)',
+  he4jGamma: '#DB2777',
   /**
    * College HC24, HC30, HC31 (round 2, group H): the relative wind, lift and drag, tip vortices;
    * the gas in a duct, a hot chamber or exhaust; a shock and an expansion fan's Mach lines.
@@ -1301,6 +1312,15 @@ const dark: Palette = {
   he4jFroude: '#FB923C',
   he4jOil: '#B8862E',
   he4jCurve: '#60A5FA',
+  he4jTitanium: '#8A929C',
+  he4jPoly: '#C9CCC6',
+  he4jCement: '#BBAF92',
+  he4jSuture: '#A78BFA',
+  he4jCeramic: '#CFC5A9',
+  he4jApatite: '#9C8F6C',
+  he4jScanner: '#4B5563',
+  he4jBeam: 'rgba(125, 211, 252, 0.35)',
+  he4jGamma: '#F472B6',
   aeroWind: '#7FB0DA',
   aeroLift: '#6EA3FF',
   aeroDrag: '#FB8A4C',

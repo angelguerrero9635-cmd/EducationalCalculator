@@ -231,7 +231,10 @@ College tissue card icons (HC154, `layouts/icons/he4j.tsx`), drawn sections in a
 stains: `simple squamous epithelium`, `simple cuboidal epithelium`, `simple columnar epithelium`,
 `stratified squamous epithelium`, `compact bone`, `hyaline cartilage`, `blood smear`, `adipose
 tissue`, `skeletal muscle tissue`, `cardiac muscle tissue`, `smooth muscle tissue`, `neuron with
-glia`.
+glia`. Implants and scanners (HC158, `layouts/icons/he4jObjects.tsx`), painted: `titanium hip
+stem`, `CoCrMo femoral head`, `steel bone screw`, `polyethylene cup liner`, `PMMA bone cement`,
+`PLGA suture`, `alumina femoral head`, `hydroxyapatite-coated stem`; `X-ray tube`, `CT scanner`,
+`MRI scanner`, `ultrasound probe`, `PET scanner`, `SPECT camera`, `OCT probe`.
 Card figure `gait` (HC156, `layouts/gaitCard.tsx`, 112 × 76, for sequence stages): `{ kind:
 'gait', phase }`, a stick walker side on with the right leg lit at `heelStrike`, `footFlat`,
 `midstance`, `heelOff`, `toeOff` or `midswing`, standing on its lowest foot; a sequence's gait

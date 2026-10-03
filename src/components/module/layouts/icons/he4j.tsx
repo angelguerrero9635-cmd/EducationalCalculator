@@ -11,6 +11,7 @@ import { Circle, ClipPath, Defs, Ellipse, G, Line, Path, Polygon, Rect } from 'r
 import { usePalette } from '@/theme';
 
 import { TopLight, url, usePaintIds } from '../../reps/paint';
+import { He4jObjectIcon } from './he4jObjects';
 import type { IconProps } from './types';
 
 /** The swatch every tissue is drawn in. */
@@ -474,6 +475,7 @@ export function He4jIcon({ icon, ink }: IconProps): ReactNode {
         </G>,
       );
     default:
-      return null;
+      // HC158: implants and scanners, painted objects (icons/he4jObjects.tsx).
+      return <He4jObjectIcon icon={icon} ink={ink} />;
   }
 }
