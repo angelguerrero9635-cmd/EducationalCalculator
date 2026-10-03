@@ -600,6 +600,7 @@ search or the sitemap, but the module tests and the harness run over it):
 | `driftPaths`       | 12 Wright–Fisher paths of p over t; expected H dashed on a 2nd axis    | College evolution, drift (HC153)    |
 | `karnaugh`         | K-map in Gray order beside its truth table; groups ringed, SOP terms   | College digital logic (HC184)       |
 | `pipelineDiagram`  | instructions × cycles, a stage per cell; stalls, forwarding; k+n−1     | College architecture (HC186)        |
+| `dataStructure`    | sorted n: binary search halvings as bars, ⌊log₂n⌋ + 1; linear n        | College data structures (HC187)     |
 | `globe`            | sun rays, noon angle, day dial; great circle; Euler pole; dipole; air  | College earth and geography (HC36)  |
 | `stressStrain`     | σ–ε curve: E, 0.2% offset, UTS, necking; specimen; tube; two members   | College materials, biomech. (HC28)  |
 | `stressElement`    | element, turned to θ_p; Mohr's circle; 3 circles; loci, n; soil line   | College stress, soil (HC33)         |

@@ -529,12 +529,185 @@ const PIPELINE_STALL = page({
   },
 });
 
+// ─── HC187: data structures (data-structures#0 and #2) ───────────────────────
+
+const structuresExplore: LayoutDef = {
+  kind: 'explore',
+  id: 'g.he-dataStructure-lists',
+  title: 'Stacks, queues and lists',
+  use: 'Use this for “After push 3, push 5, push 2, pop, what is on top?”',
+  assumptions: [
+    'A stack takes from the end it added to; a queue from the other end.',
+    'Each push, pop, enqueue or dequeue is constant time: nothing else moves.',
+    'A circular queue reuses its slots: after the last slot comes slot 0.',
+  ],
+  figure: { kind: 'dataStructure' },
+  scenes: [
+    {
+      label: 'Push 3, 5, 2',
+      lines: ['Each push goes on top: 2, pushed last, is on top.'],
+      ds: { structure: 'stack', ops: ['push 3', 'push 5', 'push 2'], holds: [3, 5, 2] },
+    },
+    {
+      label: 'Pop',
+      lines: ['A pop takes the top: 2 comes out, last in, first out, and 5 is on top.'],
+      ds: {
+        structure: 'stack',
+        ops: ['push 3', 'push 5', 'push 2', 'pop'],
+        holds: [3, 5],
+        out: 2,
+      },
+    },
+    {
+      label: 'Dequeue',
+      lines: ['Enqueue 3, 5, 2, then dequeue: 3 comes out of the front, first in, first out.'],
+      ds: {
+        structure: 'queue',
+        ops: ['enqueue 3', 'enqueue 5', 'enqueue 2', 'dequeue'],
+        holds: [5, 2],
+        out: 3,
+      },
+    },
+    {
+      label: 'Circular queue',
+      lines: ['With the front at slot 6 of 8, the next item after slot 7 wraps to slot 0.'],
+      ds: {
+        structure: 'ring',
+        slots: 8,
+        front: 6,
+        start: [4, 8],
+        ops: ['enqueue 1'],
+        holds: [4, 8, 1],
+      },
+    },
+    {
+      label: 'Insert at head',
+      lines: ['Inserting 4 at the head changes one pointer; no node shifts.'],
+      ds: { structure: 'list', start: [7, 2, 9], ops: ['insert head 4'], holds: [4, 7, 2, 9] },
+    },
+  ],
+};
+
+const SORTED = [3, 8, 12, 17, 23, 31, 38, 44, 52, 60, 71];
+
+const searchExplore: LayoutDef = {
+  kind: 'explore',
+  id: 'g.he-dataStructure-binary-search',
+  title: 'Binary search step by step',
+  use: 'Use this for “Search the sorted list 3, 8, 12, … 71 for 44. Which items are compared?”',
+  assumptions: [
+    'The list is sorted; mid is the middle of low and high, rounded down.',
+    'Each comparison halves what is left, so 11 items need at most 4 comparisons.',
+  ],
+  figure: { kind: 'dataStructure' },
+  scenes: [
+    {
+      label: 'Compare 31',
+      lines: ['The middle of 0 to 10 is index 5, holding 31: 44 is larger, so low moves to 6.'],
+      ds: { structure: 'array', values: SORTED, target: 44, step: 1 },
+    },
+    {
+      label: 'Compare 52',
+      lines: ['The middle of 6 to 10 is index 8, holding 52: 44 is smaller, so high moves to 7.'],
+      ds: { structure: 'array', values: SORTED, target: 44, step: 2 },
+    },
+    {
+      label: 'Compare 38',
+      lines: ['The middle of 6 and 7 is index 6, holding 38: 44 is larger, so low moves to 7.'],
+      ds: { structure: 'array', values: SORTED, target: 44, step: 3 },
+    },
+    {
+      label: 'Found',
+      lines: ['Low, mid and high meet at index 7: 44 is found on the fourth comparison.'],
+      ds: { structure: 'array', values: SORTED, target: 44, step: 4 },
+    },
+  ],
+};
+
+const searchPage = (id: string, title: string, use: string, n: number) =>
+  page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'The list is sorted, and each comparison is one step.',
+      'Binary search halves what is left each time; linear search checks items in order.',
+      'Linear search’s average assumes the item is there, equally likely anywhere.',
+    ],
+    variables: [
+      num('n', 'n', 'Items', undefined, 1, 1e12, { integer: true, step: 1 }),
+      out('binary', 'C_b', 'Binary search, worst case', undefined, { integer: true }),
+      out('linear', 'C_l', 'Linear search, worst case', undefined, { integer: true }),
+      out('average', 'C̄_l', 'Linear search, average'),
+    ],
+    rules: [
+      derive(
+        'binary',
+        'binary',
+        ['n'],
+        '{binary} = ⌊log₂ {n}⌋ + 1',
+        (v) => Math.floor(Math.log2(v.n!) + 1e-9) + 1,
+        '⌊log₂ {n}⌋ + 1',
+        'Each comparison halves the range; one more is needed for the last item left.',
+      ),
+      derive(
+        'linear',
+        'linear',
+        ['n'],
+        '{linear} = {n}',
+        (v) => v.n!,
+        '{n}',
+        'In the worst case linear search checks every item.',
+      ),
+      derive(
+        'average',
+        'average',
+        ['n'],
+        '{average} = ({n} + 1) ÷ 2',
+        (v) => (v.n! + 1) / 2,
+        '({n} + 1) ÷ 2',
+        'On average the item is halfway along: (1 + 2 + … + n) ÷ n.',
+      ),
+    ],
+    example: example(
+      { n },
+      ['binary', (v) => Math.floor(Math.log2(v.n!) + 1e-9) + 1],
+      ['linear', (v) => v.n!],
+      ['average', (v) => (v.n! + 1) / 2],
+    ),
+    startWith: ['n'],
+    representation: {
+      kind: 'dataStructure',
+      n: 'n',
+      binary: 'binary',
+      linear: 'linear',
+      average: 'average',
+    },
+  });
+
+const SEARCH = searchPage(
+  'g.he-dataStructure-search',
+  'Binary or linear search?',
+  'Use this for “At most how many comparisons does binary search make in a sorted list of 1000?”',
+  1000,
+);
+
+/** The edge: a billion items, 30 halvings (the bars past 11 give way to “…”). */
+const SEARCH_BILLION = searchPage(
+  'g.he-dataStructure-search-billion',
+  'Searching a billion items',
+  'Use this for “How many comparisons does binary search need for 10⁹ sorted items?”',
+  1e9,
+);
+
 export const HE4N_GALLERY_MODULES: ModuleDef[] = [
   KMAP_THREE,
   KMAP_FOUR,
   PIPELINE,
   PIPELINE_DEEP,
   PIPELINE_STALL,
+  SEARCH,
+  SEARCH_BILLION,
 ];
 
 export const HE4N_GALLERY_LAYOUTS: LayoutDef[] = [
@@ -542,4 +715,6 @@ export const HE4N_GALLERY_LAYOUTS: LayoutDef[] = [
   truthExplore,
   stateMoore,
   stateMealy,
+  structuresExplore,
+  searchExplore,
 ];

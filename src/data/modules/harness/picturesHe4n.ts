@@ -14,12 +14,17 @@ import type { LayoutDef } from '../layouts';
 import type { Representation } from '../types';
 import type { NumOrVar } from '../typesGraphs';
 import {
+  binarySteps,
+  dsReplay,
   fsmReplay,
   pipelineCycles,
   pipelineRow,
   stageNames,
+  worstRanges,
 } from '@/components/module/reps/he4nMath';
 import type {
+  DataStructureScene,
+  SearchSpec,
   KarnaughScene,
   KarnaughSpec,
   PipelineSpec,
@@ -41,9 +46,56 @@ export function he4nIssues(rep: Representation, get: Get): string[] {
       return karnaughIssues(rep, get);
     case 'pipelineDiagram':
       return pipelineIssues(rep, get);
+    case 'dataStructure':
+      return searchIssues(rep, get);
     default:
       return [];
   }
+}
+
+// ─── HC187 ───────────────────────────────────────────────────────────────────
+
+/** The bars counted are ⌊log₂n⌋ + 1; linear n and (n + 1)/2. */
+function searchIssues(s: SearchSpec, get: Get): string[] {
+  const out: string[] = [];
+  const n = get(s.n);
+  if (n === undefined || n < 1) return out;
+  const bars = worstRanges(n).length;
+  if (bars !== Math.floor(Math.log2(Math.floor(n)) + 1e-9) + 1)
+    out.push(`search: ${bars} halvings, ⌊log₂n⌋ + 1 = ${Math.floor(Math.log2(n)) + 1}`);
+  const b = opt(get, s.binary);
+  if (b !== undefined && b !== bars) out.push(`search: binary ${b}, drawn ${bars}`);
+  const l = opt(get, s.linear);
+  if (l !== undefined && !near(l, Math.floor(n))) out.push(`search: linear ${l}, n = ${n}`);
+  const a = opt(get, s.average);
+  if (a !== undefined && !near(a, (Math.floor(n) + 1) / 2)) out.push(`search: average ${a}`);
+  return out;
+}
+
+/** A scene's operations replayed give what it says it holds and what came out. */
+function dataSceneIssues(s: DataStructureScene, where: string): string[] {
+  const out: string[] = [];
+  if (s.structure === 'array') {
+    const v = s.values ?? [];
+    if (v.length < 2 || v.length > 16) out.push(`${where}: an array of ${v.length}`);
+    if (v.some((x, i) => i > 0 && x < v[i - 1]!)) out.push(`${where}: the array is not sorted`);
+    if (s.target === undefined) out.push(`${where}: no target`);
+    const steps = binarySteps(v, s.target ?? 0);
+    if ((s.step ?? 1) < 1 || (s.step ?? 1) > steps.length)
+      out.push(`${where}: comparison ${s.step} of ${steps.length}`);
+    return out;
+  }
+  const st = dsReplay(s);
+  if (st.error) return [`${where}: ${st.error}`];
+  if (s.holds && s.holds.join(',') !== st.items.join(','))
+    out.push(`${where}: holds ${st.items.join(', ')}, not ${s.holds.join(', ')}`);
+  if (s.out !== undefined && s.out !== st.out)
+    out.push(`${where}: ${st.out} comes out, not ${s.out}`);
+  const cap = s.structure === 'ring' ? (s.slots ?? 8) : s.structure === 'stack' ? 7 : 6;
+  if (st.items.length > cap) out.push(`${where}: ${st.items.length} items, more than ${cap} fit`);
+  if (s.structure === 'ring' && !((s.slots ?? 8) >= 3 && (s.slots ?? 8) <= 12))
+    out.push(`${where}: a ring of ${s.slots} slots`);
+  return out;
 }
 
 // ─── HC186 ───────────────────────────────────────────────────────────────────
@@ -227,6 +279,7 @@ export function he4nFigureIssues(l: LayoutDef): string[] {
     if (f.kind === 'karnaugh' && s.kmap)
       out.push(...karnaughSceneIssues(f.mode ?? 'map', s.kmap, where));
     if (f.kind === 'stateDiagram' && s.fsm) out.push(...stateSceneIssues(f, s.fsm, where));
+    if (f.kind === 'dataStructure' && s.ds) out.push(...dataSceneIssues(s.ds, where));
   }
   return out;
 }

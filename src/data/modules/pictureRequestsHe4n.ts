@@ -85,4 +85,25 @@ export const HE4N_REQUESTS: PictureRequest[] = [
       'g.he-pipelineDiagram-stall',
     ],
   },
+  {
+    ...ask(
+      'HC187',
+      'explore figure dataStructure (and calculator dataStructure)',
+      'Data structures replayed from a scene’s operations: a stack with its top, a queue with front and rear, a circular buffer as a ring of numbered slots, a linked list of nodes and arrows, a sorted array with binary search’s low, mid and high; the last added lit, the last removed outside with “out”; and for searching, binary search’s halvings as bars beside linear search',
+      [`${E}data-structures#0`, `${E}data-structures#2`],
+      [
+        'From EC-P25. New explore figure `dataStructure` (typesHe4n.ts DataStructureFigure; layouts/dataStructureFigure.tsx; the replay in reps/he4nMath.ts) and, for the calculator page #2, a calculator kind `dataStructure` (SearchSpec; reps/SearchRanges.tsx).',
+        "Explore fields: figure { kind: 'dataStructure' }; scene `ds`: { structure: 'stack' | 'queue' | 'ring' | 'list' | 'array', start?, ops? ('push 3', 'pop', 'enqueue 5', 'dequeue', 'insert head 4', 'insert tail 4', 'delete head'), slots? and front? (ring), holds? and out? (checked), values?, target?, step? (array: the comparison shown) }.",
+        "Example (data-structures#0): { label: 'Pop', ds: { structure: 'stack', ops: ['push 3', 'push 5', 'push 2', 'pop'], holds: [3, 5], out: 2 } }; the ring: { structure: 'ring', slots: 8, front: 6, start: [4, 8], ops: ['enqueue 1'], holds: [4, 8, 1] }. Calculator (data-structures#2 main): { kind: 'dataStructure', n: 'n', binary: 'binary', linear: 'linear', average: 'average' } with 1000 → 10, 1000, 500.5.",
+        'Harness (harness/picturesHe4n.ts): each scene’s operations replayed give the contents it names and the value that came out, every operation fits its structure and never takes from an empty one, the ring has 3–12 slots, the array is sorted with the step a real comparison; the calculator’s bars number ⌊log₂n⌋ + 1 and equal binary, linear = n, average = (n + 1)/2.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-dataStructure-lists',
+      'g.he-dataStructure-binary-search',
+      'g.he-dataStructure-search',
+      'g.he-dataStructure-search-billion',
+    ],
+  },
 ];

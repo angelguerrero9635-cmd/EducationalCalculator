@@ -316,3 +316,8 @@ College explore figure `stateDiagram` (HC185, `layouts/stateDiagramFigure.tsx`, 
 x, y, loop? }], arrows: [{ from, to, input, output?, bend? }], tape? }`, scene `fsm: { input,
 state? }`: bubbles and arrows in a fixed layout, the input replayed with the state reached and
 the last arrow lit, and a tape with the state and output after each bit.
+College explore figure `dataStructure` (HC187, `layouts/dataStructureFigure.tsx`, `typesHe4n.ts`):
+`{ kind: 'dataStructure' }`, scene `ds: { structure: 'stack' | 'queue' | 'ring' | 'list' |
+'array', start?, ops?, slots?, front?, holds?, out?, values?, target?, step? }`: the operations
+replayed and the structure drawn (top; front and rear; a ring of slots; nodes to ∅; low, mid
+and high), the last added lit and the last removed outside with “out”.

@@ -1,7 +1,8 @@
 /**
  * College pictures, round 4, group N (docs/RENDERINGS_HE.md): digital logic and computer
  * systems. HC184 `karnaugh` (calculator kind and explore figure, with its truth table); HC185
- * the `stateDiagram` explore figure; HC186 `pipelineDiagram`.
+ * the `stateDiagram` explore figure; HC186 `pipelineDiagram`; HC187 the `dataStructure` explore
+ * figure (and a search picture).
  */
 import type { NumOrVar } from './typesGraphs';
 
@@ -100,10 +101,60 @@ export interface StateDiagramScene {
   state?: string;
 }
 
-/** The scene field each group N explore figure reads (layouts.test). */
-export const HE4N_SCENE_FIELD = { karnaugh: 'kmap', stateDiagram: 'fsm' } as const;
+// ─── HC187: data structures ──────────────────────────────────────────────────
 
-export type He4nFigure = KarnaughFigure | StateDiagramFigure;
+/**
+ * The explore figure: each scene draws one structure after its operations are replayed from
+ * `start`: a stack (vertical, top marked), a queue (front and rear), a circular buffer (a ring of
+ * `slots`, front and rear marked, the wrap shown), a linked list (nodes and arrows, head), or a
+ * sorted array with binary search's low, mid and high pointers at a comparison.
+ */
+export interface DataStructureFigure {
+  kind: 'dataStructure';
+}
+
+/** One operation: “push 3”, “pop”, “enqueue 5”, “dequeue”, “insert head 4”, “insert tail 4”, “delete head”. */
+export type DataOp = string;
+
+/** A `dataStructure` scene. */
+export interface DataStructureScene {
+  structure: 'stack' | 'queue' | 'ring' | 'list' | 'array';
+  /** What it holds before the operations (bottom to top; front to rear; head to tail). */
+  start?: number[];
+  ops?: DataOp[];
+  /** `ring`: its slots N and the front's slot at the start. */
+  slots?: number;
+  front?: number;
+  /** What the scene says it holds after (same order as `start`) and what came out last (checked). */
+  holds?: number[];
+  out?: number;
+  /** `array`: sorted values, the target, and the comparisons made so far (1 = the first). */
+  values?: number[];
+  target?: number;
+  step?: number;
+}
+
+/** The scene field each group N explore figure reads (layouts.test). */
+export const HE4N_SCENE_FIELD = {
+  karnaugh: 'kmap',
+  stateDiagram: 'fsm',
+  dataStructure: 'ds',
+} as const;
+
+export type He4nFigure = KarnaughFigure | StateDiagramFigure | DataStructureFigure;
+
+/**
+ * The calculator picture for searching (data-structures#2): an array of n, and under it binary
+ * search's worst case, each comparison's remaining range a bar to scale (n, ⌊n/2⌋, … 1), up to 12
+ * rows then “…”, the count ⌊log₂n⌋ + 1 bracketed, beside linear search's n comparisons.
+ */
+export interface SearchSpec {
+  kind: 'dataStructure';
+  n: NumOrVar;
+  binary?: NumOrVar;
+  linear?: NumOrVar;
+  average?: NumOrVar;
+}
 
 // ─── HC186: pipeline diagrams ────────────────────────────────────────────────
 
@@ -135,7 +186,7 @@ export interface PipelineSpec {
 
 // ─── The group's calculator pictures ─────────────────────────────────────────
 
-export type He4nSpec = KarnaughSpec | PipelineSpec;
+export type He4nSpec = KarnaughSpec | PipelineSpec | SearchSpec;
 
 const ids = (xs: unknown[]): string[] =>
   xs.flat(4).filter((x): x is string => typeof x === 'string');
@@ -156,6 +207,8 @@ export function he4nSpecVars(r: He4nSpec): string[] {
         r.speedup,
         (r.stalls ?? []).map((s) => s.count),
       ]);
+    case 'dataStructure':
+      return ids([r.n, r.binary, r.linear, r.average]);
   }
 }
 
@@ -163,4 +216,5 @@ export function he4nSpecVars(r: He4nSpec): string[] {
 export interface He4nScene {
   kmap?: KarnaughScene;
   fsm?: StateDiagramScene;
+  ds?: DataStructureScene;
 }
