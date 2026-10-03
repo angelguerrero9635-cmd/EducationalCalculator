@@ -160,4 +160,20 @@ export const HE4M_REQUESTS: PictureRequest[] = [
     status: 'drawn',
     gallery: ['g.he-orbitElements', 'g.he-orbitElements-equatorial'],
   },
+  {
+    ...ask(
+      'HC178',
+      'pfdSymbol',
+      'Card figure: the process-flow-diagram symbols for a pump, compressor, shell-and-tube exchanger, fired heater, distillation column, flash drum, packed absorber, CSTR and packed bed, each with its streams arrowed',
+      [`${E}material-energy-balances#0~symbols`],
+      [
+        'From ACC-P36. New card figure (typesHe4m.ts PfdSymbolCard, layouts/pfdCard.tsx), 84 × 68, flat line art in the card’s ink with moving or packed parts in its shade.',
+        "Field: { kind: 'pfdSymbol', symbol: 'pump' | 'compressor' | 'exchanger' | 'heater' | 'column' | 'flash' | 'absorber' | 'cstr' | 'packedBed' }; the card’s label names the unit.",
+        "Example: the plan's sort, bins Moves fluid, Changes temperature, Separates, Reacts; cards [{ label: 'Centrifugal pump', bin: 'move', figure: { kind: 'pfdSymbol', symbol: 'pump' } }, …] (g.he-pfdSymbol has all nine).",
+        'Layout check (harness/picturesHe4m.ts he4mLayoutIssues): every pfdSymbol card names a drawn symbol, none twice in one sort.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: ['g.he-pfdSymbol'],
+  },
 ];

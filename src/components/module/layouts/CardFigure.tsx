@@ -21,6 +21,8 @@ import { MoleculeCard } from './chemFigures';
 import { CondensedCardView, condensedWidth } from './condensedCard';
 import { SkeletalCardView } from './skeletalCard';
 import { TrussJointCardView } from './trussJointCard';
+import { PfdCardView } from './pfdCard';
+import { PFD_CARD_H, PFD_CARD_W } from '@/data/modules/typesHe4m';
 import { TRUSS_CARD_H, TRUSS_CARD_W } from '@/data/modules/typesHe2i';
 import { IrCardView } from './irCard';
 import { IR_CARD_H, IR_CARD_W } from '@/data/modules/typesHe3e';
@@ -90,6 +92,8 @@ export function figureWidth(f: Spec): number {
       return SKELETAL_CARD_W;
     case 'trussJoint':
       return TRUSS_CARD_W;
+    case 'pfdSymbol':
+      return PFD_CARD_W; // HC178
     case 'ir':
       return IR_CARD_W;
     case 'projection':
@@ -121,6 +125,7 @@ export function CardFigureView({
 }) {
   const w = figureWidth(figure);
   const h =
+    (figure.kind === 'pfdSymbol' ? PFD_CARD_H : undefined) ?? // HC178
     hs2bFigureSize(figure)?.[1] ??
     hs3dCardSize(figure)?.[1] ??
     he3dCardSize(figure)?.[1] ??
@@ -397,6 +402,8 @@ function Drawing({ f, w, ink, shade }: { f: Spec; w: number; ink: string; shade:
       return <SkeletalCardView f={f} ink={ink} shade={shade} />;
     case 'trussJoint':
       return <TrussJointCardView f={f} ink={ink} shade={shade} />;
+    case 'pfdSymbol':
+      return <PfdCardView f={f} ink={ink} shade={shade} />; // HC178
     case 'ir':
       return <IrCardView f={f} ink={ink} shade={shade} />;
     case 'projection':

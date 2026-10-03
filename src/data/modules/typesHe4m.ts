@@ -11,6 +11,7 @@
  * - HC182 `complexPlane` `constellation`: M-PSK or M-QAM points, Gray-coded, with boundaries.
  * - HC183 `placeValueChart` `base` 2, 8, 16: columns weighted bᵏ, a two's complement row.
  * - HC173 explore figure `orbitElements`: the equatorial plane, the tilted orbit, one element lit.
+ * - HC178 card figure `pfdSymbol`: a process-flow-diagram symbol on a sort card.
  */
 import type { NumOrVar } from './typesGraphs';
 
@@ -280,6 +281,37 @@ export type He4mFigure = { kind: 'orbitElements' };
 
 /** The scene field each group M figure reads (for the layout tests). */
 export const HE4M_SCENE_FIELD = { orbitElements: 'orbit' } as const;
+
+// ─── HC178: card figure pfdSymbol ───────────────────────────────────────────────
+
+/** The process units a `pfdSymbol` card draws. */
+export const PFD_SYMBOLS = [
+  'pump',
+  'compressor',
+  'exchanger',
+  'heater',
+  'column',
+  'flash',
+  'absorber',
+  'cstr',
+  'packedBed',
+] as const;
+export type PfdSymbolName = (typeof PFD_SYMBOLS)[number];
+
+/**
+ * HC178 (ACC-P36): a process-flow-diagram symbol on a sort card, 84 × 68, in the card's ink with
+ * its streams arrowed in and out: a centrifugal pump, a compressor (the narrowing trapezoid), a
+ * shell-and-tube exchanger, a fired heater with its stack, a distillation column with trays, a
+ * flash drum, a packed absorber, a stirred tank (CSTR) and a packed-bed reactor. Flat line art,
+ * as a PFD draws them; the card's label names the unit.
+ */
+export interface PfdSymbolCard {
+  kind: 'pfdSymbol';
+  symbol: PfdSymbolName;
+}
+
+export const PFD_CARD_W = 84;
+export const PFD_CARD_H = 68;
 
 // ─── The new kinds together ──────────────────────────────────────────────────────
 

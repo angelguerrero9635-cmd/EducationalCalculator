@@ -19,6 +19,7 @@
  * - HC173 explore figure `orbitElements`: every scene has its elements in range; Ω's arc lies in
  *   the equatorial plane, ω's and ν's in the orbit plane, i's ends at i from the equator in the
  *   orbit plane; a scene lighting Ω or ω with i = 0 says Ω is undefined.
+ * - HC178 card figure `pfdSymbol`: each card names a drawn symbol, none twice in a sort.
  */
 import {
   constellation,
@@ -37,6 +38,7 @@ import {
 
 import type { LayoutDef } from '../layouts';
 import type { Representation } from '../types';
+import { PFD_SYMBOLS } from '../typesHe4m';
 
 type Val = (x: string | number) => number | undefined;
 
@@ -311,6 +313,18 @@ export function placeValueBaseIssues(rep: Representation, val: Val): string[] {
 /** HC173 (and HC178's cards): group M's layout figures. */
 export function he4mLayoutIssues(l: LayoutDef): string[] {
   const out: string[] = [];
+  // HC178: every pfdSymbol card names a symbol the card draws, once per sort.
+  if (l.kind === 'sort') {
+    const seen = new Set<string>();
+    for (const card of l.cards) {
+      const f = card.figure;
+      if (f?.kind !== 'pfdSymbol') continue;
+      if (!(PFD_SYMBOLS as readonly string[]).includes(f.symbol))
+        out.push(`card "${card.label}": no PFD symbol ${f.symbol}`);
+      if (seen.has(f.symbol)) out.push(`card "${card.label}": ${f.symbol} drawn twice`);
+      seen.add(f.symbol);
+    }
+  }
   if (l.kind !== 'explore') return out;
   for (const sc of l.scenes) {
     const at = `scene "${sc.label}"`;

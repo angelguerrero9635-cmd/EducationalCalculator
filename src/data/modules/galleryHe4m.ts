@@ -8,6 +8,7 @@
  * HC182: `complexPlane` `constellation` (he.engineering.communication-systems#1).
  * HC183: `placeValueChart` `base` 2, 8, 16 (he.engineering.digital-logic#0).
  * HC173: explore figure `orbitElements` (he.engineering.orbital-mechanics#1~elements).
+ * HC178: card figure `pfdSymbol` (he.engineering.material-energy-balances#0~symbols).
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
@@ -1142,4 +1143,45 @@ const ORBIT_ELEMENTS_EDGE: LayoutDef = {
   ],
 };
 
-export const HE4M_GALLERY_LAYOUTS: LayoutDef[] = [ORBIT_ELEMENTS, ORBIT_ELEMENTS_EDGE];
+// ─── HC178: what each PFD symbol does (material-energy-balances#0~symbols, sort) ─
+
+const PFD_SORT: LayoutDef = {
+  kind: 'sort',
+  id: 'g.he-pfdSymbol',
+  title: 'What each process symbol does',
+  use: 'Use this for “Which units on this flow diagram separate the streams, and which react?”',
+  assumptions: [
+    'Each symbol is the usual process-flow-diagram shape; the arrows are its streams.',
+    'Sort a unit by its main job, even when it does more than one thing.',
+  ],
+  question: 'What is this unit’s main job?',
+  bins: [
+    { id: 'move', label: 'Moves fluid', why: 'It raises a stream’s pressure so it flows on.' },
+    {
+      id: 'heat',
+      label: 'Changes temperature',
+      why: 'It adds or takes away heat without mixing the streams.',
+    },
+    {
+      id: 'separate',
+      label: 'Separates',
+      why: 'It splits a mixture into streams of different make-up.',
+    },
+    { id: 'react', label: 'Reacts', why: 'Chemicals change into others inside it.' },
+  ],
+  cards: (
+    [
+      ['Centrifugal pump', 'pump', 'move'],
+      ['Compressor', 'compressor', 'move'],
+      ['Shell-and-tube heat exchanger', 'exchanger', 'heat'],
+      ['Fired heater', 'heater', 'heat'],
+      ['Distillation column', 'column', 'separate'],
+      ['Flash drum', 'flash', 'separate'],
+      ['Packed absorber', 'absorber', 'separate'],
+      ['Stirred-tank reactor (CSTR)', 'cstr', 'react'],
+      ['Packed-bed reactor', 'packedBed', 'react'],
+    ] as const
+  ).map(([label, symbol, bin]) => ({ label, bin, figure: { kind: 'pfdSymbol', symbol } })),
+};
+
+export const HE4M_GALLERY_LAYOUTS: LayoutDef[] = [ORBIT_ELEMENTS, ORBIT_ELEMENTS_EDGE, PFD_SORT];

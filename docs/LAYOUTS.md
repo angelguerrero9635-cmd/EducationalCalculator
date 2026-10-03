@@ -154,6 +154,10 @@ the orbit plane), `nu` (ν from periapsis) or `shape` (2a with e). With i = 0 th
 line and the figure says Ω is undefined. Not to scale; the angles are. The layout check keeps Ω's
 arc in the equatorial plane and ω's and ν's in the orbit plane.
 
+Card figure `pfdSymbol` (HC178, `layouts/pfdCard.tsx`): a process-flow-diagram symbol, 84 × 68,
+its streams arrowed: `symbol` is `pump`, `compressor`, `exchanger` (shell and tube), `heater`
+(fired, with its stack), `column` (trays), `flash`, `absorber` (packed), `cstr` or `packedBed`.
+
 Grade 9 biology (HS group G): `macromolecules` (`layouts/macroFigure.tsx`): monomers on their own
 cards joining into a polymer, the joining groups and new bonds lit and one water molecule drawn per
 bond; `macro: { kind, count?, split? }` builds starch, a polypeptide (folded), a DNA strand or a fat

@@ -31,7 +31,7 @@ import type { GeneScene, KeyScene, KeyStep, ObserveSecond, ReplicationCard } fro
 import type { Hs2fFigure, SpectraScene } from '../typesHs2f';
 import type { EarthSectionScene, Hs3cFigure } from '../typesHs3c';
 import type { He4dFigure, SymmetryScene } from '../typesHe4d';
-import type { He4mFigure, OrbitScene } from '../typesHe4m';
+import type { He4mFigure, OrbitScene, PfdSymbolCard } from '../typesHe4m';
 import type { GelScene, Hs3dCard, Hs3dFigure, ObserveScale, ReflexScene } from '../typesHs3d';
 import type { Round3Icon } from './icons';
 import type { StrobeCard } from './strobeCard';
@@ -219,6 +219,8 @@ export type CardFigure =
   | ProjectionCard
   /** College round 3, group D (`typesHe3d.ts`): code on a code panel (HC48). */
   | He3dCard
+  /** College round 4, group M (`typesHe4m.ts`): a process-flow-diagram symbol (HC178). */
+  | PfdSymbolCard
   /** College HC57 (`typesHe3g.ts`): one step of glycolysis or the citric acid cycle, 112 × 76. */
   | PathwayStepCard
   /** One stage of DNA replication, old strands dark and new ones lit (H100, `typesHs2e.ts`). */
