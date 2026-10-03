@@ -133,6 +133,7 @@ import {
   divisionContentIssues,
   linkageMapIssues,
   pedigreeIssues,
+  resolutionIssues,
 } from './picturesHe4i';
 import type { ModuleDef, Representation } from '../types';
 
@@ -1737,6 +1738,10 @@ export function repIssues(
       break;
     }
     case 'fieldOfView': {
+      if (rep.resolution) {
+        out.push(...resolutionIssues(rep, val)); // HC149
+        break;
+      }
       count(rep.across, 'cells across');
       const [f, n, s] = [rep.field, rep.across, rep.size].map((id) => (id ? val(id) : undefined));
       if (

@@ -5,7 +5,7 @@
  * is the parents' × 1/4; a pedigree card is possible under its bin's mode and not another's. Called from `repIssues` in
  * `pictures.ts` (and the layout checks from `layoutFigures.ts`). Test-only.
  */
-import { cellRatio, crossoverSpots } from '@/components/module/reps/he4iMath';
+import { airy, cellRatio, crossoverSpots, resolvedAs } from '@/components/module/reps/he4iMath';
 import { codonEffect, effectOfBin } from '@/components/module/layouts/codonsHe4iMath';
 import { CODON_TABLE } from '@/components/module/reps/dnaMath';
 import { modeOfBin, modePossible, type Mode } from '@/components/module/reps/pedigreeHe4iMath';
@@ -14,7 +14,7 @@ import { divisionStages, type CodonsCard } from '../typesHe4i';
 import { geneIsOn } from '../typesHs2e';
 
 import type { LayoutDef, PedigreePerson } from '../layouts';
-import { EVIDENCE_OF } from '../layouts/icons/he4i';
+import { EVIDENCE_OF, GRAM_OF } from '../layouts/icons/he4i';
 import type { Representation } from '../types';
 
 type Val = (x: string | number) => number | undefined;
@@ -124,6 +124,23 @@ export function he4iLayoutIssues(l: LayoutDef): string[] {
       const want = bin ? effectOfBin(bin) : undefined;
       const got = codonEffect(card.figure);
       if (want !== got) out.push(`card "${card.label}": a ${got} change in bin "${bin?.label}"`);
+    }
+  }
+  // HC149: a Gram wall figure sits on (or in) the bin that names its stain.
+  if (l.kind === 'sort') {
+    const stain = (b: { id: string; label: string }) => {
+      const t = `${b.id} ${b.label}`.toLowerCase();
+      return t.includes('positive') ? 'positive' : t.includes('negative') ? 'negative' : 'both';
+    };
+    for (const b of l.bins) {
+      const g = b.figure?.kind === 'icon' ? GRAM_OF[b.figure.icon] : undefined;
+      if (g && stain(b) !== g) out.push(`bin "${b.label}": the Gram-${g} wall drawn on it`);
+    }
+    for (const card of l.cards) {
+      const g = card.figure?.kind === 'icon' ? GRAM_OF[card.figure.icon] : undefined;
+      const bin = l.bins.find((b) => b.id === card.bin);
+      if (g && bin && stain(bin) !== g && stain(bin) !== 'both')
+        out.push(`card "${card.label}": the Gram-${g} wall in bin "${bin.label}"`);
     }
   }
   // HC147: a corepressor works a repressor, and the gene is on exactly when it is absent.
@@ -256,5 +273,38 @@ export function codonsCardIssues(f: CodonsCard): string[] {
   // Every codon reads in the standard code.
   for (let i = 0; i + 3 <= m.length; i += 3)
     if (!CODON_TABLE[m.slice(i, i + 3)]) out.push(`codons: ${m.slice(i, i + 3)} is not a codon`);
+  return out;
+}
+
+/**
+ * HC149 on `fieldOfView` `resolution`: d and gap positive; drawn as resolved exactly when
+ * gap ≥ d, and the brightness drawn between the spots dips below their peaks then (an
+ * independent sum of the two Airy disks); d = 0.61λ ÷ NA and total = objective × eyepiece.
+ */
+export function resolutionIssues(rep: Representation, val: Val): string[] {
+  if (rep.kind !== 'fieldOfView' || !rep.resolution) return [];
+  const out: string[] = [];
+  const q = rep.resolution;
+  const [d, gap] = [val(q.d), val(q.gap)];
+  if (d !== undefined && !(d > 0)) out.push(`resolution: d = ${d}`);
+  if (gap !== undefined && !(gap > 0)) out.push(`resolution: gap = ${gap}`);
+  if (d !== undefined && gap !== undefined && d > 0 && gap > 0) {
+    const drawn = resolvedAs(gap, d) !== 'blob';
+    if (drawn !== gap >= d)
+      out.push(`resolution: gap ${gap}, d ${d} drawn ${drawn ? '' : 'not '}resolved`);
+    const sum = (x: number) => airy(x - gap / 2, d) + airy(x + gap / 2, d);
+    const dip = sum(0) < sum(gap / 2) - 1e-9;
+    if (gap >= d && !dip) out.push(`resolution: no dip between spots ${gap} apart (d ${d})`);
+  }
+  const [lam, na] = [q.wavelength, q.na].map((x) => (x === undefined ? undefined : val(x)));
+  const near = (a: number, b: number) => Math.abs(a - b) <= 1e-6 * Math.max(1, Math.abs(b));
+  if (d !== undefined && lam !== undefined && na !== undefined && !near(d, (0.61 * lam) / na))
+    out.push(`resolution: d ${d}, 0.61λ ÷ NA = ${(0.61 * lam) / na}`);
+  if (na !== undefined && !(na > 0 && na <= 1.6)) out.push(`resolution: NA ${na}`);
+  const [ob, ey, tot] = [q.objective, q.eyepiece, q.total].map((x) =>
+    x === undefined ? undefined : val(x),
+  );
+  if (ob !== undefined && ey !== undefined && tot !== undefined && !near(tot, ob * ey))
+    out.push(`resolution: total ${tot}, objective × eyepiece = ${ob * ey}`);
   return out;
 }

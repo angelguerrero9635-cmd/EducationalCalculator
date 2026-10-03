@@ -48,7 +48,12 @@ import type { FieldPlotSpec } from './typesHe2g';
 import type { He3bSpec } from './typesHe3b';
 import type { ChainTreeHe4a, ScatterClassesSpec } from './typesHe4a'; // HC139, HC98
 import type { DriftPathsSpec } from './typesHe4e';
-import type { CurvedSolidHe4i, LinkageMapSpec, PedigreeSpec } from './typesHe4i'; // HC141–HC149, group I
+import type {
+  CurvedSolidHe4i,
+  FieldResolutionHe4i,
+  LinkageMapSpec,
+  PedigreeSpec,
+} from './typesHe4i'; // HC141–HC149, group I
 import type { CardIcon } from './layouts/types';
 import type { TreeChances, TwoWaySpec, VennChances } from './typesHse';
 import type { IntegerLineHs2a } from './typesHs2a';
@@ -1684,7 +1689,9 @@ export type Representation =
       sd?: { id: string; kind?: 'population' | 'sample' };
     }
   /** A microscope's field of view with `across` cells end to end along its middle. */
-  | { kind: 'fieldOfView'; field: string; across: string; size?: string }
+  | { kind: 'fieldOfView'; field: string; across: string; size?: string; resolution?: undefined }
+  /** HC149: two points blurred to Airy disks, resolved or not (`typesHe4i.ts`). */
+  | FieldResolutionHe4i
   /** A graduated cylinder: the level before (dashed), after, and the rise (the object's volume). */
   | { kind: 'gradCylinder'; before: string; after: string; volume?: string; max: number }
   /**

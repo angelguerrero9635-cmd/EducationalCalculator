@@ -21,7 +21,7 @@ import { Canvas, Caption, ChartText, useRep } from './common';
 import { Metal, url, usePaintIds } from './paint';
 import { Steppers } from './Steppers';
 
-type Spec = Extract<Representation, { kind: 'fieldOfView' }>;
+type Spec = Extract<Representation, { kind: 'fieldOfView'; field: string }>;
 
 /**
  * The circle seen through a microscope eyepiece (a black metal tube), its width on a dimension

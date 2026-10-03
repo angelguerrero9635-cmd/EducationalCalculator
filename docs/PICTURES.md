@@ -775,6 +775,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `curvedSolid`      | `fill` (cone), `slab` (cylinder)         | a cone tank on its apex filling, r = Rh/H; a slab lifted H + h − y; W (HC54)  |
 | `curvedSolid`      | `ratio: { area, volume, ratio, … }`      | a cell as a sphere: A, V, A ÷ V = 3 ÷ r; `compare`: one r × k beside (HC141)  |
 | `cellDivision`     | `content: { chromatids, dna, gamete }`   | G₁, after S, after meiosis I, a gamete; chromatids and c of each (HC142)      |
+| `fieldOfView`      | `resolution: { d, gap, wavelength?, … }` | two points as Airy disks in an eyepiece; resolved when gap ≥ d, a dip (HC149) |
 | `termsChart`       | `type: 'nr'`, `'factorial'`, `alternate` | n·rⁿ, cⁿ ÷ n!; signs alternating, the sums zig-zag about S (HC66)             |
 | `termsChart`       | `bounds`, `next`, `ratio`, `limit`       | a band low ≤ S ≤ high; aₙ₊₁ and aₙ₊₁ ÷ aₙ; the sum S worked out (HC66)        |
 | `rectangle`        | `grow: { du, dv, dt?, product? }`        | u × v growing by strips u′Δt × v and u × v′Δt; (uv)′ = u′v + uv′ (HC67)       |

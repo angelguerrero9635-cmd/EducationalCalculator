@@ -21,6 +21,7 @@ import { alleleHe4eVars, driftPathsVars, normalCurveHe4eVars } from '../typesHe4
 import {
   cellDivisionHe4iVars,
   curvedSolidHe4iVars,
+  fieldResolutionVars,
   linkageMapVars,
   pedigreeVars,
 } from '../typesHe4i';
@@ -428,6 +429,7 @@ function representationVars(r: Representation): string[] {
         ...(r.sd ? [r.sd.id] : []),
       ];
     case 'fieldOfView':
+      if (r.resolution) return fieldResolutionVars(r); // HC149
       return [r.field, r.across, ...(r.size ? [r.size] : [])];
     case 'gradCylinder':
       return [r.before, r.after, ...(r.volume ? [r.volume] : [])];

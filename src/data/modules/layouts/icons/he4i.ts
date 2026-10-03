@@ -8,7 +8,20 @@ export const HE4I_ICONS = [
   'human appendix',
   'bird wing and butterfly wing',
   'shark fin and dolphin flipper',
+  // Microbial structure (HC149, microbiology#0): the two walls in section and four shapes.
+  'Gram-positive wall',
+  'Gram-negative wall',
+  'coccus',
+  'bacillus',
+  'spirillum',
+  'endospore',
 ] as const;
+
+/** HC149: the Gram wall icons, for the layout check (a wall figure on the bin it names). */
+export const GRAM_OF: Record<string, 'positive' | 'negative'> = {
+  'Gram-positive wall': 'positive',
+  'Gram-negative wall': 'negative',
+};
 
 /**
  * The kind of evidence each evolution icon shows (and the group HH limbs it sorts beside), for

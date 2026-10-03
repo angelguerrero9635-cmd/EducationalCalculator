@@ -8,6 +8,7 @@
  * HC145: `linkageMap`, the new kind (he.biology.genetics#1, ~three-point).
  * HC146: card figure `codons` (he.biology.genetics#2~mutations).
  * HC147: `geneExpression` `corepressor` (he.biology.cell-molecular#2).
+ * HC149: Gram card icons and `fieldOfView` `resolution` (he.biology.microbiology#0, ~resolution).
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
@@ -822,6 +823,166 @@ const OPERONS: LayoutDef = {
   ],
 };
 
+// ─── HC149: microbial structure and the resolution limit (microbiology#0, ~resolution) ──
+
+const SORT_GRAM: LayoutDef = {
+  id: 'g.he-cardIcons-gram',
+  title: 'Gram-positive or Gram-negative?',
+  kind: 'sort',
+  use: 'Use this for sorting cell-wall features and shapes as Gram-positive, Gram-negative or both.',
+  assumptions: [
+    'The Gram stain colours a thick peptidoglycan wall purple; a thin one under an outer membrane loses the purple and takes the pink counterstain.',
+    'Shape alone does not tell the stain: cocci and bacilli can be either.',
+  ],
+  intro: 'Compare each feature with the two walls drawn on the bins.',
+  question: 'Which cells have it?',
+  bins: [
+    {
+      id: 'positive',
+      label: 'Gram-positive',
+      why: 'A thick peptidoglycan wall threaded with teichoic acids holds the purple stain.',
+      figure: { kind: 'icon', icon: 'Gram-positive wall' },
+    },
+    {
+      id: 'negative',
+      label: 'Gram-negative',
+      why: 'A thin peptidoglycan layer under an outer membrane with LPS: the purple washes out.',
+      figure: { kind: 'icon', icon: 'Gram-negative wall' },
+    },
+    {
+      id: 'both',
+      label: 'Both',
+      why: 'Every bacterium has a plasma membrane and 70S ribosomes, whatever its wall.',
+      figure: { kind: 'icon', icon: 'bacterium' },
+    },
+  ],
+  cards: [
+    { label: 'Thick peptidoglycan', bin: 'positive' },
+    { label: 'Teichoic acids', bin: 'positive' },
+    { label: 'Stains purple', bin: 'positive' },
+    {
+      label: 'Endospores (Bacillus, Clostridium)',
+      bin: 'positive',
+      figure: { kind: 'icon', icon: 'endospore' },
+    },
+    { label: 'Outer membrane with LPS', bin: 'negative' },
+    { label: 'Thin peptidoglycan layer', bin: 'negative' },
+    { label: 'Stains pink', bin: 'negative' },
+    { label: 'Spirilla', bin: 'negative', figure: { kind: 'icon', icon: 'spirillum' } },
+    { label: 'Plasma membrane', bin: 'both' },
+    { label: '70S ribosomes', bin: 'both' },
+    { label: 'Cocci', bin: 'both', figure: { kind: 'icon', icon: 'coccus' } },
+    { label: 'Bacilli', bin: 'both', figure: { kind: 'icon', icon: 'bacillus' } },
+  ],
+};
+
+const dOf = (v: Values) => (0.61 * v.lam!) / v.na!;
+
+const resolutionPage = (id: string, title: string, use: string, typed: Values, extra: string) =>
+  page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'Each point of light blurs to an Airy disk; d, the radius of its first dark ring, is the resolution limit.',
+      'Two points are just resolved when one’s peak sits on the other’s first dark ring (Rayleigh).',
+      extra,
+    ],
+    variables: [
+      num('lam', 'λ', 'Wavelength', 'nm', 380, 700, { step: 1 }),
+      num('na', 'NA', 'Numerical aperture', undefined, 0.1, 1.4, { step: 0.01 }),
+      out('d', 'd', 'Resolution limit', 'nm'),
+      num('gap', 'g', 'Distance between the points', 'nm', 1, 1e5, { step: 1 }),
+      out('k', 'g ÷ d', 'Gap in resolution limits'),
+      num('ob', 'M_obj', 'Objective', '×', 1, 200, { step: 1 }),
+      num('ey', 'M_eye', 'Eyepiece', '×', 1, 30, { step: 1 }),
+      out('tot', 'M', 'Total magnification', '×'),
+      out('seen', 'g_seen', 'Gap as seen in the eyepiece', 'μm'),
+    ],
+    rules: [
+      rule('limit', '{d} = 0.61 × {lam} ÷ {na}', ['d', 'lam', 'na'], (v) => v.d! - dOf(v), {
+        d: [
+          dOf,
+          '0.61 × {lam} ÷ {na}',
+          'The Rayleigh limit: shorter light or a wider cone of it resolves finer detail.',
+        ],
+        na: [
+          (v) => fin((0.61 * v.lam!) / v.d!),
+          '0.61 × {lam} ÷ {d}',
+          'Turn d = 0.61λ ÷ NA round for NA.',
+        ],
+      }),
+      rule('gap', '{k} = {gap} ÷ {d}', ['k', 'gap', 'd'], (v) => v.k! - v.gap! / v.d!, {
+        k: [(v) => fin(v.gap! / v.d!), '{gap} ÷ {d}', 'At 1 or more the two points are resolved.'],
+      }),
+      rule('mag', '{tot} = {ob} × {ey}', ['tot', 'ob', 'ey'], (v) => v.tot! - v.ob! * v.ey!, {
+        tot: [
+          (v) => v.ob! * v.ey!,
+          '{ob} × {ey}',
+          'The eyepiece magnifies the objective’s image again.',
+        ],
+      }),
+      rule(
+        'seen',
+        '{seen} = {gap} × {tot} ÷ 1000',
+        ['seen', 'gap', 'tot'],
+        (v) => v.seen! - (v.gap! * v.tot!) / 1000,
+        {
+          seen: [
+            (v) => (v.gap! * v.tot!) / 1000,
+            '{gap} × {tot} ÷ 1000',
+            'Magnifying makes the gap look bigger (1000 nm in a μm), but blurred disks grow with it.',
+          ],
+        },
+      ),
+    ],
+    example: example(
+      typed,
+      ['d', dOf],
+      ['k', (v) => v.gap! / v.d!],
+      ['tot', (v) => v.ob! * v.ey!],
+      ['seen', (v) => (v.gap! * v.tot!) / 1000],
+    ),
+    startWith: ['lam', 'na', 'gap', 'ob', 'ey'],
+    representation: {
+      kind: 'fieldOfView',
+      resolution: {
+        d: 'd',
+        gap: 'gap',
+        wavelength: 'lam',
+        na: 'na',
+        objective: 'ob',
+        eyepiece: 'ey',
+        total: 'tot',
+      },
+    },
+  });
+
+const RESOLVED = resolutionPage(
+  'g.he-fieldOfView-resolution',
+  'The resolution limit of a lens',
+  'Use this for “What is the smallest detail a 1.25 NA objective resolves in 550 nm light?”',
+  { lam: 550, na: 1.25, gap: 300, ob: 100, ey: 10 },
+  'An oil-immersion objective (NA 1.25) at 1000× in green light.',
+);
+
+const RAYLEIGH = resolutionPage(
+  'g.he-fieldOfView-resolution-rayleigh',
+  'Two points just resolved',
+  'Use this for “Two points are as far apart as the resolution limit. What does the microscope show?”',
+  { lam: 500, na: 1, gap: 305, ob: 60, ey: 10 },
+  'The gap is the limit itself: the dip between the peaks is about a quarter.',
+);
+
+/** A low-power objective: the same two points blur into one. */
+const BLURRED = resolutionPage(
+  'g.he-fieldOfView-resolution-blob',
+  'Two points blurred into one',
+  'Use this for “Can a 10× objective of NA 0.25 separate two points 600 nm apart in 550 nm light?”',
+  { lam: 550, na: 0.25, gap: 600, ob: 10, ey: 10 },
+  'A dry 10× objective (NA 0.25) gathers a narrow cone of light, so its disks are wide.',
+);
+
 export const HE4I_GALLERY_MODULES: ModuleDef[] = [
   CELL_RATIO,
   CELL_RATIO_SMALL,
@@ -832,6 +993,9 @@ export const HE4I_GALLERY_MODULES: ModuleDef[] = [
   LINKAGE_TWO,
   LINKAGE_LOOSE,
   LINKAGE_THREE,
+  RESOLVED,
+  RAYLEIGH,
+  BLURRED,
 ];
 
 export const HE4I_GALLERY_LAYOUTS: LayoutDef[] = [
@@ -839,4 +1003,5 @@ export const HE4I_GALLERY_LAYOUTS: LayoutDef[] = [
   MODES_SORT,
   MUTATIONS_SORT,
   OPERONS,
+  SORT_GRAM,
 ];

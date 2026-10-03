@@ -7,18 +7,25 @@
  * its belly; the large intestine with the appendix ringed below the cecum; a bird's wing (with
  * its arm bones) beside a butterfly's wing (veins, no bones); a shark's fin (fin rays, no arm
  * bones) beside a dolphin's flipper (arm bones). The analogous pairs share a job, not a build.
+ *
+ * Microbial structure (HC149): the Gram-positive wall in section (a thick purple peptidoglycan
+ * mesh threaded with teichoic acids over the membrane's bilayer) and the Gram-negative wall
+ * (an outer membrane with LPS chains, a thin pink peptidoglycan layer, the inner membrane);
+ * cocci in a cluster, two bacilli, a spirillum and a rod holding an endospore, painted.
  */
 import type { ReactNode } from 'react';
-import { Circle, G, Line, Path } from 'react-native-svg';
+import { Circle, Defs, Ellipse, G, Line, Path, Rect } from 'react-native-svg';
 
 import { usePalette } from '@/theme';
 
+import { Ball, url, usePaintIds } from '../../reps/paint';
 import type { IconProps } from './types';
 
 type Pt = [number, number];
 
 export function He4iIcon({ icon, ink }: IconProps): ReactNode {
   const c = usePalette();
+  const ids = usePaintIds('cell', 'spore');
   /** A bone: a thick round-ended stroke in its color with a thin ink edge. */
   const bone = (a: Pt, b: Pt, color: string, w: number) => (
     <G key={`${a}-${b}`}>
@@ -61,6 +68,77 @@ export function He4iIcon({ icon, ink }: IconProps): ReactNode {
   );
   /** The thin line between the two halves of a pair. */
   const divider = <Line x1={24} y1={4} x2={24} y2={44} stroke={ink} strokeWidth={0.5} />;
+
+  /** A membrane's bilayer: two rows of heads, tails between them, from y. */
+  const bilayer = (y: number, key: string) => (
+    <G key={key}>
+      {Array.from({ length: 12 }, (_, i) => {
+        const x = 3 + i * 3.8;
+        return (
+          <G key={i}>
+            <Path
+              d={`M ${x} ${y + 1.6} L ${x} ${y + 4.4} M ${x} ${y + 6.4} L ${x} ${y + 9.2}`}
+              stroke={c.bioTail}
+              strokeWidth={0.9}
+            />
+            <Circle cx={x} cy={y} r={1.5} fill={c.bioHead} stroke={ink} strokeWidth={0.35} />
+            <Circle cx={x} cy={y + 10.8} r={1.5} fill={c.bioHead} stroke={ink} strokeWidth={0.35} />
+          </G>
+        );
+      })}
+    </G>
+  );
+  /** A peptidoglycan layer: a stained band with its mesh, y0 to y1. */
+  const mesh = (y0: number, y1: number, color: string) => (
+    <G>
+      <Rect x={1} y={y0} width={46} height={y1 - y0} fill={color} opacity={0.85} />
+      {Array.from({ length: Math.max(1, Math.floor((y1 - y0) / 3.5)) }, (_, i) => (
+        <Line
+          key={`h${i}`}
+          x1={1}
+          y1={y0 + 1.75 + i * 3.5}
+          x2={47}
+          y2={y0 + 1.75 + i * 3.5}
+          stroke={ink}
+          strokeWidth={0.4}
+          opacity={0.6}
+        />
+      ))}
+      {Array.from({ length: 12 }, (_, i) => (
+        <Line
+          key={`v${i}`}
+          x1={3 + i * 3.8}
+          y1={y0}
+          x2={3 + i * 3.8}
+          y2={y1}
+          stroke={ink}
+          strokeWidth={0.4}
+          opacity={0.45}
+        />
+      ))}
+    </G>
+  );
+  /** A rod-shaped cell (a bacillus), painted, from (x, y), w × h, turned a degrees. */
+  const rod = (x: number, y: number, w: number, h: number, a: number, key: string) => (
+    <G key={key} transform={`rotate(${a} ${x + w / 2} ${y + h / 2})`}>
+      <Rect
+        x={x}
+        y={y}
+        width={w}
+        height={h}
+        rx={h / 2}
+        fill={url(ids.cell)}
+        stroke={ink}
+        strokeWidth={0.9}
+      />
+    </G>
+  );
+  const paints = (
+    <Defs>
+      <Ball id={ids.cell} color={c.bacteriumCell} />
+      <Ball id={ids.spore} color={c.he4iAiry} />
+    </Defs>
+  );
 
   switch (icon) {
     case 'whale pelvis':
@@ -238,6 +316,119 @@ export function He4iIcon({ icon, ink }: IconProps): ReactNode {
           {bone([33.6, 22.8], [33.4, 40], c.limbHand, 1.1)}
           {bone([36, 22.8], [36.4, 37], c.limbHand, 1.1)}
           {bone([38.2, 22.5], [39.4, 30], c.limbHand, 1.1)}
+        </G>
+      );
+    case 'Gram-positive wall':
+      return (
+        <G>
+          {mesh(4, 30, c.he4iGramPos)}
+          {/* Teichoic acids threading the peptidoglycan to the outside. */}
+          {[8, 19, 31, 41].map((x) => (
+            <Path
+              key={x}
+              d={`M ${x} 33 C ${x - 2} 24 ${x + 2} 14 ${x} 2`}
+              stroke={c.bioSugarEdge}
+              strokeWidth={1.1}
+              fill="none"
+            />
+          ))}
+          {bilayer(34, 'm')}
+        </G>
+      );
+    case 'Gram-negative wall':
+      return (
+        <G>
+          {/* LPS chains outside the outer membrane. */}
+          {Array.from({ length: 12 }, (_, i) => (
+            <Path
+              key={i}
+              d={`M ${3 + i * 3.8} 8 l -1 -3 l 1.5 -2.5`}
+              stroke={c.bioSugarEdge}
+              strokeWidth={0.9}
+              fill="none"
+            />
+          ))}
+          {bilayer(9.5, 'o')}
+          {mesh(25, 29, c.he4iGramNeg)}
+          {bilayer(34, 'i')}
+        </G>
+      );
+    case 'coccus':
+      return (
+        <G>
+          {paints}
+          {[
+            [16, 16],
+            [27, 13],
+            [22, 25],
+            [33, 24],
+            [12, 28],
+            [27, 35],
+            [17, 38],
+          ].map(([x, y]) => (
+            <Circle
+              key={`${x},${y}`}
+              cx={x}
+              cy={y}
+              r={6}
+              fill={url(ids.cell)}
+              stroke={ink}
+              strokeWidth={0.9}
+            />
+          ))}
+        </G>
+      );
+    case 'bacillus':
+      return (
+        <G>
+          {paints}
+          {rod(4, 12, 26, 10, -12, 'a')}
+          {rod(17, 27, 26, 10, 8, 'b')}
+        </G>
+      );
+    case 'spirillum':
+      return (
+        <G>
+          <Path
+            d="M 4 30 C 8 14 14 14 17 24 C 20 34 26 34 29 24 C 32 14 38 14 41 24 C 41.6 26.4 42.3 27.2 43.4 27"
+            stroke={ink}
+            strokeWidth={7}
+            strokeLinecap="round"
+            fill="none"
+          />
+          <Path
+            d="M 4 30 C 8 14 14 14 17 24 C 20 34 26 34 29 24 C 32 14 38 14 41 24 C 41.6 26.4 42.3 27.2 43.4 27"
+            stroke={c.bacteriumCell}
+            strokeWidth={5.2}
+            strokeLinecap="round"
+            fill="none"
+          />
+          <Path
+            d="M 5 27 C 9 15 13 15 16 22"
+            stroke={c.shine}
+            strokeWidth={1.3}
+            strokeLinecap="round"
+            fill="none"
+            opacity={0.6}
+          />
+        </G>
+      );
+    case 'endospore':
+      return (
+        <G>
+          {paints}
+          {rod(3, 17, 42, 15, 0, 'r')}
+          {/* The spore at one end: a thick coat round a dry core. */}
+          <Ellipse cx={35} cy={24.5} rx={7} ry={5.2} fill={c.card} stroke={ink} strokeWidth={1.6} />
+          <Ellipse
+            cx={35}
+            cy={24.5}
+            rx={4.6}
+            ry={3.2}
+            fill={url(ids.spore)}
+            stroke={ink}
+            strokeWidth={0.6}
+          />
         </G>
       );
     default:

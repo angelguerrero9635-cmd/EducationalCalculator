@@ -10,6 +10,7 @@
  * - HC145 `linkageMap`: loci on a chromosome to scale in cM, homologs with their crossovers.
  * - HC146 card `codons`: a codon strip before and after a point mutation.
  * - HC147 `geneExpression` `corepressor`: the trp repressor binds only with tryptophan.
+ * - HC149 `fieldOfView` `resolution`: two points blurred to Airy disks, resolved or not.
  */
 import type { PedigreePerson } from './layouts/types';
 import type { NumOrVar } from './typesGraphs';
@@ -182,4 +183,38 @@ export const CODONS_CARD_H = 74;
  */
 export interface GeneSceneHe4i {
   corepressor?: boolean;
+}
+
+// ─── HC149: fieldOfView resolution ───────────────────────────────────────────────
+
+/**
+ * HC149 (B-P13): `resolution` on `fieldOfView`, a picture of its own (it has no `field` or
+ * `across`). Two points `gap` apart seen through the eyepiece, each blurred to an Airy disk
+ * whose first dark ring is at radius `d` (the resolution limit), on the same nm scale as the
+ * brightness along the line through them under it (the two disks added). Drawn as resolved
+ * exactly when gap ≥ d: two spots with a dip between them (just resolved within 2% of d, the
+ * Rayleigh dip), else one blob. `wavelength` and `na` (when given) work d = 0.61λ ÷ NA in the
+ * caption; `objective`, `eyepiece` and `total` its magnification (each checked). A "?" d or gap
+ * draws no spots.
+ */
+export interface FieldResolutionHe4i {
+  kind: 'fieldOfView';
+  field?: undefined;
+  across?: undefined;
+  size?: undefined;
+  resolution: {
+    d: NumOrVar;
+    gap: NumOrVar;
+    wavelength?: NumOrVar;
+    na?: NumOrVar;
+    objective?: NumOrVar;
+    eyepiece?: NumOrVar;
+    total?: string;
+  };
+}
+
+/** The variable ids a resolution field names (for the module tests). */
+export function fieldResolutionVars(r: FieldResolutionHe4i): string[] {
+  const q = r.resolution;
+  return ids(q.d, q.gap, q.wavelength, q.na, q.objective, q.eyepiece, q.total);
 }

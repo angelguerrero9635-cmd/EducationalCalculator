@@ -233,6 +233,10 @@ College card icons, round 4 (group I, `layouts/icons/he4i.tsx`), evidence for ev
 `whale pelvis` and `human appendix` (vestigial, the part ringed), `bird wing and butterfly wing`
 and `shark fin and dolphin flipper` (analogous: one drawn with its arm bones, one without); the
 layout check keeps each one, and group HH's limbs, in the bin naming its kind of evidence.
+Microbial structure (HC149): `Gram-positive wall` and `Gram-negative wall` in section (for the
+bins: a thick purple peptidoglycan mesh with teichoic acids over the membrane; an outer membrane
+with LPS, a thin pink layer, the inner membrane), `coccus`, `bacillus`, `spirillum`, `endospore`;
+the layout check keeps a wall on the bin that names its stain.
 Card figure `pedigree` (HC144, `layouts/pedigreeCardHe4i.tsx`): `{ kind: 'pedigree', people,
 marked? }`, 112 × 76, a 2–3 generation family in the standard symbols, `people` as the explore
 figure lists them (drawn with the `pedigree` calculator picture's pieces); `marked` says the

@@ -28,6 +28,7 @@ import { Marbles } from './Marbles';
 import { EnergyPyramid } from './EnergyPyramid';
 import { Generations } from './Generations';
 import { FieldOfView } from './FieldOfView';
+import { ResolutionHe4i } from './ResolutionHe4i';
 import { GradCylinder } from './GradCylinder';
 import { BaseTen } from './BaseTen';
 import { Clock } from './Clock';
@@ -857,6 +858,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'generations':
       return <Generations spec={spec} calc={calc} />;
     case 'fieldOfView':
+      if (spec.resolution) return <ResolutionHe4i spec={spec} calc={calc} />; // HC149
       return <FieldOfView spec={spec} calc={calc} />;
     case 'gradCylinder':
       return <GradCylinder spec={spec} calc={calc} />;

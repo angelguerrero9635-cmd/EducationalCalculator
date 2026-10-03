@@ -139,4 +139,25 @@ export const HE4I_REQUESTS: PictureRequest[] = [
     status: 'drawn',
     gallery: ['g.he-geneExpression-corepressor'],
   },
+  {
+    ...ask(
+      'HC149',
+      'fieldOfView',
+      'Gram card icons (the Gram-positive and Gram-negative walls in section; coccus, bacillus, spirillum, endospore) and `fieldOfView` `resolution`: two points gap apart blurred to Airy disks of radius d in the eyepiece, with the brightness along the line through them: separate, just resolved, or one blob',
+      [`${B}microbiology#0`, `${B}microbiology#0~resolution`],
+      [
+        'From B-P13. Icons in data/modules/layouts/icons/he4i.ts and layouts/icons/he4i.tsx (48 × 48). `resolution` is a fieldOfView of its own (typesHe4i.ts FieldResolutionHe4i, reps/ResolutionHe4i.tsx; Airy brightness from J₁ in reps/he4iMath.ts); the onion-cell field is unchanged (its spec now says `resolution?: undefined`).',
+        "Icon fields: { kind: 'icon', icon: 'Gram-positive wall' | 'Gram-negative wall' | 'coccus' | 'bacillus' | 'spirillum' | 'endospore' }, the walls as bin figures (`figure` on the bins Gram-positive and Gram-negative; every bin then needs one, e.g. HH's 'bacterium' on Both).",
+        "Resolution fields: { kind: 'fieldOfView', resolution: { d, gap, wavelength?, na?, objective?, eyepiece?, total? } }. Example (~resolution): { kind: 'fieldOfView', resolution: { d: 'd', gap: 'gap', wavelength: 'lam', na: 'na', objective: 'ob', eyepiece: 'ey', total: 'tot' } } with 550 nm, NA 1.25 → d = 268 nm; the page adds a gap value (300 nm), the table can stay beside it. A \"?\" d or gap draws no spots. No handles.",
+        'Harness (harness/picturesHe4i.ts): d and gap positive; drawn as resolved exactly when gap ≥ d (just resolved within 2%), and then the summed brightness dips between the points; d = 0.61λ ÷ NA; total = objective × eyepiece. Layout check: a Gram wall sits on (or in) the bin naming its stain.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-cardIcons-gram',
+      'g.he-fieldOfView-resolution',
+      'g.he-fieldOfView-resolution-rayleigh',
+      'g.he-fieldOfView-resolution-blob',
+    ],
+  },
 ];
