@@ -183,6 +183,54 @@ const bendWork = (v: Values, x: number, first: boolean) => {
   ];
 };
 
+/** F(x) = px³ ÷ 3 + qx² ÷ 2 + rx, an antiderivative of px² + qx + r, at x. */
+const antiQuad = (v: Values, x: number) => (v.p! * x ** 3) / 3 + (v.q! * x ** 2) / 2 + v.r! * x;
+
+/** Integral values as fractions with a bottom up to 6 (32/3), as whole coefficients give them. */
+const sixths = { fraction: 6, improper: true } as const;
+const inSixths = (x: number) => formatNumber(x, sixths);
+
+/** The antiderivative's terms for px² + qx + r as [coefficient, power, divisor], 0s left out. */
+const antiTerms = (v: Values) =>
+  (
+    [
+      [v.p!, 3, 3],
+      [v.q!, 2, 2],
+      [v.r!, 1, 1],
+    ] as const
+  ).filter(([k]) => k !== 0);
+
+/** Terms with their signs: [[1, "x³ ÷ 3"], [−2, "2x²"]] → "x³ ÷ 3 − 2x²" ("0" when none). */
+const joinSigned = (terms: readonly (readonly [number, string])[]) =>
+  terms.length === 0
+    ? '0'
+    : terms
+        .map(([k, t], i) => (i === 0 ? `${k < 0 ? '−' : ''}${t}` : `${k < 0 ? '−' : '+'} ${t}`))
+        .join(' ');
+
+/** "x³ ÷ 3 − 2x² + 5x": F(x) as written, the divisor worked in where it comes out short. */
+const antiForm = (v: Values) =>
+  joinSigned(
+    antiTerms(v).map(([k, n, d]) => {
+      const power = n === 1 ? 'x' : `x${raised(n)}`;
+      const whole = exact(Math.abs(k) / d);
+      const short = Math.abs(whole * 1e4 - Math.round(whole * 1e4)) < 1e-6;
+      const size = short ? whole : Math.abs(k);
+      const front = size === 1 ? '' : formatNumber(size);
+      return [k, short ? `${front}${power}` : `${front}${power} ÷ ${d}`] as const;
+    }),
+  );
+
+/** F at a point with the number put in: "2 × (−1)³ ÷ 3 + 5 × (−1)". */
+const antiAt = (v: Values, x: number) =>
+  joinSigned(
+    antiTerms(v).map(([k, n, d]) => {
+      const front = Math.abs(k) === 1 ? '' : `${formatNumber(Math.abs(k))} × `;
+      const power = n === 1 ? '' : raised(n);
+      return [k, `${front}${signed(x)}${power}${d === 1 ? '' : ` ÷ ${d}`}`] as const;
+    }),
+  );
+
 export const COLLEGE_MATH_MODULES: ModuleDef[] = [
   {
     // Calculus I → Limits and continuity: a quotient at x = a, 0/0 or k/0.
@@ -2041,6 +2089,92 @@ export const COLLEGE_MATH_MODULES: ModuleDef[] = [
       height: 'H',
       extent: 4,
       fill: { depth: 'h', r: 'r', inflow: 'q', rise: 'dh' },
+    },
+  },
+  {
+    // Calculus I → Definite integrals and the Fundamental Theorem: ∫ from a to b of (px² + qx + r) dx = F(b) − F(a).
+    id: 'he.math.calc-1#3',
+    use: 'Use this for “Evaluate the integral of 3x² − 4x + 2 from 0 to 2.”',
+    assumptions: [
+      'An antiderivative of f(x) = px² + qx + r is F(x) = px³ ÷ 3 + qx² ÷ 2 + rx: by the power rule, F′(x) = f(x).',
+      'The Fundamental Theorem (part 2): the integral of f from a to b is F(b) − F(a). A + C would cancel, so it is left out.',
+      'Area below the x-axis counts as negative, so the integral is the area above the axis less the area below it.',
+      'Swapping the limits flips the sign: the integral from b to a is −I.',
+    ],
+    variables: [
+      V('p', 'p', 'Coefficient of x²', { min: -50, max: 50, step: 0.1 }),
+      V('q', 'q', 'Coefficient of x', { min: -50, max: 50, step: 0.1 }),
+      V('r', 'r', 'Constant term', { min: -50, max: 50, step: 0.1 }),
+      V('a', 'a', 'Lower limit', { min: -100, max: 100, step: 0.1 }),
+      V('b', 'b', 'Upper limit', { min: -100, max: 100, step: 0.1 }),
+      V('Fa', 'F(a)', 'Antiderivative at the lower limit', {
+        min: -1e8,
+        max: 1e8,
+        derived: true,
+        ...sixths,
+      }),
+      V('Fb', 'F(b)', 'Antiderivative at the upper limit', {
+        min: -1e8,
+        max: 1e8,
+        derived: true,
+        ...sixths,
+      }),
+      V('I', 'I', 'Value of the integral', { min: -2e8, max: 2e8, derived: true, ...sixths }),
+    ],
+    ...rels(
+      derive(
+        'F(a) = pa³ ÷ 3 + qa² ÷ 2 + ra',
+        '{Fa} = {p} × {a}³ ÷ 3 + {q} × {a}² ÷ 2 + {r} × {a}',
+        'Fa',
+        ['p', 'q', 'r', 'a'],
+        (v) => antiQuad(v, v.a!),
+        (v) => antiAt(v, v.a!),
+        (v) =>
+          `Raise each power by 1 and divide by the new power: F(x) = ${antiForm(v)}. Put in x = a.`,
+      ),
+      derive(
+        'F(b) = pb³ ÷ 3 + qb² ÷ 2 + rb',
+        '{Fb} = {p} × {b}³ ÷ 3 + {q} × {b}² ÷ 2 + {r} × {b}',
+        'Fb',
+        ['p', 'q', 'r', 'b'],
+        (v) => antiQuad(v, v.b!),
+        (v) => antiAt(v, v.b!),
+        'The same antiderivative, at x = b.',
+      ),
+      withStep(
+        derive(
+          'I = F(b) − F(a)',
+          '{I} = {Fb} − {Fa}',
+          'I',
+          ['Fb', 'Fa'],
+          (v) => v.Fb! - v.Fa!,
+          (v) => `${inSixths(v.Fb!)} − ${v.Fa! < 0 ? `(${inSixths(v.Fa!)})` : inSixths(v.Fa!)}`,
+          (v) =>
+            v.Fb! - v.Fa! < 0
+              ? 'Subtract F(a) from F(b). The integral is negative: more of the area lies below the x-axis than above it.'
+              : 'Subtract F(a) from F(b): the change in the antiderivative from a to b.',
+        ),
+        'I',
+        {
+          work: (v) => [
+            `∫ from ${formatNumber(v.a!)} to ${formatNumber(v.b!)} of (${polyForm([v.p!, v.q!, v.r!])}) dx = [${antiForm(v)}] from ${formatNumber(v.a!)} to ${formatNumber(v.b!)} = ${inSixths(exact(v.Fb! - v.Fa!))}`,
+          ],
+        },
+      ),
+    ),
+    // ∫ from 1 to 3 of (x² + 1) dx: F(x) = x³ ÷ 3 + x, F(3) = 9 + 3 = 12, F(1) = 1 ÷ 3 + 1 = 4/3,
+    // I = 12 − 4/3 = 32/3 = 10.667.
+    example: { p: 1, q: 0, r: 1, a: 1, b: 3, Fa: 4 / 3, Fb: 12, I: 32 / 3 },
+    startWith: ['p', 'q', 'r', 'a', 'b'],
+    // f(x) = px² + qx + r with a to b shaded, the part above the axis + and below it −, ∫ written.
+    representation: {
+      kind: 'functionGraph',
+      family: 'quadratic',
+      form: 'standard',
+      a: 'p',
+      b: 'q',
+      c: 'r',
+      area: { from: 'a', to: 'b', value: 'I', signed: true },
     },
   },
 ];
