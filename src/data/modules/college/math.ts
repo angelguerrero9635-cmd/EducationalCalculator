@@ -1868,4 +1868,95 @@ export const COLLEGE_MATH_MODULES: ModuleDef[] = [
       keep: ['dx'],
     },
   },
+  {
+    // Calculus I → Related rates and optimization: two cars on perpendicular roads, dD/dt = (x·(dx/dt) + y·(dy/dt)) ÷ D.
+    id: 'he.math.calc-1#2~two-cars',
+    title: 'Two cars moving apart',
+    use: 'Use this for “Two cyclists leave a crossroads, one east at 15 km/h and one north at 20 km/h. How fast is the gap between them growing when they are 12 km and 5 km out?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'The roads cross at a right angle, so the cars and the crossing make a right triangle: D² = x² + y² at every instant.',
+      'Differentiating both sides in time t and dividing by 2 gives D·(dD/dt) = x·(dx/dt) + y·(dy/dt).',
+      'A positive rate means that distance is growing; a car driving back toward the crossing has a negative rate.',
+      'Distances are in km and rates in km/h.',
+    ],
+    variables: [
+      V('x', 'x', 'East car’s distance from the crossing', fixed('km', 0.01, 1000, 0.01)),
+      V('y', 'y', 'North car’s distance from the crossing', fixed('km', 0.01, 1000, 0.01)),
+      V('dx', 'dx/dt', 'East car’s speed away from the crossing', fixed('km/h', -300, 300, 0.1)),
+      V('dy', 'dy/dt', 'North car’s speed away from the crossing', fixed('km/h', -300, 300, 0.1)),
+      V('D', 'D', 'Distance between the cars', fixed('km', 0.01, 1500, 0.0001)),
+      V('dD', 'dD/dt', 'Rate the distance between them grows', fixed('km/h', -1e3, 1e3, 0.0001)),
+    ],
+    ...rels(
+      rule(
+        'x < D and y < D',
+        'Each car’s distance {x} and {y} is less than the distance between them {D}',
+        ['x', 'y', 'D'],
+        (v) => v.x! < v.D! && v.y! < v.D!,
+        'The distance between the cars is the hypotenuse, so it is longer than either road distance. Pick D larger than x and y.',
+      ),
+      rel(
+        'D² = x² + y²',
+        '{D}² = {x}² + {y}²',
+        ['D', 'x', 'y'],
+        (v) => v.D! ** 2 - v.x! ** 2 - v.y! ** 2,
+        {
+          D: [
+            (v) => exact(Math.hypot(v.x!, v.y!)),
+            '√({x}² + {y}²)',
+            'The distance between the cars is the hypotenuse: add the squares of the two road distances, then the square root.',
+          ],
+          x: [
+            (v) => (v.D! > v.y! ? exact(Math.sqrt(v.D! ** 2 - v.y! ** 2)) : undefined),
+            '√({D}² − {y}²)',
+            'Take y² from D², then the square root.',
+          ],
+          y: [
+            (v) => (v.D! > v.x! ? exact(Math.sqrt(v.D! ** 2 - v.x! ** 2)) : undefined),
+            '√({D}² − {x}²)',
+            'Take x² from D², then the square root.',
+          ],
+        },
+      ),
+      rel(
+        'D·(dD/dt) = x·(dx/dt) + y·(dy/dt)',
+        '{D} × {dD} = {x} × {dx} + {y} × {dy}',
+        ['D', 'dD', 'x', 'dx', 'y', 'dy'],
+        (v) => v.D! * v.dD! - v.x! * v.dx! - v.y! * v.dy!,
+        {
+          dD: [
+            (v) => (v.D! > 0 ? exact((v.x! * v.dx! + v.y! * v.dy!) / v.D!) : undefined),
+            '({x} × {dx} + {y} × {dy}) ÷ {D}',
+            'Differentiate D² = x² + y² in t, divide by 2, then divide by D.',
+          ],
+          dx: [
+            (v) => (v.x! > 0 ? exact((v.D! * v.dD! - v.y! * v.dy!) / v.x!) : undefined),
+            '({D} × {dD} − {y} × {dy}) ÷ {x}',
+            'Take y·(dy/dt) from D·(dD/dt), then divide by x.',
+          ],
+          dy: [
+            (v) => (v.y! > 0 ? exact((v.D! * v.dD! - v.x! * v.dx!) / v.y!) : undefined),
+            '({D} × {dD} − {x} × {dx}) ÷ {y}',
+            'Take x·(dx/dt) from D·(dD/dt), then divide by y.',
+          ],
+        },
+      ),
+    ),
+    // x = 30 km, y = 40 km, 60 and 80 km/h: D = √(900 + 1600) = 50 km,
+    // dD/dt = (30 × 60 + 40 × 80) ÷ 50 = (1800 + 3200) ÷ 50 = 100 km/h.
+    example: { x: 30, y: 40, dx: 60, dy: 80, D: 50, dD: 100 },
+    startWith: ['x', 'y', 'dx', 'dy'],
+    // The two roads, a car at each end, D dashed; each rate an arrow on its side.
+    representation: {
+      kind: 'rightTriangle',
+      a: 'y',
+      b: 'x',
+      c: 'D',
+      extent: 40,
+      rates: { a: 'dy', b: 'dx', c: 'dD' },
+      scene: 'roads',
+      keep: ['dx', 'dy', 'y'],
+    },
+  },
 ];
