@@ -178,3 +178,40 @@ export function niceBelow(x: number) {
   const m = x / e;
   return (m >= 5 ? 5 : m >= 2 ? 2 : 1) * e;
 }
+
+// ─── HC133: contourMap ─────────────────────────────────────────────────────────
+
+/** The made-up hill's outline by direction (screen angle, y down): about 1, never round. */
+export const hillR = (t: number) => 1 + 0.14 * Math.sin(2 * t + 1) + 0.08 * Math.cos(3 * t - 0.4);
+
+/** How flat the hill's contours are drawn (their height over their width). */
+export const HILL_SQUASH = 0.72;
+
+/** Contours drawn (0, A's, to K − 1) for n intervals crossed: two past B's, at least 6. */
+export const contourCount = (n: number) => Math.max(6, Math.round(n) + 3);
+
+/** Contour k's size as a share of A's: 1 at A's, shrinking evenly toward the summit. */
+export const contourShare = (k: number, K: number) => 1 - (0.9 * k) / K;
+
+/**
+ * Where A and B sit on the transect (it runs left from the summit), as shares of A's contour:
+ * A on contour 0, B on contour n; with n = 0 both on the flat below the hill.
+ */
+export function transectEnds(n: number): { a: number; b: number } {
+  const K = contourCount(n);
+  const step = 0.9 / K;
+  if (n <= 0) return { a: 1 + 1.6 * step, b: 1 + 0.4 * step };
+  return { a: 1, b: contourShare(n, K) };
+}
+
+/** The contours the line A–B meets after A (A's own left out), A to B: n of them. */
+export function transectCrossings(n: number): number[] {
+  const K = contourCount(n);
+  const { a, b } = transectEnds(n);
+  const out: number[] = [];
+  for (let k = 0; k < K; k++) {
+    const s = contourShare(k, K);
+    if (s < a - 1e-12 && s >= b - 1e-12) out.push(k);
+  }
+  return out;
+}

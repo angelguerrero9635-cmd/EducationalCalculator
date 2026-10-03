@@ -2,6 +2,7 @@
  * College gallery demos, round 4, group H (docs/RENDERINGS_HE.md). Each stands in for the
  * college page that waits, built from the plan's worked example. Spread into gallery.ts.
  * HC129: `catchment` (he.earth-science.hydrology#1).
+ * HC133: `contourMap` (he.geography.physical-geography#2).
  */
 import type { Values, VariableDef } from '@/engine/types';
 
@@ -157,6 +158,143 @@ const CATCHMENT_WOODS = catchmentPage(
   { C: 0.15, i: 25, A: 10 },
 );
 
-export const HE4H_GALLERY_MODULES: ModuleDef[] = [CATCHMENT, CATCHMENT_PAVED, CATCHMENT_WOODS];
+// ─── HC133: slope from a contour map (physical-geography#2) ────────────────────
+
+const DEG = Math.PI / 180;
+
+const CONTOUR_RULES = [
+  rule('rise', '{rise} = {n} × {CI}', ['rise', 'n', 'CI'], (v) => v.rise! - v.n! * v.CI!, {
+    rise: [(v) => v.n! * v.CI!, '{n} × {CI}', 'Each interval crossed climbs one contour interval.'],
+    n: [(v) => v.rise! / v.CI!, '{rise} ÷ {CI}', 'The rise counted in contour intervals.'],
+    CI: [(v) => v.rise! / v.n!, '{rise} ÷ {n}', 'The rise shared over the intervals crossed.'],
+  }),
+  rule(
+    'ground',
+    '{ground} = {map} × {denom} ÷ 100',
+    ['ground', 'map', 'denom'],
+    (v) => v.ground! - (v.map! * v.denom!) / 100,
+    {
+      ground: [
+        (v) => (v.map! * v.denom!) / 100,
+        '{map} × {denom} ÷ 100',
+        'Each map centimetre stands for the scale’s denominator in centimetres; ÷ 100 gives metres.',
+      ],
+      map: [
+        (v) => (100 * v.ground!) / v.denom!,
+        '100 × {ground} ÷ {denom}',
+        'The ground distance shrunk by the scale, in centimetres.',
+      ],
+      denom: [
+        (v) => (100 * v.ground!) / v.map!,
+        '100 × {ground} ÷ {map}',
+        'How many times the ground distance is the map distance.',
+      ],
+    },
+  ),
+  rule(
+    'gradient',
+    '{gradient} = 100 × {rise} ÷ {ground}',
+    ['gradient', 'rise', 'ground'],
+    (v) => v.gradient! - (100 * v.rise!) / v.ground!,
+    {
+      gradient: [
+        (v) => (100 * v.rise!) / v.ground!,
+        '100 × {rise} ÷ {ground}',
+        'Rise over run, as a percent.',
+      ],
+      rise: [
+        (v) => (v.gradient! * v.ground!) / 100,
+        '{gradient} × {ground} ÷ 100',
+        'The percent of the run that the ground climbs.',
+      ],
+      ground: [
+        (v) => (100 * v.rise!) / v.gradient!,
+        '100 × {rise} ÷ {gradient}',
+        'The run that climbs this rise at this gradient.',
+      ],
+    },
+  ),
+  rule(
+    'angle',
+    '{angle} = tan⁻¹({rise} ÷ {ground})',
+    ['angle', 'rise', 'ground'],
+    (v) => Math.tan(v.angle! * DEG) - v.rise! / v.ground!,
+    {
+      angle: [
+        (v) => Math.atan(v.rise! / v.ground!) / DEG,
+        'tan⁻¹({rise} ÷ {ground})',
+        'The slope angle is the angle whose tangent is rise over run.',
+      ],
+    },
+  ),
+];
+
+const contourPage = (id: string, title: string, use: string, typed: Values) =>
+  page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'The ground slopes evenly between the two points, so one gradient fits the whole line.',
+      'Contours close together mean steep ground; far apart, gentle ground.',
+      'The map distance is measured along the straight line from A to B.',
+    ],
+    variables: [
+      num('CI', 'CI', 'Contour interval', 'm', 1, 500, { step: 1 }),
+      num('n', 'n', 'Intervals crossed', undefined, 0, 100, { integer: true, step: 1 }),
+      num('rise', 'Δh', 'Rise', 'm', 0, 50000, { derived: true }),
+      num('map', 'dₘₐₚ', 'Map distance', 'cm', 0.1, 100, { step: 0.1 }),
+      num('denom', 'S', 'Scale denominator', undefined, 1000, 10000000, {
+        integer: true,
+        step: 1000,
+      }),
+      num('ground', 'd', 'Ground distance', 'm', 1, 1e7, { derived: true }),
+      num('gradient', 'G', 'Gradient', '%', 0, 1000, { derived: true }),
+      num('angle', 'θ', 'Slope angle', '°', 0, 89.9, { derived: true }),
+    ],
+    rules: CONTOUR_RULES,
+    example: example(
+      typed,
+      ['rise', (v) => v.n! * v.CI!],
+      ['ground', (v) => (v.map! * v.denom!) / 100],
+      ['gradient', (v) => (100 * v.rise!) / v.ground!],
+      ['angle', (v) => Math.atan(v.rise! / v.ground!) / DEG],
+    ),
+    startWith: ['CI', 'n', 'map', 'denom'],
+    representation: {
+      kind: 'contourMap',
+      interval: 'CI',
+      crossed: 'n',
+      mapDistance: 'map',
+      scale: 'denom',
+      rise: 'rise',
+      ground: 'ground',
+      gradient: 'gradient',
+      angle: 'angle',
+    },
+  });
+
+const CONTOUR = contourPage(
+  'g.he-contourMap-profile',
+  'Slope along a line on a contour map',
+  'Use this for “A to B crosses 5 intervals of 20 m and measures 5 cm on a 1:50,000 map. What is the gradient?”',
+  { CI: 20, n: 5, map: 5, denom: 50000 },
+);
+
+/** A steep face: many contours crowded into a short line on a large-scale map. */
+const CONTOUR_STEEP = contourPage(
+  'g.he-contourMap-steep',
+  'A steep slope on a large-scale map',
+  'Use this for “A line 2 cm long on a 1:25,000 map crosses 25 contours 10 m apart. How steep is it?”',
+  { CI: 10, n: 25, map: 2, denom: 25000 },
+);
+
+export const HE4H_GALLERY_MODULES: ModuleDef[] = [
+  CATCHMENT,
+  CATCHMENT_PAVED,
+  CATCHMENT_WOODS,
+  CONTOUR,
+  CONTOUR_STEEP,
+];
 
 export const HE4H_GALLERY_LAYOUTS: LayoutDef[] = [];

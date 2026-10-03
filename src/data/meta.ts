@@ -180,6 +180,7 @@ const PICTURE_NAMES: Record<string, string> = {
   solidOfRevolution: 'a region turned about an axis, with one disk, washer or shell',
   driftPaths: 'genetic drift: populations’ allele frequencies wandering, expected H falling',
   catchment: 'a drainage basin to scale: rain, the share that runs off, the peak flow out',
+  contourMap: 'a hill of contours, a line across them and its profile: rise, run, gradient',
   propertyDiagram: 'a T–v, P–v or T–s plane with the vapor dome, states and a cycle',
   elementChain: 'finite elements: springs or bars between nodes, loads, displacements; a mesh',
   fatigueDiagram: 'fatigue: a Goodman diagram, an S–N line on log axes, a Miner damage bar',
