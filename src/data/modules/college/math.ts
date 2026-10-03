@@ -372,6 +372,70 @@ export const COLLEGE_MATH_MODULES: ModuleDef[] = [
     },
   },
   {
+    // Calculus I → Limits and continuity: ε–δ for a line, δ = ε ÷ |m|.
+    id: 'he.math.calc-1#0~epsilon-delta',
+    title: 'Find δ for a given ε (a line)',
+    use: 'Use this for “For lim (3x − 1) = 5 as x → 2, find δ when ε = 0.06.”',
+    assumptions: [
+      'lim f(x) = L as x → a means: for every ε > 0 there is a δ > 0 with |f(x) − L| < ε whenever 0 < |x − a| < δ.',
+      'For a line f(x) = mx + b, |f(x) − L| = |m| × |x − a|, so δ = ε ÷ |m| works (any smaller δ does too).',
+    ],
+    variables: [
+      V('m', 'm', 'Slope', { min: -20, max: 20, step: 0.5 }),
+      V('b', 'b', 'Intercept', { min: -50, max: 50, step: 0.5 }),
+      V('a', 'a', 'Point x approaches', { min: -10, max: 10, step: 0.5 }),
+      V('L', 'L', 'The limit', { min: -300, max: 300, step: 0.01, derived: true }),
+      V('eps', 'ε', 'Allowed distance from L', { min: 0.0001, max: 10, step: 0.0001 }),
+      V('delta', 'δ', 'Allowed distance from a', { min: 0.00001, max: 100, step: 0.00001 }),
+    ],
+    ...rels(
+      rule(
+        'm ≠ 0',
+        'The slope {m} is not 0',
+        ['m'],
+        (v) => v.m !== 0,
+        'With m = 0 the line is flat: every δ works. Pick a slope that is not 0.',
+      ),
+      derive(
+        'L = ma + b',
+        '{L} = {m} × {a} + {b}',
+        'L',
+        ['m', 'a', 'b'],
+        (v) => v.m! * v.a! + v.b!,
+        (v) => `${signed(v.m!)} × ${signed(v.a!)} + ${signed(v.b!)}`,
+        'A line is continuous, so its limit at a is its value there.',
+      ),
+      rel(
+        'δ = ε ÷ |m|',
+        '{delta} = {eps} ÷ |{m}|',
+        ['delta', 'eps', 'm'],
+        (v) => v.delta! * Math.abs(v.m!) - v.eps!,
+        {
+          delta: [
+            (v) => (v.m === 0 ? undefined : v.eps! / Math.abs(v.m!)),
+            (v) => `${formatNumber(v.eps!)} ÷ |${formatNumber(v.m!)}|`,
+            '|f(x) − L| = |m| × |x − a| < ε when |x − a| < ε ÷ |m|.',
+          ],
+          eps: [
+            (v) => v.delta! * Math.abs(v.m!),
+            (v) => `${formatNumber(v.delta!)} × |${formatNumber(v.m!)}|`,
+            'The δ-band on x maps to a band |m| times as wide on y.',
+          ],
+        },
+      ),
+    ),
+    example: { m: 3, b: -1, a: 2, L: 5, eps: 0.06, delta: 0.02 },
+    startWith: ['m', 'b', 'a', 'eps'],
+    representation: {
+      kind: 'functionGraph',
+      family: 'linear',
+      m: 'm',
+      b: 'b',
+      band: { x: 'a', y: 'L', dx: 'delta', dy: 'eps' },
+      fixed: true,
+    },
+  },
+  {
     // Calculus I → Derivatives and differentiation rules
     id: 'he.math.calc-1#1',
     use: 'Use this for “Find the slope of y = 3x⁴ at x = −1.”',
