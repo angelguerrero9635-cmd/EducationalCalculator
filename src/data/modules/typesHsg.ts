@@ -5,6 +5,12 @@
  */
 
 import type { DnaLongGene } from './typesHs2e';
+import {
+  membraneHe3gVars,
+  type MembranePotential,
+  type MembranePsi,
+  type PathwayName,
+} from './typesHe3g';
 
 // ─── H31 macromolecules (explore) ────────────────────────────────────────────
 
@@ -61,6 +67,9 @@ export type EnergyProcess =
 export interface EnergyScene {
   process?: EnergyProcess;
   lit?: EnergySubstance;
+  /** HC57 (college): a pathway's steps in detail, one lit (`typesHe3g.ts`). */
+  detail?: PathwayName;
+  step?: number;
 }
 
 /** The substances each process takes in or gives out (the arrows it lights). */
@@ -191,6 +200,9 @@ export interface MembraneSpec {
    * pump's "K⁺" going in as Na⁺ goes out): its own arrow beside the first, named.
    */
   counter?: string;
+  /** HC79 (college): the membrane potential and water potential (`typesHe3g.ts`). */
+  potential?: MembranePotential;
+  psi?: MembranePsi;
 }
 
 // ─── H36 dnaStrand (calculator picture) ──────────────────────────────────────
@@ -240,7 +252,7 @@ export function hsgSpecVars(r: HsgSpec): string[] {
     xs.filter((x): x is string => typeof x === 'string');
   switch (r.kind) {
     case 'membrane':
-      return ids([r.outside, r.inside, r.moved, r.atp, r.gradient]);
+      return [...ids([r.outside, r.inside, r.moved, r.atp, r.gradient]), ...membraneHe3gVars(r)];
     case 'dnaStrand':
       return ids([r.length, r.mutation?.at, r.percentA, r.codons, r.gene?.bases]);
   }

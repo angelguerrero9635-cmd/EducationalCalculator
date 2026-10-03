@@ -1,0 +1,675 @@
+{
+  "id": "ncees-fe-ec-specifications",
+  "curriculum": "NCEES FE Electrical and Computer CBT exam specifications",
+  "publisher": "NCEES",
+  "edition": "Effective beginning with the July 2020 examinations",
+  "subject": "electrical",
+  "level": "college",
+  "content": "titles",
+  "license": {
+    "name": "© NCEES; free to view (all rights reserved)",
+    "url": "https://ncees.org/exams/fe-exam/",
+    "attribution": "Fundamentals of Engineering (FE) Electrical and Computer CBT Exam Specifications, NCEES."
+  },
+  "terms": {
+    "unit": "Knowledge area",
+    "lesson": "Subtopic"
+  },
+  "sourceUrl": "https://ncees.org/wp-content/uploads/2022/09/FE-Electrical-and-Computer-CBT-specs.pdf",
+  "retrieved": "2026-10-02",
+  "notes": "Topic list and question counts per knowledge area only, as the brief allows (110 questions in all). No exam items, practice exams or Reference Handbook content were read. Fetched from ncees.org (robots.txt: Crawl-delay 10, disallows /*?, /calendar/action*, /events/action*, /cdn-cgi*), 10 s between requests. Topic mapping is ours.",
+  "books": [
+    {
+      "grade": "college",
+      "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Electrical-and-Computer-CBT-specs.pdf",
+      "units": [
+        {
+          "n": "1",
+          "title": "Mathematics",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Electrical-and-Computer-CBT-specs.pdf",
+          "topics": [
+            "he.engineering.numerical-methods#0",
+            "he.engineering.numerical-methods#1",
+            "he.engineering.numerical-methods#2",
+            "he.engineering.numerical-methods#3",
+            "he.engineering.numerical-methods#4",
+            "he.math.calc-1#0",
+            "he.math.calc-1#1",
+            "he.math.calc-1#2",
+            "he.math.calc-1#3",
+            "he.math.calc-1#4",
+            "he.math.diff-eq#0",
+            "he.math.diff-eq#1",
+            "he.math.diff-eq#2",
+            "he.math.diff-eq#3",
+            "he.math.diff-eq#4",
+            "he.math.linear-algebra#0",
+            "he.math.linear-algebra#1",
+            "he.math.linear-algebra#2",
+            "he.math.linear-algebra#3",
+            "he.math.linear-algebra#4"
+          ],
+          "questions": "11–17",
+          "lessons": [
+            {
+              "n": "1.A",
+              "title": "Algebra and trigonometry",
+              "url": null
+            },
+            {
+              "n": "1.B",
+              "title": "Complex numbers",
+              "url": null
+            },
+            {
+              "n": "1.C",
+              "title": "Discrete mathematics",
+              "url": null
+            },
+            {
+              "n": "1.D",
+              "title": "Analytic geometry",
+              "url": null
+            },
+            {
+              "n": "1.E",
+              "title": "Calculus (e.g., differential, integral, single-variable, multivariable)",
+              "url": null
+            },
+            {
+              "n": "1.F",
+              "title": "Ordinary differential equations",
+              "url": null
+            },
+            {
+              "n": "1.G",
+              "title": "Linear algebra",
+              "url": null
+            },
+            {
+              "n": "1.H",
+              "title": "Vector analysis",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Probability and Statistics",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Electrical-and-Computer-CBT-specs.pdf",
+          "topics": [],
+          "questions": "4–6",
+          "lessons": [
+            {
+              "n": "2.A",
+              "title": "Measures of central tendencies and dispersions (e.g., mean, mode, standard deviation)",
+              "url": null
+            },
+            {
+              "n": "2.B",
+              "title": "Probability distributions (e.g., discrete, continuous, normal, binomial, conditional probability)",
+              "url": null
+            },
+            {
+              "n": "2.C",
+              "title": "Expected value (weighted average)",
+              "url": null
+            }
+          ],
+          "notes": "No taxonomy topic of a college course matches this knowledge area (ethics, economics, statistics or professional practice are not taxonomy topics).",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "3",
+          "title": "Ethics and Professional Practice",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Electrical-and-Computer-CBT-specs.pdf",
+          "topics": [],
+          "questions": "4–6",
+          "lessons": [
+            {
+              "n": "3.A",
+              "title": "Codes of ethics (e.g., professional and technical societies, NCEES Model Law and Model Rules)",
+              "url": null
+            },
+            {
+              "n": "3.B",
+              "title": "Intellectual property (e.g., copyright, trade secrets, patents, trademarks)",
+              "url": null
+            },
+            {
+              "n": "3.C",
+              "title": "Safety (e.g., grounding, material safety data, PPE, radiation protection)",
+              "url": null
+            }
+          ],
+          "notes": "No taxonomy topic of a college course matches this knowledge area (ethics, economics, statistics or professional practice are not taxonomy topics).",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "4",
+          "title": "Engineering Economics",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Electrical-and-Computer-CBT-specs.pdf",
+          "topics": [],
+          "questions": "5–8",
+          "lessons": [
+            {
+              "n": "4.A",
+              "title": "Time value of money (e.g., present value, future value, annuities)",
+              "url": null
+            },
+            {
+              "n": "4.B",
+              "title": "Cost estimation",
+              "url": null
+            },
+            {
+              "n": "4.C",
+              "title": "Risk identification",
+              "url": null
+            },
+            {
+              "n": "4.D",
+              "title": "Analysis (e.g., cost-benefit, trade-off, break-even)",
+              "url": null
+            }
+          ],
+          "notes": "No taxonomy topic of a college course matches this knowledge area (ethics, economics, statistics or professional practice are not taxonomy topics).",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "5",
+          "title": "Properties of Electrical Materials",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Electrical-and-Computer-CBT-specs.pdf",
+          "topics": [
+            "he.engineering.materials-science#0",
+            "he.engineering.materials-science#1",
+            "he.engineering.materials-science#2",
+            "he.engineering.materials-science#3",
+            "he.engineering.electronics#0",
+            "he.engineering.electronics#1",
+            "he.engineering.electronics#2",
+            "he.engineering.electronics#3"
+          ],
+          "questions": "4–6",
+          "lessons": [
+            {
+              "n": "5.A",
+              "title": "Semiconductor materials (e.g., tunneling, diffusion/drift current, energy bands, doping bands, p-n theory)",
+              "url": null
+            },
+            {
+              "n": "5.B",
+              "title": "Electrical (e.g., conductivity, resistivity, permittivity, magnetic permeability, noise)",
+              "url": null
+            },
+            {
+              "n": "5.C",
+              "title": "Thermal (e.g., conductivity, expansion)",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "6",
+          "title": "Circuit Analysis (DC and AC Steady State)",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Electrical-and-Computer-CBT-specs.pdf",
+          "topics": [
+            "he.engineering.circuits-1#0",
+            "he.engineering.circuits-1#1",
+            "he.engineering.circuits-1#2",
+            "he.engineering.circuits-1#3",
+            "he.engineering.circuits-1#4",
+            "he.engineering.circuits-2#0",
+            "he.engineering.circuits-2#1",
+            "he.engineering.circuits-2#2",
+            "he.engineering.circuits-2#3",
+            "he.engineering.circuits-2#4"
+          ],
+          "questions": "11–17",
+          "lessons": [
+            {
+              "n": "6.A",
+              "title": "KCL, KVL",
+              "url": null
+            },
+            {
+              "n": "6.B",
+              "title": "Series/parallel equivalent circuits",
+              "url": null
+            },
+            {
+              "n": "6.C",
+              "title": "Thevenin and Norton theorems",
+              "url": null
+            },
+            {
+              "n": "6.D",
+              "title": "Node and loop analysis",
+              "url": null
+            },
+            {
+              "n": "6.E",
+              "title": "Waveform analysis (e.g., RMS, average, frequency, phase, wavelength)",
+              "url": null
+            },
+            {
+              "n": "6.F",
+              "title": "Phasors",
+              "url": null
+            },
+            {
+              "n": "6.G",
+              "title": "Impedance",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "7",
+          "title": "Linear Systems",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Electrical-and-Computer-CBT-specs.pdf",
+          "topics": [
+            "he.engineering.signals-systems#0",
+            "he.engineering.signals-systems#1",
+            "he.engineering.signals-systems#2",
+            "he.engineering.signals-systems#3",
+            "he.engineering.signals-systems#4"
+          ],
+          "questions": "5–8",
+          "lessons": [
+            {
+              "n": "7.A",
+              "title": "Frequency/transient response",
+              "url": null
+            },
+            {
+              "n": "7.B",
+              "title": "Resonance",
+              "url": null
+            },
+            {
+              "n": "7.C",
+              "title": "Laplace transforms",
+              "url": null
+            },
+            {
+              "n": "7.D",
+              "title": "Transfer functions",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "8",
+          "title": "Signal Processing",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Electrical-and-Computer-CBT-specs.pdf",
+          "topics": [
+            "he.engineering.signals-systems#0",
+            "he.engineering.signals-systems#1",
+            "he.engineering.signals-systems#2",
+            "he.engineering.signals-systems#3",
+            "he.engineering.signals-systems#4"
+          ],
+          "questions": "5–8",
+          "lessons": [
+            {
+              "n": "8.A",
+              "title": "Sampling (e.g., aliasing, Nyquist theorem)",
+              "url": null
+            },
+            {
+              "n": "8.B",
+              "title": "Analog filters",
+              "url": null
+            },
+            {
+              "n": "8.C",
+              "title": "Digital filters (e.g., difference equations, Z-transforms)",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "9",
+          "title": "Electronics",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Electrical-and-Computer-CBT-specs.pdf",
+          "topics": [
+            "he.engineering.electronics#0",
+            "he.engineering.electronics#1",
+            "he.engineering.electronics#2",
+            "he.engineering.electronics#3"
+          ],
+          "questions": "7–11",
+          "lessons": [
+            {
+              "n": "9.A",
+              "title": "Models, biasing, and performance of discrete devices (e.g., diodes, transistors, thyristors)",
+              "url": null
+            },
+            {
+              "n": "9.B",
+              "title": "Amplifiers (e.g., single-stage/common emitter, differential, biasing)",
+              "url": null
+            },
+            {
+              "n": "9.C",
+              "title": "Operational amplifiers (e.g., ideal, nonideal)",
+              "url": null
+            },
+            {
+              "n": "9.D",
+              "title": "Instrumentation (e.g., measurements, data acquisition, transducers)",
+              "url": null
+            },
+            {
+              "n": "9.E",
+              "title": "Power electronics (e.g., rectifiers, inverters, converters)",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "10",
+          "title": "Power Systems",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Electrical-and-Computer-CBT-specs.pdf",
+          "topics": [
+            "he.engineering.power-systems#0",
+            "he.engineering.power-systems#1",
+            "he.engineering.power-systems#2",
+            "he.engineering.power-systems#3"
+          ],
+          "questions": "8–12",
+          "lessons": [
+            {
+              "n": "10.A",
+              "title": "Power theory (e.g., power factor, single and three phase, voltage regulation)",
+              "url": null
+            },
+            {
+              "n": "10.B",
+              "title": "Transmission and distribution (e.g., real and reactive losses, efficiency, voltage drop, delta and wye connections)",
+              "url": null
+            },
+            {
+              "n": "10.C",
+              "title": "Transformers (e.g., single-phase and three-phase connections, reflected impedance)",
+              "url": null
+            },
+            {
+              "n": "10.D",
+              "title": "Motors and generators (e.g., synchronous, induction, dc)",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "11",
+          "title": "Electromagnetics",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Electrical-and-Computer-CBT-specs.pdf",
+          "topics": [
+            "he.engineering.electromagnetics#0",
+            "he.engineering.electromagnetics#1",
+            "he.engineering.electromagnetics#2",
+            "he.engineering.electromagnetics#3"
+          ],
+          "questions": "4–6",
+          "lessons": [
+            {
+              "n": "11.A",
+              "title": "Electrostatics/magnetostatics (e.g., spatial relationships, vector analysis)",
+              "url": null
+            },
+            {
+              "n": "11.B",
+              "title": "Electrodynamics (e.g., Maxwell equations, wave propagation)",
+              "url": null
+            },
+            {
+              "n": "11.C",
+              "title": "Transmission lines (high frequency)",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "12",
+          "title": "Control Systems",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Electrical-and-Computer-CBT-specs.pdf",
+          "topics": [
+            "he.engineering.control-systems#0",
+            "he.engineering.control-systems#1",
+            "he.engineering.control-systems#2",
+            "he.engineering.control-systems#3",
+            "he.engineering.control-systems#4"
+          ],
+          "questions": "6–9",
+          "lessons": [
+            {
+              "n": "12.A",
+              "title": "Block diagrams (e.g. feedforward, feedback)",
+              "url": null
+            },
+            {
+              "n": "12.B",
+              "title": "Bode plots",
+              "url": null
+            },
+            {
+              "n": "12.C",
+              "title": "Closed-loop response, open-loop response, and stability",
+              "url": null
+            },
+            {
+              "n": "12.D",
+              "title": "Controller performance (e.g., steady-state errors, settling time, overshoot)",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "13",
+          "title": "Communications",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Electrical-and-Computer-CBT-specs.pdf",
+          "topics": [
+            "he.engineering.communication-systems#0",
+            "he.engineering.communication-systems#1",
+            "he.engineering.communication-systems#2",
+            "he.engineering.communication-systems#3"
+          ],
+          "questions": "5–8",
+          "lessons": [
+            {
+              "n": "13.A",
+              "title": "Basic modulation/demodulation concepts (e.g., AM, FM, PCM)",
+              "url": null
+            },
+            {
+              "n": "13.B",
+              "title": "Fourier transforms/Fourier series",
+              "url": null
+            },
+            {
+              "n": "13.C",
+              "title": "Multiplexing (e.g., time division, frequency division, code division)",
+              "url": null
+            },
+            {
+              "n": "13.D",
+              "title": "Digital communications",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "14",
+          "title": "Computer Networks",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Electrical-and-Computer-CBT-specs.pdf",
+          "topics": [
+            "he.engineering.networks#0",
+            "he.engineering.networks#1",
+            "he.engineering.networks#2",
+            "he.engineering.networks#3"
+          ],
+          "questions": "4–6",
+          "lessons": [
+            {
+              "n": "14.A",
+              "title": "Routing and switching",
+              "url": null
+            },
+            {
+              "n": "14.B",
+              "title": "Network topologies (e.g., mesh, ring, star)",
+              "url": null
+            },
+            {
+              "n": "14.C",
+              "title": "Network types (e.g., LAN, WAN, internet)",
+              "url": null
+            },
+            {
+              "n": "14.D",
+              "title": "Network models (e.g., OSI, TCP/IP)",
+              "url": null
+            },
+            {
+              "n": "14.E",
+              "title": "Network intrusion detection and prevention (e.g., firewalls, endpoint detection, network detection)",
+              "url": null
+            },
+            {
+              "n": "14.F",
+              "title": "Security (e.g., port scanning, network vulnerability testing, web vulnerability testing, penetration testing, security triad)",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "15",
+          "title": "Digital Systems",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Electrical-and-Computer-CBT-specs.pdf",
+          "topics": [
+            "he.engineering.digital-logic#0",
+            "he.engineering.digital-logic#1",
+            "he.engineering.digital-logic#2",
+            "he.engineering.digital-logic#3"
+          ],
+          "questions": "8–12",
+          "lessons": [
+            {
+              "n": "15.A",
+              "title": "Number systems",
+              "url": null
+            },
+            {
+              "n": "15.B",
+              "title": "Boolean logic",
+              "url": null
+            },
+            {
+              "n": "15.C",
+              "title": "Logic gates and circuits",
+              "url": null
+            },
+            {
+              "n": "15.D",
+              "title": "Logic minimization (e.g., SOP, POS, Karnaugh maps)",
+              "url": null
+            },
+            {
+              "n": "15.E",
+              "title": "Flip-flops and counters",
+              "url": null
+            },
+            {
+              "n": "15.F",
+              "title": "Programmable logic devices and gate arrays",
+              "url": null
+            },
+            {
+              "n": "15.G",
+              "title": "State machine design",
+              "url": null
+            },
+            {
+              "n": "15.H",
+              "title": "Timing (e.g., diagrams, asynchronous inputs, race conditions and other hazards)",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "16",
+          "title": "Computer Systems",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Electrical-and-Computer-CBT-specs.pdf",
+          "topics": [
+            "he.engineering.computer-architecture#0",
+            "he.engineering.computer-architecture#1",
+            "he.engineering.computer-architecture#2",
+            "he.engineering.computer-architecture#3",
+            "he.engineering.embedded-systems#0",
+            "he.engineering.embedded-systems#1",
+            "he.engineering.embedded-systems#2",
+            "he.engineering.embedded-systems#3",
+            "he.engineering.operating-systems#0",
+            "he.engineering.operating-systems#1",
+            "he.engineering.operating-systems#2",
+            "he.engineering.operating-systems#3"
+          ],
+          "questions": "5–8",
+          "lessons": [
+            {
+              "n": "16.A",
+              "title": "Microprocessors",
+              "url": null
+            },
+            {
+              "n": "16.B",
+              "title": "Memory technology and systems",
+              "url": null
+            },
+            {
+              "n": "16.C",
+              "title": "Interfacing",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "17",
+          "title": "Software Engineering",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Electrical-and-Computer-CBT-specs.pdf",
+          "topics": [
+            "he.engineering.data-structures#0",
+            "he.engineering.data-structures#1",
+            "he.engineering.data-structures#2",
+            "he.engineering.data-structures#3",
+            "he.engineering.engineering-programming#0",
+            "he.engineering.engineering-programming#1",
+            "he.engineering.engineering-programming#2",
+            "he.engineering.engineering-programming#3"
+          ],
+          "questions": "4–6",
+          "lessons": [
+            {
+              "n": "17.A",
+              "title": "Algorithms (e.g., sorting, searching, complexity, big-O)",
+              "url": null
+            },
+            {
+              "n": "17.B",
+              "title": "Data structures (e.g., lists, trees, vectors, structures, arrays)",
+              "url": null
+            },
+            {
+              "n": "17.C",
+              "title": "Software implementation (e.g., iteration, conditionals, recursion, control flow, scripting, testing)",
+              "url": null
+            }
+          ]
+        }
+      ],
+      "title": "NCEES FE Electrical and Computer CBT exam specifications"
+    }
+  ]
+}

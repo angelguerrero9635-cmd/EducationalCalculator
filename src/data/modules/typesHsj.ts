@@ -7,6 +7,23 @@
 import type { NumOrVar } from './typesGraphs';
 import { ladderVars, type EnergyLadderSpec } from './typesHs2d';
 import { gasMixtureVars, type GasMixture } from './typesHs3e';
+import {
+  gibbsVars,
+  phScaleHe3fVars,
+  polyproticVars,
+  type EquilibriumGibbsSpec,
+  type PhPolyprotic,
+  type PhScaleHe3fSpec,
+} from './typesHe3f';
+import {
+  energyHe3gVars,
+  gasHe3gVars,
+  type EnergyBombSpec,
+  type EnergyQuantity,
+  type EnergySteps,
+  type GasPv,
+  type GasReal,
+} from './typesHe3g';
 
 // ─── H51 gasPiston ───────────────────────────────────────────────────────────
 
@@ -49,6 +66,9 @@ export interface GasPistonSpec extends GasState {
   energy?: { heat: NumOrVar; work: NumOrVar; change?: string };
   /** Round 3: a gas mixture colored by gas (`typesHs3e.ts`, H108 part 6). */
   mixture?: GasMixture;
+  /** HC43: the P–V diagram beside the piston, and a van der Waals gas (`typesHe3g.ts`). */
+  pv?: GasPv;
+  real?: GasReal;
 }
 
 // ─── H52 beaker: solutions ───────────────────────────────────────────────────
@@ -140,6 +160,9 @@ export type EnergyProfileSpec =
       names?: { reactants?: string; products?: string };
       keep?: string[];
       fixed?: boolean;
+      /** HC44: ΔG instead of ΔH, and a mechanism of 2–3 steps (`typesHe3g.ts`). */
+      quantity?: EnergyQuantity;
+      steps?: EnergySteps;
     }
   | {
       kind: 'energyProfile';
@@ -153,7 +176,9 @@ export type EnergyProfileSpec =
       metal?: { name: string; mass: NumOrVar; start: NumOrVar; heat?: NumOrVar };
     }
   /** Round 2: an enthalpy ladder, levels only (`typesHs2d.ts`, H101). */
-  | EnergyLadderSpec;
+  | EnergyLadderSpec
+  /** HC44: a bomb calorimeter (`typesHe3g.ts`). */
+  | EnergyBombSpec;
 
 // ─── H54 equilibriumChart ────────────────────────────────────────────────────
 
@@ -230,6 +255,8 @@ export type PhScaleSpec =
       equivalence?: NumOrVar;
       keep?: string[];
       fixed?: boolean;
+      /** College (HC71): a polyprotic acid (`typesHe3f.ts`). */
+      polyprotic?: PhPolyprotic;
     };
 
 // ─── H56 electrochemicalCell (explore figure) ───────────────────────────────
@@ -290,7 +317,15 @@ export type DecayChartSpec =
   | { kind: 'decayChart'; mode: 'equation'; left: Nuclide[]; right: Nuclide[] };
 
 export type HsjSpec =
-  GasPistonSpec | EnergyProfileSpec | EquilibriumChartSpec | PhScaleSpec | DecayChartSpec;
+  | GasPistonSpec
+  | EnergyProfileSpec
+  | EquilibriumChartSpec
+  | PhScaleSpec
+  | DecayChartSpec
+  /** College (HC58): G against the extent (`typesHe3f.ts`). */
+  | EquilibriumGibbsSpec
+  /** College (HC71, HC73): buffer, amino acid, pKₐ ladder (`typesHe3f.ts`). */
+  | PhScaleHe3fSpec;
 
 /** Every variable id a group J picture refers to (for the module tests). */
 export function hsjSpecVars(r: HsjSpec): string[] {
@@ -310,9 +345,11 @@ export function hsjSpecVars(r: HsjSpec): string[] {
         r.energy?.work,
         r.energy?.change,
         ...gasMixtureVars(r.mixture),
+        ...gasHe3gVars(r),
       );
     case 'energyProfile':
       if (r.mode === 'ladder') return ladderVars(r);
+      if (r.mode === 'bomb') return energyHe3gVars(r); // HC44
       return r.mode === 'calorimeter'
         ? ids(
             r.mass,
@@ -325,8 +362,12 @@ export function hsjSpecVars(r: HsjSpec): string[] {
             r.metal?.start,
             r.metal?.heat,
           )
-        : ids(r.reactants, r.products, r.activation, r.deltaH, r.reverse, r.catalyst);
+        : [
+            ...ids(r.reactants, r.products, r.activation, r.deltaH, r.reverse, r.catalyst),
+            ...energyHe3gVars(r),
+          ];
     case 'equilibriumChart':
+      if ('gibbs' in r) return gibbsVars(r);
       return ids(
         ...r.species.flatMap((s) => [s.start, s.eq]),
         r.K,
@@ -336,15 +377,20 @@ export function hsjSpecVars(r: HsjSpec): string[] {
         r.stress?.Q,
       );
     case 'phScale':
+      if (r.mode === 'buffer' || r.mode === 'aminoAcid' || r.mode === 'pka')
+        return phScaleHe3fVars(r);
       return r.mode === 'titration'
-        ? ids(
-            r.acid.concentration,
-            r.acid.volume,
-            r.acid.Ka,
-            r.base.concentration,
-            r.added,
-            r.equivalence,
-          )
+        ? [
+            ...ids(
+              r.acid.concentration,
+              r.acid.volume,
+              r.acid.Ka,
+              r.base.concentration,
+              r.added,
+              r.equivalence,
+            ),
+            ...polyproticVars(r.polyprotic),
+          ]
         : ids(r.pH, r.hydrogen, r.hydroxide, r.pOH);
     case 'decayChart': {
       if (r.mode !== 'equation') return ids(r.halfLife, r.time, r.start, r.left, r.halves);

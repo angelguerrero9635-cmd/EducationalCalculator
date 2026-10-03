@@ -1,0 +1,1884 @@
+/**
+ * College gallery demos, round 3, group H (docs/RENDERINGS_HE.md). Each stands in for the
+ * college page that waits, built from the plan's worked example. Spread into gallery.ts.
+ *
+ * HC40: `heatExchanger` (ME-P15, ACC-P35): counterflow and parallel flow by LMTD, the energy
+ * balance, effectiveness–NTU, a process exchanger, and a close approach.
+ *
+ * HC59: `shaft` (ME-P6): a solid and a hollow shaft in torsion, sizing for power and speed,
+ * bending with torsion, and a long thin rod twisting tens of degrees.
+ *
+ * HC41: `elementChain` (ME-P25, ACC-P14 `axial`): springs in series, one bar element, a load
+ * between two walls, two bars in series, and node and DOF counts of a mesh (and a finer one).
+ *
+ * HC52: `fatigueDiagram` (ME-P17, ACC-P37 S–N part): Goodman (safe and failing), the S–N line
+ * (mid life and low cycle), Basquin's law, Miner's rule.
+ */
+import { formatNumber } from '@/engine/format';
+import type { Relation, Values, VariableDef } from '@/engine/types';
+
+import type { LayoutDef } from './layouts';
+import type { ModuleDef, StepText } from './types';
+
+// ─── Building blocks ─────────────────────────────────────────────────────────
+
+type Solver = (v: Values) => number | undefined;
+
+/** A relation and its steps from one table: each value it solves for, with its text. */
+function rule(
+  id: string,
+  display: string,
+  vars: string[],
+  residual: (v: Values) => number,
+  solves: Record<string, [Solver, string, string]>,
+): { relation: Relation; steps: Record<string, StepText> } {
+  return {
+    relation: {
+      id,
+      display,
+      vars,
+      residual,
+      solve: Object.fromEntries(Object.entries(solves).map(([k, [f]]) => [k, f])),
+    },
+    steps: Object.fromEntries(
+      Object.entries(solves).map(([k, [, expr, how]]) => [k, { expr, how }]),
+    ),
+  };
+}
+
+const rules = (...rs: ReturnType<typeof rule>[]) => ({
+  relations: rs.map((r) => r.relation),
+  steps: Object.fromEntries(rs.map((r) => [r.relation.id, r.steps])),
+});
+
+const div = (a: number, b: number) => (b === 0 || !Number.isFinite(b) ? undefined : a / b);
+const fin = (x: number) => (Number.isFinite(x) ? x : undefined);
+
+/** A value with one unit (the formula is written in it). */
+const q = (
+  id: string,
+  symbol: string,
+  name: string,
+  unit: string | undefined,
+  min: number,
+  max: number,
+  step: number,
+  more: Partial<VariableDef> = {},
+): VariableDef => ({
+  id,
+  symbol,
+  name,
+  ...(unit ? { unit, units: [unit] } : {}),
+  min,
+  max,
+  step,
+  ...more,
+});
+
+/** a = b − c, solved every way. */
+const diffRule = (a: string, b: string, c: string, how: string) =>
+  rule(
+    `${a} = ${b} − ${c}`,
+    `{${a}} = {${b}} − {${c}}`,
+    [a, b, c],
+    (v) => v[a]! - (v[b]! - v[c]!),
+    {
+      [a]: [(v) => v[b]! - v[c]!, `{${b}} − {${c}}`, how],
+      [b]: [(v) => v[a]! + v[c]!, `{${a}} + {${c}}`, 'Add the difference back on.'],
+      [c]: [(v) => v[b]! - v[a]!, `{${b}} − {${a}}`, 'Take the difference away.'],
+    },
+  );
+
+/** a × k = b × c × d (k a fixed unit factor, 1 when none), solved every way. */
+const productRule = (a: string, k: number, [b, c, d]: [string, string, string], how: string) => {
+  const kt = k === 1 ? '' : ` × ${k.toLocaleString('en-US')}`;
+  const kd = k === 1 ? '' : ` ÷ ${k.toLocaleString('en-US')}`;
+  return rule(
+    `${a}${kt} = ${b} × ${c} × ${d}`,
+    `{${a}}${kt} = {${b}} × {${c}} × {${d}}`,
+    [a, b, c, d],
+    (v) => v[a]! * k - v[b]! * v[c]! * v[d]!,
+    {
+      [a]: [(v) => (v[b]! * v[c]! * v[d]!) / k, `{${b}} × {${c}} × {${d}}${kd}`, how],
+      [b]: [
+        (v) => div(v[a]! * k, v[c]! * v[d]!),
+        `{${a}}${kt} ÷ ({${c}} × {${d}})`,
+        'Divide by the other two factors.',
+      ],
+      [c]: [
+        (v) => div(v[a]! * k, v[b]! * v[d]!),
+        `{${a}}${kt} ÷ ({${b}} × {${d}})`,
+        'Divide by the other two factors.',
+      ],
+      [d]: [
+        (v) => div(v[a]! * k, v[b]! * v[c]!),
+        `{${a}}${kt} ÷ ({${b}} × {${c}})`,
+        'Divide by the other two factors.',
+      ],
+    },
+  );
+};
+
+// ─── HC40: heat exchangers (heat-transfer#3, process-design#1) ───────────────
+
+const tempVar = (id: string, symbol: string, name: string) =>
+  q(id, symbol, name, '°C', -100, 1500, 0.1);
+const dTVar = (id: string, symbol: string, name: string) =>
+  q(id, symbol, name, 'K', 0.01, 2000, 0.01);
+
+/** LMTD of two end differences (the mean of one when they are equal). */
+const lmtdOf = (d1: number, d2: number) =>
+  !(d1 > 0 && d2 > 0)
+    ? undefined
+    : Math.abs(d1 - d2) < 1e-9 * Math.max(d1, d2)
+      ? d1
+      : (d1 - d2) / Math.log(d1 / d2);
+
+const same = (a: number, b: number) => Math.abs(a - b) < 1e-9 * Math.max(Math.abs(a), Math.abs(b));
+const n6 = (x: number) => formatNumber(Number(x.toPrecision(6)));
+
+const LMTD_RULE = {
+  relation: {
+    id: 'ΔT_lm = (ΔT₁ − ΔT₂) ÷ ln(ΔT₁ ÷ ΔT₂)',
+    display: '{lmtd} = ({dT1} − {dT2}) ÷ ln({dT1} ÷ {dT2})',
+    vars: ['lmtd', 'dT1', 'dT2'],
+    residual: (v: Values) =>
+      same(v.dT1!, v.dT2!)
+        ? v.lmtd! - v.dT1!
+        : v.lmtd! * Math.log(v.dT1! / v.dT2!) - (v.dT1! - v.dT2!),
+    solve: { lmtd: (v: Values) => lmtdOf(v.dT1!, v.dT2!) },
+    // Equal ends: the log mean is that difference itself (the formula's 0 ÷ 0 has that limit).
+    check: (v: Values) =>
+      same(v.dT1!, v.dT2!)
+        ? `${n6(v.lmtd!)} = ${n6(v.dT1!)}`
+        : `${n6(v.lmtd!)} = (${n6(v.dT1!)} − ${n6(v.dT2!)}) ÷ ln(${n6(v.dT1!)} ÷ ${n6(v.dT2!)})`,
+  } as Relation,
+  steps: {
+    lmtd: {
+      expr: (v: Values) =>
+        v.dT1 !== undefined && v.dT2 !== undefined && same(v.dT1, v.dT2)
+          ? '{dT1}'
+          : '({dT1} − {dT2}) ÷ ln({dT1} ÷ {dT2})',
+      how: (v: Values) =>
+        v.dT1 !== undefined && v.dT2 !== undefined && same(v.dT1, v.dT2)
+          ? 'The two ends are equal, so the difference is the same all along: the log mean is that difference.'
+          : 'The difference between the streams shrinks exponentially along the length; its mean is the log mean of the two ends.',
+    },
+  } as Record<string, StepText>,
+};
+
+/** A rule that only checks a ≤ b, with the reason shown when it fails. */
+const atMost = (a: string, b: string, display: string, why: string) => ({
+  relation: {
+    id: `${a} ≤ ${b}`,
+    constraint: true,
+    display,
+    vars: [a, b],
+    residual: (x: Values) => (x[a]! <= x[b]! + 1e-9 ? 0 : 1),
+    solve: {},
+    message: () => why,
+  } as Relation,
+  steps: {} as Record<string, StepText>,
+});
+
+/** The temperatures an exchanger can have: each stream moves the right way, no cross. */
+const exchangerLimits = () => [
+  atMost(
+    'Tho',
+    'Thi',
+    '{Tho} ≤ {Thi}',
+    'The hot stream gives heat, so it can’t leave warmer than it came in.',
+  ),
+  atMost(
+    'Tci',
+    'Tco',
+    '{Tci} ≤ {Tco}',
+    'The cold stream takes heat, so it can’t leave colder than it came in.',
+  ),
+  atMost(
+    'Tco',
+    'Thi',
+    '{Tco} ≤ {Thi}',
+    'The cold stream can’t end hotter than the hot stream starts.',
+  ),
+  atMost(
+    'Tci',
+    'Tho',
+    '{Tci} ≤ {Tho}',
+    'The hot stream can’t end colder than the cold stream starts.',
+  ),
+];
+
+const EXCHANGER_ASSUMPTIONS = [
+  'Steady flow; no heat lost to the surroundings.',
+  'U is the same all along the exchanger; no phase change.',
+  'Each stream’s specific heat is constant.',
+];
+
+/** An exchanger sized by LMTD: the four temperatures, ΔT₁, ΔT₂, ΔT_lm, q (kW), U and A. */
+function lmtdDemo(o: {
+  id: string;
+  title: string;
+  use: string;
+  arrangement: 'counter' | 'parallel';
+  temps: [number, number, number, number];
+  qkW: number;
+  U: number;
+  names: { hot: string; cold: string; hotLong: string; coldLong: string };
+  fluids?: { hot?: 'oil' | 'water' | 'gas'; cold?: 'water' | 'air' | 'oil' };
+}): ModuleDef {
+  const [Thi, Tho, Tci, Tco] = o.temps;
+  const counter = o.arrangement === 'counter';
+  const dT1 = counter ? Thi - Tco : Thi - Tci;
+  const dT2 = counter ? Tho - Tci : Tho - Tco;
+  const lmtd = lmtdOf(dT1, dT2)!;
+  const A = (o.qkW * 1000) / (o.U * lmtd);
+  const end1 = counter
+    ? 'At the hot inlet’s end the hot stream meets the cold outlet.'
+    : 'Both streams enter at the same end.';
+  const end2 = counter
+    ? 'At the far end the hot outlet meets the cold inlet.'
+    : 'Both streams leave at the far end.';
+  return {
+    id: o.id,
+    title: o.title,
+    use: o.use,
+    assumptions: [
+      `${counter ? 'Counterflow' : 'Parallel flow'}: the streams run ${counter ? 'in opposite directions' : 'the same way'}.`,
+      ...EXCHANGER_ASSUMPTIONS,
+    ],
+    variables: [
+      tempVar('Thi', 'T_hi', `${o.names.hotLong} in`),
+      tempVar('Tho', 'T_ho', `${o.names.hotLong} out`),
+      tempVar('Tci', 'T_ci', `${o.names.coldLong} in`),
+      tempVar('Tco', 'T_co', `${o.names.coldLong} out`),
+      dTVar('dT1', 'ΔT₁', 'Temperature difference at the hot inlet’s end'),
+      dTVar('dT2', 'ΔT₂', 'Temperature difference at the other end'),
+      dTVar('lmtd', 'ΔT_lm', 'Log-mean temperature difference'),
+      q('q', 'q', 'Heat rate', 'kW', 0.001, 1e6, 0.01),
+      q('U', 'U', 'Overall heat transfer coefficient', 'W/(m²·K)', 1, 1e5, 0.1),
+      q('A', 'A', 'Heat transfer area', 'm²', 0.0001, 1e5, 0.001),
+    ],
+    ...rules(
+      diffRule('dT1', 'Thi', counter ? 'Tco' : 'Tci', end1),
+      diffRule('dT2', 'Tho', counter ? 'Tci' : 'Tco', end2),
+      LMTD_RULE,
+      ...exchangerLimits(),
+      productRule(
+        'q',
+        1000,
+        ['U', 'A', 'lmtd'],
+        'The rate equation q = UAΔT_lm, in watts; ÷ 1,000 gives kW.',
+      ),
+    ),
+    example: { Thi, Tho, Tci, Tco, dT1, dT2, lmtd, q: o.qkW, U: o.U, A },
+    startWith: ['Thi', 'Tho', 'Tci', 'Tco', 'q', 'U'],
+    unitSystems: ['metric'],
+    representation: {
+      kind: 'heatExchanger',
+      arrangement: o.arrangement,
+      Thi: 'Thi',
+      Tho: 'Tho',
+      Tci: 'Tci',
+      Tco: 'Tco',
+      dT1: 'dT1',
+      dT2: 'dT2',
+      lmtd: 'lmtd',
+      q: 'q',
+      U: 'U',
+      A: 'A',
+      hotName: o.names.hot,
+      coldName: o.names.cold,
+      ...(o.fluids?.hot ? { hotFluid: o.fluids.hot } : {}),
+      ...(o.fluids?.cold ? { coldFluid: o.fluids.cold } : {}),
+    },
+  };
+}
+
+const OIL_WATER = { hot: 'oil', cold: 'water', hotLong: 'Oil', coldLong: 'Water' };
+
+const exchangerCounter = lmtdDemo({
+  id: 'g.he-heatExchanger-counter',
+  title: 'An oil cooler in counterflow: the area by LMTD',
+  use: 'Use this for the area of a counterflow exchanger from its four temperatures, q and U.',
+  arrangement: 'counter',
+  temps: [120, 70, 20, 50],
+  qkW: 50,
+  U: 300,
+  names: OIL_WATER,
+});
+
+const exchangerParallel = lmtdDemo({
+  id: 'g.he-heatExchanger-parallel',
+  title: 'The same oil cooler in parallel flow',
+  use: 'Use this for a parallel-flow exchanger, and to see why it needs more area than counterflow.',
+  arrangement: 'parallel',
+  temps: [120, 70, 20, 50],
+  qkW: 50,
+  U: 300,
+  names: OIL_WATER,
+});
+
+const exchangerProcess = lmtdDemo({
+  id: 'g.he-heatExchanger-process',
+  title: 'Sizing a process exchanger from its duty',
+  use: 'Use this for the area of a countercurrent process exchanger from its duty, U and four temperatures.',
+  arrangement: 'counter',
+  temps: [150, 90, 30, 80],
+  qkW: 500,
+  U: 500,
+  names: {
+    hot: 'hot stream',
+    cold: 'cooling water',
+    hotLong: 'Hot stream',
+    coldLong: 'Cooling water',
+  },
+});
+
+const exchangerClose = lmtdDemo({
+  id: 'g.he-heatExchanger-counter-close',
+  title: 'A close approach: the cold outlet above the hot outlet',
+  use: 'Use this for a counterflow exchanger whose cold outlet ends hotter than the hot outlet.',
+  arrangement: 'counter',
+  temps: [90, 40, 30, 85],
+  qkW: 100,
+  U: 800,
+  names: {
+    hot: 'hot water',
+    cold: 'feed water',
+    hotLong: 'Hot water',
+    coldLong: 'Feed water',
+  },
+  fluids: { hot: 'water' },
+});
+
+/** q = ṁc_pΔT for one stream (q in kW, c_p in kJ/(kg·K)), solved every way. */
+const streamRule = (m: string, cp: string, T1: string, T2: string, which: string) =>
+  rule(
+    `q = ṁc_p ΔT (${which})`,
+    `{q} = {${m}} × {${cp}} × ({${T1}} − {${T2}})`,
+    ['q', m, cp, T1, T2],
+    (v) => v.q! - v[m]! * v[cp]! * (v[T1]! - v[T2]!),
+    {
+      q: [
+        (v) => v[m]! * v[cp]! * (v[T1]! - v[T2]!),
+        `{${m}} × {${cp}} × ({${T1}} − {${T2}})`,
+        `The heat the ${which} stream gives or takes: its capacity rate ṁc_p times its change.`,
+      ],
+      [m]: [
+        (v) => div(v.q!, v[cp]! * (v[T1]! - v[T2]!)),
+        `{q} ÷ ({${cp}} × ({${T1}} − {${T2}}))`,
+        'Divide the heat by c_p and the temperature change.',
+      ],
+      [cp]: [
+        (v) => div(v.q!, v[m]! * (v[T1]! - v[T2]!)),
+        `{q} ÷ ({${m}} × ({${T1}} − {${T2}}))`,
+        'Divide the heat by ṁ and the temperature change.',
+      ],
+      [T1]: [
+        (v) => fin(v[T2]! + v.q! / (v[m]! * v[cp]!)),
+        `{${T2}} + {q} ÷ ({${m}} × {${cp}})`,
+        'The change is q ÷ ṁc_p; add it to the other temperature.',
+      ],
+      [T2]: [
+        (v) => fin(v[T1]! - v.q! / (v[m]! * v[cp]!)),
+        `{${T1}} − {q} ÷ ({${m}} × {${cp}})`,
+        'The change is q ÷ ṁc_p; take it from the other temperature.',
+      ],
+    },
+  );
+
+const exchangerBalance: ModuleDef = {
+  id: 'g.he-heatExchanger-balance',
+  title: 'The energy balance: the water flow an oil cooler needs',
+  use: 'Use this for an unknown flow rate or outlet temperature, from the heat one stream gives the other.',
+  assumptions: ['Counterflow.', ...EXCHANGER_ASSUMPTIONS],
+  variables: [
+    q('mh', 'ṁ_h', 'Oil mass flow', 'kg/s', 0.0001, 1e4, 0.001),
+    q('cph', 'c_ph', 'Oil specific heat', 'kJ/(kg·K)', 0.1, 20, 0.01),
+    tempVar('Thi', 'T_hi', 'Oil in'),
+    tempVar('Tho', 'T_ho', 'Oil out'),
+    q('q', 'q', 'Heat rate', 'kW', 0.001, 1e6, 0.01),
+    q('mc', 'ṁ_c', 'Water mass flow', 'kg/s', 0.0001, 1e4, 0.001),
+    q('cpc', 'c_pc', 'Water specific heat', 'kJ/(kg·K)', 0.1, 20, 0.01),
+    tempVar('Tci', 'T_ci', 'Water in'),
+    tempVar('Tco', 'T_co', 'Water out'),
+  ],
+  ...rules(
+    streamRule('mh', 'cph', 'Thi', 'Tho', 'hot'),
+    streamRule('mc', 'cpc', 'Tco', 'Tci', 'cold'),
+    ...exchangerLimits(),
+  ),
+  example: {
+    mh: 0.5,
+    cph: 2,
+    Thi: 120,
+    Tho: 70,
+    q: 50,
+    mc: 50 / (4.18 * 30),
+    cpc: 4.18,
+    Tci: 20,
+    Tco: 50,
+  },
+  startWith: ['mh', 'cph', 'Thi', 'Tho', 'cpc', 'Tci', 'Tco'],
+  unitSystems: ['metric'],
+  representation: {
+    kind: 'heatExchanger',
+    arrangement: 'counter',
+    Thi: 'Thi',
+    Tho: 'Tho',
+    Tci: 'Tci',
+    Tco: 'Tco',
+    q: 'q',
+    mh: 'mh',
+    cph: 'cph',
+    mc: 'mc',
+    cpc: 'cpc',
+    hotName: 'oil',
+    coldName: 'water',
+  },
+};
+
+/** Counterflow ε from NTU and C_r (C_r = 1: NTU ÷ (1 + NTU)). */
+const effCounter = (ntu: number, cr: number) => {
+  if (Math.abs(1 - cr) < 1e-9) return ntu / (1 + ntu);
+  const e = Math.exp(-ntu * (1 - cr));
+  return (1 - e) / (1 - cr * e);
+};
+
+const exchangerNtu: ModuleDef = {
+  id: 'g.he-heatExchanger-ntu',
+  title: 'Effectiveness–NTU: the heat without the outlet temperatures',
+  use: 'Use this for the heat a counterflow exchanger passes when only the inlets, UA and the flows are known.',
+  assumptions: ['Counterflow; the oil has the smaller capacity rate.', ...EXCHANGER_ASSUMPTIONS],
+  variables: [
+    tempVar('Thi', 'T_hi', 'Oil in'),
+    tempVar('Tci', 'T_ci', 'Water in'),
+    q('Cmin', 'C_min', 'Smaller capacity rate (the oil’s ṁc_p)', 'W/K', 0.01, 1e8, 0.1),
+    q('Cr', 'C_r', 'Capacity ratio C_min ÷ C_max', undefined, 0.01, 1, 0.001),
+    q('UA', 'UA', 'Overall conductance', 'W/K', 0.01, 1e9, 0.1),
+    q('ntu', 'NTU', 'Number of transfer units', undefined, 0.001, 50, 0.001),
+    q('eff', 'ε', 'Effectiveness', undefined, 0.0001, 0.9999, 0.0001),
+    q('q', 'q', 'Heat rate', 'kW', 0.001, 1e6, 0.01),
+  ],
+  ...rules(
+    rule(
+      'NTU = UA ÷ C_min',
+      '{ntu} = {UA} ÷ {Cmin}',
+      ['ntu', 'UA', 'Cmin'],
+      (v) => v.ntu! * v.Cmin! - v.UA!,
+      {
+        ntu: [
+          (v) => div(v.UA!, v.Cmin!),
+          '{UA} ÷ {Cmin}',
+          'NTU measures the exchanger’s size against the smaller capacity rate.',
+        ],
+        UA: [(v) => v.ntu! * v.Cmin!, '{ntu} × {Cmin}', 'Multiply NTU by C_min.'],
+        Cmin: [(v) => div(v.UA!, v.ntu!), '{UA} ÷ {ntu}', 'Divide UA by NTU.'],
+      },
+    ),
+    rule(
+      'ε = (1 − e^(−NTU(1 − C_r))) ÷ (1 − C_r e^(−NTU(1 − C_r)))',
+      '{eff} = (1 − e^(−{ntu} × (1 − {Cr}))) ÷ (1 − {Cr} × e^(−{ntu} × (1 − {Cr})))',
+      ['eff', 'ntu', 'Cr'],
+      (v) => v.eff! - effCounter(v.ntu!, v.Cr!),
+      {
+        eff: [
+          (v) => effCounter(v.ntu!, v.Cr!),
+          '(1 − e^(−{ntu} × (1 − {Cr}))) ÷ (1 − {Cr} × e^(−{ntu} × (1 − {Cr})))',
+          'The counterflow effectiveness: the share of the largest possible heat this exchanger passes.',
+        ],
+        ntu: [
+          (v) =>
+            Math.abs(1 - v.Cr!) < 1e-9
+              ? div(v.eff!, 1 - v.eff!)
+              : fin(Math.log((1 - v.eff! * v.Cr!) / (1 - v.eff!)) / (1 - v.Cr!)),
+          'ln((1 − {eff} × {Cr}) ÷ (1 − {eff})) ÷ (1 − {Cr})',
+          'The effectiveness rule turned round: the NTU a wanted ε needs.',
+        ],
+      },
+    ),
+    rule(
+      'q = εC_min(T_hi − T_ci)',
+      '{q} × 1,000 = {eff} × {Cmin} × ({Thi} − {Tci})',
+      ['q', 'eff', 'Cmin', 'Thi', 'Tci'],
+      (v) => v.q! * 1000 - v.eff! * v.Cmin! * (v.Thi! - v.Tci!),
+      {
+        q: [
+          (v) => (v.eff! * v.Cmin! * (v.Thi! - v.Tci!)) / 1000,
+          '{eff} × {Cmin} × ({Thi} − {Tci}) ÷ 1,000',
+          'The largest heat is C_min times the inlets’ difference; ε of it passes. ÷ 1,000 gives kW.',
+        ],
+        eff: [
+          (v) => div(v.q! * 1000, v.Cmin! * (v.Thi! - v.Tci!)),
+          '{q} × 1,000 ÷ ({Cmin} × ({Thi} − {Tci}))',
+          'The heat passed over the largest possible heat.',
+        ],
+        Cmin: [
+          (v) => div(v.q! * 1000, v.eff! * (v.Thi! - v.Tci!)),
+          '{q} × 1,000 ÷ ({eff} × ({Thi} − {Tci}))',
+          'Divide the heat in watts by ε and the inlets’ difference.',
+        ],
+        Thi: [
+          (v) => fin(v.Tci! + (v.q! * 1000) / (v.eff! * v.Cmin!)),
+          '{Tci} + {q} × 1,000 ÷ ({eff} × {Cmin})',
+          'The inlets’ difference is q ÷ εC_min; add it to the cold inlet.',
+        ],
+        Tci: [
+          (v) => fin(v.Thi! - (v.q! * 1000) / (v.eff! * v.Cmin!)),
+          '{Thi} − {q} × 1,000 ÷ ({eff} × {Cmin})',
+          'The inlets’ difference is q ÷ εC_min; take it from the hot inlet.',
+        ],
+      },
+    ),
+  ),
+  example: (() => {
+    const ntu = 841 / 1000;
+    const eff = effCounter(ntu, 0.6);
+    return {
+      Thi: 120,
+      Tci: 20,
+      Cmin: 1000,
+      Cr: 0.6,
+      UA: 841,
+      ntu,
+      eff,
+      q: (eff * 1000 * 100) / 1000,
+    };
+  })(),
+  startWith: ['Thi', 'Tci', 'Cmin', 'Cr', 'UA'],
+  unitSystems: ['metric'],
+  representation: {
+    kind: 'heatExchanger',
+    arrangement: 'counter',
+    Thi: 'Thi',
+    Tci: 'Tci',
+    q: 'q',
+    Cmin: 'Cmin',
+    Cr: 'Cr',
+    ntu: 'ntu',
+    eff: 'eff',
+    minSide: 'hot',
+    hotName: 'oil',
+    coldName: 'water',
+    more: ['UA'],
+  },
+};
+
+// ─── HC59: shafts in torsion and bending (mechanics-of-materials#2, machine-design#2) ──
+
+const SHAFT_ASSUMPTIONS = [
+  'A straight round shaft of one material, elastic (stresses under the yield strength).',
+  'Plane sections stay plane; the torque is the same all along the length.',
+];
+
+const torqueVar = (id = 'T', name = 'Torque') => q(id, 'T', name, 'N·m', 0.001, 1e7, 0.1);
+const mmVar = (id: string, symbol: string, name: string, min = 0.1) =>
+  q(id, symbol, name, 'mm', min, 1e5, 0.01);
+const mpaVar = (id: string, symbol: string, name: string) =>
+  q(id, symbol, name, 'MPa', 0.0001, 1e5, 0.01);
+
+/** J = π(d⁴ − d_i⁴) ÷ 32 (d_i left out when solid). */
+const polarRule = (d: string, di?: string) =>
+  di
+    ? rule(
+        'J = π(d⁴ − d_i⁴) ÷ 32',
+        `{J} = π × ({${d}}⁴ − {${di}}⁴) ÷ 32`,
+        ['J', d, di],
+        (v) => v.J! - (Math.PI * (v[d]! ** 4 - v[di]! ** 4)) / 32,
+        {
+          J: [
+            (v) => (Math.PI * (v[d]! ** 4 - v[di]! ** 4)) / 32,
+            `π × ({${d}}⁴ − {${di}}⁴) ÷ 32`,
+            'The polar moment of a ring: the whole disc’s less the bore’s.',
+          ],
+          [d]: [
+            (v) => fin(((32 * v.J!) / Math.PI + v[di]! ** 4) ** 0.25),
+            `(32 × {J} ÷ π + {${di}}⁴)^(1/4)`,
+            'Undo the ÷ 32 and the π, add the bore’s d_i⁴ back, then take the fourth root.',
+          ],
+          [di]: [
+            (v) => {
+              const x = v[d]! ** 4 - (32 * v.J!) / Math.PI;
+              return x > 0 ? x ** 0.25 : undefined;
+            },
+            `({${d}}⁴ − 32 × {J} ÷ π)^(1/4)`,
+            'Take the ring’s 32J ÷ π from d⁴, then the fourth root.',
+          ],
+        },
+      )
+    : rule(
+        'J = πd⁴ ÷ 32',
+        `{J} = π × {${d}}⁴ ÷ 32`,
+        ['J', d],
+        (v) => v.J! - (Math.PI * v[d]! ** 4) / 32,
+        {
+          J: [
+            (v) => (Math.PI * v[d]! ** 4) / 32,
+            `π × {${d}}⁴ ÷ 32`,
+            'The polar moment of a solid round section.',
+          ],
+          [d]: [
+            (v) => fin(((32 * v.J!) / Math.PI) ** 0.25),
+            '(32 × {J} ÷ π)^(1/4)',
+            'Undo the ÷ 32 and the π, then take the fourth root.',
+          ],
+        },
+      );
+
+/** τ = T(d ÷ 2) ÷ J, T in N·m (× 1,000 to N·mm), d in mm, J in mm⁴, τ in MPa. */
+const torsionRule = (tau: string, T: string, d: string) =>
+  rule(
+    'τ_max = Tc ÷ J',
+    `{${tau}} = {${T}} × 1,000 × ({${d}} ÷ 2) ÷ {J}`,
+    [tau, T, d, 'J'],
+    (v) => v[tau]! * v.J! - v[T]! * 1000 * (v[d]! / 2),
+    {
+      [tau]: [
+        (v) => div(v[T]! * 1000 * (v[d]! / 2), v.J!),
+        `{${T}} × 1,000 × ({${d}} ÷ 2) ÷ {J}`,
+        'Shear grows with the radius, so it is largest at the surface, c = d ÷ 2; × 1,000 turns N·m into N·mm, giving MPa.',
+      ],
+      [T]: [
+        (v) => div(v[tau]! * v.J!, 1000 * (v[d]! / 2)),
+        `{${tau}} × {J} ÷ (1,000 × ({${d}} ÷ 2))`,
+        'Turn the rule round: τJ ÷ c is the torque in N·mm; ÷ 1,000 gives N·m.',
+      ],
+      J: [
+        (v) => div(v[T]! * 1000 * (v[d]! / 2), v[tau]!),
+        `{${T}} × 1,000 × ({${d}} ÷ 2) ÷ {${tau}}`,
+        'Turn the rule round: J = Tc ÷ τ.',
+      ],
+    },
+  );
+
+/** φ = TL ÷ GJ: T × 1,000 (N·mm) and G × 1,000 (MPa) cancel. */
+const twistRule = (T: string) =>
+  rule(
+    'φ = TL ÷ GJ',
+    `{phi} = {${T}} × {L} ÷ ({G} × {J})`,
+    ['phi', T, 'L', 'G', 'J'],
+    (v) => v.phi! * v.G! * v.J! - v[T]! * v.L!,
+    {
+      phi: [
+        (v) => div(v[T]! * v.L!, v.G! * v.J!),
+        `{${T}} × {L} ÷ ({G} × {J})`,
+        'The twist grows with torque and length and falls with stiffness GJ; the × 1,000 for N·mm and the × 1,000 for GPa cancel.',
+      ],
+      [T]: [
+        (v) => div(v.phi! * v.G! * v.J!, v.L!),
+        '{phi} × {G} × {J} ÷ {L}',
+        'Turn the rule round: T = φGJ ÷ L.',
+      ],
+      L: [
+        (v) => div(v.phi! * v.G! * v.J!, v[T]!),
+        '{phi} × {G} × {J} ÷ {T}',
+        'Turn the rule round: L = φGJ ÷ T.',
+      ],
+      G: [
+        (v) => div(v[T]! * v.L!, v.phi! * v.J!),
+        '{T} × {L} ÷ ({phi} × {J})',
+        'Turn the rule round: G = TL ÷ φJ.',
+      ],
+      J: [
+        (v) => div(v[T]! * v.L!, v.phi! * v.G!),
+        '{T} × {L} ÷ ({phi} × {G})',
+        'Turn the rule round: J = TL ÷ φG.',
+      ],
+    },
+  );
+
+const degRule = rule(
+  'φ° = φ × 180 ÷ π',
+  '{phiDeg} = {phi} × 180 ÷ π',
+  ['phiDeg', 'phi'],
+  (v) => v.phiDeg! - (v.phi! * 180) / Math.PI,
+  {
+    phiDeg: [(v) => (v.phi! * 180) / Math.PI, '{phi} × 180 ÷ π', 'A radian is 180 ÷ π degrees.'],
+    phi: [(v) => (v.phiDeg! * Math.PI) / 180, '{phiDeg} × π ÷ 180', 'A degree is π ÷ 180 radians.'],
+  },
+);
+
+const twistVars = (): VariableDef[] => [
+  mmVar('L', 'L', 'Length'),
+  q('G', 'G', 'Shear modulus', 'GPa', 0.01, 1000, 0.1),
+  q('J', 'J', 'Polar moment of area', 'mm⁴', 0.0001, 1e14, 0.1),
+  mpaVar('tau', 'τ_max', 'Largest shear stress'),
+  q('phi', 'φ', 'Angle of twist', 'rad', 0.000001, 10, 0.0001),
+  q('phiDeg', 'φ°', 'Angle of twist in degrees', '°', 0.0001, 600, 0.01),
+];
+
+function solidShaft(o: {
+  id: string;
+  title: string;
+  use: string;
+  T: number;
+  d: number;
+  L: number;
+  G: number;
+}): ModuleDef {
+  const J = (Math.PI * o.d ** 4) / 32;
+  const tau = (o.T * 1000 * (o.d / 2)) / J;
+  const phi = (o.T * o.L) / (o.G * J);
+  return {
+    id: o.id,
+    title: o.title,
+    use: o.use,
+    assumptions: SHAFT_ASSUMPTIONS,
+    variables: [torqueVar(), mmVar('d', 'd', 'Diameter'), ...twistVars()],
+    ...rules(polarRule('d'), torsionRule('tau', 'T', 'd'), twistRule('T'), degRule),
+    example: { T: o.T, d: o.d, L: o.L, G: o.G, J, tau, phi, phiDeg: (phi * 180) / Math.PI },
+    startWith: ['T', 'd', 'L', 'G'],
+    unitSystems: ['metric'],
+    representation: {
+      kind: 'shaft',
+      d: 'd',
+      length: 'L',
+      torque: 'T',
+      G: 'G',
+      J: 'J',
+      tau: 'tau',
+      angle: 'phi',
+      more: ['phiDeg'],
+    },
+  };
+}
+
+const shaftSolid = solidShaft({
+  id: 'g.he-shaft-solid',
+  title: 'A solid steel shaft: the largest shear and the twist',
+  use: 'Use this for the largest shear stress and the angle of twist of a solid shaft under a torque.',
+  T: 2000,
+  d: 50,
+  L: 1500,
+  G: 77,
+});
+
+const shaftLong = solidShaft({
+  id: 'g.he-shaft-long',
+  title: 'A long thin rod: a twist big enough to see',
+  use: 'Use this for a long, slender torsion rod whose twist is tens of degrees.',
+  T: 20,
+  d: 10,
+  L: 2000,
+  G: 77,
+});
+
+const shaftHollow: ModuleDef = (() => {
+  const [T, d, di, L, G] = [2000, 60, 40, 1500, 77];
+  const J = (Math.PI * (d ** 4 - di ** 4)) / 32;
+  const tau = (T * 1000 * (d / 2)) / J;
+  const phi = (T * L) / (G * J);
+  return {
+    id: 'g.he-shaft-hollow',
+    title: 'A hollow shaft: less steel, nearly the same strength',
+    use: 'Use this for the shear stress and twist of a hollow (tube) shaft.',
+    assumptions: SHAFT_ASSUMPTIONS,
+    variables: [
+      torqueVar(),
+      mmVar('d', 'd_o', 'Outer diameter'),
+      mmVar('di', 'd_i', 'Inner diameter (the bore)', 0.01),
+      ...twistVars(),
+    ],
+    ...rules(
+      polarRule('d', 'di'),
+      torsionRule('tau', 'T', 'd'),
+      twistRule('T'),
+      degRule,
+      atMost('di', 'd', '{di} ≤ {d}', 'The bore must be narrower than the shaft.'),
+    ),
+    example: { T, d, di, L, G, J, tau, phi, phiDeg: (phi * 180) / Math.PI },
+    startWith: ['T', 'd', 'di', 'L', 'G'],
+    unitSystems: ['metric'],
+    representation: {
+      kind: 'shaft',
+      d: 'd',
+      di: 'di',
+      length: 'L',
+      torque: 'T',
+      G: 'G',
+      J: 'J',
+      tau: 'tau',
+      angle: 'phi',
+      more: ['phiDeg'],
+    },
+  };
+})();
+
+const shaftPower: ModuleDef = (() => {
+  const [P, n, tauA] = [30, 1200, 60];
+  const w = (2 * Math.PI * n) / 60;
+  const T = (P * 1000) / w;
+  const d = ((16 * T * 1000) / (Math.PI * tauA)) ** (1 / 3);
+  return {
+    id: 'g.he-shaft-power',
+    title: 'Sizing a shaft for a power and a speed',
+    use: 'Use this for “Size a solid shaft to carry 30 kW at 1200 rpm with 60 MPa allowed.”',
+    assumptions: [...SHAFT_ASSUMPTIONS, 'Steady power; the shaft is sized on shear alone.'],
+    variables: [
+      q('P', 'P', 'Power', 'kW', 0.0001, 1e6, 0.01),
+      q('n', 'n', 'Speed', 'rpm', 0.01, 1e6, 1),
+      q('w', 'ω', 'Angular speed', 'rad/s', 0.001, 1e6, 0.01),
+      torqueVar(),
+      mpaVar('tauA', 'τ_allow', 'Allowed shear stress'),
+      mmVar('d', 'd', 'Diameter needed', 0.01),
+    ],
+    ...rules(
+      rule(
+        'ω = 2πn ÷ 60',
+        '{w} = 2π × {n} ÷ 60',
+        ['w', 'n'],
+        (v) => v.w! - (2 * Math.PI * v.n!) / 60,
+        {
+          w: [
+            (v) => (2 * Math.PI * v.n!) / 60,
+            '2π × {n} ÷ 60',
+            'Each turn is 2π radians, and a minute is 60 s.',
+          ],
+          n: [
+            (v) => (v.w! * 60) / (2 * Math.PI),
+            '{w} × 60 ÷ (2π)',
+            'Turn radians per second into turns per minute.',
+          ],
+        },
+      ),
+      rule(
+        'T = P ÷ ω',
+        '{T} = {P} × 1,000 ÷ {w}',
+        ['T', 'P', 'w'],
+        (v) => v.T! * v.w! - v.P! * 1000,
+        {
+          T: [
+            (v) => div(v.P! * 1000, v.w!),
+            '{P} × 1,000 ÷ {w}',
+            'Power is torque times angular speed; × 1,000 turns kW into W.',
+          ],
+          P: [
+            (v) => (v.T! * v.w!) / 1000,
+            '{T} × {w} ÷ 1,000',
+            'Power is torque times angular speed; ÷ 1,000 gives kW.',
+          ],
+          w: [
+            (v) => div(v.P! * 1000, v.T!),
+            '{P} × 1,000 ÷ {T}',
+            'Divide the power in W by the torque.',
+          ],
+        },
+      ),
+      rule(
+        'd = (16T ÷ πτ_allow)^(1/3)',
+        '{d} = (16 × {T} × 1,000 ÷ (π × {tauA}))^(1/3)',
+        ['d', 'T', 'tauA'],
+        (v) => v.d! ** 3 * Math.PI * v.tauA! - 16 * v.T! * 1000,
+        {
+          d: [
+            (v) => fin(((16 * v.T! * 1000) / (Math.PI * v.tauA!)) ** (1 / 3)),
+            '(16 × {T} × 1,000 ÷ (π × {tauA}))^(1/3)',
+            'Set τ_max = 16T ÷ πd³ to the allowed stress and solve for d; × 1,000 turns N·m into N·mm.',
+          ],
+          T: [
+            (v) => (Math.PI * v.tauA! * v.d! ** 3) / 16000,
+            'π × {tauA} × {d}³ ÷ 16,000',
+            'The torque this shaft carries at the allowed stress, in N·m.',
+          ],
+          tauA: [
+            (v) => div(16 * v.T! * 1000, Math.PI * v.d! ** 3),
+            '16 × {T} × 1,000 ÷ (π × {d}³)',
+            'The largest shear stress in this shaft: 16T ÷ πd³.',
+          ],
+        },
+      ),
+    ),
+    example: { P, n, w, T, tauA, d },
+    startWith: ['P', 'n', 'tauA'],
+    unitSystems: ['metric'],
+    representation: {
+      kind: 'shaft',
+      d: 'd',
+      torque: 'T',
+      tau: 'tauA',
+      power: 'P',
+      speed: 'n',
+      more: ['w'],
+    },
+  };
+})();
+
+const shaftBending: ModuleDef = (() => {
+  const [d, M, T, Sy] = [40, 400, 600, 420];
+  const sigma = (32 * M * 1000) / (Math.PI * d ** 3);
+  const tau = (16 * T * 1000) / (Math.PI * d ** 3);
+  const sv = Math.sqrt(sigma ** 2 + 3 * tau ** 2);
+  return {
+    id: 'g.he-shaft-bending',
+    title: 'A shaft in bending and torsion: the factor of safety',
+    use: 'Use this for the von Mises factor of safety of a shaft carrying a bending moment and a torque.',
+    assumptions: [
+      ...SHAFT_ASSUMPTIONS,
+      'Static loads (no fatigue); the stress element at the surface.',
+    ],
+    variables: [
+      mmVar('d', 'd', 'Diameter'),
+      q('M', 'M', 'Bending moment', 'N·m', 0.001, 1e7, 0.1),
+      torqueVar(),
+      mpaVar('sigma', 'σ', 'Bending stress at the surface'),
+      mpaVar('tau', 'τ', 'Torsion shear stress at the surface'),
+      mpaVar('sv', 'σ′', 'Von Mises stress'),
+      mpaVar('Sy', 'S_y', 'Yield strength'),
+      q('n', 'n', 'Factor of safety', undefined, 0.0001, 1e6, 0.01),
+    ],
+    ...rules(
+      rule(
+        'σ = 32M ÷ πd³',
+        '{sigma} = 32 × {M} × 1,000 ÷ (π × {d}³)',
+        ['sigma', 'M', 'd'],
+        (v) => v.sigma! * Math.PI * v.d! ** 3 - 32000 * v.M!,
+        {
+          sigma: [
+            (v) => (32000 * v.M!) / (Math.PI * v.d! ** 3),
+            '32 × {M} × 1,000 ÷ (π × {d}³)',
+            'Bending stress at the surface, Mc ÷ I for a round section; × 1,000 turns N·m into N·mm.',
+          ],
+          M: [
+            (v) => (v.sigma! * Math.PI * v.d! ** 3) / 32000,
+            '{sigma} × π × {d}³ ÷ 32,000',
+            'Turn the rule round for the moment, in N·m.',
+          ],
+          d: [
+            (v) => fin(((32000 * v.M!) / (Math.PI * v.sigma!)) ** (1 / 3)),
+            '(32 × {M} × 1,000 ÷ (π × {sigma}))^(1/3)',
+            'Turn the rule round and take the cube root.',
+          ],
+        },
+      ),
+      rule(
+        'τ = 16T ÷ πd³',
+        '{tau} = 16 × {T} × 1,000 ÷ (π × {d}³)',
+        ['tau', 'T', 'd'],
+        (v) => v.tau! * Math.PI * v.d! ** 3 - 16000 * v.T!,
+        {
+          tau: [
+            (v) => (16000 * v.T!) / (Math.PI * v.d! ** 3),
+            '16 × {T} × 1,000 ÷ (π × {d}³)',
+            'Torsion shear at the surface; × 1,000 turns N·m into N·mm.',
+          ],
+          T: [
+            (v) => (v.tau! * Math.PI * v.d! ** 3) / 16000,
+            '{tau} × π × {d}³ ÷ 16,000',
+            'Turn the rule round for the torque, in N·m.',
+          ],
+          d: [
+            (v) => fin(((16000 * v.T!) / (Math.PI * v.tau!)) ** (1 / 3)),
+            '(16 × {T} × 1,000 ÷ (π × {tau}))^(1/3)',
+            'Turn the rule round and take the cube root.',
+          ],
+        },
+      ),
+      rule(
+        'σ′ = √(σ² + 3τ²)',
+        '{sv} = √({sigma}² + 3 × {tau}²)',
+        ['sv', 'sigma', 'tau'],
+        (v) => v.sv! ** 2 - v.sigma! ** 2 - 3 * v.tau! ** 2,
+        {
+          sv: [
+            (v) => Math.sqrt(v.sigma! ** 2 + 3 * v.tau! ** 2),
+            '√({sigma}² + 3 × {tau}²)',
+            'Von Mises joins the two stresses into one to compare with S_y.',
+          ],
+          sigma: [
+            (v) => {
+              const x = v.sv! ** 2 - 3 * v.tau! ** 2;
+              return x >= 0 ? Math.sqrt(x) : undefined;
+            },
+            '√({sv}² − 3 × {tau}²)',
+            'Take 3τ² from σ′², then the square root.',
+          ],
+          tau: [
+            (v) => {
+              const x = (v.sv! ** 2 - v.sigma! ** 2) / 3;
+              return x >= 0 ? Math.sqrt(x) : undefined;
+            },
+            '√(({sv}² − {sigma}²) ÷ 3)',
+            'Take σ² from σ′², divide by 3, then the square root.',
+          ],
+        },
+      ),
+      rule('n = S_y ÷ σ′', '{n} = {Sy} ÷ {sv}', ['n', 'Sy', 'sv'], (v) => v.n! * v.sv! - v.Sy!, {
+        n: [
+          (v) => div(v.Sy!, v.sv!),
+          '{Sy} ÷ {sv}',
+          'How many times the stress the material can take before it yields.',
+        ],
+        Sy: [(v) => v.n! * v.sv!, '{n} × {sv}', 'Multiply σ′ by n.'],
+        sv: [(v) => div(v.Sy!, v.n!), '{Sy} ÷ {n}', 'Divide S_y by n.'],
+      }),
+    ),
+    example: { d, M, T, sigma, tau, sv, Sy, n: Sy / sv },
+    startWith: ['d', 'M', 'T', 'Sy'],
+    unitSystems: ['metric'],
+    representation: {
+      kind: 'shaft',
+      d: 'd',
+      torque: 'T',
+      moment: 'M',
+      sigma: 'sigma',
+      tau: 'tau',
+      vonMises: 'sv',
+      n: 'n',
+      more: ['Sy'],
+    },
+  };
+})();
+
+// ─── HC52: fatigue (machine-design#1, aerospace-structures#3~basquin) ────────
+
+const FATIGUE_ASSUMPTIONS = [
+  'Fully reversed or steady-plus-alternating stress, the same every cycle.',
+  'The stresses at the critical point are below the yield strength.',
+];
+
+function goodmanDemo(o: {
+  id: string;
+  title: string;
+  use: string;
+  sa: number;
+  sm: number;
+}): ModuleDef {
+  const [Sut, k] = [600, 0.7];
+  const Sep = 0.5 * Sut;
+  const Se = k * Sep;
+  return {
+    id: o.id,
+    title: o.title,
+    use: o.use,
+    assumptions: [
+      ...FATIGUE_ASSUMPTIONS,
+      'The modified Goodman line; S_e′ = 0.5S_ut (S_ut up to 1400 MPa).',
+    ],
+    variables: [
+      mpaVar('Sut', 'S_ut', 'Ultimate tensile strength'),
+      mpaVar('Sep', 'S_e′', 'Endurance limit of the test specimen'),
+      q('k', 'k', 'Marin factors multiplied', undefined, 0.01, 1, 0.001),
+      mpaVar('Se', 'S_e', 'Endurance limit of the part'),
+      mpaVar('sa', 'σ_a', 'Alternating stress'),
+      mpaVar('sm', 'σ_m', 'Mean stress'),
+      q('n', 'n', 'Factor of safety', undefined, 0.0001, 1e4, 0.01),
+    ],
+    ...rules(
+      rule('S_e′ = 0.5S_ut', '{Sep} = 0.5 × {Sut}', ['Sep', 'Sut'], (v) => v.Sep! - 0.5 * v.Sut!, {
+        Sep: [
+          (v) => 0.5 * v.Sut!,
+          '0.5 × {Sut}',
+          'A polished steel specimen lasts forever below about half its ultimate strength.',
+        ],
+        Sut: [(v) => 2 * v.Sep!, '2 × {Sep}', 'Double the specimen’s endurance limit.'],
+      }),
+      rule('S_e = kS_e′', '{Se} = {k} × {Sep}', ['Se', 'k', 'Sep'], (v) => v.Se! - v.k! * v.Sep!, {
+        Se: [
+          (v) => v.k! * v.Sep!,
+          '{k} × {Sep}',
+          'The Marin factors (surface, size, load …) take the part below the specimen.',
+        ],
+        k: [
+          (v) => div(v.Se!, v.Sep!),
+          '{Se} ÷ {Sep}',
+          'Divide the part’s limit by the specimen’s.',
+        ],
+        Sep: [(v) => div(v.Se!, v.k!), '{Se} ÷ {k}', 'Divide S_e by the Marin product.'],
+      }),
+      rule(
+        'σ_a ÷ S_e + σ_m ÷ S_ut = 1 ÷ n',
+        '{sa} ÷ {Se} + {sm} ÷ {Sut} = 1 ÷ {n}',
+        ['sa', 'Se', 'sm', 'Sut', 'n'],
+        (v) => v.n! * (v.sa! / v.Se! + v.sm! / v.Sut!) - 1,
+        {
+          n: [
+            (v) => div(1, v.sa! / v.Se! + v.sm! / v.Sut!),
+            '1 ÷ ({sa} ÷ {Se} + {sm} ÷ {Sut})',
+            'Each stress over its strength, added, is the share of the Goodman line used; n is its reciprocal.',
+          ],
+          sa: [
+            (v) => fin(v.Se! * (1 / v.n! - v.sm! / v.Sut!)),
+            '{Se} × (1 ÷ {n} − {sm} ÷ {Sut})',
+            'Take the mean stress’s share from 1 ÷ n, then multiply by S_e.',
+          ],
+          sm: [
+            (v) => fin(v.Sut! * (1 / v.n! - v.sa! / v.Se!)),
+            '{Sut} × (1 ÷ {n} − {sa} ÷ {Se})',
+            'Take the alternating stress’s share from 1 ÷ n, then multiply by S_ut.',
+          ],
+          Se: [
+            (v) => {
+              const x = 1 / v.n! - v.sm! / v.Sut!;
+              return x > 0 ? v.sa! / x : undefined;
+            },
+            '{sa} ÷ (1 ÷ {n} − {sm} ÷ {Sut})',
+            'Divide σ_a by what is left of 1 ÷ n after the mean stress’s share.',
+          ],
+        },
+      ),
+    ),
+    example: { Sut, Sep, k, Se, sa: o.sa, sm: o.sm, n: 1 / (o.sa / Se + o.sm / Sut) },
+    startWith: ['Sut', 'k', 'sa', 'sm'],
+    unitSystems: ['metric'],
+    representation: {
+      kind: 'fatigueDiagram',
+      mode: 'goodman',
+      Se: 'Se',
+      Sut: 'Sut',
+      sa: 'sa',
+      sm: 'sm',
+      n: 'n',
+      more: ['Sep', 'k'],
+    },
+  };
+}
+
+const fatigueGoodman = goodmanDemo({
+  id: 'g.he-fatigueDiagram-goodman',
+  title: 'The Goodman diagram: a factor of safety in fatigue',
+  use: 'Use this for the Goodman factor of safety of a part under a mean and an alternating stress.',
+  sa: 80,
+  sm: 120,
+});
+
+const fatigueGoodmanFails = goodmanDemo({
+  id: 'g.he-fatigueDiagram-goodman-fails',
+  title: 'Past the Goodman line: a part that fails in fatigue',
+  use: 'Use this for a load whose point falls outside the Goodman line (n under 1).',
+  sa: 150,
+  sm: 300,
+});
+
+function snDemo(o: { id: string; title: string; use: string; Sf: number }): ModuleDef {
+  const [Sut, Se, f] = [600, 210, 0.9];
+  const a = (f * Sut) ** 2 / Se;
+  const b = -Math.log10((f * Sut) / Se) / 3;
+  return {
+    id: o.id,
+    title: o.title,
+    use: o.use,
+    assumptions: [
+      ...FATIGUE_ASSUMPTIONS,
+      'The S–N line through fS_ut at 10³ cycles and S_e at 10⁶ (f typed, 0.9 here).',
+    ],
+    variables: [
+      mpaVar('Sut', 'S_ut', 'Ultimate tensile strength'),
+      mpaVar('Se', 'S_e', 'Endurance limit'),
+      q('f', 'f', 'Fatigue strength fraction at 10³ cycles', undefined, 0.5, 1, 0.01),
+      mpaVar('a', 'a', 'S–N coefficient'),
+      q('b', 'b', 'S–N exponent', undefined, -1, -0.0001, 0.0001),
+      mpaVar('Sf', 'S_f', 'Fully reversed stress'),
+      q('N', 'N', 'Cycles to failure', 'cycles', 1, 1e12, 1),
+    ],
+    ...rules(
+      rule(
+        'a = (fS_ut)² ÷ S_e',
+        '{a} = ({f} × {Sut})² ÷ {Se}',
+        ['a', 'f', 'Sut', 'Se'],
+        (v) => v.a! * v.Se! - (v.f! * v.Sut!) ** 2,
+        {
+          a: [
+            (v) => div((v.f! * v.Sut!) ** 2, v.Se!),
+            '({f} × {Sut})² ÷ {Se}',
+            'The line’s coefficient, from its two ends.',
+          ],
+          Se: [
+            (v) => div((v.f! * v.Sut!) ** 2, v.a!),
+            '({f} × {Sut})² ÷ {a}',
+            'Turn the rule round for S_e.',
+          ],
+        },
+      ),
+      rule(
+        'b = −log(fS_ut ÷ S_e) ÷ 3',
+        '{b} = −log₁₀({f} × {Sut} ÷ {Se}) ÷ 3',
+        ['b', 'f', 'Sut', 'Se'],
+        (v) => v.b! + Math.log10((v.f! * v.Sut!) / v.Se!) / 3,
+        {
+          b: [
+            (v) => -Math.log10((v.f! * v.Sut!) / v.Se!) / 3,
+            '−log₁₀({f} × {Sut} ÷ {Se}) ÷ 3',
+            'The slope on log–log axes: the fall from fS_ut to S_e over three decades.',
+          ],
+          Se: [
+            (v) => v.f! * v.Sut! * 10 ** (3 * v.b!),
+            '{f} × {Sut} × 10^(3 × {b})',
+            'Undo the log: S_e = fS_ut × 10^(3b).',
+          ],
+        },
+      ),
+      rule(
+        'N = (S_f ÷ a)^(1 ÷ b)',
+        '{N} = ({Sf} ÷ {a})^(1 ÷ {b})',
+        ['N', 'Sf', 'a', 'b'],
+        (v) => Math.log(v.N!) * v.b! - Math.log(v.Sf! / v.a!),
+        {
+          N: [
+            (v) => fin((v.Sf! / v.a!) ** (1 / v.b!)),
+            '({Sf} ÷ {a})^(1 ÷ {b})',
+            'S_f = aN^b turned round for the life.',
+          ],
+          Sf: [
+            (v) => v.a! * v.N! ** v.b!,
+            '{a} × {N}^{b}',
+            'The strength the line gives at this life.',
+          ],
+        },
+      ),
+    ),
+    example: { Sut, Se, f, a, b, Sf: o.Sf, N: (o.Sf / a) ** (1 / b) },
+    startWith: ['Sut', 'Se', 'f', 'Sf'],
+    unitSystems: ['metric'],
+    representation: {
+      kind: 'fatigueDiagram',
+      mode: 'sn',
+      Sut: 'Sut',
+      Se: 'Se',
+      f: 'f',
+      a: 'a',
+      b: 'b',
+      Sf: 'Sf',
+      N: 'N',
+    },
+  };
+}
+
+const fatigueSn = snDemo({
+  id: 'g.he-fatigueDiagram-sn',
+  title: 'Life on the S–N line',
+  use: 'Use this for the cycles to failure at a fully reversed stress between S_e and fS_ut.',
+  Sf: 300,
+});
+
+const fatigueSnLow = snDemo({
+  id: 'g.he-fatigueDiagram-sn-low-cycle',
+  title: 'A high stress: a short life near 10³ cycles',
+  use: 'Use this for a stress near fS_ut, where the part lasts only a few thousand cycles.',
+  Sf: 500,
+});
+
+const fatigueBasquin: ModuleDef = (() => {
+  const [sf, b, sa] = [1000, -0.1, 300];
+  const rev = (sa / sf) ** (1 / b);
+  return {
+    id: 'g.he-fatigueDiagram-basquin',
+    title: 'Basquin’s law: cycles to failure of an aluminum part',
+    use: 'Use this for the reversals and cycles to failure from σ′_f, b and the stress amplitude.',
+    assumptions: [
+      ...FATIGUE_ASSUMPTIONS,
+      'Fully reversed stress; aluminum has no endurance limit.',
+    ],
+    variables: [
+      mpaVar('sf', 'σ′_f', 'Fatigue strength coefficient'),
+      q('b', 'b', 'Fatigue strength exponent', undefined, -1, -0.0001, 0.0001),
+      mpaVar('sa', 'σ_a', 'Stress amplitude'),
+      q('rev', '2N', 'Reversals to failure', 'reversals', 1, 1e14, 1),
+      q('N', 'N', 'Cycles to failure', 'cycles', 0.5, 1e14, 1),
+    ],
+    ...rules(
+      rule(
+        'σ_a = σ′_f(2N)^b',
+        '{sa} = {sf} × {rev}^{b}',
+        ['sa', 'sf', 'rev', 'b'],
+        (v) => Math.log(v.sa! / v.sf!) - v.b! * Math.log(v.rev!),
+        {
+          sa: [(v) => v.sf! * v.rev! ** v.b!, '{sf} × {rev}^{b}', 'Basquin’s power law.'],
+          rev: [
+            (v) => fin((v.sa! / v.sf!) ** (1 / v.b!)),
+            '({sa} ÷ {sf})^(1 ÷ {b})',
+            'Turn the power law round for the reversals.',
+          ],
+          sf: [
+            (v) => v.sa! / v.rev! ** v.b!,
+            '{sa} ÷ {rev}^{b}',
+            'Turn the power law round for σ′_f.',
+          ],
+        },
+      ),
+      rule('N = 2N ÷ 2', '{N} = {rev} ÷ 2', ['N', 'rev'], (v) => 2 * v.N! - v.rev!, {
+        N: [(v) => v.rev! / 2, '{rev} ÷ 2', 'Each cycle is two reversals.'],
+        rev: [(v) => 2 * v.N!, '2 × {N}', 'Each cycle is two reversals.'],
+      }),
+    ),
+    example: { sf, b, sa, rev, N: rev / 2 },
+    startWith: ['sf', 'b', 'sa'],
+    unitSystems: ['metric'],
+    representation: {
+      kind: 'fatigueDiagram',
+      mode: 'basquin',
+      sigmaF: 'sf',
+      b: 'b',
+      sa: 'sa',
+      reversals: 'rev',
+      N: 'N',
+    },
+  };
+})();
+
+const fatigueMiner: ModuleDef = (() => {
+  const [n1, N1, n2, N2] = [20000, 80000, 100000, 500000];
+  const D = n1 / N1 + n2 / N2;
+  return {
+    id: 'g.he-fatigueDiagram-miner',
+    title: 'Miner’s rule: the life used by two load blocks',
+    use: 'Use this for the damage used by blocks of cycles at two stress levels, and how often the set can repeat.',
+    assumptions: [
+      ...FATIGUE_ASSUMPTIONS,
+      'Damage adds in proportion to cycles, in any order (Miner’s rule).',
+    ],
+    variables: [
+      q('n1', 'n₁', 'Cycles at the first stress', 'cycles', 0.0001, 1e12, 1),
+      q('N1', 'N₁', 'Life at the first stress', 'cycles', 1, 1e14, 1),
+      q('n2', 'n₂', 'Cycles at the second stress', 'cycles', 0.0001, 1e12, 1),
+      q('N2', 'N₂', 'Life at the second stress', 'cycles', 1, 1e14, 1),
+      q('D', 'D', 'Damage used', undefined, 0.000001, 100, 0.0001),
+      q('rep', 'Repeats', 'Times the set can repeat to failure', undefined, 0.0001, 1e8, 0.01),
+    ],
+    ...rules(
+      rule(
+        'D = n₁ ÷ N₁ + n₂ ÷ N₂',
+        '{D} = {n1} ÷ {N1} + {n2} ÷ {N2}',
+        ['D', 'n1', 'N1', 'n2', 'N2'],
+        (v) => v.D! - v.n1! / v.N1! - v.n2! / v.N2!,
+        {
+          D: [
+            (v) => v.n1! / v.N1! + v.n2! / v.N2!,
+            '{n1} ÷ {N1} + {n2} ÷ {N2}',
+            'Each block uses its cycles’ share of the life at its stress; the shares add.',
+          ],
+          n1: [
+            (v) => v.N1! * (v.D! - v.n2! / v.N2!),
+            '{N1} × ({D} − {n2} ÷ {N2})',
+            'Take the second block’s share from D, then multiply by N₁.',
+          ],
+          n2: [
+            (v) => v.N2! * (v.D! - v.n1! / v.N1!),
+            '{N2} × ({D} − {n1} ÷ {N1})',
+            'Take the first block’s share from D, then multiply by N₂.',
+          ],
+        },
+      ),
+      rule('repeats = 1 ÷ D', '{rep} = 1 ÷ {D}', ['rep', 'D'], (v) => v.rep! * v.D! - 1, {
+        rep: [(v) => div(1, v.D!), '1 ÷ {D}', 'The part fails when the damage reaches 1.'],
+        D: [(v) => div(1, v.rep!), '1 ÷ {rep}', 'Each set uses 1 ÷ repeats of the life.'],
+      }),
+    ),
+    example: { n1, N1, n2, N2, D, rep: 1 / D },
+    startWith: ['n1', 'N1', 'n2', 'N2'],
+    unitSystems: ['metric'],
+    representation: {
+      kind: 'fatigueDiagram',
+      mode: 'miner',
+      blocks: [
+        { n: 'n1', N: 'N1' },
+        { n: 'n2', N: 'N2' },
+      ],
+      D: 'D',
+      repeats: 'rep',
+    },
+  };
+})();
+
+// ─── HC41: element chains and meshes (finite-element-analysis#0, #3; structural-analysis#3) ──
+
+const FE_ASSUMPTIONS = [
+  'Axial springs or bars only, loaded at the nodes; small displacements.',
+  'Each element’s force is its stiffness times its stretch, k(u_j − u_i).',
+];
+
+const kVar = (id: string, symbol: string, name: string, unit = 'N/mm') =>
+  q(id, symbol, name, unit, 0.000001, 1e12, 0.01);
+const forceVar = (id: string, symbol: string, name: string, unit = 'N') =>
+  q(id, symbol, name, unit, -1e9, 1e9, 0.1);
+const uVar = (id: string, symbol: string, name: string) =>
+  q(id, symbol, name, 'mm', -1e6, 1e6, 0.0001);
+
+/** a = b (one value carried to another, a node's balance), both ways. */
+const sameRule = (a: string, b: string, display: string, how: string) =>
+  rule(display, `{${a}} = {${b}}`, [a, b], (v) => v[a]! - v[b]!, {
+    [a]: [(v) => v[b]!, `{${b}}`, how],
+    [b]: [(v) => v[a]!, `{${a}}`, how],
+  });
+
+const chainSprings: ModuleDef = {
+  id: 'g.he-elementChain-springs',
+  title: 'Two springs in series by the direct stiffness method',
+  use: 'Use this for the nodal displacements, element forces and reaction of two springs in series with a load at the end.',
+  assumptions: [...FE_ASSUMPTIONS, 'Node 1 is fixed; the load F acts at node 3.'],
+  variables: [
+    kVar('k1', 'k₁', 'Stiffness of spring 1'),
+    kVar('k2', 'k₂', 'Stiffness of spring 2'),
+    forceVar('F', 'F', 'Load at node 3'),
+    uVar('u2', 'u₂', 'Displacement of node 2'),
+    uVar('u3', 'u₃', 'Displacement of node 3'),
+    forceVar('f1', 'f₁', 'Force in spring 1'),
+    forceVar('f2', 'f₂', 'Force in spring 2'),
+    forceVar('R1', 'R₁', 'Reaction at node 1'),
+  ],
+  ...rules(
+    sameRule(
+      'f2',
+      'F',
+      'f₂ = F (node 3 balances)',
+      'Node 3 balances: the spring on its left carries the whole load.',
+    ),
+    sameRule(
+      'f1',
+      'f2',
+      'f₁ = f₂ (node 2 balances)',
+      'Node 2 has no load, so the two springs pull it equally.',
+    ),
+    rule('f₁ = k₁u₂', '{f1} = {k1} × {u2}', ['f1', 'k1', 'u2'], (v) => v.f1! - v.k1! * v.u2!, {
+      f1: [(v) => v.k1! * v.u2!, '{k1} × {u2}', 'Spring 1 stretches by u₂ (node 1 stays put).'],
+      u2: [
+        (v) => div(v.f1!, v.k1!),
+        '{f1} ÷ {k1}',
+        'The stretch of spring 1 is its force over its stiffness.',
+      ],
+      k1: [(v) => div(v.f1!, v.u2!), '{f1} ÷ {u2}', 'Divide the force by the stretch.'],
+    }),
+    rule(
+      'f₂ = k₂(u₃ − u₂)',
+      '{f2} = {k2} × ({u3} − {u2})',
+      ['f2', 'k2', 'u3', 'u2'],
+      (v) => v.f2! - v.k2! * (v.u3! - v.u2!),
+      {
+        f2: [
+          (v) => v.k2! * (v.u3! - v.u2!),
+          '{k2} × ({u3} − {u2})',
+          'Spring 2 stretches by the difference of its nodes.',
+        ],
+        u3: [
+          (v) => fin(v.u2! + v.f2! / v.k2!),
+          '{u2} + {f2} ÷ {k2}',
+          'Node 3 moves u₂ plus spring 2’s stretch.',
+        ],
+        u2: [
+          (v) => fin(v.u3! - v.f2! / v.k2!),
+          '{u3} − {f2} ÷ {k2}',
+          'Take spring 2’s stretch from u₃.',
+        ],
+        k2: [
+          (v) => div(v.f2!, v.u3! - v.u2!),
+          '{f2} ÷ ({u3} − {u2})',
+          'Divide the force by the stretch.',
+        ],
+      },
+    ),
+    rule('R₁ = −f₁', '{R1} = −{f1}', ['R1', 'f1'], (v) => v.R1! + v.f1!, {
+      R1: [(v) => -v.f1!, '−{f1}', 'The wall holds node 1 back against spring 1’s pull.'],
+      f1: [(v) => -v.R1!, '−{R1}', 'The spring pulls as hard as the wall holds.'],
+    }),
+  ),
+  example: { k1: 1000, k2: 500, F: 2000, u2: 2, u3: 6, f1: 2000, f2: 2000, R1: -2000 },
+  startWith: ['k1', 'k2', 'F'],
+  unitSystems: ['metric'],
+  representation: {
+    kind: 'elementChain',
+    elements: [
+      { type: 'spring', k: 'k1', force: 'f1' },
+      { type: 'spring', k: 'k2', force: 'f2' },
+    ],
+    fixed: [1],
+    loads: [{ node: 3, F: 'F' }],
+    reactions: [{ node: 1, R: 'R1' }],
+    disp: [
+      { node: 2, u: 'u2' },
+      { node: 3, u: 'u3' },
+    ],
+  },
+};
+
+const chainBar: ModuleDef = {
+  id: 'g.he-elementChain-bar',
+  title: 'One bar element: its stiffness, force and stress',
+  use: 'Use this for a bar element’s stiffness AE ÷ L, and its force and stress from the nodes’ displacements.',
+  assumptions: [...FE_ASSUMPTIONS, 'One bar of one material and area.'],
+  variables: [
+    q('A', 'A', 'Cross-section area', 'mm²', 0.0001, 1e8, 0.01),
+    q('E', 'E', 'Elastic modulus', 'GPa', 0.001, 1500, 0.1),
+    q('L', 'L', 'Length', 'mm', 0.001, 1e7, 0.1),
+    kVar('k', 'k', 'Element stiffness'),
+    uVar('u1', 'u₁', 'Displacement of node 1'),
+    uVar('u2', 'u₂', 'Displacement of node 2'),
+    forceVar('f', 'f', 'Element force'),
+    q('sigma', 'σ', 'Stress', 'MPa', -1e6, 1e6, 0.01),
+  ],
+  ...rules(
+    rule(
+      'k = AE ÷ L',
+      '{k} = {A} × {E} × 1,000 ÷ {L}',
+      ['k', 'A', 'E', 'L'],
+      (v) => v.k! * v.L! - v.A! * v.E! * 1000,
+      {
+        k: [
+          (v) => div(v.A! * v.E! * 1000, v.L!),
+          '{A} × {E} × 1,000 ÷ {L}',
+          'A bar is a spring of stiffness AE ÷ L; × 1,000 turns GPa into N/mm².',
+        ],
+        A: [
+          (v) => div(v.k! * v.L!, v.E! * 1000),
+          '{k} × {L} ÷ ({E} × 1,000)',
+          'Turn the rule round for the area.',
+        ],
+        E: [
+          (v) => div(v.k! * v.L!, v.A! * 1000),
+          '{k} × {L} ÷ ({A} × 1,000)',
+          'Turn the rule round for E, in GPa.',
+        ],
+        L: [
+          (v) => div(v.A! * v.E! * 1000, v.k!),
+          '{A} × {E} × 1,000 ÷ {k}',
+          'Turn the rule round for the length.',
+        ],
+      },
+    ),
+    rule(
+      'f = k(u₂ − u₁)',
+      '{f} = {k} × ({u2} − {u1})',
+      ['f', 'k', 'u2', 'u1'],
+      (v) => v.f! - v.k! * (v.u2! - v.u1!),
+      {
+        f: [
+          (v) => v.k! * (v.u2! - v.u1!),
+          '{k} × ({u2} − {u1})',
+          'The bar’s force is its stiffness times its stretch.',
+        ],
+        u2: [(v) => fin(v.u1! + v.f! / v.k!), '{u1} + {f} ÷ {k}', 'Add the stretch f ÷ k to u₁.'],
+        u1: [
+          (v) => fin(v.u2! - v.f! / v.k!),
+          '{u2} − {f} ÷ {k}',
+          'Take the stretch f ÷ k from u₂.',
+        ],
+        k: [
+          (v) => div(v.f!, v.u2! - v.u1!),
+          '{f} ÷ ({u2} − {u1})',
+          'Divide the force by the stretch.',
+        ],
+      },
+    ),
+    rule('σ = f ÷ A', '{sigma} = {f} ÷ {A}', ['sigma', 'f', 'A'], (v) => v.sigma! * v.A! - v.f!, {
+      sigma: [(v) => div(v.f!, v.A!), '{f} ÷ {A}', 'Stress is force over area (N/mm² is MPa).'],
+      f: [(v) => v.sigma! * v.A!, '{sigma} × {A}', 'Force is stress times area.'],
+    }),
+  ),
+  example: { A: 100, E: 200, L: 1000, k: 20000, u1: 0.02, u2: 0.12, f: 2000, sigma: 20 },
+  startWith: ['A', 'E', 'L', 'u1', 'u2'],
+  unitSystems: ['metric'],
+  representation: {
+    kind: 'elementChain',
+    elements: [{ type: 'bar', k: 'k', A: 'A', L: 'L', force: 'f' }],
+    loads: [
+      { node: 1, F: 'f', negate: true },
+      { node: 2, F: 'f' },
+    ],
+    disp: [
+      { node: 1, u: 'u1' },
+      { node: 2, u: 'u2' },
+    ],
+    stress: 'sigma',
+    more: ['E'],
+  },
+};
+
+const chainFixedFixed: ModuleDef = {
+  id: 'g.he-elementChain-fixed-fixed',
+  title: 'A load between two walls: one spring stretches, one squeezes',
+  use: 'Use this for a node loaded between two fixed ends: its displacement and both reactions.',
+  assumptions: [...FE_ASSUMPTIONS, 'Nodes 1 and 3 are fixed; the load F acts at node 2.'],
+  variables: [
+    kVar('k1', 'k₁', 'Stiffness of spring 1'),
+    kVar('k2', 'k₂', 'Stiffness of spring 2'),
+    forceVar('F', 'F', 'Load at node 2'),
+    uVar('u2', 'u₂', 'Displacement of node 2'),
+    forceVar('R1', 'R₁', 'Reaction at node 1'),
+    forceVar('R3', 'R₃', 'Reaction at node 3'),
+  ],
+  ...rules(
+    rule(
+      'u₂ = F ÷ (k₁ + k₂)',
+      '{u2} = {F} ÷ ({k1} + {k2})',
+      ['u2', 'F', 'k1', 'k2'],
+      (v) => v.u2! * (v.k1! + v.k2!) - v.F!,
+      {
+        u2: [
+          (v) => div(v.F!, v.k1! + v.k2!),
+          '{F} ÷ ({k1} + {k2})',
+          'Both springs resist node 2’s move, so their stiffnesses add.',
+        ],
+        F: [
+          (v) => v.u2! * (v.k1! + v.k2!),
+          '{u2} × ({k1} + {k2})',
+          'The load is the move times the springs’ total stiffness.',
+        ],
+        k1: [
+          (v) => fin(v.F! / v.u2! - v.k2!),
+          '{F} ÷ {u2} − {k2}',
+          'The total stiffness F ÷ u₂, less k₂.',
+        ],
+        k2: [
+          (v) => fin(v.F! / v.u2! - v.k1!),
+          '{F} ÷ {u2} − {k1}',
+          'The total stiffness F ÷ u₂, less k₁.',
+        ],
+      },
+    ),
+    rule('R₁ = −k₁u₂', '{R1} = −{k1} × {u2}', ['R1', 'k1', 'u2'], (v) => v.R1! + v.k1! * v.u2!, {
+      R1: [
+        (v) => -v.k1! * v.u2!,
+        '−{k1} × {u2}',
+        'Spring 1 stretches by u₂ and pulls node 1; the wall pulls back.',
+      ],
+      u2: [(v) => div(-v.R1!, v.k1!), '−{R1} ÷ {k1}', 'Turn the rule round for u₂.'],
+      k1: [(v) => div(-v.R1!, v.u2!), '−{R1} ÷ {u2}', 'Turn the rule round for k₁.'],
+    }),
+    rule('R₃ = −k₂u₂', '{R3} = −{k2} × {u2}', ['R3', 'k2', 'u2'], (v) => v.R3! + v.k2! * v.u2!, {
+      R3: [
+        (v) => -v.k2! * v.u2!,
+        '−{k2} × {u2}',
+        'Spring 2 is squeezed by u₂ and pushes node 3; the wall pushes back.',
+      ],
+      u2: [(v) => div(-v.R3!, v.k2!), '−{R3} ÷ {k2}', 'Turn the rule round for u₂.'],
+      k2: [(v) => div(-v.R3!, v.u2!), '−{R3} ÷ {u2}', 'Turn the rule round for k₂.'],
+    }),
+  ),
+  example: { k1: 1000, k2: 2000, F: 3000, u2: 1, R1: -1000, R3: -2000 },
+  startWith: ['k1', 'k2', 'F'],
+  unitSystems: ['metric'],
+  representation: {
+    kind: 'elementChain',
+    elements: [
+      { type: 'spring', k: 'k1' },
+      { type: 'spring', k: 'k2' },
+    ],
+    fixed: [1, 3],
+    loads: [{ node: 2, F: 'F' }],
+    reactions: [
+      { node: 1, R: 'R1' },
+      { node: 3, R: 'R3' },
+    ],
+    disp: [{ node: 2, u: 'u2' }],
+  },
+};
+
+const chainAxial: ModuleDef = {
+  id: 'g.he-elementChain-axial',
+  title: 'Two steel bars in series: displacements by the stiffness method',
+  use: 'Use this for the node displacements of two bars in series, fixed at one end and loaded at the other.',
+  assumptions: [...FE_ASSUMPTIONS, 'Node 1 is fixed; one material; the load P acts at node 3.'],
+  variables: [
+    q('E', 'E', 'Elastic modulus', 'GPa', 0.001, 1500, 0.1),
+    q('A1', 'A₁', 'Area of bar 1', 'mm²', 0.0001, 1e8, 0.01),
+    q('L1', 'L₁', 'Length of bar 1', 'mm', 0.001, 1e7, 0.1),
+    q('A2', 'A₂', 'Area of bar 2', 'mm²', 0.0001, 1e8, 0.01),
+    q('L2', 'L₂', 'Length of bar 2', 'mm', 0.001, 1e7, 0.1),
+    kVar('k1', 'k₁', 'Stiffness of bar 1', 'N/m'),
+    kVar('k2', 'k₂', 'Stiffness of bar 2', 'N/m'),
+    forceVar('P', 'P', 'Load at node 3', 'kN'),
+    uVar('u2', 'u₂', 'Displacement of node 2'),
+    uVar('u3', 'u₃', 'Displacement of node 3'),
+  ].map((v) => (v.id === 'k1' || v.id === 'k2' ? { ...v, scientific: true } : v)),
+  ...rules(
+    ...(['1', '2'] as const).map((i) =>
+      rule(
+        `k${i} = A${i}E ÷ L${i}`,
+        `{k${i}} = {A${i}} × {E} × 10⁶ ÷ {L${i}}`,
+        [`k${i}`, `A${i}`, 'E', `L${i}`],
+        (v) => v[`k${i}`]! * v[`L${i}`]! - v[`A${i}`]! * v.E! * 1e6,
+        {
+          [`k${i}`]: [
+            (v) => div(v[`A${i}`]! * v.E! * 1e6, v[`L${i}`]!),
+            `{A${i}} × {E} × 10⁶ ÷ {L${i}}`,
+            'AE ÷ L in N/mm (× 1,000 for GPa), then × 1,000 again for N/m.',
+          ],
+          [`A${i}`]: [
+            (v) => div(v[`k${i}`]! * v[`L${i}`]!, v.E! * 1e6),
+            `{k${i}} × {L${i}} ÷ ({E} × 10⁶)`,
+            'Turn the rule round for the area.',
+          ],
+          [`L${i}`]: [
+            (v) => div(v[`A${i}`]! * v.E! * 1e6, v[`k${i}`]!),
+            `{A${i}} × {E} × 10⁶ ÷ {k${i}}`,
+            'Turn the rule round for the length.',
+          ],
+        },
+      ),
+    ),
+    rule(
+      'u₂ = P ÷ k₁',
+      '{u2} = {P} × 10⁶ ÷ {k1}',
+      ['u2', 'P', 'k1'],
+      (v) => v.u2! * v.k1! - v.P! * 1e6,
+      {
+        u2: [
+          (v) => div(v.P! * 1e6, v.k1!),
+          '{P} × 10⁶ ÷ {k1}',
+          'Bar 1 carries all of P (node 2 balances); its stretch is P ÷ k₁, × 10⁶ for kN and N/m to mm.',
+        ],
+        P: [(v) => (v.u2! * v.k1!) / 1e6, '{u2} × {k1} ÷ 10⁶', 'Turn the rule round for P, in kN.'],
+        k1: [(v) => div(v.P! * 1e6, v.u2!), '{P} × 10⁶ ÷ {u2}', 'Turn the rule round for k₁.'],
+      },
+    ),
+    rule(
+      'u₃ = u₂ + P ÷ k₂',
+      '{u3} = {u2} + {P} × 10⁶ ÷ {k2}',
+      ['u3', 'u2', 'P', 'k2'],
+      (v) => v.u3! - v.u2! - (v.P! * 1e6) / v.k2!,
+      {
+        u3: [
+          (v) => fin(v.u2! + (v.P! * 1e6) / v.k2!),
+          '{u2} + {P} × 10⁶ ÷ {k2}',
+          'Bar 2 also carries P: node 3 moves u₂ plus bar 2’s stretch.',
+        ],
+        u2: [
+          (v) => fin(v.u3! - (v.P! * 1e6) / v.k2!),
+          '{u3} − {P} × 10⁶ ÷ {k2}',
+          'Take bar 2’s stretch from u₃.',
+        ],
+        k2: [
+          (v) => div(v.P! * 1e6, v.u3! - v.u2!),
+          '{P} × 10⁶ ÷ ({u3} − {u2})',
+          'Divide P by bar 2’s stretch.',
+        ],
+      },
+    ),
+  ),
+  example: {
+    E: 200,
+    A1: 1000,
+    L1: 2000,
+    A2: 500,
+    L2: 2000,
+    k1: 1e8,
+    k2: 5e7,
+    P: 30,
+    u2: 0.3,
+    u3: 0.9,
+  },
+  startWith: ['E', 'A1', 'L1', 'A2', 'L2', 'P'],
+  unitSystems: ['metric'],
+  representation: {
+    kind: 'elementChain',
+    elements: [
+      { type: 'bar', k: 'k1', A: 'A1', L: 'L1' },
+      { type: 'bar', k: 'k2', A: 'A2', L: 'L2' },
+    ],
+    fixed: [1],
+    loads: [{ node: 3, F: 'P' }],
+    disp: [
+      { node: 2, u: 'u2' },
+      { node: 3, u: 'u3' },
+    ],
+    more: ['E'],
+  },
+};
+
+function meshDemo(id: string, title: string, use: string, nx: number, ny: number): ModuleDef {
+  const nodes = (nx + 1) * (ny + 1);
+  return {
+    id,
+    title,
+    use,
+    assumptions: [
+      'A rectangular plate cut into n_x × n_y four-node quadrilaterals.',
+      'Plane stress: two displacements, u and v, at each node.',
+    ],
+    variables: [
+      q('nx', 'n_x', 'Elements along the plate', undefined, 1, 1000, 1, { integer: true }),
+      q('ny', 'n_y', 'Elements up the plate', undefined, 1, 1000, 1, { integer: true }),
+      q('nodes', 'Nodes', 'Number of nodes', undefined, 4, 1e7, 1, { integer: true }),
+      q('dof', 'DOF', 'Degrees of freedom', undefined, 8, 2e7, 1, { integer: true }),
+    ],
+    ...rules(
+      rule(
+        'nodes = (n_x + 1)(n_y + 1)',
+        '{nodes} = ({nx} + 1) × ({ny} + 1)',
+        ['nodes', 'nx', 'ny'],
+        (v) => v.nodes! - (v.nx! + 1) * (v.ny! + 1),
+        {
+          nodes: [
+            (v) => (v.nx! + 1) * (v.ny! + 1),
+            '({nx} + 1) × ({ny} + 1)',
+            'A row of n elements has n + 1 nodes, in each direction.',
+          ],
+          nx: [
+            (v) => fin(v.nodes! / (v.ny! + 1) - 1),
+            '{nodes} ÷ ({ny} + 1) − 1',
+            'Divide by the nodes up the plate, then take one away.',
+          ],
+          ny: [
+            (v) => fin(v.nodes! / (v.nx! + 1) - 1),
+            '{nodes} ÷ ({nx} + 1) − 1',
+            'Divide by the nodes along the plate, then take one away.',
+          ],
+        },
+      ),
+      rule(
+        'DOF = 2 × nodes',
+        '{dof} = 2 × {nodes}',
+        ['dof', 'nodes'],
+        (v) => v.dof! - 2 * v.nodes!,
+        {
+          dof: [(v) => 2 * v.nodes!, '2 × {nodes}', 'Each node moves two ways, u and v.'],
+          nodes: [(v) => v.dof! / 2, '{dof} ÷ 2', 'Two degrees of freedom to a node.'],
+        },
+      ),
+    ),
+    example: { nx, ny, nodes, dof: 2 * nodes },
+    startWith: ['nx', 'ny'],
+    unitSystems: ['metric'],
+    representation: {
+      kind: 'elementChain',
+      mode: 'mesh',
+      nx: 'nx',
+      ny: 'ny',
+      nodes: 'nodes',
+      dof: 'dof',
+    },
+  };
+}
+
+const chainMesh = meshDemo(
+  'g.he-elementChain-mesh',
+  'Counting nodes and degrees of freedom in a mesh',
+  'Use this for the number of nodes and degrees of freedom of an n_x × n_y quadrilateral mesh.',
+  10,
+  5,
+);
+
+const chainMeshFine = meshDemo(
+  'g.he-elementChain-mesh-fine',
+  'A finer mesh: twice the elements each way, nearly four times the work',
+  'Use this to see how refining a mesh grows the number of unknowns.',
+  20,
+  10,
+);
+
+export const HE3H_GALLERY_MODULES: ModuleDef[] = [
+  exchangerCounter,
+  exchangerParallel,
+  exchangerBalance,
+  exchangerNtu,
+  exchangerProcess,
+  exchangerClose,
+  shaftSolid,
+  shaftHollow,
+  shaftPower,
+  shaftBending,
+  shaftLong,
+  fatigueGoodman,
+  fatigueGoodmanFails,
+  fatigueSn,
+  fatigueSnLow,
+  fatigueBasquin,
+  fatigueMiner,
+  chainSprings,
+  chainBar,
+  chainFixedFixed,
+  chainAxial,
+  chainMesh,
+  chainMeshFine,
+];
+
+export const HE3H_GALLERY_LAYOUTS: LayoutDef[] = [];

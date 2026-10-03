@@ -1,0 +1,66 @@
+{
+  "id": "mit-ocw-6-006",
+  "curriculum": "MIT OpenCourseWare 6.006 Introduction to Algorithms",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Fall 2011",
+  "subject": "computer",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Erik Demaine, Srini Devadas. 6.006 Introduction to Algorithms. Fall 2011. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-fall-2011/. License: CC BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Lecture block"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-fall-2011/",
+  "retrieved": "2026-10-02",
+  "sources": [
+    "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-fall-2011/pages/calendar/"
+  ],
+  "notes": "Lecture list from the calendar; quiz 1 read.",
+  "books": [
+    {
+      "course": "he.engineering.data-structures",
+      "title": "6.006 Introduction to Algorithms (Fall 2011)",
+      "url": "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-fall-2011/",
+      "units": [
+        {
+          "n": "1–2",
+          "title": "Algorithmic thinking; peak finding; models of computation",
+          "topics": ["he.engineering.data-structures#3"]
+        },
+        {
+          "n": "3–7",
+          "title": "Insertion and merge sort; heaps; BSTs; AVL trees; counting and radix sort; lower bounds",
+          "topics": ["he.engineering.data-structures#1", "he.engineering.data-structures#2"]
+        },
+        {
+          "n": "8–10",
+          "title": "Hashing: chaining, table doubling, Karp–Rabin, open addressing",
+          "topics": ["he.engineering.data-structures#2"]
+        },
+        {
+          "n": "11–12",
+          "title": "Numerics: Karatsuba, Newton",
+          "topics": [],
+          "notes": "No topic.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "13–18",
+          "title": "BFS, DFS, topological sort; shortest paths (Dijkstra, Bellman–Ford)",
+          "topics": ["he.engineering.data-structures#1", "he.engineering.networks#2"]
+        },
+        {
+          "n": "19–",
+          "title": "Dynamic programming; complexity",
+          "topics": [],
+          "notes": "Dynamic programming: no taxonomy topic.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        }
+      ]
+    }
+  ]
+}

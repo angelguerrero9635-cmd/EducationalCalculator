@@ -1,0 +1,595 @@
+{
+  "id": "libretexts-harmon-phylogenetic-comparative-methods",
+  "curriculum": "Harmon, Phylogenetic Comparative Methods",
+  "publisher": "Luke J. Harmon (University of Idaho); LibreTexts",
+  "edition": "LibreTexts edition",
+  "subject": "biology",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/",
+    "attribution": "Luke J. Harmon, Phylogenetic Comparative Methods, LibreTexts Biology. License: CC BY 4.0."
+  },
+  "terms": {
+    "unit": "Chapter",
+    "lesson": "Section"
+  },
+  "sourceUrl": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)",
+  "retrieved": "2026-10-02",
+  "notes": "Reference only. Chapter pages tagged license:ccby. A graduate text on trait and diversification models on trees; it has no exercise pages, so no records were taken from it. Licence tags seen on chapter pages: license:ccby.",
+  "books": [
+    {
+      "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)",
+      "units": [
+        {
+          "n": "1",
+          "title": "A Macroevolutionary Research Program",
+          "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/01%3A_A_Macroevolutionary_Research_Program",
+          "topics": ["he.biology.evolution#2"],
+          "lessons": [
+            {
+              "n": "1.1",
+              "title": "Introduction",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/01%3A_A_Macroevolutionary_Research_Program/1.01%3A_Introduction"
+            },
+            {
+              "n": "1.2",
+              "title": "The roots of comparative methods",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/01%3A_A_Macroevolutionary_Research_Program/1.02%3A_The_roots_of_comparative_methods"
+            },
+            {
+              "n": "1.3",
+              "title": "A brief Introduction to Phylogenetic Trees",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/01%3A_A_Macroevolutionary_Research_Program/1.03%3A_A_brief_Introduction_to_Phylogenetic_Trees"
+            },
+            {
+              "n": "1.4",
+              "title": "What we can (and can’t) learn about evolutionary history from living species",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/01%3A_A_Macroevolutionary_Research_Program/1.04%3A_What_we_can_(and_can%E2%80%99t)_learn_about_evolutionary_history_from_living_species"
+            },
+            {
+              "n": "1.5",
+              "title": "Overview of the book",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/01%3A_A_Macroevolutionary_Research_Program/1.05%3A_Overview_of_the_book"
+            },
+            {
+              "n": "1.S",
+              "title": "A Macroevolutionary Research Program (Summary)",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/01%3A_A_Macroevolutionary_Research_Program/1.0S%3A_1.S%3A_A_Macroevolutionary_Research_Program_(Summary)"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Fitting Statistical Models to Data",
+          "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/02%3A_Fitting_Statistical_Models_to_Data",
+          "topics": [],
+          "notes": "Statistical model fitting (likelihood, Bayes, AIC): no taxonomy topic.",
+          "lessons": [
+            {
+              "n": "2.1",
+              "title": "Introduction",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/02%3A_Fitting_Statistical_Models_to_Data/2.01%3A_Introduction"
+            },
+            {
+              "n": "2.2",
+              "title": "Standard Statistical Hypothesis Testing",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/02%3A_Fitting_Statistical_Models_to_Data/2.02%3A_Standard_Statistical_Hypothesis_Testing"
+            },
+            {
+              "n": "2.3",
+              "title": "Maximum Likelihood",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/02%3A_Fitting_Statistical_Models_to_Data/2.03%3A_Maximum_Likelihood"
+            },
+            {
+              "n": "2.4",
+              "title": "Bayesian Statistics",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/02%3A_Fitting_Statistical_Models_to_Data/2.04%3A_Bayesian_Statistics"
+            },
+            {
+              "n": "2.5",
+              "title": "AIC versus Bayes",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/02%3A_Fitting_Statistical_Models_to_Data/2.05%3A_AIC_versus_Bayes"
+            },
+            {
+              "n": "2.6",
+              "title": "Models and Comparative Methods",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/02%3A_Fitting_Statistical_Models_to_Data/2.06%3A_Models_and_Comparative_Methods"
+            },
+            {
+              "n": "2.S",
+              "title": "Fitting Statistical Models to Data (Summary)",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/02%3A_Fitting_Statistical_Models_to_Data/2.0S%3A_2.S%3A_Fitting_Statistical_Models_to_Data_(Summary)"
+            }
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "3",
+          "title": "Introduction to Brownian Motion",
+          "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/03%3A_Introduction_to_Brownian_Motion",
+          "topics": ["he.biology.evolution#2", "he.biology.evolution#1"],
+          "lessons": [
+            {
+              "n": "3.1",
+              "title": "Introduction to Brownian Motion",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/03%3A_Introduction_to_Brownian_Motion/3.01%3A_Introduction_to_Brownian_Motion"
+            },
+            {
+              "n": "3.2",
+              "title": "Properties of Brownian Motion",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/03%3A_Introduction_to_Brownian_Motion/3.02%3A_Properties_of_Brownian_Motion"
+            },
+            {
+              "n": "3.3",
+              "title": "Simple Quantitative Genetics Models for Brownian Motion",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/03%3A_Introduction_to_Brownian_Motion/3.03%3A_Simple_Quantitative_Genetics_Models_for_Brownian_Motion"
+            },
+            {
+              "n": "3.4",
+              "title": "Brownian Motion on a Phylogenetic Tree",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/03%3A_Introduction_to_Brownian_Motion/3.04%3A_Brownian_Motion_on_a_Phylogenetic_Tree"
+            },
+            {
+              "n": "3.5",
+              "title": "Multivariate Brownian motion",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/03%3A_Introduction_to_Brownian_Motion/3.05%3A_Multivariate_Brownian_motion"
+            },
+            {
+              "n": "3.6",
+              "title": "Simulating Brownian motion on trees",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/03%3A_Introduction_to_Brownian_Motion/3.06%3A_Simulating_Brownian_motion_on_trees"
+            },
+            {
+              "n": "3.S",
+              "title": "Introduction to Brownian Motion (Summary)",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/03%3A_Introduction_to_Brownian_Motion/3.0S%3A_3.S%3A_Introduction_to_Brownian_Motion_(Summary)"
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Fitting Brownian Motion",
+          "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/04%3A_Fitting_Brownian_Motion",
+          "topics": ["he.biology.evolution#2"],
+          "lessons": [
+            {
+              "n": "4.1",
+              "title": "Introduction",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/04%3A_Fitting_Brownian_Motion/4.01%3A_Introduction"
+            },
+            {
+              "n": "4.2",
+              "title": "Estimating Rates using Independent Contrasts",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/04%3A_Fitting_Brownian_Motion/4.02%3A_Estimating_Rates_using_Independent_Contrasts"
+            },
+            {
+              "n": "4.3",
+              "title": "Estimating rates using maximum likelihood",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/04%3A_Fitting_Brownian_Motion/4.03%3A_Estimating_rates_using_maximum_likelihood"
+            },
+            {
+              "n": "4.4",
+              "title": "Bayesian approach to evolutionary rates",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/04%3A_Fitting_Brownian_Motion/4.04%3A_Bayesian_approach_to_evolutionary_rates"
+            },
+            {
+              "n": "4.5",
+              "title": "Summary",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/04%3A_Fitting_Brownian_Motion/4.05%3A_Summary"
+            }
+          ]
+        },
+        {
+          "n": "5",
+          "title": "Multivariate Brownian Motion",
+          "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/05%3A_Multivariate_Brownian_Motion",
+          "topics": ["he.biology.evolution#2"],
+          "lessons": [
+            {
+              "n": "5.1",
+              "title": "Introduction to Multivariate Brownian Motion",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/05%3A_Multivariate_Brownian_Motion/5.01%3A_Introduction_to_Multivariate_Brownian_Motion"
+            },
+            {
+              "n": "5.2",
+              "title": "What is evolutionary correlation?",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/05%3A_Multivariate_Brownian_Motion/5.02%3A_What_is_evolutionary_correlation%3F"
+            },
+            {
+              "n": "5.3",
+              "title": "Modeling the evolution of correlated characters",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/05%3A_Multivariate_Brownian_Motion/5.03%3A_Modeling_the_evolution_of_correlated_characters"
+            },
+            {
+              "n": "5.4",
+              "title": "Testing for evolutionary correlations",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/05%3A_Multivariate_Brownian_Motion/5.04%3A_Testing_for_evolutionary_correlations"
+            },
+            {
+              "n": "5.5",
+              "title": "Multivariate Brownian Motion (Summary)",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/05%3A_Multivariate_Brownian_Motion/5.05%3A_Multivariate_Brownian_Motion_(Summary)"
+            }
+          ]
+        },
+        {
+          "n": "6",
+          "title": "Beyond Brownian Motion",
+          "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/06%3A_Beyond_Brownian_Motion",
+          "topics": ["he.biology.evolution#2", "he.biology.evolution#0"],
+          "lessons": [
+            {
+              "n": "6.1",
+              "title": "Introduction to Non-Brownian Motion",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/06%3A_Beyond_Brownian_Motion/6.01%3A_Introduction_to_Non-Brownian_Motion"
+            },
+            {
+              "n": "6.2",
+              "title": "Transforming the evolutionary variance-covariance matrix",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/06%3A_Beyond_Brownian_Motion/6.02%3A_Transforming_the_evolutionary_variance-covariance_matrix"
+            },
+            {
+              "n": "6.3",
+              "title": "Variation in rates of trait evolution across clades",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/06%3A_Beyond_Brownian_Motion/6.03%3A_Variation_in_rates_of_trait_evolution_across_clades"
+            },
+            {
+              "n": "6.4",
+              "title": "Non-Brownian evolution under stabilizing selection",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/06%3A_Beyond_Brownian_Motion/6.04%3A_Non-Brownian_evolution_under_stabilizing_selection"
+            },
+            {
+              "n": "6.5",
+              "title": "Early Burst Models",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/06%3A_Beyond_Brownian_Motion/6.05%3A_Early_Burst_Models"
+            },
+            {
+              "n": "6.6",
+              "title": "Peak Shift Models",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/06%3A_Beyond_Brownian_Motion/6.06%3A_Peak_Shift_Models"
+            },
+            {
+              "n": "6.7",
+              "title": "Appendix - Deriving an OU model under stabilizing selection",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/06%3A_Beyond_Brownian_Motion/6.07%3A_Appendix_-_Deriving_an_OU_model_under_stabilizing_selection"
+            },
+            {
+              "n": "6.S",
+              "title": "Beyond Brownian Motion (Summary)",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/06%3A_Beyond_Brownian_Motion/6.0S%3A_6.S%3A_Beyond_Brownian_Motion_(Summary)"
+            }
+          ]
+        },
+        {
+          "n": "7",
+          "title": "Models of Discrete Character Evolution",
+          "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/07%3A_Models_of_Discrete_Character_Evolution",
+          "topics": ["he.biology.evolution#2"],
+          "lessons": [
+            {
+              "n": "7.1",
+              "title": "Limblessness as a discrete trait",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/07%3A_Models_of_Discrete_Character_Evolution/7.01%3A_Limblessness_as_a_discrete_trait"
+            },
+            {
+              "n": "7.2",
+              "title": "Modeling the evolution of discrete states",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/07%3A_Models_of_Discrete_Character_Evolution/7.02%3A_Modeling_the_evolution_of_discrete_states"
+            },
+            {
+              "n": "7.3",
+              "title": "The Mk Model",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/07%3A_Models_of_Discrete_Character_Evolution/7.03%3A_The_Mk_Model"
+            },
+            {
+              "n": "7.4",
+              "title": "The Extended Mk Model",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/07%3A_Models_of_Discrete_Character_Evolution/7.04%3A_The_Extended_Mk_Model"
+            },
+            {
+              "n": "7.5",
+              "title": "Simulating the Mk model on a tree",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/07%3A_Models_of_Discrete_Character_Evolution/7.05%3A_Simulating_the_Mk_model_on_a_tree"
+            },
+            {
+              "n": "7.6",
+              "title": "R Markdown to Recreate Analyses",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/07%3A_Models_of_Discrete_Character_Evolution/7.06%3A_R_Markdown_to_Recreate_Analyses"
+            },
+            {
+              "n": "7.S",
+              "title": "Models of Discrete Character Evolution (Summary)",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/07%3A_Models_of_Discrete_Character_Evolution/7.0S%3A_7.S%3A_Models_of_Discrete_Character_Evolution_(Summary)"
+            }
+          ]
+        },
+        {
+          "n": "8",
+          "title": "Fitting Models of Discrete Character Evolution",
+          "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/08%3A_Fitting_Models_of_Discrete_Character_Evolution",
+          "topics": ["he.biology.evolution#2"],
+          "lessons": [
+            {
+              "n": "8.1",
+              "title": "The Evolution of Limbs and Limblessness",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/08%3A_Fitting_Models_of_Discrete_Character_Evolution/8.01%3A_The_Evolution_of_Limbs_and_Limblessness"
+            },
+            {
+              "n": "8.2",
+              "title": "Fitting Mk models to Comparative Data",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/08%3A_Fitting_Models_of_Discrete_Character_Evolution/8.02%3A_Fitting_Mk_models_to_Comparative_Data"
+            },
+            {
+              "n": "8.3",
+              "title": "Using Maximum likelihood to Estimate Parameters of the Mk model",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/08%3A_Fitting_Models_of_Discrete_Character_Evolution/8.03%3A_Using_Maximum_likelihood_to_Estimate_Parameters_of_the_Mk_model"
+            },
+            {
+              "n": "8.4",
+              "title": "Using Bayesian MCMC to estimate parameters of the Mk model",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/08%3A_Fitting_Models_of_Discrete_Character_Evolution/8.04%3A_Using_Bayesian_MCMC_to_estimate_parameters_of_the_Mk_model"
+            },
+            {
+              "n": "8.5",
+              "title": "Exploring Mk - the \"total garbage\" test",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/08%3A_Fitting_Models_of_Discrete_Character_Evolution/8.05%3A_Exploring_Mk_-_the_%22total_garbage%22_test"
+            },
+            {
+              "n": "8.6",
+              "title": "Testing for Differences in the Forwards and Backwards Rate of Character Change",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/08%3A_Fitting_Models_of_Discrete_Character_Evolution/8.06%3A_Testing_for_Differences_in_the_Forwards_and_Backwards_Rate_of_Character_Change"
+            },
+            {
+              "n": "8.7",
+              "title": "Appendix - Felsenstein's Pruning Algorithm",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/08%3A_Fitting_Models_of_Discrete_Character_Evolution/8.07%3A_Appendix_-_Felsenstein's_Pruning_Algorithm"
+            },
+            {
+              "n": "8.S",
+              "title": "Fitting models of discrete character evolution (Summary)",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/08%3A_Fitting_Models_of_Discrete_Character_Evolution/8.0S%3A_8.S%3A_Fitting_models_of_discrete_character_evolution_(Summary)"
+            }
+          ]
+        },
+        {
+          "n": "9",
+          "title": "Beyond the Mk Model",
+          "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/09%3A_Beyond_the_Mk_Model",
+          "topics": ["he.biology.evolution#2"],
+          "lessons": [
+            {
+              "n": "9.1",
+              "title": "The Evolution of Frog Life History Strategies",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/09%3A_Beyond_the_Mk_Model/9.01%3A_The_Evolution_of_Frog_Life_History_Strategies"
+            },
+            {
+              "n": "9.2",
+              "title": "Beyond the Mk model",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/09%3A_Beyond_the_Mk_Model/9.02%3A_Beyond_the_Mk_model"
+            },
+            {
+              "n": "9.3",
+              "title": "Pagel’s λ, δ, and κ",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/09%3A_Beyond_the_Mk_Model/9.03%3A_Pagel%E2%80%99s_%CE%BB%2C_%CE%B4%2C_and_%CE%BA"
+            },
+            {
+              "n": "9.5",
+              "title": "Threshold Models",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/09%3A_Beyond_the_Mk_Model/9.05%3A_Threshold_Models"
+            },
+            {
+              "n": "9.6",
+              "title": "Modeling more than one Discrete Character at a Time",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/09%3A_Beyond_the_Mk_Model/9.06%3A_Modeling_more_than_one_Discrete_Character_at_a_Time"
+            },
+            {
+              "n": "9.7",
+              "title": "Testing for non-independent evolution of different characters",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/09%3A_Beyond_the_Mk_Model/9.07%3A_Testing_for_non-independent_evolution_of_different_characters"
+            },
+            {
+              "n": "9.S",
+              "title": "Beyond the Mk Model (Summary)",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/09%3A_Beyond_the_Mk_Model/9.0S%3A_9.S%3A_Beyond_the_Mk_Model_(Summary)"
+            }
+          ]
+        },
+        {
+          "n": "10",
+          "title": "Introduction to Birth-Death Models",
+          "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/10%3A_Introduction_to_Birth-Death_Models",
+          "topics": ["he.biology.evolution#3"],
+          "lessons": [
+            {
+              "n": "10.1",
+              "title": "Plant Diversity Imbalance",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/10%3A_Introduction_to_Birth-Death_Models/10.01%3A_Plant_Diversity_Imbalance"
+            },
+            {
+              "n": "10.2",
+              "title": "The Birth-Death Model",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/10%3A_Introduction_to_Birth-Death_Models/10.02%3A_The_Birth-Death_Model"
+            },
+            {
+              "n": "10.3",
+              "title": "Birth-death models and phylogenetic trees",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/10%3A_Introduction_to_Birth-Death_Models/10.03%3A_Birth-death_models_and_phylogenetic_trees"
+            },
+            {
+              "n": "10.4",
+              "title": "Simulating Birth-Death Trees",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/10%3A_Introduction_to_Birth-Death_Models/10.04%3A_Simulating_Birth-Death_Trees"
+            },
+            {
+              "n": "10.5",
+              "title": "Tree topology, tree shape, and tree balance under a birth-death model",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/10%3A_Introduction_to_Birth-Death_Models/10.05%3A_Tree_topology%2C_tree_shape%2C_and_tree_balance_under_a_birth-death_model"
+            },
+            {
+              "n": "10.6",
+              "title": "Lineage-through-Time Plots",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/10%3A_Introduction_to_Birth-Death_Models/10.06%3A_Lineage-through-Time_Plots"
+            },
+            {
+              "n": "10.S",
+              "title": "Introduction to birth-death models (Summary)",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/10%3A_Introduction_to_Birth-Death_Models/10.0S%3A_10.S%3A_Introduction_to_birth-death_models_(Summary)"
+            }
+          ]
+        },
+        {
+          "n": "11",
+          "title": "Fitting Birth-Death Models",
+          "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/11%3A_Fitting_Birth-Death_Models",
+          "topics": ["he.biology.evolution#3"],
+          "lessons": [
+            {
+              "n": "11.1",
+              "title": "Hotspots of Diversity",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/11%3A_Fitting_Birth-Death_Models/11.01%3A_Hotspots_of_Diversity"
+            },
+            {
+              "n": "11.2",
+              "title": "Clade Age and Diversity",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/11%3A_Fitting_Birth-Death_Models/11.02%3A_Clade_Age_and_Diversity"
+            },
+            {
+              "n": "11.3",
+              "title": "Tree Balance",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/11%3A_Fitting_Birth-Death_Models/11.03%3A_Tree_Balance"
+            },
+            {
+              "n": "11.4",
+              "title": "Fitting birth-death models to branching times",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/11%3A_Fitting_Birth-Death_Models/11.04%3A_Fitting_birth-death_models_to_branching_times"
+            },
+            {
+              "n": "11.5",
+              "title": "Sampling and birth-death models",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/11%3A_Fitting_Birth-Death_Models/11.05%3A_Sampling_and_birth-death_models"
+            },
+            {
+              "n": "11.S",
+              "title": "Fitting Birth-Death Models (Summary)",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/11%3A_Fitting_Birth-Death_Models/11.0S%3A_11.S%3A_Fitting_Birth-Death_Models_(Summary)"
+            }
+          ]
+        },
+        {
+          "n": "12",
+          "title": "Beyond Birth-Death models",
+          "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/12%3A_Beyond_Birth-Death_models",
+          "topics": ["he.biology.evolution#3"],
+          "lessons": [
+            {
+              "n": "12.1",
+              "title": "Capturing Variable Evolution",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/12%3A_Beyond_Birth-Death_models/12.01%3A_Capturing_Variable_Evolution"
+            },
+            {
+              "n": "12.2",
+              "title": "Variation in Diversification Rates across Clades",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/12%3A_Beyond_Birth-Death_models/12.02%3A_Variation_in_Diversification_Rates_across_Clades"
+            },
+            {
+              "n": "12.3",
+              "title": "Variation in Diversification Rates through Time",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/12%3A_Beyond_Birth-Death_models/12.03%3A_Variation_in_Diversification_Rates_through_Time"
+            },
+            {
+              "n": "12.4",
+              "title": "Diversity-Dependent Models",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/12%3A_Beyond_Birth-Death_models/12.04%3A_Diversity-Dependent_Models"
+            },
+            {
+              "n": "12.5",
+              "title": "Protracted Speciation",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/12%3A_Beyond_Birth-Death_models/12.05%3A_Protracted_Speciation"
+            },
+            {
+              "n": "12.S",
+              "title": "Beyond Birth-Death Models (Summary)",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/12%3A_Beyond_Birth-Death_models/12.0S%3A_12.S%3A_Beyond_Birth-Death_Models_(Summary)"
+            }
+          ]
+        },
+        {
+          "n": "13",
+          "title": "Characters and Diversification Rates",
+          "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/13%3A_Characters_and_Diversification_Rates",
+          "topics": ["he.biology.evolution#3"],
+          "lessons": [
+            {
+              "n": "13.1",
+              "title": "The Evolution of Self-Incompatibility",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/13%3A_Characters_and_Diversification_Rates/13.01%3A_The_Evolution_of_Self-Incompatibility"
+            },
+            {
+              "n": "13.2",
+              "title": "A State-Dependent Model of Diversification",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/13%3A_Characters_and_Diversification_Rates/13.02%3A_A_State-Dependent_Model_of_Diversification"
+            },
+            {
+              "n": "13.3",
+              "title": "Calculating Likelihoods for State-Dependent Diversification Models",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/13%3A_Characters_and_Diversification_Rates/13.03%3A_Calculating_Likelihoods_for_State-Dependent_Diversification_Models"
+            },
+            {
+              "n": "13.4",
+              "title": "ML and Bayesian Tests for State-Dependent Diversification",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/13%3A_Characters_and_Diversification_Rates/13.04%3A_ML_and_Bayesian_Tests_for_State-Dependent_Diversification"
+            },
+            {
+              "n": "13.5",
+              "title": "Potential Pitfalls and How to Avoid Them",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/13%3A_Characters_and_Diversification_Rates/13.05%3A_Potential_Pitfalls_and_How_to_Avoid_Them"
+            },
+            {
+              "n": "13.S",
+              "title": "Characters and Diversification Rates (Summary)",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/13%3A_Characters_and_Diversification_Rates/13.0S%3A_13.S%3A_Characters_and_Diversification_Rates_(Summary)"
+            }
+          ]
+        },
+        {
+          "n": "14",
+          "title": "What have we learned from the trees?",
+          "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/14%3A_What_have_we_learned_from_the_trees",
+          "topics": [],
+          "notes": "Conclusion.",
+          "lessons": [
+            {
+              "n": "14.1",
+              "title": "The Lorax",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/14%3A_What_have_we_learned_from_the_trees/14.01%3A_The_Lorax"
+            },
+            {
+              "n": "14.2",
+              "title": "What We Have Learned so Far",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/14%3A_What_have_we_learned_from_the_trees/14.02%3A_What_We_Have_Learned_so_Far"
+            },
+            {
+              "n": "14.3",
+              "title": "Where Can we go Next?",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/14%3A_What_have_we_learned_from_the_trees/14.03%3A_Where_Can_we_go_Next%3F"
+            },
+            {
+              "n": "14.4",
+              "title": "A hint at the future of comparative methods",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/14%3A_What_have_we_learned_from_the_trees/14.04%3A_A_hint_at_the_future_of_comparative_methods"
+            },
+            {
+              "n": "14.S",
+              "title": "What have we learned from the trees? (Summary)",
+              "url": "https://bio.libretexts.org/Bookshelves/Evolutionary_Developmental_Biology/Phylogenetic_Comparative_Methods_(Harmon)/14%3A_What_have_we_learned_from_the_trees/14.0S%3A_14.S%3A_What_have_we_learned_from_the_trees%3F_(Summary)"
+            }
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        }
+      ],
+      "title": "Harmon, Phylogenetic Comparative Methods"
+    }
+  ]
+}

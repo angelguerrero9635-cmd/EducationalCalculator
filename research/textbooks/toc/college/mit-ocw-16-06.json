@@ -1,0 +1,53 @@
+{
+  "id": "mit-ocw-16-06",
+  "curriculum": "MIT OpenCourseWare 16.06 Principles of Automatic Control",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Fall 2012",
+  "subject": "electrical",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Steven Hall and others. 16.06 Principles of Automatic Control. Fall 2012. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu/courses/16-06-principles-of-automatic-control-fall-2012/. License: CC BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Lecture block"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/16-06-principles-of-automatic-control-fall-2012/",
+  "retrieved": "2026-10-02",
+  "sources": [
+    "https://ocw.mit.edu/courses/16-06-principles-of-automatic-control-fall-2012/pages/calendar/"
+  ],
+  "notes": "Session list from the calendar. Problem sets are mostly Franklin, Powell and Emami-Naeini problems (skipped).",
+  "books": [
+    {
+      "course": "he.engineering.control-systems",
+      "title": "16.06 Principles of Automatic Control (Fall 2012)",
+      "url": "https://ocw.mit.edu/courses/16-06-principles-of-automatic-control-fall-2012/",
+      "units": [
+        {
+          "n": "L1–L4",
+          "title": "Why control; block diagrams; modeling; Mason’s rule",
+          "topics": ["he.engineering.control-systems#0"]
+        },
+        {
+          "n": "L5–L9",
+          "title": "Dynamic response; time-domain specifications; zeros; Routh; steady-state error",
+          "topics": ["he.engineering.control-systems#1", "he.engineering.control-systems#2"]
+        },
+        {
+          "n": "L10–L15",
+          "title": "PID; root locus rules; lead and lag compensation",
+          "topics": ["he.engineering.control-systems#4", "he.engineering.control-systems#2"]
+        },
+        {
+          "n": "L16–",
+          "title": "Frequency response design; Bode; Nyquist; margins",
+          "topics": ["he.engineering.control-systems#3"],
+          "examples": ["compensator for a plant with an RHP zero"]
+        }
+      ]
+    }
+  ]
+}

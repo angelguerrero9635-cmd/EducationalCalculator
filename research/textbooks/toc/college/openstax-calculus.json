@@ -1,0 +1,892 @@
+{
+  "id": "openstax-calculus",
+  "curriculum": "Calculus, Volumes 1–3",
+  "publisher": "OpenStax (Rice University)",
+  "edition": "Volumes 1–3 (2016), web edition",
+  "subject": "math",
+  "level": "college",
+  "content": "titles",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Access for free at openstax.org. © Rice University, OpenStax. Titles only."
+  },
+  "terms": "OpenStax: titles only; no exercise, example or number recorded (no-LLM statement).",
+  "sourceUrl": "https://openstax.org/details/books/calculus-volume-1",
+  "retrieved": "2026-10-02",
+  "notes": "Titles only. Section titles are read from the book's sitemap (https://openstax.org/rex/sitemaps/<slug>.xml, listed in robots.txt) and restored from the page slugs (capitals and apostrophes ours); chapter titles are the book's chapter names. Nothing under /books/ was fetched. Licence read from the OpenStax CMS record (https://openstax.org/apps/cms/api/v2/pages/<id>/). Every OpenStax book also states that it may not be used in training or be ingested into LLMs or generative AI offerings without OpenStax's permission (quoted in research/textbooks/sources/hs-b.md); hence titles only (docs/RESEARCH_HE.md).",
+  "books": [
+    {
+      "title": "Calculus Volume 1",
+      "url": "https://openstax.org/details/books/calculus-volume-1",
+      "units": [
+        {
+          "n": "1",
+          "title": "Functions and Graphs",
+          "topics": [],
+          "note": "precalculus review; no college topic",
+          "sections": [
+            {
+              "n": "1.1",
+              "title": "Review of Functions",
+              "url": "https://openstax.org/books/calculus-volume-1/pages/1-1-review-of-functions",
+              "topics": [],
+              "note": "no topic of the course"
+            },
+            {
+              "n": "1.2",
+              "title": "Basic Classes of Functions",
+              "url": "https://openstax.org/books/calculus-volume-1/pages/1-2-basic-classes-of-functions",
+              "topics": [],
+              "note": "no topic of the course"
+            },
+            {
+              "n": "1.3",
+              "title": "Trigonometric Functions",
+              "url": "https://openstax.org/books/calculus-volume-1/pages/1-3-trigonometric-functions",
+              "topics": [],
+              "note": "no topic of the course"
+            },
+            {
+              "n": "1.4",
+              "title": "Inverse Functions",
+              "url": "https://openstax.org/books/calculus-volume-1/pages/1-4-inverse-functions",
+              "topics": [],
+              "note": "no topic of the course"
+            },
+            {
+              "n": "1.5",
+              "title": "Exponential and Logarithmic Functions",
+              "url": "https://openstax.org/books/calculus-volume-1/pages/1-5-exponential-and-logarithmic-functions",
+              "topics": [],
+              "note": "no topic of the course"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Limits",
+          "topics": ["he.math.calc-1#0"],
+          "sections": [
+            {
+              "n": "2.1",
+              "title": "A Preview of Calculus",
+              "url": "https://openstax.org/books/calculus-volume-1/pages/2-1-a-preview-of-calculus",
+              "topics": ["he.math.calc-1#0"]
+            },
+            {
+              "n": "2.2",
+              "title": "The Limit of a Function",
+              "url": "https://openstax.org/books/calculus-volume-1/pages/2-2-the-limit-of-a-function"
+            },
+            {
+              "n": "2.3",
+              "title": "The Limit Laws",
+              "url": "https://openstax.org/books/calculus-volume-1/pages/2-3-the-limit-laws"
+            },
+            {
+              "n": "2.4",
+              "title": "Continuity",
+              "url": "https://openstax.org/books/calculus-volume-1/pages/2-4-continuity"
+            },
+            {
+              "n": "2.5",
+              "title": "The Precise Definition of a Limit",
+              "url": "https://openstax.org/books/calculus-volume-1/pages/2-5-the-precise-definition-of-a-limit"
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Derivatives",
+          "topics": ["he.math.calc-1#1"],
+          "sections": [
+            {
+              "n": "3.1",
+              "title": "Defining the Derivative",
+              "url": "https://openstax.org/books/calculus-volume-1/pages/3-1-defining-the-derivative"
+            },
+            {
+              "n": "3.2",
+              "title": "The Derivative as a Function",
+              "url": "https://openstax.org/books/calculus-volume-1/pages/3-2-the-derivative-as-a-function"
+            },
+            {
+              "n": "3.3",
+              "title": "Differentiation Rules",
+              "url": "https://openstax.org/books/calculus-volume-1/pages/3-3-differentiation-rules"
+            },
+            {
+              "n": "3.4",
+              "title": "Derivatives as Rates of Change",
+              "url": "https://openstax.org/books/calculus-volume-1/pages/3-4-derivatives-as-rates-of-change"
+            },
+            {
+              "n": "3.5",
+              "title": "Derivatives of Trigonometric Functions",
+              "url": "https://openstax.org/books/calculus-volume-1/pages/3-5-derivatives-of-trigonometric-functions"
+            },
+            {
+              "n": "3.6",
+              "title": "The Chain Rule",
+              "url": "https://openstax.org/books/calculus-volume-1/pages/3-6-the-chain-rule"
+            },
+            {
+              "n": "3.7",
+              "title": "Derivatives of Inverse Functions",
+              "url": "https://openstax.org/books/calculus-volume-1/pages/3-7-derivatives-of-inverse-functions"
+            },
+            {
+              "n": "3.8",
+              "title": "Implicit Differentiation",
+              "url": "https://openstax.org/books/calculus-volume-1/pages/3-8-implicit-differentiation"
+            },
+            {
+              "n": "3.9",
+              "title": "Derivatives of Exponential and Logarithmic Functions",
+              "url": "https://openstax.org/books/calculus-volume-1/pages/3-9-derivatives-of-exponential-and-logarithmic-functions"
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Applications of Derivatives",
+          "topics": [],
+          "note": "chapter mapped section by section",
+          "sections": [
+            {
+              "n": "4.1",
+              "title": "Related Rates",
+              "url": "https://openstax.org/books/calculus-volume-1/pages/4-1-related-rates",
+              "topics": ["he.math.calc-1#2"]
+            },
+            {
+              "n": "4.2",
+              "title": "Linear Approximations and Differentials",
+              "url": "https://openstax.org/books/calculus-volume-1/pages/4-2-linear-approximations-and-differentials",
+              "topics": ["he.math.calc-1#1"]
+            },
+            {
+              "n": "4.3",
+              "title": "Maxima and Minima",
+              "url": "https://openstax.org/books/calculus-volume-1/pages/4-3-maxima-and-minima",
+              "topics": ["he.math.calc-1#2"]
+            },
+            {
+              "n": "4.4",
+              "title": "The Mean Value Theorem",
+              "url": "https://openstax.org/books/calculus-volume-1/pages/4-4-the-mean-value-theorem",
+              "topics": [],
+              "note": "no college topic: mean value theorem"
+            },
+            {
+              "n": "4.5",
+              "title": "Derivatives and the Shape of a Graph",
+              "url": "https://openstax.org/books/calculus-volume-1/pages/4-5-derivatives-and-the-shape-of-a-graph",
+              "topics": ["he.math.calc-1#2"]
+            },
+            {
+              "n": "4.6",
+              "title": "Limits at Infinity and Asymptotes",
+              "url": "https://openstax.org/books/calculus-volume-1/pages/4-6-limits-at-infinity-and-asymptotes",
+              "topics": ["he.math.calc-1#0"]
+            },
+            {
+              "n": "4.7",
+              "title": "Applied Optimization Problems",
+              "url": "https://openstax.org/books/calculus-volume-1/pages/4-7-applied-optimization-problems",
+              "topics": ["he.math.calc-1#2"]
+            },
+            {
+              "n": "4.8",
+              "title": "L’Hôpital’s Rule",
+              "url": "https://openstax.org/books/calculus-volume-1/pages/4-8-lhopitals-rule",
+              "topics": ["he.math.calc-1#1"]
+            },
+            {
+              "n": "4.9",
+              "title": "Newton’s Method",
+              "url": "https://openstax.org/books/calculus-volume-1/pages/4-9-newtons-method",
+              "topics": [],
+              "note": "no college topic: Newton's method"
+            },
+            {
+              "n": "4.10",
+              "title": "Antiderivatives",
+              "url": "https://openstax.org/books/calculus-volume-1/pages/4-10-antiderivatives",
+              "topics": ["he.math.calc-1#3"]
+            }
+          ]
+        },
+        {
+          "n": "5",
+          "title": "Integration",
+          "topics": ["he.math.calc-1#3"],
+          "sections": [
+            {
+              "n": "5.1",
+              "title": "Approximating Areas",
+              "url": "https://openstax.org/books/calculus-volume-1/pages/5-1-approximating-areas"
+            },
+            {
+              "n": "5.2",
+              "title": "The Definite Integral",
+              "url": "https://openstax.org/books/calculus-volume-1/pages/5-2-the-definite-integral"
+            },
+            {
+              "n": "5.3",
+              "title": "The Fundamental Theorem of Calculus",
+              "url": "https://openstax.org/books/calculus-volume-1/pages/5-3-the-fundamental-theorem-of-calculus"
+            },
+            {
+              "n": "5.4",
+              "title": "Integration Formulas and the Net Change Theorem",
+              "url": "https://openstax.org/books/calculus-volume-1/pages/5-4-integration-formulas-and-the-net-change-theorem"
+            },
+            {
+              "n": "5.5",
+              "title": "Substitution",
+              "url": "https://openstax.org/books/calculus-volume-1/pages/5-5-substitution",
+              "topics": ["he.math.calc-1#4"]
+            },
+            {
+              "n": "5.6",
+              "title": "Integrals Involving Exponential and Logarithmic Functions",
+              "url": "https://openstax.org/books/calculus-volume-1/pages/5-6-integrals-involving-exponential-and-logarithmic-functions",
+              "topics": ["he.math.calc-1#4"]
+            },
+            {
+              "n": "5.7",
+              "title": "Integrals Resulting in Inverse Trigonometric Functions",
+              "url": "https://openstax.org/books/calculus-volume-1/pages/5-7-integrals-resulting-in-inverse-trigonometric-functions",
+              "topics": ["he.math.calc-1#4"]
+            }
+          ]
+        },
+        {
+          "n": "6",
+          "title": "Applications of Integration",
+          "topics": ["he.math.calc-2#2"],
+          "sections": [
+            {
+              "n": "6.1",
+              "title": "Areas Between Curves",
+              "url": "https://openstax.org/books/calculus-volume-1/pages/6-1-areas-between-curves"
+            },
+            {
+              "n": "6.2",
+              "title": "Determining Volumes by Slicing",
+              "url": "https://openstax.org/books/calculus-volume-1/pages/6-2-determining-volumes-by-slicing"
+            },
+            {
+              "n": "6.3",
+              "title": "Volumes of Revolution Cylindrical Shells",
+              "url": "https://openstax.org/books/calculus-volume-1/pages/6-3-volumes-of-revolution-cylindrical-shells"
+            },
+            {
+              "n": "6.4",
+              "title": "Arc Length of a Curve and Surface Area",
+              "url": "https://openstax.org/books/calculus-volume-1/pages/6-4-arc-length-of-a-curve-and-surface-area"
+            },
+            {
+              "n": "6.5",
+              "title": "Physical Applications",
+              "url": "https://openstax.org/books/calculus-volume-1/pages/6-5-physical-applications"
+            },
+            {
+              "n": "6.6",
+              "title": "Moments and Centers of Mass",
+              "url": "https://openstax.org/books/calculus-volume-1/pages/6-6-moments-and-centers-of-mass"
+            },
+            {
+              "n": "6.7",
+              "title": "Integrals Exponential Functions and Logarithms",
+              "url": "https://openstax.org/books/calculus-volume-1/pages/6-7-integrals-exponential-functions-and-logarithms"
+            },
+            {
+              "n": "6.8",
+              "title": "Exponential Growth and Decay",
+              "url": "https://openstax.org/books/calculus-volume-1/pages/6-8-exponential-growth-and-decay",
+              "topics": ["he.math.diff-eq#0"]
+            },
+            {
+              "n": "6.9",
+              "title": "Calculus of the Hyperbolic Functions",
+              "url": "https://openstax.org/books/calculus-volume-1/pages/6-9-calculus-of-the-hyperbolic-functions",
+              "topics": [],
+              "note": "no college topic: hyperbolic functions"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Calculus Volume 2",
+      "url": "https://openstax.org/details/books/calculus-volume-2",
+      "units": [
+        {
+          "n": "1",
+          "title": "Integration",
+          "topics": ["he.math.calc-1#3"],
+          "sections": [
+            {
+              "n": "1.1",
+              "title": "Approximating Areas",
+              "url": "https://openstax.org/books/calculus-volume-2/pages/1-1-approximating-areas"
+            },
+            {
+              "n": "1.2",
+              "title": "The Definite Integral",
+              "url": "https://openstax.org/books/calculus-volume-2/pages/1-2-the-definite-integral"
+            },
+            {
+              "n": "1.3",
+              "title": "The Fundamental Theorem of Calculus",
+              "url": "https://openstax.org/books/calculus-volume-2/pages/1-3-the-fundamental-theorem-of-calculus"
+            },
+            {
+              "n": "1.4",
+              "title": "Integration Formulas and the Net Change Theorem",
+              "url": "https://openstax.org/books/calculus-volume-2/pages/1-4-integration-formulas-and-the-net-change-theorem"
+            },
+            {
+              "n": "1.5",
+              "title": "Substitution",
+              "url": "https://openstax.org/books/calculus-volume-2/pages/1-5-substitution",
+              "topics": ["he.math.calc-1#4"]
+            },
+            {
+              "n": "1.6",
+              "title": "Integrals Involving Exponential and Logarithmic Functions",
+              "url": "https://openstax.org/books/calculus-volume-2/pages/1-6-integrals-involving-exponential-and-logarithmic-functions",
+              "topics": ["he.math.calc-1#4"]
+            },
+            {
+              "n": "1.7",
+              "title": "Integrals Resulting in Inverse Trigonometric Functions",
+              "url": "https://openstax.org/books/calculus-volume-2/pages/1-7-integrals-resulting-in-inverse-trigonometric-functions",
+              "topics": ["he.math.calc-1#4"]
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Applications of Integration",
+          "topics": ["he.math.calc-2#2"],
+          "sections": [
+            {
+              "n": "2.1",
+              "title": "Areas Between Curves",
+              "url": "https://openstax.org/books/calculus-volume-2/pages/2-1-areas-between-curves",
+              "topics": ["he.math.calc-2#2"]
+            },
+            {
+              "n": "2.2",
+              "title": "Determining Volumes by Slicing",
+              "url": "https://openstax.org/books/calculus-volume-2/pages/2-2-determining-volumes-by-slicing"
+            },
+            {
+              "n": "2.3",
+              "title": "Volumes of Revolution Cylindrical Shells",
+              "url": "https://openstax.org/books/calculus-volume-2/pages/2-3-volumes-of-revolution-cylindrical-shells"
+            },
+            {
+              "n": "2.4",
+              "title": "Arc Length of a Curve and Surface Area",
+              "url": "https://openstax.org/books/calculus-volume-2/pages/2-4-arc-length-of-a-curve-and-surface-area"
+            },
+            {
+              "n": "2.5",
+              "title": "Physical Applications",
+              "url": "https://openstax.org/books/calculus-volume-2/pages/2-5-physical-applications"
+            },
+            {
+              "n": "2.6",
+              "title": "Moments and Centers of Mass",
+              "url": "https://openstax.org/books/calculus-volume-2/pages/2-6-moments-and-centers-of-mass",
+              "topics": [],
+              "note": "no college topic: moments and centres of mass"
+            },
+            {
+              "n": "2.7",
+              "title": "Integrals Exponential Functions and Logarithms",
+              "url": "https://openstax.org/books/calculus-volume-2/pages/2-7-integrals-exponential-functions-and-logarithms"
+            },
+            {
+              "n": "2.8",
+              "title": "Exponential Growth and Decay",
+              "url": "https://openstax.org/books/calculus-volume-2/pages/2-8-exponential-growth-and-decay",
+              "topics": ["he.math.diff-eq#0"]
+            },
+            {
+              "n": "2.9",
+              "title": "Calculus of the Hyperbolic Functions",
+              "url": "https://openstax.org/books/calculus-volume-2/pages/2-9-calculus-of-the-hyperbolic-functions",
+              "topics": [],
+              "note": "no college topic: hyperbolic functions"
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Techniques of Integration",
+          "topics": ["he.math.calc-2#0"],
+          "sections": [
+            {
+              "n": "3.1",
+              "title": "Integration by Parts",
+              "url": "https://openstax.org/books/calculus-volume-2/pages/3-1-integration-by-parts"
+            },
+            {
+              "n": "3.2",
+              "title": "Trigonometric Integrals",
+              "url": "https://openstax.org/books/calculus-volume-2/pages/3-2-trigonometric-integrals"
+            },
+            {
+              "n": "3.3",
+              "title": "Trigonometric Substitution",
+              "url": "https://openstax.org/books/calculus-volume-2/pages/3-3-trigonometric-substitution"
+            },
+            {
+              "n": "3.4",
+              "title": "Partial Fractions",
+              "url": "https://openstax.org/books/calculus-volume-2/pages/3-4-partial-fractions"
+            },
+            {
+              "n": "3.5",
+              "title": "Other Strategies for Integration",
+              "url": "https://openstax.org/books/calculus-volume-2/pages/3-5-other-strategies-for-integration"
+            },
+            {
+              "n": "3.6",
+              "title": "Numerical Integration",
+              "url": "https://openstax.org/books/calculus-volume-2/pages/3-6-numerical-integration",
+              "topics": [],
+              "note": "no college topic: numerical integration"
+            },
+            {
+              "n": "3.7",
+              "title": "Improper Integrals",
+              "url": "https://openstax.org/books/calculus-volume-2/pages/3-7-improper-integrals",
+              "topics": ["he.math.calc-2#1"]
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Introduction to Differential Equations",
+          "topics": ["he.math.diff-eq#0"],
+          "sections": [
+            {
+              "n": "4.1",
+              "title": "Basics of Differential Equations",
+              "url": "https://openstax.org/books/calculus-volume-2/pages/4-1-basics-of-differential-equations"
+            },
+            {
+              "n": "4.2",
+              "title": "Direction Fields and Numerical Methods",
+              "url": "https://openstax.org/books/calculus-volume-2/pages/4-2-direction-fields-and-numerical-methods"
+            },
+            {
+              "n": "4.3",
+              "title": "Separable Equations",
+              "url": "https://openstax.org/books/calculus-volume-2/pages/4-3-separable-equations"
+            },
+            {
+              "n": "4.4",
+              "title": "The Logistic Equation",
+              "url": "https://openstax.org/books/calculus-volume-2/pages/4-4-the-logistic-equation"
+            },
+            {
+              "n": "4.5",
+              "title": "First Order Linear Equations",
+              "url": "https://openstax.org/books/calculus-volume-2/pages/4-5-first-order-linear-equations"
+            }
+          ]
+        },
+        {
+          "n": "5",
+          "title": "Sequences and Series",
+          "topics": ["he.math.calc-2#3"],
+          "sections": [
+            {
+              "n": "5.1",
+              "title": "Sequences",
+              "url": "https://openstax.org/books/calculus-volume-2/pages/5-1-sequences"
+            },
+            {
+              "n": "5.2",
+              "title": "Infinite Series",
+              "url": "https://openstax.org/books/calculus-volume-2/pages/5-2-infinite-series"
+            },
+            {
+              "n": "5.3",
+              "title": "The Divergence and Integral Tests",
+              "url": "https://openstax.org/books/calculus-volume-2/pages/5-3-the-divergence-and-integral-tests"
+            },
+            {
+              "n": "5.4",
+              "title": "Comparison Tests",
+              "url": "https://openstax.org/books/calculus-volume-2/pages/5-4-comparison-tests"
+            },
+            {
+              "n": "5.5",
+              "title": "Alternating Series",
+              "url": "https://openstax.org/books/calculus-volume-2/pages/5-5-alternating-series"
+            },
+            {
+              "n": "5.6",
+              "title": "Ratio and Root Tests",
+              "url": "https://openstax.org/books/calculus-volume-2/pages/5-6-ratio-and-root-tests"
+            }
+          ]
+        },
+        {
+          "n": "6",
+          "title": "Power Series",
+          "topics": ["he.math.calc-2#4"],
+          "sections": [
+            {
+              "n": "6.1",
+              "title": "Power Series and Functions",
+              "url": "https://openstax.org/books/calculus-volume-2/pages/6-1-power-series-and-functions"
+            },
+            {
+              "n": "6.2",
+              "title": "Properties of Power Series",
+              "url": "https://openstax.org/books/calculus-volume-2/pages/6-2-properties-of-power-series"
+            },
+            {
+              "n": "6.3",
+              "title": "Taylor and Maclaurin Series",
+              "url": "https://openstax.org/books/calculus-volume-2/pages/6-3-taylor-and-maclaurin-series"
+            },
+            {
+              "n": "6.4",
+              "title": "Working with Taylor Series",
+              "url": "https://openstax.org/books/calculus-volume-2/pages/6-4-working-with-taylor-series"
+            }
+          ]
+        },
+        {
+          "n": "7",
+          "title": "Parametric Equations and Polar Coordinates",
+          "topics": ["he.math.calc-2#5"],
+          "sections": [
+            {
+              "n": "7.1",
+              "title": "Parametric Equations",
+              "url": "https://openstax.org/books/calculus-volume-2/pages/7-1-parametric-equations"
+            },
+            {
+              "n": "7.2",
+              "title": "Calculus of Parametric Curves",
+              "url": "https://openstax.org/books/calculus-volume-2/pages/7-2-calculus-of-parametric-curves"
+            },
+            {
+              "n": "7.3",
+              "title": "Polar Coordinates",
+              "url": "https://openstax.org/books/calculus-volume-2/pages/7-3-polar-coordinates"
+            },
+            {
+              "n": "7.4",
+              "title": "Area and Arc Length in Polar Coordinates",
+              "url": "https://openstax.org/books/calculus-volume-2/pages/7-4-area-and-arc-length-in-polar-coordinates"
+            },
+            {
+              "n": "7.5",
+              "title": "Conic Sections",
+              "url": "https://openstax.org/books/calculus-volume-2/pages/7-5-conic-sections",
+              "topics": [],
+              "note": "conic sections (precalculus)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Calculus Volume 3",
+      "url": "https://openstax.org/details/books/calculus-volume-3",
+      "units": [
+        {
+          "n": "1",
+          "title": "Parametric Equations and Polar Coordinates",
+          "topics": ["he.math.calc-2#5"],
+          "sections": [
+            {
+              "n": "1.1",
+              "title": "Parametric Equations",
+              "url": "https://openstax.org/books/calculus-volume-3/pages/1-1-parametric-equations"
+            },
+            {
+              "n": "1.2",
+              "title": "Calculus of Parametric Curves",
+              "url": "https://openstax.org/books/calculus-volume-3/pages/1-2-calculus-of-parametric-curves"
+            },
+            {
+              "n": "1.3",
+              "title": "Polar Coordinates",
+              "url": "https://openstax.org/books/calculus-volume-3/pages/1-3-polar-coordinates"
+            },
+            {
+              "n": "1.4",
+              "title": "Area and Arc Length in Polar Coordinates",
+              "url": "https://openstax.org/books/calculus-volume-3/pages/1-4-area-and-arc-length-in-polar-coordinates"
+            },
+            {
+              "n": "1.5",
+              "title": "Conic Sections",
+              "url": "https://openstax.org/books/calculus-volume-3/pages/1-5-conic-sections",
+              "topics": [],
+              "note": "conic sections (precalculus)"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Vectors in Space",
+          "topics": ["he.math.calc-3#0"],
+          "sections": [
+            {
+              "n": "2.1",
+              "title": "Vectors in the Plane",
+              "url": "https://openstax.org/books/calculus-volume-3/pages/2-1-vectors-in-the-plane"
+            },
+            {
+              "n": "2.2",
+              "title": "Vectors in Three Dimensions",
+              "url": "https://openstax.org/books/calculus-volume-3/pages/2-2-vectors-in-three-dimensions"
+            },
+            {
+              "n": "2.3",
+              "title": "The Dot Product",
+              "url": "https://openstax.org/books/calculus-volume-3/pages/2-3-the-dot-product"
+            },
+            {
+              "n": "2.4",
+              "title": "The Cross Product",
+              "url": "https://openstax.org/books/calculus-volume-3/pages/2-4-the-cross-product"
+            },
+            {
+              "n": "2.5",
+              "title": "Equations of Lines and Planes in Space",
+              "url": "https://openstax.org/books/calculus-volume-3/pages/2-5-equations-of-lines-and-planes-in-space"
+            },
+            {
+              "n": "2.6",
+              "title": "Quadric Surfaces",
+              "url": "https://openstax.org/books/calculus-volume-3/pages/2-6-quadric-surfaces"
+            },
+            {
+              "n": "2.7",
+              "title": "Cylindrical and Spherical Coordinates",
+              "url": "https://openstax.org/books/calculus-volume-3/pages/2-7-cylindrical-and-spherical-coordinates",
+              "topics": [],
+              "note": "no college topic: cylindrical and spherical coordinates (plan gap)"
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Vector-Valued Functions",
+          "topics": ["he.math.calc-3#0"],
+          "sections": [
+            {
+              "n": "3.1",
+              "title": "Vector Valued Functions and Space Curves",
+              "url": "https://openstax.org/books/calculus-volume-3/pages/3-1-vector-valued-functions-and-space-curves"
+            },
+            {
+              "n": "3.2",
+              "title": "Calculus of Vector Valued Functions",
+              "url": "https://openstax.org/books/calculus-volume-3/pages/3-2-calculus-of-vector-valued-functions"
+            },
+            {
+              "n": "3.3",
+              "title": "Arc Length and Curvature",
+              "url": "https://openstax.org/books/calculus-volume-3/pages/3-3-arc-length-and-curvature"
+            },
+            {
+              "n": "3.4",
+              "title": "Motion in Space",
+              "url": "https://openstax.org/books/calculus-volume-3/pages/3-4-motion-in-space"
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Differentiation of Functions of Several Variables",
+          "topics": ["he.math.calc-3#1"],
+          "sections": [
+            {
+              "n": "4.1",
+              "title": "Functions of Several Variables",
+              "url": "https://openstax.org/books/calculus-volume-3/pages/4-1-functions-of-several-variables"
+            },
+            {
+              "n": "4.2",
+              "title": "Limits and Continuity",
+              "url": "https://openstax.org/books/calculus-volume-3/pages/4-2-limits-and-continuity"
+            },
+            {
+              "n": "4.3",
+              "title": "Partial Derivatives",
+              "url": "https://openstax.org/books/calculus-volume-3/pages/4-3-partial-derivatives"
+            },
+            {
+              "n": "4.4",
+              "title": "Tangent Planes and Linear Approximations",
+              "url": "https://openstax.org/books/calculus-volume-3/pages/4-4-tangent-planes-and-linear-approximations"
+            },
+            {
+              "n": "4.5",
+              "title": "The Chain Rule",
+              "url": "https://openstax.org/books/calculus-volume-3/pages/4-5-the-chain-rule"
+            },
+            {
+              "n": "4.6",
+              "title": "Directional Derivatives and the Gradient",
+              "url": "https://openstax.org/books/calculus-volume-3/pages/4-6-directional-derivatives-and-the-gradient"
+            },
+            {
+              "n": "4.7",
+              "title": "Maxima Minima Problems",
+              "url": "https://openstax.org/books/calculus-volume-3/pages/4-7-maxima-minima-problems"
+            },
+            {
+              "n": "4.8",
+              "title": "Lagrange Multipliers",
+              "url": "https://openstax.org/books/calculus-volume-3/pages/4-8-lagrange-multipliers"
+            }
+          ]
+        },
+        {
+          "n": "5",
+          "title": "Multiple Integration",
+          "topics": ["he.math.calc-3#2"],
+          "sections": [
+            {
+              "n": "5.1",
+              "title": "Double Integrals Over Rectangular Regions",
+              "url": "https://openstax.org/books/calculus-volume-3/pages/5-1-double-integrals-over-rectangular-regions"
+            },
+            {
+              "n": "5.2",
+              "title": "Double Integrals Over General Regions",
+              "url": "https://openstax.org/books/calculus-volume-3/pages/5-2-double-integrals-over-general-regions"
+            },
+            {
+              "n": "5.3",
+              "title": "Double Integrals in Polar Coordinates",
+              "url": "https://openstax.org/books/calculus-volume-3/pages/5-3-double-integrals-in-polar-coordinates"
+            },
+            {
+              "n": "5.4",
+              "title": "Triple Integrals",
+              "url": "https://openstax.org/books/calculus-volume-3/pages/5-4-triple-integrals"
+            },
+            {
+              "n": "5.5",
+              "title": "Triple Integrals in Cylindrical and Spherical Coordinates",
+              "url": "https://openstax.org/books/calculus-volume-3/pages/5-5-triple-integrals-in-cylindrical-and-spherical-coordinates"
+            },
+            {
+              "n": "5.6",
+              "title": "Calculating Centers of Mass and Moments of Inertia",
+              "url": "https://openstax.org/books/calculus-volume-3/pages/5-6-calculating-centers-of-mass-and-moments-of-inertia"
+            },
+            {
+              "n": "5.7",
+              "title": "Change of Variables in Multiple Integrals",
+              "url": "https://openstax.org/books/calculus-volume-3/pages/5-7-change-of-variables-in-multiple-integrals",
+              "topics": ["he.math.calc-3#2"]
+            }
+          ]
+        },
+        {
+          "n": "6",
+          "title": "Vector Calculus",
+          "topics": ["he.math.calc-3#3"],
+          "sections": [
+            {
+              "n": "6.1",
+              "title": "Vector Fields",
+              "url": "https://openstax.org/books/calculus-volume-3/pages/6-1-vector-fields",
+              "topics": ["he.math.calc-3#3"]
+            },
+            {
+              "n": "6.2",
+              "title": "Line Integrals",
+              "url": "https://openstax.org/books/calculus-volume-3/pages/6-2-line-integrals",
+              "topics": ["he.math.calc-3#3"]
+            },
+            {
+              "n": "6.3",
+              "title": "Conservative Vector Fields",
+              "url": "https://openstax.org/books/calculus-volume-3/pages/6-3-conservative-vector-fields",
+              "topics": ["he.math.calc-3#3"]
+            },
+            {
+              "n": "6.4",
+              "title": "Green’s Theorem",
+              "url": "https://openstax.org/books/calculus-volume-3/pages/6-4-greens-theorem",
+              "topics": ["he.math.calc-3#4"]
+            },
+            {
+              "n": "6.5",
+              "title": "Divergence and Curl",
+              "url": "https://openstax.org/books/calculus-volume-3/pages/6-5-divergence-and-curl",
+              "topics": ["he.math.calc-3#4"]
+            },
+            {
+              "n": "6.6",
+              "title": "Surface Integrals",
+              "url": "https://openstax.org/books/calculus-volume-3/pages/6-6-surface-integrals",
+              "topics": ["he.math.calc-3#3"]
+            },
+            {
+              "n": "6.7",
+              "title": "Stokes’ Theorem",
+              "url": "https://openstax.org/books/calculus-volume-3/pages/6-7-stokes-theorem",
+              "topics": ["he.math.calc-3#4"]
+            },
+            {
+              "n": "6.8",
+              "title": "The Divergence Theorem",
+              "url": "https://openstax.org/books/calculus-volume-3/pages/6-8-the-divergence-theorem",
+              "topics": ["he.math.calc-3#4"]
+            }
+          ]
+        },
+        {
+          "n": "7",
+          "title": "Second-Order Differential Equations",
+          "topics": ["he.math.diff-eq#1"],
+          "sections": [
+            {
+              "n": "7.1",
+              "title": "Second Order Linear Equations",
+              "url": "https://openstax.org/books/calculus-volume-3/pages/7-1-second-order-linear-equations"
+            },
+            {
+              "n": "7.2",
+              "title": "Nonhomogeneous Linear Equations",
+              "url": "https://openstax.org/books/calculus-volume-3/pages/7-2-nonhomogeneous-linear-equations"
+            },
+            {
+              "n": "7.3",
+              "title": "Applications",
+              "url": "https://openstax.org/books/calculus-volume-3/pages/7-3-applications"
+            },
+            {
+              "n": "7.4",
+              "title": "Series Solutions of Differential Equations",
+              "url": "https://openstax.org/books/calculus-volume-3/pages/7-4-series-solutions-of-differential-equations",
+              "topics": ["he.math.diff-eq#4"]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,261 @@
+{
+  "id": "mit-ocw-7.016-2018",
+  "curriculum": "MIT OCW 7.016 Introductory Biology",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Fall 2018",
+  "subject": "biology",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Barbara Imperiali, Adam Martin and Diviya Ray. 7.016 Introductory Biology. Fall 2018. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu. License: Creative Commons BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Part",
+    "lesson": "Lecture"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/7-016-introductory-biology-fall-2018/",
+  "retrieved": "2026-10-02",
+  "notes": "Reference only (CC BY-NC-SA 4.0; OCW terms https://ocw.mit.edu/pages/privacy-and-terms-of-use/). Lecture list and order from the course calendar or lecture-notes page; examples, ranges and notation are our words, read from the exams and problem sets (no problem text or numbers copied). Third-party figures inside OCW PDFs are outside the licence and were not used. Exams 1–3 read for the question records.",
+  "books": [
+    {
+      "course": "7.016",
+      "url": "https://ocw.mit.edu/courses/7-016-introductory-biology-fall-2018/",
+      "units": [
+        {
+          "n": "1",
+          "title": "Biochemistry and molecular biology",
+          "topics": [
+            "he.biology.principles-1#0",
+            "he.biology.principles-1#2",
+            "he.biology.principles-1#4"
+          ],
+          "examples": [
+            "line-angle structures: implied atoms, functional groups, lone pairs",
+            "strongest interaction at points in a folded protein",
+            "template strand, mRNA, anticodon from a promoter sequence",
+            "which substitution changes gene, mRNA or protein"
+          ],
+          "notation": ["ΔG in kcal/mol", "5′ and 3′ ends", "N- and C-termini"],
+          "lessons": [
+            {
+              "n": "2",
+              "title": "Chemical bonding and molecular interactions; lipids and membranes",
+              "topics": ["he.biology.principles-1#0", "he.biology.cell-molecular#0"]
+            },
+            {
+              "n": "3",
+              "title": "Structures of amino acids, peptides and proteins",
+              "topics": ["he.biology.principles-1#0"]
+            },
+            {
+              "n": "4",
+              "title": "Enzymes and metabolism",
+              "topics": ["he.biology.principles-1#2"]
+            },
+            {
+              "n": "5",
+              "title": "Carbohydrates and glycoproteins",
+              "topics": ["he.biology.principles-1#0"]
+            },
+            {
+              "n": "6",
+              "title": "Nucleic acids",
+              "topics": ["he.biology.principles-1#0", "he.biology.genetics#2"]
+            },
+            {
+              "n": "7",
+              "title": "Replication",
+              "topics": ["he.biology.genetics#2"]
+            },
+            {
+              "n": "8",
+              "title": "Transcription",
+              "topics": ["he.biology.genetics#2"]
+            },
+            {
+              "n": "9",
+              "title": "Chromatin remodeling and splicing",
+              "topics": ["he.biology.cell-molecular#2"]
+            },
+            {
+              "n": "10",
+              "title": "Translation",
+              "topics": ["he.biology.genetics#2"]
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Genetics and recombinant DNA",
+          "topics": [
+            "he.biology.principles-1#3",
+            "he.biology.principles-1#4",
+            "he.biology.genetics#0",
+            "he.biology.genetics#1",
+            "he.biology.genetics#2"
+          ],
+          "examples": [
+            "test-cross classes for linked genes a few cM apart",
+            "three-point test cross of 1000 progeny",
+            "pedigree mode and risk",
+            "restriction-enzyme pair for an in-frame fusion; select and screen transformants"
+          ],
+          "ranges": ["distances 5–30 cM", "progeny 100–1000"],
+          "lessons": [
+            {
+              "n": "11",
+              "title": "Cells, the simplest functional units",
+              "topics": ["he.biology.principles-1#1"]
+            },
+            {
+              "n": "12",
+              "title": "Cell division and segregating genetic material",
+              "topics": ["he.biology.principles-1#3"]
+            },
+            {
+              "n": "13",
+              "title": "Rules of inheritance",
+              "topics": ["he.biology.principles-1#4", "he.biology.genetics#0"]
+            },
+            {
+              "n": "14",
+              "title": "Linkage, crossing over",
+              "topics": ["he.biology.genetics#1"]
+            },
+            {
+              "n": "15",
+              "title": "Model organisms",
+              "topics": ["he.biology.genetics#2"]
+            },
+            {
+              "n": "16",
+              "title": "Recombinant DNA, cloning and editing",
+              "topics": ["he.biology.genetics#2"]
+            },
+            {
+              "n": "17",
+              "title": "Genomes and DNA sequencing",
+              "topics": ["he.biology.genetics#2"]
+            },
+            {
+              "n": "18",
+              "title": "SNPs and human genetics",
+              "topics": ["he.biology.genetics#0"]
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Cell biology, signalling and cancer",
+          "topics": [
+            "he.biology.cell-molecular#1",
+            "he.biology.cell-molecular#3",
+            "he.biology.anatomy-physiology#2"
+          ],
+          "examples": [
+            "predict pathway outputs for receptor, Ras and transcription-factor mutants",
+            "proto-oncogene vs tumour suppressor",
+            "synapse drug effects; optogenetic channels in a circuit"
+          ],
+          "lessons": [
+            {
+              "n": "19",
+              "title": "Cell trafficking and protein localization",
+              "topics": ["he.biology.principles-1#1"]
+            },
+            {
+              "n": "20",
+              "title": "Cell signaling: overview",
+              "topics": ["he.biology.cell-molecular#1"]
+            },
+            {
+              "n": "21",
+              "title": "Cell signaling: examples",
+              "topics": ["he.biology.cell-molecular#1"]
+            },
+            {
+              "n": "22",
+              "title": "Neurons, action potential, and optogenetics",
+              "topics": ["he.biology.anatomy-physiology#2"]
+            },
+            {
+              "n": "23",
+              "title": "Cell cycle and checkpoints",
+              "topics": ["he.biology.cell-molecular#3"]
+            },
+            {
+              "n": "24",
+              "title": "Stem cells, apoptosis, tissue homeostasis",
+              "topics": ["he.biology.cell-molecular#3"]
+            },
+            {
+              "n": "25",
+              "title": "Cancer 1",
+              "topics": ["he.biology.cell-molecular#3"]
+            },
+            {
+              "n": "26",
+              "title": "Cancer 2",
+              "topics": ["he.biology.cell-molecular#3"]
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Imaging, immunology and infectious disease",
+          "topics": ["he.biology.microbiology#3"],
+          "lessons": [
+            {
+              "n": "27",
+              "title": "Visualizing life: dyes and stains",
+              "topics": ["he.biology.principles-1#1"]
+            },
+            {
+              "n": "28",
+              "title": "Fluorescent proteins",
+              "topics": ["he.biology.principles-1#1"]
+            },
+            {
+              "n": "29",
+              "title": "Cell imaging techniques",
+              "topics": ["he.biology.principles-1#1"]
+            },
+            {
+              "n": "30",
+              "title": "Immunology 1: diversity, specificity, B cells",
+              "topics": ["he.biology.microbiology#3"]
+            },
+            {
+              "n": "31",
+              "title": "Immunology 2: memory, T cells, autoimmunity",
+              "topics": ["he.biology.microbiology#3"]
+            },
+            {
+              "n": "32",
+              "title": "Infectious disease, viruses and bacteria",
+              "topics": ["he.biology.microbiology#0"]
+            },
+            {
+              "n": "33",
+              "title": "Bacteria and antibiotic resistance",
+              "topics": ["he.biology.microbiology#1", "he.biology.microbiology#2"]
+            },
+            {
+              "n": "34",
+              "title": "Viruses and anti-viral resistance",
+              "topics": ["he.biology.microbiology#0"]
+            },
+            {
+              "n": "35",
+              "title": "Reproductive cloning and embryonic stem cells",
+              "topics": ["he.biology.cell-molecular#2"]
+            }
+          ]
+        }
+      ],
+      "title": "7.016"
+    }
+  ]
+}

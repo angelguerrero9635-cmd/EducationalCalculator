@@ -1,0 +1,86 @@
+{
+  "id": "mit-ocw-16-01",
+  "curriculum": "MIT OpenCourseWare 16.01 Unified Engineering I, II, III, & IV (fluids part)",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Fall 2005–Spring 2006",
+  "subject": "aerospace",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Mark Drela and others. 16.01 Unified Engineering I, II, III, & IV (fluids part). Fall 2005–Spring 2006. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu/courses/16-01-unified-engineering-i-ii-iii-iv-fall-2005-spring-2006/. License: CC BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Lecture block"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/16-01-unified-engineering-i-ii-iii-iv-fall-2005-spring-2006/",
+  "retrieved": "2026-10-02",
+  "sources": [
+    "https://ocw.mit.edu/courses/16-01-unified-engineering-i-ii-iii-iv-fall-2005-spring-2006/pages/syllabus/",
+    "https://ocw.mit.edu/courses/16-01-unified-engineering-i-ii-iii-iv-fall-2005-spring-2006/pages/calendar/"
+  ],
+  "notes": "Fluids discipline only (the course also has thermodynamics, structures, signals, programming). Lecture list from the Fluid Mechanics page; Spring 2004 fluids problems F1–F20 and two fluids quizzes read. Text: Anderson, Fundamentals of Aerodynamics.",
+  "books": [
+    {
+      "course": null,
+      "title": "16.01 Unified Engineering I, II, III, & IV (fluids part) (Fall 2005–Spring 2006)",
+      "url": "https://ocw.mit.edu/courses/16-01-unified-engineering-i-ii-iii-iv-fall-2005-spring-2006/",
+      "units": [
+        {
+          "n": "F1–F7 (fall)",
+          "title": "Aerodynamic forces and moments; dimensional analysis; Reynolds and Mach number; control volumes",
+          "url": "https://ocw.mit.edu/courses/16-01-unified-engineering-i-ii-iii-iv-fall-2005-spring-2006/pages/fluid-mechanics/",
+          "topics": ["he.engineering.aerodynamics#1", "he.engineering.aerodynamics#3"]
+        },
+        {
+          "n": "F8–F18 (fall)",
+          "title": "Streamlines; vorticity and circulation; Bernoulli; potential flows; lifting flow; vortex sheets",
+          "topics": ["he.engineering.aerodynamics#0"]
+        },
+        {
+          "n": "F19–F21 (fall)",
+          "title": "Airfoils; airfoil polar relations",
+          "topics": ["he.engineering.aerodynamics#0", "he.engineering.aerodynamics#1"]
+        },
+        {
+          "n": "F1–F4 (spring)",
+          "title": "Formation of lifting flow; thin-airfoil analysis",
+          "topics": ["he.engineering.aerodynamics#0"],
+          "examples": [
+            "starting vortex",
+            "flapped airfoil derivatives",
+            "panel code vs thin-airfoil c_l"
+          ]
+        },
+        {
+          "n": "F5–F10 (spring)",
+          "title": "3-D wings; lifting line; elliptic loading; wing geometry; aircraft performance and drag estimation",
+          "topics": ["he.engineering.aerodynamics#2", "he.engineering.flight-mechanics#0"],
+          "examples": [
+            "downwash law → C_Di",
+            "taper ratio and stall margin",
+            "max L/D and endurance C_L"
+          ],
+          "notation": ["C_L, C_Di, AR, e; λ = c_t ÷ c_r"]
+        },
+        {
+          "n": "F11–F16 (spring)",
+          "title": "Compressible flow: energy, stagnation quantities, normal shocks, speed of sound, pitot tube",
+          "topics": ["he.engineering.compressible-flow#0", "he.engineering.compressible-flow#1"],
+          "examples": ["stagnation state on a hand out of a car", "sound wave as a weak shock"]
+        },
+        {
+          "n": "F17–F20 (spring)",
+          "title": "Oblique shocks and expansions; quasi-1-D nozzle flow; choking",
+          "topics": ["he.engineering.compressible-flow#2", "he.engineering.compressible-flow#3"],
+          "examples": [
+            "diamond airfoil at Mach 1.6",
+            "paint-sprayer hose choking",
+            "test duct with a throat"
+          ]
+        }
+      ]
+    }
+  ]
+}

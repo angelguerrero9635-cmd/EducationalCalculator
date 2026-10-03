@@ -1,0 +1,77 @@
+{
+  "id": "dma-geodesy-for-the-layman",
+  "curriculum": "Geodesy for the Layman (DMA TR 80-003)",
+  "publisher": "Defense Mapping Agency; hosted by NOAA National Geodetic Survey",
+  "edition": "1984 revision (web edition)",
+  "subject": "civil",
+  "level": "college",
+  "content": "titles",
+  "license": {
+    "name": "Public domain (U.S. federal government work)",
+    "url": null,
+    "attribution": "Defense Mapping Agency, Geodesy for the Layman, DMA TR 80-003, 1984 (\"DMA TR 80-003 contains no copyrighted material, nor is a copyright pending. This publication is approved for public release; distribution unlimited.\"), https://geodesy.noaa.gov/PUBS_LIB/Geodesy4Layman/TR80003A.HTM"
+  },
+  "terms": {
+    "unit": "Chapter"
+  },
+  "sourceUrl": "https://geodesy.noaa.gov/PUBS_LIB/Geodesy4Layman/TR80003A.HTM",
+  "retrieved": "2026-10-02",
+  "notes": "Chapter titles from the contents. Explains the ellipsoid, geoid, datums and satellite geodesy (the h, N, H relation of surveying#3); predates current GNSS practice and has no exercises, so no question records. No open surveying textbook with problems was reached.",
+  "books": [
+    {
+      "course": "he.engineering.surveying",
+      "title": "Geodesy for the Layman",
+      "url": "https://geodesy.noaa.gov/PUBS_LIB/Geodesy4Layman/TR80003A.HTM",
+      "units": [
+        {
+          "n": "I",
+          "title": "History of Geodesy",
+          "topics": [],
+          "notes": "History or general; no topic.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "II",
+          "title": "Figure of the Earth",
+          "topics": ["he.engineering.surveying#3"]
+        },
+        {
+          "n": "III",
+          "title": "Geodetic Surveying Techniques",
+          "topics": [
+            "he.engineering.surveying#0",
+            "he.engineering.surveying#1",
+            "he.engineering.surveying#2"
+          ]
+        },
+        {
+          "n": "IV",
+          "title": "Geodetic Systems",
+          "topics": ["he.engineering.surveying#3"]
+        },
+        {
+          "n": "V",
+          "title": "Physical Geodesy",
+          "topics": ["he.engineering.surveying#3"]
+        },
+        {
+          "n": "VI",
+          "title": "Satellite Geodesy",
+          "topics": ["he.engineering.surveying#3"]
+        },
+        {
+          "n": "VII",
+          "title": "Other Developments in Geodesy",
+          "topics": [],
+          "notes": "History or general; no topic.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "VIII",
+          "title": "The World Geodetic System",
+          "topics": ["he.engineering.surveying#3"]
+        }
+      ]
+    }
+  ]
+}

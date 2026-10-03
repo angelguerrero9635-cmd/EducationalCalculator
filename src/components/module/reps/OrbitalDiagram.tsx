@@ -10,11 +10,13 @@ import { View } from 'react-native';
 import Svg, { Defs, G, Line, LinearGradient, Path, Rect, Stop } from 'react-native-svg';
 
 import type { OrbitalDiagramSpec } from '@/data/modules/typesHsi';
+import { isOrbitalHe4d, type OrbitalHe4dSpec } from '@/data/modules/typesHe4d';
 import { formatNumber } from '@/engine/format';
 import { chart, usePalette, type Palette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
 import { chargeSup } from './AtomModel';
+import { OrbitalHe4d } from './OrbitalHe4d';
 import { element } from './chem';
 import { Canvas, Caption, ChartText, useRep } from './common';
 import {
@@ -39,9 +41,12 @@ import {
 import { reader } from './graphKit';
 import { MathChip } from './hsdText';
 import { url, usePaintIds } from './paint';
+import { OrbitalMo } from './OrbitalMo';
 
 export function OrbitalDiagram({ spec, calc }: { spec: OrbitalDiagramSpec; calc: Calculator }) {
+  if (isOrbitalHe4d(spec)) return <OrbitalHe4d spec={spec} calc={calc} />; // HC109, HC110
   if (spec.mode === 'ladder') return <Ladder spec={spec} calc={calc} />;
+  if (spec.mode === 'mo') return <OrbitalMo spec={spec} calc={calc} />; // HC70
   return <Boxes spec={spec} calc={calc} />;
 }
 
@@ -223,7 +228,7 @@ function Ladder({
   spec,
   calc,
 }: {
-  spec: Extract<OrbitalDiagramSpec, { mode: 'ladder' }>;
+  spec: Exclude<Extract<OrbitalDiagramSpec, { mode: 'ladder' }>, OrbitalHe4dSpec>;
   calc: Calculator;
 }) {
   const c = usePalette();

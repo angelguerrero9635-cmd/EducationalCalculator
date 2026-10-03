@@ -84,6 +84,7 @@ export function hsjIssues(rep: HsjSpec, val: (id: string) => number | undefined)
         out.push(...ladderIssues(rep, num));
         break;
       }
+      if (rep.mode === 'bomb') break; // HC44: picturesHe3g.ts
       if (rep.mode === 'calorimeter') {
         const [m, c, t1, t2] = [num(rep.mass), num(rep.heat), num(rep.start), num(rep.end)];
         if (m === undefined || c === undefined || t1 === undefined || t2 === undefined) break;
@@ -119,6 +120,7 @@ export function hsjIssues(rep: HsjSpec, val: (id: string) => number | undefined)
       break;
     }
     case 'equilibriumChart': {
+      if ('gibbs' in rep) break;
       const species = rep.species.map((s) => ({
         coef: s.coef,
         sign: s.side === 'product' ? (1 as const) : (-1 as const),
@@ -160,6 +162,8 @@ export function hsjIssues(rep: HsjSpec, val: (id: string) => number | undefined)
       break;
     }
     case 'phScale': {
+      if (rep.mode === 'buffer' || rep.mode === 'aminoAcid' || rep.mode === 'pka') break;
+      if (rep.mode === 'titration' && rep.polyprotic) break;
       if (rep.mode === 'titration') {
         const [ca, va, cb] = [
           num(rep.acid.concentration),

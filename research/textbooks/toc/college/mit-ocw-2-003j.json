@@ -1,0 +1,59 @@
+{
+  "id": "mit-ocw-2-003j",
+  "curriculum": "MIT OCW 2.003J Dynamics and Vibration",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Fall 2002",
+  "subject": "mechanical",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "J. Kim Vandiver and Nicholas Patrikalakis. 2.003J Dynamics and Vibration, Fall 2002. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu/courses/2-003j-dynamics-and-vibration-13-013j-fall-2002/. License: Creative Commons BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Assignment",
+    "lesson": "Part"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/2-003j-dynamics-and-vibration-13-013j-fall-2002/",
+  "retrieved": "2026-10-02",
+  "notes": "Instructor(s): J. Kim Vandiver and Nicholas Patrikalakis. Units are the problem sets, labs and exams read (type only; no solutions fetched). Calendar (topic order) as published: DAY# TOPICS ASSIGNMENTS 1 Introduction and Motivation Kinematics Problem Set 1 2 Kinematics 3 Kinematics 4 Recitation Problem Set 2 Problem Set 1 Due 5 Momentum Formulation for Systems of Particles 6 Momentum Formulation for Systems of Particles 7 Recitation Problem Set 3 Problem Set 2 Due 8 Momentum Formulation for Systems of Particles 9 Recitation Problem Set 4 Problem Set 3 Due 10 Variational Formulation for Systems of Particles 11 Variational Formulation for Systems of Particles 12 Recitation Problem Set 5 Problem Set 4 Due 13 Quiz 1 14 Variational Formulation for Systems of Particles 15 Variational Formulation for Systems of Particles Problem Set6 16 Recitation Problem Set 5 Due 17 Recitation Problem Set7 Problem Set 6 Due 18 Variational Formulation for Systems of Particles 19 Dynamics of Systems Containing Rigid Bodies 20 Recitation Problem Set8 Problem Set 7 Due 21 Dynamics of Sys Third-party content inside OCW files (figures credited to other publishers) was not used.",
+  "books": [
+    {
+      "grade": "college",
+      "url": "https://ocw.mit.edu/courses/2-003j-dynamics-and-vibration-13-013j-fall-2002/",
+      "units": [
+        {
+          "n": "1",
+          "title": "ps11",
+          "url": "https://ocw.mit.edu/courses/2-003j-dynamics-and-vibration-13-013j-fall-2002/resources/ps11/",
+          "topics": ["he.engineering.vibrations#2", "he.engineering.vibrations#0"],
+          "examples": [
+            "energy lost per cycle in terms of the logarithmic decrement",
+            "heave natural frequency of a tension-leg platform (buoyancy and tendon springs)",
+            "spring constant from a natural frequency and ζ from two successive peaks",
+            "surge natural frequency of the platform as an inverted pendulum"
+          ],
+          "lessons": [],
+          "notes": "4 question record(s): OCW-2.003J-PS11-1, OCW-2.003J-PS11-2, OCW-2.003J-PS11-3, OCW-2.003J-PS11-5"
+        },
+        {
+          "n": "2",
+          "title": "ps12",
+          "url": "https://ocw.mit.edu/courses/2-003j-dynamics-and-vibration-13-013j-fall-2002/resources/ps12/",
+          "topics": ["he.engineering.vibrations#1", "he.engineering.vibrations#0"],
+          "examples": [
+            "buoy response to waves at three frequency ratios",
+            "heave natural frequency of a spar buoy",
+            "isolate an aquarium from floor vibration at 20 Hz",
+            "pendulum length for a target period (clock pendulum)",
+            "static surge force and the response to a periodic force"
+          ],
+          "lessons": [],
+          "notes": "5 question record(s): OCW-2.003J-PS12-1, OCW-2.003J-PS12-2, OCW-2.003J-PS12-3, OCW-2.003J-PS12-4, OCW-2.003J-PS12-5"
+        }
+      ],
+      "title": "MIT OCW 2.003J Dynamics and Vibration"
+    }
+  ]
+}

@@ -1,0 +1,630 @@
+{
+  "id": "libretexts-fleming-quantum",
+  "curriculum": "Fleming, Quantum Chemistry with Applications in Spectroscopy",
+  "publisher": "Patrick Fleming; LibreTexts",
+  "edition": "LibreTexts edition",
+  "subject": "chemistry",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Patrick Fleming, Quantum Chemistry with Applications in Spectroscopy, LibreTexts. License: CC BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Chapter",
+    "lesson": "Section"
+  },
+  "sourceUrl": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)",
+  "retrieved": "2026-10-02",
+  "notes": "Reference only. Chapter and section titles as listed on LibreTexts (fetched at its 5 s Crawl-delay); topics are our mapping; examples, ranges and notation in our words from the problem pages read for question records. No text, problem or number copied. Licence tags seen on chapter pages: license:ccbyncsa.",
+  "books": [
+    {
+      "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)",
+      "units": [
+        {
+          "n": "1",
+          "title": "Foundations and Review",
+          "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/01%3A_Foundations_and_Review",
+          "topics": ["he.chemistry.physical-2#0"],
+          "lessons": [
+            {
+              "n": "1.1",
+              "title": "Some Newtonian Physics",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/01%3A_Foundations_and_Review/1.01%3A_Some_Newtonian_Physics"
+            },
+            {
+              "n": "1.2",
+              "title": "Some Vectors and Dot Products",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/01%3A_Foundations_and_Review/1.02%3A_Some_Vectors_and_Dot_Products"
+            },
+            {
+              "n": "1.3",
+              "title": "Classical Description of a Wave on a String",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/01%3A_Foundations_and_Review/1.03%3A_Classical_Description_of_a_Wave_on_a_String"
+            },
+            {
+              "n": "1.4",
+              "title": "Failures of Classical Physics",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/01%3A_Foundations_and_Review/1.04%3A_Failures_of_Classical_Physics"
+            },
+            {
+              "n": "1.5",
+              "title": "On Superposition and the Weirdness of Quantum Mechanics",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/01%3A_Foundations_and_Review/1.05%3A_On_Superposition_and_the_Weirdness_of_Quantum_Mechanics"
+            },
+            {
+              "n": "1.6",
+              "title": "References",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/01%3A_Foundations_and_Review/1.06%3A_References"
+            },
+            {
+              "n": "1.7",
+              "title": "Vocabulary and Concepts",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/01%3A_Foundations_and_Review/1.07%3A_Vocabulary_and_Concepts"
+            },
+            {
+              "n": "1.8",
+              "title": "Problems",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/01%3A_Foundations_and_Review/1.08%3A_Problems"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Particle in a Box",
+          "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/02%3A_Particle_in_a_Box",
+          "topics": ["he.chemistry.physical-2#1", "he.chemistry.physical-2#0"],
+          "examples": [
+            "normalization and orthogonality; acceptable wavefunctions; Hermitian operators",
+            "degeneracy in a 3-D box"
+          ],
+          "lessons": [
+            {
+              "n": "2.1",
+              "title": "Background",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/02%3A_Particle_in_a_Box/2.01%3A_Background"
+            },
+            {
+              "n": "2.2",
+              "title": "The Postulates of Quantum Mechanics",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/02%3A_Particle_in_a_Box/2.02%3A_The_Postulates_of_Quantum_Mechanics"
+            },
+            {
+              "n": "2.3",
+              "title": "The One-Dimensional Particle in a Box",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/02%3A_Particle_in_a_Box/2.03%3A_The_One-Dimensional_Particle_in_a_Box"
+            },
+            {
+              "n": "2.4",
+              "title": "The Tools of Quantum Mechanics",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/02%3A_Particle_in_a_Box/2.04%3A_The_Tools_of_Quantum_Mechanics"
+            },
+            {
+              "n": "2.5",
+              "title": "Superposition and Completeness",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/02%3A_Particle_in_a_Box/2.05%3A_Superposition_and_Completeness"
+            },
+            {
+              "n": "2.6",
+              "title": "Problems in Multiple Dimensions",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/02%3A_Particle_in_a_Box/2.06%3A_Problems_in_Multiple_Dimensions"
+            },
+            {
+              "n": "2.7",
+              "title": "The Free Electron Model",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/02%3A_Particle_in_a_Box/2.07%3A_The_Free_Electron_Model"
+            },
+            {
+              "n": "2.8",
+              "title": "Entanglement and Schrödinger's Cat",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/02%3A_Particle_in_a_Box/2.08%3A_Entanglement_and_Schrodinger's_Cat"
+            },
+            {
+              "n": "2.9",
+              "title": "References",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/02%3A_Particle_in_a_Box/2.09%3A_References"
+            },
+            {
+              "n": "2.10",
+              "title": "Vocabulary and Concepts",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/02%3A_Particle_in_a_Box/2.10%3A_Vocabulary_and_Concepts"
+            },
+            {
+              "n": "2.11",
+              "title": "Problems",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/02%3A_Particle_in_a_Box/2.11%3A_Problems"
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "An Introduction to Group Theory",
+          "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/03%3A_An_Introduction_to_Group_Theory",
+          "topics": ["he.chemistry.inorganic#0"],
+          "lessons": [
+            {
+              "n": "3.1",
+              "title": "Overview",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/03%3A_An_Introduction_to_Group_Theory/3.01%3A_Overview"
+            },
+            {
+              "n": "3.2",
+              "title": "Group Theory in Chemistry",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/03%3A_An_Introduction_to_Group_Theory/3.02%3A_Group_Theory_in_Chemistry"
+            },
+            {
+              "n": "3.3",
+              "title": "Determining the Point Group for a Molecule- the Schoenflies notation",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/03%3A_An_Introduction_to_Group_Theory/3.03%3A_Determining_the_Point_Group_for_a_Molecule-_the_Schoenflies_notation"
+            },
+            {
+              "n": "3.4",
+              "title": "Multiplication Operation for Symmetry Elements",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/03%3A_An_Introduction_to_Group_Theory/3.04%3A_Multiplication_Operation_for_Symmetry_Elements"
+            },
+            {
+              "n": "3.5",
+              "title": "More Definitions- Order and Class",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/03%3A_An_Introduction_to_Group_Theory/3.05%3A_More_Definitions-_Order_and_Class"
+            },
+            {
+              "n": "3.6",
+              "title": "Representations",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/03%3A_An_Introduction_to_Group_Theory/3.06%3A_Representations"
+            },
+            {
+              "n": "3.7",
+              "title": "The \"Great Orthogonality Theorem\"",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/03%3A_An_Introduction_to_Group_Theory/3.07%3A_The_Great_Orthogonality_Theorem"
+            },
+            {
+              "n": "3.8",
+              "title": "Character and Character Tables",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/03%3A_An_Introduction_to_Group_Theory/3.08%3A_Character_and_Character_Tables"
+            },
+            {
+              "n": "3.9",
+              "title": "Direct Products",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/03%3A_An_Introduction_to_Group_Theory/3.09%3A_Direct_Products"
+            },
+            {
+              "n": "3.10",
+              "title": "Vocabulary and Concepts",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/03%3A_An_Introduction_to_Group_Theory/3.10%3A_Vocabulary_and_Concepts"
+            },
+            {
+              "n": "3.11",
+              "title": "Problems",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/03%3A_An_Introduction_to_Group_Theory/3.11%3A_Problems"
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "title": "The Harmonic Oscillator and Vibrational Spectroscopy",
+          "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/04%3A_The_Harmonic_Oscillator_and_Vibrational_Spectroscopy",
+          "topics": ["he.chemistry.physical-2#1", "he.chemistry.physical-2#4"],
+          "examples": [
+            "μ and k from ω_e",
+            "Morse k from D_e and β",
+            "ω_e and ω_e x_e from an overtone progression"
+          ],
+          "ranges": ["ω_e 300–3000 cm⁻¹"],
+          "notation": ["ω_e, ω_e x_e in cm⁻¹; ΔG(v + ½)"],
+          "lessons": [
+            {
+              "n": "4.1",
+              "title": "The Potential Energy Surface for a Diatomic Molecule",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/04%3A_The_Harmonic_Oscillator_and_Vibrational_Spectroscopy/4.01%3A_The_Potential_Energy_Surface_for_a_Diatomic_Molecule"
+            },
+            {
+              "n": "4.2",
+              "title": "Solving the Schrödinger Equation",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/04%3A_The_Harmonic_Oscillator_and_Vibrational_Spectroscopy/4.02%3A_Solving_the_Schrodinger_Equation"
+            },
+            {
+              "n": "4.3",
+              "title": "Strengths and Weaknesses",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/04%3A_The_Harmonic_Oscillator_and_Vibrational_Spectroscopy/4.03%3A_Strengths_and_Weaknesses"
+            },
+            {
+              "n": "4.4",
+              "title": "Vibrational Spectroscopy Techniques",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/04%3A_The_Harmonic_Oscillator_and_Vibrational_Spectroscopy/4.04%3A_Vibrational_Spectroscopy_Techniques"
+            },
+            {
+              "n": "4.5",
+              "title": "Group Theory Considerations",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/04%3A_The_Harmonic_Oscillator_and_Vibrational_Spectroscopy/4.05%3A_Group_Theory_Considerations"
+            },
+            {
+              "n": "4.6",
+              "title": "References",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/04%3A_The_Harmonic_Oscillator_and_Vibrational_Spectroscopy/4.06%3A_References"
+            },
+            {
+              "n": "4.7",
+              "title": "Vocabulary and Concepts",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/04%3A_The_Harmonic_Oscillator_and_Vibrational_Spectroscopy/4.07%3A_Vocabulary_and_Concepts"
+            },
+            {
+              "n": "4.8",
+              "title": "Problems",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/04%3A_The_Harmonic_Oscillator_and_Vibrational_Spectroscopy/4.08%3A_Problems"
+            }
+          ]
+        },
+        {
+          "n": "5",
+          "title": "The Rigid Rotor and Rotational Spectroscopy",
+          "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/05%3A_The_Rigid_Rotor_and_Rotational_Spectroscopy",
+          "topics": ["he.chemistry.physical-2#4"],
+          "examples": [
+            "assign a rotational spectrum, B and D from a linear plot",
+            "P and R branches, combination differences, B_e, α_e, r_e"
+          ],
+          "notation": ["B, D in cm⁻¹; J″ → J′"],
+          "lessons": [
+            {
+              "n": "5.1",
+              "title": "Spherical Polar Coordinates",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/05%3A_The_Rigid_Rotor_and_Rotational_Spectroscopy/5.01%3A_Spherical_Polar_Coordinates"
+            },
+            {
+              "n": "5.2",
+              "title": "Potential Energy and the Hamiltonian",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/05%3A_The_Rigid_Rotor_and_Rotational_Spectroscopy/5.02%3A_Potential_Energy_and_the_Hamiltonian"
+            },
+            {
+              "n": "5.3",
+              "title": "Solution to the Schrödinger Equation",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/05%3A_The_Rigid_Rotor_and_Rotational_Spectroscopy/5.03%3A_Solution_to_the_Schrodinger_Equation"
+            },
+            {
+              "n": "5.4",
+              "title": "Spherical Harmonics",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/05%3A_The_Rigid_Rotor_and_Rotational_Spectroscopy/5.04%3A_Spherical_Harmonics"
+            },
+            {
+              "n": "5.5",
+              "title": "Angular Momentum",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/05%3A_The_Rigid_Rotor_and_Rotational_Spectroscopy/5.05%3A_Angular_Momentum"
+            },
+            {
+              "n": "5.6",
+              "title": "Application to the Rotation of Real Molecules",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/05%3A_The_Rigid_Rotor_and_Rotational_Spectroscopy/5.06%3A_Application_to_the_Rotation_of_Real_Molecules"
+            },
+            {
+              "n": "5.7",
+              "title": "Spectroscopy",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/05%3A_The_Rigid_Rotor_and_Rotational_Spectroscopy/5.07%3A_Spectroscopy"
+            },
+            {
+              "n": "5.8",
+              "title": "References",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/05%3A_The_Rigid_Rotor_and_Rotational_Spectroscopy/5.08%3A_References"
+            },
+            {
+              "n": "5.9",
+              "title": "Vocabulary and Concepts",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/05%3A_The_Rigid_Rotor_and_Rotational_Spectroscopy/5.09%3A_Vocabulary_and_Concepts"
+            },
+            {
+              "n": "5.10",
+              "title": "Problems",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/05%3A_The_Rigid_Rotor_and_Rotational_Spectroscopy/5.10%3A_Problems"
+            }
+          ]
+        },
+        {
+          "n": "6",
+          "title": "The Hydrogen Atom",
+          "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/06%3A_The_Hydrogen_Atom",
+          "topics": ["he.chemistry.physical-2#2"],
+          "examples": [
+            "finite-mass Rydberg constants",
+            "normalization and ⟨r⟩ of 1s",
+            "node counts",
+            "ionization potential of a one-electron ion"
+          ],
+          "lessons": [
+            {
+              "n": "6.1",
+              "title": "Older Models of the Hydrogen Atom",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/06%3A_The_Hydrogen_Atom/6.01%3A_Older_Models_of_the_Hydrogen_Atom"
+            },
+            {
+              "n": "6.2",
+              "title": "The Quantum Mechanical H-atom",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/06%3A_The_Hydrogen_Atom/6.02%3A_The_Quantum_Mechanical_H-atom"
+            },
+            {
+              "n": "6.3",
+              "title": "Rydberg Spectra of Polyelectronic Atoms",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/06%3A_The_Hydrogen_Atom/6.03%3A_Rydberg_Spectra_of_Polyelectronic_Atoms"
+            },
+            {
+              "n": "6.4",
+              "title": "References",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/06%3A_The_Hydrogen_Atom/6.04%3A_References"
+            },
+            {
+              "n": "6.5",
+              "title": "Vocabulary and Concepts",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/06%3A_The_Hydrogen_Atom/6.05%3A_Vocabulary_and_Concepts"
+            },
+            {
+              "n": "6.6",
+              "title": "Problems",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/06%3A_The_Hydrogen_Atom/6.06%3A_Problems"
+            }
+          ]
+        },
+        {
+          "n": "7",
+          "title": "Approximate Methods",
+          "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/07%3A_Approximate_Methods",
+          "topics": [],
+          "notes": "Perturbation and variational methods: plan gap.",
+          "lessons": [
+            {
+              "n": "7.1",
+              "title": "Perturbation Theory",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/07%3A_Approximate_Methods/7.01%3A_Perturbation_Theory"
+            },
+            {
+              "n": "7.2",
+              "title": "Variational Method",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/07%3A_Approximate_Methods/7.02%3A_Variational_Method"
+            },
+            {
+              "n": "7.3",
+              "title": "Vocabulary and Concepts",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/07%3A_Approximate_Methods/7.03%3A_Vocabulary_and_Concepts"
+            },
+            {
+              "n": "7.4",
+              "title": "Problems",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/07%3A_Approximate_Methods/7.04%3A_Problems"
+            }
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "8",
+          "title": "Polyelectronic Atoms",
+          "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/08%3A_Polyelectronic_Atoms",
+          "topics": [],
+          "notes": "Many-electron atoms and term symbols: plan gap.",
+          "lessons": [
+            {
+              "n": "8.1",
+              "title": "Potential Energy and the Hamiltonian",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/08%3A_Polyelectronic_Atoms/8.01%3A_Potential_Energy_and_the_Hamiltonian"
+            },
+            {
+              "n": "8.2",
+              "title": "The Aufbau Principle",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/08%3A_Polyelectronic_Atoms/8.02%3A_The_Aufbau_Principle"
+            },
+            {
+              "n": "8.3",
+              "title": "Orbital Diagrams",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/08%3A_Polyelectronic_Atoms/8.03%3A_Orbital_Diagrams"
+            },
+            {
+              "n": "8.4",
+              "title": "Angular Momentum Coupling",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/08%3A_Polyelectronic_Atoms/8.04%3A_Angular_Momentum_Coupling"
+            },
+            {
+              "n": "8.5",
+              "title": "The Pauli Exclusion Principle",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/08%3A_Polyelectronic_Atoms/8.05%3A_The_Pauli_Exclusion_Principle"
+            },
+            {
+              "n": "8.6",
+              "title": "Atomic Spectroscopy",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/08%3A_Polyelectronic_Atoms/8.06%3A_Atomic_Spectroscopy"
+            },
+            {
+              "n": "8.7",
+              "title": "Vocabulary and Concepts",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/08%3A_Polyelectronic_Atoms/8.07%3A_Vocabulary_and_Concepts"
+            },
+            {
+              "n": "8.8",
+              "title": "Learning Objectives",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/08%3A_Polyelectronic_Atoms/8.08%3A_Learning_Objectives"
+            },
+            {
+              "n": "8.9",
+              "title": "Problems",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/08%3A_Polyelectronic_Atoms/8.09%3A_Problems"
+            }
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "9",
+          "title": "Molecules",
+          "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/09%3A_Molecules",
+          "topics": ["he.chemistry.physical-2#3"],
+          "lessons": [
+            {
+              "n": "9.1",
+              "title": "Potential Energy and the Hamiltonian",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/09%3A_Molecules/9.01%3A_Potential_Energy_and_the_Hamiltonian"
+            },
+            {
+              "n": "9.2",
+              "title": "The Born-Oppenheimer Approximation",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/09%3A_Molecules/9.02%3A_The_Born-Oppenheimer_Approximation"
+            },
+            {
+              "n": "9.3",
+              "title": "Molecular Orbital Theory",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/09%3A_Molecules/9.03%3A_Molecular_Orbital_Theory"
+            },
+            {
+              "n": "9.4",
+              "title": "Hund's coupling cases (a) and (b)",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/09%3A_Molecules/9.04%3A_Hund's_coupling_cases_(a)_and_(b)"
+            },
+            {
+              "n": "9.5",
+              "title": "Diatomic Term Symbols",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/09%3A_Molecules/9.05%3A_Diatomic_Term_Symbols"
+            },
+            {
+              "n": "9.6",
+              "title": "Herzberg Diagrams",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/09%3A_Molecules/9.06%3A_Herzberg_Diagrams"
+            },
+            {
+              "n": "9.7",
+              "title": "Vibronic Transitions",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/09%3A_Molecules/9.07%3A_Vibronic_Transitions"
+            },
+            {
+              "n": "9.8",
+              "title": "Term Symbols for Polyatomic Molecules",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/09%3A_Molecules/9.08%3A_Term_Symbols_for_Polyatomic_Molecules"
+            },
+            {
+              "n": "9.9",
+              "title": "Group Theoretical Approach to Molecular Orbitals",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/09%3A_Molecules/9.09%3A_Group_Theoretical_Approach_to_Molecular_Orbitals"
+            },
+            {
+              "n": "9.10",
+              "title": "References",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/09%3A_Molecules/9.10%3A_References"
+            },
+            {
+              "n": "9.11",
+              "title": "Vocabulary and Concepts",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/09%3A_Molecules/9.11%3A_Vocabulary_and_Concepts"
+            },
+            {
+              "n": "9.12",
+              "title": "Learning Objectives",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/09%3A_Molecules/9.12%3A_Learning_Objectives"
+            }
+          ]
+        },
+        {
+          "n": "10",
+          "title": "Lasers",
+          "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/10%3A_Lasers",
+          "topics": ["he.chemistry.physical-2#4"],
+          "lessons": [
+            {
+              "n": "10.1",
+              "title": "Fractional Population of Quantum States",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/10%3A_Lasers/10.01%3A_Fractional_Population_of_Quantum_States"
+            },
+            {
+              "n": "10.2",
+              "title": "Types of Lasers",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/10%3A_Lasers/10.02%3A_Types_of_Lasers"
+            },
+            {
+              "n": "10.3",
+              "title": "Examples of Laser Systems",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/10%3A_Lasers/10.03%3A_Examples_of_Laser_Systems"
+            },
+            {
+              "n": "10.4",
+              "title": "Laser Spectroscopy",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/10%3A_Lasers/10.04%3A_Laser_Spectroscopy"
+            },
+            {
+              "n": "10.5",
+              "title": "References",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/10%3A_Lasers/10.05%3A_References"
+            },
+            {
+              "n": "10.6",
+              "title": "Vocabulary and Concepts",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/10%3A_Lasers/10.06%3A_Vocabulary_and_Concepts"
+            },
+            {
+              "n": "10.7",
+              "title": "Problems",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/10%3A_Lasers/10.07%3A_Problems"
+            }
+          ]
+        },
+        {
+          "n": "11",
+          "title": "Quantum Strangeness",
+          "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/11%3A_Quantum_Strangeness",
+          "topics": [],
+          "notes": "Interpretation topics; no topic.",
+          "lessons": [
+            {
+              "n": "",
+              "title": "1",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/11%3A_Quantum_Strangeness/11.01%3A_Nodes_and_Wave_Nature#fn1"
+            },
+            {
+              "n": "11.1",
+              "title": "Nodes and Wave Nature",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/11%3A_Quantum_Strangeness/11.01%3A_Nodes_and_Wave_Nature"
+            },
+            {
+              "n": "11.2",
+              "title": "Quantum Interference",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/11%3A_Quantum_Strangeness/11.02%3A_Quantum_Interference"
+            },
+            {
+              "n": "11.3",
+              "title": "The Stern-Gerlach Experiment",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/11%3A_Quantum_Strangeness/11.03%3A_The_Stern-Gerlach_Experiment"
+            },
+            {
+              "n": "11.4",
+              "title": "Spooky Action at a Distance",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/11%3A_Quantum_Strangeness/11.04%3A_Spooky_Action_at_a_Distance"
+            },
+            {
+              "n": "11.5",
+              "title": "Bell's Inequality",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/11%3A_Quantum_Strangeness/11.05%3A_Bell's_Inequality"
+            },
+            {
+              "n": "11.6",
+              "title": "References",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/11%3A_Quantum_Strangeness/11.06%3A_References"
+            }
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "12",
+          "title": "Appendices",
+          "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/12%3A_Appendices",
+          "topics": [],
+          "notes": "No taxonomy topic.",
+          "lessons": [
+            {
+              "n": "12.1",
+              "title": "Appendix I",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/12%3A_Appendices/12.01%3A_Appendix_I"
+            },
+            {
+              "n": "12.2",
+              "title": "Appendix II – Selected Character Tables",
+              "url": "https://chem.libretexts.org/Bookshelves/Physical_and_Theoretical_Chemistry_Textbook_Maps/Quantum_Chemistry_with_Applications_in_Spectroscopy_(Fleming)/12%3A_Appendices/12.02%3A_Appendix_II__Selected_Character_Tables"
+            }
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        }
+      ],
+      "title": "Fleming, Quantum Chemistry with Applications in Spectroscopy"
+    }
+  ]
+}

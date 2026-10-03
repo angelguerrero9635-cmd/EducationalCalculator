@@ -1,0 +1,95 @@
+{
+  "id": "wikibooks-introduction-to-chemical-engineering-processes",
+  "curriculum": "Introduction to Chemical Engineering Processes (Wikibooks)",
+  "publisher": "Wikibooks",
+  "edition": "live wiki, read 2026-10-02",
+  "subject": "chemical",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "attribution": "Introduction to Chemical Engineering Processes, Wikibooks contributors, https://en.wikibooks.org/wiki/Introduction_to_Chemical_Engineering_Processes, CC BY-SA 4.0."
+  },
+  "terms": {
+    "unit": "Page"
+  },
+  "sourceUrl": "https://en.wikibooks.org/wiki/Introduction_to_Chemical_Engineering_Processes",
+  "retrieved": "2026-10-02",
+  "notes": "Page list from the book index. Practice-problem pages exist for chapters 1–3 and mathematical methods; later chapters have worked examples in the text (recycle, reactions with recycle).",
+  "books": [
+    {
+      "course": "he.engineering.material-energy-balances",
+      "title": "Introduction to Chemical Engineering Processes",
+      "url": "https://en.wikibooks.org/wiki/Introduction_to_Chemical_Engineering_Processes",
+      "units": [
+        {
+          "n": "1",
+          "title": "Introduction; units; significant figures; chemistry review",
+          "url": "https://en.wikibooks.org/wiki/Introduction_to_Chemical_Engineering_Processes/Units",
+          "topics": ["he.engineering.material-energy-balances#0"]
+        },
+        {
+          "n": "2",
+          "title": "What is a mass balance; converting information into mass flows; using the mass balance",
+          "url": "https://en.wikibooks.org/wiki/Introduction_to_Chemical_Engineering_Processes/How_to_use_the_mass_balance",
+          "topics": [
+            "he.engineering.material-energy-balances#0",
+            "he.engineering.material-energy-balances#1"
+          ],
+          "examples": [
+            "salt pan evaporation",
+            "flow, area and radius from mass flow",
+            "pipe constriction"
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Multiple components; multiple processes",
+          "url": "https://en.wikibooks.org/wiki/Introduction_to_Chemical_Engineering_Processes/Problem_Solving_with_Multiple_Components",
+          "topics": ["he.engineering.material-energy-balances#1"],
+          "examples": ["mixture densities", "book plant (limiting input)"],
+          "notation": ["degrees-of-freedom table before solving"]
+        },
+        {
+          "n": "4",
+          "title": "Recycle: why, how to analyze, a simple system with recycle",
+          "url": "https://en.wikibooks.org/wiki/Introduction_to_Chemical_Engineering_Processes/How_to_Analyze_a_Recycle_System",
+          "topics": ["he.engineering.material-energy-balances#1"],
+          "examples": ["cleaning process with recycle"]
+        },
+        {
+          "n": "5",
+          "title": "Mole balances; reactions with recycle; atom balances",
+          "url": "https://en.wikibooks.org/wiki/Introduction_to_Chemical_Engineering_Processes/Reactions_with_Recycle",
+          "topics": ["he.engineering.material-energy-balances#2"],
+          "examples": ["ethylene hydrogenation with membrane separator and purge"],
+          "notation": ["extent of reaction ξ; fractional conversion"]
+        },
+        {
+          "n": "6",
+          "title": "Non-ideal gases; vapor–liquid equilibrium; generalized correlations",
+          "url": "https://en.wikibooks.org/wiki/Introduction_to_Chemical_Engineering_Processes/Vapor-Liquid_equilibrium",
+          "topics": [
+            "he.engineering.chemical-thermodynamics#0",
+            "he.engineering.chemical-thermodynamics#2"
+          ]
+        },
+        {
+          "n": "7",
+          "title": "Steady-state energy balance; unsteady mass and energy balances",
+          "url": "https://en.wikibooks.org/wiki/Introduction_to_Chemical_Engineering_Processes/Steady_state_energy_balance",
+          "topics": ["he.engineering.material-energy-balances#3"]
+        },
+        {
+          "n": "App.",
+          "title": "Statistics; root finding; linear systems; plotting; Excel; MATLAB; unit-operation reference; notation",
+          "url": "https://en.wikibooks.org/wiki/Introduction_to_Chemical_Engineering_Processes/Numerical_Root_Finding_Methods",
+          "topics": [],
+          "notes": "Mathematical methods: he.engineering.numerical-methods.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        }
+      ]
+    }
+  ]
+}

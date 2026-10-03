@@ -1,0 +1,260 @@
+{
+  "id": "roylance-mechanics-of-materials",
+  "curriculum": "Mechanics of Materials",
+  "publisher": "MIT (LibreTexts Engineering edition)",
+  "edition": "LibreTexts edition",
+  "subject": "classical",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Mechanics of Materials by David Roylance (MIT), Engineering LibreTexts. CC BY-NC-SA 4.0."
+  },
+  "terms": {
+    "unit": "Chapter",
+    "lesson": "Section"
+  },
+  "sourceUrl": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_of_Materials_(Roylance)",
+  "retrieved": "2026-10-02",
+  "notes": "Open text (CC BY-NC-SA 4.0): chapters and sections; section exercises recorded as types in classical.jsonl (ROY-*).",
+  "books": [
+    {
+      "grade": "college",
+      "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_of_Materials_(Roylance)",
+      "units": [
+        {
+          "n": "1",
+          "title": "Tensile Response of Materials",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_of_Materials_(Roylance)/01%3A_Tensile_Response_of_Materials",
+          "topics": [
+            "he.engineering.mechanics-of-materials#0",
+            "he.engineering.materials-science#3"
+          ],
+          "examples": [
+            "rod stress and elongation",
+            "true stress–strain and necking",
+            "rule of mixtures for composites",
+            "rubber elasticity"
+          ],
+          "lessons": [
+            {
+              "n": "1.01",
+              "title": "Introduction to Elastic Response",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_of_Materials_(Roylance)/01%3A_Tensile_Response_of_Materials/1.01%3A_Introduction_to_Elastic_Response"
+            },
+            {
+              "n": "1.02",
+              "title": "Atomistics of Elasticity",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_of_Materials_(Roylance)/01%3A_Tensile_Response_of_Materials/1.02%3A_Atomistics_of_Elasticity"
+            },
+            {
+              "n": "1.03",
+              "title": "Introduction to Composites",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_of_Materials_(Roylance)/01%3A_Tensile_Response_of_Materials/1.03%3A_Introduction_to_Composites"
+            },
+            {
+              "n": "1.04",
+              "title": "Stress-Strain Curves",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_of_Materials_(Roylance)/01%3A_Tensile_Response_of_Materials/1.04%3A_Stress-Strain_Curves"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Simple Tensile and Shear Structures",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_of_Materials_(Roylance)/02%3A_Simple_Tensile_and_Shear_Structures",
+          "topics": [
+            "he.engineering.mechanics-of-materials#0",
+            "he.engineering.mechanics-of-materials#1",
+            "he.engineering.mechanics-of-materials#2",
+            "he.engineering.statics#1"
+          ],
+          "examples": ["truss forces and deflection", "thin-walled vessels", "torsion of shafts"],
+          "notation": ["hoop stress pr/t"],
+          "lessons": [
+            {
+              "n": "2.01",
+              "title": "Trusses",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_of_Materials_(Roylance)/02%3A_Simple_Tensile_and_Shear_Structures/2.01%3A_Trusses"
+            },
+            {
+              "n": "2.02",
+              "title": "Pressure Vessels",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_of_Materials_(Roylance)/02%3A_Simple_Tensile_and_Shear_Structures/2.02%3A_Pressure_Vessels"
+            },
+            {
+              "n": "2.03",
+              "title": "Shear and Torsion",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_of_Materials_(Roylance)/02%3A_Simple_Tensile_and_Shear_Structures/2.03%3A_Shear_and_Torsion"
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "General Concepts of Stress and Strain",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_of_Materials_(Roylance)/03%3A_General_Concepts_of_Stress_and_Strain",
+          "topics": [
+            "he.engineering.advanced-solid-mechanics#0",
+            "he.engineering.advanced-solid-mechanics#1"
+          ],
+          "examples": ["Mohr's circle", "3-D principal stresses", "compliance matrices"],
+          "notation": ["index notation σ_ij"],
+          "lessons": [
+            {
+              "n": "3.01",
+              "title": "Kinematics",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_of_Materials_(Roylance)/03%3A_General_Concepts_of_Stress_and_Strain/3.01%3A_Kinematics"
+            },
+            {
+              "n": "3.02",
+              "title": "Equilibrium",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_of_Materials_(Roylance)/03%3A_General_Concepts_of_Stress_and_Strain/3.02%3A_Equilibrium"
+            },
+            {
+              "n": "3.03",
+              "title": "Tensor Transformations",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_of_Materials_(Roylance)/03%3A_General_Concepts_of_Stress_and_Strain/3.03%3A_Tensor_Transformations"
+            },
+            {
+              "n": "3.04",
+              "title": "Constitutive Relations",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_of_Materials_(Roylance)/03%3A_General_Concepts_of_Stress_and_Strain/3.04%3A_Constitutive_Relations"
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Bending",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_of_Materials_(Roylance)/04%3A_Bending",
+          "topics": [
+            "he.engineering.mechanics-of-materials#3",
+            "he.engineering.mechanics-of-materials#4",
+            "he.engineering.mechanics-of-materials#5"
+          ],
+          "examples": [
+            "V–M diagrams with singularity functions",
+            "bending and shear stresses",
+            "beam deflection by superposition",
+            "laminated plates"
+          ],
+          "lessons": [
+            {
+              "n": "4.01",
+              "title": "Shear and Bending Moment Diagrams",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_of_Materials_(Roylance)/04%3A_Bending/4.01%3A_Shear_and_Bending_Moment_Diagrams"
+            },
+            {
+              "n": "4.02",
+              "title": "Stresses in Beams",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_of_Materials_(Roylance)/04%3A_Bending/4.02%3A_Stresses_in_Beams"
+            },
+            {
+              "n": "4.03",
+              "title": "Beam Displacements",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_of_Materials_(Roylance)/04%3A_Bending/4.03%3A_Beam_Displacements"
+            },
+            {
+              "n": "4.04",
+              "title": "Laminated Composite Plates",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_of_Materials_(Roylance)/04%3A_Bending/4.04%3A_Laminated_Composite_Plates"
+            }
+          ]
+        },
+        {
+          "n": "5",
+          "title": "General Stress Analysis",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_of_Materials_(Roylance)/05%3A_General_Stress_Analysis",
+          "topics": [
+            "he.engineering.advanced-solid-mechanics#4",
+            "he.engineering.finite-element-analysis#0",
+            "he.engineering.finite-element-analysis#2"
+          ],
+          "examples": [
+            "thick-walled vessels (Lamé)",
+            "strain-gauge rosettes",
+            "FEA of trusses and plane stress",
+            "viscoelasticity"
+          ],
+          "lessons": [
+            {
+              "n": "5.01",
+              "title": "Closed-Form Solutions",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_of_Materials_(Roylance)/05%3A_General_Stress_Analysis/5.01%3A_Closed-Form_Solutions"
+            },
+            {
+              "n": "5.02",
+              "title": "Experimental Solutions",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_of_Materials_(Roylance)/05%3A_General_Stress_Analysis/5.02%3A_Experimental_Solutions"
+            },
+            {
+              "n": "5.03",
+              "title": "Finite Element Analysis",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_of_Materials_(Roylance)/05%3A_General_Stress_Analysis/5.03%3A_Finite_Element_Analysis"
+            },
+            {
+              "n": "5.04",
+              "title": "Linear Viscoelasticity",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_of_Materials_(Roylance)/05%3A_General_Stress_Analysis/5.04%3A_Linear_Viscoelasticity"
+            }
+          ]
+        },
+        {
+          "n": "6",
+          "title": "Yield and Fracture",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_of_Materials_(Roylance)/06%3A_Yield_and_Fracture",
+          "topics": [
+            "he.engineering.advanced-solid-mechanics#3",
+            "he.engineering.machine-design#0",
+            "he.engineering.machine-design#1",
+            "he.engineering.materials-science#3"
+          ],
+          "examples": [
+            "von Mises and Tresca checks",
+            "dislocation basis of yield",
+            "Weibull strength",
+            "fracture toughness",
+            "S–N and Goodman"
+          ],
+          "lessons": [
+            {
+              "n": "6.01",
+              "title": "Yield and Plastic Flow",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_of_Materials_(Roylance)/06%3A_Yield_and_Fracture/6.01%3A_Yield_and_Plastic_Flow"
+            },
+            {
+              "n": "6.02",
+              "title": "Dislocation Basis of Yield and Creep",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_of_Materials_(Roylance)/06%3A_Yield_and_Fracture/6.02%3A_Dislocation_Basis_of_Yield_and_Creep"
+            },
+            {
+              "n": "6.03",
+              "title": "Statistics of Fracture",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_of_Materials_(Roylance)/06%3A_Yield_and_Fracture/6.03%3A_Statistics_of_Fracture"
+            },
+            {
+              "n": "6.04",
+              "title": "Introduction to Fracture Mechanics",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_of_Materials_(Roylance)/06%3A_Yield_and_Fracture/6.04%3A_Introduction_to_Fracture_Mechanics"
+            },
+            {
+              "n": "6.05",
+              "title": "Fatigue",
+              "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_of_Materials_(Roylance)/06%3A_Yield_and_Fracture/6.05%3A_Fatigue"
+            }
+          ]
+        },
+        {
+          "n": "7",
+          "title": "Appendices",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Mechanics_of_Materials_(Roylance)/07%3A_Appendices",
+          "topics": [],
+          "notes": "No college topic of this group fits (outside the earth and geography courses, or a taxonomy gap).",
+          "lessons": [],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        }
+      ],
+      "title": "Mechanics of Materials"
+    }
+  ]
+}

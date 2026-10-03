@@ -1,0 +1,64 @@
+{
+  "id": "mit-ocw-3-35",
+  "curriculum": "MIT OCW 3.35 Fracture and Fatigue",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Fall 2003",
+  "subject": "mechanical",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Subra Suresh. 3.35 Fracture and Fatigue, Fall 2003. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu/courses/3-35-fracture-and-fatigue-fall-2003/. License: Creative Commons BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Assignment",
+    "lesson": "Part"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/3-35-fracture-and-fatigue-fall-2003/",
+  "retrieved": "2026-10-02",
+  "notes": "Instructor(s): Subra Suresh. Units are the problem sets, labs and exams read (type only; no solutions fetched). Calendar (topic order) as published: SES # TOPICS 1 Introduction Fracture and fatigue of bulk materials, thin films and surfaces Macroscopic failure modes Microscopic failure modes Part I: FRACTURE 2-3 Mechanics of Fracture Energy release rate and crack driving force Linear elastic fracture mechanics Elastic-plastic fracture mechanics Resistance curves Measurement matters and ASTM standards 4-5 Micromechanisms of Fracture Ductile failure Transitions in fracture modes Stress-based criteria Strain-based criteria Energy-based criteria 6-7 Microstructural Effects Ferrous alloys Aluminum alloys Matrix failure versus grain boundary fracture Damage processes in ceramics and polymers Thin films and surface coatings 8 Interface Fracture Mechanics and Toughness Locus Elasticity aspects Plasticity aspects 9 Toughening Mechanisms Deflection toughening Process zone toughening Ligament toughening Interfacial toughening 10 Fracture Mechan Third-party content inside OCW files (figures credited to other publishers) was not used.",
+  "books": [
+    {
+      "grade": "college",
+      "url": "https://ocw.mit.edu/courses/3-35-fracture-and-fatigue-fall-2003/",
+      "units": [
+        {
+          "n": "1",
+          "title": "ps3",
+          "url": "https://ocw.mit.edu/courses/3-35-fracture-and-fatigue-fall-2003/resources/ps3/",
+          "topics": ["he.engineering.materials-science#3"],
+          "examples": [
+            "toughness from a critical crack-tip opening displacement and the J-integral"
+          ],
+          "lessons": [],
+          "notes": "1 question record(s): OCW-3.35-PS3-5"
+        },
+        {
+          "n": "2",
+          "title": "ps5",
+          "url": "https://ocw.mit.edu/courses/3-35-fracture-and-fatigue-fall-2003/resources/ps5/",
+          "topics": ["he.engineering.machine-design#1"],
+          "examples": ["life of an aircraft tail designed to a third of its yield strength"],
+          "lessons": [],
+          "notes": "1 question record(s): OCW-3.35-PS5-5"
+        },
+        {
+          "n": "3",
+          "title": "ps7",
+          "url": "https://ocw.mit.edu/courses/3-35-fracture-and-fatigue-fall-2003/resources/ps7/",
+          "topics": ["he.engineering.machine-design#1"],
+          "examples": [
+            "Basquin S–N relation: life at a stress amplitude",
+            "effect of a shot-peening residual stress on fatigue strength",
+            "fatigue check of a rod under mean and alternating axial force",
+            "why the Goodman line can be written with the endurance limit"
+          ],
+          "lessons": [],
+          "notes": "4 question record(s): OCW-3.35-PS7-1, OCW-3.35-PS7-2, OCW-3.35-PS7-3, OCW-3.35-PS7-4"
+        }
+      ],
+      "title": "MIT OCW 3.35 Fracture and Fatigue"
+    }
+  ]
+}

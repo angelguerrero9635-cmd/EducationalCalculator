@@ -1,0 +1,73 @@
+{
+  "id": "mit-ocw-5.111-2008",
+  "curriculum": "MIT OCW 5.111 Principles of Chemical Science",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Fall 2008",
+  "subject": "chemistry",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Catherine Drennan and Elizabeth Vogel Taylor. 5.111 Principles of Chemical Science. Fall 2008. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu. License: Creative Commons BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Group",
+    "lesson": "Exam"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/5-111-principles-of-chemical-science-fall-2008/",
+  "retrieved": "2026-10-02",
+  "notes": "Reference only (CC BY-NC-SA 4.0; OCW terms https://ocw.mit.edu/pages/privacy-and-terms-of-use/). Lecture list and order from the course pages; examples, ranges and notation are our words, read from the exams and problem sets (no problem text or numbers copied). Third-party figures inside OCW PDFs are outside the licence and were not used. Lecture order matches 5.111SC (2014); this record lists the exams read.",
+  "books": [
+    {
+      "course": "5.111",
+      "url": "https://ocw.mit.edu/courses/5-111-principles-of-chemical-science-fall-2008/",
+      "units": [
+        {
+          "n": "Exams",
+          "title": "Exams 1–3",
+          "topics": [
+            "he.chemistry.gen-chem-1#0",
+            "he.chemistry.gen-chem-1#4",
+            "he.chemistry.gen-chem-1#3",
+            "he.chemistry.gen-chem-2#1",
+            "he.chemistry.gen-chem-2#2",
+            "he.chemistry.gen-chem-2#3",
+            "he.chemistry.gen-chem-2#4"
+          ],
+          "notation": [
+            "RT/ℑ = 0.025693 V at 25.00 °C; ln K = (nℑ/RT)ΔE°",
+            "E₃° = (n₁E₁° − n₂E₂°)/n₃ for combining half-reactions"
+          ],
+          "ranges": ["Z up to 20 for one-electron ions", "x-ray photon energies ~10⁻¹⁶ J"],
+          "lessons": [
+            {
+              "n": "E1",
+              "title": "Exam 1: photoelectric effect, one-electron atoms, multi-electron atoms (PES, Z_eff), periodic trends",
+              "topics": ["he.chemistry.gen-chem-1#0"],
+              "url": "https://ocw.mit.edu/courses/5-111-principles-of-chemical-science-fall-2008/resources/exam1_fa08/"
+            },
+            {
+              "n": "E2",
+              "title": "Exam 2: Lewis structures, ionic bonds, hybridization, MO theory, thermochemistry",
+              "topics": ["he.chemistry.gen-chem-1#4", "he.chemistry.gen-chem-1#3"],
+              "url": "https://ocw.mit.edu/courses/5-111-principles-of-chemical-science-fall-2008/resources/exam2_fa08/"
+            },
+            {
+              "n": "E3",
+              "title": "Exam 3: thermodynamics, equilibrium, acid–base, titration, redox",
+              "topics": [
+                "he.chemistry.gen-chem-2#1",
+                "he.chemistry.gen-chem-2#2",
+                "he.chemistry.gen-chem-2#3",
+                "he.chemistry.gen-chem-2#4"
+              ],
+              "url": "https://ocw.mit.edu/courses/5-111-principles-of-chemical-science-fall-2008/resources/exam3_fa08/"
+            }
+          ]
+        }
+      ],
+      "title": "5.111"
+    }
+  ]
+}

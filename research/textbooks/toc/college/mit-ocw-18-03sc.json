@@ -1,0 +1,277 @@
+{
+  "id": "mit-ocw-18-03sc",
+  "curriculum": "MIT OCW 18.03SC Differential Equations",
+  "publisher": "MIT OpenCourseWare (Haynes Miller, Jeremy Orloff, John Lewis, Arthur Mattuck)",
+  "edition": "Fall 2011 (scholar course)",
+  "subject": "math",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Haynes Miller, Jeremy Orloff, Dr. John Lewis, and Arthur Mattuck. 18.03SC Differential Equations. Fall 2011. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu. License: Creative Commons BY-NC-SA."
+  },
+  "terms": "MIT OCW: CC BY-NC-SA 4.0; syllabus order and problem types only (type records). Third-party content on OCW pages is outside the licence and was skipped.",
+  "sourceUrl": "https://ocw.mit.edu/courses/18-03sc-differential-equations-fall-2011/",
+  "retrieved": "2026-10-02",
+  "notes": "Units and sessions from the course navigation. 18.03 has no series-solutions unit (taxonomy DE #4) and puts complex numbers and sinusoids in Unit I. Notation: x′ and ẋ, p(D) operator notation, exponential response formula, W(s) transfer function.",
+  "books": [
+    {
+      "title": "18.03SC Differential Equations (Fall 2011)",
+      "url": "https://ocw.mit.edu/courses/18-03sc-differential-equations-fall-2011/",
+      "units": [
+        {
+          "n": "I",
+          "title": "First Order Differential Equations",
+          "url": "https://ocw.mit.edu/courses/18-03sc-differential-equations-fall-2011/pages/unit-i-first-order-differential-equations/",
+          "topics": ["he.math.diff-eq#0"],
+          "sections": [
+            {
+              "n": "I.1",
+              "title": "Conventions"
+            },
+            {
+              "n": "I.2",
+              "title": "Basic DE's"
+            },
+            {
+              "n": "I.3",
+              "title": "Geometric Methods"
+            },
+            {
+              "n": "I.4",
+              "title": "Numerical Methods"
+            },
+            {
+              "n": "I.5",
+              "title": "Linear ODE's"
+            },
+            {
+              "n": "I.6",
+              "title": "Integrating Factors"
+            },
+            {
+              "n": "I.7",
+              "title": "Complex Arithmetic",
+              "topics": ["he.math.diff-eq#1"]
+            },
+            {
+              "n": "I.8",
+              "title": "Sinusoidal Functions",
+              "topics": ["he.math.diff-eq#1"]
+            },
+            {
+              "n": "I.9",
+              "title": "Constant Coefficients"
+            },
+            {
+              "n": "I.10",
+              "title": "Exponential Input"
+            },
+            {
+              "n": "I.11",
+              "title": "Autonomous Equations"
+            },
+            {
+              "n": "I.12",
+              "title": "Linear vs. Nonlinear"
+            },
+            {
+              "n": "Exam 1",
+              "title": "Exam 1",
+              "examples": [
+                "growth, logistic and harvesting model",
+                "phase line and direction field",
+                "Euler step and a linear IVP",
+                "complex arithmetic and amplitude–phase form",
+                "complex replacement"
+              ]
+            }
+          ]
+        },
+        {
+          "n": "II",
+          "title": "Second Order Constant Coefficient Linear Equations",
+          "url": "https://ocw.mit.edu/courses/18-03sc-differential-equations-fall-2011/pages/unit-ii-second-order-constant-coefficient-linear-equations/",
+          "topics": ["he.math.diff-eq#1"],
+          "sections": [
+            {
+              "n": "II.1",
+              "title": "Characteristic Equation"
+            },
+            {
+              "n": "II.2",
+              "title": "Damped Oscillators"
+            },
+            {
+              "n": "II.3",
+              "title": "Exponential Response"
+            },
+            {
+              "n": "II.4",
+              "title": "Gain and Phase Lag"
+            },
+            {
+              "n": "II.5",
+              "title": "Undetermined Coefficients"
+            },
+            {
+              "n": "II.6",
+              "title": "Linear Operators"
+            },
+            {
+              "n": "II.7",
+              "title": "Pure Resonance"
+            },
+            {
+              "n": "II.8",
+              "title": "Frequency Response"
+            },
+            {
+              "n": "II.9",
+              "title": "Applications"
+            },
+            {
+              "n": "Exam 2",
+              "title": "Exam 2",
+              "examples": [
+                "damping regimes",
+                "undetermined coefficients and superposition",
+                "maximal amplitude",
+                "complex gain and phase lag",
+                "recover m, b, k from a resonant solution"
+              ]
+            }
+          ]
+        },
+        {
+          "n": "III",
+          "title": "Fourier Series and Laplace Transform",
+          "url": "https://ocw.mit.edu/courses/18-03sc-differential-equations-fall-2011/pages/unit-iii-fourier-series-and-laplace-transform/",
+          "topics": ["he.math.diff-eq#2"],
+          "sections": [
+            {
+              "n": "III.1",
+              "title": "Fourier Series: Basics",
+              "topics": [],
+              "note": "no college topic: Fourier series"
+            },
+            {
+              "n": "III.2",
+              "title": "Operations",
+              "topics": [],
+              "note": "no college topic: Fourier series"
+            },
+            {
+              "n": "III.3",
+              "title": "Periodic Input",
+              "topics": [],
+              "note": "no college topic: Fourier series"
+            },
+            {
+              "n": "III.4",
+              "title": "Step and Delta"
+            },
+            {
+              "n": "III.5",
+              "title": "Impulse Response"
+            },
+            {
+              "n": "III.6",
+              "title": "Convolution"
+            },
+            {
+              "n": "III.7",
+              "title": "Laplace Transform"
+            },
+            {
+              "n": "III.8",
+              "title": "Partial Fractions"
+            },
+            {
+              "n": "III.9",
+              "title": "Solving IVP's"
+            },
+            {
+              "n": "III.10",
+              "title": "Transfer Functions"
+            },
+            {
+              "n": "III.11",
+              "title": "Poles"
+            },
+            {
+              "n": "Exam 3",
+              "title": "Exam 3",
+              "examples": [
+                "read a Fourier series",
+                "generalized derivative with deltas",
+                "step response by convolution",
+                "inverse Laplace transforms",
+                "pole diagram"
+              ]
+            }
+          ]
+        },
+        {
+          "n": "IV",
+          "title": "First-order Systems",
+          "url": "https://ocw.mit.edu/courses/18-03sc-differential-equations-fall-2011/pages/unit-iv-first-order-systems/",
+          "topics": ["he.math.diff-eq#3"],
+          "sections": [
+            {
+              "n": "IV.1",
+              "title": "Linear Systems"
+            },
+            {
+              "n": "IV.2",
+              "title": "Matrix Methods"
+            },
+            {
+              "n": "IV.3",
+              "title": "Phase Portraits"
+            },
+            {
+              "n": "IV.4",
+              "title": "Matrix Exponentials"
+            },
+            {
+              "n": "IV.5",
+              "title": "Nonlinear Systems"
+            },
+            {
+              "n": "IV.6",
+              "title": "Linearization"
+            },
+            {
+              "n": "IV.7",
+              "title": "Limit Cycles and Chaos"
+            },
+            {
+              "n": "Final",
+              "title": "Final Exam",
+              "topics": [
+                "he.math.diff-eq#0",
+                "he.math.diff-eq#1",
+                "he.math.diff-eq#2",
+                "he.math.diff-eq#3"
+              ],
+              "examples": [
+                "isoclines and Euler",
+                "phase line and a decay model",
+                "complex exponentials",
+                "particular solutions",
+                "square-wave Fourier series",
+                "generalized derivatives",
+                "transfer function",
+                "e^(Bt)",
+                "phase-portrait types by parameter",
+                "nonlinear equilibria and Jacobian"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

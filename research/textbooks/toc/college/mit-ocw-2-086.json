@@ -1,0 +1,111 @@
+{
+  "id": "mit-ocw-2-086",
+  "curriculum": "MIT OCW 2.086 Numerical Computation for Mechanical Engineers",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Fall 2014",
+  "subject": "classical",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Nicolas G. Hadjiconstantinou and Anthony T. Patera. 2.086 Numerical Computation for Mechanical Engineers, Fall 2014. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu/courses/2-086-numerical-computation-for-mechanical-engineers-fall-2014/. License: Creative Commons BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Assignment",
+    "lesson": "Part"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/2-086-numerical-computation-for-mechanical-engineers-fall-2014/",
+  "retrieved": "2026-10-02",
+  "notes": "Instructor(s): Nicolas G. Hadjiconstantinou and Anthony T. Patera. Units are the problem sets, labs and exams read (type only; no solutions fetched). Calendar (topic order) as published: WEEK # MATLAB ® TOPICS ASSESSMENTS Unit I: (Numerical) Calculus—Interpolation, Integration, Differentiation 1 The MATLAB Environment 2 Syntax. Scripts Mini Quiz 1: Nutshell: Interpolation 3 Single-Index Arrays. Plot Mini Quiz 1 (cont.): Nutshell: Interpolation Unit II: Probability; Statistical Estimation; Monte-Carlo Methods 4 Functions Assignment 1 Due 5 Random Sampling (rand, randn, randi). Norminv and finv Mini Quiz 2: Nutshell: Introduction to Probability and Statistics 6 Double-Index Arrays Mini Quiz 3: Nutshell: Monte Carlo Methods Unit III: (Numerical) Linear Algebra I—Matrices and Vectors, Least-Squares; Regression 7 Matrix and Vector Operations Assignment 2 Due 8 (evil) inv. Backslash Operator (Least-Squares) Mini Quiz 4: Nutshell: Matrices and Vectors 9 Mini Quiz 5: Nutshell: Least Squares Fitting of Models to Data Unit IV: Numerical Ordinary Differential Equations (ODEs); Eige Third-party content inside OCW files (figures credited to other publishers) was not used.",
+  "books": [
+    {
+      "grade": "college",
+      "url": "https://ocw.mit.edu/courses/2-086-numerical-computation-for-mechanical-engineers-fall-2014/",
+      "units": [
+        {
+          "n": "1",
+          "title": "mit2_086f14_assignment_1",
+          "url": "https://ocw.mit.edu/courses/2-086-numerical-computation-for-mechanical-engineers-fall-2014/resources/mit2_086f14_assignment_1/",
+          "topics": [
+            "he.engineering.engineering-programming#1",
+            "he.engineering.engineering-programming#3",
+            "he.engineering.engineering-programming#0",
+            "he.engineering.numerical-methods#2",
+            "he.engineering.engineering-programming#2",
+            "he.engineering.numerical-methods#3"
+          ],
+          "examples": [
+            "area of a surface of revolution from radius data",
+            "build a row array of the first N terms",
+            "build the array of terms up to a limit with a while loop",
+            "finite-difference derivative of tabulated data",
+            "index of the interval holding a point",
+            "integral of tabulated data on [0, 1]",
+            "loop until a Fibonacci term passes a limit",
+            "piecewise-linear interpolant at a point"
+          ],
+          "lessons": [],
+          "notes": "12 question record(s): OCW-2.086-A1-5, OCW-2.086-A1-12, OCW-2.086-A1-1, OCW-2.086-A1-2, OCW-2.086-A1-3, OCW-2.086-A1-4, OCW-2.086-A1-6, OCW-2.086-A1-7, OCW-2.086-A1-8, OCW-2.086-A1-9, OCW-2.086-A1-10, OCW-2.086-A1-11"
+        },
+        {
+          "n": "2",
+          "title": "mit2_086f14_assignment_2",
+          "url": "https://ocw.mit.edu/courses/2-086-numerical-computation-for-mechanical-engineers-fall-2014/resources/mit2_086f14_assignment_2/",
+          "topics": [
+            "he.engineering.engineering-programming#3",
+            "he.engineering.engineering-programming#1"
+          ],
+          "examples": [
+            "fraction of springs within a stiffness band by sampling",
+            "function returning a Monte Carlo area and its confidence interval",
+            "sequence of array operations on a 20 × 40 matrix"
+          ],
+          "lessons": [],
+          "notes": "3 question record(s): OCW-2.086-A2-6, OCW-2.086-A2-7, OCW-2.086-A2-1"
+        },
+        {
+          "n": "3",
+          "title": "mit2_086f14_assignment_4",
+          "url": "https://ocw.mit.edu/courses/2-086-numerical-computation-for-mechanical-engineers-fall-2014/resources/mit2_086f14_assignment_4/",
+          "topics": [
+            "he.engineering.engineering-programming#3",
+            "he.engineering.numerical-methods#4"
+          ],
+          "examples": [
+            "Euler solution of a lumped cooling ODE with a forcing term",
+            "falling ball with drag by an ODE solver",
+            "pass a function handle to another function"
+          ],
+          "lessons": [],
+          "notes": "3 question record(s): OCW-2.086-A4-1, OCW-2.086-A4-2, OCW-2.086-A4-3"
+        },
+        {
+          "n": "4",
+          "title": "mit2_086f14_assignment_5",
+          "url": "https://ocw.mit.edu/courses/2-086-numerical-computation-for-mechanical-engineers-fall-2014/resources/mit2_086f14_assignment_5/",
+          "topics": ["he.engineering.numerical-methods#1", "he.engineering.numerical-methods#0"],
+          "examples": [
+            "equilibrium of three masses on springs as Au = f",
+            "function that finds a root for a parameter"
+          ],
+          "lessons": [],
+          "notes": "2 question record(s): OCW-2.086-A5-2, OCW-2.086-A5-5"
+        },
+        {
+          "n": "5",
+          "title": "mit2_086f14_assignment_3",
+          "url": "https://ocw.mit.edu/courses/2-086-numerical-computation-for-mechanical-engineers-fall-2014/resources/mit2_086f14_assignment_3/",
+          "topics": ["he.engineering.numerical-methods#2"],
+          "examples": [
+            "acceleration of a ball from noisy heights by a quadratic fit",
+            "calibrate an IR distance sensor by least squares"
+          ],
+          "lessons": [],
+          "notes": "2 question record(s): OCW-2.086-A3-1, OCW-2.086-A3-2"
+        }
+      ],
+      "title": "MIT OCW 2.086 Numerical Computation for Mechanical Engineers"
+    }
+  ]
+}

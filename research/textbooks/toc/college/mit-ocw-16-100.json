@@ -1,0 +1,115 @@
+{
+  "id": "mit-ocw-16-100",
+  "curriculum": "MIT OpenCourseWare 16.100 Aerodynamics",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Fall 2005",
+  "subject": "aerospace",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "David Darmofal. 16.100 Aerodynamics. Fall 2005. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu/courses/16-100-aerodynamics-fall-2005/. License: CC BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Lecture block"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/16-100-aerodynamics-fall-2005/",
+  "retrieved": "2026-10-02",
+  "sources": [
+    "https://ocw.mit.edu/courses/16-100-aerodynamics-fall-2005/pages/syllabus/",
+    "https://ocw.mit.edu/courses/16-100-aerodynamics-fall-2005/pages/calendar/"
+  ],
+  "notes": "Weekly topics from the course calendar; homework (9 sets) and two take-home exams read for types. Text: Anderson, Fundamentals of Aerodynamics (3rd ed.), cited by section in each set. Graduate-leaning: many items are derivations or panel-code work the plan does not cover.",
+  "books": [
+    {
+      "course": null,
+      "title": "16.100 Aerodynamics (Fall 2005)",
+      "url": "https://ocw.mit.edu/courses/16-100-aerodynamics-fall-2005/",
+      "units": [
+        {
+          "n": "1",
+          "title": "Integral equations; lift and drag",
+          "url": "https://ocw.mit.edu/courses/16-100-aerodynamics-fall-2005/pages/calendar/",
+          "topics": ["he.engineering.aerodynamics#1"],
+          "examples": ["control-volume force on a body", "jet turned by a cylinder"],
+          "notation": ["L′ and D′ per span; c_l, c_d section coefficients"]
+        },
+        {
+          "n": "2",
+          "title": "Kinematics, stress–strain, Navier–Stokes",
+          "topics": ["he.engineering.aerodynamics#1"],
+          "examples": [
+            "vorticity and strain rate of Couette and Poiseuille profiles",
+            "vortex with a core"
+          ],
+          "notes": "Fluid-mechanics groundwork (he.engineering.fluid-mechanics)."
+        },
+        {
+          "n": "3",
+          "title": "2-D potential flow",
+          "topics": ["he.engineering.aerodynamics#0"],
+          "examples": ["pressure on a half-cylinder roof in wind", "one-vortex airfoil model"]
+        },
+        {
+          "n": "4",
+          "title": "2-D panel methods",
+          "topics": ["he.engineering.aerodynamics#0"],
+          "examples": ["three-vortex triangle airfoil with the Kutta condition (3 × 3 system)"],
+          "ranges": ["α −5 to 5°; 12% thick"]
+        },
+        {
+          "n": "5",
+          "title": "Thin airfoil theory and vortex lattice methods",
+          "topics": ["he.engineering.aerodynamics#0"],
+          "examples": ["flap effectiveness dc_l/dη", "camber design for a target c_l"],
+          "notation": [
+            "c_l = 2π(α − α_L0) in radians; camber line z(x); η flap angle positive down"
+          ]
+        },
+        {
+          "n": "6",
+          "title": "Lifting line and high-aspect-ratio wings",
+          "topics": ["he.engineering.aerodynamics#2"],
+          "examples": [
+            "two-term Fourier lifting line for a tapered wing",
+            "twist and span efficiency"
+          ],
+          "ranges": ["AR 5–10; taper 0.6–1; C_L 0.5"],
+          "notation": ["Γ(θ) = 2bV∞ΣA_n sin nθ; e span efficiency; C_Di = C_L² ÷ (πeAR)"]
+        },
+        {
+          "n": "7",
+          "title": "Compressibility and quasi-1-D flow",
+          "topics": ["he.engineering.aerodynamics#3", "he.engineering.compressible-flow#0"]
+        },
+        {
+          "n": "8",
+          "title": "Oblique shock waves and expansion fans",
+          "topics": ["he.engineering.compressible-flow#1", "he.engineering.compressible-flow#3"],
+          "examples": ["flat plate at Mach 4: c_l and c_d by shock-expansion"]
+        },
+        {
+          "n": "9–13",
+          "title": "Navier–Stokes; laminar, transitional and turbulent boundary layers",
+          "topics": ["he.engineering.aerodynamics#1"],
+          "examples": [
+            "Stokes first problem",
+            "momentum-integral with an assumed profile",
+            "Blasius friction drag of two airfoils",
+            "fighter wing friction drag full scale and 1/10 model",
+            "wall suction"
+          ],
+          "ranges": ["Re 10⁵–10⁷; transition Re_x ≈ 5 × 10⁵"],
+          "notes": "Boundary layers belong to he.engineering.fluid-mechanics#5 too; aerodynamics#1 pages cover Re and drag only."
+        },
+        {
+          "n": "14",
+          "title": "Airfoil design",
+          "topics": ["he.engineering.aerodynamics#0"],
+          "examples": ["panel-code (Xfoil) polars of NACA 00xx sections"]
+        }
+      ]
+    }
+  ]
+}

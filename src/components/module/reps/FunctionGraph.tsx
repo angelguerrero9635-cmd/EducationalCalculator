@@ -18,6 +18,7 @@ import {
   type NumOrVar,
 } from '@/data/modules/typesFunctionGraph';
 import { formatNumber } from '@/engine/format';
+import { subscriptRuns } from '@/engine/subscripts';
 import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
@@ -45,6 +46,12 @@ import { SignBand, SignFill, signCaption } from './FunctionSign';
 import { reshape, reshapeCaption, reshapeVars } from './functionGraphHs2g';
 import { transformCurve, transformText } from './functionGraphHs3b';
 import { RiemannRects, riemannCaption } from './functionGraphRiemann';
+import { he1eLayer, type He1eLayerProps } from './FunctionGraphMarksHe1e';
+import { he2gLayer } from './FunctionGraphMarksHe2g';
+import { he3aLayer } from './FunctionGraphMarksHe3a';
+import { he3aCaption, he3aWindow, he3aXs, he3aYs } from './functionGraphHe3a';
+import { he2gCaption, he2gWindow, he2gXs, he2gYs } from './functionGraphHe2g';
+import { he1eCaption, he1ePanel, he1eXs, he1eYs, repeatCurve } from './functionGraphHe1e';
 import { riemannOf, riemannXs } from './riemann';
 import { toShownUnits, unitPositionIds } from './functionGraphUnits';
 import { usePaintIds, url } from './paint';
@@ -77,18 +84,69 @@ const widthOf = (text: string, size: number) =>
 
 // ─── Text with italic letters ─────────────────────────────────────────────────
 
-/** Single letters in italic (x, f, a), words upright (sin, ln, max). */
+/**
+ * Single letters in italic (x, f, a), words upright (sin, ln, max); a "_" subscript (F_A0,
+ * U_eff) small and lowered, never a raw underscore.
+ */
 function Runs({ text, size }: { text: string; size: number }) {
-  const parts = text.split(/([A-Za-z]+)/).filter((p) => p !== '');
-  return (
-    <>
-      {parts.map((p, i) => (
-        <TSpan key={i} fontStyle={/^[A-Za-z]$/.test(p) ? 'italic' : 'normal'} fontSize={size}>
-          {p}
-        </TSpan>
-      ))}
-    </>
-  );
+  return <>{runSpans(text, size)}</>;
+}
+
+/**
+ * Runs' spans, flat: `lead` shifts the first one (a raised or lowered part set inside one text
+ * element; a shift on a span wrapping others is not applied on the web).
+ */
+function runSpans(
+  text: string,
+  size: number,
+  key = 'r',
+  lead: { dx?: number; dy?: number } = {},
+): ReactNode[] {
+  const drop = size * 0.3;
+  const spans: ReactNode[] = [];
+  let down = false;
+  const first = () => {
+    if (!spans.length) return { dx: lead.dx ?? 0, dy: lead.dy ?? 0 };
+    return { dx: 0, dy: 0 };
+  };
+  subscriptRuns(text).forEach((r, j) => {
+    if (r.sub) {
+      const f = first();
+      spans.push(
+        <TSpan key={`${key}s${j}`} dx={f.dx} dy={drop + f.dy} fontSize={size * 0.72}>
+          {r.s}
+        </TSpan>,
+      );
+      down = true;
+      return;
+    }
+    r.s
+      .split(/([A-Za-z]+)/)
+      .filter((p) => p !== '')
+      .forEach((p, i) => {
+        const f = first();
+        spans.push(
+          <TSpan
+            key={`${key}${j}-${i}`}
+            dx={f.dx}
+            dy={(down ? -drop : 0) + f.dy}
+            fontStyle={/^[A-Za-z]$/.test(p) ? 'italic' : 'normal'}
+            fontSize={size}
+          >
+            {p}
+          </TSpan>,
+        );
+        down = false;
+      });
+  });
+  // Back on the line, so whatever is set after this text sits where it should.
+  if (down)
+    spans.push(
+      <TSpan key={`${key}up`} dy={-drop} fontSize={size}>
+        {'\u200B'}
+      </TSpan>,
+    );
+  return spans;
 }
 
 const width = widthOf;
@@ -114,7 +172,11 @@ function layout(
   let cx = x;
   let up = size;
   let down = 4;
+  const simple = (t: Tok) => !('frac' in t) && !('root' in t) && !('cases' in t);
+  /** Tokens before this index were drawn with the run before them. */
+  let skipTo = 0;
   toks.forEach((t, i) => {
+    if (i < skipTo) return;
     const k = `${key}-${i}`;
     if ('frac' in t) {
       const s = size - 1;
@@ -185,30 +247,39 @@ function layout(
       up = Math.max(up, y - h0);
       down = Math.max(down, h1 - y);
       cx += 19 + fw + Math.max(...laid.map((l) => l.when.w));
-    } else if (t.sup || t.sub) {
-      // A superscript after ")" starts a little right, so the italic letter clears the bracket.
-      const prev = toks[i - 1];
-      if (t.sup && prev && 't' in prev && !prev.sup && prev.t.endsWith(')')) cx += size * 0.18 + 2;
-      nodes.push(
-        <ChartText
-          key={k}
-          x={cx}
-          y={y + (t.sup ? -size * 0.45 : size * 0.3)}
-          fontSize={SUP}
-          fill={color}
-        >
-          <Runs text={t.t} size={SUP} />
-        </ChartText>,
+    } else {
+      // A run of plain, raised and lowered text is one text element: the browser sets each
+      // part after the last, so an exponent sits right after its base (estimated widths put
+      // "e⁻⁰·¹ᵗ" over the e, or left a gap before it).
+      let j = i;
+      while (j < toks.length && simple(toks[j]!)) j++;
+      skipTo = j;
+      const run = (toks.slice(i, j) as { t: string; sup?: boolean; sub?: boolean }[]).filter(
+        (r) => r.t,
       );
-      if (t.sup) up = Math.max(up, size * 0.45 + SUP);
-      cx += width(t.t, SUP) + 1;
-    } else if (t.t) {
+      if (!run.length) return;
+      let level = 0;
+      const spans = run.map((r, n) => {
+        const at = r.sup ? -size * 0.45 : r.sub ? size * 0.3 : 0;
+        const dy = at - level;
+        level = at;
+        const prev = run[n - 1];
+        // A superscript after ")" starts a little right, so the italic letter clears it.
+        const dx = r.sup && prev && !prev.sup && prev.t.endsWith(')') ? size * 0.18 + 2 : 0;
+        const fs = r.sup || r.sub ? SUP : size;
+        return runSpans(r.t, fs, `${n}-`, { dx, dy });
+      });
       nodes.push(
         <ChartText key={k} x={cx} y={y} fontSize={size} fill={color}>
-          <Runs text={t.t} size={size} />
+          {spans}
         </ChartText>,
       );
-      cx += width(t.t, size);
+      run.forEach((r, n) => {
+        const prev = run[n - 1];
+        if (r.sup && prev && !prev.sup && prev.t.endsWith(')')) cx += size * 0.18 + 2;
+        if (r.sup) up = Math.max(up, size * 0.45 + SUP);
+        cx += r.sup || r.sub ? width(r.t, SUP) + 1 : width(r.t, size);
+      });
     }
   });
   return { node: <G>{nodes}</G>, w: cx - x, up, down };
@@ -385,7 +456,9 @@ export function FunctionGraph({
   const dep = spec.axes && spec.name ? spec.name : 'y';
   // H94: |f(x)|, a horizontal factor and a kept domain reshape the family's curve.
   const shaped = reshape(spec, get, say, xName, (f, l) => buildCurve(f, get, say, l));
-  const main = shaped.curve;
+  const main = repeatCurve(spec, shaped.curve, get, say, xName, (f, l) =>
+    buildCurve(f, get, say, l),
+  ); // HC10
   const allKnown = [...familyVars(given), ...reshapeVars(given)].every((id) => rep.known(id));
   // H106: g(x) = a·f(x − h) + k beside f, an arrow from f's point to its image.
   const tf = spec.other ? undefined : spec.transform;
@@ -440,6 +513,9 @@ export function FunctionGraph({
     ...(limX !== undefined ? [limX - 3, limX, limX + 3] : []),
     ...(shadeRange ?? []),
     ...riemannXs(spec.riemann, get), // H106
+    ...he1eXs(spec, main, other, get), // HC10, HC12
+    ...he2gXs(spec, main, get), // HC37, HC38
+    ...he3aXs(spec, main, get), // HC45
     ...main.domain
       .flatMap((i) => [i.lo, i.hi])
       .filter((v) => Number.isFinite(v) && Math.abs(v) < 50),
@@ -504,6 +580,9 @@ export function FunctionGraph({
       : []),
     // H106: the log sum's plunge to its asymptote, below its zero.
     ...(main.family === 'logSum' ? [-2.5] : []),
+    ...he1eYs(spec, main, other, get), // HC10, HC12
+    ...he2gYs(spec, main, get), // HC37, HC38
+    ...he3aYs(spec, main, get), // HC45
   ].filter((v) => Number.isFinite(v) && Math.abs(v) < 1e6);
 
   const legend: { toks: Tok[]; name: string; color: string; dash?: string }[] = [
@@ -564,7 +643,7 @@ export function FunctionGraph({
       ys,
       pw,
       ph,
-      fixed: spec.window,
+      fixed: spec.window ?? he2gWindow(spec, get) ?? he3aWindow(spec, get, known, main), // HC37, HC42, HC92
       xMin: spec.xMin,
       square: !!spec.inverse,
     });
@@ -607,11 +686,13 @@ export function FunctionGraph({
 
   return (
     <View>
-      <Canvas aspect={(w) => (legendH + (named ? 30 : 12) + 30 + w * plotAspect) / w}>
+      <Canvas
+        aspect={(w) => (legendH + (named ? 30 : 12) + 30 + w * plotAspect + he1ePanel(spec, w)) / w}
+      >
         {({ w, h }) => {
           const L0 = 34;
-          const top = legendH + (named ? 26 : 10);
-          const bottom = h - (named ? 40 : 24);
+          const top = legendH + (named ? 29 : 10);
+          const bottom = h - (named ? 40 : 24) - he1ePanel(spec, w); // HC12: the F(x) panel
           const pw0 = w - L0 - 14;
           const win = frozen.value ?? live(pw0, bottom - top);
           drawn.current = win;
@@ -1009,6 +1090,33 @@ export function FunctionGraph({
               `(${numText(atPt.x, piX)}, ${fName}(${numText(atPt.x, piX)}))`;
             label(atPt.x, atPt.y, rep.known(spec.at!.x) ? t : undefined, c.chartHighlight);
           }
+          // HC10, HC12: the families' marks, the repeated dose and the regions.
+          const layerProps: He1eLayerProps = {
+            spec,
+            main,
+            other,
+            get,
+            allKnown,
+            c,
+            sx,
+            sy,
+            win,
+            L,
+            pw,
+            top,
+            bottom,
+            w,
+            h,
+            xName,
+            fName,
+            label,
+            dots,
+            dashes,
+            valueOf: (id) => (rep.known(id) ? rep.value(id) : undefined),
+          };
+          const he1e = he1eLayer(layerProps);
+          const he2g = he2gLayer(layerProps); // HC37, HC38
+          const he3a = he3aLayer(layerProps); // HC42, HC45, HC92
           // Limit: arrows along the curve from both sides.
           const lim =
             limX !== undefined && inX(limX)
@@ -1287,7 +1395,7 @@ export function FunctionGraph({
                     {spec.axes?.y ? (
                       <ChartText
                         x={Math.max(4, L - 20)}
-                        y={top - 9}
+                        y={top - 12}
                         fontSize={chart.label}
                         fontWeight="700"
                       >
@@ -1370,6 +1478,9 @@ export function FunctionGraph({
                       faded={!allKnown}
                     />
                   ) : null}
+                  {he1e.under}
+                  {he2g.under}
+                  {he3a.under}
                   {dashes.map((d, i) => (
                     <Line
                       key={`d${i}`}
@@ -1592,6 +1703,9 @@ export function FunctionGraph({
                     />
                   ) : null}
                 </G>
+                {he1e.over}
+                {he2g.over}
+                {he3a.over}
                 {ineq && allKnown ? (
                   <SignBand curve={main} sign={ineq} sx={sx} sy={sy} win={win} />
                 ) : null}
@@ -1871,6 +1985,9 @@ export function FunctionGraph({
         `Shaded: the points ${shade} the curve, y ${shade === 'above' ? '>' : '<'} ${fName}(${xName})`,
       );
     if (spec.riemann) lines.push(riemannCaption(spec.riemann, main.f, get, xName)); // H106
+    lines.push(...he1eCaption(spec, main, other, get, xName, fName, gName)); // HC10, HC12
+    lines.push(...he2gCaption(spec, main, get, xName, fName)); // HC37, HC38
+    lines.push(...he3aCaption(spec, main, get, known, xName, fName)); // HC42, HC45, HC92
     if (spec.inequality) lines.push(signCaption(main, ineq, fName, xName));
     lines.push(...reshapeCaption(spec, shaped, fName, xName));
     if (spec.inverse) lines.push(`The inverse is the reflection across the line y = ${xName}`);

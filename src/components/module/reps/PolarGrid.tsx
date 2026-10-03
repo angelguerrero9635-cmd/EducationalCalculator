@@ -14,6 +14,7 @@ import { HsdGrid, niceStep, niceWindow } from './hsdGrid';
 import { angleText, short } from './hsdKit';
 import { MathChip, MathText } from './hsdText';
 import { CURVE_FIELDS, PATH_FIELDS, pathAt, petals, polarR, polarSpan } from './polar';
+import { usePolarHe3c, useParametricHe3c } from './PolarHe3c'; // HC53
 import { polarConicText } from './polarConic';
 
 const RAD = Math.PI / 180;
@@ -72,8 +73,6 @@ export function PolarGrid({ spec, calc }: { spec: PolarGridSpec; calc: Calculato
   // The ellipse's t is an angle, in degrees.
   // A "?" t reads "?", and the point's coordinates read "?" until t and the path's numbers are
   // all typed: never the example's point behind a "?".
-  const tText =
-    par && !isKnown(par.t) ? '?' : par?.family === 'ellipse' ? `${short(t)}°` : short(t);
   const pathKnown =
     !!par &&
     isKnown(par.t) &&
@@ -82,6 +81,13 @@ export function PolarGrid({ spec, calc }: { spec: PolarGridSpec; calc: Calculato
     );
   const xyText = (p: { x: number; y: number }) =>
     pathKnown ? `(${short(p.x)}, ${short(p.y)})` : '(?, ?)';
+  const he3cPar = useParametricHe3c(par, pv, t, isKnown); // HC53: cycloid, radians, length
+  const tText =
+    par && !isKnown(par.t)
+      ? '?'
+      : par?.family === 'ellipse'
+        ? `${short(t)}°`
+        : (he3cPar.tText ?? short(t));
   // The path over its range, stretched to reach a t typed past either end.
   const [t0, t1] = par ? [Math.min(par.range[0], t), Math.max(par.range[1], t)] : [0, 0];
   const samples = par
@@ -119,8 +125,10 @@ export function PolarGrid({ spec, calc }: { spec: PolarGridSpec; calc: Calculato
         thText: isKnown(spec.point.theta) ? angleText(num(spec.point.theta), show) : '?',
       }
     : undefined;
+  const he3c = usePolarHe3c(spec, num, isKnown, cv, cvKnown, show); // HC53: area, region, tangent
   const maxR = Math.max(
     1,
+    ...he3c.radii,
     ...curvePts.map((p) => Math.hypot(p.x, p.y)),
     ...(pt ? [Math.abs(pt.r)] : []),
   );
@@ -193,6 +201,8 @@ export function PolarGrid({ spec, calc }: { spec: PolarGridSpec; calc: Calculato
     );
   }
 
+  lines.push(...he3c.lines, ...he3cPar.lines);
+
   return (
     <View>
       <Canvas
@@ -238,6 +248,7 @@ export function PolarGrid({ spec, calc }: { spec: PolarGridSpec; calc: Calculato
               <>
                 <Svg width={w} height={h}>
                   <HsdGrid f={f} step={{ x: win.value.step, y: win.value.step }} />
+                  {he3cPar.draw(f)}
                   <Path
                     d={d(samples)}
                     stroke={c.chartHighlight}
@@ -274,7 +285,7 @@ export function PolarGrid({ spec, calc }: { spec: PolarGridSpec; calc: Calculato
                     {/* Below the point, away from the y-axis numbers (the edge clamps it). */}
                     <MathChip
                       x={f.sx(at.x) + (at.x < 0 ? -10 : 10)}
-                      y={f.sy(at.y) + 24}
+                      y={f.sy(at.y) + (par.family === 'cycloid' ? -14 : 24)}
                       text={`t = ${tText}: ${xyText(at)}`}
                       anchor={at.x < 0 ? 'end' : 'start'}
                       w={w}
@@ -378,6 +389,7 @@ export function PolarGrid({ spec, calc }: { spec: PolarGridSpec; calc: Calculato
                       fill={c.chartMuted}
                     />
                   ))}
+                {he3c.under(P, k, cx, cy)}
                 {spec.curve ? (
                   <Path
                     d={curvePts
@@ -401,6 +413,7 @@ export function PolarGrid({ spec, calc }: { spec: PolarGridSpec; calc: Calculato
                     size={chart.value}
                   />
                 ) : null}
+                {he3c.over(P, R, cx, cy)}
                 {pt && p ? (
                   <G opacity={pt.known ? 1 : 0.35}>
                     {/* The ray at θ, and the opposite ray a negative r lands on. */}

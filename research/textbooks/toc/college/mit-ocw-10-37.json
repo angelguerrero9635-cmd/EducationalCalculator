@@ -1,0 +1,79 @@
+{
+  "id": "mit-ocw-10-37",
+  "curriculum": "MIT OpenCourseWare 10.37 Chemical and Biological Reaction Engineering",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Spring 2007",
+  "subject": "chemical",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "William Green, Jr., K. Dane Wittrup. 10.37 Chemical and Biological Reaction Engineering. Spring 2007. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu/courses/10-37-chemical-and-biological-reaction-engineering-spring-2007/. License: CC BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Lecture block"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/10-37-chemical-and-biological-reaction-engineering-spring-2007/",
+  "retrieved": "2026-10-02",
+  "sources": [
+    "https://ocw.mit.edu/courses/10-37-chemical-and-biological-reaction-engineering-spring-2007/pages/calendar/",
+    "https://ocw.mit.edu/courses/10-37-chemical-and-biological-reaction-engineering-spring-2007/pages/assignments/"
+  ],
+  "notes": "Lecture list from the Lecture Notes page; problem sets 1–4 and 6, two midterms and the final read (Fogler problems skipped).",
+  "books": [
+    {
+      "course": "he.engineering.reaction-engineering",
+      "title": "10.37 Chemical and Biological Reaction Engineering (Spring 2007)",
+      "url": "https://ocw.mit.edu/courses/10-37-chemical-and-biological-reaction-engineering-spring-2007/",
+      "units": [
+        {
+          "n": "1–4",
+          "title": "Stoichiometry; rates and mechanisms; cell growth and enzyme kinetics; reactive intermediates",
+          "topics": [
+            "he.engineering.reaction-engineering#0",
+            "he.engineering.reaction-engineering#3"
+          ],
+          "examples": [
+            "airbag stoichiometry",
+            "pseudo-first-order rate constant",
+            "Michaelis–Menten by quasi-steady state"
+          ]
+        },
+        {
+          "n": "5–9",
+          "title": "CSTR; selectivity; batch; PFR; size comparisons, series and parallel",
+          "topics": [
+            "he.engineering.reaction-engineering#1",
+            "he.engineering.reaction-engineering#2"
+          ],
+          "examples": [
+            "k from CSTR data",
+            "CSTR volume for 40% conversion",
+            "two CSTR layouts",
+            "parallel CSTR feed split"
+          ],
+          "notation": ["τ = V ÷ v₀; X; Levenspiel F_A0 ÷ (−r_A)"]
+        },
+        {
+          "n": "10–11",
+          "title": "Non-ideal mixing and residence-time distribution; nonisothermal reactors and stability",
+          "topics": ["he.engineering.reaction-engineering#1"],
+          "examples": ["tracer RTD", "runaway explosion"],
+          "notes": "RTD and nonisothermal reactors: plan gaps."
+        },
+        {
+          "n": "12–15",
+          "title": "Data analysis; chemostats; binding kinetics; gene expression dynamics",
+          "topics": ["he.engineering.reaction-engineering#0"]
+        },
+        {
+          "n": "16–",
+          "title": "Catalysis; mass transfer and reaction",
+          "topics": ["he.engineering.reaction-engineering#3"],
+          "examples": ["Eley–Rideal rate law"]
+        }
+      ]
+    }
+  ]
+}

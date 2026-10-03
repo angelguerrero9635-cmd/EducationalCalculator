@@ -1,0 +1,91 @@
+{
+  "id": "mit-ocw-1-72",
+  "curriculum": "MIT OCW 1.72 Groundwater Hydrology",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Fall 2005",
+  "subject": "earth-science",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Charles Harvey. 1.72 Groundwater Hydrology, Fall 2005. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu/courses/1-72-groundwater-hydrology-fall-2005/. License: Creative Commons BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Assignment",
+    "lesson": "Part"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/1-72-groundwater-hydrology-fall-2005/",
+  "retrieved": "2026-10-02",
+  "notes": "Instructor(s): Charles Harvey. Units are the problem sets, labs and exams read (type only; no solutions fetched). Calendar (topic order) as published: Lec # TOPICS KEY DATES 1 Course Introduction, Water Balance Equation 2 Aquifers, Porosity, and Darcy’s Law 3 Hydraulic Head and Fluid Potential 4 Continuity and Flow Nets Problem set 1 due 5 Groundwater Flow Patterns Problem set 2 due 6 Groundwater/Surface Water Interactions Problem set 3 due 7 Transient Systems and Groundwater Storage 8 Pump Test Analysis Problem set 5 due 9 Numerical Modeling of Groundwater Flow FEFLOW® problem set 1 due 10 Superposition 11 Solute Transport in Groundwater 12 Soil Moisture I 13 Soil Moisture II FEFLOW® problem set 2 due 14 Natural Tracers 15 Hydraulic Conductivity: The Permeater Third-party content inside OCW files (figures credited to other publishers) was not used.",
+  "books": [
+    {
+      "grade": "college",
+      "url": "https://ocw.mit.edu/courses/1-72-groundwater-hydrology-fall-2005/",
+      "units": [
+        {
+          "n": "1",
+          "title": "ps2",
+          "url": "https://ocw.mit.edu/courses/1-72-groundwater-hydrology-fall-2005/resources/ps2/",
+          "topics": ["he.earth-science.hydrology#2"],
+          "examples": [
+            "falling-head permeameter: derive head against time from Darcy's law and mass balance",
+            "layered aquifer: equivalent horizontal and vertical K, transmissivity and flow per unit width"
+          ],
+          "lessons": [],
+          "notes": "2 question record(s): OCW-1.72-PS2-Q1, OCW-1.72-PS2-Q2"
+        },
+        {
+          "n": "2",
+          "title": "ps5",
+          "url": "https://ocw.mit.edu/courses/1-72-groundwater-hydrology-fall-2005/resources/ps5/",
+          "topics": ["he.earth-science.hydrology#2"],
+          "examples": [
+            "estimate K from heads in a line of wells and a plume's travel; time for a solute to reach a well (advection, sorption retardation)",
+            "steady pumping well at the centre of a circular island in a lake: head and drawdown with radius (Thiem with a constant-head boundary)"
+          ],
+          "lessons": [],
+          "notes": "2 question record(s): OCW-1.72-PS5-Q1, OCW-1.72-PS5-Q2"
+        },
+        {
+          "n": "3",
+          "title": "final_20041",
+          "url": "https://ocw.mit.edu/courses/1-72-groundwater-hydrology-fall-2005/resources/final_20041/",
+          "topics": ["he.earth-science.hydrology#2", "he.earth-science.hydrology#1"],
+          "examples": [
+            "explain the difference between paired terms (dispersivity and dispersion coefficient, effective and total stress, isotherms)",
+            "injection well near a no-flow boundary and a constant-head lake: place image wells; is the head change larger or smaller",
+            "label a subsurface cross-section: water table, vadose and phreatic zones, capillary fringe, confined and unconfined aquifers, potentiometric surface, perched water, artesian well",
+            "pumped confined aquifer: why flow toward the well computed from nearby heads grows with time (transient storage)",
+            "two mechanisms of overland flow (infiltration excess and saturation excess) and when each occurs"
+          ],
+          "lessons": [],
+          "notes": "5 question record(s): OCW-1.72-FINAL-Q2, OCW-1.72-FINAL-Q3, OCW-1.72-FINAL-Q4, OCW-1.72-FINAL-Q5, OCW-1.72-FINAL-Q6"
+        },
+        {
+          "n": "4",
+          "title": "labassn",
+          "url": "https://ocw.mit.edu/courses/1-72-groundwater-hydrology-fall-2005/resources/labassn/",
+          "topics": ["he.earth-science.hydrology#2"],
+          "examples": [
+            "field Darcy test: how a constant-head permeameter, a seepage meter and a differential head sampler give K, q and dh/dz"
+          ],
+          "lessons": [],
+          "notes": "1 question record(s): OCW-1.72-LAB-Q1"
+        },
+        {
+          "n": "5",
+          "title": "bangladesh_pset1",
+          "url": "https://ocw.mit.edu/courses/1-72-groundwater-hydrology-fall-2005/resources/bangladesh_pset1/",
+          "topics": ["he.earth-science.hydrology#0"],
+          "examples": [
+            "lumped bucket model of an irrigated aquifer: dry-season head change from pond, river and pumping fluxes"
+          ],
+          "lessons": [],
+          "notes": "1 question record(s): OCW-1.72-BGD-Q1"
+        }
+      ],
+      "title": "MIT OCW 1.72 Groundwater Hydrology"
+    }
+  ]
+}

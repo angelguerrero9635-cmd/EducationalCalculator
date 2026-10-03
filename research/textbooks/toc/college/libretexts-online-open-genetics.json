@@ -1,0 +1,660 @@
+{
+  "id": "libretexts-online-open-genetics",
+  "curriculum": "Nickle and Barrette-Ng, Online Open Genetics",
+  "publisher": "Todd Nickle and Isabelle Barrette-Ng (Mount Royal University, University of Calgary); LibreTexts",
+  "edition": "LibreTexts edition",
+  "subject": "biology",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-SA 3.0",
+    "url": "https://creativecommons.org/licenses/by-sa/3.0/",
+    "attribution": "Todd Nickle and Isabelle Barrette-Ng, Online Open Genetics, LibreTexts Biology. License: CC BY-SA 3.0."
+  },
+  "terms": {
+    "unit": "Chapter",
+    "lesson": "Section"
+  },
+  "sourceUrl": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)",
+  "retrieved": "2026-10-02",
+  "notes": "Reference only. Licence confirmed on LibreTexts: chapter pages tagged license:ccbysa and the exercise pages link creativecommons.org/licenses/by-sa/3.0 (the plan's \"CC BY-SA 3.0 (to confirm)\" holds). Exercises 2.E, 3.E, 5.E and 6.E were read for the records (type only); their answers were not used. Licence tags seen on chapter pages: license:ccbysa.",
+  "books": [
+    {
+      "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)",
+      "units": [
+        {
+          "n": "1",
+          "title": "Overview, DNA, and Genes",
+          "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/01%3A_Overview_DNA_and_Genes",
+          "topics": ["he.biology.genetics#2"],
+          "lessons": [
+            {
+              "n": "1.1",
+              "title": "Overview",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/01%3A_Overview_DNA_and_Genes/1.01%3A_Overview"
+            },
+            {
+              "n": "1.2",
+              "title": "DNA is the Genetic Material",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/01%3A_Overview_DNA_and_Genes/1.02%3A_DNA_is_the_Genetic_Material"
+            },
+            {
+              "n": "1.3",
+              "title": "The Structure of DNA",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/01%3A_Overview_DNA_and_Genes/1.03%3A__The_Structure_of_DNA"
+            },
+            {
+              "n": "1.4",
+              "title": "Genes are the Basic Units of Inheritance",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/01%3A_Overview_DNA_and_Genes/1.04%3A_Genes_are_the_Basic_Units_of_Inheritance"
+            },
+            {
+              "n": "1.5",
+              "title": "The Function of Genes",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/01%3A_Overview_DNA_and_Genes/1.05%3A_The_Function_of_Genes"
+            },
+            {
+              "n": "1.6",
+              "title": "The Nuclear Genome",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/01%3A_Overview_DNA_and_Genes/1.06%3A_The_Nuclear_Genome"
+            },
+            {
+              "n": "1.7",
+              "title": "Model Organisms Facilitate Genetic Advances",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/01%3A_Overview_DNA_and_Genes/1.07%3A_Model_Organisms_Facilitate_Genetic_Advances"
+            },
+            {
+              "n": "1.E",
+              "title": "Overview, DNA, and Genes (Exercises)",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/01%3A_Overview_DNA_and_Genes/1.E%3A_Overview_DNA_and_Genes_(Exercises)"
+            },
+            {
+              "n": "1.S",
+              "title": "Overview, DNA, and Genes (Summary)",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/01%3A_Overview_DNA_and_Genes/1.S%3A_Overview_DNA_and_Genes_(Summary)"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Chromosomes, Mitosis, and Meiosis",
+          "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/02%3A_Chromosomes_Mitosis_and_Meiosis",
+          "topics": ["he.biology.principles-1#3"],
+          "examples": [
+            "chromosomes and chromatids per cell through the cycle for a given 2n",
+            "alleles per cell by ploidy",
+            "draw anaphase I configurations"
+          ],
+          "lessons": [
+            {
+              "n": "2.1",
+              "title": "DNA is Packaged into Chromatin",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/02%3A_Chromosomes_Mitosis_and_Meiosis/2.01%3A_DNA_is_Packaged_into_Chromatin"
+            },
+            {
+              "n": "2.2",
+              "title": "Mitosis",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/02%3A_Chromosomes_Mitosis_and_Meiosis/2.02%3A_Mitosis"
+            },
+            {
+              "n": "2.3",
+              "title": "Meiosis",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/02%3A_Chromosomes_Mitosis_and_Meiosis/2.03%3A_Meiosis"
+            },
+            {
+              "n": "2.4",
+              "title": "The Cell Cycle and Changes in DNA Content",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/02%3A_Chromosomes_Mitosis_and_Meiosis/2.04%3A_The_Cell_Cycle_and_Changes_in_DNA_Content"
+            },
+            {
+              "n": "2.5",
+              "title": "Karyotypes Describe Chromosome Number and Structure",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/02%3A_Chromosomes_Mitosis_and_Meiosis/2.05%3A_Karyotypes_Describe_Chromosome_Number_and_Structure"
+            },
+            {
+              "n": "2.6",
+              "title": "Polyploidy Arises from Changes in Whole Sets of Chromosomes",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/02%3A_Chromosomes_Mitosis_and_Meiosis/2.06%3A_Polyploidy_Arises_from_Changes_in_Whole_Sets_of_Chromosomes"
+            },
+            {
+              "n": "2.7",
+              "title": "Endoreduplication",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/02%3A_Chromosomes_Mitosis_and_Meiosis/2.07%3A_Endoreduplication"
+            },
+            {
+              "n": "2.8",
+              "title": "Gene Balance",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/02%3A_Chromosomes_Mitosis_and_Meiosis/2.08%3A_Gene_Balance"
+            },
+            {
+              "n": "2.9",
+              "title": "Organellar Genomes",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/02%3A_Chromosomes_Mitosis_and_Meiosis/2.09%3A_Organellar_Genomes"
+            },
+            {
+              "n": "2.E",
+              "title": "Chromosomes, Mitosis, and Meiosis (Exercises)",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/02%3A_Chromosomes_Mitosis_and_Meiosis/2.E%3A_Chromosomes_Mitosis_and_Meiosis_(Exercises)"
+            },
+            {
+              "n": "2.S",
+              "title": "Chromosomes, Mitosis, and Meiosis (Summary)",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/02%3A_Chromosomes_Mitosis_and_Meiosis/2.S%3A_Chromosomes_Mitosis_and_Meiosis_(Summary)"
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Genetic Analysis of Single Genes",
+          "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/03%3A_Genetic_Analysis_of_Single_Genes",
+          "topics": ["he.biology.genetics#0", "he.biology.principles-1#4"],
+          "examples": [
+            "monohybrid F1 and F2; test cross",
+            "ABO genotypes of parents",
+            "match phenotypes to dominance terms"
+          ],
+          "lessons": [
+            {
+              "n": "3.1",
+              "title": "Mendel’s First Law",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/03%3A_Genetic_Analysis_of_Single_Genes/3.01%3A__Mendels_First_Law"
+            },
+            {
+              "n": "3.2",
+              "title": "Relationships Between Genes, Genotypes and Phenotypes",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/03%3A_Genetic_Analysis_of_Single_Genes/3.02%3A_Relationships_Between_Genes_Genotypes_and_Phenotypes"
+            },
+            {
+              "n": "3.3",
+              "title": "Biochemical Basis of Dominance",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/03%3A_Genetic_Analysis_of_Single_Genes/3.03%3A__Biochemical_Basis_of_Dominance"
+            },
+            {
+              "n": "3.4",
+              "title": "Crossing Techniques Used in Classical Genetics",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/03%3A_Genetic_Analysis_of_Single_Genes/3.04%3A__Crossing_Techniques_Used_in_Classical_Genetics"
+            },
+            {
+              "n": "3.5",
+              "title": "Sex-Linkage- An Exception to Mendel’s First Law",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/03%3A_Genetic_Analysis_of_Single_Genes/3.05%3A__Sex-Linkage-_An_Exception_to_Mendels_First_Law"
+            },
+            {
+              "n": "3.6",
+              "title": "Phenotypes May Not Be As Expected from the Genotype",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/03%3A_Genetic_Analysis_of_Single_Genes/3.06%3A__Phenotypes_May_Not_Be_As_Expected_from_the_Genotype"
+            },
+            {
+              "n": "3.7",
+              "title": "Phenotypic Ratios May Not Be As Expected",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/03%3A_Genetic_Analysis_of_Single_Genes/3.07%3A__Phenotypic_Ratios_May_Not_Be_As_Expected"
+            },
+            {
+              "n": "3.E",
+              "title": "Genetic Analysis of Single Genes (Exercises)",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/03%3A_Genetic_Analysis_of_Single_Genes/3.E%3A_Genetic_Analysis_of_Single_Genes_(Exercises)"
+            },
+            {
+              "n": "3.S",
+              "title": "Genetic Analysis of Single Genes (Summary)",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/03%3A_Genetic_Analysis_of_Single_Genes/3.S%3A_Genetic_Analysis_of_Single_Genes_(Summary)"
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Mutation and Variation",
+          "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/04%3A_Mutation_and_Variation",
+          "topics": ["he.biology.genetics#2"],
+          "lessons": [
+            {
+              "n": "4.1",
+              "title": "Mutation and Polymorphism",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/04%3A_Mutation_and_Variation/4.01%3A_Mutation_and_Polymorphism"
+            },
+            {
+              "n": "4.2",
+              "title": "Origins of Mutations",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/04%3A_Mutation_and_Variation/4.02%3A_Origins_of_Mutations"
+            },
+            {
+              "n": "4.3",
+              "title": "Genetic screening for mutations- Forward genetics",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/04%3A_Mutation_and_Variation/4.03%3A_Genetic_screening_for_mutations-_Forward_genetics"
+            },
+            {
+              "n": "4.4",
+              "title": "Types of Mutations",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/04%3A_Mutation_and_Variation/4.04%3A_Types_of_Mutations"
+            },
+            {
+              "n": "4.5",
+              "title": "Some mutations may not have detectable phenotypes",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/04%3A_Mutation_and_Variation/4.05%3A_Some_mutations_may_not_have_detectable_phenotypes"
+            },
+            {
+              "n": "4.6",
+              "title": "Complementation tests and Allelism",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/04%3A_Mutation_and_Variation/4.06%3A_Complementation_tests_and_Allelism"
+            },
+            {
+              "n": "4.7",
+              "title": "Example of Human Mutations",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/04%3A_Mutation_and_Variation/4.07%3A_Example_of_Human_Mutations"
+            },
+            {
+              "n": "4.E",
+              "title": "Mutation and Variation (Exercises)",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/04%3A_Mutation_and_Variation/4.E%3A_Mutation_and_Variation_(Exercises)"
+            },
+            {
+              "n": "4.S",
+              "title": "Mutation and Variation (Summary)",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/04%3A_Mutation_and_Variation/4.S%3A_Mutation_and_Variation_(Summary)"
+            }
+          ]
+        },
+        {
+          "n": "5",
+          "title": "Pedigrees and Populations",
+          "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/05%3A_Pedigrees_and_Populations",
+          "topics": ["he.biology.genetics#0", "he.biology.genetics#3"],
+          "examples": [
+            "mode of inheritance from pedigrees",
+            "risk through chains of carriers (½ × ½ × ¼)",
+            "Hardy–Weinberg from 1% homozygous recessive; test genotype counts"
+          ],
+          "ranges": ["samples of about 1200 individuals"],
+          "notation": ["p² + 2pq + q² = 1"],
+          "lessons": [
+            {
+              "n": "5.1",
+              "title": "Prelude to Pedigrees and Populations",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/05%3A_Pedigrees_and_Populations/5.01%3A_Prelude_to_Pedigrees_and_Populations"
+            },
+            {
+              "n": "5.2",
+              "title": "Pedigree Analysis",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/05%3A_Pedigrees_and_Populations/5.02%3A_Pedigree_Analysis"
+            },
+            {
+              "n": "5.3",
+              "title": "Inferring the Mode of Inheritance",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/05%3A_Pedigrees_and_Populations/5.03%3A_Inferring_the_Mode_of_Inheritance"
+            },
+            {
+              "n": "5.4",
+              "title": "Sporadic and Non-Heritable Diseases",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/05%3A_Pedigrees_and_Populations/5.04%3A_Sporadic_and_Non-Heritable_Diseases"
+            },
+            {
+              "n": "5.5",
+              "title": "Calculating Probabilities",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/05%3A_Pedigrees_and_Populations/5.05%3A_Calculating_Probabilities"
+            },
+            {
+              "n": "5.6",
+              "title": "Population Genetics",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/05%3A_Pedigrees_and_Populations/5.06%3A_Population_Genetics"
+            },
+            {
+              "n": "5.E",
+              "title": "Pedigrees and Populations (Exercises)",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/05%3A_Pedigrees_and_Populations/5.E%3A_Pedigrees_and_Populations_(Exercises)"
+            },
+            {
+              "n": "5.S",
+              "title": "Pedigrees and Populations (Summary)",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/05%3A_Pedigrees_and_Populations/5.S%3A_Pedigrees_and_Populations_(Summary)"
+            }
+          ]
+        },
+        {
+          "n": "6",
+          "title": "Genetic Analysis of Multiple Genes",
+          "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/06%3A_Genetic_Analysis_of_Multiple_Genes",
+          "topics": ["he.biology.genetics#0", "he.biology.principles-1#4"],
+          "examples": [
+            "pathway epistasis ratios 15:1, 12:4, 12:3:1, 9:7",
+            "product rule for a trihybrid cross"
+          ],
+          "lessons": [
+            {
+              "n": "6.1",
+              "title": "Dihybrid Crosses",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/06%3A_Genetic_Analysis_of_Multiple_Genes/6.01%3A_Dihybrid_Crosses"
+            },
+            {
+              "n": "6.2",
+              "title": "Epistasis and Other Gene Interactions",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/06%3A_Genetic_Analysis_of_Multiple_Genes/6.02%3A_Epistasis_and_Other_Gene_Interactions"
+            },
+            {
+              "n": "6.3",
+              "title": "Example of Multiple Genes Affecting One Character",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/06%3A_Genetic_Analysis_of_Multiple_Genes/6.03%3A_Example_of_Multiple_Genes_Affecting_One_Character"
+            },
+            {
+              "n": "6.E",
+              "title": "Genetic Analysis of Multiple Genes (Exercises)",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/06%3A_Genetic_Analysis_of_Multiple_Genes/6.E%3A_Genetic_Analysis_of_Multiple_Genes_(Exercises)"
+            },
+            {
+              "n": "6.S",
+              "title": "Genetic Analysis of Multiple Genes (Summary)",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/06%3A_Genetic_Analysis_of_Multiple_Genes/6.S%3A_Genetic_Analysis_of_Multiple_Genes_(Summary)"
+            }
+          ]
+        },
+        {
+          "n": "7",
+          "title": "Linkage and Mapping",
+          "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/07%3A_Linkage_and_Mapping",
+          "topics": ["he.biology.genetics#1"],
+          "examples": ["recombination frequency; three-point mapping; coefficient of coincidence"],
+          "lessons": [
+            {
+              "n": "7.1",
+              "title": "Linkage",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/07%3A_Linkage_and_Mapping/7.01%3A__Linkage"
+            },
+            {
+              "n": "7.2",
+              "title": "Recombination",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/07%3A_Linkage_and_Mapping/7.02%3A__Recombination"
+            },
+            {
+              "n": "7.3",
+              "title": "Linkage Reduces Recombination Frequency",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/07%3A_Linkage_and_Mapping/7.03%3A__Linkage_Reduces_Recombination_Frequency"
+            },
+            {
+              "n": "7.4",
+              "title": "Crossovers Allow Recombination of Linked Loci",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/07%3A_Linkage_and_Mapping/7.04%3A__Crossovers_Allow_Recombination_of_Linked_Loci"
+            },
+            {
+              "n": "7.5",
+              "title": "Inferring Recombination From Genetic Data",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/07%3A_Linkage_and_Mapping/7.05%3A__Inferring_Recombination_From_Genetic_Data"
+            },
+            {
+              "n": "7.6",
+              "title": "Genetic Mapping",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/07%3A_Linkage_and_Mapping/7.06%3A__Genetic_Mapping"
+            },
+            {
+              "n": "7.7",
+              "title": "Mapping With Three-Point Crosses",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/07%3A_Linkage_and_Mapping/7.07%3A__Mapping_With_Three-Point_Crosses"
+            },
+            {
+              "n": "7.E",
+              "title": "Linkage and Mapping (Exercises)",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/07%3A_Linkage_and_Mapping/7.E%3A_Linkage_and_Mapping_(Exercises)"
+            },
+            {
+              "n": "7.S",
+              "title": "Linkage and Mapping (Summary)",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/07%3A_Linkage_and_Mapping/7.S%3A_Linkage_and_Mapping_(Summary)"
+            }
+          ]
+        },
+        {
+          "n": "8",
+          "title": "Techniques of Molecular Genetics",
+          "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/08%3A_Techniques_of_Molecular_Genetics",
+          "topics": ["he.biology.genetics#2"],
+          "lessons": [
+            {
+              "n": "8.1",
+              "title": "Prelude to Molecular Genetics",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/08%3A_Techniques_of_Molecular_Genetics/8.01%3A_Prelude_to_Molecular_Genetics"
+            },
+            {
+              "n": "8.2",
+              "title": "Isolating Genomic DNA",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/08%3A_Techniques_of_Molecular_Genetics/8.02%3A_Isolating_Genomic_DNA"
+            },
+            {
+              "n": "8.3",
+              "title": "Isolating or Detecting a Specific Sequence by PCR",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/08%3A_Techniques_of_Molecular_Genetics/8.03%3A__Isolating_or_Detecting_a_Specific_Sequence_by_PCR"
+            },
+            {
+              "n": "8.4",
+              "title": "Cutting and Pasting DNA- Restriction Digests and DNA Ligation",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/08%3A_Techniques_of_Molecular_Genetics/8.04%3A_Cutting_and_Pasting_DNA-_Restriction_Digests_and_DNA_Ligation"
+            },
+            {
+              "n": "8.5",
+              "title": "Cloning DNA - Plasmid Vectors",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/08%3A_Techniques_of_Molecular_Genetics/8.05%3A_Cloning_DNA_-_Plasmid_Vectors"
+            },
+            {
+              "n": "8.6",
+              "title": "DNA Analysis - Gel Electrophoresis",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/08%3A_Techniques_of_Molecular_Genetics/8.06%3A__DNA_Analysis_-_Gel_Electrophoresis"
+            },
+            {
+              "n": "8.7",
+              "title": "DNA Analysis- Blotting and Hybridization",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/08%3A_Techniques_of_Molecular_Genetics/8.07%3A__DNA_Analysis-_Blotting_and_Hybridization"
+            },
+            {
+              "n": "8.8",
+              "title": "Transgenic organisms",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/08%3A_Techniques_of_Molecular_Genetics/8.08%3A__Transgenic_organisms"
+            },
+            {
+              "n": "8.9",
+              "title": "Techniques of Molecular Genetics (Exercises)",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/08%3A_Techniques_of_Molecular_Genetics/8.09%3A_Techniques_of_Molecular_Genetics_(Exercises)"
+            },
+            {
+              "n": "8.S",
+              "title": "Techniques of Molecular Genetics (Summary)",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/08%3A_Techniques_of_Molecular_Genetics/8.S%3A_Techniques_of_Molecular_Genetics_(Summary)"
+            }
+          ]
+        },
+        {
+          "n": "9",
+          "title": "Changes in Chromosome Number and Structure",
+          "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/09%3A__Changes_in_Chromosome_Number_and_Structure",
+          "topics": ["he.biology.principles-1#3"],
+          "lessons": [
+            {
+              "n": "9.1",
+              "title": "Changes in Chromosome Number",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/09%3A__Changes_in_Chromosome_Number_and_Structure/9.01%3A__Changes_in_Chromosome_Number"
+            },
+            {
+              "n": "9.2",
+              "title": "Changes in Chromosome Structure",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/09%3A__Changes_in_Chromosome_Number_and_Structure/9.02%3A__Changes_in_Chromosome_Structure"
+            },
+            {
+              "n": "9.3",
+              "title": "Chromosome Abnormalities in Humans",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/09%3A__Changes_in_Chromosome_Number_and_Structure/9.03%3A__Chromosome_Abnormalities_in_Humans"
+            },
+            {
+              "n": "9.4",
+              "title": "Diagnosing Human Chromosome Abnormalities",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/09%3A__Changes_in_Chromosome_Number_and_Structure/9.04%3A__Diagnosing_Human_Chromosome_Abnormalities"
+            },
+            {
+              "n": "9.E",
+              "title": "Changes in Chromosome Number and Structure (Exercises)",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/09%3A__Changes_in_Chromosome_Number_and_Structure/9.E%3A_Changes_in_Chromosome_Number_and_Structure_(Exercises)"
+            },
+            {
+              "n": "9.S",
+              "title": "Changes in Chromosome Number and Structure (Summary)",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/09%3A__Changes_in_Chromosome_Number_and_Structure/9.S%3A_Changes_in_Chromosome_Number_and_Structure_(Summary)"
+            }
+          ]
+        },
+        {
+          "n": "10",
+          "title": "Molecular Markers and Quantitative Traits",
+          "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/10%3A__Molecular_Markers_and_Quantitative_Traits",
+          "topics": ["he.biology.genetics#1"],
+          "lessons": [
+            {
+              "n": "10.1",
+              "title": "Some Variations in the Genome Affect Complex Traits",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/10%3A__Molecular_Markers_and_Quantitative_Traits/10.01%3A_Some_Variations_in_the_Genome_Affect_Complex_Traits"
+            },
+            {
+              "n": "10.2",
+              "title": "Origins of Molecular Polymorphisms",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/10%3A__Molecular_Markers_and_Quantitative_Traits/10.02%3A_Origins_of_Molecular_Polymorphisms"
+            },
+            {
+              "n": "10.3",
+              "title": "Classification and Detection of Molecular Markers",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/10%3A__Molecular_Markers_and_Quantitative_Traits/10.03%3A_Classification_and_Detection_of_Molecular_Markers"
+            },
+            {
+              "n": "10.4",
+              "title": "Applications of Molecular Markers",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/10%3A__Molecular_Markers_and_Quantitative_Traits/10.04%3A_Applications_of_Molecular_Markers"
+            },
+            {
+              "n": "10.5",
+              "title": "Quantitative Trait Locus (QTL) Analysis",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/10%3A__Molecular_Markers_and_Quantitative_Traits/10.05%3A_Quantitative_Trait_Locus_(QTL)_Analysis"
+            },
+            {
+              "n": "10.E",
+              "title": "Molecular Markers and Quantitative Traits (Exercises)",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/10%3A__Molecular_Markers_and_Quantitative_Traits/10.E%3A_Molecular_Markers_and_Quantitative_Traits_(Exercises)"
+            },
+            {
+              "n": "10.S",
+              "title": "Molecular Markers and Quantitative Traits (Summary)",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/10%3A__Molecular_Markers_and_Quantitative_Traits/10.S%3A_Molecular_Markers_and_Quantitative_Traits_(Summary)"
+            }
+          ]
+        },
+        {
+          "n": "11",
+          "title": "Genomics and Systems Biology",
+          "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/11%3A_Genomics_and_Systems_Biology",
+          "topics": ["he.biology.genetics#2"],
+          "lessons": [
+            {
+              "n": "11.1",
+              "title": "‘Omics  Technologies",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/11%3A_Genomics_and_Systems_Biology/11.01%3A__Omics__Technologies"
+            }
+          ]
+        },
+        {
+          "n": "12",
+          "title": "Regulation of Gene Expression",
+          "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/12%3A_Regulation_of_Gene_Expression",
+          "topics": ["he.biology.cell-molecular#2"],
+          "lessons": [
+            {
+              "n": "12.1",
+              "title": "The lac Operon",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/12%3A_Regulation_of_Gene_Expression/12.01%3A_The_lac_Operon"
+            },
+            {
+              "n": "12.2",
+              "title": "The Use of Mutants to Study the lac Operon",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/12%3A_Regulation_of_Gene_Expression/12.02%3A_The_Use_of_Mutants_to_Study_the_lac_Operon"
+            },
+            {
+              "n": "12.3",
+              "title": "Eukaryotic Gene Regulation",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/12%3A_Regulation_of_Gene_Expression/12.03%3A_Eukaryotic_Gene_Regulation"
+            },
+            {
+              "n": "12.4",
+              "title": "Regulatory Elements in Evolution",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/12%3A_Regulation_of_Gene_Expression/12.04%3A_Regulatory_Elements_in_Evolution"
+            },
+            {
+              "n": "12.5",
+              "title": "Additional Levels of Regulating Transcription",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/12%3A_Regulation_of_Gene_Expression/12.05%3A_Additional_Levels_of_Regulating_Transcription"
+            },
+            {
+              "n": "12.6",
+              "title": "Epigenetics",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/12%3A_Regulation_of_Gene_Expression/12.06%3A_Epigenetics"
+            },
+            {
+              "n": "12.7",
+              "title": "Regulation of Gene Expression (Exercises)",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/12%3A_Regulation_of_Gene_Expression/12.07%3A_Regulation_of_Gene_Expression_(Exercises)"
+            },
+            {
+              "n": "12.S",
+              "title": "Regulation of Gene Expression (Summary)",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/12%3A_Regulation_of_Gene_Expression/12.S%3A_Regulation_of_Gene_Expression_(Summary)"
+            }
+          ]
+        },
+        {
+          "n": "13",
+          "title": "Cancer Genetics",
+          "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/13%3A_Cancer_Genetics",
+          "topics": ["he.biology.cell-molecular#3"],
+          "lessons": [
+            {
+              "n": "13.1",
+              "title": "Classification of Cancers",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/13%3A_Cancer_Genetics/13.01%3A__Classification_of_Cancers"
+            }
+          ]
+        },
+        {
+          "n": "14",
+          "title": "Appendices",
+          "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/14%3A_Appendices",
+          "topics": [],
+          "notes": "Appendices (nomenclature).",
+          "lessons": [
+            {
+              "n": "14.1",
+              "title": "Why Use Nomenclature?",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/14%3A_Appendices/14.01%3A_Why_Use_Nomenclature"
+            },
+            {
+              "n": "14.2",
+              "title": "Biochemistry of Gene\tBehavior",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/14%3A_Appendices/14.02%3A_Biochemistry_of_GeneBehavior"
+            },
+            {
+              "n": "14.3",
+              "title": "Basic Nomenclature",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/14%3A_Appendices/14.03%3A_Basic_Nomenclature"
+            },
+            {
+              "n": "14.4",
+              "title": "Three-­Letter Symbols",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/14%3A_Appendices/14.04%3A_Three-Letter_Symbols"
+            },
+            {
+              "n": "14.5",
+              "title": "Linked Genes",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/14%3A_Appendices/14.05%3A_Linked_Genes"
+            },
+            {
+              "n": "14.6",
+              "title": "Summary",
+              "url": "https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/14%3A_Appendices/14.06%3A_Summary"
+            }
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        }
+      ],
+      "title": "Nickle and Barrette-Ng, Online Open Genetics"
+    }
+  ]
+}

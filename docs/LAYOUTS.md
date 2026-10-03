@@ -137,6 +137,14 @@ station that many degrees from the focus on both halves, filled where the wave a
 hollow where it doesn't. The layout check keeps a scene's lines from saying S waves arrive past
 104°.
 
+College inorganic chemistry, round 4 (group D, HC113): `symmetryElements`
+(`layouts/symmetryFigure.tsx`), a ball-and-stick molecule in 3-D with one symmetry element lit;
+`symmetry: { molecule, element? }` names the molecule (`H2O`, `CH2Cl2`, `NH3`, `BF3`, `PCl5`,
+`CH4`, `XeF4`, `SF6`, `CO2`, `N2F2`, trans) and the element by its id in `reps/symmetryMath.ts`
+(`C2`, `C3`, `C4`, `Cinf`, `sv`, `sv2`, `sh`, `sd`, `i`, `S3`, `S4`, `S6`): an axis with its
+turn, a mirror pane, the centre with the atom pairs it swaps, or an axis with a pane across it.
+The layout check applies the element and requires every atom to land on a like atom.
+
 Grade 9 biology (HS group G): `macromolecules` (`layouts/macroFigure.tsx`): monomers on their own
 cards joining into a polymer, the joining groups and new bonds lit and one water molecule drawn per
 bond; `macro: { kind, count?, split? }` builds starch, a polypeptide (folded), a DNA strand or a fat
@@ -158,6 +166,14 @@ Card figure `replication` (H100, `layouts/replicationCard.tsx`, 112 × 76, for s
 `{ kind: 'replication', stage }` draws `unzip` (helicase at the fork), `pair` (free nucleotides
 pairing with each old strand), `join` (DNA polymerase and the new strand) or `copies` (two
 helices, each one old strand, dark, and one new, lit: semiconservative).
+
+College biochemistry (HC57, round 3 group G): an `organelleEnergy` scene with
+`energy: { detail: 'glycolysis' | 'krebs' | 'etc', step? }` draws the pathway step by step instead
+(`layouts/pathwayFigure.tsx`): each row the enzyme, substrate → product with its carbons and what
+it makes or uses, the tally under it (2 ATP and 2 NADH net per glucose; 3 NADH, 1 FADH₂, 1 GTP,
+2 CO₂ per turn; 10 and 6 H⁺ for 2.5 and 1.5 ATP); `step` lights a row and tallies to it. Card
+figure `pathwayStep` (`layouts/pathwayCard.tsx`, 112 × 76): `{ kind: 'pathwayStep', pathway,
+step }` draws the step's carbon chains (phosphates orange, CoA a tag) and chips for what it makes.
 
 Grade 11 physics (H102, group H2C): card figure `strobe` (`layouts/strobeCard.tsx`, 140 × 48):
 `{ kind: 'strobe', gaps, dir?, ramp? }` dots the object's place every second, the `gaps` (m)
@@ -199,8 +215,18 @@ marked), `crystal` adding the salt's lattice with its corner ions pulled off. Ca
 formula written with dashes ("CH3-C(=O)-O-CH2-CH3", the carbonyl's O drawn above) with its
 functional group lit (`alcohol`, `acid`, `ester`, `amine`, `ketone`, `aldehyde`, `ether`,
 `halide`). The `molecule` card now draws BF₃, CCl₄, CHCl₃ and CH₂O (`reps/chemLayoutsHs2d.ts`).
+The `molecule` card also draws PCl₃, PCl₅, SF₆, XeF₄, `[PtCl4]2-`, `[Fe(CN)6]4-`, HCN, C₂H₂,
+CH₂Cl₂ and N₂F₂ in 3-D (HC113, `reps/chemLayoutsHe4d.ts`).
 Card icons for the models of the atom (`layouts/icons/h2d.tsx`): `Dalton atom model`, `Thomson
 atom model`, `Rutherford atom model`, `Bohr atom model`, `quantum atom model`.
+College card icons (HC85, `layouts/icons/he3i.tsx`): crystal defects `vacancy`, `interstitial
+atom`, `substitutional impurity`, `edge dislocation`, `screw dislocation`, `grain boundary`,
+`twin boundary`, `pore in metal`, `inclusion in metal`; process families `sand casting`, `die
+casting`, `investment casting`, `forging`, `rolling mill`, `extrusion`, `deep drawing`,
+`press-brake bending`, `lathe turning`, `milling cutter`, `arc welding`, `brazing`; additive
+families `SLA printing`, `DLP printing`, `FDM printing`, `SLS printing`, `laser metal powder
+fusion`, `electron beam melting`, `PolyJet-style jetting`, `binder jet`, `wire-and-arc DED`,
+`laminated sheets`.
 
 Observe figures: an observation can set `figure: { kind: 'shadowStick', stick: 100 }`
 (`layouts/ShadowStick.tsx`): a meter stick and its noon shadow for the column tapped last, to
@@ -256,3 +282,27 @@ marks and side lengths that mean what they say), `construction` (named points wi
 compass arcs, ticks, arcs and angle numbers, a stage's new parts `lit`) and `solidCut` (a
 cube, pyramid, cylinder, cone or sphere with its cutting plane and the section shaded). Every
 figure and card figure has a page at `/gallery`.
+
+College card figure `skeletal` (HC2, `layouts/skeletalCard.tsx`, `typesHe1c.ts`): `{ kind:
+'skeletal', smiles, group?, numbered?, center?, ranks?, rs? }`, one line-angle structure at
+112 × 76 from a SMILES-like spec (`CC(=O)OCC`, `c1cc[nH]c1`, `C[C@H](O)CC`), its group lit
+(`carboxyl`, `ester`, `amide`, `nitrile`, `aldehyde`, `ketone`, `hydroxyl`, `amine`, … or atom
+numbers), the parent chain numbered, and CIP ranks with R or S on `center`.
+
+College card figure `trussJoint` (HC27, `layouts/trussJointCard.tsx`, `typesHe2i.ts`): `{ kind:
+'trussJoint', members, load?, support? }`, one truss joint at 96 × 72: its members (directions in
+degrees, 0 right, 90 up), a load pushing in along its direction, a pin or roller under it. It
+never marks the zero-force members (statics#1~zero-force asks which they are).
+College card figure `ir` (HC55, `layouts/irCard.tsx`, `typesHe3e.ts`): `{ kind: 'ir', bands:
+[{ at, to?, strength?, shape? }] }`, an IR spectrum at 140 × 60 computed from its bands (sharp,
+broad, or a very broad range `at`–`to`), 4000 → 400 cm⁻¹.
+College card figure `projection` (HC78, `layouts/projectionCard.tsx`, `typesHe3m.ts`): `{ kind:
+'projection', projection, tissot?, land? }`, one map projection at 84 × 52 computed from its
+formulas (Mercator, Lambert conformal conic, stereographic, Albers, Mollweide, Gall–Peters,
+azimuthal equidistant, equirectangular, Winkel tripel, cylindrical equal-area): the outline, the
+graticule every 30°, hand-written land shapes shaded, and Tissot dots that show what it keeps.
+College card figure `graph` (HC50, `reps/GraphDiagram.tsx` `GraphCardView`, `typesHe3d.ts`):
+`{ kind: 'graph', vertices: [{ name, x, y }] (a unit box), edges: [{ from, to, cost?, lit? }],
+lit?, degrees?, dist?, wide? }`, a small fixed graph at 96 × 64 (`wide`: 168 × 104) with
+costs on the edges, each vertex's name or degree in it, lit vertices and edges heavy in the
+highlight, and Dijkstra's distances beside the vertices; for Euler sorts and Dijkstra stages.

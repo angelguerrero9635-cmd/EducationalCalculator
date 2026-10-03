@@ -1,0 +1,72 @@
+{
+  "id": "mit-ocw-10-450",
+  "curriculum": "MIT OpenCourseWare 10.450 Process Dynamics, Operations, and Control",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Spring 2006",
+  "subject": "chemical",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Joseph Hahn and others. 10.450 Process Dynamics, Operations, and Control. Spring 2006. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu/courses/10-450-process-dynamics-operations-and-control-spring-2006/. License: CC BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Lecture block"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/10-450-process-dynamics-operations-and-control-spring-2006/",
+  "retrieved": "2026-10-02",
+  "sources": [
+    "https://ocw.mit.edu/courses/10-450-process-dynamics-operations-and-control-spring-2006/pages/calendar/",
+    "https://ocw.mit.edu/courses/10-450-process-dynamics-operations-and-control-spring-2006/pages/assignments/"
+  ],
+  "notes": "Lesson list from the Lecture Notes page; eleven problem sets read.",
+  "books": [
+    {
+      "course": "he.engineering.process-control",
+      "title": "10.450 Process Dynamics, Operations, and Control (Spring 2006)",
+      "url": "https://ocw.mit.edu/courses/10-450-process-dynamics-operations-and-control-spring-2006/",
+      "units": [
+        {
+          "n": "1–2",
+          "title": "Processes and systems; math review",
+          "topics": ["he.engineering.process-control#0"]
+        },
+        {
+          "n": "3–13",
+          "title": "Blending tank; two tanks in series (first-order and interacting responses)",
+          "topics": ["he.engineering.process-control#0"],
+          "examples": ["first-order step table", "sketch in time constants"],
+          "notation": ["τ, K; y/y∞ = 1 − e^(−t/τ)"]
+        },
+        {
+          "n": "14–20",
+          "title": "Operability; heated tank; proportional and PI control",
+          "topics": ["he.engineering.process-control#1", "he.engineering.process-control#2"],
+          "examples": [
+            "P-controller faceplate and offset",
+            "heated block model",
+            "PI in a simulator"
+          ]
+        },
+        {
+          "n": "21–26",
+          "title": "Exothermic reactor: multiple steady states, linearization",
+          "topics": ["he.engineering.process-control#0"],
+          "examples": ["linearize about each steady state"]
+        },
+        {
+          "n": "27–31",
+          "title": "Higher-order overdamped systems; Bode stability; margins",
+          "topics": ["he.engineering.process-control#3"],
+          "examples": ["Bode tuning by gain and phase margin", "model from a step test"]
+        },
+        {
+          "n": "32–39",
+          "title": "Cascade and feedforward control",
+          "topics": ["he.engineering.process-control#3"]
+        }
+      ]
+    }
+  ]
+}

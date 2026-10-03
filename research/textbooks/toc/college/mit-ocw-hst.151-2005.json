@@ -1,0 +1,88 @@
+{
+  "id": "mit-ocw-hst.151-2005",
+  "curriculum": "MIT OCW HST.151 Principles of Pharmacology",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Spring 2005",
+  "subject": "bio",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Carl Rosow, David Standaert and Gary Strichartz. HST.151 Principles of Pharmacology. Spring 2005. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu. License: Creative Commons BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Part",
+    "lesson": "Lecture"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/hst-151-principles-of-pharmacology-spring-2005/",
+  "retrieved": "2026-10-02",
+  "notes": "Reference only (CC BY-NC-SA 4.0; OCW terms https://ocw.mit.edu/pages/privacy-and-terms-of-use/). Lecture list and order from the course calendar or lecture-notes page; examples, ranges and notation are our words, read from the exams and problem sets (no problem text or numbers copied). Third-party figures inside OCW PDFs are outside the licence and were not used. Midterm and final (with answer key) read for the records; most system topics have no taxonomy home.",
+  "books": [
+    {
+      "course": "HST.151",
+      "url": "https://ocw.mit.edu/courses/hst-151-principles-of-pharmacology-spring-2005/",
+      "units": [
+        {
+          "n": "1",
+          "title": "Principles",
+          "topics": ["he.biology.cell-molecular#1", "he.engineering.biotransport#3"],
+          "examples": [
+            "potency from EC50; partial agonist efficacy",
+            "K_A of a competitive antagonist from the EC50 shift",
+            "Vd and CL from a bolus curve; maximum bolus in a window; infusion rate"
+          ],
+          "notation": [
+            "Vd = Dose/C₀",
+            "CL = 0.693·Vd/t½",
+            "rate = CL × C_ss",
+            "dose ratio − 1 = [A]/K_A"
+          ],
+          "lessons": [
+            {
+              "n": "1",
+              "title": "Receptors and dose-response",
+              "topics": ["he.biology.cell-molecular#1"]
+            },
+            {
+              "n": "2",
+              "title": "Pharmacokinetics I–II",
+              "topics": ["he.engineering.biotransport#3"]
+            },
+            {
+              "n": "4",
+              "title": "Drug metabolism; pharmacogenetics",
+              "topics": ["he.engineering.biotransport#3"]
+            },
+            {
+              "n": "7",
+              "title": "Pharmacokinetics III (controlled release)",
+              "topics": ["he.engineering.biotransport#3", "he.engineering.biomaterials#3"]
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Systems pharmacology",
+          "topics": [],
+          "lessons": [
+            {
+              "n": "3–10",
+              "title": "Cholinergic, autonomic, local anaesthetics, antidysrhythmics, vasoactive, lipid-lowering, antihistamines, immunosuppression",
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+            },
+            {
+              "n": "12–16",
+              "title": "Neuropharmacology, antimicrobials, chemotherapy, opioids",
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+            }
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        }
+      ],
+      "title": "HST.151"
+    }
+  ]
+}

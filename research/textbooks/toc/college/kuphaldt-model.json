@@ -1,0 +1,514 @@
+{
+  "id": "kuphaldt-model",
+  "curriculum": "Modular Electronics Learning (ModEL), Kuphaldt",
+  "publisher": "Tony R. Kuphaldt (hosted by ibiblio)",
+  "edition": "module PDFs, read 2026-10-02",
+  "subject": "electrical",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/",
+    "attribution": "Tony R. Kuphaldt, Modular Electronics Learning (ModEL) project, https://www.ibiblio.org/kuphaldt/socratic/model/, CC BY 4.0 (each module: \"© 2016-2026 by Tony R. Kuphaldt – under the terms and conditions of the Creative Commons Attribution 4.0 International Public License\")."
+  },
+  "terms": {
+    "unit": "Module"
+  },
+  "sourceUrl": "https://www.ibiblio.org/kuphaldt/socratic/model/",
+  "retrieved": "2026-10-02",
+  "notes": "34 of the project’s ~150 modules read (selected for the taxonomy topics); examples are the titles of the module’s quantitative questions (PDF bookmarks). Each module has Tutorial, Historical, Derivations, Questions (conceptual, quantitative, diagnostic) chapters; worked values in mixed SI.",
+  "books": [
+    {
+      "course": null,
+      "title": "ModEL modules",
+      "url": "https://www.ibiblio.org/kuphaldt/socratic/model/",
+      "units": [
+        {
+          "n": "series",
+          "title": "Series Circuits and Voltage Dividers",
+          "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_series.pdf",
+          "topics": ["he.engineering.circuits-1#0"],
+          "examples": [
+            "Three-battery, one-lamp circuit",
+            "Leeds & Northrup resistance box design",
+            "VIRP table for a three-resistor series circuit",
+            "Solving for a series resistance",
+            "Series dropping resistor for an LED",
+            "Electric heater and extension cord",
+            "Voltage divider circuit",
+            "Voltage divider built using a Radio Shack 30-in-one kit"
+          ],
+          "notes": "25 questions in its Questions chapter (conceptual, quantitative, diagnostic)."
+        },
+        {
+          "n": "parallel",
+          "title": "Parallel Circuits and Current Dividers",
+          "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_parallel.pdf",
+          "topics": ["he.engineering.circuits-1#0"],
+          "examples": [
+            "Resistor network",
+            "Three-source, one-lamp circuit",
+            "VIRP table for a three-resistor parallel circuit",
+            "Solving for a parallel branch resistance",
+            "Current divider circuit",
+            "Current divider built using a Radio Shack 30-in-one kit",
+            "Shunt resistor for an ammeter",
+            "Designing an electric heater"
+          ],
+          "notes": "25 questions in its Questions chapter (conceptual, quantitative, diagnostic)."
+        },
+        {
+          "n": "seriesparallel",
+          "title": "Series-Parallel Circuits",
+          "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_seriesparallel.pdf",
+          "topics": ["he.engineering.circuits-1#0"],
+          "examples": [
+            "Building custom resistance values",
+            "Two different LED circuits",
+            "Three-resistor circuits",
+            "Four-resistor circuits",
+            "Five-resistor circuit",
+            "Terminal-block resistor circuit",
+            "Mixed-source circuits",
+            "More mixed-source circuits"
+          ],
+          "notes": "30 questions in its Questions chapter (conceptual, quantitative, diagnostic)."
+        },
+        {
+          "n": "kvl",
+          "title": "Kirchhoff's Voltage Law",
+          "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_kvl.pdf",
+          "topics": ["he.engineering.circuits-1#0"],
+          "examples": [
+            "Tracing KVL loops in a series circuit",
+            "Tracing KVL loops in a multi-source circuit",
+            "One resistor, multiple batteries",
+            "Series-connected batteries",
+            "More connected batteries",
+            "Grounded batteries",
+            "Voltages in a resistor network",
+            "Series resistor network with common-mode source"
+          ],
+          "notes": "24 questions in its Questions chapter (conceptual, quantitative, diagnostic)."
+        },
+        {
+          "n": "kcl",
+          "title": "Kirchhoff's Current Law",
+          "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_kcl.pdf",
+          "topics": ["he.engineering.circuits-1#0", "he.engineering.circuits-1#1"],
+          "examples": [
+            "Paralleled current sources",
+            "Currents in resistor networks",
+            "Currents in a large resistor network",
+            "Battery currents",
+            "Current divider",
+            "Solving for currents in a multi-source circuit",
+            "Interpreting a SPICE analysis"
+          ],
+          "notes": "20 questions in its Questions chapter (conceptual, quantitative, diagnostic)."
+        },
+        {
+          "n": "thevenin_norton",
+          "title": "Thevenin's and Norton's Theorems",
+          "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_thevenin_norton.pdf",
+          "topics": ["he.engineering.circuits-1#2"],
+          "examples": [
+            "Testing sources under load",
+            "Thévenin and Norton equivalents of a single-source network",
+            "Thévenin equivalent of an AC/DC power supply",
+            "Norton equivalent of an electric arc welder",
+            "Thévenizing a loaded voltage divider",
+            "Unbalanced bridge circuit"
+          ],
+          "notes": "16 questions in its Questions chapter (conceptual, quantitative, diagnostic)."
+        },
+        {
+          "n": "super",
+          "title": "Superposition Theorem",
+          "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_super.pdf",
+          "topics": ["he.engineering.circuits-1#2"],
+          "examples": [
+            "Two-source, three-resistor network",
+            "Wind turbine and battery network",
+            "Two generators powering a heating element",
+            "Two generators powering a motor",
+            "One generator and two batteries"
+          ],
+          "notes": "12 questions in its Questions chapter (conceptual, quantitative, diagnostic)."
+        },
+        {
+          "n": "maxpower",
+          "title": "Maximum Power Transfer Theorem",
+          "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_maxpower.pdf",
+          "topics": ["he.engineering.circuits-1#2"],
+          "examples": ["Series resistance", "Battery bank short-circuit current"],
+          "notes": "9 questions in its Questions chapter (conceptual, quantitative, diagnostic)."
+        },
+        {
+          "n": "capacitor",
+          "title": "Capacitors and Capacitive Circuits",
+          "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_capacitor.pdf",
+          "topics": ["he.engineering.circuits-1#4"],
+          "examples": [
+            "Air capacitor gap",
+            "Defibrillator capacitor",
+            "Capacitor labeling",
+            "Half-life",
+            "Number of time constants",
+            "Inverse exponential functions",
+            "Current versus rate-of-voltage-change",
+            "Capacitance of three-capacitor network"
+          ],
+          "notes": "36 questions in its Questions chapter (conceptual, quantitative, diagnostic)."
+        },
+        {
+          "n": "opamp",
+          "title": "Operational Amplifiers",
+          "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_opamp.pdf",
+          "topics": ["he.engineering.circuits-1#3", "he.engineering.electronics#3"],
+          "examples": [
+            "Empirically determining open-loop gain",
+            "Voltage follower simulation program",
+            "Calculating output voltages and gains",
+            "Voltage gain calculations",
+            "Necessary resistor values for specified voltage gains",
+            "Modifying voltage gain",
+            "Multi-stage amplifier gains",
+            "Calculating input and output voltages"
+          ],
+          "notes": "74 questions in its Questions chapter (conceptual, quantitative, diagnostic)."
+        },
+        {
+          "n": "phasor",
+          "title": "Phasor Mathematics",
+          "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_phasor.pdf",
+          "topics": ["he.engineering.circuits-2#0"],
+          "examples": [
+            "Practice: complex number calculations",
+            "Adding sine waves",
+            "Hand-plotting a sinusoidal sum",
+            "Phasor addition of two AC voltages",
+            "Simple phasor diagrams",
+            "Series AC voltages",
+            "Parallel AC currents"
+          ],
+          "notes": "12 questions in its Questions chapter (conceptual, quantitative, diagnostic)."
+        },
+        {
+          "n": "rxz",
+          "title": "Resistance, Reactance, and Impedance",
+          "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_rxz.pdf",
+          "topics": ["he.engineering.circuits-2#0"],
+          "examples": [
+            "Resistances and reactances expressed as impedances",
+            "Imperfect inductor",
+            "Simple AC circuits",
+            "Series RC circuit with AC voltage source",
+            "Capacitive voltage divider",
+            "Protective relay burdens",
+            "Parallel RC circuit with AC voltage source"
+          ],
+          "notes": "18 questions in its Questions chapter (conceptual, quantitative, diagnostic)."
+        },
+        {
+          "n": "ac_s",
+          "title": "Series AC Circuits",
+          "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_ac_s.pdf",
+          "topics": ["he.engineering.circuits-2#0"],
+          "examples": [
+            "Series RL impedances",
+            "Series RC impedances",
+            "Inductor with winding resistance",
+            "VIZ table for series RC circuit",
+            "Sound system calculations",
+            "LL and RL phasor diagrams",
+            "RL network and phasor diagram",
+            "Unknown capacitance"
+          ],
+          "notes": "14 questions in its Questions chapter (conceptual, quantitative, diagnostic)."
+        },
+        {
+          "n": "powerfactor",
+          "title": "Efficiency and Power Factor",
+          "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_powerfactor.pdf",
+          "topics": ["he.engineering.circuits-2#1"],
+          "examples": [
+            "Three AC loads",
+            "Power factor from wattmeter",
+            "AC generator horsepower",
+            "Power factor from Lissajous figure",
+            "Power factor measurement using instrument transformers",
+            "Hydroelectric generator ratings",
+            "Power factor for a capacitive circuit",
+            "Worsening power factor in a motor"
+          ],
+          "notes": "21 questions in its Questions chapter (conceptual, quantitative, diagnostic)."
+        },
+        {
+          "n": "filters",
+          "title": "Elementary Filter Circuits",
+          "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_filters.pdf",
+          "topics": ["he.engineering.circuits-2#2"],
+          "examples": [
+            "Practice: complex number calculations",
+            "Frequency response of an RC network",
+            "Filter type and cutoff identifications",
+            "Designing simple RC low-pass and high-pass filters",
+            "Designing filters using IEC standard component values",
+            "Resonant filter type and cutoff",
+            "Deriving a formula for Q",
+            "Using C to analyze a filter network"
+          ],
+          "notes": "32 questions in its Questions chapter (conceptual, quantitative, diagnostic)."
+        },
+        {
+          "n": "resonance",
+          "title": "Resonance",
+          "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_resonance.pdf",
+          "topics": ["he.engineering.circuits-2#2"],
+          "examples": [
+            "Series LC impedance",
+            "Series LC circuit calculations",
+            "Parallel LC circuit calculations",
+            "Deriving the resonant frequency equation"
+          ],
+          "notes": "15 questions in its Questions chapter (conceptual, quantitative, diagnostic)."
+        },
+        {
+          "n": "transformer",
+          "title": "Transformers",
+          "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_transformer.pdf",
+          "topics": ["he.engineering.circuits-2#3"],
+          "examples": [
+            "Basic transformer calculations",
+            "Autotransformer currents",
+            "Transformer-resistor circuit",
+            "Transformer fuse sizing",
+            "Measuring transformer impedance"
+          ],
+          "notes": "17 questions in its Questions chapter (conceptual, quantitative, diagnostic)."
+        },
+        {
+          "n": "polyphase",
+          "title": "Polyphase AC",
+          "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_polyphase.pdf",
+          "topics": ["he.engineering.circuits-2#4"],
+          "examples": [
+            "Total power dissipation",
+            "Balanced Delta source and Delta load",
+            "Balanced Delta source and Wye load",
+            "Balanced Wye source and Delta load",
+            "Three-phase versus single-phase power transmission",
+            "Three-phase electric motor with CT current measurement",
+            "Direct-coupled and transformer-coupled loads",
+            "Wye source and Wye load with and without line fault"
+          ],
+          "notes": "18 questions in its Questions chapter (conceptual, quantitative, diagnostic)."
+        },
+        {
+          "n": "pn",
+          "title": "PN Junctions and Diodes",
+          "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_pn.pdf",
+          "topics": ["he.engineering.electronics#0"],
+          "examples": ["Voltages and currents in simple diode circuits", "LED resistor sizing"],
+          "notes": "13 questions in its Questions chapter (conceptual, quantitative, diagnostic)."
+        },
+        {
+          "n": "rectifier",
+          "title": "Rectifier Circuits",
+          "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_rectifier.pdf",
+          "topics": ["he.engineering.electronics#0"],
+          "examples": [
+            "Line-powered rectifier",
+            "Rectified peak voltage and ripple frequency",
+            "Heavy-duty rectifier design"
+          ],
+          "notes": "18 questions in its Questions chapter (conceptual, quantitative, diagnostic)."
+        },
+        {
+          "n": "bjt",
+          "title": "Bipolar Junction Transistors",
+          "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_bjt.pdf",
+          "topics": ["he.engineering.electronics#1"],
+          "examples": ["DC bias calculations", "BJT circuit calculations"],
+          "notes": "16 questions in its Questions chapter (conceptual, quantitative, diagnostic)."
+        },
+        {
+          "n": "fet",
+          "title": "Field-Effect Transistors",
+          "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_fet.pdf",
+          "topics": ["he.engineering.electronics#1"],
+          "examples": ["Drain current calculation", "ESD test jig"],
+          "notes": "21 questions in its Questions chapter (conceptual, quantitative, diagnostic)."
+        },
+        {
+          "n": "bjtamp",
+          "title": "Single-Stage BJT Amplifiers",
+          "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_bjtamp.pdf",
+          "topics": ["he.engineering.electronics#2"],
+          "examples": [
+            "Emitter-follower calculations",
+            "Common-collector output voltage",
+            "Common-emitter calculations",
+            "Voltage gain of a bypassed common-emitter amplifier",
+            "Achieving a specified voltage gain",
+            "Gain and quiescent values for common-emitter amplifier",
+            "Common-collector impedance formulae",
+            "Common-emitter impedance formulae"
+          ],
+          "notes": "35 questions in its Questions chapter (conceptual, quantitative, diagnostic)."
+        },
+        {
+          "n": "number",
+          "title": "Digital Numeration",
+          "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_number.pdf",
+          "topics": ["he.engineering.digital-logic#0"],
+          "examples": [
+            "Counting in binary, octal, and hexadecimal",
+            "Binary to decimal and hex conversions",
+            "Decimal to binary conversions",
+            "Unsigned decimal-binary and binary-decimal conversions",
+            "Four-bit signed binary integers",
+            "Signed decimal-binary and binary-decimal conversions",
+            "Half-life of an anesthetic",
+            "Stepper motor sequence"
+          ],
+          "notes": "27 questions in its Questions chapter (conceptual, quantitative, diagnostic)."
+        },
+        {
+          "n": "comblogic",
+          "title": "Combinational Logic",
+          "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_comblogic.pdf",
+          "topics": ["he.engineering.digital-logic#1"],
+          "examples": [
+            "Using Python to evaluate combinational logic expressions",
+            "Using Python to evaluate a combinational function diagram",
+            "Boolean expressions from gate circuits",
+            "Boolean expressions from relay circuits",
+            "Truth tables from Boolean expressions",
+            "Gate circuits from Boolean expressions",
+            "Relay circuits from Boolean expressions",
+            "Circuits from two-input truth tables"
+          ],
+          "notes": "29 questions in its Questions chapter (conceptual, quantitative, diagnostic)."
+        },
+        {
+          "n": "latchlogic",
+          "title": "Latching Logic",
+          "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_latchlogic.pdf",
+          "topics": ["he.engineering.digital-logic#2"],
+          "examples": [
+            "Timing diagram for an SR latch",
+            "Timing diagram for an enabled SR latch",
+            "Timing diagram for a D latch",
+            "Timing diagram for a D flip-flop",
+            "Cascaded D latches"
+          ],
+          "notes": "16 questions in its Questions chapter (conceptual, quantitative, diagnostic)."
+        },
+        {
+          "n": "counter",
+          "title": "Digital Counters",
+          "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_counter.pdf",
+          "topics": ["he.engineering.digital-logic#2"],
+          "examples": [
+            "Determining up/down counter state",
+            "Frequency division",
+            "One-minute pulse",
+            "Wired-AND modulus reduction",
+            "Frequency division using clear versus using preset"
+          ],
+          "notes": "22 questions in its Questions chapter (conceptual, quantitative, diagnostic)."
+        },
+        {
+          "n": "analogdigital",
+          "title": "Analog-Digital Conversion",
+          "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_analogdigital.pdf",
+          "topics": ["he.engineering.embedded-systems#0"],
+          "examples": [
+            "R-2R ladder voltage calculations",
+            "ADC0804 signal values",
+            "Spreadsheet simulation of 8-bit ADC",
+            "Re-design input network for an ADC circuit"
+          ],
+          "notes": "21 questions in its Questions chapter (conceptual, quantitative, diagnostic)."
+        },
+        {
+          "n": "serialcomm",
+          "title": "Serial Data Communication",
+          "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_serialcomm.pdf",
+          "topics": ["he.engineering.embedded-systems#2"],
+          "examples": ["Manchester data frame with a specified bit rate"],
+          "notes": "18 questions in its Questions chapter (conceptual, quantitative, diagnostic)."
+        },
+        {
+          "n": "tline",
+          "title": "Transmission Lines",
+          "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_tline.pdf",
+          "topics": ["he.engineering.electromagnetics#0"],
+          "examples": [
+            "Echo time calculations",
+            "TDR spreadsheet",
+            "TDR calculator program in C",
+            "TDR calculator program in Python"
+          ],
+          "notes": "17 questions in its Questions chapter (conceptual, quantitative, diagnostic)."
+        },
+        {
+          "n": "antenna",
+          "title": "Radio Antennas",
+          "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_antenna.pdf",
+          "topics": ["he.engineering.electromagnetics#3"],
+          "examples": [
+            "Antenna dimensions",
+            "Transmitter power and field strength",
+            "Monopole radiation strength"
+          ],
+          "notes": "16 questions in its Questions chapter (conceptual, quantitative, diagnostic)."
+        },
+        {
+          "n": "linkbudget",
+          "title": "RF Link Budgets",
+          "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_linkbudget.pdf",
+          "topics": ["he.engineering.electromagnetics#3", "he.engineering.communication-systems#2"],
+          "examples": [
+            "Power ratio and dB conversions",
+            "Power and loss calculations",
+            "Waveguide power loss",
+            "Path loss estimation",
+            "Fresnel zone interference",
+            "Fresnel zone ground contact",
+            "Estimating radio transmitter ERP",
+            "Minimum transmitter power"
+          ],
+          "notes": "19 questions in its Questions chapter (conceptual, quantitative, diagnostic)."
+        },
+        {
+          "n": "modulation",
+          "title": "Introduction to Modulation",
+          "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_modulation.pdf",
+          "topics": ["he.engineering.communication-systems#0"],
+          "examples": [
+            "Oscillographs comparing sinusoids",
+            "Telephony up/down converter circuits",
+            "High-side versus low-side injection"
+          ],
+          "notes": "12 questions in its Questions chapter (conceptual, quantitative, diagnostic)."
+        },
+        {
+          "n": "tcpip",
+          "title": "Internet Protocols",
+          "url": "https://www.ibiblio.org/kuphaldt/socratic/model/mod_tcpip.pdf",
+          "topics": ["he.engineering.networks#1"],
+          "examples": [
+            "IP address space",
+            "PLC transmitting ASCII message via UDP",
+            "PLC transmitting ASCII message to itself",
+            "PLC transmitting integer data over network"
+          ],
+          "notes": "12 questions in its Questions chapter (conceptual, quantitative, diagnostic)."
+        }
+      ]
+    }
+  ]
+}

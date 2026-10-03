@@ -2,6 +2,8 @@ import { View } from 'react-native';
 import Svg, { Circle, Defs, G, Line, Path, Rect } from 'react-native-svg';
 
 import type { OscillatorSpec } from '@/data/modules/typesHs3a';
+import { oscillatorHe } from '@/data/modules/typesHe1h';
+import { OscillatorHe } from './OscillatorHe';
 import { chart, usePalette } from '@/theme';
 
 import type { Calculator } from '../useCalculator';
@@ -24,6 +26,7 @@ const BLOCK = 40;
  * beside the F–x line whose triangle is U = ½kx².
  */
 export function Oscillator({ spec, calc }: { spec: OscillatorSpec; calc: Calculator }) {
+  if (spec.mode !== 'hang' && oscillatorHe(spec)) return <OscillatorHe spec={spec} calc={calc} />; // HC11
   return spec.mode === 'hang' ? (
     <Hanging spec={spec} calc={calc} />
   ) : (

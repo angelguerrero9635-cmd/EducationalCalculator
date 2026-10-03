@@ -32,6 +32,7 @@ import { GalvanicFigure } from './galvanicFigure';
 import { HslFigureView } from './hslFigures';
 import { SpectraFigure } from './spectraFigure';
 import { Hs3cFigureView } from './hs3cFigures';
+import { SymmetryFigure } from './symmetryFigure';
 import { BodyFigure } from './bodyFigure';
 import { ContinentsFigure } from './continentsFigure';
 import { FrontFigure } from './frontFigure';
@@ -42,8 +43,10 @@ import { CellFigure, Particles } from './figuresR4h';
 import { ConeFigure } from './coneFigure';
 import { MacroFigure } from './macroFigure';
 import { OrganelleFigure } from './organelleFigure';
+import { PathwayDetail } from './pathwayFigure';
 import { GelFigure } from './gelFigure';
 import { ReflexArcFigure } from './reflexArcFigure';
+import { CodeTraceFigureView } from './codeTraceFigure';
 
 /**
  * A picture with a few scenes to switch between: tap a scene, the figure changes, and the
@@ -120,6 +123,8 @@ function FigureView({
       return <SpectraFigure scene={scene.spectra ?? { star: [] }} />;
     case 'earthLayers':
       return <Hs3cFigureView figure={figure} scene={scene} />;
+    case 'symmetryElements':
+      return <SymmetryFigure scene={scene.symmetry ?? { molecule: 'H2O' }} />; // HC113
     case 'parts':
       if (figure.drawing) {
         return (
@@ -205,6 +210,7 @@ function FigureView({
     case 'macromolecules':
       return <MacroFigure macro={scene.macro ?? { kind: 'carbohydrate' }} />;
     case 'organelleEnergy':
+      if (scene.energy?.detail) return <PathwayDetail energy={scene.energy} />; // HC57
       return <OrganelleFigure energy={scene.energy ?? {}} />;
     case 'cladogram':
       return <CladogramFigure figure={figure} clade={scene.clade ?? {}} />;
@@ -224,6 +230,8 @@ function FigureView({
       return <GelFigure figure={figure} scene={scene.gel ?? {}} />;
     case 'reflexArc':
       return <ReflexArcFigure scene={scene.reflex ?? {}} />;
+    case 'codeTrace':
+      return <CodeTraceFigureView figure={figure} scene={scene.trace ?? { rows: [] }} />;
   }
 }
 

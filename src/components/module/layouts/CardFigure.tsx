@@ -19,6 +19,16 @@ import { Round3Icon } from './icons';
 import { isRound3Icon } from '@/data/modules/layouts/icons';
 import { MoleculeCard } from './chemFigures';
 import { CondensedCardView, condensedWidth } from './condensedCard';
+import { SkeletalCardView } from './skeletalCard';
+import { TrussJointCardView } from './trussJointCard';
+import { TRUSS_CARD_H, TRUSS_CARD_W } from '@/data/modules/typesHe2i';
+import { IrCardView } from './irCard';
+import { IR_CARD_H, IR_CARD_W } from '@/data/modules/typesHe3e';
+import { SKELETAL_CARD_H, SKELETAL_CARD_W } from '@/data/modules/typesHe1c';
+import { ProjectionCardView } from './projectionCard';
+import { PROJECTION_CARD_H, PROJECTION_CARD_W } from '@/data/modules/typesHe3m';
+import { PATHWAY_CARD_H, PATHWAY_CARD_W } from '@/data/modules/typesHe3g';
+import { PathwayCard } from './pathwayCard';
 import {
   CellPartsCard,
   DotPlotCard,
@@ -29,6 +39,7 @@ import {
 } from './cardFiguresR3h';
 import { DIVISION_H, DIVISION_W, DivisionCard } from './divisionCard';
 import { hs3dCardSize, Hs3dCardView } from './hs3dCards';
+import { he3dCardSize, He3dCardView } from './he3dCards';
 import { Hs2bCardView, hs2bFigureSize } from './cardFiguresHs2b';
 import { StrobeCardView } from './strobeCard';
 import { STROBE_W } from '@/data/modules/layouts/strobeCard';
@@ -46,6 +57,8 @@ export function figureWidth(f: Spec): number {
   if (r3h) return r3h;
   const hs2b = hs2bFigureSize(f);
   if (hs2b) return hs2b[0];
+  const he3d = he3dCardSize(f);
+  if (he3d) return he3d[0];
   switch (f.kind) {
     case 'bar':
       return Math.max(S, 16 + (f.length + (f.units === 'offset' ? 2 : 0)) * 8 + 24);
@@ -73,8 +86,18 @@ export function figureWidth(f: Spec): number {
       return STROBE_W;
     case 'condensed':
       return condensedWidth(f);
+    case 'skeletal':
+      return SKELETAL_CARD_W;
+    case 'trussJoint':
+      return TRUSS_CARD_W;
+    case 'ir':
+      return IR_CARD_W;
+    case 'projection':
+      return PROJECTION_CARD_W; // HC78
     case 'replication':
       return REPLICATION_W;
+    case 'pathwayStep':
+      return PATHWAY_CARD_W; // HC57
     case 'reflexArc':
     case 'flowerCycle':
       return hs3dCardSize(f)![0];
@@ -100,13 +123,24 @@ export function CardFigureView({
   const h =
     hs2bFigureSize(figure)?.[1] ??
     hs3dCardSize(figure)?.[1] ??
+    he3dCardSize(figure)?.[1] ??
     (figure.kind === 'polygon' && figure.marks
       ? MARKED
       : figure.kind === 'cellDivision'
         ? DIVISION_H
         : figure.kind === 'replication'
           ? REPLICATION_H
-          : S);
+          : figure.kind === 'skeletal'
+            ? SKELETAL_CARD_H
+            : figure.kind === 'trussJoint'
+              ? TRUSS_CARD_H
+              : figure.kind === 'ir'
+                ? IR_CARD_H
+                : figure.kind === 'projection'
+                  ? PROJECTION_CARD_H
+                  : figure.kind === 'pathwayStep'
+                    ? PATHWAY_CARD_H
+                    : S);
   return (
     <Svg width={w} height={h}>
       <Drawing f={figure} w={w} ink={ink} shade={shade} />
@@ -223,9 +257,14 @@ function Drawing({ f, w, ink, shade }: { f: Spec; w: number; ink: string; shade:
       return <StrobeCardView f={f} ink={ink} />;
     case 'replication':
       return <ReplicationCard f={f} ink={ink} />;
+    case 'pathwayStep':
+      return <PathwayCard f={f} ink={ink} />; // HC57
     case 'reflexArc':
     case 'flowerCycle':
       return <Hs3dCardView f={f} ink={ink} />;
+    case 'code':
+    case 'graph':
+      return <He3dCardView f={f} ink={ink} />;
     case 'fractionBars': {
       const bw = w - 8;
       const bh = 12;
@@ -354,6 +393,14 @@ function Drawing({ f, w, ink, shade }: { f: Spec; w: number; ink: string; shade:
       return <MoleculeCard formula={f.formula} w={w} h={S} />;
     case 'condensed':
       return <CondensedCardView f={f} ink={ink} shade={shade} />;
+    case 'skeletal':
+      return <SkeletalCardView f={f} ink={ink} shade={shade} />;
+    case 'trussJoint':
+      return <TrussJointCardView f={f} ink={ink} shade={shade} />;
+    case 'ir':
+      return <IrCardView f={f} ink={ink} shade={shade} />;
+    case 'projection':
+      return <ProjectionCardView f={f} ink={ink} shade={shade} />;
     case 'ray': {
       const y = S / 2;
       const x1 = 10;

@@ -1,0 +1,151 @@
+{
+  "id": "mit-ocw-8-09",
+  "curriculum": "MIT OCW 8.09 Classical Mechanics III",
+  "publisher": "MIT OpenCourseWare (Iain Stewart)",
+  "edition": "Fall 2014",
+  "subject": "physics",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Iain Stewart. 8.09 Classical Mechanics III. Fall 2014. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu. License: Creative Commons BY-NC-SA."
+  },
+  "terms": "MIT OCW: CC BY-NC-SA 4.0; syllabus order and problem types only (type records). Third-party content on OCW pages is outside the licence and was skipped.",
+  "sourceUrl": "https://ocw.mit.edu/courses/8-09-classical-mechanics-iii-fall-2014/",
+  "retrieved": "2026-10-02",
+  "notes": "Lecture topics from the course calendar (in order); problem sets 1–7 carry the examples. Units are the problem sets and exams whose question types are recorded in research/questions/college/physics.jsonl; examples are those question kinds. robots.txt: Allow /.",
+  "books": [
+    {
+      "title": "8.09 Classical Mechanics III (Fall 2014)",
+      "url": "https://ocw.mit.edu/courses/8-09-classical-mechanics-iii-fall-2014/",
+      "units": [
+        {
+          "n": "1",
+          "title": "Review of Analytical Mechanics",
+          "topics": ["he.physics.classical-mechanics#0", "he.physics.classical-mechanics#1"]
+        },
+        {
+          "n": "2",
+          "title": "Rigid Body Dynamics",
+          "topics": ["he.physics.classical-mechanics#3"]
+        },
+        {
+          "n": "3",
+          "title": "Vibrations & Oscillations",
+          "topics": ["he.physics.classical-mechanics#4"]
+        },
+        {
+          "n": "4",
+          "title": "Canonical Transformations, Hamilton-Jacobi Equations, and Action-Angle Variables",
+          "topics": ["he.physics.classical-mechanics#1"]
+        },
+        {
+          "n": "5",
+          "title": "Perturbation Theory",
+          "topics": ["he.physics.classical-mechanics#1"]
+        },
+        {
+          "n": "6",
+          "title": "Fluid Mechanics",
+          "topics": [],
+          "note": "no college topic: fluid mechanics"
+        },
+        {
+          "n": "7",
+          "title": "Chaos",
+          "topics": [],
+          "note": "no college topic: nonlinear dynamics and chaos"
+        },
+        {
+          "n": "PS1",
+          "title": "Problem Set 1",
+          "url": "https://ocw.mit.edu/courses/8-09-classical-mechanics-iii-fall-2014/0409acb80f5782daf4c91abc249eceb4_MIT8_09F14_pset1.pdf",
+          "topics": ["he.physics.classical-mechanics#2", "he.physics.classical-mechanics#0"],
+          "examples": [
+            "two gravitating masses in a uniform field: Lagrangian in CM and relative coordinates, Hamiltonian",
+            "double pendulum: Lagrangian, equations of motion, Hamiltonian",
+            "point mass on a rotating hoop (generalized coordinates)",
+            "two masses joined by a spring on a plane: Lagrangian and conserved quantities",
+            "Hamilton's principle for a Lagrangian with second derivatives (higher-order EOM)"
+          ]
+        },
+        {
+          "n": "PS2",
+          "title": "Problem Set 2",
+          "url": "https://ocw.mit.edu/courses/8-09-classical-mechanics-iii-fall-2014/9bd103e8a7b6517e5abc788490b65954_MIT8_09F14_pset2.pdf",
+          "topics": ["he.physics.classical-mechanics#0"],
+          "examples": [
+            "spherical pendulum in a viscous fluid: Rayleigh dissipation function and EOM",
+            "bead on a helix: constraint torque, energy and angular momentum",
+            "hoop rolling on a cylinder: Lagrange multipliers and the leaving angle",
+            "infinite rope over two pulleys: equilibrium shape (variational)",
+            "falling ladder against a smooth wall: constraint forces and separation angle"
+          ]
+        },
+        {
+          "n": "PS3",
+          "title": "Problem Set 3",
+          "url": "https://ocw.mit.edu/courses/8-09-classical-mechanics-iii-fall-2014/d5fdb8fec0febc6ba799cc86e67af3ee_MIT8_09F14_pset3.pdf",
+          "topics": ["he.physics.classical-mechanics#3"],
+          "examples": [
+            "rotation angle in Euler's theorem from eigenvectors of a rotation matrix",
+            "Foucault pendulum and the Coriolis force in a rotating frame",
+            "angular velocity components in terms of Euler angles",
+            "disk with a point mass on its edge: inertia tensor, principal axes, free rotation",
+            "cone rolling on its side without slipping: angular velocity and kinetic energy"
+          ]
+        },
+        {
+          "n": "PS4",
+          "title": "Problem Set 4",
+          "url": "https://ocw.mit.edu/courses/8-09-classical-mechanics-iii-fall-2014/4ffa078142eca4a96a4bcb7a90bf0a4c_MIT8_09F14_pset4.pdf",
+          "topics": ["he.physics.classical-mechanics#3", "he.physics.classical-mechanics#4"],
+          "examples": [
+            "heavy symmetric top: steady precession rates",
+            "three masses on a circle with an exponential potential: normal modes",
+            "small oscillations of the double pendulum: normal modes for given masses",
+            "rigid bar on two springs: coupled translation–rotation modes"
+          ]
+        },
+        {
+          "n": "PS5",
+          "title": "Problem Set 5",
+          "url": "https://ocw.mit.edu/courses/8-09-classical-mechanics-iii-fall-2014/a55cb49d8706f671ccfdac7c6937cddc_MIT8_09F14_pset5.pdf",
+          "topics": ["he.physics.classical-mechanics#1", "he.physics.classical-mechanics#2"],
+          "examples": [
+            "canonical transformations and generating functions",
+            "canonical transformation for the harmonic oscillator",
+            "Poisson brackets and conserved quantities of a two-degree Hamiltonian",
+            "angular momentum and the Laplace–Runge–Lenz vector via Poisson brackets",
+            "motion in an exponential potential from Hamilton's equations",
+            "projectile by the Hamilton–Jacobi method"
+          ]
+        },
+        {
+          "n": "PS6",
+          "title": "Problem Set 6",
+          "url": "https://ocw.mit.edu/courses/8-09-classical-mechanics-iii-fall-2014/b63fddef11e05c7864e9c9887eb01177_MIT8_09F14_pset6.pdf",
+          "topics": ["he.physics.classical-mechanics#1"],
+          "examples": [
+            "charged particle in a plane with a magnetic field and a central potential: Hamilton–Jacobi",
+            "time-dependent linear potential: Hamilton–Jacobi solution",
+            "action–angle variables for V = F|x|: period",
+            "action–angle variables for V = a csc²(x/x₀)",
+            "3-D anisotropic oscillator in action–angle variables"
+          ]
+        },
+        {
+          "n": "PS7",
+          "title": "Problem Set 7",
+          "url": "https://ocw.mit.edu/courses/8-09-classical-mechanics-iii-fall-2014/be840a46409997dabaa9fc37256c80dc_MIT8_09F14_pset7.pdf",
+          "topics": ["he.physics.classical-mechanics#1"],
+          "examples": [
+            "canonical perturbation theory for a mass between two springs",
+            "second-order perturbation theory for the pendulum"
+          ]
+        }
+      ]
+    }
+  ]
+}

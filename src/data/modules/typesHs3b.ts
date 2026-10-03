@@ -5,6 +5,7 @@
  */
 import type { Representation } from './types';
 import type { NumOrVar } from './typesGraphs';
+import type { SpaceObjectsHe3b } from './typesHe3b';
 
 /**
  * H106: two more function families.
@@ -84,7 +85,7 @@ export interface FunctionGraphHs3b {
     n: NumOrVar;
     to: NumOrVar;
     from?: NumOrVar;
-    side?: 'right' | 'left' | 'middle';
+    side?: 'right' | 'left' | 'middle' | 'trapezoid' | 'simpson'; // HC45: functionGraphHe3a.ts
     sum?: string;
   };
 }
@@ -248,7 +249,7 @@ export interface VectorDiagramHs3b {
     volume?: string;
     distance?: string;
     mid?: { x?: string; y?: string; z?: string };
-  };
+  } & SpaceObjectsHe3b; // HC47: planes, lines, a helix, a sphere, a circle (typesHe3b.ts)
 }
 
 /**

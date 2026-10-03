@@ -1,0 +1,397 @@
+/**
+ * Picture checks for college pictures, round 2, group I (`typesHe2i.ts`): what each draws must
+ * agree with the values. Called from `repIssues` in `pictures.ts` with a reader of formula units
+ * (`siOf`), and from `layoutFigureIssues` for the card figure. Test-only.
+ */
+import {
+  buildTruss,
+  cutOf,
+  elementStretch,
+  memberLength,
+  reactionCount,
+  solveTruss,
+  unitLoadDeflection,
+} from '@/components/module/reps/trussMath';
+import {
+  bearingFactors,
+  settlement,
+  stackLayers,
+  stressAt,
+  structuralNumber,
+} from '@/components/module/reps/soilMath';
+import { compassCorrection, latDep, levelRun } from '@/components/module/reps/surveyMath';
+
+import type { LayoutDef } from '../layouts';
+import type { NumOrVar } from '../typesGraphs';
+import type { SoilProfileSpec, SurveySpec, TrussJointCard, TrussSpec } from '../typesHe2i';
+
+type Val = (id: string) => number | undefined;
+
+const near = (a: number, b: number, rel = 2e-3, abs = 1e-6) =>
+  Math.abs(a - b) <= rel * Math.max(Math.abs(a), Math.abs(b)) + abs;
+
+const reader = (val: Val) => (x: NumOrVar | undefined) =>
+  x === undefined ? undefined : typeof x === 'number' ? x : val(x);
+
+/** HC27 `truss`. */
+export function trussIssues(rep: TrussSpec, val: Val): string[] {
+  const out: string[] = [];
+  const get = reader(val);
+  /** A page value (when known) must match what the picture draws; `abs` compares sizes. */
+  const same = (x: NumOrVar | undefined, want: number, what: string, abs = false) => {
+    const v = get(x);
+    if (v === undefined || !Number.isFinite(want)) return;
+    if (!near(abs ? Math.abs(v) : v, abs ? Math.abs(want) : want))
+      out.push(`truss: ${what} is ${v}, the picture draws ${want}`);
+  };
+
+  if (rep.mode === 'element') {
+    const e = rep.element;
+    if (!e) return ['truss: element mode without an element'];
+    const [th, du, dv, L, A, E] = [e.theta, e.du, e.dv, e.L, e.A, e.E].map(get);
+    if (th === undefined || du === undefined || dv === undefined) return out;
+    const delta = elementStretch(du, dv, th);
+    same(e.delta, delta, 'δ = Δu cos θ + Δv sin θ');
+    if (L !== undefined && A !== undefined && E !== undefined && L > 0) {
+      const f = (A * E * delta) / (1000 * L);
+      same(e.f, f, 'f = (AE ÷ L)δ');
+      if (A > 0) same(e.sigma, (1000 * f) / A, 'σ = f ÷ A');
+    }
+    return out;
+  }
+
+  const r = rep.counts?.r === undefined ? undefined : get(rep.counts.r);
+  if (r !== undefined && r !== 3 && r !== 4 && rep.panels)
+    out.push(`truss: r = ${r}, but a panel truss draws a pin and a roller (3) or two pins (4)`);
+  const t = buildTruss(rep, get, r);
+  if (!t) return out;
+  const m = t.members.length;
+  const j = t.joints.length;
+  const rr = reactionCount(t);
+  // m + r − 2j shown equals the drawing's own counts.
+  if (rep.counts) {
+    same(rep.counts.m, m, 'm (members drawn)');
+    same(rep.counts.j, j, 'j (joints drawn)');
+    same(rep.counts.r, rr, 'r (reactions drawn)');
+    same(rep.counts.degree, m + rr - 2 * j, 'm + r − 2j');
+  }
+  if (rep.panels) {
+    const p = t.panel!;
+    same(rep.panels.reaction, ((p.n - 1) * p.P) / 2, 'R = (n − 1)P ÷ 2');
+  }
+  const sol = solveTruss(t);
+  if (!sol.ok) {
+    if (!rep.counts) out.push(`truss: the drawn truss is ${sol.why}, so its forces can't be drawn`);
+    return out;
+  }
+  // Every joint balances with the drawn forces, reactions and loads.
+  const scale = Math.max(1, ...t.loads.map((l) => Math.abs(l.P)));
+  const sum = t.joints.map(() => [0, 0]);
+  t.members.forEach(({ a, b }, k) => {
+    const L = memberLength(t, k);
+    const [ux, uy] = [(t.joints[b]!.x - t.joints[a]!.x) / L, (t.joints[b]!.y - t.joints[a]!.y) / L];
+    const F = sol.forces[k]!;
+    sum[a]![0]! += F * ux;
+    sum[a]![1]! += F * uy;
+    sum[b]![0]! -= F * ux;
+    sum[b]![1]! -= F * uy;
+  });
+  t.supports.forEach((s, i) => {
+    sum[s.j]![0]! += sol.reactions[i]!.rx;
+    sum[s.j]![1]! += sol.reactions[i]!.ry;
+  });
+  for (const l of t.loads) {
+    sum[l.j]![0]! += l.fx;
+    sum[l.j]![1]! += l.fy;
+  }
+  sum.forEach(([fx, fy], i) => {
+    if (Math.abs(fx!) > 1e-6 * scale || Math.abs(fy!) > 1e-6 * scale)
+      out.push(`truss: joint ${t.joints[i]!.name} does not balance (${fx}, ${fy})`);
+  });
+  // Zero-force members are exactly 0 (drawn dashed with 0), the rest carry a T or C letter.
+  sol.forces.forEach((F, k) => {
+    if (F !== 0 && Math.abs(F) < 1e-6 * scale)
+      out.push(`truss: member ${k} carries ${F}, drawn with a letter instead of 0`);
+  });
+  // A page's member force: its size, and its sign when the page writes one (+ T, − C).
+  t.members.forEach((mm, k) => {
+    const v = get(mm.force);
+    if (v === undefined) return;
+    const F = sol.forces[k]!;
+    if (!near(Math.abs(v), Math.abs(F)))
+      out.push(`truss: member ${k}'s force is ${v}, the picture draws ${F}`);
+    else if (v !== 0 && Math.sign(v) !== Math.sign(F) && v < 0)
+      out.push(`truss: member ${k} is ${v} (C) but drawn in tension`);
+  });
+  t.supports.forEach((s, i) => same(s.reaction, sol.reactions[i]!.ry, 'a reaction'));
+  if (rep.cut) {
+    const cut = cutOf(t, sol, rep.cut);
+    if (!cut) {
+      out.push(`truss: the cut through panel ${String(rep.cut.panel)} does not cut three members`);
+      return out;
+    }
+    const h = t.panel!.h;
+    const F = Math.abs(sol.forces[cut.chord]!);
+    // The cut chord's force × the height is the moment at the cut joint.
+    if (!near(F * h, Math.abs(cut.M)))
+      out.push(`truss: chord F × h = ${F * h}, the moment at the cut joint is ${cut.M}`);
+    same(rep.cut.M, cut.M, 'M at the cut', true);
+    same(rep.cut.F, F, 'the cut chord force', true);
+    same(rep.cut.V, cut.V, 'V in the cut panel', true);
+    same(rep.cut.Fd, sol.forces[cut.diagonal]!, 'the cut diagonal force', true);
+    same(rep.cut.theta, cut.theta, 'θ of the cut diagonal');
+    same(rep.cut.x, t.joints[cut.centre]!.x - t.joints[0]!.x, 'x of the moment centre');
+    const fd = Math.abs(sol.forces[cut.diagonal]!);
+    if (!near(fd * Math.sin((cut.theta * Math.PI) / 180), Math.abs(cut.V)))
+      out.push(
+        `truss: F_d sin θ = ${fd * Math.sin((cut.theta * Math.PI) / 180)} is not V = ${cut.V}`,
+      );
+  }
+  if (rep.deflect) {
+    const ji = t.joints.findIndex((J) => J.name === rep.deflect!.joint);
+    const [A, E] = [get(rep.deflect.A), get(rep.deflect.E)];
+    if (ji < 0) out.push(`truss: no joint ${rep.deflect.joint} to deflect`);
+    else if (A !== undefined && E !== undefined) {
+      const d = unitLoadDeflection(t, sol, ji, A, E);
+      if (d) same(rep.deflect.delta, d.delta, 'δ = ΣFfL ÷ (AE)');
+    }
+  }
+  if (rep.angle?.value !== undefined) {
+    const at = (name: string) => t.joints.find((J) => J.name === name);
+    const [J, A, B] = [at(rep.angle.joint), at(rep.angle.from), at(rep.angle.to)];
+    if (J && A && B) {
+      const a1 = Math.atan2(A.y - J.y, A.x - J.x);
+      const a2 = Math.atan2(B.y - J.y, B.x - J.x);
+      let d = (Math.abs(a2 - a1) * 180) / Math.PI;
+      if (d > 180) d = 360 - d;
+      same(rep.angle.value, d, 'the marked angle');
+    }
+  }
+  return out;
+}
+
+/** The `trussJoint` card figures of a sort or sequence: clear members, a load and a pin apart. */
+export function trussJointCardIssues(l: LayoutDef): string[] {
+  const out: string[] = [];
+  const figures =
+    l.kind === 'sort'
+      ? l.cards.map((c) => [c.label, c.figure] as const)
+      : l.kind === 'sequence'
+        ? l.stages.map((s) => [s.label, s.figure] as const)
+        : [];
+  const gap = (a: number, b: number) => {
+    const d = (((a - b) % 360) + 360) % 360;
+    return Math.min(d, 360 - d);
+  };
+  for (const [label, f] of figures) {
+    if (f?.kind !== 'trussJoint') continue;
+    const card = f as TrussJointCard;
+    const ms = card.members;
+    if (ms.length < 1 || ms.length > 5) out.push(`card "${label}": ${ms.length} members`);
+    ms.forEach((a, i) =>
+      ms.slice(i + 1).forEach((b) => {
+        if (gap(a, b) < 25) out.push(`card "${label}": members at ${a}° and ${b}° overlap`);
+      }),
+    );
+    // The load's arrow comes in from the side opposite its direction.
+    if (card.load !== undefined && ms.some((a) => gap(a, card.load! + 180) < 20))
+      out.push(`card "${label}": the load's arrow lies on a member`);
+    if (card.support && ms.some((a) => gap(a, 270) < 50))
+      out.push(`card "${label}": a member runs into the support`);
+  }
+  return out;
+}
+
+/** HC26 `soilProfile`. */
+export function soilProfileIssues(rep: SoilProfileSpec, val: Val): string[] {
+  const out: string[] = [];
+  const get = reader(val);
+  const same = (x: NumOrVar | undefined, want: number | undefined, what: string) => {
+    const v = get(x);
+    if (v === undefined || want === undefined || !Number.isFinite(want)) return;
+    if (!near(v, want)) out.push(`soilProfile: ${what} is ${v}, the picture draws ${want}`);
+  };
+  switch (rep.mode) {
+    case 'stress': {
+      const ls = rep.layers.map((l) => ({
+        thickness: get(l.thickness),
+        gamma: get(l.gamma),
+        gammaSat: get(l.gammaSat),
+      }));
+      const [zw, z] = [get(rep.zw), get(rep.z)];
+      const gw = get(rep.gammaW) ?? 9.81;
+      if (
+        zw === undefined ||
+        z === undefined ||
+        ls.some((l, i) => i < ls.length - 1 && l.thickness === undefined) ||
+        rep.layers.some(
+          (l, i) =>
+            (l.gamma !== undefined && ls[i]!.gamma === undefined) ||
+            (l.gammaSat !== undefined && ls[i]!.gammaSat === undefined),
+        )
+      )
+        return out;
+      const layers = stackLayers(ls.map((l) => ({ ...l, thickness: l.thickness ?? 0 })));
+      const at = stressAt(layers, zw, z, gw);
+      same(rep.sigma, at.sigma, 'σ at z');
+      same(rep.u, at.u, 'u at z');
+      same(rep.sigmaEff, at.eff, 'σ′ at z');
+      // σ′ = σ − u at the marked depth; u = 0 above the water table.
+      const [s, u, e] = [get(rep.sigma), get(rep.u), get(rep.sigmaEff)];
+      if (s !== undefined && u !== undefined && e !== undefined && !near(e, s - u))
+        out.push(`soilProfile: σ′ = ${e} is not σ − u = ${s - u}`);
+      if (u !== undefined && z <= zw && Math.abs(u) > 1e-9)
+        out.push(`soilProfile: u = ${u} above the water table`);
+      return out;
+    }
+    case 'consolidation': {
+      const [H, s0, ds, Cc, e0, Cs, sp] = [
+        rep.H,
+        rep.s0,
+        rep.ds,
+        rep.Cc,
+        rep.e0,
+        rep.Cs,
+        rep.sp,
+      ].map(get);
+      if (rep.Cs !== undefined && (Cs === undefined || sp === undefined)) return out;
+      // The overconsolidated formula holds for σ′₀ ≤ σ′_p ≤ σ′₀ + Δσ (the page's limits).
+      if (rep.Cs !== undefined && sp !== undefined && s0 !== undefined && ds !== undefined)
+        if (sp < s0 || sp > s0 + ds) return out;
+      if (
+        H !== undefined &&
+        s0 !== undefined &&
+        ds !== undefined &&
+        Cc !== undefined &&
+        e0 !== undefined
+      )
+        same(rep.S, settlement(H, Cc, e0, s0, ds, Cs, sp), 'S');
+      if (H !== undefined && rep.Hdr !== undefined)
+        same(rep.Hdr, (rep.drainage ?? 'double') === 'double' ? H / 2 : H, 'H_dr');
+      return out;
+    }
+    case 'footing': {
+      const [B, Df, phi, c, g] = [rep.B, rep.Df, rep.phi, rep.c, rep.gamma].map(get);
+      if (phi !== undefined && (phi < 0 || phi > 50))
+        out.push(`soilProfile: φ′ = ${phi} is outside 0–50°`);
+      if (B !== undefined && !(B > 0)) out.push(`soilProfile: B = ${B}`);
+      if (
+        B === undefined ||
+        Df === undefined ||
+        phi === undefined ||
+        c === undefined ||
+        g === undefined
+      )
+        return out;
+      const f = bearingFactors(phi);
+      const sq = rep.shape === 'square';
+      same(
+        rep.q,
+        (sq ? 1.3 : 1) * c * f.Nc + g * Df * f.Nq + (sq ? 0.4 : 0.5) * g * B * f.Ng,
+        'q_u',
+      );
+      return out;
+    }
+    case 'plan': {
+      const [B, cc, d] = [rep.B, rep.c, rep.d].map(get);
+      if (cc === undefined || d === undefined) return out;
+      same(rep.b0, 4 * (cc + d), 'b₀ = 4(c + d)');
+      if (B !== undefined && cc + d >= B * (rep.perB ?? 1))
+        out.push('soilProfile: the punching perimeter runs past the footing');
+      return out;
+    }
+    case 'pavement': {
+      const ls = rep.layers.map((l) => ({
+        a: get(l.a),
+        D: get(l.D),
+        m: l.m === undefined ? 1 : get(l.m),
+      }));
+      if (ls.some((l) => l.a === undefined || l.D === undefined || l.m === undefined)) return out;
+      same(
+        rep.SN,
+        structuralNumber(ls.map((l) => ({ a: l.a!, D: l.D!, m: l.m! }))),
+        'SN = Σ a·D·m',
+      );
+      return out;
+    }
+  }
+}
+
+/** HC32 `survey`. */
+export function surveyIssues(rep: SurveySpec, val: Val): string[] {
+  const out: string[] = [];
+  const get = reader(val);
+  const same = (x: NumOrVar | undefined, want: number | undefined, what: string) => {
+    const v = get(x);
+    if (v === undefined || want === undefined || !Number.isFinite(want)) return;
+    if (!near(v, want, 2e-3, 1e-6)) out.push(`survey: ${what} is ${v}, the picture draws ${want}`);
+  };
+  switch (rep.mode) {
+    case 'traverse': {
+      const cs = rep.courses.map((c) => ({ azimuth: get(c.azimuth), length: get(c.length) }));
+      const lit = rep.lit === undefined ? undefined : cs[rep.lit];
+      if (lit && lit.azimuth !== undefined && lit.length !== undefined) {
+        const ld = latDep(lit.azimuth, lit.length);
+        same(rep.lat, ld.lat, 'lat = L cos Az');
+        same(rep.dep, ld.dep, 'dep = L sin Az');
+        // lat² + dep² = L², north up.
+        const [la, de] = [get(rep.lat), get(rep.dep)];
+        if (la !== undefined && de !== undefined && !near(la * la + de * de, lit.length ** 2, 4e-3))
+          out.push(`survey: lat² + dep² = ${la * la + de * de}, not L² = ${lit.length ** 2}`);
+      }
+      const cl = rep.closure;
+      if (cl) {
+        const [sl, sd] = [get(cl.sumLat), get(cl.sumDep)];
+        const all = cs.every((c) => c.length !== undefined);
+        const drawnP = all ? cs.reduce((s, c) => s + c.length!, 0) : undefined;
+        const P = cl.P === undefined ? drawnP : get(cl.P);
+        if (sl !== undefined && sd !== undefined) {
+          const e = Math.hypot(sl, sd);
+          same(cl.e, e, 'e = √(Σlat² + Σdep²)');
+          if (P !== undefined && e > 0) same(cl.precision, P / e, 'precision P ÷ e');
+          if (rep.compass && lit?.length !== undefined && P !== undefined) {
+            const cc = compassCorrection(sl, sd, lit.length, P);
+            same(rep.compass.cLat, cc.cLat, 'c_lat = −Σlat × L ÷ P');
+            same(rep.compass.cDep, cc.cDep, 'c_dep = −Σdep × L ÷ P');
+          }
+        }
+      }
+      return out;
+    }
+    case 'angles': {
+      const n = get(rep.n);
+      if (n === undefined) return out;
+      if (!Number.isInteger(n) || n < 3 || n > 10) return [`survey: ${n} sides can't be drawn`];
+      const req = (n - 2) * 180;
+      same(rep.required, req, 'the required sum (n − 2) × 180°');
+      const m = get(rep.measured);
+      if (m !== undefined) {
+        same(rep.misclosure, (m - req) * 3600, 'the misclosure (″)');
+        same(rep.correction, (-(m - req) * 3600) / n, 'the correction per angle (″)');
+      }
+      return out;
+    }
+    case 'level': {
+      const v = [rep.BM, rep.BS1, rep.FS1, rep.BS2, rep.FS2].map(get);
+      if (v.some((x) => x === undefined)) return out;
+      const [BM, BS1, FS1, BS2, FS2] = v as [number, number, number, number, number];
+      const r = levelRun(BM, BS1, FS1, BS2, FS2);
+      // Each elevation is the HI − FS shown.
+      same(rep.HI1, r.HI1, 'HI₁ = BM + BS₁');
+      same(rep.TP, r.TP, 'TP1 = HI₁ − FS₁');
+      same(rep.HI2, r.HI2, 'HI₂ = TP1 + BS₂');
+      same(rep.B, r.B, 'B = HI₂ − FS₂');
+      return out;
+    }
+    case 'curvature': {
+      const K = get(rep.K);
+      if (K !== undefined) same(rep.h, (rep.coef ?? 0.0675) * K * K, 'h = coef × K²');
+      return out;
+    }
+    case 'heights': {
+      const [h, N] = [get(rep.h), get(rep.N)];
+      if (h !== undefined && N !== undefined) same(rep.H, h - N, 'H = h − N');
+      return out;
+    }
+  }
+}

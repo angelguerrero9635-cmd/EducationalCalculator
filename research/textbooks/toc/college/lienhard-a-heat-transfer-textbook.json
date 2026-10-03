@@ -1,0 +1,115 @@
+{
+  "id": "lienhard-a-heat-transfer-textbook",
+  "curriculum": "A Heat Transfer Textbook",
+  "publisher": "Phlogiston Press (free download, ahtt.mit.edu)",
+  "edition": "6th edition, version 6.00 (19 April 2024)",
+  "subject": "mechanical",
+  "level": "college",
+  "content": "titles",
+  "license": {
+    "name": "© J. H. Lienhard V and J. H. Lienhard IV; free download for personal or non-profit instructional use",
+    "url": "https://ahtt.mit.edu/",
+    "attribution": "A Heat Transfer Textbook, 6th ed., by John H. Lienhard IV and John H. Lienhard V. Copyright the authors."
+  },
+  "terms": {
+    "unit": "Chapter",
+    "lesson": "Section"
+  },
+  "sourceUrl": "https://ahtt.mit.edu/",
+  "retrieved": "2026-10-02",
+  "notes": "Copyrighted, free to download: chapter titles only. The single PDF (32 MB) was fetched once (robots.txt: Crawl-delay 30). End-of-chapter problems recorded as types (AHTT-*).",
+  "books": [
+    {
+      "grade": "college",
+      "url": "https://ahtt.mit.edu/",
+      "units": [
+        {
+          "n": "1",
+          "title": "Introduction",
+          "url": "https://ahtt.mit.edu/",
+          "topics": [
+            "he.engineering.heat-transfer#0",
+            "he.engineering.heat-transfer#1",
+            "he.engineering.heat-transfer#2"
+          ],
+          "lessons": []
+        },
+        {
+          "n": "2",
+          "title": "Heat conduction concepts, thermal resistance, and the overall heat transfer coefficient",
+          "url": "https://ahtt.mit.edu/",
+          "topics": ["he.engineering.heat-transfer#0"],
+          "lessons": []
+        },
+        {
+          "n": "3",
+          "title": "Heat exchanger design",
+          "url": "https://ahtt.mit.edu/",
+          "topics": ["he.engineering.heat-transfer#3"],
+          "lessons": []
+        },
+        {
+          "n": "4",
+          "title": "Conduction analysis, dimensional analysis, and fin design",
+          "url": "https://ahtt.mit.edu/",
+          "topics": ["he.engineering.heat-transfer#0"],
+          "lessons": []
+        },
+        {
+          "n": "5",
+          "title": "Transient and multidimensional heat conduction",
+          "url": "https://ahtt.mit.edu/",
+          "topics": ["he.engineering.heat-transfer#0"],
+          "lessons": []
+        },
+        {
+          "n": "6",
+          "title": "Laminar and turbulent boundary layers",
+          "url": "https://ahtt.mit.edu/",
+          "topics": ["he.engineering.heat-transfer#1", "he.engineering.fluid-mechanics#5"],
+          "lessons": []
+        },
+        {
+          "n": "7",
+          "title": "Forced convection in a variety of configurations",
+          "url": "https://ahtt.mit.edu/",
+          "topics": ["he.engineering.heat-transfer#1"],
+          "lessons": []
+        },
+        {
+          "n": "8",
+          "title": "Natural convection in single-phase fluids and during film condensation",
+          "url": "https://ahtt.mit.edu/",
+          "topics": ["he.engineering.heat-transfer#1"],
+          "lessons": []
+        },
+        {
+          "n": "9",
+          "title": "Heat transfer in boiling and other phase-change configurations",
+          "url": "https://ahtt.mit.edu/",
+          "topics": [],
+          "notes": "Boiling, condensation and mass transfer: no topic in this group (taxonomy gap).",
+          "lessons": [],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "10",
+          "title": "Radiative heat transfer",
+          "url": "https://ahtt.mit.edu/",
+          "topics": ["he.engineering.heat-transfer#2"],
+          "lessons": []
+        },
+        {
+          "n": "11",
+          "title": "An introduction to mass transfer",
+          "url": "https://ahtt.mit.edu/",
+          "topics": [],
+          "notes": "Boiling, condensation and mass transfer: no topic in this group (taxonomy gap).",
+          "lessons": [],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        }
+      ],
+      "title": "A Heat Transfer Textbook"
+    }
+  ]
+}

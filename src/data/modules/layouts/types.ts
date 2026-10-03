@@ -14,6 +14,12 @@ import type {
 } from '../typesHsh';
 import type { GalvanicScene } from '../typesHsj';
 import type { CondensedCard, HydrationScene } from '../typesHs2d';
+import type { SkeletalCard } from '../typesHe1c';
+import type { TrussJointCard } from '../typesHe2i';
+import type { IrCard } from '../typesHe3e';
+import type { ProjectionCard } from '../typesHe3m';
+import type { CodeTraceScene, He3dCard, He3dFigure } from '../typesHe3d';
+import type { PathwayStepCard } from '../typesHe3g';
 import type {
   CurrentsScene,
   GreenhouseScene,
@@ -24,6 +30,7 @@ import type {
 import type { GeneScene, KeyScene, KeyStep, ObserveSecond, ReplicationCard } from '../typesHs2e';
 import type { Hs2fFigure, SpectraScene } from '../typesHs2f';
 import type { EarthSectionScene, Hs3cFigure } from '../typesHs3c';
+import type { He4dFigure, SymmetryScene } from '../typesHe4d';
 import type { GelScene, Hs3dCard, Hs3dFigure, ObserveScale, ReflexScene } from '../typesHs3d';
 import type { Round3Icon } from './icons';
 import type { StrobeCard } from './strobeCard';
@@ -201,6 +208,18 @@ export type CardFigure =
   | StrobeCard
   /** An organic molecule's condensed formula, its functional group lit (`typesHs2d.ts`, H101). */
   | CondensedCard
+  /** College HC2 (`typesHe1c.ts`): a line-angle structure, 112 × 76, a group lit. */
+  | SkeletalCard
+  /** College HC27 (`typesHe2i.ts`): one truss joint, its members, a load or a pin; 96 × 72. */
+  | TrussJointCard
+  /** College HC55 (`typesHe3e.ts`): an IR spectrum from its bands, 140 × 60. */
+  | IrCard
+  /** College HC78 (`typesHe3m.ts`): a map projection's outline, graticule and Tissot dots. */
+  | ProjectionCard
+  /** College round 3, group D (`typesHe3d.ts`): code on a code panel (HC48). */
+  | He3dCard
+  /** College HC57 (`typesHe3g.ts`): one step of glycolysis or the citric acid cycle, 112 × 76. */
+  | PathwayStepCard
   /** One stage of DNA replication, old strands dark and new ones lit (H100, `typesHs2e.ts`). */
   | ReplicationCard
   /** Biology round 3 (H109, `typesHs3d.ts`): a reflex arc, one part lit. */
@@ -311,8 +330,12 @@ export type Figure =
   | Hs2fFigure
   /** Earth and space round 3, group H3C (`typesHs3c.ts`): Earth cut open, a station placed. */
   | Hs3cFigure
+  /** College round 4, group D (`typesHe4d.ts`): a molecule with one symmetry element lit. */
+  | He4dFigure
   /** Biology round 3, group H3D (`typesHs3d.ts`): a gel of fixed samples. */
   | Hs3dFigure
+  /** College round 3, group D (`typesHe3d.ts`): a code trace (HC48). */
+  | He3dFigure
   /**
    * A thing made of named parts, each with its job; a scene highlights one part. With a
    * `drawing` (`layouts/partsDrawings.tsx`), the thing is drawn, every part labeled and the
@@ -546,6 +569,8 @@ export interface Scene {
   spectra?: SpectraScene;
   /** An `earthLayers` figure (`typesHs3c.ts`): the station's distance from the focus. */
   earthSection?: EarthSectionScene;
+  /** A `symmetryElements` figure (`typesHe4d.ts`): the molecule and the element lit. */
+  symmetry?: SymmetryScene;
   /** The part to highlight (a `parts` figure). */
   part?: string;
   /** More parts lit with `part`, on a drawn `parts` figure (a stamen: anther and filament). */
@@ -594,6 +619,8 @@ export interface Scene {
   gel?: GelScene;
   /** The part lit and the impulse so far (a `reflexArc` figure; `typesHs3d.ts`). */
   reflex?: ReflexScene;
+  /** The line lit, the variables table and the test (a `codeTrace` figure; `typesHe3d.ts`). */
+  trace?: CodeTraceScene;
   /** The flashes, as "● ● ●" with "—" for a long one (a `flashes` figure). */
   flashes?: string;
   /**

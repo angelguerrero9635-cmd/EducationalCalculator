@@ -4,6 +4,9 @@
  * the earlier round files so their unions only name them. A `NumOrVar` field is a fixed number
  * or a variable id.
  */
+import { phaseSubstanceVars, type PhaseSubstance } from './typesHe1i';
+import { chemRateHe2kVars, type ChemRateHe2kSpec } from './typesHe2k';
+import { chemCellHe3fVars, type ChemCellHe3fSpec } from './typesHe3f';
 import type { NumOrVar } from './typesGraphs';
 
 const ids = (...xs: (NumOrVar | undefined)[]) =>
@@ -56,6 +59,8 @@ export type ChemDiagramHs3eSpec =
       boiling?: NumOrVar;
       drop?: NumOrVar;
       rise?: NumOrVar;
+      /** College (HC8): any one-component substance, drawn from its values (`typesHe1i.ts`). */
+      substance?: PhaseSubstance;
     }
   | {
       kind: 'chemDiagram';
@@ -67,21 +72,27 @@ export type ChemDiagramHs3eSpec =
       rate?: NumOrVar;
       species?: string;
     }
+  /** College (HC34): integrated rate laws, Arrhenius, consecutive reactions (`typesHe2k.ts`). */
+  | ChemRateHe2kSpec
   | {
       kind: 'chemDiagram';
       mode: 'cell';
       cathode: NumOrVar;
       anode: NumOrVar;
       voltage?: NumOrVar;
-    };
+    }
+  /** College (HC56): a cell at its concentrations, or an electrolysis (`typesHe3f.ts`). */
+  | ChemCellHe3fSpec;
 
 export function chemDiagramHs3eVars(r: ChemDiagramHs3eSpec): string[] {
   switch (r.mode) {
     case 'phase':
-      return ids(r.freezing, r.boiling, r.drop, r.rise);
+      return [...ids(r.freezing, r.boiling, r.drop, r.rise), ...phaseSubstanceVars(r.substance)];
     case 'rate':
+      if (!('times' in r)) return chemRateHe2kVars(r);
       return ids(...r.times, ...r.concentrations, r.span, r.change, r.rate);
     case 'cell':
+      if (!('cathode' in r)) return chemCellHe3fVars(r);
       return ids(r.cathode, r.anode, r.voltage);
   }
 }

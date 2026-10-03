@@ -14,10 +14,13 @@ import type { FunctionGraphSpec } from './typesFunctionGraph';
 import type { ChemSpec } from './typesChem';
 import type { EnergyTrackSpec, MotionGraphSpec, SkatersSpec } from './typesMechanics';
 import type { Physics8Spec } from './typesPhysics8';
+import type { CircuitNetSpec } from './typesHe1h';
+import type { He2dSeriesSpec } from './typesHe2d';
 import type { HscSpec } from './typesHsc';
 import type { HsbSpec } from './typesHsb';
 import type { HsdSpec } from './typesHsd';
 import type { BeakerSolution, HsjSpec } from './typesHsj';
+import type { BeakerCuvette } from './typesHe4d';
 import type { CircleSector, PlaneGeometry, SideSplitter } from './typesHsf';
 import type { HsgSpec, PunnettInheritance } from './typesHsg';
 import type { HshSpec } from './typesHsh';
@@ -26,15 +29,44 @@ import type { HslSpec } from './typesHsl';
 import type { ChemDiagramSpec } from './typesHs2d';
 import type { Hs2fKindSpec } from './typesHs2f';
 import type { Hs3cSpec } from './typesHs3c';
+import type { He1gSpec } from './typesHe1g';
 import type { DopplerWave, HskSpec, StandingWave } from './typesHsk';
+import type { He2fSpec } from './typesHe2f';
+import type { He3lSpec } from './typesHe3l';
+import type { He4cSpec } from './typesHe4c';
 import type { Hs2cSpec } from './typesHs2c';
 import type { Hs3aSpec } from './typesHs3a';
+import type { He1bSpec } from './typesHe1b';
+import type { He1fSpec } from './typesHe1f';
+import type { He2bSpec } from './typesHe2b';
+import type { He3iSpec } from './typesHe3i';
+import type { GlobeSpec } from './typesHe2k';
+import type { InstrumentTraceSpec } from './typesHe3e';
+import type { He3mSpec, PlaneGis } from './typesHe3m';
+import type { He2jSpec } from './typesHe2j';
+import type { FieldPlotSpec } from './typesHe2g';
+import type { He3bSpec } from './typesHe3b';
+import type { ChainTreeHe4a, ScatterClassesSpec } from './typesHe4a'; // HC139, HC98
+import type { DriftPathsSpec } from './typesHe4e';
 import type { CardIcon } from './layouts/types';
 import type { TreeChances, TwoWaySpec, VennChances } from './typesHse';
 import type { IntegerLineHs2a } from './typesHs2a';
 import type { CircleHs3b, PolygonHs3b, RectangleHs3b, TableHs3b } from './typesHs3b';
 import type { BarFlows, Hs2eSpec } from './typesHs2e';
 import type { Hs3dSpec, PieStage } from './typesHs3d';
+import type { SkeletalSpec } from './typesHe1c';
+import type { SoilProfileSpec, SurveySpec, TrussSpec } from './typesHe2i';
+import type { He3dSpec } from './typesHe3d';
+import type { PhaseEnvelopeSpec } from './typesHe1i';
+import type { He2cSpec } from './typesHe2c';
+import type { He3hSpec } from './typesHe3h';
+import type { CurvedSolidHe3c, RectangleHe3c, RightTriangleHe3c } from './typesHe3c'; // HC54, HC67
+import type { He3gSpec } from './typesHe3g';
+import type { He3jSpec } from './typesHe3j';
+import type { BeamSpec } from './typesHe1a';
+import type { BodeSpec } from './typesHe2a';
+import type { He2hSpec } from './typesHe2h';
+import type { He3kSpec, WaterfallDecibels } from './typesHe3k';
 
 /**
  * Plot axis: which variable it shows and the visible range, as numbers in the shown unit.
@@ -497,6 +529,8 @@ export type Representation =
       readScale?: boolean;
       /** Grade 9 (H100): the bars between the first and last are flows in or out (`typesHs2e.ts`). */
       flows?: BarFlows;
+      /** HC9: a log scale, decade grid lines; a value ≤ 0 isn't drawn (`BarsLogHe1d`). */
+      log?: boolean;
     }
   /** Picture graph: one column of icons per category; tap a cell to set that count. */
   | {
@@ -523,6 +557,8 @@ export type Representation =
       total: string;
       /** Subtotals listed under the chart (e.g. natural increase, net migration). */
       caption?: string[];
+      /** College budgets in dB on a level axis (HC91, `typesHe3k.ts`). */
+      decibels?: true | WaterfallDecibels;
     }
   /**
    * Rectangle with side lengths and a value written inside. Drag the corner. `extent` is the
@@ -540,7 +576,8 @@ export type Representation =
       /** Draw it as a real roof in perspective: slate shingles, a gutter and rain falling. */
       roof?: boolean;
       extent: number;
-    } & RectangleHs3b)
+    } & RectangleHs3b &
+      RectangleHe3c) // HC67: grow
   /** 10 × 10 grid with `percent` squares shaded. Tap a square to set the percent. */
   | {
       kind: 'grid100';
@@ -612,7 +649,7 @@ export type Representation =
       sector?: CircleSector;
     } & CircleHs3b)
   /** Right triangle (vertical leg `a`, horizontal leg `b`, hypotenuse `c`) with side squares. */
-  | {
+  | ({
       kind: 'rightTriangle';
       a: string;
       b: string;
@@ -620,7 +657,7 @@ export type Representation =
       extent: number;
       /** Each square ruled in unit squares (sides up to 12), so the areas can be counted. */
       grid?: boolean;
-    }
+    } & RightTriangleHe3c) // HC54: rates
   /**
    * A glass cylinder, cone or sphere full of water, to scale, its radius (and height) marked
    * and draggable; the caption works V with the numbers. `compare` (cone or sphere) stands the
@@ -628,7 +665,7 @@ export type Representation =
    * water: 1/3 of it for a cone, 2/3 for a sphere. `extent` is the biggest diameter or height
    * drawn before the scale shrinks (shown units).
    */
-  | {
+  | ({
       kind: 'curvedSolid';
       shape: 'cylinder' | 'cone' | 'sphere';
       radius: string;
@@ -647,7 +684,7 @@ export type Representation =
       surface?: string;
       /** Grades 9–12 (a cylinder): Cavalieri's two stacks of coins, one straight, one leaning. */
       cavalieri?: boolean;
-    }
+    } & CurvedSolidHe3c) // HC54: a cone filling, a cylinder's slab
   /**
    * A scatter plot of fixed data `points` ([x, y], in the axes' numbers) with a line of fit
    * y = `slope` × x + `intercept` (two variables), dragged by a handle near each end; the
@@ -679,6 +716,8 @@ export type Representation =
       r?: string | true;
       leastSquares?: 'beside' | 'fit';
       residualOf?: { point: number | string; residual?: string };
+      /** HC97: the points from a value group, x₁, y₁, x₂, y₂ … (typesHe4a.ts ScatterHe4a). */
+      pointsFrom?: string;
     }
   /**
    * Graph of `y` against `x`. The curve is computed by the solver with `params` held at
@@ -836,6 +875,8 @@ export type Representation =
     }
   /** Grades 9–12 (H52): a solution's solute as dots, a dilution, a solubility curve. */
   | { kind: 'beaker'; solution: BeakerSolution }
+  /** College (HC112): a cuvette in a spectrophotometer's beam (`typesHe4d.ts`). */
+  | { kind: 'beaker'; cuvette: BeakerCuvette }
   /**
    * A quadrilateral with 2 pairs of equal sides (`first`, `second`), square corners when
    * `rightAngles` is 4; named square, rectangle, rhombus or parallelogram.
@@ -1085,6 +1126,10 @@ export type Representation =
       partition?: PlaneGeometry['partition'];
       polygon?: PlaneGeometry['polygon'];
       slopes?: boolean;
+      /** College GIS (HC77, `typesHe3m.ts`): shoelace area, a buffer, the mean centre. */
+      shoelace?: PlaneGis['shoelace'];
+      buffer?: PlaneGis['buffer'];
+      center?: PlaneGis['center'];
     }
   /** Grade 8 functions, systems and transformations (specs in `typesGraphs.ts`). */
   | LinearFunctionSpec
@@ -1092,6 +1137,7 @@ export type Representation =
   | FunctionMachineSpec
   | MappingSpec
   | TransformationSpec
+  | ScatterClassesSpec // HC139: minimum distance in feature space (typesHe4a.ts)
   /** Grades 9–12: the graph of any function family (spec in `typesFunctionGraph.ts`). */
   | FunctionGraphSpec
   /** Grade 7 life science: energy pyramid, generations (specs in `typesLife.ts`). */
@@ -1105,6 +1151,10 @@ export type Representation =
   | EnergyTrackSpec
   /** Grade 8 spectrum, circuits, electromagnet and orbit (specs in `typesPhysics8.ts`). */
   | Physics8Spec
+  /** College schematics (HC7): `seriesCircuit` and `circuit` with `net` (`typesHe1h.ts`). */
+  | CircuitNetSpec
+  /** College op-amp and semiconductor schematics (HC18, HC39): `amp`, `device` (`typesHe2d.ts`). */
+  | He2dSeriesSpec
   /** Grades 9–12 geometry: triangle solver (specs in `typesHsc.ts`). */
   | HscSpec
   /** Grades 9–12 earth and space, group HL (specs in `typesHsl.ts`). */
@@ -1113,6 +1163,8 @@ export type Representation =
   | Hs2fKindSpec
   /** Grades 9–12 round 3 earth and space, group H3C: geologic clock, … (`typesHs3c.ts`). */
   | Hs3cSpec
+  /** College round 1, group G: fluidSystem (HC6; specs in `typesHe1g.ts`). */
+  | He1gSpec
   /** Grades 9–12 statistics and counting, group HB (specs in `typesHsb.ts`). */
   | HsbSpec
   /** Grades 9–12 group D: unit circle, algebra tiles, vectors, … (specs in `typesHsd.ts`). */
@@ -1127,15 +1179,71 @@ export type Representation =
   | HsjSpec
   /** Grades 9–12 round 2, group H2D: effusion, isotopes, oxidation numbers, mass defect. */
   | ChemDiagramSpec
+  /** College round 1, group I (HC8): a binary's Pxy, Txy or x–y diagram (`typesHe1i.ts`). */
+  | PhaseEnvelopeSpec
+  /** College round 2, group C: HC17 property diagram, HC23 thermal wall (`typesHe2c.ts`). */
+  | He2cSpec
+  /** College round 3, group H: HC40 heat exchanger, … (`typesHe3h.ts`). */
+  | He3hSpec
+  /** College round 3, group G: HC80 dilution series (`typesHe3g.ts`). */
+  | He3gSpec
   /** Grades 9–12 physics, group HK: projectile, free body, … (specs in typesHsk.ts). */
   | HskSpec
+  /** College round 2, group F: freeBody and circularMotion options (`typesHe2f.ts`). */
+  | He2fSpec
+  /** College round 3, group L: HC68 ray modes, HC69 phaseSpace, HC93 wave (`typesHe3l.ts`). */
+  | He3lSpec
+  /** College round 4, group C: HC99, HC101, HC103–HC105, HC118 (`typesHe4c.ts`). */
+  | He4cSpec
   /** Grades 9–12 physics round 2, group H2C: impulse, … (specs in typesHs2c.ts). */
   | Hs2cSpec
   /** Grades 9–12 physics round 3, group H3A: torque, rotor, … (specs in typesHs3a.ts). */
   | Hs3aSpec
+  /** College round 1, group B: HC3 `section` (spec in typesHe1b.ts). */
+  | He1bSpec
+  /** College round 1, group F: HC5 control volume, HC13 velocity profile (`typesHe1f.ts`). */
+  | He1fSpec
+  /** College round 2, group B: HC15 potential well, HC16 unit cell (`typesHe2b.ts`). */
+  | He2bSpec
+  /** College round 3, group I: HC82 binary phase, HC83 machining, HC84 linkage (`typesHe3i.ts`). */
+  | He3iSpec
+  /** College round 2, group K: HC36 `globe` (`typesHe2k.ts`). */
+  | GlobeSpec
+  /** College round 3, group E: HC55 `instrumentTrace` (`typesHe3e.ts`). */
+  | InstrumentTraceSpec
+  /** College round 3, group M: HC75 `aquifer`, HC76, HC78 (`typesHe3m.ts`). */
+  | He3mSpec
+  /** College round 2, group J: HC28 stress–strain, HC33 stress element (`typesHe2j.ts`). */
+  | He2jSpec
+  /** College round 2, group G (HC21): slope, vector and phase fields (`typesHe2g.ts`). */
+  | FieldPlotSpec
+  /** College round 3, group B (HC46, HC65): surfaces and solids of revolution (`typesHe3b.ts`). */
+  | He3bSpec
+  /** College round 4, group E (HC153): genetic drift's paths (`typesHe4e.ts`). */
+  | DriftPathsSpec
   /** Grades 9–12 round 2 biology, group H2E (specs in `typesHs2e.ts`). */
   | Hs2eSpec
   | Hs3dSpec
+  /** College round 1, group C (HC2): a line-angle structure (`typesHe1c.ts`). */
+  | SkeletalSpec
+  /** College round 2, group I (HC27): a pin-jointed truss (`typesHe2i.ts`). */
+  | TrussSpec
+  /** College round 2, group I (HC26): soil to scale, stresses, a footing, a pavement. */
+  | SoilProfileSpec
+  /** College round 2, group I (HC32): a traverse, leveling, curvature, heights. */
+  | SurveySpec
+  /** College round 3, group D (`typesHe3d.ts`): timing diagrams, graphs, schedules, bit fields. */
+  | He3dSpec
+  /** College round 1, group A: the `beam` (HC1; specs in `typesHe1a.ts`). */
+  | BeamSpec
+  /** College round 2, group A: the Bode plot (HC22; `typesHe2a.ts`). */
+  | BodeSpec
+  /** College round 3, group J: HC60, HC61, HC88, HC89, HC90 (`typesHe3j.ts`). */
+  | He3jSpec
+  /** College round 3, group K: HC86 lamina, HC87 rocket, HC62, HC63 (`typesHe3k.ts`). */
+  | He3kSpec
+  /** College round 2, group H: HC24 wing, HC30 duct, HC31 supersonicFlow (`typesHe2h.ts`). */
+  | He2hSpec
   /** Box plot: the five-number summary on a number line, each mark draggable. */
   | {
       kind: 'boxPlot';
@@ -1523,6 +1631,8 @@ export type Representation =
     }
   /** Grades 9–12 (H21): a probability tree, a chance on every branch (spec in `typesHse.ts`). */
   | { kind: 'treeDiagram'; chances: TreeChances }
+  /** HC98: the multivariable chain rule as a tree (spec in `typesHe4a.ts`). */
+  | { kind: 'treeDiagram'; chain: ChainTreeHe4a }
   /**
    * A clear bag of marbles: `parts` are how many of each color (40 in all at most), in
    * `colors` and named by `names` (the color names by default). The event is color `pick`

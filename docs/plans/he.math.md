@@ -129,7 +129,7 @@ poles: ['a']`, `limit: { x: 'a' }`, `at: { x, y }` (confirm the by-top family dr
   continuity with a parameter — ~continuity Solves (Partly when k sits in both pieces); IVT
   existence — ~ivt Solves; sin(kx)/x — ~special-trig Solves; limits at infinity — ~end-behavior
   Solves (signs only); limit from a graph — Partly (no graph-reading page); ε–δ for a line —
-  ~epsilon-delta Solves, for x² — No.
+  ~epsilon-delta Solves, for x² — No; e-limit (1 + ax)^(b/x) as x → 0 — No [new-page] (GRE-MATH-Q7).
 - **Verdict:** 7 pages (2 sorts, 1 ⏳).
 
 ### C1#1 he.math.calc-1#1 — Derivatives and differentiation rules
@@ -168,7 +168,7 @@ poles: ['a']`, `limit: { x: 'a' }`, `at: { x, y }` (confirm the by-top family dr
   exp derivatives — ~trig, ~exp Solve; implicit slope on a circle — ~implicit Solves, on another
   curve — No (E13); tangent line equation — ~implicit, ~linear-approx Solve; linearization —
   Solves; L'Hôpital on 0/0 — ~lhopital Solves for its family; derivative of an inverse function —
-  No (propose `~inverse` after E13).
+  No (propose `~inverse` after E13); derivative from the limit definition and short proofs (product rule, sin′ = cos) — No [new-page]; read f′ from a graph, sketch f′ from f — No [new-page]; rate of change in context (average velocity, meaning and units of f′) — Partly [new-page].
 - **Verdict:** 8 pages (1 kept, 7 new; 2 ⏳).
 
 ### C1#2 he.math.calc-1#2 — Related rates and optimization
@@ -206,10 +206,10 @@ poles: ['a']`, `limit: { x: 'a' }`, `at: { x, y }` (confirm the by-top family dr
 - **~steps — BUILD (sequence):** stages "Draw it and name the quantities", "Write the quantity
   to make largest or smallest", "Use the constraint to leave one variable", "Differentiate and
   set the derivative to 0", "Check the ends or the second derivative", "Answer with units".
-- **Answers:** open box, fence, cheapest can — main, ~fence Solve, can — No (propose `~can`,
-  r = ∛(V/2π)); local and absolute extrema of a cubic — ~extrema Solves (absolute on [a, b] —
-  Partly, add the ends); ladder, two cars, cone tank — Solve; shadow of a walker — Partly (same
-  similar-triangle model as ~cone-tank); MVT value c — No (not in the taxonomy; see below).
+- **Answers:** open box, fence, cheapest can — main, ~fence Partly, can — No (propose `~can`,
+  r = ∛(V/2π)); local and absolute extrema of a cubic — ~extrema Partly (most items read f′ from a graph) (absolute on [a, b] —
+  Partly, add the ends); ladder, two cars, cone tank — Partly; shadow of a walker — Partly (same
+  similar-triangle model as ~cone-tank); MVT value c — No (not in the taxonomy; see below); curve sketching with every feature — No [new-page] (not in the taxonomy).
 - **Verdict:** 7 pages (1 sequence, 1 ⏳).
 
 ### C1#3 he.math.calc-1#3 — Definite integrals and the Fundamental Theorem
@@ -243,8 +243,8 @@ sum }`. Refresh `m.12.area-under-curve`.
 - **Answers:** evaluate a definite integral of a polynomial — main Solves; of other functions —
   Partly (E13); Riemann sums from a formula — ~riemann Solves, from a table — No (propose
   `~table-sum`); FTC part 1 — ~accumulation Solves for linear f, for F(x) = ∫ sin t dt — Partly;
-  average value — Solves; displacement vs distance (AP FR staple) — ~motion Solves; area between
-  a line and a parabola — Solves, two parabolas — Partly.
+  average value — Solves; displacement vs distance (AP FR staple) — ~motion Partly; area between
+  a line and a parabola — Solves, two parabolas — Partly; trapezoid, midpoint and Simpson rules — No (not in the taxonomy).
 - **Verdict:** 6 pages.
 
 ### C1#4 he.math.calc-1#4 — u-substitution
@@ -324,7 +324,7 @@ Active Calculus 5–8, CLP-2; AP Calculus BC (Units 6–10) is the bridge level.
 - **Answers:** p-integrals at ∞ and at 0 — Solve; e^(−kx) — Solves; comparison verdict —
   ~comparison Solves for its family, in general — Partly; ∫ 1/x from 0 to 1 diverges — ~near-zero
   Solves; a pole inside [a, b] (∫ from −1 to 1 of 1/x²) — Partly (the page rejects; propose a
-  split version later).
+  split version later); improper integral from the Gaussian integral — No [new-page].
 - **Verdict:** 4 pages.
 
 ### C2#2 he.math.calc-2#2 — Volume, arc length and work
@@ -375,7 +375,7 @@ Active Calculus 5–8, CLP-2; AP Calculus BC (Units 6–10) is the bridge level.
   decides it." Cards: Σ 1/n²; Σ (2/3)ⁿ; Σ (−1)ⁿ/n; Σ 3ⁿ/n!; Σ 1/(n² + 1) (Converges);
   Σ 1/√n; Σ n/(n + 1); Σ n!/2ⁿ (Diverges).
 - **Answers:** p-series and geometric verdicts — main, `m.11.series~infinite` Solve; integral
-  test bound — Solves; ratio test — ~ratio Solves for n·rⁿ, others in the sort; alternating error
+  test bound — Solves; ratio test — ~ratio Partly (n·rⁿ only; factorial terms are common), others in the sort; alternating error
   bound (AP BC staple) — ~alternating Solves; comparison and limit comparison — ~converge-diverge
   Partly (the verdict, not the work); limit of a sequence — `m.12.limits-intro~infinity` (Refresh).
 - **Verdict:** 4 pages (1 sort, 2 ⏳).
@@ -399,9 +399,8 @@ Active Calculus 5–8, CLP-2; AP Calculus BC (Units 6–10) is the bridge level.
   b = 1, 5 terms → 1 − 1/3 + 1/10 − 1/42 + 1/216 = 0.74749; next term 1/1320 = 0.00076 bounds
   the error (true 0.74682).
 - **Answers:** Maclaurin polynomial and error bound — main, ~sin-cos Solve; Taylor polynomial from
-  given derivatives (AP FR staple) — ~from-derivatives Solves; interval of convergence — ~radius
-  Solves for its family; series by substitution or integration — ~integrate-series Solves for
-  e^(−x²); ln(1 + x) and 1/(1 − x) series — Partly (add to the ~sin-cos choice list).
+  given derivatives (AP FR staple) — ~from-derivatives Solves; interval of convergence — ~radius Partly (endpoint checks); series by substitution or integration — ~integrate-series Solves for
+  e^(−x²); ln(1 + x) and 1/(1 − x) series — Partly (add to the ~sin-cos choice list); sum a numerical series from a known Maclaurin series — No [new-page].
 - **Verdict:** 5 pages (4 ⏳).
 
 ### C2#5 he.math.calc-2#5 — Parametric and polar calculus
@@ -423,8 +422,7 @@ Active Calculus 5–8, CLP-2; AP Calculus BC (Units 6–10) is the bridge level.
   `curve` cardioid with `point`.
 - **Answers:** parametric slope and tangent — main Solves; speed and arc length — ~cycloid-arc
   Solves for its family; polar area — Solves (a petal of a rose — Partly, propose a rose
-  choice); area between two polar curves — No; polar slope — Solves; vector-valued motion (AP BC
-  Unit 9) — C3#0~helix.
+  choice); area between two polar curves — No; polar slope — Solves; vector-valued motion (AP BC Unit 9) — ~cycloid-arc Partly; identify the graph of a parametric curve — No [new-page].
 - **Verdict:** 4 pages (1 ⏳).
 
 ## Course 3. he.math.calc-3 — Calculus III (Multivariable)
@@ -482,7 +480,7 @@ chapters 2–6, CLP-3 and CLP-4, Active Calculus Multivariable, MIT OCW 18.02.
   sin(xy) — No (E13); directional derivative and steepest direction — Solves; chain rule from
   given partials — ~chain Solves; classify critical points — ~extrema Solves; Lagrange with a
   linear constraint — Solves, on a circle — No (propose a second family); linear approximation
-  — main (the tangent plane) Solves.
+  — main (the tangent plane) Solves; read partials from a contour plot or table — No [new-page]; limits along paths (does not exist) — No [new-page].
 - **Verdict:** 5 pages (3 ⏳).
 
 ### C3#2 he.math.calc-3#2 — Multiple integrals
@@ -506,7 +504,7 @@ chapters 2–6, CLP-3 and CLP-4, Active Calculus Multivariable, MIT OCW 18.02.
   Solves for its family; reversing the order — Partly (the steps show both); polar area and
   integrals — ~polar Solves; mass and center of mass — ~mass Solves; triple integrals in
   cylindrical or spherical coordinates — No (propose `~sphere`, V = 4πR³/3 with ρ²sin φ);
-  Jacobian change of variables — No.
+  Jacobian change of variables — No; triple integrals in rectangular coordinates — No [new-page].
 - **Verdict:** 4 pages (2 ⏳).
 
 ### C3#3 he.math.calc-3#3 — Line and surface integrals
@@ -527,7 +525,7 @@ chapters 2–6, CLP-3 and CLP-4, Active Calculus Multivariable, MIT OCW 18.02.
 - **Answers:** work along a segment — main Solves, along a parabola or circle — Partly (Green's
   page does the circle); path independence and potential — ~conservative Solves; flux through a
   sphere — Solves, through a graph surface — No; mass of a wire — Solves; surface area of a graph
-  — No (propose `~surface-area` for a plane patch).
+  — No (propose `~surface-area` for a plane patch); scalar surface integral (mass, moment of inertia of a surface) — No [new-page].
 - **Verdict:** 4 pages (3 ⏳).
 
 ### C3#4 he.math.calc-3#4 — Green's, Stokes' and Divergence theorems
@@ -552,7 +550,7 @@ chapters 2–6, CLP-3 and CLP-4, Active Calculus Multivariable, MIT OCW 18.02.
   a sphere from ∭ div F (Divergence).
 - **Answers:** Green's on a rectangle — Solves, on a disk — Partly (the ~stokes circle in the
   plane); area by a line integral — No (propose `~area`, A = ½∮(x dy − y dx) for an ellipse);
-  divergence theorem on a box — Solves; Stokes' with a circle — Solves; which theorem — Solves.
+  divergence theorem on a box — Solves; Stokes' with a circle — Solves; which theorem — Solves; compute divergence and curl — No [new-page].
 - **Verdict:** 4 pages (1 sort, 2 ⏳).
 
 ## Course 4. he.math.diff-eq — Differential Equations
@@ -588,7 +586,7 @@ Differential Equations_; CV2 chapter 4 and CV3 chapter 7; MIT OCW 18.03.
 - **Answers:** cooling and growth with data (find k) — main Solves; logistic — Solves; Euler's
   method (AP BC) — ~euler Solves; mixing tank — Solves; linear by integrating factor — ~linear
   Solves for its family; separable in general (y′ = x/y) — Partly (E13); slope field matching —
-  No (propose a sort of fields once P9 has a card figure); exact equations — No.
+  No (propose a sort of fields once P9 has a card figure); exact equations — No; verify a solution and fit constants — No [new-page]; Bernoulli and homogeneous substitutions — No [new-page].
 - **Verdict:** 6 pages (1 sort, 2 ⏳).
 
 ### DE#1 he.math.diff-eq#1 — Second-order linear ODEs
@@ -612,7 +610,7 @@ Differential Equations_; CV2 chapter 4 and CV3 chapter 7; MIT OCW 18.03.
 - **Answers:** characteristic equation in all three cases — ~characteristic Solves; IVP with a
   damped spring — main Solves; undetermined coefficients with polynomial forcing — No (propose
   `~polynomial-forcing`, y_p = (m/c)t + n/c − bm/c²); resonance and amplitude — Solves; RLC
-  circuit — main (same equation; the engineering pages own it); variation of parameters — No.
+  circuit — main (same equation; the engineering pages own it); variation of parameters — No; complex numbers and sinusoids, A cos(ωt − φ) — No [new-page]; Wronskian, superposition, reduction of order — No [new-page].
 - **Verdict:** 3 pages (1 ⏳).
 
 ### DE#2 he.math.diff-eq#2 — Laplace transforms
@@ -656,7 +654,8 @@ Differential Equations_; CV2 chapter 4 and CV3 chapter 7; MIT OCW 18.03.
 - **Answers:** eigenvalue method with real eigenvalues — main, ~solution Solve; complex
   eigenvalues (spiral solution) — Partly (the type, not x(t)); classify equilibria — Solves;
   second-order equation as a system — Partly (A = `[[0, 1], [−k/m, −c/m]]` typed on main);
-  linearize a nonlinear system — ~predator-prey Solves for Lotka–Volterra.
+  linearize a nonlinear system — ~predator-prey Solves for Lotka–Volterra; normal modes of
+  coupled masses — No [new-page].
 - **Verdict:** 4 pages (1 sort, 3 ⏳).
 
 ### DE#4 he.math.diff-eq#4 — Series solutions
@@ -730,7 +729,7 @@ _Linear Algebra_; Beezer, _A First Course in Linear Algebra_; MIT OCW 18.06.
 - **Answers:** basis and dimension of Nul A and Col A — main Solves; is a vector in the span —
   Partly (main with b typed as a fourth column); independence — Solves in ℝ³, four vectors — No;
   coordinates in a basis — Solves in ℝ²; subspace tests — Solves; polynomial and matrix spaces
-  — No (no quantity model; the sort's sentence covers the test).
+  — No (no quantity model; the sort's sentence covers the test); matrix of a linear transformation (rotations, reflections, incidence matrices) — No [new-page].
 - **Verdict:** 4 pages (1 sort).
 
 ### LA#2 he.math.linear-algebra#2 — Determinants
@@ -774,7 +773,7 @@ _Linear Algebra_; Beezer, _A First Course in Linear Algebra_; MIT OCW 18.06.
   a = b = 1 → r = √2, θ = 45°. Picture: `complexPlane` `conjugate`, `modulus`, `argument`.
 - **Answers:** 2 × 2 eigenpairs — main Solves; 3 × 3 with a known λ — Solves, the cubic —
   Partly (triangular matrices only); diagonalize and powers — ~powers Solves; Markov steady
-  state — Solves for 2 states; complex eigenvalues — Solves.
+  state — Solves for 2 states; complex eigenvalues — Solves; discrete dynamical systems classified by eigenvalues — No [new-page].
 - **Verdict:** 5 pages.
 
 ### LA#4 he.math.linear-algebra#4 — Orthogonality and least squares

@@ -1,0 +1,86 @@
+{
+  "id": "nasa-glenn-beginners-guide",
+  "curriculum": "Beginner's Guide to Aeronautics (NASA Glenn)",
+  "publisher": "NASA Glenn Research Center",
+  "edition": "web site, read 2026-10-02",
+  "subject": "aerospace",
+  "level": "college",
+  "content": "titles",
+  "license": {
+    "name": "Public domain (U.S. federal government work)",
+    "url": null,
+    "attribution": "NASA Glenn Research Center, Beginner's Guide to Aeronautics, https://www.grc.nasa.gov/www/k-12/airplane/ ('All of this information was developed in the public domain.')"
+  },
+  "terms": {
+    "unit": "Guide"
+  },
+  "sourceUrl": "https://www.grc.nasa.gov/www/k-12/airplane/",
+  "retrieved": "2026-10-02",
+  "notes": "Index of the guide sections and activity sets (titles). The site is moving to www1.grc.nasa.gov/beginners-guide-to-aeronautics/. The guide pages state the equations (lift, drag, isentropic, shock, nozzle, standard atmosphere) as NASA writes them; the activities are written by contributing teachers (grades 6–12), so they are recorded as types only.",
+  "books": [
+    {
+      "course": null,
+      "title": "Beginner's Guide to Aeronautics",
+      "url": "https://www.grc.nasa.gov/www/k-12/airplane/",
+      "units": [
+        {
+          "n": "1",
+          "title": "Beginner's Guide to Aerodynamics (lift, drag, wing geometry, Mach number, standard atmosphere)",
+          "url": "https://www.grc.nasa.gov/www/k-12/airplane/short.html",
+          "topics": [
+            "he.engineering.aerodynamics#0",
+            "he.engineering.aerodynamics#1",
+            "he.engineering.aerodynamics#2",
+            "he.engineering.aerodynamics#3",
+            "he.engineering.flight-mechanics#0"
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Aerodynamics activities (grades 6–12): lift and velocity, Mach number, elliptical wing, trimmed aircraft, pitot tube, range, density and lift",
+          "url": "https://www.grc.nasa.gov/www/k-12/BGA/BGAindex.html",
+          "topics": [
+            "he.engineering.aerodynamics#1",
+            "he.engineering.aerodynamics#3",
+            "he.engineering.flight-mechanics#1"
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Beginner's Guide to Propulsion (turbojet, turbofan, ramjet, nozzles, thrust)",
+          "url": "https://www.grc.nasa.gov/www/k-12/airplane/shortp.html",
+          "topics": [
+            "he.engineering.propulsion#0",
+            "he.engineering.propulsion#2",
+            "he.engineering.compressible-flow#0",
+            "he.engineering.compressible-flow#1",
+            "he.engineering.compressible-flow#2"
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Propulsion activities (grades 6–12): drag equation, forces in a climb, climb vectors",
+          "url": "https://www.grc.nasa.gov/www/k-12/BGP/BGPindex.html",
+          "topics": ["he.engineering.aerodynamics#1", "he.engineering.flight-mechanics#0"]
+        },
+        {
+          "n": "5",
+          "title": "Beginner's Guide to Model Rockets (thrust, stability, flight)",
+          "url": "https://www.grc.nasa.gov/www/k-12/airplane/shortr.html",
+          "topics": ["he.engineering.propulsion#1"]
+        },
+        {
+          "n": "6",
+          "title": "Interactive simulators (FoilSim, EngineSim, Oblique Shock, ShockModeler, RocketNozzle)",
+          "url": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/",
+          "topics": [
+            "he.engineering.aerodynamics#0",
+            "he.engineering.compressible-flow#1",
+            "he.engineering.propulsion#0",
+            "he.engineering.propulsion#2"
+          ]
+        }
+      ]
+    }
+  ]
+}

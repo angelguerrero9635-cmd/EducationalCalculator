@@ -20,7 +20,7 @@ export function hs2hIssues(rep: Representation, val: Val): string[] {
     }
     case 'treeDiagram': {
       // Each size's names: as many as the size, all different.
-      if ('chances' in rep || !rep.namesBySize) break;
+      if ('chances' in rep || 'chain' in rep || !rep.namesBySize) break; // HC98: chain apart
       for (const [size, names] of Object.entries(rep.namesBySize)) {
         if (names.length !== Number(size)) out.push(`${names.length} names for a stage of ${size}`);
         if (new Set(names).size !== names.length) out.push(`names for ${size} repeat`);

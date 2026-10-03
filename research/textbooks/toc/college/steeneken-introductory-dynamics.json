@@ -1,0 +1,137 @@
+{
+  "id": "steeneken-introductory-dynamics",
+  "curriculum": "Introductory Dynamics: 2D Kinematics and Kinetics of Point Masses and Rigid Bodies",
+  "publisher": "TU Delft (LibreTexts Engineering edition)",
+  "edition": "LibreTexts edition",
+  "subject": "classical",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/",
+    "attribution": "Introductory Dynamics by Peter Steeneken (TU Delft), Engineering LibreTexts. CC BY 4.0."
+  },
+  "terms": {
+    "unit": "Chapter",
+    "lesson": "Section"
+  },
+  "sourceUrl": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introductory_Dynamics%3A_2D_Kinematics_and_Kinetics_of_Point_Masses_and_Rigid_Bodies_(Steeneken)",
+  "retrieved": "2026-10-02",
+  "notes": "Open text (CC BY 4.0): chapter list (parts hold the chapters). The chapter pages hold no exercise boxes; no question records.",
+  "books": [
+    {
+      "grade": "college",
+      "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introductory_Dynamics%3A_2D_Kinematics_and_Kinetics_of_Point_Masses_and_Rigid_Bodies_(Steeneken)",
+      "units": [
+        {
+          "n": "1",
+          "title": "Preface",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introductory_Dynamics%3A_2D_Kinematics_and_Kinetics_of_Point_Masses_and_Rigid_Bodies_(Steeneken)/01%3A_Introduction/01%3A_Preface",
+          "topics": [],
+          "notes": "No college topic of this group fits (outside the earth and geography courses, or a taxonomy gap).",
+          "lessons": [],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "2",
+          "title": "Notation Math and Engineering Basics",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introductory_Dynamics%3A_2D_Kinematics_and_Kinetics_of_Point_Masses_and_Rigid_Bodies_(Steeneken)/01%3A_Introduction/02%3A_Notation_Math_and_Engineering_Basics",
+          "topics": [],
+          "notes": "Notation, math and engineering basics (no dynamics topic).",
+          "lessons": [],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "3",
+          "title": "Vectors and Coordinates",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introductory_Dynamics%3A_2D_Kinematics_and_Kinetics_of_Point_Masses_and_Rigid_Bodies_(Steeneken)/01%3A_Introduction/03%3A_Vectors_and_Coordinates",
+          "topics": ["he.engineering.statics#0"],
+          "lessons": []
+        },
+        {
+          "n": "4",
+          "title": "Introduction to Dynamics",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introductory_Dynamics%3A_2D_Kinematics_and_Kinetics_of_Point_Masses_and_Rigid_Bodies_(Steeneken)/01%3A_Introduction/04%3A_Introduction_to_Dynamics",
+          "topics": ["he.engineering.dynamics#0"],
+          "lessons": []
+        },
+        {
+          "n": "5",
+          "title": "Kinematics of Point Masses",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introductory_Dynamics%3A_2D_Kinematics_and_Kinetics_of_Point_Masses_and_Rigid_Bodies_(Steeneken)/02%3A_Dynamics_of_Point_Masses/05%3A_Kinematics_of_Point_Masses",
+          "topics": ["he.engineering.dynamics#0"],
+          "lessons": []
+        },
+        {
+          "n": "6",
+          "title": "Kinetics of Point Masses",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introductory_Dynamics%3A_2D_Kinematics_and_Kinetics_of_Point_Masses_and_Rigid_Bodies_(Steeneken)/02%3A_Dynamics_of_Point_Masses/06%3A_Kinetics_of_Point_Masses",
+          "topics": ["he.engineering.dynamics#1"],
+          "lessons": []
+        },
+        {
+          "n": "7",
+          "title": "Work and Energy",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introductory_Dynamics%3A_2D_Kinematics_and_Kinetics_of_Point_Masses_and_Rigid_Bodies_(Steeneken)/02%3A_Dynamics_of_Point_Masses/07%3A_Work_and_Energy",
+          "topics": ["he.engineering.dynamics#2"],
+          "lessons": []
+        },
+        {
+          "n": "8",
+          "title": "Impulse and Momentum",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introductory_Dynamics%3A_2D_Kinematics_and_Kinetics_of_Point_Masses_and_Rigid_Bodies_(Steeneken)/02%3A_Dynamics_of_Point_Masses/08%3A_Impulse_and_Momentum",
+          "topics": ["he.engineering.dynamics#2"],
+          "lessons": []
+        },
+        {
+          "n": "9",
+          "title": "Kinematics of Rigid Bodies",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introductory_Dynamics%3A_2D_Kinematics_and_Kinetics_of_Point_Masses_and_Rigid_Bodies_(Steeneken)/03%3A_Rigid_Body_Dynamics/09%3A_Kinematics_of_Rigid_Bodies",
+          "topics": ["he.engineering.dynamics#3"],
+          "lessons": []
+        },
+        {
+          "n": "10",
+          "title": "Kinetics of Rigid Bodies",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introductory_Dynamics%3A_2D_Kinematics_and_Kinetics_of_Point_Masses_and_Rigid_Bodies_(Steeneken)/03%3A_Rigid_Body_Dynamics/10%3A_Kinetics_of_Rigid_Bodies",
+          "topics": ["he.engineering.dynamics#3"],
+          "lessons": []
+        },
+        {
+          "n": "11",
+          "title": "Work and Energy of Rigid Bodies",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introductory_Dynamics%3A_2D_Kinematics_and_Kinetics_of_Point_Masses_and_Rigid_Bodies_(Steeneken)/03%3A_Rigid_Body_Dynamics/11%3A_Work_and_Energy_of_Rigid_Bodies",
+          "topics": ["he.engineering.dynamics#3"],
+          "lessons": []
+        },
+        {
+          "n": "12",
+          "title": "Angular Impulse and Angular Momentum",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introductory_Dynamics%3A_2D_Kinematics_and_Kinetics_of_Point_Masses_and_Rigid_Bodies_(Steeneken)/03%3A_Rigid_Body_Dynamics/12%3A_Angular_Impulse_and_Angular_Momentum",
+          "topics": ["he.engineering.dynamics#3"],
+          "lessons": []
+        },
+        {
+          "n": "13",
+          "title": "Vibrations",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introductory_Dynamics%3A_2D_Kinematics_and_Kinetics_of_Point_Masses_and_Rigid_Bodies_(Steeneken)/04%3A_Vibrations_and_Strategy/13%3A_Vibrations",
+          "topics": [
+            "he.engineering.vibrations#0",
+            "he.engineering.vibrations#1",
+            "he.engineering.vibrations#2"
+          ],
+          "lessons": []
+        },
+        {
+          "n": "14",
+          "title": "Solution Strategy Dynamics",
+          "url": "https://eng.libretexts.org/Bookshelves/Mechanical_Engineering/Introductory_Dynamics%3A_2D_Kinematics_and_Kinetics_of_Point_Masses_and_Rigid_Bodies_(Steeneken)/04%3A_Vibrations_and_Strategy/14%3A_Solution_Strategy_Dynamics",
+          "topics": ["he.engineering.dynamics#1"],
+          "notes": "Solution strategy.",
+          "lessons": []
+        }
+      ],
+      "title": "Introductory Dynamics: 2D Kinematics and Kinetics of Point Masses and Rigid Bodies"
+    }
+  ]
+}

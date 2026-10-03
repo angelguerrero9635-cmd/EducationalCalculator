@@ -42,12 +42,18 @@ import { ionicChargeIssues } from './picturesHs3e';
 
 import type { ChemSpec } from '../typesChem';
 import type { HsiSpec } from '../typesHsi';
+import { isOrbitalHe4d } from '../typesHe4d';
+import { isLewisHe4d } from '@/components/module/reps/lewisHe4d';
+import { lewisHe4dIssues } from './picturesHe4d';
 
 /** Equal to display rounding (values are read as shown, 4 decimals or 4 significant figures). */
 const near = (a: number, b: number, tol = 1e-4) =>
   Math.abs(a - b) <= tol * Math.max(1, Math.abs(a), Math.abs(b));
 
 export function hsiIssues(rep: HsiSpec, val: (id: string) => number | undefined): string[] {
+  if (isOrbitalHe4d(rep)) return []; // HC109, HC110: picturesHe4d.ts
+  if (rep.kind === 'lewisStructure' && rep.mode === 'molecule' && isLewisHe4d(rep))
+    return lewisHe4dIssues(rep, (x) => (typeof x === 'number' ? x : val(x))); // HC111
   const out: string[] = [];
   const num = (x: string | number | undefined) =>
     x === undefined ? undefined : typeof x === 'number' ? x : val(x);
@@ -130,6 +136,7 @@ export function hsiIssues(rep: HsiSpec, val: (id: string) => number | undefined)
       break;
     }
     case 'orbitalDiagram': {
+      if (rep.mode === 'mo') break; // HC70: picturesHe3e.ts
       if (rep.mode === 'boxes') {
         if (rep.element === undefined && rep.electrons === undefined)
           out.push('boxes need an element or a number of electrons');
@@ -195,6 +202,7 @@ export function hsiIssues(rep: HsiSpec, val: (id: string) => number | undefined)
       break;
     }
     case 'vsepr': {
+      if (rep.mode === 'expanded' || rep.mode === 'complex') break; // HC72: picturesHe3e.ts
       if (rep.mode === 'hbonds') {
         const n = num(rep.molecules);
         if (n !== undefined && (n !== Math.round(n) || n < 2 || n > 5))

@@ -1,0 +1,88 @@
+{
+  "id": "griffiths-electrodynamics",
+  "curriculum": "Introduction to Electrodynamics",
+  "publisher": "David J. Griffiths (Cambridge University Press)",
+  "edition": "5th edition (2023)",
+  "subject": "physics",
+  "level": "college",
+  "content": "titles",
+  "license": {
+    "name": "All rights reserved",
+    "url": "https://www.cambridge.org/highereducation/books/introduction-to-electrodynamics/",
+    "attribution": "Titles only, from the publisher's or author's public table of contents; no other content."
+  },
+  "terms": "Commercial: chapter titles only.",
+  "sourceUrl": "https://www.cambridge.org/highereducation/books/introduction-to-electrodynamics/",
+  "retrieved": "2026-10-02",
+  "notes": "Chapter titles from cambridge.org as indexed by a web search; assets.cambridge.org (front-matter PDFs and robots.txt) reset our connections, so nothing there was read.",
+  "books": [
+    {
+      "title": "Introduction to Electrodynamics, 5th ed.",
+      "url": "https://www.cambridge.org/highereducation/books/introduction-to-electrodynamics/",
+      "units": [
+        {
+          "n": "1",
+          "title": "Vector Analysis",
+          "topics": [],
+          "note": "vector calculus review (he.math.calc-3)"
+        },
+        {
+          "n": "2",
+          "title": "Electrostatics",
+          "topics": ["he.physics.electromagnetism#0"]
+        },
+        {
+          "n": "3",
+          "title": "Potentials",
+          "topics": ["he.physics.electromagnetism#0"]
+        },
+        {
+          "n": "4",
+          "title": "Electric Fields in Matter",
+          "topics": ["he.physics.electromagnetism#0"]
+        },
+        {
+          "n": "5",
+          "title": "Magnetostatics",
+          "topics": ["he.physics.electromagnetism#1"]
+        },
+        {
+          "n": "6",
+          "title": "Magnetic Fields in Matter",
+          "topics": ["he.physics.electromagnetism#1"]
+        },
+        {
+          "n": "7",
+          "title": "Electrodynamics",
+          "topics": ["he.physics.electromagnetism#2"]
+        },
+        {
+          "n": "8",
+          "title": "Conservation Laws",
+          "topics": ["he.physics.electromagnetism#2"]
+        },
+        {
+          "n": "9",
+          "title": "Electromagnetic Waves",
+          "topics": ["he.physics.electromagnetism#3"]
+        },
+        {
+          "n": "10",
+          "title": "Potentials and Fields",
+          "topics": ["he.physics.electromagnetism#2"]
+        },
+        {
+          "n": "11",
+          "title": "Radiation",
+          "topics": ["he.physics.electromagnetism#3"]
+        },
+        {
+          "n": "12",
+          "title": "Electrodynamics and Relativity",
+          "topics": [],
+          "note": "no college topic: relativistic electrodynamics"
+        }
+      ]
+    }
+  ]
+}

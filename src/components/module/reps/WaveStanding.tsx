@@ -2,6 +2,7 @@ import { View } from 'react-native';
 import Svg, { Circle, Defs, G, Line, Path, Rect } from 'react-native-svg';
 
 import type { Representation } from '@/data/modules';
+import type { WaveHe3lSpec } from '@/data/modules/typesHe3l';
 import type { StandingWave } from '@/data/modules/typesHsk';
 import { chart, usePalette } from '@/theme';
 
@@ -11,7 +12,7 @@ import { standingOf } from './hskMath';
 import { sig, SubLabel, worked } from './hskKit';
 import { Glass, Sheen, url, usePaintIds } from './paint';
 
-type Spec = Extract<Representation, { kind: 'wave' }>;
+type Spec = Exclude<Extract<Representation, { kind: 'wave' }>, WaveHe3lSpec>;
 
 const AMP = 28;
 

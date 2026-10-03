@@ -4,9 +4,24 @@
  * `types.ts` so that file's union only lists them. A `NumOrVar` field is a fixed number or a
  * variable id. Formulas are written plainly ("H2O", "NH4+"); the pictures print subscripts.
  */
+import {
+  isOrbitalHe4d,
+  lewisFormalVars,
+  orbitalHe4dVars,
+  type LewisFormal,
+  type OrbitalHe4dSpec,
+} from './typesHe4d';
 import type { NumOrVar } from './typesGraphs';
 import { ionicChargeVars, type IonicCharges } from './typesHs3e';
 import { moleMapHs2dVars, type MoleMapLimiting } from './typesHs2d';
+import {
+  moleMapHe3eVars,
+  orbitalMoVars,
+  vseprHe3eVars,
+  type MoleMapHe3e,
+  type OrbitalMoSpec,
+  type VseprHe3eSpec,
+} from './typesHe3e';
 
 /** One conversion factor in a chain: `top` `topUnit` over `bottom` `bottomUnit` (1000 m / 1 km). */
 export interface ChainFactor {
@@ -100,6 +115,8 @@ export interface AtomModelSpec {
  *   (nm, 1240 ÷ E) are checked.
  */
 export type OrbitalDiagramSpec =
+  /** College HC109, HC110: ladder with Z, radial, crystal field (`typesHe4d.ts`). */
+  | OrbitalHe4dSpec
   | {
       kind: 'orbitalDiagram';
       mode: 'boxes';
@@ -115,7 +132,9 @@ export type OrbitalDiagramSpec =
       energy?: string;
       wavelength?: string;
       levels?: number;
-    };
+    }
+  /** College HC70: molecular orbitals (`typesHe3e.ts`). */
+  | OrbitalMoSpec;
 
 /**
  * `limiting` on `reaction` (H49): the particles each reactant starts with (`amounts`, in the
@@ -174,6 +193,9 @@ export type LewisStructureSpec = { kind: 'lewisStructure' } & (
       bonding?: string;
       lone?: string;
       dots?: boolean;
+      /** College HC111: formal charges, resonance forms (`typesHe4d.ts`). */
+      formal?: LewisFormal;
+      resonance?: boolean;
     }
   | {
       mode: 'ionic';
@@ -214,7 +236,9 @@ export type VseprSpec =
       angle?: string;
       polar?: boolean;
     }
-  | { kind: 'vsepr'; mode: 'hbonds'; molecules: NumOrVar; bonds?: string };
+  | { kind: 'vsepr'; mode: 'hbonds'; molecules: NumOrVar; bonds?: string }
+  /** College HC72: 5–6 domains and complexes (`typesHe3e.ts`). */
+  | VseprHe3eSpec;
 
 /**
  * The mole map (H50): the `moles` of a substance in the middle, joined to its `mass` (× the
@@ -224,7 +248,8 @@ export type VseprSpec =
  * `second` adds a second substance of a balanced reaction: its moles by the mole ratio
  * (`ratio`: [coefficient of the first, of the second]) and its mass. Every value is checked.
  */
-export interface MoleMapSpec {
+/** College HC74: `solution` and `gas` boxes (`typesHe3e.ts`). */
+export interface MoleMapSpec extends MoleMapHe3e {
   kind: 'moleMap';
   moles: NumOrVar;
   mass?: NumOrVar;
@@ -248,6 +273,7 @@ export type HsiSpec =
 
 /** Every variable id a group I spec refers to (for the module tests). */
 export function hsiSpecVars(r: HsiSpec): string[] {
+  if (isOrbitalHe4d(r)) return orbitalHe4dVars(r); // HC109, HC110
   const ids = (...xs: (NumOrVar | undefined)[]) =>
     xs.filter((x): x is string => typeof x === 'string');
   switch (r.kind) {
@@ -259,6 +285,7 @@ export function hsiSpecVars(r: HsiSpec): string[] {
     case 'atomModel':
       return ids(r.protons, r.neutrons, r.electrons, r.mass, r.charge, r.valence);
     case 'orbitalDiagram':
+      if (r.mode === 'mo') return orbitalMoVars(r); // HC70
       return r.mode === 'boxes'
         ? ids(r.element, r.electrons, r.unpaired)
         : ids(r.upper, r.lower, r.energy, r.wavelength);
@@ -271,13 +298,18 @@ export function hsiSpecVars(r: HsiSpec): string[] {
         r.volume,
         ...(r.second ? [...r.second.ratio, r.second.moles, r.second.mass, r.second.molarMass] : []),
         ...moleMapHs2dVars(r),
+        ...moleMapHe3eVars(r),
       );
     case 'vsepr':
+      if (r.mode === 'expanded' || r.mode === 'complex') return vseprHe3eVars(r); // HC72
       return r.mode === 'hbonds' ? ids(r.molecules, r.bonds) : ids(r.bonded, r.lone, r.angle);
     case 'lewisStructure':
       switch (r.mode) {
         case 'molecule':
-          return ids(...Object.values(r.atoms ?? {}), r.charge, r.valence, r.bonding, r.lone);
+          return [
+            ...ids(...Object.values(r.atoms ?? {}), r.charge, r.valence, r.bonding, r.lone),
+            ...lewisFormalVars(r.formal), // HC111
+          ];
         case 'ionic':
           return ids(r.metals, r.nonmetals, r.transferred, ...ionicChargeVars(r.charges));
         case 'metallic':

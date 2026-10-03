@@ -1,0 +1,49 @@
+{
+  "id": "mit-ocw-6-013",
+  "curriculum": "MIT OpenCourseWare 6.013 Electromagnetics and Applications",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Spring 2009",
+  "subject": "electrical",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Markus Zahn, David Staelin. 6.013 Electromagnetics and Applications. Spring 2009. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu/courses/6-013-electromagnetics-and-applications-spring-2009/. License: CC BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Lecture block"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/6-013-electromagnetics-and-applications-spring-2009/",
+  "retrieved": "2026-10-02",
+  "sources": [
+    "https://ocw.mit.edu/courses/6-013-electromagnetics-and-applications-spring-2009/pages/calendar/"
+  ],
+  "notes": "Session list from the calendar (first sessions shown); problem sets 7, 8, 10, 11 read.",
+  "books": [
+    {
+      "course": "he.engineering.electromagnetics",
+      "title": "6.013 Electromagnetics and Applications (Spring 2009)",
+      "url": "https://ocw.mit.edu/courses/6-013-electromagnetics-and-applications-spring-2009/",
+      "units": [
+        {
+          "n": "L1–L6",
+          "title": "Maxwell’s equations; media and boundaries; plane waves; Poynting; forces and motors",
+          "topics": ["he.engineering.electromagnetics#1", "he.engineering.electromagnetics#2"]
+        },
+        {
+          "n": "L7–",
+          "title": "Transmission lines; resonators; waveguides; antennas and arrays; optics",
+          "topics": ["he.engineering.electromagnetics#0", "he.engineering.electromagnetics#3"],
+          "examples": [
+            "|V(z)| pattern → VSWR and load",
+            "stub matching",
+            "loop far field",
+            "two-dipole array",
+            "short-dipole received voltage"
+          ]
+        }
+      ]
+    }
+  ]
+}

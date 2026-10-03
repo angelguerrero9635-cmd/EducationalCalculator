@@ -1,0 +1,41 @@
+{
+  "id": "wikibooks-control-systems",
+  "curriculum": "Control Systems (Wikibooks)",
+  "publisher": "Wikibooks",
+  "edition": "live wiki, read 2026-10-02",
+  "subject": "electrical",
+  "level": "college",
+  "content": "titles",
+  "license": {
+    "name": "CC BY-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "attribution": "Control Systems, Wikibooks contributors, https://en.wikibooks.org/wiki/Control_Systems, CC BY-SA 4.0."
+  },
+  "terms": {
+    "unit": "Page"
+  },
+  "sourceUrl": "https://en.wikibooks.org/wiki/Control_Systems",
+  "retrieved": "2026-10-02",
+  "notes": "Only two pages were read before Wikibooks rate-limited this session (HTTP 429): Routh–Hurwitz Criterion and Root Locus. The book index was not retrieved.",
+  "books": [
+    {
+      "course": "he.engineering.control-systems",
+      "title": "Control Systems",
+      "url": "https://en.wikibooks.org/wiki/Control_Systems",
+      "units": [
+        {
+          "n": "1",
+          "title": "Routh–Hurwitz Criterion",
+          "url": "https://en.wikibooks.org/wiki/Control_Systems/Routh-Hurwitz_Criterion",
+          "topics": ["he.engineering.control-systems#2"]
+        },
+        {
+          "n": "2",
+          "title": "Root Locus",
+          "url": "https://en.wikibooks.org/wiki/Control_Systems/Root_Locus",
+          "topics": ["he.engineering.control-systems#2"]
+        }
+      ]
+    }
+  ]
+}

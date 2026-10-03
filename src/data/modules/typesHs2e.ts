@@ -25,6 +25,8 @@ export interface MacroCalcSpec {
   bonds?: string;
   water?: string;
   split?: boolean;
+  /** College HC115: a protein's four levels, one lit (`typesHe4d.ts`, `ProteinLevels.tsx`). */
+  level?: NumOrVar;
 }
 
 // ─── H100 part 2: dnaStrand long genes ───────────────────────────────────────
@@ -189,7 +191,7 @@ export function hs2eSpecVars(r: Hs2eSpec): string[] {
     xs.filter((x): x is string => typeof x === 'string');
   switch (r.kind) {
     case 'macromolecules':
-      return ids([r.count, r.bonds, r.water]);
+      return ids([r.count, r.bonds, r.water, r.level]);
     case 'cellDivision':
       return ids([r.diploid, r.haploid, r.chromatids, r.zygote, r.combinations]);
   }

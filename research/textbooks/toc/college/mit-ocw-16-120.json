@@ -1,0 +1,76 @@
+{
+  "id": "mit-ocw-16-120",
+  "curriculum": "MIT OpenCourseWare 16.120 Compressible Flow",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Spring 2003",
+  "subject": "aerospace",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Zoltan Spakovszky, Wesley Harris. 16.120 Compressible Flow. Spring 2003. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu/courses/16-120-compressible-flow-spring-2003/. License: CC BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Lecture block"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/16-120-compressible-flow-spring-2003/",
+  "retrieved": "2026-10-02",
+  "sources": [
+    "https://ocw.mit.edu/courses/16-120-compressible-flow-spring-2003/pages/syllabus/",
+    "https://ocw.mit.edu/courses/16-120-compressible-flow-spring-2003/pages/calendar/"
+  ],
+  "notes": "Graduate course; problem sets are derivations. Lecture order from the calendar.",
+  "books": [
+    {
+      "course": null,
+      "title": "16.120 Compressible Flow (Spring 2003)",
+      "url": "https://ocw.mit.edu/courses/16-120-compressible-flow-spring-2003/",
+      "units": [
+        {
+          "n": "1–3",
+          "title": "Basics: energy equation, entropy, shock thickness, nondimensional parameters",
+          "url": "https://ocw.mit.edu/courses/16-120-compressible-flow-spring-2003/pages/calendar/",
+          "topics": ["he.engineering.compressible-flow#0", "he.engineering.compressible-flow#1"]
+        },
+        {
+          "n": "4–5",
+          "title": "Quasi-1-D isentropic flow, choking, corrected flow; converging–diverging nozzles and starting",
+          "topics": ["he.engineering.compressible-flow#0", "he.engineering.compressible-flow#2"],
+          "notation": ["corrected flow and flow function; A/A*"]
+        },
+        {
+          "n": "6–8",
+          "title": "Generalized 1-D flow with friction, heat and mass addition; ramjets and scramjets",
+          "topics": [],
+          "notes": "Fanno and Rayleigh flow: taxonomy gap (the plan proposes a topic or folding into Nozzle flow).",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "9–11",
+          "title": "Swirling and compound-compressible flow",
+          "topics": [],
+          "notes": "Graduate; no taxonomy topic.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "12–13",
+          "title": "Disturbance types and characteristic speeds",
+          "topics": ["he.engineering.compressible-flow#3"]
+        },
+        {
+          "n": "14–17",
+          "title": "Shocks, deflagrations, detonations, Crocco’s theorem",
+          "topics": ["he.engineering.compressible-flow#1"],
+          "examples": ["shock structure by Navier–Stokes", "weak-shock entropy rise"]
+        },
+        {
+          "n": "18–26",
+          "title": "Linear and nonlinear 2-D compressible flow: slender bodies, transonic and hypersonic",
+          "topics": ["he.engineering.compressible-flow#3"],
+          "examples": ["2-D supersonic inlet contour", "transonic small-disturbance equation"]
+        }
+      ]
+    }
+  ]
+}

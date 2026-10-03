@@ -1,11 +1,15 @@
-import { SKILLS } from '@/data/taxonomy';
+import { COURSES, SKILLS } from '@/data/taxonomy';
 
 import { getPage, moduleOwner } from '..';
 import { GALLERY_LAYOUTS, GALLERY_MODULES } from '../gallery';
 import { PICTURE_REQUESTS, type PictureRequest } from '../pictureRequests';
 
 const GALLERY = new Set([...GALLERY_MODULES, ...GALLERY_LAYOUTS].map((g) => g.id));
-const SKILL_IDS = new Set(SKILLS.map((s) => s.id));
+const SKILL_IDS = new Set([
+  ...SKILLS.map((s) => s.id),
+  // College pages belong to a topic, `<course id>#<topic index>`.
+  ...COURSES.flatMap((c) => c.topics.map((_, i) => `${c.id}#${i}`)),
+]);
 /** The text that shows a request's picture (or its part) is on a page. */
 const markOn = (r: PictureRequest, id: string) =>
   (typeof r.uses === 'object' ? r.uses[id] : r.uses) ?? `"${r.kind}"`;

@@ -4,6 +4,8 @@
  */
 import type { TermsChartSpec } from '@/data/modules/typesHsb';
 
+import { extraHe3c, seriesTermsHe3c } from './termsSeriesHe3c';
+
 export interface TermsModel {
   terms: number[];
   sums: number[];
@@ -28,7 +30,7 @@ export function termsModel(
   const lit = spec.lit === undefined ? 0 : Math.round(val(spec.lit) ?? 0);
   const c = val(spec.plus) ?? 0;
   const terms: number[] = [];
-  for (let i = 0; i < Math.max(n, Math.min(lit, 30)); i++)
+  for (let i = 0; i < Math.max(n + extraHe3c(spec), Math.min(lit, 30)); i++)
     terms.push(
       spec.type === 'power' // H106: a₁ × nᵖ
         ? a * (i + 1) ** d
@@ -40,6 +42,7 @@ export function termsModel(
               : a
             : a * d ** i,
     );
+  seriesTermsHe3c(spec, a, d, terms); // HC66: n·rⁿ, cⁿ ÷ n!, alternating signs
   if (!terms.every(Number.isFinite))
     return { terms: [], sums: [], count: 0, problem: `The terms grow too large to draw.` };
   const sums: number[] = [];

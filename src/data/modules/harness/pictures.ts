@@ -25,6 +25,7 @@ import { chemIssues } from './chemPictures';
 import { placeParts } from '../helpers';
 import { physics8Issues } from './picturesPhysics8';
 import { functionGraphIssues } from './picturesFunctionGraph';
+import { he1eIssues } from './picturesHe1e';
 import { hscIssues } from './picturesHsc';
 import { hsbIssues } from './picturesHsb';
 import { hsdIssues } from './picturesHsd';
@@ -57,13 +58,76 @@ import { hs2aIssues } from './picturesHs2a';
 import { barFlowIssues, hs2eIssues, percentSecondIssues, reactionManyIssues } from './picturesHs2e';
 import { hs2fIssues } from './picturesHs2f';
 import { hs3cIssues } from './picturesHs3c';
+import { he1gIssues } from './picturesHe1g';
 import { hs2gIssues } from './picturesHs2g';
 import { hs2hIssues } from './picturesHs2h';
 import { hs3bCenter, hs3bIssues, hs3bVal } from './picturesHs3b';
+import { he1dIssues, he1dScaleIssues } from './picturesHe1d';
 import * as hsk from './picturesHsk';
 import { gasEnergyIssues, hs2cIssues, siOf } from './picturesHs2c';
+import {
+  dilutionIssues,
+  energyHe3gIssues,
+  gasHe3gIssues,
+  membraneHe3gIssues,
+} from './picturesHe3g';
 import { hs3aIssues, hs3aOptionIssues } from './picturesHs3a';
+import { he4bIssues } from './picturesHe4b'; // HC96–HC171, group B
+import { sectionIssues } from './picturesHe1b';
+import { he1aIssues } from './picturesHe1a';
+import { bodeIssues, complexPlaneHe2aIssues } from './picturesHe2a';
 import { gasMixtureIssues } from './picturesHs3e';
+import { netIssues, oscillatorIssues } from './picturesHe1h';
+import { ampIssues, deviceIssues } from './picturesHe2d';
+import { he2fIssues } from './picturesHe2f';
+import { isHe2fSpec } from '../typesHe2f';
+import { he3lIssues } from './picturesHe3l';
+import { isHe3lSpec } from '../typesHe3l';
+import { skeletalIssues } from './picturesHe1c';
+import { soilProfileIssues, surveyIssues, trussIssues } from './picturesHe2i';
+import { phaseEnvelopeIssues, phaseSubstanceIssues } from './picturesHe1i';
+import { chemRateHe2kIssues, globeIssues } from './picturesHe2k';
+import { he3fIssues } from './picturesHe3f';
+import { he3mIssues, planeGisIssues } from './picturesHe3m';
+import { he1fIssues } from './picturesHe1f';
+import { he2bIssues } from './picturesHe2b';
+import { he3iIssues, limbIssues } from './picturesHe3i';
+import { he2jIssues } from './picturesHe2j';
+import { cuvetteIssues, orbitalHe4dIssues, proteinLevelIssues, siHe4d } from './picturesHe4d';
+import { isOrbitalHe4d } from '../typesHe4d';
+import { he2eIssues, isHe2e } from './picturesHe2e';
+import { he2hIssues } from './picturesHe2h';
+import { fieldPlotIssues, he2gGraphIssues } from './picturesHe2g';
+import { he3aGraphIssues } from './picturesHe3a';
+import { solidIssues, spaceObjectsIssues, surfacePlotIssues } from './picturesHe3b';
+import { he2cIssues } from './picturesHe2c';
+import { he3hIssues } from './picturesHe3h';
+import {
+  combustionIssues,
+  instrumentTraceIssues,
+  moleMapHe3eIssues,
+  orbitalMoIssues,
+  vseprHe3eIssues,
+} from './picturesHe3e';
+import { he3cIssues } from './picturesHe3c';
+import { he3dIssues } from './picturesHe3d';
+import { he3jIssues } from './picturesHe3j';
+import { he3kIssues, waterfallDecibelsIssues } from './picturesHe3k';
+import {
+  chainTreeIssues,
+  matrixGridHe4aIssues,
+  matrixMoveIssues,
+  scatterClassesIssues,
+  scatterPointsHe4a,
+} from './picturesHe4a';
+import { he4cIssues } from './picturesHe4c';
+import { isHe4cOption } from '../typesHe4c';
+import {
+  driftPathsIssues,
+  he4eAlleleIssues,
+  he4eGraphIssues,
+  he4eNormalIssues,
+} from './picturesHe4e';
 import type { ModuleDef, Representation } from '../types';
 
 export function repIssues(
@@ -101,6 +165,7 @@ export function repIssues(
     if (k < 1 || xs.some((x) => x === undefined)) return undefined;
     return (xs as number[]).sort((a, b) => a - b);
   };
+  if (isHe4cOption(rep)) return [...out, ...he4cIssues(rep, siOf(val, byId))]; // HC99, HC101, HC103, HC105, HC118
   switch (rep.kind) {
     case 'tenFrame': {
       const cap = 10 * (rep.frames ?? 1);
@@ -747,6 +812,10 @@ export function repIssues(
       break;
     }
     case 'beaker': {
+      if ('cuvette' in rep) {
+        out.push(...cuvetteIssues(rep.cuvette, siHe4d(val, byId))); // HC112
+        break;
+      }
       if ('solution' in rep) {
         out.push(...solutionIssues(rep.solution, (id) => val(id), byId));
         break;
@@ -866,6 +935,14 @@ export function repIssues(
     }
     case 'coordinatePlane': {
       out.push(...planeGeometryIssues(rep, val), ...hs2bIssues(rep, (id) => val(id)));
+      // HC77, in formula units as the picture draws them.
+      out.push(
+        ...planeGisIssues(rep, (x) =>
+          typeof x === 'number'
+            ? x
+            : ((v) => (v === undefined ? v : v * (byId.get(x)?.unitFactor ?? 1)))(val(x)),
+        ),
+      );
       // Plotting draws its path from 0 across then up, in the first quadrant only.
       if (rep.plot && rep.quadrants !== 1) out.push('plotting a point is in the first quadrant');
       if (rep.plot && rep.second) out.push('plotting places one point, not two');
@@ -1108,6 +1185,7 @@ export function repIssues(
     }
     case 'rectangle':
       out.push(...hs3bIssues(rep, val, byId)); // H106: bounds
+      out.push(...he3cIssues(rep, val, byId)); // HC67: grow
       break;
     case 'grid100': {
       // Tenths × tenths: columns and rows of one grid, the overlap the product (Grid100.tsx);
@@ -1176,6 +1254,10 @@ export function repIssues(
       break;
     }
     case 'wave': {
+      if (isHe3lSpec(rep)) {
+        out.push(...he3lIssues(rep, siOf(val, byId), byId)); // HC93
+        break;
+      }
       out.push(...hsk.waveHsIssues(rep, (id) => hsk.mapSi(val(id), byId.get(id)?.unitFactor)));
       if (typeof rep.extent === 'string') count(rep.extent, 'waves drawn', 12);
       const [A, L] = [rep.amplitude ? val(rep.amplitude) : undefined, val(rep.wavelength)];
@@ -1473,6 +1555,10 @@ export function repIssues(
       break;
     }
     case 'treeDiagram': {
+      if ('chain' in rep) {
+        out.push(...chainTreeIssues(rep.chain, val)); // HC98
+        break;
+      }
       if ('chances' in rep) {
         out.push(...treeChanceIssues(rep.chances, val), ...hs2gIssues(rep, val));
         break;
@@ -1802,6 +1888,15 @@ export function repIssues(
       break;
     }
     case 'scatter': {
+      if ('classes' in rep) {
+        out.push(...scatterClassesIssues(rep, val)); // HC139
+        break;
+      }
+      if (rep.pointsFrom) {
+        const p = scatterPointsHe4a(rep, byId, val); // HC97: the points the values make
+        out.push(...p.issues, ...(p.rep.points.length ? repIssues(p.rep, shown, byId) : []));
+        break;
+      }
       // Every point is on the axes; clusters and the outlier name points that exist.
       const on = (v: number, a: { min: number; max: number }) => v >= a.min && v <= a.max;
       rep.points.forEach(([x, y], i) => {
@@ -1835,6 +1930,7 @@ export function repIssues(
       if (h !== undefined && h < 0) out.push(`height ${h} is negative`);
       // The caption works V from the radius and height drawn (in the radius's unit), so a
       // volume shown in another unit (L) is not compared here; the relation holds it.
+      out.push(...he3cIssues(rep, val, byId)); // HC54: fill, slab
       break;
     }
     case 'rightTriangle': {
@@ -1844,6 +1940,7 @@ export function repIssues(
         if (Math.abs(a * a + b * b - c * c) > 1e-6 * (1 + c * c))
           out.push(`squares ${a}² + ${b}² don't make ${c}²`);
       }
+      out.push(...he3cIssues(rep, val, byId)); // HC54: rates
       break;
     }
     case 'quadrilateral': {
@@ -1853,8 +1950,19 @@ export function repIssues(
     }
     case 'functionGraph': {
       const v = hs3bVal(rep, val, byId); // H106: `unitsOf` reads formula units
+      if (rep.family === 'amplification' || rep.family === 'fourier') {
+        out.push(...he4eGraphIssues(rep, v)); // HC148, HC179: drawn by FunctionGraphHe4e
+        break;
+      }
+      if (rep.family === 'response' || rep.family === 'gradation') {
+        out.push(...he1dIssues(rep, v, byId)); // HC4, HC9: drawn by FunctionGraphHe1d
+        break;
+      }
       out.push(...functionGraphIssues(rep, v), ...hs2aIssues(rep, v), ...hs2gIssues(rep, v));
-      out.push(...hs3bIssues(rep, val, byId));
+      out.push(...he1eIssues(rep, v)); // HC10, HC12
+      out.push(...he2gGraphIssues(rep, v)); // HC37, HC38
+      out.push(...he3aGraphIssues(rep, v)); // HC42, HC45, HC92
+      out.push(...hs3bIssues(rep, val, byId), ...he1dScaleIssues(rep, v)); // HC9: log axes
       break;
     }
     case 'linearFunction': {
@@ -1868,6 +1976,10 @@ export function repIssues(
       break;
     }
     case 'transformation': {
+      if (rep.move === 'matrix') {
+        out.push(...matrixMoveIssues(rep, val)); // HC95
+        break;
+      }
       if (rep.figure.length < 2 || rep.figure.length > 6)
         out.push(`figure with ${rep.figure.length} corners (2 to 6 are labelled A–F)`);
       const num = (x: string | number | undefined, d: number) => (x === undefined ? d : val(x));
@@ -1953,6 +2065,8 @@ export function repIssues(
       out.push(...chemHsiIssues(filledChem(rep, val), (x) => val(x)));
       out.push(...chemHs2dIssues(rep, (x) => val(x)));
       if (rep.kind === 'reaction' && rep.many) out.push(...reactionManyIssues());
+      if (rep.kind === 'reaction' && rep.combustion)
+        out.push(...combustionIssues(rep.combustion, val)); // HC74
       break;
     case 'lineSystem': {
       // H106: a parabola in the system (a line with `square`) is checked on its own.
@@ -2130,10 +2244,19 @@ export function repIssues(
       }
       break;
     }
+    case 'seriesCircuit':
+      if ('net' in rep) out.push(...netIssues(rep, siOf(val, byId), byId)); // HC7
+      if ('amp' in rep) out.push(...ampIssues(rep, siOf(val, byId), byId)); // HC18
+      if ('device' in rep) out.push(...deviceIssues(rep, siOf(val, byId), byId)); // HC39
+      break;
     case 'spectrum':
     case 'circuit':
     case 'electromagnet':
     case 'orbit':
+      if ('net' in rep) {
+        out.push(...netIssues(rep, siOf(val, byId), byId)); // HC7
+        break;
+      }
       if (hsk.physicsHsOption(rep)) out.push(...hsk.physicsHsIssues(rep, (id) => val(id)));
       else out.push(...physics8Issues(rep, (id) => val(id)));
       break;
@@ -2153,6 +2276,8 @@ export function repIssues(
         ...hs2gIssues(rep, val),
       );
       out.push(...hs3bIssues(rep, val, byId)); // H106: the F curve
+      if (rep.kind === 'termsChart') out.push(...he3cIssues(rep, val, byId)); // HC66
+      out.push(...he4eNormalIssues(rep, val, byId)); // HC114, HC152
       break;
     case 'unitCircle':
     case 'algebraTiles':
@@ -2162,23 +2287,44 @@ export function repIssues(
     case 'conicGraph':
     case 'matrixGrid':
       out.push(...hsdIssues(rep, (id) => val(id)), ...hs2gIssues(rep, val));
+      if (rep.kind === 'complexPlane') out.push(...complexPlaneHe2aIssues(rep, siOf(val, byId))); // HC14
+      if (rep.kind === 'matrixGrid') out.push(...matrixGridHe4aIssues(rep, val)); // HC94, HC190
       out.push(...hs3bIssues(rep, val, byId)); // H106: space, polar conics, turned conics
+      if (rep.kind === 'vectorDiagram') out.push(...spaceObjectsIssues(rep, val)); // HC47
+      if (rep.kind === 'polarGrid' || rep.kind === 'conicGraph')
+        out.push(...he3cIssues(rep, val, byId)); // HC53, HC67
+      out.push(...he4bIssues(rep, val, byId)); // HC96, HC100, HC108, HC171
       break;
     case 'membrane':
     case 'dnaStrand':
       out.push(...hsgIssues(rep, (id) => val(id)));
+      if (rep.kind === 'membrane') out.push(...membraneHe3gIssues(rep, siOf(val, byId))); // HC79
       break;
     case 'macromolecules':
     case 'cellDivision':
       out.push(...hs2eIssues(rep, (id) => val(id)));
+      if (rep.kind === 'macromolecules') out.push(...proteinLevelIssues(rep, siHe4d(val, byId))); // HC115
       break;
     case 'neuron':
       out.push(...neuronIssues(rep, (id) => val(id)));
+      break;
+    case 'skeletal':
+      out.push(...skeletalIssues(rep, val));
+      break;
+    case 'truss':
+      out.push(...trussIssues(rep, siOf(val, byId)));
+      break;
+    case 'soilProfile':
+      out.push(...soilProfileIssues(rep, siOf(val, byId)));
+      break;
+    case 'survey':
+      out.push(...surveyIssues(rep, siOf(val, byId)));
       break;
     case 'gel':
     case 'alleleFrequencies':
     case 'immuneResponse':
       out.push(...hshIssues(rep, (id) => val(id)));
+      out.push(...he4eAlleleIssues(rep, val)); // HC151
       break;
     case 'unitChain':
     case 'atomModel':
@@ -2186,7 +2332,13 @@ export function repIssues(
     case 'lewisStructure':
     case 'vsepr':
     case 'moleMap':
+      if (isOrbitalHe4d(rep)) out.push(...orbitalHe4dIssues(rep, siHe4d(val, byId))); // HC109, HC110
       out.push(...hsiIssues(rep, (id) => val(id)));
+      if (rep.kind === 'orbitalDiagram' && rep.mode === 'mo')
+        out.push(...orbitalMoIssues(rep, val)); // HC70
+      if (rep.kind === 'vsepr') out.push(...vseprHe3eIssues(rep, val)); // HC72
+      if (rep.kind === 'moleMap')
+        out.push(...moleMapHe3eIssues(rep, val, (id) => byId.get(id)?.unit)); // HC74
       if (rep.kind === 'moleMap') out.push(...moleMapHs2dIssues(rep, (id) => val(id)));
       break;
     case 'gasPiston':
@@ -2195,12 +2347,26 @@ export function repIssues(
     case 'phScale':
     case 'decayChart':
       out.push(...hsjIssues(rep, (id) => val(id)));
+      out.push(...he3fIssues(rep, val, byId));
       if (rep.kind === 'gasPiston') out.push(...gasEnergyIssues(rep, siOf(val, byId)));
       if (rep.kind === 'gasPiston')
         out.push(...gasMixtureIssues(rep.mixture, (x) => (x === undefined ? undefined : val(x))));
+      if (rep.kind === 'gasPiston') out.push(...gasHe3gIssues(rep, siOf(val, byId))); // HC43
+      if (rep.kind === 'energyProfile') out.push(...energyHe3gIssues(rep, siOf(val, byId))); // HC44
       break;
     case 'chemDiagram':
       out.push(...chemDiagramIssues(rep, (id) => val(id)));
+      if (rep.mode === 'phase') out.push(...phaseSubstanceIssues(rep.substance, val));
+      out.push(...he3fIssues(rep, val, byId));
+      if (rep.mode === 'rate' && !('times' in rep))
+        out.push(
+          ...chemRateHe2kIssues(rep, val, (x) =>
+            typeof x === 'string' ? byId.get(x)?.unit : undefined,
+          ),
+        );
+      break;
+    case 'phaseEnvelope':
+      out.push(...phaseEnvelopeIssues(rep, val));
       break;
     case 'earthLayers':
     case 'oceanProfile':
@@ -2213,6 +2379,10 @@ export function repIssues(
       break;
     case 'streamChannel':
     case 'reserve':
+      if ('mode' in rep) {
+        out.push(...he3jIssues(rep, siOf(val, byId))); // HC88
+        break;
+      }
       out.push(...hs2fIssues(rep, (id) => (val(id) ?? NaN) * (byId.get(id)?.unitFactor ?? 1)));
       break;
     case 'geologicClock':
@@ -2221,6 +2391,107 @@ export function repIssues(
     case 'habitableZone':
     case 'parallax':
       out.push(...hs3cIssues(rep, (id) => (val(id) ?? NaN) * (byId.get(id)?.unitFactor ?? 1)));
+      break;
+    case 'fluidSystem':
+      out.push(...he1gIssues(rep, siOf(val, byId), byId));
+      break;
+    case 'controlVolume':
+    case 'velocityProfile':
+      // In formula units, as the picture draws them.
+      out.push(...he1fIssues(rep, (id) => (val(id) ?? NaN) * (byId.get(id)?.unitFactor ?? 1)));
+      break;
+    case 'potentialWell':
+    case 'unitCell':
+      // In the variables' own units, which the check reads SI from.
+      out.push(
+        ...he2bIssues(
+          rep,
+          (id) => (val(id) ?? NaN) * (byId.get(id)?.unitFactor ?? 1),
+          (id) => byId.get(id)?.unit,
+        ),
+      );
+      break;
+    case 'instrumentTrace':
+      out.push(...instrumentTraceIssues(rep, val)); // HC55
+      break;
+    case 'binaryPhase':
+    case 'machining':
+    case 'linkage':
+      out.push(...he3iIssues(rep, siOf(val, byId), byId)); // HC82–HC84
+      break;
+    case 'globe':
+      // In formula units (a distance in km, a speed in m/s), as the picture draws them.
+      out.push(
+        ...globeIssues(rep, (x) =>
+          ((v) =>
+            v === undefined || typeof x === 'number' ? v : v * (byId.get(x)?.unitFactor ?? 1))(
+            val(x),
+          ),
+        ),
+      );
+      break;
+    case 'aquifer':
+    case 'refraction':
+    case 'projection':
+      // In formula units, as the picture draws them (HC75, HC76, HC78).
+      out.push(
+        ...he3mIssues(rep, (x) =>
+          typeof x === 'number'
+            ? x
+            : ((v) => (v === undefined ? v : v * (byId.get(x)?.unitFactor ?? 1)))(val(x)),
+        ),
+      );
+      break;
+    case 'stressStrain':
+    case 'stressElement':
+      out.push(...he2jIssues(rep, siOf(val, byId), byId)); // HC28, HC33
+      break;
+    case 'wing':
+    case 'duct':
+    case 'supersonicFlow':
+      out.push(...he2hIssues(rep, (id) => (val(id) ?? NaN) * (byId.get(id)?.unitFactor ?? 1)));
+      break;
+    case 'propertyDiagram':
+    case 'thermalWall':
+      out.push(...he2cIssues(rep, (id) => (val(id) ?? NaN) * (byId.get(id)?.unitFactor ?? 1)));
+      break;
+    case 'heatExchanger':
+    case 'shaft':
+    case 'fatigueDiagram':
+    case 'elementChain':
+      out.push(...he3hIssues(rep, val, byId)); // HC40, HC41, HC52, HC59
+      break;
+    case 'timingDiagram':
+    case 'graph':
+    case 'scheduleChart':
+    case 'bitFields':
+      out.push(
+        ...he3dIssues(
+          rep,
+          (x) => (typeof x === 'number' ? x : (val(x) ?? NaN) * (byId.get(x)?.unitFactor ?? 1)),
+          (x) => (typeof x === 'string' ? byId.get(x)?.unit : undefined),
+        ),
+      );
+      break;
+    case 'dilutionSeries':
+      out.push(...dilutionIssues(rep, siOf(val, byId))); // HC80
+      break;
+    case 'waterfall':
+      out.push(...waterfallDecibelsIssues(rep, val)); // HC91, decibels only
+      break;
+    case 'lamina':
+    case 'rocket':
+    case 'deviceCurves':
+    case 'stemPlot':
+      // In formula units, as the picture draws them (HC86, HC87, HC62, HC63).
+      out.push(
+        ...he3kIssues(rep, (x) =>
+          ((v) =>
+            v === undefined || typeof x === 'number' ? v : v * (byId.get(x)?.unitFactor ?? 1))(
+            val(x),
+          ),
+        ),
+      );
       break;
     case 'projectile':
     case 'induction':
@@ -2231,6 +2502,17 @@ export function repIssues(
     case 'collision':
     case 'circularMotion':
     case 'freeBody':
+      if (isHe2fSpec(rep)) return [...out, ...he2fIssues(rep, siOf(val, byId))]; // HC20, HC25, HC35
+      if (isHe3lSpec(rep)) {
+        out.push(...he3lIssues(rep, siOf(val, byId), byId)); // HC68
+        break;
+      }
+      if (rep.kind === 'simpleMachine' && rep.limb)
+        return [...out, ...limbIssues(rep, siOf(val, byId), byId)]; // HC81
+      if (isHe2e(rep)) {
+        out.push(...he2eIssues(rep, siOf(val, byId)));
+        break;
+      } // HC19, HC29
       out.push(...hsk.hskIssues(rep, (id) => val(id), byId));
       out.push(...hs3aOptionIssues(rep, siOf(val, byId)));
       break;
@@ -2246,6 +2528,41 @@ export function repIssues(
     case 'pendulum':
     case 'capacitor':
       out.push(...hs3aIssues(rep, siOf(val, byId)));
+      if (rep.kind === 'oscillator') out.push(...oscillatorIssues(rep, siOf(val, byId), byId)); // HC11
+      out.push(...he4bIssues(rep, val, byId)); // HC102, HC106, HC107
+      break;
+    case 'section':
+      out.push(...sectionIssues(rep, siOf(val, byId), byId));
+      break;
+    case 'beam':
+      out.push(...he1aIssues(rep, siOf(val, byId)));
+      break;
+    case 'bode':
+      out.push(...bodeIssues(rep, siOf(val, byId))); // HC22
+      break;
+    case 'phaseSpace':
+      out.push(...he3lIssues(rep, siOf(val, byId), byId)); // HC69
+      break;
+    case 'roadCurve':
+    case 'connection':
+    case 'hydrograph':
+    case 'blockDiagram':
+      out.push(...he3jIssues(rep, siOf(val, byId))); // HC60, HC61, HC89, HC90
+      break;
+    case 'spacetime':
+      out.push(...he4cIssues(rep, siOf(val, byId))); // HC104
+      break;
+    case 'fieldPlot':
+      out.push(...fieldPlotIssues(rep, val)); // HC21
+      break;
+    case 'surfacePlot':
+      out.push(...surfacePlotIssues(rep, val)); // HC46
+      break;
+    case 'driftPaths':
+      out.push(...driftPathsIssues(rep, val)); // HC153
+      break;
+    case 'solidOfRevolution':
+      out.push(...solidIssues(rep, val)); // HC65
       break;
     case 'bars':
       out.push(...barFlowIssues(rep, val));

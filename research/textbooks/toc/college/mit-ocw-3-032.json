@@ -1,0 +1,75 @@
+{
+  "id": "mit-ocw-3-032",
+  "curriculum": "MIT OCW 3.032 Mechanical Behavior of Materials",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Fall 2007",
+  "subject": "classical",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "John Vander Sande and Krystyn Van Vliet. 3.032 Mechanical Behavior of Materials, Fall 2007. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu/courses/3-032-mechanical-behavior-of-materials-fall-2007/. License: Creative Commons BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Assignment",
+    "lesson": "Part"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/3-032-mechanical-behavior-of-materials-fall-2007/",
+  "retrieved": "2026-10-02",
+  "notes": "Instructor(s): John Vander Sande and Krystyn Van Vliet. Units are the problem sets, labs and exams read (type only; no solutions fetched). Calendar (topic order) as published: SES # Topics Key Dates 1 Introduction 2 Force distributions Problem set 1 out 3 Deformation under force 4 Stress distributions in materials 5 Strain and stress Problem set 1 due Problem set 2 out 6 Pressure vessels Lab 1 7 Stress transformations Lab 1 8 Stress transformations: 2D - 3D Problem set 2 due Problem set 3 out 9 Stress transformations: 3D 10 Elasticity 11 Continuum linear elasticity Problem set 3 due 12 Linear elasticity Quiz 1 13 Linear elasticity (cont.) Problem set 4 out 14 Superelasticity 15 Nonlinear elasticity Lab 2 16 Viscoelasticity Lab 2 17 Rubber elasticity Problem set 4 due Problem set 5 out 18 Continuum plasticity 19 Plasticity in crystals 20 Plasticity in crystals (cont.) Problem set 5 due 21 Plasticity in amorphous materials 22 Controlling plasticity onset 23 Controlling plasticity onset (cont.) 24 Plasticity at surfaces Lab 3 25 EGs of engineering elastoplastic d Third-party content inside OCW files (figures credited to other publishers) was not used.",
+  "books": [
+    {
+      "grade": "college",
+      "url": "https://ocw.mit.edu/courses/3-032-mechanical-behavior-of-materials-fall-2007/",
+      "units": [
+        {
+          "n": "1",
+          "title": "ps4_07",
+          "url": "https://ocw.mit.edu/courses/3-032-mechanical-behavior-of-materials-fall-2007/resources/ps4_07/",
+          "topics": ["he.engineering.advanced-solid-mechanics#0"],
+          "examples": ["resolve a stress state onto axes along fibres"],
+          "lessons": [],
+          "notes": "1 question record(s): OCW-3.032-PS4-1"
+        },
+        {
+          "n": "2",
+          "title": "ps5_07",
+          "url": "https://ocw.mit.edu/courses/3-032-mechanical-behavior-of-materials-fall-2007/resources/ps5_07/",
+          "topics": ["he.engineering.advanced-solid-mechanics#3"],
+          "examples": [
+            "pressure-dependent yield of a glassy polymer",
+            "show the von Mises forms (octahedral shear, J2) agree"
+          ],
+          "lessons": [],
+          "notes": "2 question record(s): OCW-3.032-PS5-4, OCW-3.032-PS5-5"
+        },
+        {
+          "n": "3",
+          "title": "ps6_07",
+          "url": "https://ocw.mit.edu/courses/3-032-mechanical-behavior-of-materials-fall-2007/resources/ps6_07/",
+          "topics": ["he.engineering.materials-science#3", "he.engineering.materials-science#1"],
+          "examples": [
+            "creep activation energy from rates at two temperatures",
+            "why hardness is about three times the yield strength"
+          ],
+          "lessons": [],
+          "notes": "2 question record(s): OCW-3.032-PS6-2, OCW-3.032-PS6-4"
+        },
+        {
+          "n": "4",
+          "title": "ps7_07",
+          "url": "https://ocw.mit.edu/courses/3-032-mechanical-behavior-of-materials-fall-2007/resources/ps7_07/",
+          "topics": ["he.engineering.materials-science#3", "he.engineering.machine-design#1"],
+          "examples": [
+            "life of a spring from a fatigue fracture surface",
+            "plastic-zone size at a crack tip in several materials"
+          ],
+          "lessons": [],
+          "notes": "2 question record(s): OCW-3.032-PS7-2, OCW-3.032-PS7-4"
+        }
+      ],
+      "title": "MIT OCW 3.032 Mechanical Behavior of Materials"
+    }
+  ]
+}

@@ -35,6 +35,7 @@ import { H3B_ICONS } from './h3b';
 import { H3C_ICONS } from './h3c';
 import { H3D_ICONS } from './h3d';
 import { H3E_ICONS } from './h3e';
+import { HE3I_ICONS } from './he3i';
 
 export const ROUND3_ICONS: readonly string[] = [
   ...R3A_ICONS,
@@ -72,6 +73,7 @@ export const ROUND3_ICONS: readonly string[] = [
   ...H3C_ICONS,
   ...H3D_ICONS,
   ...H3E_ICONS,
+  ...HE3I_ICONS,
 ];
 
 export type Round3Icon =
@@ -109,6 +111,7 @@ export type Round3Icon =
   | (typeof H3B_ICONS)[number]
   | (typeof H3C_ICONS)[number]
   | (typeof H3D_ICONS)[number]
-  | (typeof H3E_ICONS)[number];
+  | (typeof H3E_ICONS)[number]
+  | (typeof HE3I_ICONS)[number];
 
 export const isRound3Icon = (icon: string): icon is Round3Icon => ROUND3_ICONS.includes(icon);

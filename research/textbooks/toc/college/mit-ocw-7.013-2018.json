@@ -1,0 +1,165 @@
+{
+  "id": "mit-ocw-7.013-2018",
+  "curriculum": "MIT OCW 7.013 Introductory Biology",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Spring 2018",
+  "subject": "biology",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Angelika Amon, Hazel Sive and Diviya Ray. 7.013 Introductory Biology. Spring 2018. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu. License: Creative Commons BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Part",
+    "lesson": "Lecture"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/7-013-introductory-biology-spring-2018/",
+  "retrieved": "2026-10-02",
+  "notes": "Reference only (CC BY-NC-SA 4.0; OCW terms https://ocw.mit.edu/pages/privacy-and-terms-of-use/). Lecture list and order from the course calendar or lecture-notes page; examples, ranges and notation are our words, read from the exams and problem sets (no problem text or numbers copied). Third-party figures inside OCW PDFs are outside the licence and were not used. Exam question papers E1Q–E3Q read for the records.",
+  "books": [
+    {
+      "course": "7.013",
+      "url": "https://ocw.mit.edu/courses/7-013-introductory-biology-spring-2018/",
+      "units": [
+        {
+          "n": "1",
+          "title": "Biochemistry and genetics",
+          "topics": [
+            "he.biology.principles-1#0",
+            "he.biology.principles-1#2",
+            "he.biology.principles-1#4",
+            "he.biology.genetics#0",
+            "he.biology.genetics#1"
+          ],
+          "examples": [
+            "hydrogen bonds and solubility from a structure",
+            "pedigree risk for a second child",
+            "test-cross classes for genes 10 cM apart",
+            "classify an inhibitor (allosteric, irreversible)"
+          ],
+          "lessons": [
+            {
+              "n": "1",
+              "title": "Introduction and the cell",
+              "topics": ["he.biology.principles-1#1"]
+            },
+            {
+              "n": "2–4",
+              "title": "Biochemistry 1–3",
+              "topics": ["he.biology.principles-1#0", "he.biology.principles-1#2"]
+            },
+            {
+              "n": "5–8",
+              "title": "Genetics 1–4",
+              "topics": [
+                "he.biology.principles-1#4",
+                "he.biology.genetics#0",
+                "he.biology.genetics#1"
+              ]
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Molecular biology and recombinant DNA",
+          "topics": ["he.biology.genetics#2"],
+          "examples": [
+            "template strand and first codons from a promoter",
+            "which mutation truncates a protein",
+            "libraries, PCR primers, sequencing nucleotides"
+          ],
+          "lessons": [
+            {
+              "n": "9–12",
+              "title": "Molecular biology 1–4",
+              "topics": ["he.biology.genetics#2", "he.biology.cell-molecular#2"]
+            },
+            {
+              "n": "13–16",
+              "title": "Recombinant DNA 1–4",
+              "topics": ["he.biology.genetics#2"]
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Cell biology, cancer and development",
+          "topics": [
+            "he.biology.cell-molecular#1",
+            "he.biology.cell-molecular#3",
+            "he.biology.cell-molecular#2"
+          ],
+          "examples": [
+            "JAK–STAT mutants table",
+            "APC, separase and Cdk mutants and ploidy",
+            "Ames test",
+            "endoderm explants and induction"
+          ],
+          "lessons": [
+            {
+              "n": "17–20",
+              "title": "Cell biology 1–4",
+              "topics": ["he.biology.principles-1#1", "he.biology.cell-molecular#1"]
+            },
+            {
+              "n": "21–23",
+              "title": "Cancer 1–3",
+              "topics": ["he.biology.cell-molecular#3"]
+            },
+            {
+              "n": "24–25",
+              "title": "Development 1–2",
+              "topics": ["he.biology.cell-molecular#2"]
+            },
+            {
+              "n": "26",
+              "title": "Stem cells",
+              "topics": ["he.biology.cell-molecular#2"]
+            },
+            {
+              "n": "27",
+              "title": "Tissue repair",
+              "topics": ["he.biology.cell-molecular#3"]
+            },
+            {
+              "n": "28",
+              "title": "Tissue engineering",
+              "topics": ["he.engineering.tissue-engineering#0"]
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Immunology, neurobiology, genomics",
+          "topics": ["he.biology.microbiology#3", "he.biology.anatomy-physiology#2"],
+          "lessons": [
+            {
+              "n": "29–30",
+              "title": "Immunology 1–2",
+              "topics": ["he.biology.microbiology#3"]
+            },
+            {
+              "n": "31–34",
+              "title": "Neurobiology 1–4",
+              "topics": ["he.biology.anatomy-physiology#2", "he.biology.cell-molecular#0"]
+            },
+            {
+              "n": "35",
+              "title": "The genomic revolution",
+              "topics": ["he.biology.genetics#2"]
+            },
+            {
+              "n": "36",
+              "title": "Future of biology",
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+            }
+          ]
+        }
+      ],
+      "title": "7.013"
+    }
+  ]
+}

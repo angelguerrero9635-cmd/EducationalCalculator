@@ -10,6 +10,7 @@ import { labLineIndex } from '@/components/module/reps/hs2h';
 import type { EnergyTrackSpec, MotionGraphSpec } from '../typesMechanics';
 import type { Representation } from '../types';
 import type { HskSpec } from '../typesHsk';
+import type { WaveHe3lSpec } from '../typesHe3l';
 import {
   freeBodyWorkIssues,
   platesIssues,
@@ -292,6 +293,7 @@ export function hskIssues(rep: HskSpec, val: Val, byId: Map<string, VariableDef>
       break;
     }
     case 'charges': {
+      if ('gauss' in rep || 'distribution' in rep) break; // HC29: picturesHe2e.ts
       if (rep.mode === 'plates') {
         out.push(...platesIssues(rep, si));
         break;
@@ -410,7 +412,7 @@ export function energySpringIssues(rep: EnergyTrackSpec, si: Val): string[] {
   return out;
 }
 
-type WaveSpec = Extract<Representation, { kind: 'wave' }>;
+type WaveSpec = Exclude<Extract<Representation, { kind: 'wave' }>, WaveHe3lSpec>;
 
 /** H65: a standing wave's λ (2L/n, 4L/n with odd n) and f = v/λ; the Doppler frequencies. */
 export function waveHsIssues(rep: WaveSpec, si: Val): string[] {
@@ -449,7 +451,7 @@ export const mapSi = (x: number | undefined, factor = 1) => (x === undefined ? x
 
 type Physics8 = Extract<
   Representation,
-  { kind: 'spectrum' | 'circuit' | 'electromagnet' | 'orbit' }
+  { kind: 'spectrum' | 'circuit' | 'electromagnet' | 'orbit'; net?: undefined }
 >;
 
 /** Whether a Grade 8 physics picture carries a group-HK option (checked here instead). */

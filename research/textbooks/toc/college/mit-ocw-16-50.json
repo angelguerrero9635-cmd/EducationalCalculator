@@ -1,0 +1,91 @@
+{
+  "id": "mit-ocw-16-50",
+  "curriculum": "MIT OpenCourseWare 16.50 Introduction to Propulsion Systems",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Spring 2012",
+  "subject": "aerospace",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Manuel Martinez-Sanchez. 16.50 Introduction to Propulsion Systems. Spring 2012. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu/courses/16-50-introduction-to-propulsion-systems-spring-2012/. License: CC BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Lecture block"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/16-50-introduction-to-propulsion-systems-spring-2012/",
+  "retrieved": "2026-10-02",
+  "sources": [
+    "https://ocw.mit.edu/courses/16-50-introduction-to-propulsion-systems-spring-2012/pages/syllabus/",
+    "https://ocw.mit.edu/courses/16-50-introduction-to-propulsion-systems-spring-2012/pages/calendar/"
+  ],
+  "notes": "Lecture list from the Lecture Notes page; 10 homework sets and three quizzes read. Texts: Kerrebrock, Aircraft Engines and Gas Turbines; Sutton and Biblarz, Rocket Propulsion Elements.",
+  "books": [
+    {
+      "course": null,
+      "title": "16.50 Introduction to Propulsion Systems (Spring 2012)",
+      "url": "https://ocw.mit.edu/courses/16-50-introduction-to-propulsion-systems-spring-2012/",
+      "units": [
+        {
+          "n": "1–5",
+          "title": "Rocket equation, gravity loss, staging; orbital mechanics; non-chemical rockets",
+          "url": "https://ocw.mit.edu/courses/16-50-introduction-to-propulsion-systems-spring-2012/pages/lecture-notes/",
+          "topics": ["he.engineering.propulsion#1", "he.engineering.orbital-mechanics#3"],
+          "examples": ["3-stage solid launcher", "chemical vs electric Earth–Mars"],
+          "ranges": ["I_sp 250–460 s chemical; ε 0.1"]
+        },
+        {
+          "n": "6–8",
+          "title": "Thermal rocket models; nozzle flow; area ratio; nozzle types",
+          "topics": ["he.engineering.propulsion#2", "he.engineering.compressible-flow#2"],
+          "examples": ["two-position nozzle"]
+        },
+        {
+          "n": "9",
+          "title": "Solid propellant gas generators",
+          "topics": [],
+          "notes": "Internal ballistics: no taxonomy topic.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "10–12",
+          "title": "Reacting gases; nozzle flow of reacting gases",
+          "topics": ["he.engineering.propulsion#3"],
+          "examples": ["O/F sweep with an equilibrium code"]
+        },
+        {
+          "n": "13–16",
+          "title": "Casings; heat transfer and cooling; ablative cooling; thrust vectoring; cycles",
+          "topics": [],
+          "notes": "Rocket cooling: no taxonomy topic (examples: throat heat flux, copper wall thickness).",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "17–23",
+          "title": "Aircraft engines: turbojet, matching, turbofan, inlets, exhaust nozzles",
+          "topics": ["he.engineering.propulsion#0"],
+          "examples": [
+            "UAV turbojet design point",
+            "turbofan with limited fan pressure ratio",
+            "supersonic inlet spill"
+          ],
+          "notation": [
+            "τ, π temperature and pressure ratios; θ_t peak temperature parameter; α bypass ratio"
+          ]
+        },
+        {
+          "n": "24–33",
+          "title": "Compressors, turbines, cooling, matching, structures, vibration",
+          "topics": ["he.engineering.propulsion#0"],
+          "notes": "Turbomachinery detail beyond the topic."
+        },
+        {
+          "n": "34–38",
+          "title": "Combustors; pollutants; noise; rotordynamics",
+          "topics": ["he.engineering.propulsion#3"]
+        }
+      ]
+    }
+  ]
+}

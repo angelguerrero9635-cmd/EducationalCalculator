@@ -1,0 +1,149 @@
+{
+  "id": "mit-ocw-8-07",
+  "curriculum": "MIT OCW 8.07 Electromagnetism II",
+  "publisher": "MIT OpenCourseWare (Alan Guth, Min Chen)",
+  "edition": "Fall 2012",
+  "subject": "physics",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Alan Guth and Min Chen. 8.07 Electromagnetism II. Fall 2012. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu. License: Creative Commons BY-NC-SA."
+  },
+  "terms": "MIT OCW: CC BY-NC-SA 4.0; syllabus order and problem types only (type records). Third-party content on OCW pages is outside the licence and was skipped.",
+  "sourceUrl": "https://ocw.mit.edu/courses/8-07-electromagnetism-ii-fall-2012/",
+  "retrieved": "2026-10-02",
+  "notes": "Lecture topics from the course calendar (in order); the two quizzes and the final exam carry the examples. Units are the problem sets and exams whose question types are recorded in research/questions/college/physics.jsonl; examples are those question kinds. robots.txt: Allow /.",
+  "books": [
+    {
+      "title": "8.07 Electromagnetism II (Fall 2012)",
+      "url": "https://ocw.mit.edu/courses/8-07-electromagnetism-ii-fall-2012/",
+      "units": [
+        {
+          "n": "1",
+          "title": "Vector Analysis",
+          "topics": [],
+          "note": "vector calculus review (he.math.calc-3)"
+        },
+        {
+          "n": "2",
+          "title": "Rotations in Index Notation",
+          "topics": [],
+          "note": "index notation; no topic"
+        },
+        {
+          "n": "3",
+          "title": "Integral Formulation of Basic Equations",
+          "topics": ["he.physics.electromagnetism#2"]
+        },
+        {
+          "n": "4",
+          "title": "Conductors: Surface Forces and Capacitance",
+          "topics": ["he.physics.electromagnetism#0"]
+        },
+        {
+          "n": "5",
+          "title": "Image Charge Method; Separation of Variables",
+          "topics": ["he.physics.electromagnetism#0"]
+        },
+        {
+          "n": "6",
+          "title": "Separation of Variables in Spherical Coordinates",
+          "topics": ["he.physics.electromagnetism#0"]
+        },
+        {
+          "n": "7",
+          "title": "A Spherical Shell of Charge with a Circular Hole",
+          "topics": ["he.physics.electromagnetism#0"]
+        },
+        {
+          "n": "8",
+          "title": "The Traceless Symmetric Tensor Expansion and Standard Spherical Harmonics",
+          "topics": ["he.physics.electromagnetism#0"]
+        },
+        {
+          "n": "9",
+          "title": "Traceless Symmetric Tensor Approach to Legendre Polynomials and Spherical Harmonics",
+          "topics": ["he.physics.electromagnetism#0"]
+        },
+        {
+          "n": "10",
+          "title": "Magnetic Multipole Expansion and Magnetic Dipoles",
+          "topics": ["he.physics.electromagnetism#1"]
+        },
+        {
+          "n": "11",
+          "title": "Magnetic Dipoles and Magnetic Fields in Matter",
+          "topics": ["he.physics.electromagnetism#1"]
+        },
+        {
+          "n": "12",
+          "title": "Reversed Cherenkov Radiation in Left-Handed Meta-material",
+          "topics": [],
+          "note": "guest lecture; no topic"
+        },
+        {
+          "n": "13",
+          "title": "Flipping Photons Backward: Reversed Cherenkov Radiation Inspired by Metamaterials",
+          "topics": [],
+          "note": "guest lecture; no topic"
+        },
+        {
+          "n": "14",
+          "title": "Electromagnetic Waves",
+          "topics": ["he.physics.electromagnetism#3"]
+        },
+        {
+          "n": "15",
+          "title": "Potentials and Fields",
+          "topics": ["he.physics.electromagnetism#2"]
+        },
+        {
+          "n": "16",
+          "title": "Radiation",
+          "topics": ["he.physics.electromagnetism#3"],
+          "note": "radiation: filed under waves"
+        },
+        {
+          "n": "Q1",
+          "title": "Quiz 1",
+          "url": "https://ocw.mit.edu/courses/8-07-electromagnetism-ii-fall-2012/7d541f89b1610d64e6a76599a79ef7c1_MIT8_07F12_quiz1.pdf",
+          "topics": ["he.physics.electromagnetism#0"],
+          "examples": [
+            "short exercises: curl identity by index notation; which fields are electrostatic; image charges in two conducting planes",
+            "coaxial charge distribution: field, potential and energy per length",
+            "multipole expansion of a short charged wire to quadrupole order",
+            "spherical shell with a given surface potential: Legendre solution and charge density"
+          ]
+        },
+        {
+          "n": "Q2",
+          "title": "Quiz 2",
+          "url": "https://ocw.mit.edu/courses/8-07-electromagnetism-ii-fall-2012/f95760741eb8298d1f9626d5fa28d3ef_MIT8_07F12_quiz2.pdf",
+          "topics": ["he.physics.electromagnetism#1", "he.physics.electromagnetism#0"],
+          "examples": [
+            "spinning charged sphere: magnetic dipole moment and field",
+            "sphere with a radially varying permittivity: D, E, bound charges",
+            "two opposite magnetic dipoles: field and force",
+            "uniformly magnetized infinite cylinder: H and B everywhere",
+            "compare uniformly polarized and magnetized spheres"
+          ]
+        },
+        {
+          "n": "F",
+          "title": "Final exam",
+          "url": "https://ocw.mit.edu/courses/8-07-electromagnetism-ii-fall-2012/58f69cae58e0b474ab7c170ee67ed608_MIT8_07F12_finalexam.pdf",
+          "topics": ["he.physics.electromagnetism#2", "he.physics.electromagnetism#3"],
+          "examples": [
+            "rotating charged shell spun up: induced E-field, torque, magnetic energy",
+            "momentum conservation with magnetic monopoles in Maxwell's equations",
+            "field of a uniformly moving charge from the Liénard–Wiechert potentials",
+            "radiation from a rotating magnetic dipole: fields and power",
+            "short questions on gauges and potentials"
+          ]
+        }
+      ]
+    }
+  ]
+}

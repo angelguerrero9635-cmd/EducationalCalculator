@@ -13,6 +13,34 @@ import {
   rationalByTopVars,
   type RationalByTop,
 } from './typesHs3b';
+import {
+  familyHe1dVars,
+  functionGraphHe1dVars,
+  type FamilyHe1d,
+  type FunctionGraphHe1d,
+} from './typesHe1d';
+import {
+  familyHe1eVars,
+  functionGraphHe1eVars,
+  isFamilyHe1e,
+  type FamilyHe1e,
+  type FunctionGraphHe1e,
+} from './typesHe1e';
+import {
+  familyHe2gVars,
+  functionGraphHe2gVars,
+  isFamilyHe2g,
+  type FamilyHe2g,
+  type FunctionGraphHe2g,
+} from './typesHe2g';
+import {
+  familyHe3aVars,
+  functionGraphHe3aVars,
+  isFamilyHe3a,
+  type FamilyHe3a,
+  type FunctionGraphHe3a,
+} from './typesHe3a';
+import { familyHe4eVars, isFamilyHe4e, type FamilyHe4e } from './typesHe4e';
 
 /** A number fixed by the picture, or the id of a variable that holds it. */
 export type NumOrVar = number | string;
@@ -33,6 +61,7 @@ export type NumOrVar = number | string;
  * - arcsin, arccos, arctan: a · sin⁻¹(x) + k on the restricted domain
  */
 export type FunctionFamily =
+  | FamilyHe1d // HC4, HC9: a time response, a grain-size curve (typesHe1d.ts)
   | { family: 'linear'; m: NumOrVar; b: NumOrVar }
   | { family: 'absolute'; a?: NumOrVar; h?: NumOrVar; k?: NumOrVar }
   | { family: 'quadratic'; form: 'standard'; a: NumOrVar; b: NumOrVar; c: NumOrVar }
@@ -53,7 +82,11 @@ export type FunctionFamily =
   | { family: 'sin' | 'cos' | 'tan'; a?: NumOrVar; b?: NumOrVar; h?: NumOrVar; k?: NumOrVar }
   // H105: `degrees` reads the angle in degrees (sin⁻¹ from −90° to 90°), not radians.
   | { family: 'arcsin' | 'arccos' | 'arctan'; a?: NumOrVar; k?: NumOrVar; degrees?: boolean }
-  | FamilyHs3b; // H106: a·(x − h)^(p/q) + k and log_b(x) + log_b(x + c)
+  | FamilyHs3b // H106: a·(x − h)^(p/q) + k and log_b(x) + log_b(x + c)
+  | FamilyHe1e // HC10, HC12: expr, hill, bateman, a real power, erfc, levenspiel, equalArea
+  | FamilyHe2g // HC38: linearOde, taylor
+  | FamilyHe3a // HC42, HC45, HC92: distribution, lagrange, quantizer (typesHe3a.ts)
+  | FamilyHe4e; // HC148, HC179: amplification, fourier (typesHe4e.ts)
 
 /** One piece of a piecewise function: a family over from … to (unbounded when left out). */
 export interface Piece {
@@ -130,15 +163,26 @@ export type FunctionGraphSpec = FunctionFamily & {
   /** No handles: a drag couldn't solve backwards to the values typed. */
   fixed?: boolean;
 } & FunctionGraphHs2a &
+  FunctionGraphHe1e &
   FunctionGraphHs2g &
-  FunctionGraphHs3b;
+  FunctionGraphHs3b &
+  FunctionGraphHe1d &
+  FunctionGraphHe2g &
+  FunctionGraphHe3a;
 
 const ids = (...xs: (NumOrVar | undefined)[]) =>
   xs.filter((x): x is string => typeof x === 'string');
 
 /** The variable ids a family names. */
 export function familyVars(f: FunctionFamily): string[] {
+  if (isFamilyHe1e(f)) return familyHe1eVars(f); // HC10, HC12
+  if (isFamilyHe2g(f)) return familyHe2gVars(f); // HC38
+  if (isFamilyHe3a(f)) return familyHe3aVars(f); // HC42, HC45, HC92
+  if (isFamilyHe4e(f)) return familyHe4eVars(f); // HC148, HC179
   switch (f.family) {
+    case 'response':
+    case 'gradation':
+      return familyHe1dVars(f); // HC4, HC9
     case 'linear':
       return ids(f.m, f.b);
     case 'quadratic':
@@ -187,5 +231,9 @@ export function functionGraphVars(r: FunctionGraphSpec): string[] {
     ...ids(s?.vertex?.x, s?.vertex?.y, ...(s?.zeros ?? []), s?.intercept, s?.va, s?.ha),
     ...ids(s?.period, s?.amplitude),
     ...functionGraphHs3bVars(r),
+    ...functionGraphHe1dVars(r),
+    ...functionGraphHe1eVars(r), // HC10, HC12
+    ...functionGraphHe2gVars(r), // HC37, HC38
+    ...functionGraphHe3aVars(r), // HC42, HC45, HC92
   ];
 }

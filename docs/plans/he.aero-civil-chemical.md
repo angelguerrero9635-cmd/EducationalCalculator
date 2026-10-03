@@ -117,12 +117,13 @@ Mechanics_ (GNU FDL); JPL _Basics of Space Flight_ (public). Reference only.
 
 #### aerodynamics#1 — Lift and drag
 
-| Question type                                      | Page        | Mark   |
-| -------------------------------------------------- | ----------- | ------ |
-| lift and drag from C_L, C_D, speed, area           | main        | Solves |
-| drag polar, maximum L/D                            | ~drag-polar | Solves |
-| Reynolds number of a wing chord                    | ~reynolds   | Solves |
-| which drag is skin friction, form, induced or wave | ~drag-types | Solves |
+| Question type                                                            | Page        | Mark   |
+| ------------------------------------------------------------------------ | ----------- | ------ |
+| lift and drag from C_L, C_D, speed, area                                 | main        | Solves |
+| drag polar, maximum L/D                                                  | ~drag-polar | Solves |
+| Reynolds number of a wing chord                                          | ~reynolds   | Solves |
+| which drag is skin friction, form, induced or wave                       | ~drag-types | Solves |
+| skin-friction drag of a plate or wing from Re (laminar or turbulent c_f) | [new-page]  | No     |
 
 - **Main — BUILD:** P1 section with `forces` (L ⟂ wind, D along it, resultant). Values: density ρ
   (0.01–1.3 kg/m³), speed V (0–1000 m/s), wing area S (0.1–1000 m²), C_L (−1 to 3), C_D
@@ -265,11 +266,12 @@ Mechanics_ (GNU FDL); JPL _Basics of Space Flight_ (public). Reference only.
 
 #### compressible-flow#3 — Supersonic aerodynamics
 
-| Question type                                  | Page           | Mark           |
-| ---------------------------------------------- | -------------- | -------------- |
-| lift and wave drag of a thin airfoil (Ackeret) | main           | Solves         |
-| Mach angle                                     | ~mach-angle    | Solves         |
-| Prandtl–Meyer expansion round a corner         | ~expansion-fan | Solves (⏳ N2) |
+| Question type                                                       | Page           | Mark           |
+| ------------------------------------------------------------------- | -------------- | -------------- |
+| lift and wave drag of a thin airfoil (Ackeret)                      | main           | Solves         |
+| Mach angle                                                          | ~mach-angle    | Solves         |
+| Prandtl–Meyer expansion round a corner                              | ~expansion-fan | Solves (⏳ N2) |
+| lift and drag of a diamond or flat-plate airfoil by shock-expansion | [new-page]     | No             |
 
 - **Main — BUILD:** **P3** flat-plate mode (plate at α, shocks and fans at both edges). Values M∞
   (1.2–5), α (0–10°), c_l, c_d (wave), L/D. Relations: c_l = 4α ÷ √(M∞² − 1);
@@ -285,14 +287,15 @@ Mechanics_ (GNU FDL); JPL _Basics of Space Flight_ (public). Reference only.
 
 #### flight-mechanics#0 — Aircraft performance
 
-| Question type                                 | Page        | Mark   |
-| --------------------------------------------- | ----------- | ------ |
-| C_L, drag and thrust required in level flight | main        | Solves |
-| stall speed                                   | ~stall      | Solves |
-| jet range (Breguet)                           | ~range      | Solves |
-| rate of climb from excess thrust              | ~climb      | Solves |
-| load factor and radius of a level turn        | ~turn       | Solves |
-| density at an altitude (standard atmosphere)  | ~atmosphere | Solves |
+| Question type                                          | Page        | Mark   |
+| ------------------------------------------------------ | ----------- | ------ |
+| C_L, drag and thrust required in level flight          | main        | Solves |
+| stall speed                                            | ~stall      | Solves |
+| jet range (Breguet)                                    | ~range      | Solves |
+| rate of climb from excess thrust                       | ~climb      | Solves |
+| load factor and radius of a level turn                 | ~turn       | Solves |
+| density at an altitude (standard atmosphere)           | ~atmosphere | Solves |
+| glide range and minimum-sink speed; best-endurance C_L | [new-page]  | No     |
 
 - **Main — BUILD:** **P4** `freeBody` `object: 'aircraft'` (side view: L up, W down, T forward,
   D back, to scale). Values weight W (100–5 × 10⁶ N), ρ, V, S, C_L, C_D0, K, C_D, drag D (= thrust
@@ -390,11 +393,13 @@ Mechanics_ (GNU FDL); JPL _Basics of Space Flight_ (public). Reference only.
 
 #### aerospace-structures#0 — Thin-walled structures
 
-| Question type                                      | Page   | Mark   |
-| -------------------------------------------------- | ------ | ------ |
-| shear flow and stress in a closed box under torque | main   | Solves |
-| twist rate of a closed cell                        | main   | Solves |
-| hoop and axial stress in a pressurized fuselage    | ~cabin | Solves |
+| Question type                                         | Page       | Mark   |
+| ----------------------------------------------------- | ---------- | ------ |
+| shear flow and stress in a closed box under torque    | main       | Solves |
+| twist rate of a closed cell                           | main       | Solves |
+| hoop and axial stress in a pressurized fuselage       | ~cabin     | Solves |
+| torsion of an open thin-walled section (J = Σbt³ ÷ 3) | [new-page] | No     |
+| thermal stress in a constrained bar                   | [new-page] | No     |
 
 - **Main — BUILD:** **P6** `section` thin-walled box (enclosed area A_m shaded, shear-flow arrows
   round the wall). Values torque T, width, height, wall t, enclosed area A_m, shear flow q,
@@ -410,11 +415,12 @@ Mechanics_ (GNU FDL); JPL _Basics of Space Flight_ (public). Reference only.
 
 #### aerospace-structures#1 — Composites
 
-| Question type                                | Page        | Mark   |
-| -------------------------------------------- | ----------- | ------ |
-| longitudinal modulus by the rule of mixtures | main        | Solves |
-| transverse modulus                           | ~transverse | Solves |
-| density and specific stiffness               | ~specific   | Solves |
+| Question type                                           | Page        | Mark   |
+| ------------------------------------------------------- | ----------- | ------ |
+| longitudinal modulus by the rule of mixtures            | main        | Solves |
+| transverse modulus                                      | ~transverse | Solves |
+| density and specific stiffness                          | ~specific   | Solves |
+| ply strains from the engineering constants (compliance) | [new-page]  | No     |
 
 - **Main — BUILD:** **P8** `lamina` (fibers in matrix; load along the fibers, the two as springs
   side by side). Values fiber modulus E_f, matrix modulus E_m, fiber fraction V_f (0–0.8),
@@ -452,11 +458,12 @@ Mechanics_ (GNU FDL); JPL _Basics of Space Flight_ (public). Reference only.
 
 #### aerospace-structures#3 — Fatigue
 
-| Question type                                      | Page     | Mark   |
-| -------------------------------------------------- | -------- | ------ |
-| mean and alternating stress, Goodman safety factor | main     | Solves |
-| Miner's rule damage and repeats to failure         | ~miner   | Solves |
-| cycles to failure from Basquin's law               | ~basquin | Solves |
+| Question type                                      | Page       | Mark   |
+| -------------------------------------------------- | ---------- | ------ |
+| mean and alternating stress, Goodman safety factor | main       | Solves |
+| Miner's rule damage and repeats to failure         | ~miner     | Solves |
+| cycles to failure from Basquin's law               | ~basquin   | Solves |
+| margin of safety from limit and ultimate loads     | [new-page] | No     |
 
 - **Main — BUILD:** `linearFunction` with `test` (the Goodman line from (0, S_e) to (S_u, 0), the
   load point (σ_m, σ_a) inside or outside). Values σ_max, σ_min, σ_m, σ_a, fatigue strength S_e,
@@ -476,12 +483,13 @@ Mechanics_ (GNU FDL); JPL _Basics of Space Flight_ (public). Reference only.
 
 #### propulsion#0 — Gas turbine cycles
 
-| Question type                                  | Page        | Mark   |
-| ---------------------------------------------- | ----------- | ------ |
-| ideal Brayton efficiency and net work          | main        | Solves |
-| compressor exit temperature with an efficiency | ~compressor | Solves |
-| turbojet thrust, propulsive efficiency, TSFC   | ~turbojet   | Solves |
-| turbofan thrust with a bypass ratio            | ~turbofan   | Solves |
+| Question type                                            | Page        | Mark   |
+| -------------------------------------------------------- | ----------- | ------ |
+| ideal Brayton efficiency and net work                    | main        | Solves |
+| compressor exit temperature with an efficiency           | ~compressor | Solves |
+| turbojet thrust, propulsive efficiency, TSFC             | ~turbojet   | Solves |
+| turbofan thrust with a bypass ratio                      | ~turbofan   | Solves |
+| compressor or turbine stage: velocity triangles and work | [new-page]  | No     |
 
 - **Main — BUILD ⏳ P10:** **P10** `propertyDiagram` T–s mode (states 1–4, compression and
   expansion vertical, heat in and out on the constant-pressure lines). Values T₁, pressure ratio
@@ -528,12 +536,13 @@ Mechanics_ (GNU FDL); JPL _Basics of Space Flight_ (public). Reference only.
 
 #### propulsion#2 — Nozzle performance
 
-| Question type                                  | Page                          | Mark         |
-| ---------------------------------------------- | ----------------------------- | ------------ |
-| thrust from C_F, chamber pressure, throat area | main                          | Solves       |
-| c* and mass flow; I_sp from C_F and c*         | main                          | Solves       |
-| ideal exhaust velocity from chamber state      | ~exhaust-velocity             | Solves       |
-| over-, ideally or underexpanded                | compressible-flow#2~expansion | cross-listed |
+| Question type                                            | Page                          | Mark         |
+| -------------------------------------------------------- | ----------------------------- | ------------ |
+| thrust from C_F, chamber pressure, throat area           | main                          | Solves       |
+| c* and mass flow; I_sp from C_F and c*                   | main                          | Solves       |
+| ideal exhaust velocity from chamber state                | ~exhaust-velocity             | Solves       |
+| over-, ideally or underexpanded                          | compressible-flow#2~expansion | cross-listed |
+| throat heat flux and wall temperature of a cooled nozzle | [new-page]                    | No           |
 
 - **Main — BUILD:** P2 duct with a chamber (P2 `chamber`). Values chamber pressure p_c, throat
   A_t, thrust coefficient C_F, characteristic velocity c*, F, ṁ, I_sp. Relations: F = C_Fp_cA_t;
@@ -639,11 +648,12 @@ Mechanics_ (GNU FDL); JPL _Basics of Space Flight_ (public). Reference only.
 
 #### orbital-mechanics#3 — Interplanetary transfers
 
-| Question type                                            | Page     | Mark   |
-| -------------------------------------------------------- | -------- | ------ |
-| v∞ and departure Δv from a parking orbit (patched conic) | main     | Solves |
-| synodic period, next launch window                       | ~synodic | Solves |
-| sphere of influence radius                               | ~soi     | Solves |
+| Question type                                            | Page       | Mark   |
+| -------------------------------------------------------- | ---------- | ------ |
+| v∞ and departure Δv from a parking orbit (patched conic) | main       | Solves |
+| synodic period, next launch window                       | ~synodic   | Solves |
+| sphere of influence radius                               | ~soi       | Solves |
+| gravity-assist turn angle and the new heliocentric orbit | [new-page] | No     |
 
 - **Main — BUILD ⏳ P12:** P12 hohmann on the Sun's scale with the planet's hyperbola inset.
   Values r₁ (AU or km), r₂, v∞ (departure), parking radius r_p, v_c there, Δv, TOF (days).
@@ -678,6 +688,7 @@ and the 360-22 specification (free download, all rights reserved); MIT OCW 1.050
 | cantilever end reaction and fixed-end moment       | ~cantilever  | Solves          |
 | truss member force by the method of sections       | ~truss       | Solves (⏳ P15) |
 | determinate, indeterminate or unstable             | ~determinacy | Solves          |
+| dead load on a beam from tributary width           | [new-page]   | No              |
 
 - **Main — BUILD ⏳ P14:** **P14** `beam` (pin and roller, the load, reactions, shear and moment
   diagrams under the beam). Values span L, load P, distance a, b (derived), R_A, R_B, M_max.
@@ -728,6 +739,7 @@ and the 360-22 specification (free download, all rights reserved); MIT OCW 1.050
 | propped cantilever reactions (force method)     | main                 | Solves          |
 | fixed-end moments                               | ~fixed-end           | Solves          |
 | two-span continuous beam by moment distribution | ~moment-distribution | Solves (⏳ P14) |
+| end moments by slope-deflection                 | [new-page]           | No              |
 
 - **Main — BUILD ⏳ P14:** P14 fixed–roller beam. Values w, L, prop reaction R_B, fixed reaction
   R_A, fixed-end moment M_A. Relations: R_B = 3wL ÷ 8 (from the compatibility condition: the
@@ -885,13 +897,14 @@ and the 360-22 specification (free download, all rights reserved); MIT OCW 1.050
 
 #### hydraulics-hydrology#0 — Open-channel flow
 
-| Question type                        | Page            | Mark           |
-| ------------------------------------ | --------------- | -------------- |
-| discharge by Manning's equation      | main            | Solves         |
-| Froude number, sub- or supercritical | main            | Solves         |
-| normal depth for a discharge         | main (type Q)   | Solves (⏳ N2) |
-| critical depth and specific energy   | ~critical-depth | Solves         |
-| hydraulic jump depth and head loss   | ~jump           | Solves         |
+| Question type                                     | Page            | Mark           |
+| ------------------------------------------------- | --------------- | -------------- |
+| discharge by Manning's equation                   | main            | Solves         |
+| Froude number, sub- or supercritical              | main            | Solves         |
+| normal depth for a discharge                      | main (type Q)   | Solves (⏳ N2) |
+| critical depth and specific energy                | ~critical-depth | Solves         |
+| hydraulic jump depth and head loss                | ~jump           | Solves         |
+| gradually varied flow: profile type behind a gate | [new-page]      | No             |
 
 - **Main — BUILD ⏳ P19:** `streamChannel` with **P19** `manning` and `froude` (rectangular section to
   scale, slope drawn, Q = A × V). Values width b, depth y, Manning n, slope S, area A, hydraulic
@@ -911,12 +924,14 @@ and the 360-22 specification (free download, all rights reserved); MIT OCW 1.050
 
 #### hydraulics-hydrology#1 — Pipe networks
 
-| Question type                                      | Page            | Mark            |
-| -------------------------------------------------- | --------------- | --------------- |
-| head loss by Darcy–Weisbach with a friction factor | main            | Solves          |
-| head loss by Hazen–Williams                        | ~hazen-williams | Solves          |
-| flow split between two parallel pipes              | ~parallel       | Solves          |
-| one Hardy Cross correction of a loop               | ~hardy-cross    | Solves (⏳ P20) |
+| Question type                                           | Page            | Mark            |
+| ------------------------------------------------------- | --------------- | --------------- |
+| head loss by Darcy–Weisbach with a friction factor      | main            | Solves          |
+| head loss by Hazen–Williams                             | ~hazen-williams | Solves          |
+| flow split between two parallel pipes                   | ~parallel       | Solves          |
+| one Hardy Cross correction of a loop                    | ~hardy-cross    | Solves (⏳ P20) |
+| pump or turbine power with pipe losses; operating point | [new-page]      | No              |
+| minor losses (entrance, exit, fittings) in a pipe line  | [new-page]      | No              |
 
 - **Main — BUILD ⏳ P20:** **P20** `pipeNetwork` single pipe with the energy and hydraulic grade
   lines. Values D, L, Q, roughness ε, V, Reynolds Re, friction factor f, head loss h_f. Relations:
@@ -939,12 +954,14 @@ and the 360-22 specification (free download, all rights reserved); MIT OCW 1.050
 
 #### hydraulics-hydrology#2 — Rainfall–runoff
 
-| Question type                         | Page      | Mark                             |
-| ------------------------------------- | --------- | -------------------------------- |
-| runoff depth by the NRCS curve number | main      | Solves                           |
-| peak flow by the rational method      | ~rational | Solves                           |
-| time of concentration (Kirpich)       | ~kirpich  | Solves                           |
-| unit hydrograph convolution           | —         | No (⏳ N7, a table of ordinates) |
+| Question type                                 | Page       | Mark                             |
+| --------------------------------------------- | ---------- | -------------------------------- |
+| runoff depth by the NRCS curve number         | main       | Solves                           |
+| peak flow by the rational method              | ~rational  | Solves                           |
+| time of concentration (Kirpich)               | ~kirpich   | Solves                           |
+| unit hydrograph convolution                   | —          | No (⏳ N7, a table of ordinates) |
+| time of concentration by flow segments (NRCS) | [new-page] | No                               |
+| triangular SCS unit hydrograph (q_p, t_p)     | [new-page] | No                               |
 
 - **Main — BUILD ⏳ P21:** **P21** `hydrograph` `split` (rain depth P cut into initial abstraction,
   infiltration and runoff bars). Values curve number CN (30–98), storage S, initial abstraction
@@ -965,6 +982,8 @@ and the 360-22 specification (free download, all rights reserved); MIT OCW 1.050
 | storm sewer diameter flowing full (Manning)            | main          | Solves |
 | detention volume from inflow and allowed outflow peaks | ~detention    | Solves |
 | order of the design steps                              | ~design-steps | Solves |
+| gutter spread at a flow (modified Manning)             | [new-page]    | No     |
+| orifice or weir outlet rating                          | [new-page]    | No     |
 
 - **Main — BUILD ⏳ P20:** P20 pipe in section, full. Values Q, n, slope S, D (computed), next
   standard size (allowed list in mm, N4). Relation: D = (3.208Qn ÷ √S)^(3/8) (SI, full flow).
@@ -983,12 +1002,13 @@ and the 360-22 specification (free download, all rights reserved); MIT OCW 1.050
 
 #### transportation#0 — Traffic flow
 
-| Question type                              | Page       | Mark   |
-| ------------------------------------------ | ---------- | ------ |
-| speed and flow at a density (Greenshields) | main       | Solves |
-| capacity and the density at capacity       | main       | Solves |
-| shock wave speed at a queue                | ~shockwave | Solves |
-| headway and spacing                        | ~headway   | Solves |
+| Question type                                    | Page       | Mark   |
+| ------------------------------------------------ | ---------- | ------ |
+| speed and flow at a density (Greenshields)       | main       | Solves |
+| capacity and the density at capacity             | main       | Solves |
+| shock wave speed at a queue                      | ~shockwave | Solves |
+| headway and spacing                              | ~headway   | Solves |
+| time-mean and space-mean speed of a speed sample | [new-page] | No     |
 
 - **Main — BUILD:** `functionGraph` quadratic (flow q against density k, vertex at capacity, the
   current point; the chord from the origin has slope v). Values free-flow speed v_f, jam density
@@ -1005,12 +1025,16 @@ and the 360-22 specification (free download, all rights reserved); MIT OCW 1.050
 
 #### transportation#1 — Geometric design
 
-| Question type                                       | Page              | Mark           |
-| --------------------------------------------------- | ----------------- | -------------- |
-| stopping sight distance at a design speed and grade | main              | Solves         |
-| minimum radius of a horizontal curve                | ~horizontal-curve | Solves         |
-| curve length and tangent from R and Δ               | ~curve-elements   | Solves         |
-| length of a crest vertical curve for SSD            | ~crest-curve      | Solves (⏳ N9) |
+| Question type                                                      | Page              | Mark           |
+| ------------------------------------------------------------------ | ----------------- | -------------- |
+| stopping sight distance at a design speed and grade                | main              | Solves         |
+| minimum radius of a horizontal curve                               | ~horizontal-curve | Solves         |
+| curve length and tangent from R and Δ                              | ~curve-elements   | Solves         |
+| length of a crest vertical curve for SSD                           | ~crest-curve      | Solves (⏳ N9) |
+| braking distance on a grade; friction or initial speed from a skid | [new-page]        | No             |
+| sightline offset (middle ordinate) on a horizontal curve           | [new-page]        | No             |
+| elevations and the low or high point on a vertical curve           | [new-page]        | No             |
+| vehicle resistances: maximum acceleration or grade                 | [new-page]        | No             |
 
 - **Main — BUILD ⏳ P22:** **P22** `roadCurve` stopping (reaction strip, then braking strip, the
   object ahead). Values speed V (km/h), reaction time t (s), deceleration a (m/s²), grade G,
@@ -1049,11 +1073,14 @@ and the 360-22 specification (free download, all rights reserved); MIT OCW 1.050
 
 #### transportation#3 — Capacity analysis
 
-| Question type                                          | Page     | Mark           |
-| ------------------------------------------------------ | -------- | -------------- |
-| flow rate in passenger cars, density, level of service | main     | Solves (⏳ N5) |
-| heavy-vehicle factor                                   | main     | Solves         |
-| optimum signal cycle (Webster)                         | ~webster | Solves         |
+| Question type                                                 | Page       | Mark           |
+| ------------------------------------------------------------- | ---------- | -------------- |
+| flow rate in passenger cars, density, level of service        | main       | Solves (⏳ N5) |
+| heavy-vehicle factor                                          | main       | Solves         |
+| optimum signal cycle (Webster)                                | ~webster   | Solves         |
+| queue at a signal (D/D/1): maximum queue and delay            | [new-page] | No             |
+| M/M/1 queue at a toll booth: utilization, queue length, waits | [new-page] | No             |
+| signal approach delay (HCM uniform and random terms)          | [new-page] | No             |
 
 - **Main — BUILD ⏳ P23, N5:** **P23** `losScale` (density bar with A–F bands, the segment marked).
   Values hourly volume V (veh/h), peak-hour factor PHF, lanes N, truck share P_T, truck equivalent
@@ -1248,6 +1275,8 @@ and the 360-22 specification (free download, all rights reserved); MIT OCW 1.050
 | settling velocity (Stokes) and fraction removed     | main             | Solves |
 | CT for disinfection                                 | ~ct              | Solves |
 | order of a conventional treatment plant             | ~treatment-train | Solves |
+| breakpoint chlorination from a demand curve         | [new-page]       | No     |
+| lime–soda softening doses                           | [new-page]       | No     |
 
 - **Main — BUILD ⏳ P25:** **P25** `settlingTank` (basin to scale, a particle's path falling at
   v_s while crossing; the removed share). Values flow Q, length, width, depth, overflow rate v₀,
@@ -1265,12 +1294,13 @@ and the 360-22 specification (free download, all rights reserved); MIT OCW 1.050
 
 #### environmental#1 — Wastewater treatment
 
-| Question type                        | Page              | Mark   |
-| ------------------------------------ | ----------------- | ------ |
-| BOD exerted by day t; ultimate BOD   | main              | Solves |
-| BOD from a dilution test             | ~dilution         | Solves |
-| food-to-microorganism ratio, HRT     | ~activated-sludge | Solves |
-| order of a secondary treatment plant | ~plant-order      | Solves |
+| Question type                                   | Page              | Mark   |
+| ----------------------------------------------- | ----------------- | ------ |
+| BOD exerted by day t; ultimate BOD              | main              | Solves |
+| BOD from a dilution test                        | ~dilution         | Solves |
+| food-to-microorganism ratio, HRT                | ~activated-sludge | Solves |
+| order of a secondary treatment plant            | ~plant-order      | Solves |
+| first-order removal in a CSTR or plug-flow tank | [new-page]        | No     |
 
 - **Main — BUILD:** `functionGraph` exponential with `r` (BOD_t = L₀ − L₀e^(−kt): a = −L₀, r = −k,
   k = L₀; the asymptote L₀ and the day-5 point). Values L₀ (mg/L), rate k (per day), t (days), BOD_t.
@@ -1290,11 +1320,12 @@ and the 360-22 specification (free download, all rights reserved); MIT OCW 1.050
 
 #### environmental#2 — Air pollution
 
-| Question type                                          | Page     | Mark   |
-| ------------------------------------------------------ | -------- | ------ |
-| ground-level centerline concentration (Gaussian plume) | main     | Solves |
-| ppm to μg/m³                                           | ~ppm     | Solves |
-| overall efficiency of control devices in series        | ~control | Solves |
+| Question type                                           | Page       | Mark   |
+| ------------------------------------------------------- | ---------- | ------ |
+| ground-level centerline concentration (Gaussian plume)  | main       | Solves |
+| ppm to μg/m³                                            | ~ppm       | Solves |
+| overall efficiency of control devices in series         | ~control   | Solves |
+| instantaneous puff (1-D or 3-D diffusion) concentration | [new-page] | No     |
 
 - **Main — BUILD ⏳ P26:** **P26** `plume` (stack, effective height H, the plume widening, a
   receptor downwind). Values emission Q (g/s), wind u, σ_y, σ_z, H, concentration C (μg/m³).
@@ -1740,11 +1771,12 @@ Reference only.
 
 #### separations#2 — Extraction
 
-| Question type                             | Page          | Mark   |
-| ----------------------------------------- | ------------- | ------ |
-| fraction left after one equilibrium stage | main          | Solves |
-| crosscurrent stages with split solvent    | ~crosscurrent | Solves |
-| one large wash or several small ones      | ~crosscurrent | Solves |
+| Question type                                        | Page          | Mark   |
+| ---------------------------------------------------- | ------------- | ------ |
+| fraction left after one equilibrium stage            | main          | Solves |
+| crosscurrent stages with split solvent               | ~crosscurrent | Solves |
+| one large wash or several small ones                 | ~crosscurrent | Solves |
+| fixed-bed adsorber breakthrough and unused bed (LUB) | [new-page]    | No     |
 
 - **Main — BUILD ⏳ P9:** P9 `stages: 1` (feed and solvent in, extract and raffinate out, solute
   amounts). Values distribution coefficient K_D, solvent-to-feed S ÷ F, extraction factor E,
@@ -1806,6 +1838,7 @@ Reference only.
 | batch time for a conversion                      | ~batch        | Solves          |
 | CSTRs in series                                  | ~series       | Solves          |
 | Levenspiel plot: which reactor is smaller        | ~levenspiel   | Solves (⏳ P33) |
+| conversion from a residence-time distribution    | [new-page]    | No              |
 
 - **Main — BUILD:** `bars` (V_CSTR beside V_PFR) until P33. Values k (per min), X, v₀, τ_CSTR,
   V_CSTR, τ_PFR, V_PFR. Relations: τ_CSTR = X ÷ (k(1 − X)); τ_PFR = −ln(1 − X) ÷ k; V = v₀τ.
@@ -1865,11 +1898,12 @@ Reference only.
 
 #### process-control#0 — Process dynamics
 
-| Question type                                   | Page          | Mark   |
-| ----------------------------------------------- | ------------- | ------ |
-| first-order step response at a time; 63.2% at τ | main          | Solves |
-| second-order overshoot, decay ratio, period     | ~second-order | Solves |
-| time constant of a mixing tank                  | ~tank         | Solves |
+| Question type                                    | Page          | Mark   |
+| ------------------------------------------------ | ------------- | ------ |
+| first-order step response at a time; 63.2% at τ  | main          | Solves |
+| second-order overshoot, decay ratio, period      | ~second-order | Solves |
+| time constant of a mixing tank                   | ~tank         | Solves |
+| linearize a nonlinear model about a steady state | [new-page]    | No     |
 
 - **Main — BUILD:** `functionGraph` exponential with `r` (y = KΔu − KΔue^(−t ÷ τ), the asymptote
   KΔu and t = τ marked) until P5. Values gain K, step Δu, time constant τ, time t, response y,

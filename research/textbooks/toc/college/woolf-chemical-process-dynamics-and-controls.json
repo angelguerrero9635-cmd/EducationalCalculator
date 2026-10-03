@@ -1,0 +1,121 @@
+{
+  "id": "woolf-chemical-process-dynamics-and-controls",
+  "curriculum": "Chemical Process Dynamics and Controls (Woolf, LibreTexts)",
+  "publisher": "University of Michigan / LibreTexts",
+  "edition": "LibreTexts edition, read 2026-10-02",
+  "subject": "chemical",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY 3.0",
+    "url": "https://creativecommons.org/licenses/by/3.0/",
+    "attribution": "Peter Woolf et al., Chemical Process Dynamics and Controls, University of Michigan, https://eng.libretexts.org/Bookshelves/Industrial_and_Systems_Engineering/Chemical_Process_Dynamics_and_Controls_(Woolf), CC BY 3.0 (page tag \"CC BY 3.0\")."
+  },
+  "terms": {
+    "unit": "Chapter"
+  },
+  "sourceUrl": "https://eng.libretexts.org/Bookshelves/Industrial_and_Systems_Engineering/Chemical_Process_Dynamics_and_Controls_(Woolf)",
+  "retrieved": "2026-10-02",
+  "notes": "Chapter list from the book page (14 chapters); sections of chapters 2, 9, 10 and 11 listed and six sections read for worked examples and exercises. Written by students; sections end with \"Worked out Example\" and multiple-choice exercises, some with \"Answer TBA\".",
+  "books": [
+    {
+      "course": "he.engineering.process-control",
+      "title": "Chemical Process Dynamics and Controls",
+      "url": "https://eng.libretexts.org/Bookshelves/Industrial_and_Systems_Engineering/Chemical_Process_Dynamics_and_Controls_(Woolf)",
+      "units": [
+        {
+          "n": "1",
+          "title": "Overview",
+          "topics": ["he.engineering.process-control#1"]
+        },
+        {
+          "n": "2",
+          "title": "Modeling Basics (verbal models, degrees of freedom, incidence graphs, Excel and Mathematica ODEs)",
+          "topics": [
+            "he.engineering.process-control#0",
+            "he.engineering.material-energy-balances#0"
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Sensors and Actuators (valves, fail-safe positions)",
+          "topics": ["he.engineering.process-control#1"]
+        },
+        {
+          "n": "4",
+          "title": "Piping and Instrumentation Diagrams",
+          "topics": [
+            "he.engineering.process-control#3",
+            "he.engineering.material-energy-balances#0"
+          ]
+        },
+        {
+          "n": "5",
+          "title": "Logical Modeling",
+          "topics": [],
+          "notes": "Boolean logic and alarms: no topic.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "6",
+          "title": "Modeling Case Studies",
+          "topics": ["he.engineering.process-control#0"]
+        },
+        {
+          "n": "7",
+          "title": "Mathematics for Control Systems (Laplace)",
+          "topics": ["he.engineering.process-control#0"]
+        },
+        {
+          "n": "8",
+          "title": "Optimization",
+          "topics": [],
+          "notes": "No topic.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "9",
+          "title": "PID Control (block diagrams, P/I/D, classical tuning, Bode tuning, optimization tuning, downsides)",
+          "topics": ["he.engineering.process-control#1", "he.engineering.process-control#2"],
+          "examples": [
+            "Ziegler–Nichols from K_u and P_u",
+            "robustness from ISE and ISC",
+            "diagnosing a P response"
+          ],
+          "notation": ["K_c, T_i, T_d; Cohen–Coon; IMC"]
+        },
+        {
+          "n": "10",
+          "title": "Dynamical Systems Analysis (fixed points, linearization, eigenvalues, phase plane, root locus, Routh)",
+          "topics": ["he.engineering.process-control#3"],
+          "examples": ["Routh array of a cubic"]
+        },
+        {
+          "n": "11",
+          "title": "Control Architectures (feedback, feedforward, cascade, ratio, level, temperature, reactors)",
+          "topics": ["he.engineering.process-control#3"],
+          "examples": [
+            "ratio dilution",
+            "air–fuel ratio",
+            "cascade on a column top",
+            "exothermic CSTR temperature control"
+          ]
+        },
+        {
+          "n": "12",
+          "title": "MIMO Control",
+          "topics": [],
+          "notes": "No topic.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "13–14",
+          "title": "Statistics and Design of Experiments",
+          "topics": [],
+          "notes": "No topic.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "id": "mit-ocw-6-004",
+  "curriculum": "MIT OpenCourseWare 6.004 Computation Structures",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Spring 2009",
+  "subject": "computer",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Chris Terman. 6.004 Computation Structures. Spring 2009. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu/courses/6-004-computation-structures-spring-2009/. License: CC BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Lecture block"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/6-004-computation-structures-spring-2009/",
+  "retrieved": "2026-10-02",
+  "sources": [
+    "https://ocw.mit.edu/courses/6-004-computation-structures-spring-2009/pages/calendar/"
+  ],
+  "notes": "Lecture list from the calendar; quizzes 1, 2, 3, 5 read.",
+  "books": [
+    {
+      "course": "he.engineering.computer-architecture",
+      "title": "6.004 Computation Structures (Spring 2009)",
+      "url": "https://ocw.mit.edu/courses/6-004-computation-structures-spring-2009/",
+      "units": [
+        {
+          "n": "1",
+          "title": "Basics of information",
+          "topics": ["he.engineering.digital-logic#0"],
+          "examples": ["bits from clues", "variable-length codes"]
+        },
+        {
+          "n": "2–4",
+          "title": "Digital abstraction; combinational logic; CMOS; canonical forms and simplification",
+          "topics": ["he.engineering.digital-logic#1"]
+        },
+        {
+          "n": "5–7",
+          "title": "Sequential logic; storage; FSMs; metastability",
+          "topics": ["he.engineering.digital-logic#2", "he.engineering.digital-logic#3"],
+          "examples": ["mux latch timing", "lock FSM"]
+        },
+        {
+          "n": "8–9",
+          "title": "Pipelining; multipliers",
+          "topics": ["he.engineering.computer-architecture#2"]
+        },
+        {
+          "n": "10–14",
+          "title": "Beta ISA; machine language; stacks and procedures; non-pipelined datapath",
+          "topics": [
+            "he.engineering.computer-architecture#0",
+            "he.engineering.computer-architecture#1"
+          ],
+          "examples": ["trace a recursive procedure"]
+        },
+        {
+          "n": "15–17",
+          "title": "Memory hierarchy; caches; virtual memory",
+          "topics": ["he.engineering.computer-architecture#3", "he.engineering.operating-systems#2"]
+        },
+        {
+          "n": "18–",
+          "title": "Processes, interrupts, synchronization; pipelined Beta; buses",
+          "topics": [
+            "he.engineering.operating-systems#0",
+            "he.engineering.computer-architecture#2"
+          ],
+          "examples": ["semaphores for trains", "pipeline stalls and bypasses"]
+        }
+      ]
+    }
+  ]
+}

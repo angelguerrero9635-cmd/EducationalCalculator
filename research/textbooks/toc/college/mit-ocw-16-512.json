@@ -1,0 +1,68 @@
+{
+  "id": "mit-ocw-16-512",
+  "curriculum": "MIT OpenCourseWare 16.512 Rocket Propulsion",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Fall 2005",
+  "subject": "aerospace",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Manuel Martinez-Sanchez. 16.512 Rocket Propulsion. Fall 2005. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu/courses/16-512-rocket-propulsion-fall-2005/. License: CC BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Lecture block"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/16-512-rocket-propulsion-fall-2005/",
+  "retrieved": "2026-10-02",
+  "sources": [
+    "https://ocw.mit.edu/courses/16-512-rocket-propulsion-fall-2005/pages/syllabus/",
+    "https://ocw.mit.edu/courses/16-512-rocket-propulsion-fall-2005/pages/calendar/"
+  ],
+  "notes": "Graduate course; OCW publishes the calendar and readings only (no problem sets), so no question records.",
+  "books": [
+    {
+      "course": null,
+      "title": "16.512 Rocket Propulsion (Fall 2005)",
+      "url": "https://ocw.mit.edu/courses/16-512-rocket-propulsion-fall-2005/",
+      "units": [
+        {
+          "n": "1–6",
+          "title": "Nozzles and thrust; ideal and off-design nozzles; particles",
+          "url": "https://ocw.mit.edu/courses/16-512-rocket-propulsion-fall-2005/pages/calendar/",
+          "topics": ["he.engineering.propulsion#2"]
+        },
+        {
+          "n": "7–11",
+          "title": "Convective and radiative heat transfer; liquid, ablative and film cooling",
+          "topics": [],
+          "notes": "No taxonomy topic.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "12–15",
+          "title": "Equilibrium thermochemistry; non-equilibrium flows; propellant selection",
+          "topics": ["he.engineering.propulsion#3"]
+        },
+        {
+          "n": "16–24",
+          "title": "Solid and liquid propellants; injection; combustion stability; pressurization and pump cycles",
+          "topics": ["he.engineering.propulsion#3"]
+        },
+        {
+          "n": "25–30",
+          "title": "Turbomachinery and turbopumps",
+          "topics": [],
+          "notes": "No taxonomy topic.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "31–37",
+          "title": "Control; orbital mechanics and staging; LEO and GEO performance; low-thrust maneuvers",
+          "topics": ["he.engineering.propulsion#1", "he.engineering.orbital-mechanics#2"]
+        }
+      ]
+    }
+  ]
+}

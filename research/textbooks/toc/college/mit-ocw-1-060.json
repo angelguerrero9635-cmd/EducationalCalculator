@@ -1,0 +1,68 @@
+{
+  "id": "mit-ocw-1-060",
+  "curriculum": "MIT OpenCourseWare 1.060 Engineering Mechanics II",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Spring 2006",
+  "subject": "civil",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Ole Madsen, Heidi Nepf and others. 1.060 Engineering Mechanics II. Spring 2006. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu/courses/1-060-engineering-mechanics-ii-spring-2006/. License: CC BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Lecture block"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/1-060-engineering-mechanics-ii-spring-2006/",
+  "retrieved": "2026-10-02",
+  "sources": [
+    "https://ocw.mit.edu/courses/1-060-engineering-mechanics-ii-spring-2006/pages/calendar/",
+    "https://ocw.mit.edu/courses/1-060-engineering-mechanics-ii-spring-2006/pages/assignments/"
+  ],
+  "notes": "Lecture list from the calendar (first half shown on the page; open-channel lectures inferred from problem sets 7–9). Nine problem sets read; some problems are textbook problems removed by OCW for copyright and were skipped.",
+  "books": [
+    {
+      "course": "he.engineering.hydraulics-hydrology",
+      "title": "1.060 Engineering Mechanics II (Spring 2006)",
+      "url": "https://ocw.mit.edu/courses/1-060-engineering-mechanics-ii-spring-2006/",
+      "units": [
+        {
+          "n": "L1–L13",
+          "title": "Fluid concepts, hydrostatics, dams and gates, flow nets, Bernoulli, momentum",
+          "topics": [],
+          "notes": "Fluid mechanics (mechanical plan): he.engineering.fluid-mechanics#0–2.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "L14–L20",
+          "title": "Laminar and turbulent flow; pipe flow, friction factor, minor losses; pipe systems and pumps",
+          "topics": ["he.engineering.hydraulics-hydrology#1"],
+          "examples": [
+            "tank draining through an orifice and a pipe",
+            "sewer capacity before a basement floods",
+            "two reservoirs and two pipes",
+            "hydro plant penstocks",
+            "pump and system curve"
+          ],
+          "ranges": ["D 0.1–5 m; ε 0.06–2 mm; Q 0.05–0.5 m³/s"],
+          "notation": ["Darcy f from the Moody diagram; mwc (metres of water column)"]
+        },
+        {
+          "n": "L21–end",
+          "title": "Open-channel flow: Manning and Chezy, specific energy, critical flow, hydraulic jumps, gradually varied flow",
+          "topics": ["he.engineering.hydraulics-hydrology#0"],
+          "examples": [
+            "natural creek capacity",
+            "flood plains",
+            "contraction staying subcritical",
+            "spillway, normal depth and jump",
+            "profiles at a sluice gate"
+          ],
+          "ranges": ["S₀ 10⁻⁴–5 × 10⁻³; q 2–10 m²/s"],
+          "notation": ["h_n normal and h_c critical depth; profile names M1, S1 …; Chezy C in SI"]
+        }
+      ]
+    }
+  ]
+}

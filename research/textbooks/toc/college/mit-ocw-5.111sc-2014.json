@@ -1,0 +1,325 @@
+{
+  "id": "mit-ocw-5.111sc-2014",
+  "curriculum": "MIT OCW 5.111SC Principles of Chemical Science",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Fall 2014",
+  "subject": "chemistry",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Catherine Drennan. 5.111SC Principles of Chemical Science. Fall 2014. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu. License: Creative Commons BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Unit",
+    "lesson": "Lecture"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/5-111sc-principles-of-chemical-science-fall-2014/",
+  "retrieved": "2026-10-02",
+  "notes": "Reference only (CC BY-NC-SA 4.0; OCW terms https://ocw.mit.edu/pages/privacy-and-terms-of-use/). Lecture list and order from the course pages; examples, ranges and notation are our words, read from the exams and problem sets (no problem text or numbers copied). Third-party figures inside OCW PDFs are outside the licence and were not used. Exams 1–4 and the final (with equation sheets) were read for question types; see research/questions/college/chemistry.jsonl (OCW-5.111-F14-*).",
+  "books": [
+    {
+      "course": "5.111SC",
+      "url": "https://ocw.mit.edu/courses/5-111sc-principles-of-chemical-science-fall-2014/",
+      "units": [
+        {
+          "n": "I",
+          "title": "The Atom",
+          "topics": ["he.chemistry.gen-chem-1#0"],
+          "url": "https://ocw.mit.edu/courses/5-111sc-principles-of-chemical-science-fall-2014/pages/unit-i-the-atom/",
+          "examples": [
+            "photoelectric effect: work function, threshold, electrons per pulse",
+            "de Broglie wavelength of an electron",
+            "one-electron atom: wavelength of a transition, series assignment from a spectrum",
+            "Z_eff from an ionization energy",
+            "allowed quantum numbers; nodes; radial probability sketches",
+            "photon energy and energy per mole of photons"
+          ],
+          "ranges": [
+            "wavelengths 100–700 nm",
+            "energies 10⁻¹⁹–10⁻¹⁸ J",
+            "electron speeds ~10⁶ m/s",
+            "Z 1–20"
+          ],
+          "notation": [
+            "E_n = −Z²R_H/n² with R_H = 2.18 × 10⁻¹⁸ J (energy form), ν = (Z²R_H/h)(1/n_f² − 1/n_i²)",
+            "work function Φ in J",
+            "RPD = 4πr²ψ² for s orbitals; r_mp most probable radius"
+          ],
+          "lessons": [
+            {
+              "n": "1",
+              "title": "The Importance of Chemical Principles",
+              "topics": ["he.chemistry.gen-chem-1#0"]
+            },
+            {
+              "n": "2",
+              "title": "Atomic Structure",
+              "topics": ["he.chemistry.gen-chem-1#0"]
+            },
+            {
+              "n": "3",
+              "title": "Wave-Particle Duality of Light",
+              "topics": ["he.chemistry.gen-chem-1#0"]
+            },
+            {
+              "n": "4",
+              "title": "Wave-Particle Duality of Matter; Schrödinger Equation",
+              "topics": ["he.chemistry.gen-chem-1#0", "he.chemistry.physical-2#0"]
+            },
+            {
+              "n": "5",
+              "title": "Hydrogen Atom Energy Levels",
+              "topics": ["he.chemistry.gen-chem-1#0", "he.chemistry.physical-2#2"]
+            },
+            {
+              "n": "6",
+              "title": "Hydrogen Atom Wavefunctions (Orbitals)",
+              "topics": ["he.chemistry.gen-chem-1#0", "he.chemistry.physical-2#2"]
+            },
+            {
+              "n": "7",
+              "title": "Multielectron Atoms",
+              "topics": ["he.chemistry.gen-chem-1#0"]
+            }
+          ]
+        },
+        {
+          "n": "II",
+          "title": "Chemical Bonding & Structure",
+          "topics": ["he.chemistry.gen-chem-1#4"],
+          "examples": [
+            "rank ionization energies, radii, electron affinities",
+            "ionic-bond energy from IE, EA and Coulomb energy at a distance",
+            "Lewis structure with formal charges and resonance, VSEPR geometry and angle range",
+            "MO diagram of a second-row diatomic, bond order, magnetism",
+            "σ/π symmetry and hybrid orbitals of marked bonds"
+          ],
+          "ranges": ["IE 400–2000 kJ/mol", "EA 40–350 kJ/mol", "bond lengths 0.1–0.3 nm"],
+          "notation": [
+            "U(r) = z₁z₂e²/(4πε₀r)",
+            "electronegativity = (IE + EA)/2 (Mulliken) on the formula sheet",
+            "SN steric number, AXₙEₘ"
+          ],
+          "lessons": [
+            {
+              "n": "8",
+              "title": "The Periodic Table and Periodic Trends",
+              "topics": ["he.chemistry.gen-chem-1#0"]
+            },
+            {
+              "n": "9",
+              "title": "Periodic Table; Ionic and Covalent Bonds",
+              "topics": ["he.chemistry.gen-chem-1#0", "he.chemistry.gen-chem-1#4"]
+            },
+            {
+              "n": "10",
+              "title": "Lewis Structures",
+              "topics": ["he.chemistry.gen-chem-1#4"]
+            },
+            {
+              "n": "11",
+              "title": "Formal Charge and Resonance",
+              "topics": ["he.chemistry.gen-chem-1#4"]
+            },
+            {
+              "n": "12",
+              "title": "The Shapes of Molecules: VSEPR Theory",
+              "topics": ["he.chemistry.gen-chem-1#4"]
+            },
+            {
+              "n": "13",
+              "title": "Molecular Orbital Theory",
+              "topics": ["he.chemistry.gen-chem-1#4", "he.chemistry.physical-2#3"]
+            },
+            {
+              "n": "14",
+              "title": "Valence Bond Theory and Hybridization",
+              "topics": ["he.chemistry.gen-chem-1#4"]
+            }
+          ]
+        },
+        {
+          "n": "III",
+          "title": "Thermodynamics & Chemical Equilibrium",
+          "topics": [
+            "he.chemistry.gen-chem-1#3",
+            "he.chemistry.gen-chem-2#1",
+            "he.chemistry.gen-chem-2#2",
+            "he.chemistry.gen-chem-2#3"
+          ],
+          "examples": [
+            "Hess's law; stability from ΔG°f",
+            "sign of ΔH° from bond strengths or temperature behaviour",
+            "Le Châtelier for inert gas, volume, temperature",
+            "weak acid–strong base titration: pH before, at half and at equivalence",
+            "Henry's law solubility plot",
+            "buffer capacity (least moles for a pH limit)",
+            "Kₐ from pH"
+          ],
+          "ranges": ["concentrations 0.05–0.5 M", "Kₐ 10⁻⁵–10⁻⁴", "volumes 10–100 mL"],
+          "notation": [
+            "ΔG = ΔG° + RT ln Q",
+            "ln(K₂/K₁) = −(ΔH°/R)(1/T₂ − 1/T₁)",
+            "R = 8.314 J/(K·mol) and 0.08206 L·atm/(K·mol)",
+            "pH ≈ pKₐ − log([HA]/[A⁻])",
+            "5% rule for the small-x assumption",
+            "Kw = 1.00 × 10⁻¹⁴ at 25 °C"
+          ],
+          "lessons": [
+            {
+              "n": "15",
+              "title": "Thermodynamics: Bond and Reaction Enthalpies",
+              "topics": ["he.chemistry.gen-chem-1#3"]
+            },
+            {
+              "n": "16",
+              "title": "Thermodynamics: Gibbs Free Energy and Entropy",
+              "topics": ["he.chemistry.gen-chem-2#3"]
+            },
+            {
+              "n": "17",
+              "title": "Thermodynamics: Now What Happens When You Heat It Up?",
+              "topics": ["he.chemistry.gen-chem-2#3"]
+            },
+            {
+              "n": "18",
+              "title": "Introduction to Chemical Equilibrium",
+              "topics": ["he.chemistry.gen-chem-2#1"]
+            },
+            {
+              "n": "19",
+              "title": "Chemical Equilibrium: Le Chatelier's Principle",
+              "topics": ["he.chemistry.gen-chem-2#1"]
+            },
+            {
+              "n": "20",
+              "title": "Solubility and Acid-Base Equilibrium",
+              "topics": ["he.chemistry.gen-chem-2#1", "he.chemistry.gen-chem-2#2"]
+            },
+            {
+              "n": "21",
+              "title": "Acid-Base Equilibrium: Is MIT Water Safe to Drink?",
+              "topics": ["he.chemistry.gen-chem-2#2"]
+            },
+            {
+              "n": "22",
+              "title": "Acid-Base Equilibrium: Salt Solutions and Buffers",
+              "topics": ["he.chemistry.gen-chem-2#2"]
+            },
+            {
+              "n": "23",
+              "title": "Acid-Base Titrations Part I",
+              "topics": ["he.chemistry.gen-chem-2#2", "he.chemistry.analytical#1"]
+            },
+            {
+              "n": "24",
+              "title": "Acid-Base Titrations Part II",
+              "topics": ["he.chemistry.gen-chem-2#2", "he.chemistry.analytical#1"]
+            }
+          ]
+        },
+        {
+          "n": "IV",
+          "title": "Transition Metals & Oxidation-Reduction Reactions",
+          "topics": [
+            "he.chemistry.gen-chem-2#4",
+            "he.chemistry.inorganic#1",
+            "he.chemistry.inorganic#2"
+          ],
+          "examples": [
+            "balance redox in basic solution",
+            "strongest oxidizing/reducing agent from an E° table",
+            "Nernst potential of a cell",
+            "electrolysis: oxidation number from mass, current, time",
+            "d-count, octahedral/tetrahedral splitting, CFSE, Δₒ from λ absorbed"
+          ],
+          "ranges": ["E° −0.8 to +1.7 V", "currents mA–A", "λ 400–700 nm"],
+          "notation": [
+            "ΔE°cell = E°(cathode) − E°(anode)",
+            "ΔG° = −nℑΔE° (ℑ Faraday constant, 96,485 C/mol)",
+            "E = E° − (RT/nℑ) ln Q (natural log form)",
+            "CFSE in units of Δₒ (−0.4Δₒ per t₂g, +0.6Δₒ per e_g)",
+            "spectrochemical series given"
+          ],
+          "lessons": [
+            {
+              "n": "25",
+              "title": "Oxidation-Reduction and Electrochemical Cells",
+              "topics": ["he.chemistry.gen-chem-2#4"]
+            },
+            {
+              "n": "26",
+              "title": "Chemical and Biological Oxidations",
+              "topics": ["he.chemistry.gen-chem-2#4", "he.chemistry.biochemistry#3"]
+            },
+            {
+              "n": "27",
+              "title": "Introduction to Transition Metals",
+              "topics": ["he.chemistry.inorganic#1"]
+            },
+            {
+              "n": "28",
+              "title": "Transition Metals: Crystal Field Theory Part I",
+              "topics": ["he.chemistry.inorganic#2"]
+            },
+            {
+              "n": "29",
+              "title": "Transition Metals: Crystal Field Theory Part II",
+              "topics": ["he.chemistry.inorganic#2"]
+            }
+          ]
+        },
+        {
+          "n": "V",
+          "title": "Chemical Kinetics",
+          "topics": ["he.chemistry.gen-chem-2#0"],
+          "examples": [
+            "orders and k from a three-experiment initial-rate table",
+            "steady-state rate law from a two-step mechanism",
+            "K = k_f/k_r and ΔE = Eₐ,f − Eₐ,r on a reaction-coordinate diagram",
+            "Michaelis–Menten V_max and K_m"
+          ],
+          "ranges": ["initial rates 10⁻³ M/s", "Eₐ 20–50 kJ/mol", "K_m 10⁻⁵ M"],
+          "notation": ["k₁, k₋₁ for forward and reverse steps", "Arrhenius in ln form"],
+          "lessons": [
+            {
+              "n": "30",
+              "title": "Kinetics: Rate Laws",
+              "topics": ["he.chemistry.gen-chem-2#0"]
+            },
+            {
+              "n": "31",
+              "title": "Nuclear Chemistry and Chemical Kinetics",
+              "topics": ["he.chemistry.gen-chem-2#0"],
+              "notes": "Nuclear chemistry: no taxonomy topic."
+            },
+            {
+              "n": "32",
+              "title": "Kinetics: Reaction Mechanisms",
+              "topics": ["he.chemistry.gen-chem-2#0", "he.chemistry.physical-1#3"]
+            },
+            {
+              "n": "33",
+              "title": "Kinetics and Temperature",
+              "topics": ["he.chemistry.gen-chem-2#0"]
+            },
+            {
+              "n": "34",
+              "title": "Kinetics: Catalysts",
+              "topics": ["he.chemistry.gen-chem-2#0", "he.chemistry.biochemistry#1"]
+            },
+            {
+              "n": "35",
+              "title": "Applying Chemical Principles",
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+            }
+          ]
+        }
+      ],
+      "title": "5.111SC"
+    }
+  ]
+}

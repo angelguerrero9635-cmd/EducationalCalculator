@@ -1,0 +1,101 @@
+{
+  "id": "mit-ocw-1-963",
+  "curriculum": "MIT OCW 1.963 Environmental Engineering Applications of Geographic Information Systems",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Fall 2004",
+  "subject": "geography",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Daniel Sheehan. 1.963 Environmental Engineering Applications of Geographic Information Systems, Fall 2004. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu/courses/1-963-environmental-engineering-applications-of-geographic-information-systems-fall-2004/. License: Creative Commons BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Assignment",
+    "lesson": "Part"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/1-963-environmental-engineering-applications-of-geographic-information-systems-fall-2004/",
+  "retrieved": "2026-10-02",
+  "notes": "Instructor(s): Daniel Sheehan. Units are the problem sets, labs and exams read (type only; no solutions fetched). Calendar (topic order) as published: LEC # TOPICS 1 Course Introduction Introduction to GIS Data Types (In Class) Basic ArcGIS Tutorial - (Out of Class) 2 Quiz - Querying Data on a Map Spatial Data 3 Project Introductions Map Making in GIS 4 Mobile GIS - Planning for Field Work 5 Using Map Projections 6 Raster Data DEMs Spatial Analyst 7 Raster Processing Hydrologic Functions 8 Vector Processing Site Selection Exercise (Vector Analysis) 9 Raster Processing Cost Path Modeling 10 Project Work Time 11 Project Work Time (cont.) 12 Project Presentations 13 Final Exam Third-party content inside OCW files (figures credited to other publishers) was not used.",
+  "books": [
+    {
+      "grade": "college",
+      "url": "https://ocw.mit.edu/courses/1-963-environmental-engineering-applications-of-geographic-information-systems-fall-2004/",
+      "units": [
+        {
+          "n": "1",
+          "title": "lab6_1",
+          "url": "https://ocw.mit.edu/courses/1-963-environmental-engineering-applications-of-geographic-information-systems-fall-2004/resources/lab6_1/",
+          "topics": ["he.earth-science.hydrology#1", "he.geography.gis#2"],
+          "examples": ["flow direction, flow accumulation and watershed from a DEM"],
+          "lessons": [],
+          "notes": "1 question record(s): OCW-1.963-LAB6"
+        },
+        {
+          "n": "2",
+          "title": "lab1_1",
+          "url": "https://ocw.mit.edu/courses/1-963-environmental-engineering-applications-of-geographic-information-systems-fall-2004/resources/lab1_1/",
+          "topics": ["he.geography.gis#2", "he.geography.remote-sensing#2"],
+          "examples": [
+            "contours from a DEM at a set interval; find wetlands from imagery, DEM and contours"
+          ],
+          "lessons": [],
+          "notes": "1 question record(s): OCW-1.963-LAB1"
+        },
+        {
+          "n": "3",
+          "title": "lab3_1",
+          "url": "https://ocw.mit.edu/courses/1-963-environmental-engineering-applications-of-geographic-information-systems-fall-2004/resources/lab3_1/",
+          "topics": ["he.geography.cartography#3"],
+          "examples": ["assemble a finished map: scale bar, legend, north arrow, title, neatline"],
+          "lessons": [],
+          "notes": "1 question record(s): OCW-1.963-LAB3"
+        },
+        {
+          "n": "4",
+          "title": "lab4_1",
+          "url": "https://ocw.mit.edu/courses/1-963-environmental-engineering-applications-of-geographic-information-systems-fall-2004/resources/lab4_1/",
+          "topics": ["he.geography.cartography#0"],
+          "examples": [
+            "re-project data from geographic coordinates to an equal-area projection; define a missing projection"
+          ],
+          "lessons": [],
+          "notes": "1 question record(s): OCW-1.963-LAB4"
+        },
+        {
+          "n": "5",
+          "title": "lab5_1",
+          "url": "https://ocw.mit.edu/courses/1-963-environmental-engineering-applications-of-geographic-information-systems-fall-2004/resources/lab5_1/",
+          "topics": ["he.geography.gis#2"],
+          "examples": ["DEM surface analysis: contours, hillshade, slope"],
+          "lessons": [],
+          "notes": "1 question record(s): OCW-1.963-LAB5"
+        },
+        {
+          "n": "6",
+          "title": "lab7_1",
+          "url": "https://ocw.mit.edu/courses/1-963-environmental-engineering-applications-of-geographic-information-systems-fall-2004/resources/lab7_1/",
+          "topics": ["he.geography.gis#2"],
+          "examples": [
+            "site selection by buffering rail lines and selecting zoning and land-use classes (vector overlay)"
+          ],
+          "lessons": [],
+          "notes": "1 question record(s): OCW-1.963-LAB7"
+        },
+        {
+          "n": "7",
+          "title": "lab8_1",
+          "url": "https://ocw.mit.edu/courses/1-963-environmental-engineering-applications-of-geographic-information-systems-fall-2004/resources/lab8_1/",
+          "topics": ["he.geography.gis#2"],
+          "examples": [
+            "least-cost path across a cost-distance raster built from slope and land cover"
+          ],
+          "lessons": [],
+          "notes": "1 question record(s): OCW-1.963-LAB8"
+        }
+      ],
+      "title": "MIT OCW 1.963 Environmental Engineering Applications of Geographic Information Systems"
+    }
+  ]
+}

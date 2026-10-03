@@ -9,135 +9,639 @@ Kinds built ahead of the sections that need them (see them at `/gallery`, one pa
 with a demo module each in `src/data/modules/gallery.ts`; the gallery is not in the taxonomy,
 search or the sitemap, but the module tests and the harness run over it):
 
-| Kind               | Shows                                                                 | For                                 |
-| ------------------ | --------------------------------------------------------------------- | ----------------------------------- |
-| `doubleNumberLine` | two lined-up number lines, a mark joining a reading on each           | conversions, ratios, rates, percent |
-| `coordinatePlane`  | a point to drag; a second point with the line and a rise/run triangle | Grade 5 points, Grade 6–8 slope     |
-| `boxPlot`          | the five-number summary on a number line, each mark draggable         | Grade 6 statistics                  |
-| `pieChart`         | wedges by percent (or counts of a total)                              | percent, data in science            |
-| `fractionArea`     | a square cut in columns and rows, the overlap of two fractions        | Grade 5 fraction × fraction         |
-| `unitCubes`        | a box of unit cubes drawn in layers                                   | Grade 5 volume                      |
-| `placeValueChart`  | digits in labelled columns, the point between ones and tenths         | Grade 5 decimals and powers of ten  |
-| `factorTree`       | a number split down to circled primes                                 | Grade 4 primes, Grade 6 GCF and LCM |
-| `protractor`       | both scales, an arm to drag                                           | Grade 4 measuring angles            |
-| `wave`             | crests and troughs with wavelength (and amplitude) marked             | Grade 4 and 8 waves, physics        |
-| `punnettSquare`    | two parents' alleles and the four offspring boxes                     | Grade 7 heredity, biology           |
-| `factorPairs`      | each rectangle of its unit squares, pair outlined; thin bars past 100 | Grade 4 factors, primes, composites |
-| `shareWholes`      | wholes cut into as many parts as people, one share shaded in each     | Grade 5 fractions as division       |
-| `integerLine`      | a line through 0: a point, its opposite, its distance from 0, a jump  | Grade 6 negatives, temperature      |
-| `percentBar`       | 0%–100% over 0–whole, the part shaded, 1% marked                      | Grade 6 percent                     |
-| `ratioTable`       | equivalent ratios in rows, the current row outlined, its graph        | Grade 6 ratios                      |
-| `fractionFit`      | groups of the divisor laid along the dividend, or one group filled    | Grade 6 dividing fractions          |
-| `venn`             | two circles of factors, the shared ones in the overlap, GCF circled   | Grade 6 GCF                         |
-| `baseHeight`       | a parallelogram, triangle, trapezoid or house; lean it by the top     | Grade 6 area                        |
-| `net`              | a box, cube or square pyramid unfolded, faces labelled; Fold          | Grade 6 surface area                |
-| `dotPlot`          | a dot per value; the mean as a balance point, the median, deviations  | Grade 6 statistics                  |
-| `fieldOfView`      | the microscope circle with cells end to end across it                 | Grade 6 cells                       |
-| `gradCylinder`     | mL marks, the level before and after, the rise as the object's volume | Grade 6 density                     |
-| `grassSlope`       | soil trays on a slope, one grassed; the soil washed off in jars       | Grade 2 and 4 erosion               |
-| `flashlights`      | a flashlight near and k times as far; k × k squares lit, one shaded   | Grade 5 star brightness             |
-| `leafCount`        | a plant in the sun and one in the shade, green leaves counted         | Grade 2 plant needs                 |
-| `zeroPairs`        | yellow + and red − counters; a + with a − circled as a zero pair      | Grade 7 adding, subtracting signs   |
-| `signTable`        | the answer’s sign for each pair of signs, the numbers’ cell outlined  | Grade 7 multiplying, dividing signs |
-| `hanger`           | a beam on a hook, x-blocks and unit weights on two trays; solve steps | Grade 7–8 equations                 |
-| `scaleCopy`        | a figure and its scaled copy on one grid, the factor on an arrow      | Grade 7 scale drawings              |
-| `curvedSolid`      | a glass cylinder, cone or sphere of water, its radius and height      | Grade 8 volume of curved solids     |
-| `scatter`          | data points, a line of fit dragged by its ends, clusters, an outlier  | Grade 8 scatter plots               |
-| `crossSection`     | a clear box, triangular prism or pyramid cut by a plane; drag it      | Grade 7 cross-sections, volume      |
-| `sample`           | a population of dots, a random sample ringed; draw a new sample       | Grade 7 sampling, inferences        |
-| `spinner`          | a spinner in equal colored sectors, the event outlined; Spin          | Grade 7 probability                 |
-| `diceGrid`         | two dice's 36 pairs in a 6 × 6 grid, the event's cells shaded; tap    | Grade 7 compound probability        |
-| `treeDiagram`      | 2 or 3 stages branching left to right, each branch 1/n; a path lit    | Grade 7 compound probability        |
-| `marbles`          | a clear bag of colored glass marbles, mixed; draw one at random       | Grade 7 probability                 |
-| `rootSquare`       | a square of area A on a grid, side √A dropped onto a number line      | Grade 8 square roots, irrationals   |
-| `factorRows`       | powers as rows of factors: joined, cancelled in pairs, or stacked     | Grade 8 exponent rules              |
-| `powerScale`       | a number on a 10ⁿ ruler, its decade opened up 1–10; `second` compares | Grade 8 scientific notation         |
-| `equationBalance`  | x-blocks and counters on both pans, negatives as balloons; tips at x  | Grade 8 equations, both sides       |
-| `linearFunction`   | y = mx + b: the intercept marked, a slope triangle; all three drag    | Grade 8 linear functions            |
-| `lineSystem`       | two lines on one grid, their crossing marked (none when parallel)     | Grade 8 systems                     |
-| `functionMachine`  | an input card through a rule's steps to the output; a tappable table  | Grade 8 functions                   |
-| `mapping`          | pairs as arrows between two ovals; the graph with a vertical line     | Grade 8 functions (is it one?)      |
-| `transformation`   | a figure and its image: slide arrow, mirror line, turn or rays        | Grade 8 transformations             |
-| `energyPyramid`    | a tier per feeding level, to scale, 10% passed up each step; drag     | Grade 7 energy in ecosystems        |
-| `generations`      | a stacked bar per generation (green and brown beetles), the share     | Grade 7 natural selection           |
-| `molecules`        | ball-and-stick molecules in CPK colors, the atoms of each counted     | Grade 7 atoms and molecules         |
-| `reaction`         | molecules before and after the arrow; each element's atoms counted    | Grade 7 reactions, balancing        |
-| `heatingCurve`     | temperature against time, flat while melting and boiling; particles   | Grade 7 phase changes               |
-| `periodicTable`    | the table as a grid: an element (its card), a group or a period lit   | Grade 8 periodic table              |
-| `motionGraph`      | distance or speed against time; slope = rise ÷ run; a dot a second    | Grade 8 motion                      |
-| `skaters`          | two skaters palm to palm: equal, opposite pushes; each a = F ÷ m      | Grade 8 Newton's laws               |
-| `energyTrack`      | a coaster car or pendulum bob; PE, KE and total bars trade as it goes | Grade 8 kinetic, potential energy   |
-| `spectrum`         | radio to gamma on a 10ⁿ band, the wave above, visible light opened up | Grade 8 electromagnetic spectrum    |
-| `circuit`          | bulbs glowing by power, a switch, an ammeter; series or parallel      | Grade 8 circuits                    |
-| `electromagnet`    | a coil on a nail, field lines by turns × current, clips at its point  | Grade 8 electromagnets              |
-| `orbit`            | the sun, a planet on its orbit, its pull as an arrow; a moon; drag it | Grade 8 gravity and orbits          |
-| `functionGraph`    | y = f(x) for any family: zeros, vertex, asymptotes, holes; drag it    | Grades 9–12 functions, calculus     |
-| `triangleSolver`   | a triangle to scale from 3 parts; congruent, similar, SSA pairs; trig | Geometry triangles and trig         |
-| `markedFigure`     | points and marks: transversal angles, triangle centers, quads, proofs | Geometry lines, proofs, quads       |
-| `circleTheorems`   | inscribed, central angles; tangent ⟂ radius; chord, secant products   | Geometry circle theorems            |
-| `normalCurve`      | normal or chi-square curve, x and z axes, areas to 4 decimals, tests  | Grades 11–12 statistics (H02)       |
-| `histogram`        | bins of data or counts, mean, median, shape; probability bars, E(X)   | Grades 9–12 statistics (H03)        |
-| `pascalTriangle`   | Pascal's triangle to row 12, C(n, k) lit; counting slots, ÷ r!        | Grades 10–11 counting (H13)         |
-| `termsChart`       | a sequence's terms as bars or points, partial sums stepped, S dashed  | Grades 9 and 11 sequences (H15)     |
-| `unitCircle`       | the angle θ, its point (cos θ, sin θ), reference triangle; sine graph | Grades 10–12 trigonometry           |
-| `algebraTiles`     | x², x and unit tiles ±: collect, multiply, factor, complete a square  | Grade 9 polynomials, factoring      |
-| `vectorDiagram`    | arrows by components or size and direction; sums, kv, angle, dot sign | Grade 12 vectors, physics forces    |
-| `complexPlane`     | a + bi as a point and arrow: conjugate, sum, product, modulus, arg    | Grade 11 complex numbers, polar     |
-| `polarGrid`        | (r, θ) on rings and rays; rose, cardioid, spiral; parametric paths    | Grade 12 polar, parametric          |
-| `conicGraph`       | circle, parabola, ellipse, hyperbola: foci, directrix, asymptotes     | Grades 10–12 conics                 |
-| `matrixGrid`       | matrices in brackets: a row times a column lit; row operations        | Grade 12 matrices, systems          |
-| `membrane`         | a bilayer, particles counted on each side; channel, aquaporin or pump | Grade 9 membrane transport (H32)    |
-| `dnaStrand`        | DNA ladder, mRNA codons, amino acids; a mutation lit; Chargaff        | Grade 9 DNA, mutations (H36)        |
-| `macromolecules`   | monomers into a chain by a value, "…" past 4; bonds and water counted | Grade 9 biomolecules (H100)         |
-| `cellDivision`     | body cell 2n, gamete n, egg + sperm = zygote; one pair past 2n = 8    | Grade 9 chromosome counts (H100)    |
-| `neuron`           | a neuron timing its impulse: m and ms scales; myelin at 3 m/s         | Grade 9 impulse speed (H109)        |
-| `gel`              | a gel: ladder and lanes, bands by log size; PCR copies per cycle      | Biology biotechnology (H37)         |
-| `immuneResponse`   | antibody level by day: a slow low first response, a fast high second  | Biology immune system (H42)         |
-| `unitChain`        | factors with cancelled units struck; a ruler read; accuracy target    | Chemistry measurement (H43)         |
-| `atomModel`        | Bohr model: every proton and neutron, electrons on shells; ions       | Chemistry atoms, isotopes (H44)     |
-| `orbitalDiagram`   | orbital boxes by Aufbau and Hund; hydrogen levels and emission lines  | Chemistry electrons, spectra (H45)  |
-| `lewisStructure`   | electron dots: molecules, ions, ionic transfer, metals, hydrocarbons  | Chemistry bonding, organic (H47)    |
-| `vsepr`            | ball-and-stick VSEPR shapes, bond angle, dipoles; hydrogen bonds      | Chemistry molecular shape (H48)     |
-| `moleMap`          | grams, moles, particles, liters at STP; each factor; a mole ratio     | Chemistry mole, stoichiometry (H50) |
-| `gasPiston`        | gas under a piston: particles by n, trails ∝ √T, a gauge and scale    | Grade 10 gas laws (H51)             |
-| `energyProfile`    | reaction energy: levels, Eₐ hump, ΔH, catalyst dashed; calorimeter    | Grade 10 thermochemistry (H53)      |
-| `equilibriumChart` | concentrations leveling off where Q = K; a stress and the shift       | Grade 10 equilibrium (H54)          |
-| `phScale`          | pH 0–14 in indicator colors, [H⁺] as 10ⁿ; a titration curve           | Grade 10 acids and bases (H55)      |
-| `decayChart`       | 100 atoms decaying, the half-life curve; nuclear equations balanced   | Grades 10, 12 nuclear, dating (H57) |
-| `chemDiagram`      | effusion trails ∝ 1/√M; 100 isotope atoms, a beam; ox. numbers; Δm    | Grade 10 gases, atoms, redox (H101) |
-| `earthLayers`      | Earth cut open: P, S paths, shadow zones; seismogram; epicenter       | Earth science interior (H72)        |
-| `oceanProfile`     | the seafloor, shelf to trench, with a sonar ship; spring, neap tides  | Earth science ocean (H75)           |
-| `atmosphereLayers` | temperature by altitude through four layers; a pressure map, winds    | Earth science atmosphere (H76)      |
-| `hrDiagram`        | temperature against luminosity, log scales; regions, a star plotted   | Earth science stars (H79)           |
-| `streamChannel`    | a channel to scale, w × d, and the water passing in 1 s: Q = A × v    | Earth science streams (H103)        |
-| `reserve`          | a reserve as a bar cut into each year's use; empty after Q ÷ r years  | Earth science resources (H103)      |
-| `geologicClock`    | Earth's history as one day: the event at t, the time since shaded     | Earth science history (H110)        |
-| `coralSection`     | a fossil coral's daily lines across yearly bands; D beside 24 hours   | Earth science history (H110)        |
-| `transit`          | a planet crossing its star to scale; the light curve dipping by δ     | Earth and space exoplanets (H110)   |
-| `habitableZone`    | a star's zone 0.95√L to 1.37√L AU, green; the planet at a with T      | Earth and space exoplanets (H110)   |
-| `parallax`         | Earth in January and July, a near star shifting on far stars; p, d    | Earth and space stars (H110)        |
-| `projectile`       | a launch to scale: path, vₓ and v_y at three points, H and R; drag θ  | Physics 2D motion, parametric (H59) |
-| `freeBody`         | a block on a floor, ramp or rope; forces to scale, W sin θ; the net   | Physics forces, inclines (H60)      |
-| `circularMotion`   | v tangent, v²/r to the center; Gm₁m₂/r² pulls; Kepler ellipse, areas  | Physics circles, gravity (H61)      |
-| `collision`        | carts before and after: p = mv arrows, the total tip to tail; bounce  | Physics momentum (H62)              |
-| `impulse`          | p₀, p and Δp arrows; F–t rectangle of area Δp; a slower stop dashed   | Physics momentum (H102)             |
-| `powerLift`        | a crate hauled up h in t: stopwatch, W = mgh cut into J/s pieces      | Physics power (H102)                |
-| `photoelectric`    | light of λ on a metal: E = 1240/λ, electrons with E − φ, λ₀ strip     | Physics modern (H102)               |
-| `lightClock`       | light clock at rest and moving: the slant cΔt/2, γ; a rod L₀/γ        | Physics relativity (H102)           |
-| `torque`           | a wrench or door: arm r, F at θ, F⊥ = F sin θ dashed, τ = rF⊥         | Physics rotation (H107)             |
-| `rotor`            | hoop, disk, ball: I = cmr², τ = Iα; ω₀, ω; ω–t area; turn dials       | Physics rotation (H107)             |
-| `oscillator`       | spring and block by its x–t trace, ±A, v_max, ½kx² + ½mv²; hung       | Physics oscillations (H107)         |
-| `pendulum`         | a bob on L to a meter rule's scale, g named; T on a seconds strip     | Physics oscillations (H107)         |
-| `capacitor`        | plates ±Q on a battery, even field, κ slab; the Q–V line, ½CV²        | Physics potential (H107)            |
-| `simpleMachine`    | lever, block and tackle or ramp to scale; load, effort and the MA     | Physics simple machines (H63)       |
-| `heatEngine`       | hot and cold reservoirs, Q_H = W + Q_L as bands; efficiency, Carnot   | Physics thermodynamics (H64)        |
-| `rayDiagram`       | lens, mirror: principal rays, image; Snell, total reflection; slits   | Physics optics, telescopes (H66)    |
-| `charges`          | point charges, traced field lines; kq₁q₂/r² forces; E at a point      | Physics electrostatics (H67)        |
-| `induction`        | magnet into a coil, galvanometer; BIL on a wire; transformer turns    | Physics electromagnetism (H69)      |
-| `none`             | no picture: the page opens on its values and equation, no labels      | Equation-only pages (H105)          |
+| Kind               | Shows                                                                  | For                                 |
+| ------------------ | ---------------------------------------------------------------------- | ----------------------------------- |
+| `doubleNumberLine` | two lined-up number lines, a mark joining a reading on each            | conversions, ratios, rates, percent |
+| `coordinatePlane`  | a point to drag; a second point with the line and a rise/run triangle  | Grade 5 points, Grade 6–8 slope     |
+| `boxPlot`          | the five-number summary on a number line, each mark draggable          | Grade 6 statistics                  |
+| `pieChart`         | wedges by percent (or counts of a total)                               | percent, data in science            |
+| `fractionArea`     | a square cut in columns and rows, the overlap of two fractions         | Grade 5 fraction × fraction         |
+| `unitCubes`        | a box of unit cubes drawn in layers                                    | Grade 5 volume                      |
+| `placeValueChart`  | digits in labelled columns, the point between ones and tenths          | Grade 5 decimals and powers of ten  |
+| `factorTree`       | a number split down to circled primes                                  | Grade 4 primes, Grade 6 GCF and LCM |
+| `protractor`       | both scales, an arm to drag                                            | Grade 4 measuring angles            |
+| `wave`             | crests and troughs with wavelength (and amplitude) marked              | Grade 4 and 8 waves, physics        |
+| `punnettSquare`    | two parents' alleles and the four offspring boxes                      | Grade 7 heredity, biology           |
+| `factorPairs`      | each rectangle of its unit squares, pair outlined; thin bars past 100  | Grade 4 factors, primes, composites |
+| `shareWholes`      | wholes cut into as many parts as people, one share shaded in each      | Grade 5 fractions as division       |
+| `integerLine`      | a line through 0: a point, its opposite, its distance from 0, a jump   | Grade 6 negatives, temperature      |
+| `percentBar`       | 0%–100% over 0–whole, the part shaded, 1% marked                       | Grade 6 percent                     |
+| `ratioTable`       | equivalent ratios in rows, the current row outlined, its graph         | Grade 6 ratios                      |
+| `fractionFit`      | groups of the divisor laid along the dividend, or one group filled     | Grade 6 dividing fractions          |
+| `venn`             | two circles of factors, the shared ones in the overlap, GCF circled    | Grade 6 GCF                         |
+| `baseHeight`       | a parallelogram, triangle, trapezoid or house; lean it by the top      | Grade 6 area                        |
+| `net`              | a box, cube or square pyramid unfolded, faces labelled; Fold           | Grade 6 surface area                |
+| `dotPlot`          | a dot per value; the mean as a balance point, the median, deviations   | Grade 6 statistics                  |
+| `fieldOfView`      | the microscope circle with cells end to end across it                  | Grade 6 cells                       |
+| `gradCylinder`     | mL marks, the level before and after, the rise as the object's volume  | Grade 6 density                     |
+| `grassSlope`       | soil trays on a slope, one grassed; the soil washed off in jars        | Grade 2 and 4 erosion               |
+| `flashlights`      | a flashlight near and k times as far; k × k squares lit, one shaded    | Grade 5 star brightness             |
+| `leafCount`        | a plant in the sun and one in the shade, green leaves counted          | Grade 2 plant needs                 |
+| `zeroPairs`        | yellow + and red − counters; a + with a − circled as a zero pair       | Grade 7 adding, subtracting signs   |
+| `signTable`        | the answer’s sign for each pair of signs, the numbers’ cell outlined   | Grade 7 multiplying, dividing signs |
+| `hanger`           | a beam on a hook, x-blocks and unit weights on two trays; solve steps  | Grade 7–8 equations                 |
+| `scaleCopy`        | a figure and its scaled copy on one grid, the factor on an arrow       | Grade 7 scale drawings              |
+| `curvedSolid`      | a glass cylinder, cone or sphere of water, its radius and height       | Grade 8 volume of curved solids     |
+| `scatter`          | data points, a line of fit dragged by its ends, clusters, an outlier   | Grade 8 scatter plots               |
+| `crossSection`     | a clear box, triangular prism or pyramid cut by a plane; drag it       | Grade 7 cross-sections, volume      |
+| `sample`           | a population of dots, a random sample ringed; draw a new sample        | Grade 7 sampling, inferences        |
+| `spinner`          | a spinner in equal colored sectors, the event outlined; Spin           | Grade 7 probability                 |
+| `diceGrid`         | two dice's 36 pairs in a 6 × 6 grid, the event's cells shaded; tap     | Grade 7 compound probability        |
+| `treeDiagram`      | 2 or 3 stages branching left to right, each branch 1/n; a path lit     | Grade 7 compound probability        |
+| `marbles`          | a clear bag of colored glass marbles, mixed; draw one at random        | Grade 7 probability                 |
+| `rootSquare`       | a square of area A on a grid, side √A dropped onto a number line       | Grade 8 square roots, irrationals   |
+| `factorRows`       | powers as rows of factors: joined, cancelled in pairs, or stacked      | Grade 8 exponent rules              |
+| `powerScale`       | a number on a 10ⁿ ruler, its decade opened up 1–10; `second` compares  | Grade 8 scientific notation         |
+| `equationBalance`  | x-blocks and counters on both pans, negatives as balloons; tips at x   | Grade 8 equations, both sides       |
+| `linearFunction`   | y = mx + b: the intercept marked, a slope triangle; all three drag     | Grade 8 linear functions            |
+| `lineSystem`       | two lines on one grid, their crossing marked (none when parallel)      | Grade 8 systems                     |
+| `functionMachine`  | an input card through a rule's steps to the output; a tappable table   | Grade 8 functions                   |
+| `mapping`          | pairs as arrows between two ovals; the graph with a vertical line      | Grade 8 functions (is it one?)      |
+| `transformation`   | a figure and its image: slide arrow, mirror line, turn or rays         | Grade 8 transformations             |
+| `energyPyramid`    | a tier per feeding level, to scale, 10% passed up each step; drag      | Grade 7 energy in ecosystems        |
+| `generations`      | a stacked bar per generation (green and brown beetles), the share      | Grade 7 natural selection           |
+| `molecules`        | ball-and-stick molecules in CPK colors, the atoms of each counted      | Grade 7 atoms and molecules         |
+| `reaction`         | molecules before and after the arrow; each element's atoms counted     | Grade 7 reactions, balancing        |
+| `heatingCurve`     | temperature against time, flat while melting and boiling; particles    | Grade 7 phase changes               |
+| `periodicTable`    | the table as a grid: an element (its card), a group or a period lit    | Grade 8 periodic table              |
+| `motionGraph`      | distance or speed against time; slope = rise ÷ run; a dot a second     | Grade 8 motion                      |
+| `skaters`          | two skaters palm to palm: equal, opposite pushes; each a = F ÷ m       | Grade 8 Newton's laws               |
+| `energyTrack`      | a coaster car or pendulum bob; PE, KE and total bars trade as it goes  | Grade 8 kinetic, potential energy   |
+| `spectrum`         | radio to gamma on a 10ⁿ band, the wave above, visible light opened up  | Grade 8 electromagnetic spectrum    |
+| `circuit`          | bulbs glowing by power, a switch, an ammeter; series or parallel       | Grade 8 circuits                    |
+| `electromagnet`    | a coil on a nail, field lines by turns × current, clips at its point   | Grade 8 electromagnets              |
+| `orbit`            | the sun, a planet on its orbit, its pull as an arrow; a moon; drag it  | Grade 8 gravity and orbits          |
+| `functionGraph`    | y = f(x) for any family: zeros, vertex, asymptotes, holes; drag it     | Grades 9–12 functions, calculus     |
+| `triangleSolver`   | a triangle to scale from 3 parts; congruent, similar, SSA pairs; trig  | Geometry triangles and trig         |
+| `markedFigure`     | points and marks: transversal angles, triangle centers, quads, proofs  | Geometry lines, proofs, quads       |
+| `circleTheorems`   | inscribed, central angles; tangent ⟂ radius; chord, secant products    | Geometry circle theorems            |
+| `normalCurve`      | normal or chi-square curve, x and z axes, areas to 4 decimals, tests   | Grades 11–12 statistics (H02)       |
+| `histogram`        | bins of data or counts, mean, median, shape; probability bars, E(X)    | Grades 9–12 statistics (H03)        |
+| `pascalTriangle`   | Pascal's triangle to row 12, C(n, k) lit; counting slots, ÷ r!         | Grades 10–11 counting (H13)         |
+| `termsChart`       | a sequence's terms as bars or points, partial sums stepped, S dashed   | Grades 9 and 11 sequences (H15)     |
+| `unitCircle`       | the angle θ, its point (cos θ, sin θ), reference triangle; sine graph  | Grades 10–12 trigonometry           |
+| `algebraTiles`     | x², x and unit tiles ±: collect, multiply, factor, complete a square   | Grade 9 polynomials, factoring      |
+| `vectorDiagram`    | arrows by components or size and direction; sums, kv, angle, dot sign  | Grade 12 vectors, physics forces    |
+| `complexPlane`     | a + bi as a point and arrow: conjugate, sum, product, modulus, arg     | Grade 11 complex numbers, polar     |
+| `polarGrid`        | (r, θ) on rings and rays; rose, cardioid, spiral; parametric paths     | Grade 12 polar, parametric          |
+| `conicGraph`       | circle, parabola, ellipse, hyperbola: foci, directrix, asymptotes      | Grades 10–12 conics                 |
+| `matrixGrid`       | matrices in brackets: a row times a column lit; row operations         | Grade 12 matrices, systems          |
+| `membrane`         | a bilayer, particles counted on each side; channel, aquaporin or pump  | Grade 9 membrane transport (H32)    |
+| `dnaStrand`        | DNA ladder, mRNA codons, amino acids; a mutation lit; Chargaff         | Grade 9 DNA, mutations (H36)        |
+| `macromolecules`   | monomers into a chain by a value, "…" past 4; bonds and water counted  | Grade 9 biomolecules (H100)         |
+| `cellDivision`     | body cell 2n, gamete n, egg + sperm = zygote; one pair past 2n = 8     | Grade 9 chromosome counts (H100)    |
+| `neuron`           | a neuron timing its impulse: m and ms scales; myelin at 3 m/s          | Grade 9 impulse speed (H109)        |
+| `skeletal`         | line-angle structure: wedges, CIP ranks, R/S, IHD marks; the chair     | College organic chemistry (HC2)     |
+| `truss`            | truss to scale: forces with T or C, a section cut, m + r − 2j, a bar   | College statics, structures (HC27)  |
+| `soilProfile`      | soil to scale: σ, u, σ′ with depth; settlement; footing; pavement      | College soils, foundations (HC26)   |
+| `survey`           | traverse lat, dep, gap; polygon angles; leveling; curvature; h, N, H   | College surveying (HC32)            |
+| `gel`              | a gel: ladder and lanes, bands by log size; PCR copies per cycle       | Biology biotechnology (H37)         |
+| `immuneResponse`   | antibody level by day: a slow low first response, a fast high second   | Biology immune system (H42)         |
+| `unitChain`        | factors with cancelled units struck; a ruler read; accuracy target     | Chemistry measurement (H43)         |
+| `atomModel`        | Bohr model: every proton and neutron, electrons on shells; ions        | Chemistry atoms, isotopes (H44)     |
+| `orbitalDiagram`   | orbital boxes by Aufbau and Hund; hydrogen levels and emission lines   | Chemistry electrons, spectra (H45)  |
+| `lewisStructure`   | electron dots: molecules, ions, ionic transfer, metals, hydrocarbons   | Chemistry bonding, organic (H47)    |
+| `vsepr`            | ball-and-stick VSEPR shapes, bond angle, dipoles; hydrogen bonds       | Chemistry molecular shape (H48)     |
+| `moleMap`          | grams, moles, particles, liters at STP; each factor; a mole ratio      | Chemistry mole, stoichiometry (H50) |
+| `gasPiston`        | gas under a piston: particles by n, trails ∝ √T, a gauge and scale     | Grade 10 gas laws (H51)             |
+| `energyProfile`    | reaction energy: levels, Eₐ hump, ΔH, catalyst dashed; calorimeter     | Grade 10 thermochemistry (H53)      |
+| `equilibriumChart` | concentrations leveling off where Q = K; a stress and the shift        | Grade 10 equilibrium (H54)          |
+| `phScale`          | pH 0–14 in indicator colors, [H⁺] as 10ⁿ; a titration curve            | Grade 10 acids and bases (H55)      |
+| `decayChart`       | 100 atoms decaying, the half-life curve; nuclear equations balanced    | Grades 10, 12 nuclear, dating (H57) |
+| `chemDiagram`      | effusion trails ∝ 1/√M; 100 isotope atoms, a beam; ox. numbers; Δm     | Grade 10 gases, atoms, redox (H101) |
+| `phaseEnvelope`    | binary Pxy, Txy, x–y: bubble/dew, tie line; McCabe–Thiele stairs       | College VLE, distillation (HC8)     |
+| `earthLayers`      | Earth cut open: P, S paths, shadow zones; seismogram; epicenter        | Earth science interior (H72)        |
+| `oceanProfile`     | the seafloor, shelf to trench, with a sonar ship; spring, neap tides   | Earth science ocean (H75)           |
+| `atmosphereLayers` | temperature by altitude through four layers; a pressure map, winds     | Earth science atmosphere (H76)      |
+| `hrDiagram`        | temperature against luminosity, log scales; regions, a star plotted    | Earth science stars (H79)           |
+| `streamChannel`    | a channel to scale, w × d, and the water passing in 1 s: Q = A × v     | Earth science streams (H103)        |
+| `reserve`          | a reserve as a bar cut into each year's use; empty after Q ÷ r years   | Earth science resources (H103)      |
+| `geologicClock`    | Earth's history as one day: the event at t, the time since shaded      | Earth science history (H110)        |
+| `coralSection`     | a fossil coral's daily lines across yearly bands; D beside 24 hours    | Earth science history (H110)        |
+| `transit`          | a planet crossing its star to scale; the light curve dipping by δ      | Earth and space exoplanets (H110)   |
+| `habitableZone`    | a star's zone 0.95√L to 1.37√L AU, green; the planet at a with T       | Earth and space exoplanets (H110)   |
+| `parallax`         | Earth in January and July, a near star shifting on far stars; p, d     | Earth and space stars (H110)        |
+| `controlVolume`    | a unit or steel device in a control volume; streams, Q̇, Ẇ, in = out    | College balances, devices (HC5)     |
+| `velocityProfile`  | tube, vessel, plates or film: v arrows, v_max = 2v_avg, τ_w; c lines   | College transport, blood (HC13)     |
+| `bode`             | gain (dB) over phase on log frequency; asymptotes, corners, PM, GM     | College filters, control (HC22)     |
+| `potentialWell`    | box, oscillator, step, barrier, bump: levels to scale, ψ, nodes, λ     | College quantum, chemistry (HC15)   |
+| `unitCell`         | cubic cell: atoms counted to Z, touching line; (hkl) and d; Bragg      | College solids, minerals (HC16)     |
+| `phaseSpace`       | oscillator ellipse, flow (ẋ, ṗ), area; pendulum θ–ω; bead on a hoop    | College classical mech. (HC69)      |
+| `instrumentTrace`  | NMR n + 1 multiplets, integrals; chromatogram R; rotor lines 2B apart  | College spectroscopy (HC55)         |
+| `binaryPhase`      | lens, eutectic, steel corner: C₀, tie line, lever arms, fraction bars  | College phase diagrams (HC82)       |
+| `machining`        | turning, milling: D, N, v = πDN, f, d; the ideal finish's cusps, R_a   | College machining (HC83)            |
+| `linkage`          | ladder or rolling wheel: IC, v ⟂ rays ∝ r, ω; a loop's n, j₁, j₂, M    | College dynamics, linkages (HC84)   |
+| `globe`            | sun rays, noon angle, day dial; great circle; Euler pole; dipole; air  | College earth and geography (HC36)  |
+| `refraction`       | layers, shot and geophones, rays at i_c; t–x lines, x_c; hyperbola     | College geophysics (HC76)           |
+| `projection`       | a cylinder map by formula: graticule, Tissot k_E and k_N, y of φ lit   | College cartography (HC78)          |
+| `aquifer`          | wells, water table, Δh over L, flow; piezometer z + ψ; Thiem cone      | College hydrology (HC75)            |
+| `stressStrain`     | σ–ε curve: E, 0.2% offset, UTS, necking; specimen; tube; two members   | College materials, biomech. (HC28)  |
+| `stressElement`    | element, turned to θ_p; Mohr's circle; 3 circles; loci, n; soil line   | College stress, soil (HC33)         |
+| `wing`             | NACA section tilted by α, lift ⟂ wind; C_p, Γ; planform, tip vortices  | College aerodynamics (HC24)         |
+| `duct`             | nozzle to scale by A ÷ A∗: throat M = 1, stations, shock, p, M; a jet  | College compressible flow (HC30)    |
+| `supersonicFlow`   | normal shock and ratio bars, pitot; wedge θ, β; fan; plate; Mach cone  | College shocks, supersonic (HC31)   |
+| `fieldPlot`        | slope field + Euler; F with a path's work; x′ = Ax phases; isoclines   | College ODEs, line integrals (HC21) |
+| `surfacePlot`      | z = f(x, y): traces, slopes, tangent plane, extrema, prisms; contours  | College partials, ∬ (HC46)          |
+| solidOfRevolution  | a region turned about x or y; one disk, washer or shell; V checked     | College volumes (HC65)              |
+| `propertyDiagram`  | T–v, P–v, T–s: IAPWS vapor dome, tie line, states, cycles; vdW P–v     | College thermodynamics (HC17)       |
+| `thermalWall`      | layered wall, pipe, fin, tube, wire: T profile, R network; εσT⁴        | College heat transfer (HC23)        |
+| `heatExchanger`    | double pipe; T_h, T_c along x, counter/parallel; ΔT₁, ΔT₂, LMTD        | College heat exchangers (HC40)      |
+| `shaft`            | steel shaft: T arrows, scribed line twisting φ; τ on the face; M, σ    | College torsion, shafts (HC59)      |
+| `fatigueDiagram`   | Goodman, load line, n; S–N on log axes to S_e; Basquin; Miner bar      | College fatigue (HC52)              |
+| `elementChain`     | springs or bars between nodes; walls, F, R, u to scale; f T/C; a mesh  | College FEA, stiffness (HC41)       |
+| `timingDiagram`    | CLK/Q/D, timer ramp, PWM, UART frame, packet space–time; brackets      | College digital and embedded (HC49) |
+| `graph`            | fixed or planar V, E graph: degrees, costs, cheapest path; trees       | College graphs and networks (HC50)  |
+| `scheduleChart`    | Gantt: RM or EDF tasks, releases, misses, response; FCFS, SJF, RR      | College real-time and OS (HC51)     |
+| `bitFields`        | a word's fields to scale, bit numbers, address and mask bits; headers  | College computer, networks (HC64)   |
+| `dilutionSeries`   | tubes 1:10 or 1:2, a plate's colonies (TNTC), CFU/mL; titer tubes lit  | College microbiology (HC80)         |
+| `roadCurve`        | stopping strips to scale; curve PC, PI, PT, R, Δ, T, L, E; crest       | College transportation (HC60)       |
+| `connection`       | plate holes, net section; lap-splice bolts; fillet welds; block shear  | College steel design (HC61)         |
+| `hydrograph`       | rain P split I_a, F, Q; Q(P) curve; rational CiA; detention storage    | College hydrology (HC89)            |
+| `blockDiagram`     | loop blocks: comparator + and −, K_c, process, sensor; feedforward     | College process control (HC90)      |
+| `projectile`       | a launch to scale: path, vₓ and v_y at three points, H and R; drag θ   | Physics 2D motion, parametric (H59) |
+| `freeBody`         | a block on a floor, ramp or rope; forces to scale, W sin θ; the net    | Physics forces, inclines (H60)      |
+| `circularMotion`   | v tangent, v²/r to the center; Gm₁m₂/r² pulls; Kepler ellipse, areas   | Physics circles, gravity (H61)      |
+| `collision`        | carts before and after: p = mv arrows, the total tip to tail; bounce   | Physics momentum (H62)              |
+| `impulse`          | p₀, p and Δp arrows; F–t rectangle of area Δp; a slower stop dashed    | Physics momentum (H102)             |
+| `powerLift`        | a crate hauled up h in t: stopwatch, W = mgh cut into J/s pieces       | Physics power (H102)                |
+| `photoelectric`    | light of λ on a metal: E = 1240/λ, electrons with E − φ, λ₀ strip      | Physics modern (H102)               |
+| `lightClock`       | light clock at rest and moving: the slant cΔt/2, γ; a rod L₀/γ         | Physics relativity (H102)           |
+| `torque`           | a wrench or door: arm r, F at θ, F⊥ = F sin θ dashed, τ = rF⊥          | Physics rotation (H107)             |
+| `rotor`            | hoop, disk, ball: I = cmr², τ = Iα; ω₀, ω; ω–t area; turn dials        | Physics rotation (H107)             |
+| `oscillator`       | spring and block by its x–t trace, ±A, v_max, ½kx² + ½mv²; hung        | Physics oscillations (H107)         |
+| `pendulum`         | a bob on L to a meter rule's scale, g named; T on a seconds strip      | Physics oscillations (H107)         |
+| `capacitor`        | plates ±Q on a battery, even field, κ slab; the Q–V line, ½CV²         | Physics potential (H107)            |
+| `section`          | a cross-section to scale: centroid, I; σ, τ blocks; RC bars, Whitney   | College mechanics, steel, RC (HC3)  |
+| `beam`             | beam on supports: loads, reactions, V and M, bent shape; bar, column   | College mechanics, structures (HC1) |
+| `simpleMachine`    | lever, block and tackle or ramp to scale; load, effort and the MA      | Physics simple machines (H63)       |
+| `heatEngine`       | hot and cold reservoirs, Q_H = W + Q_L as bands; efficiency, Carnot    | Physics thermodynamics (H64)        |
+| `rayDiagram`       | lens, mirror: principal rays, image; Snell, total reflection; slits    | Physics optics, telescopes (H66)    |
+| `charges`          | point charges, traced field lines; kq₁q₂/r² forces; E at a point       | Physics electrostatics (H67)        |
+| `induction`        | magnet into a coil, galvanometer; BIL on a wire; transformer turns     | Physics electromagnetism (H69)      |
+| `fluidSystem`      | tank, manometer, gate, float; venturi, pitot, jet; pipe grade lines    | College fluids, pipe networks (HC6) |
+| `none`             | no picture: the page opens on its values and equation, no labels       | Equation-only pages (H105)          |
+| Kind               | Shows                                                                  | For                                 |
+| ------------------ | ---------------------------------------------------------------------- | ----------------------------------- |
+| `doubleNumberLine` | two lined-up number lines, a mark joining a reading on each            | conversions, ratios, rates, percent |
+| `coordinatePlane`  | a point to drag; a second point with the line and a rise/run triangle  | Grade 5 points, Grade 6–8 slope     |
+| `boxPlot`          | the five-number summary on a number line, each mark draggable          | Grade 6 statistics                  |
+| `pieChart`         | wedges by percent (or counts of a total)                               | percent, data in science            |
+| `fractionArea`     | a square cut in columns and rows, the overlap of two fractions         | Grade 5 fraction × fraction         |
+| `unitCubes`        | a box of unit cubes drawn in layers                                    | Grade 5 volume                      |
+| `placeValueChart`  | digits in labelled columns, the point between ones and tenths          | Grade 5 decimals and powers of ten  |
+| `factorTree`       | a number split down to circled primes                                  | Grade 4 primes, Grade 6 GCF and LCM |
+| `protractor`       | both scales, an arm to drag                                            | Grade 4 measuring angles            |
+| `wave`             | crests and troughs with wavelength (and amplitude) marked              | Grade 4 and 8 waves, physics        |
+| `punnettSquare`    | two parents' alleles and the four offspring boxes                      | Grade 7 heredity, biology           |
+| `factorPairs`      | each rectangle of its unit squares, pair outlined; thin bars past 100  | Grade 4 factors, primes, composites |
+| `shareWholes`      | wholes cut into as many parts as people, one share shaded in each      | Grade 5 fractions as division       |
+| `integerLine`      | a line through 0: a point, its opposite, its distance from 0, a jump   | Grade 6 negatives, temperature      |
+| `percentBar`       | 0%–100% over 0–whole, the part shaded, 1% marked                       | Grade 6 percent                     |
+| `ratioTable`       | equivalent ratios in rows, the current row outlined, its graph         | Grade 6 ratios                      |
+| `fractionFit`      | groups of the divisor laid along the dividend, or one group filled     | Grade 6 dividing fractions          |
+| `venn`             | two circles of factors, the shared ones in the overlap, GCF circled    | Grade 6 GCF                         |
+| `baseHeight`       | a parallelogram, triangle, trapezoid or house; lean it by the top      | Grade 6 area                        |
+| `net`              | a box, cube or square pyramid unfolded, faces labelled; Fold           | Grade 6 surface area                |
+| `dotPlot`          | a dot per value; the mean as a balance point, the median, deviations   | Grade 6 statistics                  |
+| `fieldOfView`      | the microscope circle with cells end to end across it                  | Grade 6 cells                       |
+| `gradCylinder`     | mL marks, the level before and after, the rise as the object's volume  | Grade 6 density                     |
+| `grassSlope`       | soil trays on a slope, one grassed; the soil washed off in jars        | Grade 2 and 4 erosion               |
+| `flashlights`      | a flashlight near and k times as far; k × k squares lit, one shaded    | Grade 5 star brightness             |
+| `leafCount`        | a plant in the sun and one in the shade, green leaves counted          | Grade 2 plant needs                 |
+| `zeroPairs`        | yellow + and red − counters; a + with a − circled as a zero pair       | Grade 7 adding, subtracting signs   |
+| `signTable`        | the answer’s sign for each pair of signs, the numbers’ cell outlined   | Grade 7 multiplying, dividing signs |
+| `hanger`           | a beam on a hook, x-blocks and unit weights on two trays; solve steps  | Grade 7–8 equations                 |
+| `scaleCopy`        | a figure and its scaled copy on one grid, the factor on an arrow       | Grade 7 scale drawings              |
+| `curvedSolid`      | a glass cylinder, cone or sphere of water, its radius and height       | Grade 8 volume of curved solids     |
+| `scatter`          | data points, a line of fit dragged by its ends, clusters, an outlier   | Grade 8 scatter plots               |
+| `crossSection`     | a clear box, triangular prism or pyramid cut by a plane; drag it       | Grade 7 cross-sections, volume      |
+| `sample`           | a population of dots, a random sample ringed; draw a new sample        | Grade 7 sampling, inferences        |
+| `spinner`          | a spinner in equal colored sectors, the event outlined; Spin           | Grade 7 probability                 |
+| `diceGrid`         | two dice's 36 pairs in a 6 × 6 grid, the event's cells shaded; tap     | Grade 7 compound probability        |
+| `treeDiagram`      | 2 or 3 stages branching left to right, each branch 1/n; a path lit     | Grade 7 compound probability        |
+| `marbles`          | a clear bag of colored glass marbles, mixed; draw one at random        | Grade 7 probability                 |
+| `rootSquare`       | a square of area A on a grid, side √A dropped onto a number line       | Grade 8 square roots, irrationals   |
+| `factorRows`       | powers as rows of factors: joined, cancelled in pairs, or stacked      | Grade 8 exponent rules              |
+| `powerScale`       | a number on a 10ⁿ ruler, its decade opened up 1–10; `second` compares  | Grade 8 scientific notation         |
+| `equationBalance`  | x-blocks and counters on both pans, negatives as balloons; tips at x   | Grade 8 equations, both sides       |
+| `linearFunction`   | y = mx + b: the intercept marked, a slope triangle; all three drag     | Grade 8 linear functions            |
+| `lineSystem`       | two lines on one grid, their crossing marked (none when parallel)      | Grade 8 systems                     |
+| `functionMachine`  | an input card through a rule's steps to the output; a tappable table   | Grade 8 functions                   |
+| `mapping`          | pairs as arrows between two ovals; the graph with a vertical line      | Grade 8 functions (is it one?)      |
+| `transformation`   | a figure and its image: slide arrow, mirror line, turn or rays         | Grade 8 transformations             |
+| `energyPyramid`    | a tier per feeding level, to scale, 10% passed up each step; drag      | Grade 7 energy in ecosystems        |
+| `generations`      | a stacked bar per generation (green and brown beetles), the share      | Grade 7 natural selection           |
+| `molecules`        | ball-and-stick molecules in CPK colors, the atoms of each counted      | Grade 7 atoms and molecules         |
+| `reaction`         | molecules before and after the arrow; each element's atoms counted     | Grade 7 reactions, balancing        |
+| `heatingCurve`     | temperature against time, flat while melting and boiling; particles    | Grade 7 phase changes               |
+| `periodicTable`    | the table as a grid: an element (its card), a group or a period lit    | Grade 8 periodic table              |
+| `motionGraph`      | distance or speed against time; slope = rise ÷ run; a dot a second     | Grade 8 motion                      |
+| `skaters`          | two skaters palm to palm: equal, opposite pushes; each a = F ÷ m       | Grade 8 Newton's laws               |
+| `energyTrack`      | a coaster car or pendulum bob; PE, KE and total bars trade as it goes  | Grade 8 kinetic, potential energy   |
+| `spectrum`         | radio to gamma on a 10ⁿ band, the wave above, visible light opened up  | Grade 8 electromagnetic spectrum    |
+| `circuit`          | bulbs glowing by power, a switch, an ammeter; series or parallel       | Grade 8 circuits                    |
+| `electromagnet`    | a coil on a nail, field lines by turns × current, clips at its point   | Grade 8 electromagnets              |
+| `orbit`            | the sun, a planet on its orbit, its pull as an arrow; a moon; drag it  | Grade 8 gravity and orbits          |
+| `functionGraph`    | y = f(x) for any family: zeros, vertex, asymptotes, holes; drag it     | Grades 9–12 functions, calculus     |
+| `triangleSolver`   | a triangle to scale from 3 parts; congruent, similar, SSA pairs; trig  | Geometry triangles and trig         |
+| `markedFigure`     | points and marks: transversal angles, triangle centers, quads, proofs  | Geometry lines, proofs, quads       |
+| `circleTheorems`   | inscribed, central angles; tangent ⟂ radius; chord, secant products    | Geometry circle theorems            |
+| `normalCurve`      | normal or chi-square curve, x and z axes, areas to 4 decimals, tests   | Grades 11–12 statistics (H02)       |
+| `histogram`        | bins of data or counts, mean, median, shape; probability bars, E(X)    | Grades 9–12 statistics (H03)        |
+| `pascalTriangle`   | Pascal's triangle to row 12, C(n, k) lit; counting slots, ÷ r!         | Grades 10–11 counting (H13)         |
+| `termsChart`       | a sequence's terms as bars or points, partial sums stepped, S dashed   | Grades 9 and 11 sequences (H15)     |
+| `unitCircle`       | the angle θ, its point (cos θ, sin θ), reference triangle; sine graph  | Grades 10–12 trigonometry           |
+| `algebraTiles`     | x², x and unit tiles ±: collect, multiply, factor, complete a square   | Grade 9 polynomials, factoring      |
+| `vectorDiagram`    | arrows by components or size and direction; sums, kv, angle, dot sign  | Grade 12 vectors, physics forces    |
+| `complexPlane`     | a + bi as a point and arrow: conjugate, sum, product, modulus, arg     | Grade 11 complex numbers, polar     |
+| `polarGrid`        | (r, θ) on rings and rays; rose, cardioid, spiral; parametric paths     | Grade 12 polar, parametric          |
+| `conicGraph`       | circle, parabola, ellipse, hyperbola: foci, directrix, asymptotes      | Grades 10–12 conics                 |
+| `matrixGrid`       | matrices in brackets: a row times a column lit; row operations         | Grade 12 matrices, systems          |
+| `membrane`         | a bilayer, particles counted on each side; channel, aquaporin or pump  | Grade 9 membrane transport (H32)    |
+| `dnaStrand`        | DNA ladder, mRNA codons, amino acids; a mutation lit; Chargaff         | Grade 9 DNA, mutations (H36)        |
+| `macromolecules`   | monomers into a chain by a value, "…" past 4; bonds and water counted  | Grade 9 biomolecules (H100)         |
+| `cellDivision`     | body cell 2n, gamete n, egg + sperm = zygote; one pair past 2n = 8     | Grade 9 chromosome counts (H100)    |
+| `neuron`           | a neuron timing its impulse: m and ms scales; myelin at 3 m/s          | Grade 9 impulse speed (H109)        |
+| `skeletal`         | line-angle structure: wedges, CIP ranks, R/S, IHD marks; the chair     | College organic chemistry (HC2)     |
+| `gel`              | a gel: ladder and lanes, bands by log size; PCR copies per cycle       | Biology biotechnology (H37)         |
+| `immuneResponse`   | antibody level by day: a slow low first response, a fast high second   | Biology immune system (H42)         |
+| `unitChain`        | factors with cancelled units struck; a ruler read; accuracy target     | Chemistry measurement (H43)         |
+| `atomModel`        | Bohr model: every proton and neutron, electrons on shells; ions        | Chemistry atoms, isotopes (H44)     |
+| `orbitalDiagram`   | orbital boxes by Aufbau and Hund; hydrogen levels and emission lines   | Chemistry electrons, spectra (H45)  |
+| `lewisStructure`   | electron dots: molecules, ions, ionic transfer, metals, hydrocarbons   | Chemistry bonding, organic (H47)    |
+| `vsepr`            | ball-and-stick VSEPR shapes, bond angle, dipoles; hydrogen bonds       | Chemistry molecular shape (H48)     |
+| `moleMap`          | grams, moles, particles, liters at STP; each factor; a mole ratio      | Chemistry mole, stoichiometry (H50) |
+| `gasPiston`        | gas under a piston: particles by n, trails ∝ √T, a gauge and scale     | Grade 10 gas laws (H51)             |
+| `energyProfile`    | reaction energy: levels, Eₐ hump, ΔH, catalyst dashed; calorimeter     | Grade 10 thermochemistry (H53)      |
+| `equilibriumChart` | concentrations leveling off where Q = K; a stress and the shift        | Grade 10 equilibrium (H54)          |
+| `phScale`          | pH 0–14 in indicator colors, [H⁺] as 10ⁿ; a titration curve            | Grade 10 acids and bases (H55)      |
+| `decayChart`       | 100 atoms decaying, the half-life curve; nuclear equations balanced    | Grades 10, 12 nuclear, dating (H57) |
+| `chemDiagram`      | effusion trails ∝ 1/√M; 100 isotope atoms, a beam; ox. numbers; Δm     | Grade 10 gases, atoms, redox (H101) |
+| `phaseEnvelope`    | binary Pxy, Txy, x–y: bubble/dew, tie line; McCabe–Thiele stairs       | College VLE, distillation (HC8)     |
+| `earthLayers`      | Earth cut open: P, S paths, shadow zones; seismogram; epicenter        | Earth science interior (H72)        |
+| `oceanProfile`     | the seafloor, shelf to trench, with a sonar ship; spring, neap tides   | Earth science ocean (H75)           |
+| `atmosphereLayers` | temperature by altitude through four layers; a pressure map, winds     | Earth science atmosphere (H76)      |
+| `hrDiagram`        | temperature against luminosity, log scales; regions, a star plotted    | Earth science stars (H79)           |
+| `streamChannel`    | a channel to scale, w × d, and the water passing in 1 s: Q = A × v     | Earth science streams (H103)        |
+| `reserve`          | a reserve as a bar cut into each year's use; empty after Q ÷ r years   | Earth science resources (H103)      |
+| `geologicClock`    | Earth's history as one day: the event at t, the time since shaded      | Earth science history (H110)        |
+| `coralSection`     | a fossil coral's daily lines across yearly bands; D beside 24 hours    | Earth science history (H110)        |
+| `transit`          | a planet crossing its star to scale; the light curve dipping by δ      | Earth and space exoplanets (H110)   |
+| `habitableZone`    | a star's zone 0.95√L to 1.37√L AU, green; the planet at a with T       | Earth and space exoplanets (H110)   |
+| `parallax`         | Earth in January and July, a near star shifting on far stars; p, d     | Earth and space stars (H110)        |
+| `controlVolume`    | a unit or steel device in a control volume; streams, Q̇, Ẇ, in = out    | College balances, devices (HC5)     |
+| `velocityProfile`  | tube, vessel, plates or film: v arrows, v_max = 2v_avg, τ_w; c lines   | College transport, blood (HC13)     |
+| `bode`             | gain (dB) over phase on log frequency; asymptotes, corners, PM, GM     | College filters, control (HC22)     |
+| `potentialWell`    | box, oscillator, step, barrier, bump: levels to scale, ψ, nodes, λ     | College quantum, chemistry (HC15)   |
+| `unitCell`         | cubic cell: atoms counted to Z, touching line; (hkl) and d; Bragg      | College solids, minerals (HC16)     |
+| `globe`            | sun rays, noon angle, day dial; great circle; Euler pole; dipole; air  | College earth and geography (HC36)  |
+| `stressStrain`     | σ–ε curve: E, 0.2% offset, UTS, necking; specimen; tube; two members   | College materials, biomech. (HC28)  |
+| `stressElement`    | element, turned to θ_p; Mohr's circle; 3 circles; loci, n; soil line   | College stress, soil (HC33)         |
+| `wing`             | NACA section tilted by α, lift ⟂ wind; C_p, Γ; planform, tip vortices  | College aerodynamics (HC24)         |
+| `duct`             | nozzle to scale by A ÷ A∗: throat M = 1, stations, shock, p, M; a jet  | College compressible flow (HC30)    |
+| `supersonicFlow`   | normal shock and ratio bars, pitot; wedge θ, β; fan; plate; Mach cone  | College shocks, supersonic (HC31)   |
+| `fieldPlot`        | slope field + Euler; F with a path's work; x′ = Ax phases; isoclines   | College ODEs, line integrals (HC21) |
+| `propertyDiagram`  | T–v, P–v, T–s: IAPWS vapor dome, tie line, states, cycles; vdW P–v     | College thermodynamics (HC17)       |
+| `thermalWall`      | layered wall, pipe, fin, tube, wire: T profile, R network; εσT⁴        | College heat transfer (HC23)        |
+| `lamina`           | fibers in epoxy end-on at V_f; springs along or across; E bars, ρ      | College composites (HC86)           |
+| `rocket`           | painted; tank to m_p ÷ m₀, mass bar, Δv–ratio curve; F terms; 2 stages | College propulsion (HC87)           |
+| `deviceCurves`     | diode I–V (drop, Shockley), MOSFET I_D–V_DS family; load line, Q       | College electronics (HC62)          |
+| `stemPlot`         | x[n] stems: cos period, step response, flip-and-shift sum, alias       | College signals (HC63)              |
+| `projectile`       | a launch to scale: path, vₓ and v_y at three points, H and R; drag θ   | Physics 2D motion, parametric (H59) |
+| `freeBody`         | a block on a floor, ramp or rope; forces to scale, W sin θ; the net    | Physics forces, inclines (H60)      |
+| `circularMotion`   | v tangent, v²/r to the center; Gm₁m₂/r² pulls; Kepler ellipse, areas   | Physics circles, gravity (H61)      |
+| `collision`        | carts before and after: p = mv arrows, the total tip to tail; bounce   | Physics momentum (H62)              |
+| `impulse`          | p₀, p and Δp arrows; F–t rectangle of area Δp; a slower stop dashed    | Physics momentum (H102)             |
+| `powerLift`        | a crate hauled up h in t: stopwatch, W = mgh cut into J/s pieces       | Physics power (H102)                |
+| `photoelectric`    | light of λ on a metal: E = 1240/λ, electrons with E − φ, λ₀ strip      | Physics modern (H102)               |
+| `lightClock`       | light clock at rest and moving: the slant cΔt/2, γ; a rod L₀/γ         | Physics relativity (H102)           |
+| `torque`           | a wrench or door: arm r, F at θ, F⊥ = F sin θ dashed, τ = rF⊥          | Physics rotation (H107)             |
+| `rotor`            | hoop, disk, ball: I = cmr², τ = Iα; ω₀, ω; ω–t area; turn dials        | Physics rotation (H107)             |
+| `oscillator`       | spring and block by its x–t trace, ±A, v_max, ½kx² + ½mv²; hung        | Physics oscillations (H107)         |
+| `pendulum`         | a bob on L to a meter rule's scale, g named; T on a seconds strip      | Physics oscillations (H107)         |
+| `capacitor`        | plates ±Q on a battery, even field, κ slab; the Q–V line, ½CV²         | Physics potential (H107)            |
+| `section`          | a cross-section to scale: centroid, I; σ, τ blocks; RC bars, Whitney   | College mechanics, steel, RC (HC3)  |
+| `beam`             | beam on supports: loads, reactions, V and M, bent shape; bar, column   | College mechanics, structures (HC1) |
+| `simpleMachine`    | lever, block and tackle or ramp to scale; load, effort and the MA      | Physics simple machines (H63)       |
+| `heatEngine`       | hot and cold reservoirs, Q_H = W + Q_L as bands; efficiency, Carnot    | Physics thermodynamics (H64)        |
+| `rayDiagram`       | lens, mirror: principal rays, image; Snell, total reflection; slits    | Physics optics, telescopes (H66)    |
+| `charges`          | point charges, traced field lines; kq₁q₂/r² forces; E at a point       | Physics electrostatics (H67)        |
+| `induction`        | magnet into a coil, galvanometer; BIL on a wire; transformer turns     | Physics electromagnetism (H69)      |
+| `fluidSystem`      | tank, manometer, gate, float; venturi, pitot, jet; pipe grade lines    | College fluids, pipe networks (HC6) |
+| `none`             | no picture: the page opens on its values and equation, no labels       | Equation-only pages (H105)          |
+| Kind               | Shows                                                                  | For                                 |
+| ------------------ | ---------------------------------------------------------------------  | ----------------------------------- |
+| `doubleNumberLine` | two lined-up number lines, a mark joining a reading on each            | conversions, ratios, rates, percent |
+| `coordinatePlane`  | a point to drag; a second point with the line and a rise/run triangle  | Grade 5 points, Grade 6–8 slope     |
+| `boxPlot`          | the five-number summary on a number line, each mark draggable          | Grade 6 statistics                  |
+| `pieChart`         | wedges by percent (or counts of a total)                               | percent, data in science            |
+| `fractionArea`     | a square cut in columns and rows, the overlap of two fractions         | Grade 5 fraction × fraction         |
+| `unitCubes`        | a box of unit cubes drawn in layers                                    | Grade 5 volume                      |
+| `placeValueChart`  | digits in labelled columns, the point between ones and tenths          | Grade 5 decimals and powers of ten  |
+| `factorTree`       | a number split down to circled primes                                  | Grade 4 primes, Grade 6 GCF and LCM |
+| `protractor`       | both scales, an arm to drag                                            | Grade 4 measuring angles            |
+| `wave`             | crests and troughs with wavelength (and amplitude) marked              | Grade 4 and 8 waves, physics        |
+| `punnettSquare`    | two parents' alleles and the four offspring boxes                      | Grade 7 heredity, biology           |
+| `factorPairs`      | each rectangle of its unit squares, pair outlined; thin bars past 100  | Grade 4 factors, primes, composites |
+| `shareWholes`      | wholes cut into as many parts as people, one share shaded in each      | Grade 5 fractions as division       |
+| `integerLine`      | a line through 0: a point, its opposite, its distance from 0, a jump   | Grade 6 negatives, temperature      |
+| `percentBar`       | 0%–100% over 0–whole, the part shaded, 1% marked                       | Grade 6 percent                     |
+| `ratioTable`       | equivalent ratios in rows, the current row outlined, its graph         | Grade 6 ratios                      |
+| `fractionFit`      | groups of the divisor laid along the dividend, or one group filled     | Grade 6 dividing fractions          |
+| `venn`             | two circles of factors, the shared ones in the overlap, GCF circled    | Grade 6 GCF                         |
+| `baseHeight`       | a parallelogram, triangle, trapezoid or house; lean it by the top      | Grade 6 area                        |
+| `net`              | a box, cube or square pyramid unfolded, faces labelled; Fold           | Grade 6 surface area                |
+| `dotPlot`          | a dot per value; the mean as a balance point, the median, deviations   | Grade 6 statistics                  |
+| `fieldOfView`      | the microscope circle with cells end to end across it                  | Grade 6 cells                       |
+| `gradCylinder`     | mL marks, the level before and after, the rise as the object's volume  | Grade 6 density                     |
+| `grassSlope`       | soil trays on a slope, one grassed; the soil washed off in jars        | Grade 2 and 4 erosion               |
+| `flashlights`      | a flashlight near and k times as far; k × k squares lit, one shaded    | Grade 5 star brightness             |
+| `leafCount`        | a plant in the sun and one in the shade, green leaves counted          | Grade 2 plant needs                 |
+| `zeroPairs`        | yellow + and red − counters; a + with a − circled as a zero pair       | Grade 7 adding, subtracting signs   |
+| `signTable`        | the answer’s sign for each pair of signs, the numbers’ cell outlined   | Grade 7 multiplying, dividing signs |
+| `hanger`           | a beam on a hook, x-blocks and unit weights on two trays; solve steps  | Grade 7–8 equations                 |
+| `scaleCopy`        | a figure and its scaled copy on one grid, the factor on an arrow       | Grade 7 scale drawings              |
+| `curvedSolid`      | a glass cylinder, cone or sphere of water, its radius and height       | Grade 8 volume of curved solids     |
+| `scatter`          | data points, a line of fit dragged by its ends, clusters, an outlier   | Grade 8 scatter plots               |
+| `crossSection`     | a clear box, triangular prism or pyramid cut by a plane; drag it       | Grade 7 cross-sections, volume      |
+| `sample`           | a population of dots, a random sample ringed; draw a new sample        | Grade 7 sampling, inferences        |
+| `spinner`          | a spinner in equal colored sectors, the event outlined; Spin           | Grade 7 probability                 |
+| `diceGrid`         | two dice's 36 pairs in a 6 × 6 grid, the event's cells shaded; tap     | Grade 7 compound probability        |
+| `treeDiagram`      | 2 or 3 stages branching left to right, each branch 1/n; a path lit     | Grade 7 compound probability        |
+| `marbles`          | a clear bag of colored glass marbles, mixed; draw one at random        | Grade 7 probability                 |
+| `rootSquare`       | a square of area A on a grid, side √A dropped onto a number line       | Grade 8 square roots, irrationals   |
+| `factorRows`       | powers as rows of factors: joined, cancelled in pairs, or stacked      | Grade 8 exponent rules              |
+| `powerScale`       | a number on a 10ⁿ ruler, its decade opened up 1–10; `second` compares  | Grade 8 scientific notation         |
+| `equationBalance`  | x-blocks and counters on both pans, negatives as balloons; tips at x   | Grade 8 equations, both sides       |
+| `linearFunction`   | y = mx + b: the intercept marked, a slope triangle; all three drag     | Grade 8 linear functions            |
+| `lineSystem`       | two lines on one grid, their crossing marked (none when parallel)      | Grade 8 systems                     |
+| `functionMachine`  | an input card through a rule's steps to the output; a tappable table   | Grade 8 functions                   |
+| `mapping`          | pairs as arrows between two ovals; the graph with a vertical line      | Grade 8 functions (is it one?)      |
+| `transformation`   | a figure and its image: slide arrow, mirror line, turn or rays         | Grade 8 transformations             |
+| `energyPyramid`    | a tier per feeding level, to scale, 10% passed up each step; drag      | Grade 7 energy in ecosystems        |
+| `generations`      | a stacked bar per generation (green and brown beetles), the share      | Grade 7 natural selection           |
+| `molecules`        | ball-and-stick molecules in CPK colors, the atoms of each counted      | Grade 7 atoms and molecules         |
+| `reaction`         | molecules before and after the arrow; each element's atoms counted     | Grade 7 reactions, balancing        |
+| `heatingCurve`     | temperature against time, flat while melting and boiling; particles    | Grade 7 phase changes               |
+| `periodicTable`    | the table as a grid: an element (its card), a group or a period lit    | Grade 8 periodic table              |
+| `motionGraph`      | distance or speed against time; slope = rise ÷ run; a dot a second     | Grade 8 motion                      |
+| `skaters`          | two skaters palm to palm: equal, opposite pushes; each a = F ÷ m       | Grade 8 Newton's laws               |
+| `energyTrack`      | a coaster car or pendulum bob; PE, KE and total bars trade as it goes  | Grade 8 kinetic, potential energy   |
+| `spectrum`         | radio to gamma on a 10ⁿ band, the wave above, visible light opened up  | Grade 8 electromagnetic spectrum    |
+| `circuit`          | bulbs glowing by power, a switch, an ammeter; series or parallel       | Grade 8 circuits                    |
+| `electromagnet`    | a coil on a nail, field lines by turns × current, clips at its point   | Grade 8 electromagnets              |
+| `orbit`            | the sun, a planet on its orbit, its pull as an arrow; a moon; drag it  | Grade 8 gravity and orbits          |
+| `functionGraph`    | y = f(x) for any family: zeros, vertex, asymptotes, holes; drag it     | Grades 9–12 functions, calculus     |
+| `triangleSolver`   | a triangle to scale from 3 parts; congruent, similar, SSA pairs; trig  | Geometry triangles and trig         |
+| `markedFigure`     | points and marks: transversal angles, triangle centers, quads, proofs  | Geometry lines, proofs, quads       |
+| `circleTheorems`   | inscribed, central angles; tangent ⟂ radius; chord, secant products    | Geometry circle theorems            |
+| `normalCurve`      | normal or chi-square curve, x and z axes, areas to 4 decimals, tests   | Grades 11–12 statistics (H02)       |
+| `histogram`        | bins of data or counts, mean, median, shape; probability bars, E(X)    | Grades 9–12 statistics (H03)        |
+| `pascalTriangle`   | Pascal's triangle to row 12, C(n, k) lit; counting slots, ÷ r!         | Grades 10–11 counting (H13)         |
+| `termsChart`       | a sequence's terms as bars or points, partial sums stepped, S dashed   | Grades 9 and 11 sequences (H15)     |
+| `unitCircle`       | the angle θ, its point (cos θ, sin θ), reference triangle; sine graph  | Grades 10–12 trigonometry           |
+| `algebraTiles`     | x², x and unit tiles ±: collect, multiply, factor, complete a square   | Grade 9 polynomials, factoring      |
+| `vectorDiagram`    | arrows by components or size and direction; sums, kv, angle, dot sign  | Grade 12 vectors, physics forces    |
+| `complexPlane`     | a + bi as a point and arrow: conjugate, sum, product, modulus, arg     | Grade 11 complex numbers, polar     |
+| `polarGrid`        | (r, θ) on rings and rays; rose, cardioid, spiral; parametric paths     | Grade 12 polar, parametric          |
+| `conicGraph`       | circle, parabola, ellipse, hyperbola: foci, directrix, asymptotes      | Grades 10–12 conics                 |
+| `matrixGrid`       | matrices in brackets: a row times a column lit; row operations         | Grade 12 matrices, systems          |
+| `membrane`         | a bilayer, particles counted on each side; channel, aquaporin or pump  | Grade 9 membrane transport (H32)    |
+| `dnaStrand`        | DNA ladder, mRNA codons, amino acids; a mutation lit; Chargaff         | Grade 9 DNA, mutations (H36)        |
+| `macromolecules`   | monomers into a chain by a value, "…" past 4; bonds and water counted  | Grade 9 biomolecules (H100)         |
+| `cellDivision`     | body cell 2n, gamete n, egg + sperm = zygote; one pair past 2n = 8     | Grade 9 chromosome counts (H100)    |
+| `neuron`           | a neuron timing its impulse: m and ms scales; myelin at 3 m/s          | Grade 9 impulse speed (H109)        |
+| `skeletal`         | line-angle structure: wedges, CIP ranks, R/S, IHD marks; the chair     | College organic chemistry (HC2)     |
+| `truss`            | truss to scale: forces with T or C, a section cut, m + r − 2j, a bar   | College statics, structures (HC27)  |
+| `soilProfile`      | soil to scale: σ, u, σ′ with depth; settlement; footing; pavement      | College soils, foundations (HC26)   |
+| `survey`           | traverse lat, dep, gap; polygon angles; leveling; curvature; h, N, H   | College surveying (HC32)            |
+| `gel`              | a gel: ladder and lanes, bands by log size; PCR copies per cycle       | Biology biotechnology (H37)         |
+| `immuneResponse`   | antibody level by day: a slow low first response, a fast high second   | Biology immune system (H42)         |
+| `unitChain`        | factors with cancelled units struck; a ruler read; accuracy target     | Chemistry measurement (H43)         |
+| `atomModel`        | Bohr model: every proton and neutron, electrons on shells; ions        | Chemistry atoms, isotopes (H44)     |
+| `orbitalDiagram`   | orbital boxes by Aufbau and Hund; hydrogen levels and emission lines   | Chemistry electrons, spectra (H45)  |
+| `lewisStructure`   | electron dots: molecules, ions, ionic transfer, metals, hydrocarbons   | Chemistry bonding, organic (H47)    |
+| `vsepr`            | ball-and-stick VSEPR shapes, bond angle, dipoles; hydrogen bonds       | Chemistry molecular shape (H48)     |
+| `moleMap`          | grams, moles, particles, liters at STP; each factor; a mole ratio      | Chemistry mole, stoichiometry (H50) |
+| `gasPiston`        | gas under a piston: particles by n, trails ∝ √T, a gauge and scale     | Grade 10 gas laws (H51)             |
+| `energyProfile`    | reaction energy: levels, Eₐ hump, ΔH, catalyst dashed; calorimeter     | Grade 10 thermochemistry (H53)      |
+| `equilibriumChart` | concentrations leveling off where Q = K; a stress and the shift        | Grade 10 equilibrium (H54)          |
+| `phScale`          | pH 0–14 in indicator colors, [H⁺] as 10ⁿ; a titration curve            | Grade 10 acids and bases (H55)      |
+| `decayChart`       | 100 atoms decaying, the half-life curve; nuclear equations balanced    | Grades 10, 12 nuclear, dating (H57) |
+| `chemDiagram`      | effusion trails ∝ 1/√M; 100 isotope atoms, a beam; ox. numbers; Δm     | Grade 10 gases, atoms, redox (H101) |
+| `phaseEnvelope`    | binary Pxy, Txy, x–y: bubble/dew, tie line; McCabe–Thiele stairs       | College VLE, distillation (HC8)     |
+| `earthLayers`      | Earth cut open: P, S paths, shadow zones; seismogram; epicenter        | Earth science interior (H72)        |
+| `oceanProfile`     | the seafloor, shelf to trench, with a sonar ship; spring, neap tides   | Earth science ocean (H75)           |
+| `atmosphereLayers` | temperature by altitude through four layers; a pressure map, winds     | Earth science atmosphere (H76)      |
+| `hrDiagram`        | temperature against luminosity, log scales; regions, a star plotted    | Earth science stars (H79)           |
+| `streamChannel`    | a channel to scale, w × d, and the water passing in 1 s: Q = A × v     | Earth science streams (H103)        |
+| `reserve`          | a reserve as a bar cut into each year's use; empty after Q ÷ r years   | Earth science resources (H103)      |
+| `geologicClock`    | Earth's history as one day: the event at t, the time since shaded      | Earth science history (H110)        |
+| `coralSection`     | a fossil coral's daily lines across yearly bands; D beside 24 hours    | Earth science history (H110)        |
+| `transit`          | a planet crossing its star to scale; the light curve dipping by δ      | Earth and space exoplanets (H110)   |
+| `habitableZone`    | a star's zone 0.95√L to 1.37√L AU, green; the planet at a with T       | Earth and space exoplanets (H110)   |
+| `parallax`         | Earth in January and July, a near star shifting on far stars; p, d     | Earth and space stars (H110)        |
+| `controlVolume`    | a unit or steel device in a control volume; streams, Q̇, Ẇ, in = out    | College balances, devices (HC5)     |
+| `velocityProfile`  | tube, vessel, plates or film: v arrows, v_max = 2v_avg, τ_w; c lines   | College transport, blood (HC13)     |
+| `bode`             | gain (dB) over phase on log frequency; asymptotes, corners, PM, GM     | College filters, control (HC22)     |
+| `potentialWell`    | box, oscillator, step, barrier, bump: levels to scale, ψ, nodes, λ     | College quantum, chemistry (HC15)   |
+| `unitCell`         | cubic cell: atoms counted to Z, touching line; (hkl) and d; Bragg      | College solids, minerals (HC16)     |
+| `phaseSpace`       | oscillator ellipse, flow (ẋ, ṗ), area; pendulum θ–ω; bead on a hoop    | College classical mech. (HC69)      |
+| `spacetime`        | Minkowski: light lines, S′ axes tilted tan⁻¹β, an event in both; u     | College relativity (HC104)          |
+| `globe`            | sun rays, noon angle, day dial; great circle; Euler pole; dipole; air  | College earth and geography (HC36)  |
+| `stressStrain`     | σ–ε curve: E, 0.2% offset, UTS, necking; specimen; tube; two members   | College materials, biomech. (HC28)  |
+| `stressElement`    | element, turned to θ_p; Mohr's circle; 3 circles; loci, n; soil line   | College stress, soil (HC33)         |
+| `wing`             | NACA section tilted by α, lift ⟂ wind; C_p, Γ; planform, tip vortices  | College aerodynamics (HC24)         |
+| `duct`             | nozzle to scale by A ÷ A∗: throat M = 1, stations, shock, p, M; a jet  | College compressible flow (HC30)    |
+| `supersonicFlow`   | normal shock and ratio bars, pitot; wedge θ, β; fan; plate; Mach cone  | College shocks, supersonic (HC31)   |
+| `fieldPlot`        | slope field + Euler; F with a path's work; x′ = Ax phases; isoclines   | College ODEs, line integrals (HC21) |
+| `propertyDiagram`  | T–v, P–v, T–s: IAPWS vapor dome, tie line, states, cycles; vdW P–v     | College thermodynamics (HC17)       |
+| `thermalWall`      | layered wall, pipe, fin, tube, wire: T profile, R network; εσT⁴        | College heat transfer (HC23)        |
+| `projectile`       | a launch to scale: path, vₓ and v_y at three points, H and R; drag θ   | Physics 2D motion, parametric (H59) |
+| `freeBody`         | a block on a floor, ramp or rope; forces to scale, W sin θ; the net    | Physics forces, inclines (H60)      |
+| `circularMotion`   | v tangent, v²/r to the center; Gm₁m₂/r² pulls; Kepler ellipse, areas   | Physics circles, gravity (H61)      |
+| `collision`        | carts before and after: p = mv arrows, the total tip to tail; bounce   | Physics momentum (H62)              |
+| `impulse`          | p₀, p and Δp arrows; F–t rectangle of area Δp; a slower stop dashed    | Physics momentum (H102)             |
+| `powerLift`        | a crate hauled up h in t: stopwatch, W = mgh cut into J/s pieces       | Physics power (H102)                |
+| `photoelectric`    | light of λ on a metal: E = 1240/λ, electrons with E − φ, λ₀ strip      | Physics modern (H102)               |
+| `lightClock`       | light clock at rest and moving: the slant cΔt/2, γ; a rod L₀/γ         | Physics relativity (H102)           |
+| `torque`           | a wrench or door: arm r, F at θ, F⊥ = F sin θ dashed, τ = rF⊥          | Physics rotation (H107)             |
+| `rotor`            | hoop, disk, ball: I = cmr², τ = Iα; ω₀, ω; ω–t area; turn dials        | Physics rotation (H107)             |
+| `oscillator`       | spring and block by its x–t trace, ±A, v_max, ½kx² + ½mv²; hung        | Physics oscillations (H107)         |
+| `pendulum`         | a bob on L to a meter rule's scale, g named; T on a seconds strip      | Physics oscillations (H107)         |
+| `capacitor`        | plates ±Q on a battery, even field, κ slab; the Q–V line, ½CV²         | Physics potential (H107)            |
+| `section`          | a cross-section to scale: centroid, I; σ, τ blocks; RC bars, Whitney   | College mechanics, steel, RC (HC3)  |
+| `beam`             | beam on supports: loads, reactions, V and M, bent shape; bar, column   | College mechanics, structures (HC1) |
+| `simpleMachine`    | lever, block and tackle or ramp to scale; load, effort and the MA      | Physics simple machines (H63)       |
+| `heatEngine`       | hot and cold reservoirs, Q_H = W + Q_L as bands; efficiency, Carnot    | Physics thermodynamics (H64)        |
+| `rayDiagram`       | lens, mirror: principal rays, image; Snell, total reflection; slits    | Physics optics, telescopes (H66)    |
+| `charges`          | point charges, traced field lines; kq₁q₂/r² forces; E at a point       | Physics electrostatics (H67)        |
+| `induction`        | magnet into a coil, galvanometer; BIL on a wire; transformer turns     | Physics electromagnetism (H69)      |
+| `fluidSystem`      | tank, manometer, gate, float; venturi, pitot, jet; pipe grade lines    | College fluids, pipe networks (HC6) |
+| `none`             | no picture: the page opens on its values and equation, no labels       | Equation-only pages (H105)          |
+| Kind               | Shows                                                                  | For                                 |
+| ------------------ | ---------------------------------------------------------------------  | ----------------------------------- |
+| `doubleNumberLine` | two lined-up number lines, a mark joining a reading on each            | conversions, ratios, rates, percent |
+| `coordinatePlane`  | a point to drag; a second point with the line and a rise/run triangle  | Grade 5 points, Grade 6–8 slope     |
+| `boxPlot`          | the five-number summary on a number line, each mark draggable          | Grade 6 statistics                  |
+| `pieChart`         | wedges by percent (or counts of a total)                               | percent, data in science            |
+| `fractionArea`     | a square cut in columns and rows, the overlap of two fractions         | Grade 5 fraction × fraction         |
+| `unitCubes`        | a box of unit cubes drawn in layers                                    | Grade 5 volume                      |
+| `placeValueChart`  | digits in labelled columns, the point between ones and tenths          | Grade 5 decimals and powers of ten  |
+| `factorTree`       | a number split down to circled primes                                  | Grade 4 primes, Grade 6 GCF and LCM |
+| `protractor`       | both scales, an arm to drag                                            | Grade 4 measuring angles            |
+| `wave`             | crests and troughs with wavelength (and amplitude) marked              | Grade 4 and 8 waves, physics        |
+| `punnettSquare`    | two parents' alleles and the four offspring boxes                      | Grade 7 heredity, biology           |
+| `factorPairs`      | each rectangle of its unit squares, pair outlined; thin bars past 100  | Grade 4 factors, primes, composites |
+| `shareWholes`      | wholes cut into as many parts as people, one share shaded in each      | Grade 5 fractions as division       |
+| `integerLine`      | a line through 0: a point, its opposite, its distance from 0, a jump   | Grade 6 negatives, temperature      |
+| `percentBar`       | 0%–100% over 0–whole, the part shaded, 1% marked                       | Grade 6 percent                     |
+| `ratioTable`       | equivalent ratios in rows, the current row outlined, its graph         | Grade 6 ratios                      |
+| `fractionFit`      | groups of the divisor laid along the dividend, or one group filled     | Grade 6 dividing fractions          |
+| `venn`             | two circles of factors, the shared ones in the overlap, GCF circled    | Grade 6 GCF                         |
+| `baseHeight`       | a parallelogram, triangle, trapezoid or house; lean it by the top      | Grade 6 area                        |
+| `net`              | a box, cube or square pyramid unfolded, faces labelled; Fold           | Grade 6 surface area                |
+| `dotPlot`          | a dot per value; the mean as a balance point, the median, deviations   | Grade 6 statistics                  |
+| `fieldOfView`      | the microscope circle with cells end to end across it                  | Grade 6 cells                       |
+| `gradCylinder`     | mL marks, the level before and after, the rise as the object's volume  | Grade 6 density                     |
+| `grassSlope`       | soil trays on a slope, one grassed; the soil washed off in jars        | Grade 2 and 4 erosion               |
+| `flashlights`      | a flashlight near and k times as far; k × k squares lit, one shaded    | Grade 5 star brightness             |
+| `leafCount`        | a plant in the sun and one in the shade, green leaves counted          | Grade 2 plant needs                 |
+| `zeroPairs`        | yellow + and red − counters; a + with a − circled as a zero pair       | Grade 7 adding, subtracting signs   |
+| `signTable`        | the answer’s sign for each pair of signs, the numbers’ cell outlined   | Grade 7 multiplying, dividing signs |
+| `hanger`           | a beam on a hook, x-blocks and unit weights on two trays; solve steps  | Grade 7–8 equations                 |
+| `scaleCopy`        | a figure and its scaled copy on one grid, the factor on an arrow       | Grade 7 scale drawings              |
+| `curvedSolid`      | a glass cylinder, cone or sphere of water, its radius and height       | Grade 8 volume of curved solids     |
+| `scatter`          | data points, a line of fit dragged by its ends, clusters, an outlier   | Grade 8 scatter plots               |
+| `crossSection`     | a clear box, triangular prism or pyramid cut by a plane; drag it       | Grade 7 cross-sections, volume      |
+| `sample`           | a population of dots, a random sample ringed; draw a new sample        | Grade 7 sampling, inferences        |
+| `spinner`          | a spinner in equal colored sectors, the event outlined; Spin           | Grade 7 probability                 |
+| `diceGrid`         | two dice's 36 pairs in a 6 × 6 grid, the event's cells shaded; tap     | Grade 7 compound probability        |
+| `treeDiagram`      | 2 or 3 stages branching left to right, each branch 1/n; a path lit     | Grade 7 compound probability        |
+| `marbles`          | a clear bag of colored glass marbles, mixed; draw one at random        | Grade 7 probability                 |
+| `rootSquare`       | a square of area A on a grid, side √A dropped onto a number line       | Grade 8 square roots, irrationals   |
+| `factorRows`       | powers as rows of factors: joined, cancelled in pairs, or stacked      | Grade 8 exponent rules              |
+| `powerScale`       | a number on a 10ⁿ ruler, its decade opened up 1–10; `second` compares  | Grade 8 scientific notation         |
+| `equationBalance`  | x-blocks and counters on both pans, negatives as balloons; tips at x   | Grade 8 equations, both sides       |
+| `linearFunction`   | y = mx + b: the intercept marked, a slope triangle; all three drag     | Grade 8 linear functions            |
+| `lineSystem`       | two lines on one grid, their crossing marked (none when parallel)      | Grade 8 systems                     |
+| `functionMachine`  | an input card through a rule's steps to the output; a tappable table   | Grade 8 functions                   |
+| `mapping`          | pairs as arrows between two ovals; the graph with a vertical line      | Grade 8 functions (is it one?)      |
+| `transformation`   | a figure and its image: slide arrow, mirror line, turn or rays         | Grade 8 transformations             |
+| `energyPyramid`    | a tier per feeding level, to scale, 10% passed up each step; drag      | Grade 7 energy in ecosystems        |
+| `generations`      | a stacked bar per generation (green and brown beetles), the share      | Grade 7 natural selection           |
+| `molecules`        | ball-and-stick molecules in CPK colors, the atoms of each counted      | Grade 7 atoms and molecules         |
+| `reaction`         | molecules before and after the arrow; each element's atoms counted     | Grade 7 reactions, balancing        |
+| `heatingCurve`     | temperature against time, flat while melting and boiling; particles    | Grade 7 phase changes               |
+| `periodicTable`    | the table as a grid: an element (its card), a group or a period lit    | Grade 8 periodic table              |
+| `motionGraph`      | distance or speed against time; slope = rise ÷ run; a dot a second     | Grade 8 motion                      |
+| `skaters`          | two skaters palm to palm: equal, opposite pushes; each a = F ÷ m       | Grade 8 Newton's laws               |
+| `energyTrack`      | a coaster car or pendulum bob; PE, KE and total bars trade as it goes  | Grade 8 kinetic, potential energy   |
+| `spectrum`         | radio to gamma on a 10ⁿ band, the wave above, visible light opened up  | Grade 8 electromagnetic spectrum    |
+| `circuit`          | bulbs glowing by power, a switch, an ammeter; series or parallel       | Grade 8 circuits                    |
+| `electromagnet`    | a coil on a nail, field lines by turns × current, clips at its point   | Grade 8 electromagnets              |
+| `orbit`            | the sun, a planet on its orbit, its pull as an arrow; a moon; drag it  | Grade 8 gravity and orbits          |
+| `functionGraph`    | y = f(x) for any family: zeros, vertex, asymptotes, holes; drag it     | Grades 9–12 functions, calculus     |
+| `triangleSolver`   | a triangle to scale from 3 parts; congruent, similar, SSA pairs; trig  | Geometry triangles and trig         |
+| `markedFigure`     | points and marks: transversal angles, triangle centers, quads, proofs  | Geometry lines, proofs, quads       |
+| `circleTheorems`   | inscribed, central angles; tangent ⟂ radius; chord, secant products    | Geometry circle theorems            |
+| `normalCurve`      | normal or chi-square curve, x and z axes, areas to 4 decimals, tests   | Grades 11–12 statistics (H02)       |
+| `histogram`        | bins of data or counts, mean, median, shape; probability bars, E(X)    | Grades 9–12 statistics (H03)        |
+| `pascalTriangle`   | Pascal's triangle to row 12, C(n, k) lit; counting slots, ÷ r!         | Grades 10–11 counting (H13)         |
+| `termsChart`       | a sequence's terms as bars or points, partial sums stepped, S dashed   | Grades 9 and 11 sequences (H15)     |
+| `unitCircle`       | the angle θ, its point (cos θ, sin θ), reference triangle; sine graph  | Grades 10–12 trigonometry           |
+| `algebraTiles`     | x², x and unit tiles ±: collect, multiply, factor, complete a square   | Grade 9 polynomials, factoring      |
+| `vectorDiagram`    | arrows by components or size and direction; sums, kv, angle, dot sign  | Grade 12 vectors, physics forces    |
+| `complexPlane`     | a + bi as a point and arrow: conjugate, sum, product, modulus, arg     | Grade 11 complex numbers, polar     |
+| `polarGrid`        | (r, θ) on rings and rays; rose, cardioid, spiral; parametric paths     | Grade 12 polar, parametric          |
+| `conicGraph`       | circle, parabola, ellipse, hyperbola: foci, directrix, asymptotes      | Grades 10–12 conics                 |
+| `matrixGrid`       | matrices in brackets: a row times a column lit; row operations         | Grade 12 matrices, systems          |
+| `membrane`         | a bilayer, particles counted on each side; channel, aquaporin or pump  | Grade 9 membrane transport (H32)    |
+| `dnaStrand`        | DNA ladder, mRNA codons, amino acids; a mutation lit; Chargaff         | Grade 9 DNA, mutations (H36)        |
+| `macromolecules`   | monomers into a chain by a value, "…" past 4; bonds and water counted  | Grade 9 biomolecules (H100)         |
+| `cellDivision`     | body cell 2n, gamete n, egg + sperm = zygote; one pair past 2n = 8     | Grade 9 chromosome counts (H100)    |
+| `neuron`           | a neuron timing its impulse: m and ms scales; myelin at 3 m/s          | Grade 9 impulse speed (H109)        |
+| `skeletal`         | line-angle structure: wedges, CIP ranks, R/S, IHD marks; the chair     | College organic chemistry (HC2)     |
+| `truss`            | truss to scale: forces with T or C, a section cut, m + r − 2j, a bar   | College statics, structures (HC27)  |
+| `soilProfile`      | soil to scale: σ, u, σ′ with depth; settlement; footing; pavement      | College soils, foundations (HC26)   |
+| `survey`           | traverse lat, dep, gap; polygon angles; leveling; curvature; h, N, H   | College surveying (HC32)            |
+| `gel`              | a gel: ladder and lanes, bands by log size; PCR copies per cycle       | Biology biotechnology (H37)         |
+| `immuneResponse`   | antibody level by day: a slow low first response, a fast high second   | Biology immune system (H42)         |
+| `unitChain`        | factors with cancelled units struck; a ruler read; accuracy target     | Chemistry measurement (H43)         |
+| `atomModel`        | Bohr model: every proton and neutron, electrons on shells; ions        | Chemistry atoms, isotopes (H44)     |
+| `orbitalDiagram`   | orbital boxes by Aufbau and Hund; hydrogen levels and emission lines   | Chemistry electrons, spectra (H45)  |
+| `lewisStructure`   | electron dots: molecules, ions, ionic transfer, metals, hydrocarbons   | Chemistry bonding, organic (H47)    |
+| `vsepr`            | ball-and-stick VSEPR shapes, bond angle, dipoles; hydrogen bonds       | Chemistry molecular shape (H48)     |
+| `moleMap`          | grams, moles, particles, liters at STP; each factor; a mole ratio      | Chemistry mole, stoichiometry (H50) |
+| `gasPiston`        | gas under a piston: particles by n, trails ∝ √T, a gauge and scale     | Grade 10 gas laws (H51)             |
+| `energyProfile`    | reaction energy: levels, Eₐ hump, ΔH, catalyst dashed; calorimeter     | Grade 10 thermochemistry (H53)      |
+| `equilibriumChart` | concentrations leveling off where Q = K; a stress and the shift        | Grade 10 equilibrium (H54)          |
+| `phScale`          | pH 0–14 in indicator colors, [H⁺] as 10ⁿ; a titration curve            | Grade 10 acids and bases (H55)      |
+| `decayChart`       | 100 atoms decaying, the half-life curve; nuclear equations balanced    | Grades 10, 12 nuclear, dating (H57) |
+| `chemDiagram`      | effusion trails ∝ 1/√M; 100 isotope atoms, a beam; ox. numbers; Δm     | Grade 10 gases, atoms, redox (H101) |
+| `phaseEnvelope`    | binary Pxy, Txy, x–y: bubble/dew, tie line; McCabe–Thiele stairs       | College VLE, distillation (HC8)     |
+| `earthLayers`      | Earth cut open: P, S paths, shadow zones; seismogram; epicenter        | Earth science interior (H72)        |
+| `oceanProfile`     | the seafloor, shelf to trench, with a sonar ship; spring, neap tides   | Earth science ocean (H75)           |
+| `atmosphereLayers` | temperature by altitude through four layers; a pressure map, winds     | Earth science atmosphere (H76)      |
+| `hrDiagram`        | temperature against luminosity, log scales; regions, a star plotted    | Earth science stars (H79)           |
+| `streamChannel`    | a channel to scale, w × d, and the water passing in 1 s: Q = A × v     | Earth science streams (H103)        |
+| `reserve`          | a reserve as a bar cut into each year's use; empty after Q ÷ r years   | Earth science resources (H103)      |
+| `geologicClock`    | Earth's history as one day: the event at t, the time since shaded      | Earth science history (H110)        |
+| `coralSection`     | a fossil coral's daily lines across yearly bands; D beside 24 hours    | Earth science history (H110)        |
+| `transit`          | a planet crossing its star to scale; the light curve dipping by δ      | Earth and space exoplanets (H110)   |
+| `habitableZone`    | a star's zone 0.95√L to 1.37√L AU, green; the planet at a with T       | Earth and space exoplanets (H110)   |
+| `parallax`         | Earth in January and July, a near star shifting on far stars; p, d     | Earth and space stars (H110)        |
+| `controlVolume`    | a unit or steel device in a control volume; streams, Q̇, Ẇ, in = out    | College balances, devices (HC5)     |
+| `velocityProfile`  | tube, vessel, plates or film: v arrows, v_max = 2v_avg, τ_w; c lines   | College transport, blood (HC13)     |
+| `bode`             | gain (dB) over phase on log frequency; asymptotes, corners, PM, GM     | College filters, control (HC22)     |
+| `potentialWell`    | box, oscillator, step, barrier, bump: levels to scale, ψ, nodes, λ     | College quantum, chemistry (HC15)   |
+| `unitCell`         | cubic cell: atoms counted to Z, touching line; (hkl) and d; Bragg      | College solids, minerals (HC16)     |
+| `phaseSpace`       | oscillator ellipse, flow (ẋ, ṗ), area; pendulum θ–ω; bead on a hoop    | College classical mech. (HC69)      |
+| `driftPaths`       | 12 Wright–Fisher paths of p over t; expected H dashed on a 2nd axis    | College evolution, drift (HC153)    |
+| `globe`            | sun rays, noon angle, day dial; great circle; Euler pole; dipole; air  | College earth and geography (HC36)  |
+| `stressStrain`     | σ–ε curve: E, 0.2% offset, UTS, necking; specimen; tube; two members   | College materials, biomech. (HC28)  |
+| `stressElement`    | element, turned to θ_p; Mohr's circle; 3 circles; loci, n; soil line   | College stress, soil (HC33)         |
+| `wing`             | NACA section tilted by α, lift ⟂ wind; C_p, Γ; planform, tip vortices  | College aerodynamics (HC24)         |
+| `duct`             | nozzle to scale by A ÷ A∗: throat M = 1, stations, shock, p, M; a jet  | College compressible flow (HC30)    |
+| `supersonicFlow`   | normal shock and ratio bars, pitot; wedge θ, β; fan; plate; Mach cone  | College shocks, supersonic (HC31)   |
+| `fieldPlot`        | slope field + Euler; F with a path's work; x′ = Ax phases; isoclines   | College ODEs, line integrals (HC21) |
+| `surfacePlot`      | z = f(x, y): traces, slopes, tangent plane, extrema, prisms; contours  | College partials, ∬ (HC46)          |
+| solidOfRevolution  | a region turned about x or y; one disk, washer or shell; V checked     | College volumes (HC65)              |
+| `propertyDiagram`  | T–v, P–v, T–s: IAPWS vapor dome, tie line, states, cycles; vdW P–v     | College thermodynamics (HC17)       |
+| `thermalWall`      | layered wall, pipe, fin, tube, wire: T profile, R network; εσT⁴        | College heat transfer (HC23)        |
+| `projectile`       | a launch to scale: path, vₓ and v_y at three points, H and R; drag θ   | Physics 2D motion, parametric (H59) |
+| `freeBody`         | a block on a floor, ramp or rope; forces to scale, W sin θ; the net    | Physics forces, inclines (H60)      |
+| `circularMotion`   | v tangent, v²/r to the center; Gm₁m₂/r² pulls; Kepler ellipse, areas   | Physics circles, gravity (H61)      |
+| `collision`        | carts before and after: p = mv arrows, the total tip to tail; bounce   | Physics momentum (H62)              |
+| `impulse`          | p₀, p and Δp arrows; F–t rectangle of area Δp; a slower stop dashed    | Physics momentum (H102)             |
+| `powerLift`        | a crate hauled up h in t: stopwatch, W = mgh cut into J/s pieces       | Physics power (H102)                |
+| `photoelectric`    | light of λ on a metal: E = 1240/λ, electrons with E − φ, λ₀ strip      | Physics modern (H102)               |
+| `lightClock`       | light clock at rest and moving: the slant cΔt/2, γ; a rod L₀/γ         | Physics relativity (H102)           |
+| `torque`           | a wrench or door: arm r, F at θ, F⊥ = F sin θ dashed, τ = rF⊥          | Physics rotation (H107)             |
+| `rotor`            | hoop, disk, ball: I = cmr², τ = Iα; ω₀, ω; ω–t area; turn dials        | Physics rotation (H107)             |
+| `oscillator`       | spring and block by its x–t trace, ±A, v_max, ½kx² + ½mv²; hung        | Physics oscillations (H107)         |
+| `pendulum`         | a bob on L to a meter rule's scale, g named; T on a seconds strip      | Physics oscillations (H107)         |
+| `capacitor`        | plates ±Q on a battery, even field, κ slab; the Q–V line, ½CV²         | Physics potential (H107)            |
+| `section`          | a cross-section to scale: centroid, I; σ, τ blocks; RC bars, Whitney   | College mechanics, steel, RC (HC3)  |
+| `beam`             | beam on supports: loads, reactions, V and M, bent shape; bar, column   | College mechanics, structures (HC1) |
+| `simpleMachine`    | lever, block and tackle or ramp to scale; load, effort and the MA      | Physics simple machines (H63)       |
+| `heatEngine`       | hot and cold reservoirs, Q_H = W + Q_L as bands; efficiency, Carnot    | Physics thermodynamics (H64)        |
+| `rayDiagram`       | lens, mirror: principal rays, image; Snell, total reflection; slits    | Physics optics, telescopes (H66)    |
+| `charges`          | point charges, traced field lines; kq₁q₂/r² forces; E at a point       | Physics electrostatics (H67)        |
+| `induction`        | magnet into a coil, galvanometer; BIL on a wire; transformer turns     | Physics electromagnetism (H69)      |
+| `fluidSystem`      | tank, manometer, gate, float; venturi, pitot, jet; pipe grade lines    | College fluids, pipe networks (HC6) |
+| `none`             | no picture: the page opens on its values and equation, no labels       | Equation-only pages (H105)          |
 
 `alleleFrequencies` (H38, a name too long for the table): 100 allele beads counted from p, a p
 scale to drag, and the bars p², 2pq and q², for Grade 9 population genetics.
+With `after` (p′; `change`, `fitness`, `mean`), a second tray for p′ after one generation of
+selection beside p's, Δp arrowed on the p scale (HC151).
+
+`fluidSystem` (HC6, `typesHe1g.ts`): college fluid mechanics and pipe networks by `mode`: `tank`
+(P = ρgh), `manometer`, `gate` (F at the center of pressure), `buoyancy`, `venturi`, `pitot`, `jet`
+(a fixed vane), `pipe` (grade lines; `pump: true` between reservoirs), `parallel`, `loop` (Hardy
+Cross), `full` (a sewer in section), `plate` (a boundary layer) and `model` (Reynolds or Froude).
+g and every density come from the page.
 
 `expandingUniverse` (H80): galaxies spreading as space stretches by a factor, each old place
 arrowed to its new one; or a Hubble plot, v = H₀d, for Earth science cosmology.
@@ -237,6 +741,19 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `functionGraph`    | `transform: { a, h, k, from?, image? }`  | g(x) = a·f(x − h) + k beside f; an arrow from f's point to its image (H106)   |
 | `functionGraph`    | `family: 'power'`, `a, p, q, h, k`       | a·(x − h)^(p/q) + k: odd roots of negatives, asymptotes when p < 0 (H106)     |
 | `functionGraph`    | `family: 'logSum'`, `b, c`; `reject`     | log_b(x) + log_b(x + c) from max(0, −c); a candidate crossed out on x (H106)  |
+| `functionGraph`    | `family: 'expr'`, `expr, of?, from?`     | an expression of the values: + − × ÷ ^, exp, ln, trig, √, abs, u (HC10)       |
+| `functionGraph`    | `family: 'hill'`, `K, n?, top?`          | θ = top·Lⁿ ÷ (Kⁿ + Lⁿ), K ringed at half; n = 1 saturates (HC10)              |
+| `functionGraph`    | `family: 'bateman'`; `feature`           | an oral dose's curve, t_max and C_max marked (HC10)                           |
+| `functionGraph`    | `repeat: { every, count, avg? }`         | one-dose family summed into a sawtooth, C_ss,avg dashed (HC10)                |
+| `functionGraph`    | `family: 'power'`, `exponent`            | a·(x − h)^z + k with a real exponent from a value (HC10)                      |
+| `functionGraph`    | `family: 'erfc'`, `Cs, C0, width`        | C_s − (C_s − C₀)·erf(x ÷ w): a diffusion profile, C₀ dashed (HC10)            |
+| `functionGraph`    | `area: { from, to, value?, signed? }`    | under f shaded, ∫f written; signed: + and − parts in two fills (HC12)         |
+| `functionGraph`    | `between: { from?, to?, value? }`        | f and `other` shaded from the crossings, the area between written (HC12)      |
+| `functionGraph`    | `strip: { at, dir? }`                    | one upright (dx) or flat (dy) slice of the shaded region (HC12)               |
+| `functionGraph`    | `level: { y, label?, at? }`              | a dashed level (an energy, a half-power line), crossings ringed (HC12)        |
+| `functionGraph`    | `accumulation: { from, x, value? }`      | a panel with F(x) = ∫f from `from`, its point and tangent f(x) (HC12)         |
+| `functionGraph`    | `family: 'levenspiel'`                   | F_A0 ÷ (−r_A) against X: the CSTR rectangle and the PFR area (HC12)           |
+| `functionGraph`    | `family: 'equalArea'`                    | P_max sin δ, the P_m line, A₁ and A₂ shaded at δ_cr (HC12)                    |
 | `lineSystem`       | `lines[i].square`, `solutions`           | y = ax² + mx + b: a parabola and a line, 0–2 crossings ringed, shading (H106) |
 | `polygon`          | `apothem`, `angle`, `area`               | the n triangles, the apothem square to a side, θ = 180° ÷ n, K = ½aP (H106)   |
 | `venn`             | `chances.one`                            | one event: circle A in the rectangle, P(not A) = 1 − P(A) outside (H106)      |
@@ -245,10 +762,42 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `transformation`   | `about: 'center'`                        | turns about the figure's own center; point symmetry pairs through it (H106)   |
 | `rectangle`        | `bounds: { error, least?, greatest? }`   | (l ± e) by (w ± e) dashed, the band between shaded, a corner close-up (H106)  |
 | `vectorDiagram`    | `space`, `z`; `cross`, `w`, `points`     | x, y, z axes, turnable: u × v, θ, areas, the box of u, v, w; PQ, M (H106)     |
+| `vectorDiagram`    | `project: { proj?, perp?, k? }`          | u onto v: projᵥ u along v, u − projᵥ u dashed, right angle; in space (HC96)   |
+| `vectorDiagram`    | `masses`, `centerOfMass`                 | balls sized by mass on a rod, a fulcrum at x_cm; ⊕ on a plane (HC100)         |
+| `vectorDiagram`    | `forces: { list, equilibrium? }`         | 2–4 forces at a point, angles to level; tip to tail: closes, or R (HC171)     |
+| `vectorDiagram`    | `cone: { l, m, size?, angle? }`          | L on its cone about z at mħ, all 2ℓ + 1 cones faint, θ from z (HC108)         |
 | `polarGrid`        | `curve.shape: 'conic'`, `k, m, n, fn`    | r = k ÷ (m − n cos θ): focus at the pole, directrix, PF ÷ PD = e at P (H106)  |
+| `polarGrid`        | `area`, `region`, `tangent`              | ½∫ r² dθ swept from the pole; r₁ ≤ r ≤ r₂ sector; tangent at P, dy/dx (HC53)  |
+| `polarGrid`        | `family: 'cycloid'`, `radians`, `length` | the rolling circle at t; t as 3π/2; the traced length L summed (HC53)         |
+| `rightTriangle`    | `rates: { a?, b?, c? }`, `scene`         | rate arrows at the moving ends; a ladder or roads; a·a′ + b·b′ = c·c′ (HC54)  |
+| `curvedSolid`      | `fill` (cone), `slab` (cylinder)         | a cone tank on its apex filling, r = Rh/H; a slab lifted H + h − y; W (HC54)  |
+| `termsChart`       | `type: 'nr'`, `'factorial'`, `alternate` | n·rⁿ, cⁿ ÷ n!; signs alternating, the sums zig-zag about S (HC66)             |
+| `termsChart`       | `bounds`, `next`, `ratio`, `limit`       | a band low ≤ S ≤ high; aₙ₊₁ and aₙ₊₁ ÷ aₙ; the sum S worked out (HC66)        |
+| `rectangle`        | `grow: { du, dv, dt?, product? }`        | u × v growing by strips u′Δt × v and u × v′Δt; (uv)′ = u′v + uv′ (HC67)       |
+| `conicGraph`       | circle `under: { to, … }`, `tangent`     | the area under the arc as triangle + sector, θ; the tangent at P (HC67)       |
 | `conicGraph`       | `conic: 'turned'`, `A, B, C, F`; `angle` | Ax² + Bxy + Cy² = 1 with x′, y′ at θ, A′x′² + C′y′² = 1, its shape (H106)     |
 | `functionGraph`    | `riemann: { n, to, from?, side?, sum? }` | n rectangles of equal width under the curve, right, left or middle; S (H106)  |
 | `functionGraph`    | `family: 'rational'`, `top`, `poles`     | the top by coefficients over (x − p)… (x² + jx + k)…: a number on top (H106)  |
+| `functionGraph`    | `family: 'response'`, `transient`        | x(t) = x_f + (x₀ − x_f)e^(−(t − θ)/τ): τ…5τ, 63.2%, 28.3%, a ramp (HC4)       |
+| `functionGraph`    | `stepResponse: { wn, zeta, mode? }`      | 2nd-order step: ±2% band, peak, Tₛ, decay ratio; free decay, t½ (HC4)         |
+| `functionGraph`    | `stepInput`, `error`, `second`           | the step above on its own axis; eₛₛ bracketed; a dashed open loop (HC4)       |
+| `functionGraph`    | `scale: { x?, y? }`, `invertY`, `swap`   | log axes (decades, minor ticks); depth down; input on the vertical (HC9)      |
+| `functionGraph`    | `family: 'gradation'`, `reads`           | % finer against log grain size, D₁₀, D₃₀, D₆₀; values dropped (HC9)           |
+| `functionGraph`    | `tangent: { x, slope?, at?, value? }`    | the tangent with its slope triangle; L(at), the linear approximation (HC37)   |
+| `functionGraph`    | `band: { x, y, dx, dy }`                 | ε–δ: y ± ε across, x ± δ up, the window zoomed to them (HC37)                 |
+| `functionGraph`    | `series: { of / derivatives, degree }`   | a Taylor polynomial dashed over f, the gap at x bracketed; ∫P shaded (HC38)   |
+| `functionGraph`    | `family: 'linearOde'`, `'taylor'`        | y″ = (cx − ω²)y solved numerically; a polynomial from f(a), f′(a), … (HC38)   |
+| `functionGraph`    | `family: 'distribution'`, `maxwell`      | f(v) with vₚ, ⟨v⟩, vᵣₘₛ marked; a second gas or T dashed (HC42)               |
+| `functionGraph`    | `distribution: 'planck'`, `others`       | E_bλ against λ, λₘₐₓ = b ÷ T marked, the visible band tinted (HC42)           |
+| `functionGraph`    | `distribution: 'occupancy'`              | Fermi–Dirac, Bose–Einstein, Boltzmann against x, the point at x (HC42)        |
+| `functionGraph`    | `newton`, `bisect`                       | Newton's tangents to the axis; bisection's brackets under it (HC45)           |
+| `functionGraph`    | `steps: { method, dy, h, n, y0 }`        | Euler, Heun or RK4 points over the exact curve, yₙ named (HC45)               |
+| `functionGraph`    | `riemann.side: 'trapezoid'`              | trapezoids or Simpson's panel pairs (`'simpson'`), nodes dotted (HC45)        |
+| `functionGraph`    | `family: 'lagrange'`, `through`          | the polynomial through the nodes, ringed and labelled (HC45)                  |
+| `functionGraph`    | `family: 'quantizer'`, `mode`            | an ADC or DAC staircase, the input's step lit, 1 LSB; zoom past 16 (HC92)     |
+| `functionGraph`    | `family: 'amplification'`, `threshold`   | qPCR logistic curves to a threshold, each Ct dropped; treated dashed (HC148)  |
+| `functionGraph`    | `family: 'fourier'`, `fourier`           | square, saw, triangle: partial sum (Gibbs) over it; bₖ stems, k lit (HC179)   |
+| `bars`             | `log`                                    | bars on a log scale, decade grid lines; a value ≤ 0 refused (HC9)             |
 | `termsChart`       | `type: 'power'`, `step` (p)              | aₙ = a₁ × nᵖ: the squares 1, 4, 9 …, nᵖ labels, sums of squares, cubes (H106) |
 | `normalCurve`      | `f: { df1, df2, stat, alpha, tails }`    | the F curve: P past F (or both tails), the critical value, decision (H106)    |
 | `algebraTiles`     | `mode: 'box'`, `side`, `top`, `product`  | area box: row × column terms, like-term diagonals tinted, collected (H95)     |
@@ -264,14 +813,19 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `bars`             | `flows: { out: [ids] }`                  | start, flows in (+, green) and out (−, red) as steps, end; axis cut (H100)    |
 | `percentBar`       | `second: id`                             | a second percent on the bar: a band, a dashed line, its label (H104)          |
 | `normalCurve`      | `t: { df }`                              | a t curve over the dashed normal; areas, t⋆ and the p-value by t (H99)        |
+| `normalCurve`      | `family: 't'`, `bracket`, `observed`     | t over the normal, ±t⋆; x̄ ± t⋆s ÷ √n on a lined-up value axis, μ (HC114)      |
+| `normalCurve`      | `shift: { selected, response, h2? }`     | parents' selected tail, S; offspring moved by R = h²S below (HC152)           |
 | `normalCurve`      | `intervals.count` (a value)              | how many simulated intervals, 20 to 100, typed; none drawn while ? (H105)     |
 | `normalCurve`      | `meanName`                               | the mean's symbol when it is a number: μ_d for a mean difference              |
 | `membrane`         | `counter`                                | a pump's second particle the other way (K⁺ in as Na⁺ goes out), own arrow     |
+| `membrane`         | `potential: { value, ions? }`; `psi`     | ± charges ∝ V, voltmeter, ions on one scale; Ψ each side, water to lower Ψ    |
 | `termsChart`       | `far`                                    | past 30 terms: the first six, a break, the nth lit (a₁₀₀) (H93)               |
 | `termsChart`       | `type: 'recursive'`, `plus`              | aₙ = k × aₙ₋₁ + c from the one before, an arrow to each next (H93)            |
 | `termsChart`       | `lit`, `litTerm`, `powers`               | a second lit term (B1 beside B2); terms as powers, 2² = 4 (H93)               |
 | `scatter`          | `residuals`, `r`, `leastSquares`, …      | residual segments and plot, r, the least-squares line beside or given (H18)   |
 | `scatter`          | `residualOf: { point: k }`               | a value picks the point, counted from 1: its residual lit and worked (H105)   |
+| `scatter`          | `pointsFrom: '<group>'`                  | points typed as a value group x₁, y₁, …; axes grow to hold them (HC97)        |
+| `scatter`          | `classes`, `pixel`, `distances`          | class means as stars, the pixel's distance to each, the nearest lit (HC139)   |
 | `boxPlot`          | `fences`; `second`, `labels`             | 1.5 × IQR fences, outliers as open dots; two box plots on one scale (H19)     |
 | `dotPlot`          | `sd: { id, kind? }` (with `mean`)        | the mean as a line and a band one standard deviation either side (H19)        |
 | `table`            | `twoWay: { rows, cols, cells, … }`       | two-way table: totals, lit cell/row/column, segmented bars, chi-square (H20)  |
@@ -280,14 +834,21 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `venn`             | `chances.counts: { total, count? }`      | counts out of a total: regions as counts, neither outside, P = n/N (H97)      |
 | `treeDiagram`      | `chances.third`, `thirdNames`, `path3`   | a third stage: 8 leaves, each path's product; three stages multiplied (H97)   |
 | `treeDiagram`      | `namesBySize`                            | outcome names for a stage of each size: 2 H, T; 3 R, G, B; … (H105)           |
+| `treeDiagram`      | `chain: { partials, rates, total? }`     | chain rule: z, x and y, t; ∂z/∂x and dx/dt on branches, paths added (HC98)    |
 | `pascalTriangle`   | `fraction: { n, k, count?, chance? }`    | C(a, r) lit over C(n, r), drawn as a fraction: 10/84 = 5/42 (H97)             |
 | `unitCircle`       | `through: { x, y, r? }`                  | a point off the circle: r, the legs, the unit point (x/r, y/r) (H98)          |
 | `unitCircle`       | `pair: { a, b, op? }`                    | A, then B on (or back) to A ± B, arcs in turn; the formula worked (H98)       |
 | `unitCircle`       | `solutions.also`                         | two values (sin x = −1/2 or 1): both lines, every solution marked (H98)       |
 | `complexPlane`     | `power: n`; `roots: n`                   | z, z², …, zⁿ in turn; the n nth roots on a circle, a regular n-gon (H99)      |
 | `complexPlane`     | `opFrom`                                 | a value picks the sum (1), difference (2 or −1) or product (3) (H105)         |
+| `complexPlane`     | `j`, `axes`, `reactances`, `zMag`        | Z = R + jX: R and jX legs, jX_L up, −jX_C down, the size, θ (HC14)            |
+| `complexPlane`     | `phasors`, `between`                     | a three-phase star, V_ab tip to tail, I at its own scale (HC14)               |
+| `complexPlane`     | `poles`, `zeros`, `locus`, `transfer`    | s-plane × and ○, root locus, σₐ, breakaway, poles at K (HC14)                 |
 | `matrixGrid`       | `mode: 'determinant'`, `cramer`          | D by its diagonals or the first-row expansion; D, Dx, Dy side by side (H99)   |
 | `matrixGrid`       | `steps: 'echelon' \| 'reduced'`          | row operations worked out from typed entries, a 0 row read out (H105)         |
+| `matrixGrid`       | `inverse: { values? }` (rowReduce)       | [A \| I] to [I \| A⁻¹], 3 × 6 or 4 × 8, A⁻¹ lit; columns fit (HC94)           |
+| `matrixGrid`       | `tally: { value? }` (rowReduce)          | det A = k × det of each stage; the diagonal product and det A under (HC94)    |
+| `matrixGrid`       | `mode: 'routh'`, `limit`                 | Routh array: first column lit, sign changes counted, tap a cell (HC190)       |
 | `histogram`        | `range: { from?, to?, total? }`          | bars k = from to to lit and added: P(X ≥ 4) = P(4) + P(5) (H99)               |
 | `histogram`        | `clt: { mean, n, samples, se? }`         | CLT: a skewed population, the means of m samples, the normal σ/√n (H99)       |
 | `histogram`        | `count` (with `data`)                    | a typed list's length: only its first n values are binned (H03)               |
@@ -304,6 +865,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `scale`            | `before`; `hanging`                      | two scales, before and after, gas bubbles labelled; a spring scale in N       |
 | `transformation`   | `then`, `image2`; `symmetry`             | a second move from A′ (dashed) to A″; lines of symmetry and the turn order    |
 | `transformation`   | `move: 'reflect'`, `slope`               | a value 1 or −1 picks the mirror y = x or y = −x (H105)                       |
+| `transformation`   | `move: 'matrix'`, `eigen`, `det`, `area` | unit square and circle under A; eigen lines, v and Av = λv; area (HC95)       |
 | `scaleCopy`        | `center`; `splitter`                     | a dilation from any center with rays; DE ∥ BC cutting a triangle's sides      |
 | `coordinatePlane`  | `midpoint`, `partition`; `polygon`       | M with equal halves ticked; P at m : n; side slopes, parallel and right marks |
 | `circle`           | `sector`; `views`: `sector`, `radian`    | a sector by its angle (° or radians), arc and area; radius-long arcs around   |
@@ -314,6 +876,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `markedFigure`     | `quadrilateral.across: [p, q]`           | a rhombus from its diagonals AC (level) and BD, not a side and angle (H105)   |
 | `circleTheorems`   | `theorem`: `cyclic`, `arcAngle`          | an inscribed quadrilateral; an angle from two arcs, inside or outside         |
 | `coordinatePlane`  | `fit`                                    | sized to the points: 5, 10 or 20 each way, up to `extent`                     |
+| `coordinatePlane`  | `shoelace`, `buffer`, `center` (HC77)    | polygon area by cross terms; a line's buffer 2rL + πr²; mean centre, SD ring  |
 | `factorTree`       | `root: { index, outside, inside }`       | equal pairs (or threes) ringed and brought out of the root: √72 = 6√2         |
 | `powerScale`       | `log`                                    | a log₁₀ scale under the 1–10 ruler: log₁₀ 470,000 = 5 + 0.672                 |
 | `punnettSquare`    | `inheritance` (Grade 9)                  | dihybrid 4 × 4 by phenotype; incomplete, codominant; X-linked with carriers   |
@@ -323,17 +886,43 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `reaction`         | `C{x}H{y}` terms, `most`, `ions`         | subscripts from values (a hydrocarbon chain), 32 a term, ions (H101)          |
 | `moleMap`          | `limiting: { reactants, coef }`          | two reactants’ grams → moles → product, the smaller lit (H101)                |
 | `energyProfile`    | `mode: 'ladder'`                         | enthalpy levels to scale, ΔH steps, a reversed one, the total (H101)          |
+| `energyProfile`    | `quantity: 'G'`, `steps`, `mode: 'bomb'` | ΔG (°′) labels; 2–3 humps, rate-determining lit; a bomb calorimeter (HC44)    |
 | `lewisStructure`   | hydrocarbon `branches: number[]`         | methyl groups on an alkane’s chain, named: 2,2-dimethylpropane (H101)         |
 | `lewisStructure`   | ionic `charges: { metal, nonmetal }`     | the ions from their charges 1–3: Na⁺ Mg²⁺ Al³⁺, Cl⁻ O²⁻ N³⁻ → Al₂O₃ (H108)    |
+| `lewisStructure`   | molecule `formal`, `resonance`           | FC circled on each atom, the v, N, B atom ringed; forms ↔; SF₆, I₃⁻ (HC111)   |
 | `chemDiagram`      | `mode: 'phase'`, `freezing`, `boiling`   | water's phase diagram, the solution's lines dashed at Tf and Tb (H108)        |
 | `chemDiagram`      | `mode: 'rate'`, `times, concentrations`  | [A] against t through two readings, the secant, Δt and Δ[A], the rate (H108)  |
 | `chemDiagram`      | `mode: 'cell'`, `cathode`, `anode`       | the galvanic cell of two E° values, its meter E°cell, the E° scale (H108)     |
+| `chemDiagram`      | `mode: 'phase'`, `substance`             | any substance, log P: Clausius–Clapeyron vapor curve, F = C − P + 2 (HC8)     |
+| `chemDiagram`      | `rate`: `integrated`, `arrhenius`        | order 0/1/2 with half-lives and ln[A] or 1/[A] line; ln k vs 1/T (HC34)       |
+| `chemDiagram`      | `mode: 'rate'`, `consecutive`            | A → B → C, B's peak at tₘₐₓ, the sum [A]₀ dotted; `notation: 'C'` (HC34)      |
+| `chemDiagram`      | `cell`: `metals`, `concentrations`       | ion dots by M, meter E; E° → E shift −(RT ÷ nF) ln Q, Q; one metal (HC56)     |
+| `chemDiagram`      | `mode: 'cell'`, `electrolysis`           | DC supply, plating cell, e⁻ counted: Q = It, Q ÷ F, ÷ z, m = nM (HC56)        |
+| `equilibriumChart` | `mode: 'gibbs'`, `gibbs`                 | G against ξ, minimum at K, Q's tangent = ΔG; ΔG against log Q below (HC58)    |
+| `phScale`          | titration `polyprotic: { pKa }`          | 2–3 equivalence points 1 : 2 : 3, each half-way point at its pKₐ (HC71)       |
+| `phScale`          | `mode: 'buffer'`, `'aminoAcid'`          | HH curve, pKₐ ± 1 band, HA and A⁻ bars; amino acid curve and pI (HC71)        |
+| `phScale`          | `mode: 'pka'`                            | pKₐ ladder −10 to 50, two acids lit, arrow to the weaker; log K (HC73)        |
 | `beaker`           | `solution: { mode, … }`                  | solute as dots by moles; a dilution’s two beakers; solubility (H52)           |
+| `orbitalDiagram`   | `mode: 'ladder'`, `Z`, `n`, `l`          | −13.6Z² ÷ n² to scale, level n lit; n² boxes; ring and line nodes (HC109)     |
+| `orbitalDiagram`   | `mode: 'radial'`, `Z`, `n`, `l`          | P(r) = r²R² in a₀, area 1; radial nodes, ⟨r⟩ dashed, r_mp ringed (HC109)      |
+| `orbitalDiagram`   | `mode: 'crystalField'`, `d`, `split`     | d boxes split by Δ beside P to scale, high or low spin; CFSE, μ (HC110)       |
+| `beaker`           | `cuvette: { path, absorbance, … }`       | lamp, cuvette of path b, beam narrowing to T × its width; A, %T, εbc (HC112)  |
+| `macromolecules`   | `level` (protein)                        | sequence, helix and sheet, fold, 2 chains; the same residues; one lit (HC115) |
 | `rockLayers`       | `dating` (Grades 9–12)                   | ages on dated layers, a dike cutting across, index fossils, 100 atoms         |
 | `motionGraph`      | `kinematics: { view, at?, slope? }`      | signed v–t, + and − areas as Δx; x–t with a tangent at t₁; strobe (H58)       |
+| `motionGraph`      | `polynomial: { c0, c1, c2, c3, at }`     | x–t, v–t, a–t on one time axis; tangent of slope v at t; v = 0 ringed (HC99)  |
 | `energyTrack`      | `spring: { k, compression, … }`          | spring launcher, rough patch (heat fd), ramp; start and now bars (H63)        |
 | `wave`             | `standing`, `doppler`                    | string or pipe harmonic n, nodes and antinodes; Doppler fronts, cone (H65)    |
+| `wave`             | `em: { amplitude, … }`, `line`           | E and B (or H) in step, E₀, B₀, λ, S; a line's envelope and VSWR (HC93)       |
+| `rayDiagram`       | `singleSlit`, `grating`, `thinFilm`      | sinc² band, w; orders at true angles, m_max; film rays, 2nt, flips (HC68)     |
 | `circuit`          | `mixed: { layout, resistors }`           | R₁ + R₂ ∥ R₃ or (R₁ + R₂) ∥ R₃; V, I, P at each resistor (H68)                |
+| `seriesCircuit`    | `net: { topology, elements, … }`         | a schematic in textbook symbols; node V, mesh and branch I; KCL, KVL (HC7)    |
+| `circuit`          | `net` (the same renderer)                | capacitor networks (Q, V at each), two batteries, internal r (HC7)            |
+| `seriesCircuit`    | `amp: 'inverting' …`, `vin`, `rin`, `rf` | op-amp circuits: rails, virtual short, ramp, Schmitt loop, in-amp (HC18)      |
+| `seriesCircuit`    | `device: 'diodeR' …`, `parts`, `values`  | diode, zener, bridge and its ripple, BJT bias, MOSFET CS, hybrid-π (HC39)     |
+| `oscillator`       | `damping`, `phase`                       | dashpot; decaying trace in its envelope, log-dec crests; x₀, v₀, φ (HC11)     |
+| `oscillator`       | `forcing`, `transmit`                    | F₀ sin ωt; X ÷ δ_st or TR against r, the point, √2 marked (HC11)              |
+| `oscillator`       | `coupled`, `springs`                     | two blocks, mode arrows, beat traces; springs in series or parallel (HC11)    |
 | `spectrum`         | `lines`, `photon`                        | H, He, Na lines, emission or absorption, shifted by z; E = hf (H70)           |
 | `spectrum`         | `lines.line: 'rest'`                     | the lab line the rest value names (the nearest line): any Balmer line (H105)  |
 | `collision`        | `type: 'general'`, `lost`                | v₁′ given, v₂′ from momentum; each cart's KE; KE lost (H102)                  |
@@ -343,13 +932,25 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `motionGraph`      | `acceleration: −9.8` (a number)          | free fall's gravity drawn with no value for it; the 9–12 v–t graph (H105)     |
 | `projectile`       | `angle: 0` (a number)                    | a launch angle that never changes (level off a ledge): no handle (H105)       |
 | `freeBody`         | `displacement`, `work` (floor)           | d bracketed, F cos θ dashed; W = Fd cos θ in the caption (H102)               |
+| `freeBody`         | `pulley: { layout, m1, m2, mu?, … }`     | table or Atwood: each block's FBD on one scale, a beside it; T₁ ≠ T₂ (HC20)   |
+| `freeBody`         | `ladder`, `tip`                          | ladder on a smooth wall, lever arms dashed; a crate that tips or slips (HC20) |
+| `freeBody`         | `drum`, `banked`                         | rope round a drum, T₂ = T₁e^(μβ); a car on a bank, N's parts dashed (HC20)    |
+| `freeBody`         | `aircraft` `view: 'side'`, `'front'`     | L, W, T, D (T, D magnified), climb γ, α, δe inset; bank φ, L cos φ (HC25)     |
+| `freeBody`         | `aircraft` `view: 'stability'`           | AC, CG and neutral point on the mean chord, the static margin bracket (HC25)  |
+| `freeBody`         | `slab: { material, thickness, angle }`   | soil or ice slab on a slope: σ, τ, s on the base to scale; FS, slides (HC118) |
 | `gasPiston`        | `energy: { heat, work, change? }`        | first law: Q and W as bands, a Q, −W, ΔU waterfall (H102)                     |
 | `gasPiston`        | `mixture: { gases, total?, fraction? }`  | 24 particles shared by partial pressure, colored by gas; stacked P bar (H108) |
+| `gasPiston`        | `pv: { path, v1, v2, … }`; `real`        | P–V path, W shaded and signed, isotherms; vdW nb band, two gauges (HC43)      |
+| `waterfall`        | `decibels: { level?, floor?, margin? }`  | a budget in dB on a dBm axis, bars sideways; a floor dashed, margin (HC91)    |
 | `charges`          | `mode: 'plates'`; `point`                | plates V, d: uniform E = V/d, F = qE; two charges: E₁, E₂, E at x (H102)      |
 | `simpleMachine`    | `seesaw: { torque?, pivot? }`            | lever as a seesaw: F₁d₁ = F₂d₂ as curved arrows, Fₚ = F₁ + F₂ (H107)          |
 | `charges`          | `equipotentials: { potential, … }`       | dashed circles r/2, r, 2r with V = kq/r; q₀ on r with U = q₀V (H107)          |
 | `charges`          | plates `launch: { charge, mass }`        | a charge let go at a plate: strobed ∝ t², K = qΔV eV, v vs c/10 (H107)        |
 | `induction`        | `mode: 'charge'`, `coulombs`             | a moving charge: F = qvB sin θ along qv × B; square to B, r = mv/qB (H107)    |
+| `induction`        | `mode: 'field'`, `source`                | wire, loop, solenoid, toroid, plates: B lines, Amperian loop, B at r (HC19)   |
+| `induction`        | `rails: { B, L, v, R }`                  | a rod on rails: ε = BLv, I round the loop by Lenz, F = BIL against v (HC19)   |
+| `charges`          | `gauss: { shape, Q, r?, R? }`            | sphere, line, plane: dashed Gaussian surface, E on it, enclosed Q (HC29)      |
+| `charges`          | `distribution`                           | ring or disk: dE from opposite pieces, E on the axis; image −q at −d (HC29)   |
 | `earthLayers`      | `mode: 'magnitude'`, `m1`, `m2`, …       | two seismograms to one scale; bars on a magnitude scale, 10^ΔM marked (H103)  |
 | `oceanProfile`     | `mode: 'stripes'`, `distance`, `age`, …  | ridge from above: stripes mirrored, hatched past 12 Ma; a rock x km, t (H103) |
 | `atmosphereLayers` | `mode: 'parcel'`, `temperature`, …       | a parcel cooling 10 °C/km, dew point 2 °C/km, meeting at a cloud base (H103)  |
@@ -358,11 +959,22 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `hrDiagram`        | `mass`, `luminosity?`, `lifetime?`       | a main-sequence star placed by mass, L = M^3.5; 3, 10, 30 M☉ marked (H103)    |
 | `circularMotion`   | kepler `starMass`                        | round another star: a³ = M × T², star, closest and farthest labels (H110)     |
 | `circularMotion`   | kepler `eccentricity` to 0.97            | long comet ellipses such as Halley's Comet (e = 0.967) (H110)                 |
+| `circularMotion`   | `mode: 'hohmann'`, `mu`, `r1`, `r2`, …   | two orbits, the transfer half-ellipse, Δv₁ or v∞, Δv₂, TOF; or Sun (HC35)     |
+| `circularMotion`   | `mode: 'visViva'`, `rp`, `ra`, `r`       | the point at r on the ellipse, r from the focus, v = √(μ(2/r − 1/a)) (HC35)   |
+| `circularMotion`   | `mode: 'pair'`, `t1`, `t2`               | two planets lined up at t = 0 and again after S, each angle and laps (HC35)   |
+| `circularMotion`   | `mode: 'tangential'`, `rho`, `at`, …     | n–t: v, a_t, a_n = v²/ρ to the center of curvature, a = their sum (HC35)      |
 | `rotor`            | `hollow: true`                           | the hollow ball (c = ⅔, a shell cut open) in the compare row (H111)           |
+| `rotor`            | `rolling: { height, shapes? }`           | a ramp of drop h, v and ω at the bottom, K_t + K_r = mgh bars; a race (HC102) |
+| `rotor`            | `rod: { length, d? }`                    | a rod, center axis dashed, the axis d away lit; I = I_cm + Md² bar (HC102)    |
+| `rotor`            | `precession: { r, omega }`               | a gyroscope on a pivot: L along the axle, mg, τ = mgr, the Ω circle (HC106)   |
+| `rotor`            | `plate: { a, b }`                        | a thin plate, its principal axes with I₁, I₂, I₃; the middle tumbles (HC107)  |
+| `pendulum`         | `rod: { length, pivot? }`, `mass`, `g`   | a rod on a pin, d bracketed to its center of mass; I ÷ (md) dashed; T (HC103) |
 | `normalCurve`      | `f.tailsFrom: id`                        | one tail or two as the Hₐ value says (1, 3, 4 right; 0, 6 both) (H112)        |
 | `pascalTriangle`   | `fraction.b`, `fraction.r`               | exactly k of r: C(a, k) × C(b, r − k) ÷ C(a + b, r), to 60 (H113)             |
 | `reserve`          | `growth: id`, `lasts: id`                | use growing g% a year: slices grow, empty at T, beside steady Q ÷ r (H115)    |
 | `photoelectric`    | `blank: true`                            | a "?" value draws nothing (no example φ, Kₘₐₓ or λ₀ faded behind it) (H116)   |
+| `photoelectric`    | `mode: 'compton'`, `angle`               | photon in, λ′ out at θ, electron at φ; p = p′ + pₑ closed; λ, λ′ (HC105)      |
+| `impulse`          | `shape`, `peak`, `time`, `mass?`         | rectangle, triangle or half-sine F–t pulse, area J; F_avg dashed; Δv (HC101)  |
 
 If no existing representation fits, add a new kind in `src/components/module/reps/` rather than
 forcing an existing one. A new kind gets: its spec in `types.ts`, a case in `reps/index.tsx`,

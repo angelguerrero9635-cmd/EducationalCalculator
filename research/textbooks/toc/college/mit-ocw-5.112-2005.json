@@ -1,0 +1,223 @@
+{
+  "id": "mit-ocw-5.112-2005",
+  "curriculum": "MIT OCW 5.112 Principles of Chemical Science",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Fall 2005",
+  "subject": "chemistry",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Christopher Cummins and Sylvia Ceyer. 5.112 Principles of Chemical Science. Fall 2005. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu. License: Creative Commons BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Part",
+    "lesson": "Lecture"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/5-112-principles-of-chemical-science-fall-2005/",
+  "retrieved": "2026-10-02",
+  "notes": "Reference only (CC BY-NC-SA 4.0; OCW terms https://ocw.mit.edu/pages/privacy-and-terms-of-use/). Lecture list and order from the course pages; examples, ranges and notation are our words, read from the exams and problem sets (no problem text or numbers copied). Third-party figures inside OCW PDFs are outside the licence and were not used. Lecture titles from the course resource pages.",
+  "books": [
+    {
+      "course": "5.112",
+      "url": "https://ocw.mit.edu/courses/5-112-principles-of-chemical-science-fall-2005/",
+      "units": [
+        {
+          "n": "L",
+          "title": "Lectures",
+          "topics": [
+            "he.chemistry.gen-chem-1#0",
+            "he.chemistry.gen-chem-1#2",
+            "he.chemistry.gen-chem-1#4",
+            "he.chemistry.gen-chem-2#2",
+            "he.chemistry.gen-chem-2#4",
+            "he.chemistry.inorganic#2"
+          ],
+          "notes": "No exams or problem sets are published for this run; the lecture order is the extract. Intermolecular interactions and polarizability (L16–17) have no taxonomy topic.",
+          "lessons": [
+            {
+              "n": "1",
+              "title": "Atomic theory of matter",
+              "topics": ["he.chemistry.gen-chem-1#0"]
+            },
+            {
+              "n": "2",
+              "title": "Discovery of nucleus",
+              "topics": ["he.chemistry.gen-chem-1#0"]
+            },
+            {
+              "n": "3",
+              "title": "Wave-particle duality of radiation and matter",
+              "topics": ["he.chemistry.gen-chem-1#0"]
+            },
+            {
+              "n": "4",
+              "title": "Particle-like nature of light",
+              "topics": ["he.chemistry.gen-chem-1#0"]
+            },
+            {
+              "n": "5",
+              "title": "Matter as a wave",
+              "topics": ["he.chemistry.gen-chem-1#0"]
+            },
+            {
+              "n": "6",
+              "title": "Schrödinger equation for H atom",
+              "topics": ["he.chemistry.gen-chem-1#0"]
+            },
+            {
+              "n": "7",
+              "title": "Hydrogen atom wavefunctions",
+              "topics": ["he.chemistry.gen-chem-1#0"]
+            },
+            {
+              "n": "8",
+              "title": "p-orbitals",
+              "topics": ["he.chemistry.gen-chem-1#0"]
+            },
+            {
+              "n": "9",
+              "title": "Electronic structure of multielectron atoms",
+              "topics": ["he.chemistry.gen-chem-1#0"]
+            },
+            {
+              "n": "10",
+              "title": "Periodic trends in elemental properties",
+              "topics": ["he.chemistry.gen-chem-1#0"]
+            },
+            {
+              "n": "11",
+              "title": "Why wavefunctions are important",
+              "topics": ["he.chemistry.gen-chem-1#0"]
+            },
+            {
+              "n": "12",
+              "title": "Ionic bonds: classical model and mechanism",
+              "topics": ["he.chemistry.gen-chem-1#4"]
+            },
+            {
+              "n": "13",
+              "title": "Kinetic theory: behavior of gases",
+              "topics": ["he.chemistry.gen-chem-1#2"]
+            },
+            {
+              "n": "14",
+              "title": "Distribution of molecular energies",
+              "topics": ["he.chemistry.gen-chem-1#2"]
+            },
+            {
+              "n": "15",
+              "title": "Internal degrees of freedom",
+              "topics": ["he.chemistry.gen-chem-1#2"]
+            },
+            {
+              "n": "16",
+              "title": "Intermolecular interactions",
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+            },
+            {
+              "n": "17",
+              "title": "Polarizability",
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+            },
+            {
+              "n": "18",
+              "title": "Thermodynamics and spontaneous change",
+              "topics": ["he.chemistry.gen-chem-2#3"]
+            },
+            {
+              "n": "19",
+              "title": "Molecular description of acids and bases",
+              "topics": ["he.chemistry.gen-chem-2#2"]
+            },
+            {
+              "n": "20",
+              "title": "Lewis and Brønsted acid-base concepts",
+              "topics": ["he.chemistry.gen-chem-2#2"]
+            },
+            {
+              "n": "21",
+              "title": "Titration curves and pH indicators",
+              "topics": ["he.chemistry.gen-chem-2#2", "he.chemistry.analytical#1"]
+            },
+            {
+              "n": "22",
+              "title": "Electrons in chemistry: redox processes",
+              "topics": ["he.chemistry.gen-chem-2#4"]
+            },
+            {
+              "n": "23",
+              "title": "Cell potentials and free energy",
+              "topics": ["he.chemistry.gen-chem-2#4"]
+            },
+            {
+              "n": "24",
+              "title": "Theory of molecular shapes",
+              "topics": ["he.chemistry.gen-chem-1#4"]
+            },
+            {
+              "n": "25",
+              "title": "Valence bond theory",
+              "topics": ["he.chemistry.gen-chem-1#4"]
+            },
+            {
+              "n": "26",
+              "title": "Molecular orbital theory",
+              "topics": ["he.chemistry.gen-chem-1#4", "he.chemistry.physical-2#3"]
+            },
+            {
+              "n": "27",
+              "title": "Molecular orbital theory for diatomic molecules",
+              "topics": ["he.chemistry.gen-chem-1#4", "he.chemistry.physical-2#3"]
+            },
+            {
+              "n": "28",
+              "title": "Molecular orbital theory for polyatomic molecules",
+              "topics": ["he.chemistry.physical-2#3"]
+            },
+            {
+              "n": "29",
+              "title": "Crystal field theory",
+              "topics": ["he.chemistry.inorganic#2"]
+            },
+            {
+              "n": "30",
+              "title": "Crystal field theory (cont.)",
+              "topics": ["he.chemistry.inorganic#2"]
+            },
+            {
+              "n": "31",
+              "title": "Color and magnetism of coordination complexes",
+              "topics": ["he.chemistry.inorganic#2"]
+            },
+            {
+              "n": "32",
+              "title": "Coordination complexes and ligands",
+              "topics": ["he.chemistry.inorganic#1"]
+            },
+            {
+              "n": "33",
+              "title": "Ligand substitution reactions: kinetics",
+              "topics": ["he.chemistry.inorganic#1", "he.chemistry.gen-chem-2#0"]
+            },
+            {
+              "n": "34",
+              "title": "Bonding in metals and semiconductors",
+              "topics": ["he.chemistry.inorganic#3"]
+            },
+            {
+              "n": "36",
+              "title": "Nuclear chemistry and the Cardiolite story",
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+            }
+          ]
+        }
+      ],
+      "title": "5.112"
+    }
+  ]
+}

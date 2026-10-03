@@ -1,0 +1,121 @@
+{
+  "id": "mit-ocw-7.05-2020",
+  "curriculum": "MIT OCW 7.05 General Biochemistry",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Spring 2020",
+  "subject": "chemistry",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Michael Yaffe and Matthew Vander Heiden. 7.05 General Biochemistry. Spring 2020. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu. License: Creative Commons BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Part",
+    "lesson": "Lecture"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/7-05-general-biochemistry-spring-2020/",
+  "retrieved": "2026-10-02",
+  "notes": "Reference only (CC BY-NC-SA 4.0; OCW terms https://ocw.mit.edu/pages/privacy-and-terms-of-use/). Lecture list and order from the course pages; examples, ranges and notation are our words, read from the exams and problem sets (no problem text or numbers copied). Third-party figures inside OCW PDFs are outside the licence and were not used. Problem sets 8–11 and exam 3 (2019) read for types (OCW-7.05-S20-*).",
+  "books": [
+    {
+      "course": "7.05",
+      "url": "https://ocw.mit.edu/courses/7-05-general-biochemistry-spring-2020/",
+      "units": [
+        {
+          "n": "L",
+          "title": "Lectures with published notes (12, 19–32)",
+          "topics": ["he.chemistry.biochemistry#2", "he.chemistry.biochemistry#3"],
+          "examples": [
+            "net ATP when a step is bypassed",
+            "which glycolytic steps are far from equilibrium (ΔG vs ΔG°′ table)",
+            "maximum ATP from oxidizing a molecule",
+            "E°′ reasoning in the respiratory chain",
+            "isotope tracing into fatty acids"
+          ],
+          "ranges": ["ΔG°′ −23 to +23 kJ/mol", "E°′ −0.32 to +0.82 V"],
+          "notes": "Lectures 1–11 and 13–18 (protein structure, enzymes) have no separate resource pages in the OCW sitemap.",
+          "lessons": [
+            {
+              "n": "12",
+              "title": "Carbohydrates; introduction to membranes",
+              "topics": ["he.chemistry.biochemistry#2", "he.biology.cell-molecular#0"]
+            },
+            {
+              "n": "19",
+              "title": "Introduction to metabolism; polysaccharides; bioenergetics and pathways",
+              "topics": ["he.chemistry.biochemistry#3", "he.chemistry.biochemistry#2"]
+            },
+            {
+              "n": "20",
+              "title": "Bioenergetics; glycolysis I",
+              "topics": ["he.chemistry.biochemistry#3", "he.chemistry.biochemistry#2"]
+            },
+            {
+              "n": "21",
+              "title": "Glycolysis II; regulation",
+              "topics": ["he.chemistry.biochemistry#2"]
+            },
+            {
+              "n": "22",
+              "title": "Gluconeogenesis; carbohydrate storage; TCA cycle I",
+              "topics": ["he.chemistry.biochemistry#2"]
+            },
+            {
+              "n": "23",
+              "title": "TCA cycle II",
+              "topics": ["he.chemistry.biochemistry#2"]
+            },
+            {
+              "n": "24",
+              "title": "Lipids and fatty acid oxidation",
+              "topics": ["he.chemistry.biochemistry#2"]
+            },
+            {
+              "n": "25",
+              "title": "Oxidative phosphorylation",
+              "topics": ["he.chemistry.biochemistry#3"]
+            },
+            {
+              "n": "26",
+              "title": "Oxidative phosphorylation; photosynthesis I",
+              "topics": ["he.chemistry.biochemistry#3"]
+            },
+            {
+              "n": "27",
+              "title": "Photosynthesis II: CO₂ assimilation",
+              "topics": ["he.chemistry.biochemistry#2"]
+            },
+            {
+              "n": "28",
+              "title": "Pentose phosphate pathway",
+              "topics": ["he.chemistry.biochemistry#2"]
+            },
+            {
+              "n": "29",
+              "title": "Lipid synthesis",
+              "topics": ["he.chemistry.biochemistry#2"]
+            },
+            {
+              "n": "30",
+              "title": "Nitrogen and amino acid metabolism I",
+              "topics": ["he.chemistry.biochemistry#2"]
+            },
+            {
+              "n": "31",
+              "title": "Amino acid metabolism II",
+              "topics": ["he.chemistry.biochemistry#2"]
+            },
+            {
+              "n": "32",
+              "title": "Nucleotide metabolism",
+              "topics": ["he.chemistry.biochemistry#2"]
+            }
+          ]
+        }
+      ],
+      "title": "7.05"
+    }
+  ]
+}

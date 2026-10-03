@@ -1,0 +1,193 @@
+{
+  "id": "mit-ocw-16-050",
+  "curriculum": "MIT OCW 16.050 Thermal Energy",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Fall 2002",
+  "subject": "mechanical",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Zoltan Spakovszky. 16.050 Thermal Energy, Fall 2002. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu/courses/16-050-thermal-energy-fall-2002/. License: Creative Commons BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Assignment",
+    "lesson": "Part"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/16-050-thermal-energy-fall-2002/",
+  "retrieved": "2026-10-02",
+  "notes": "Instructor(s): Zoltan Spakovszky. Units are the problem sets, labs and exams read (type only; no solutions fetched). Calendar (topic order) as published: LEC # TOPICS 1-3 Prelude: Introduction and Review of Unified Engineering Thermodynamics 4-13 The Second Law of Thermodynamics 4-6 Background to the Second Law of Thermodynamics 7-9 The Second Law of Thermodynamics 10-13 Applications of the Second Law 14-26 Applications of Thermodynamics to Engineering Systems 14-19 Gas Power and Propulsion Cycles 20-23 Power Cycles with Two-Phase Media (Vapor Power Cycles) 24-26 Introduction to Thermochemistry 27-37 Fundamentals of Heat Transfer 27-29 Introduction to Conduction Heat Transfer 30-32 Introduction to Convection Heat Transfer 33-34 Applications of the Concepts: Heat Exchangers 35-37 Introduction to Thermal Radiation and Radiation Heat Transfer Third-party content inside OCW files (figures credited to other publishers) was not used.",
+  "books": [
+    {
+      "grade": "college",
+      "url": "https://ocw.mit.edu/courses/16-050-thermal-energy-fall-2002/",
+      "units": [
+        {
+          "n": "1",
+          "title": "ps1_final_with_gt",
+          "url": "https://ocw.mit.edu/courses/16-050-thermal-energy-fall-2002/resources/ps1_final_with_gt/",
+          "topics": ["he.engineering.thermodynamics#1", "he.engineering.thermodynamics#0"],
+          "examples": [
+            "air mass and pressure of a balloon at two sizes",
+            "compressor and turbine power of an afterburning turbojet",
+            "heat for the reverse path of a cycle on a p–V sketch",
+            "net work and the second work term of a cycle from its heats",
+            "steam made in a reactor steam generator from helium cooling",
+            "temperature change of air accelerated in a nozzle"
+          ],
+          "lessons": [],
+          "notes": "6 question record(s): OCW-16.050-PS1-1, OCW-16.050-PS1-2, OCW-16.050-PS1-3, OCW-16.050-PS1-5, OCW-16.050-PS1-6, OCW-16.050-PS1-7"
+        },
+        {
+          "n": "2",
+          "title": "ps2_final",
+          "url": "https://ocw.mit.edu/courses/16-050-thermal-energy-fall-2002/resources/ps2_final/",
+          "topics": [
+            "he.engineering.thermodynamics#2",
+            "he.engineering.thermodynamics#1",
+            "he.engineering.thermodynamics#3"
+          ],
+          "examples": [
+            "heat rejected and work of a Carnot engine between two reservoirs",
+            "power of a refrigerator at three-quarters of the Carnot COP",
+            "which fuel gives more work per dollar with a Carnot limit",
+            "work and heat per process of a three-process ideal-gas engine"
+          ],
+          "lessons": [],
+          "notes": "4 question record(s): OCW-16.050-PS2-1, OCW-16.050-PS2-2, OCW-16.050-PS2-4, OCW-16.050-PS2-5"
+        },
+        {
+          "n": "3",
+          "title": "ps3_final",
+          "url": "https://ocw.mit.edu/courses/16-050-thermal-energy-fall-2002/resources/ps3_final/",
+          "topics": ["he.engineering.thermodynamics#3", "he.engineering.thermodynamics#1"],
+          "examples": [
+            "argon closed Brayton cycle for a power output",
+            "gas turbine with two turbines and two combustors",
+            "ideal Brayton cycle: work, heat and efficiency",
+            "time for cabin pressure to fall through a broken window"
+          ],
+          "lessons": [],
+          "notes": "4 question record(s): OCW-16.050-PS3-1, OCW-16.050-PS3-2, OCW-16.050-PS3-4, OCW-16.050-PS3-5"
+        },
+        {
+          "n": "4",
+          "title": "ps4_final",
+          "url": "https://ocw.mit.edu/courses/16-050-thermal-energy-fall-2002/resources/ps4_final/",
+          "topics": ["he.engineering.thermodynamics#1", "he.engineering.thermodynamics#2"],
+          "examples": [
+            "entropy generated when two equal liquid masses mix",
+            "helium cycle with an irreversible expansion: efficiency and entropy",
+            "ideal-gas entropy change in terms of T and k",
+            "three-process air cycle: work, heat and net work",
+            "work of a reversible isothermal compressor"
+          ],
+          "lessons": [],
+          "notes": "5 question record(s): OCW-16.050-PS4-1, OCW-16.050-PS4-2, OCW-16.050-PS4-3, OCW-16.050-PS4-5, OCW-16.050-PS4-6"
+        },
+        {
+          "n": "5",
+          "title": "ps5_final",
+          "url": "https://ocw.mit.edu/courses/16-050-thermal-energy-fall-2002/resources/ps5_final/",
+          "topics": ["he.engineering.thermodynamics#2"],
+          "examples": [
+            "efficiency and entropy generation from a T–s diagram of a cycle",
+            "exit speed of a nozzle with an isentropic efficiency",
+            "is an inventor's cycle possible",
+            "power of a centrifugal compressor with an isentropic efficiency",
+            "turbine work after a throttle with a pressure drop"
+          ],
+          "lessons": [],
+          "notes": "5 question record(s): OCW-16.050-PS5-1, OCW-16.050-PS5-2, OCW-16.050-PS5-3, OCW-16.050-PS5-4, OCW-16.050-PS5-6"
+        },
+        {
+          "n": "6",
+          "title": "ps6_final",
+          "url": "https://ocw.mit.edu/courses/16-050-thermal-energy-fall-2002/resources/ps6_final/",
+          "topics": ["he.engineering.thermodynamics#3"],
+          "examples": [
+            "end-of-compression state of an Otto cycle",
+            "ideal Diesel cycle states, work and efficiency",
+            "ideal ramjet cycle efficiency",
+            "work and efficiency of an ideal Otto engine"
+          ],
+          "lessons": [],
+          "notes": "4 question record(s): OCW-16.050-PS6-1, OCW-16.050-PS6-2, OCW-16.050-PS6-3, OCW-16.050-PS6-6"
+        },
+        {
+          "n": "7",
+          "title": "ps7_final",
+          "url": "https://ocw.mit.edu/courses/16-050-thermal-energy-fall-2002/resources/ps7_final/",
+          "topics": ["he.engineering.thermodynamics#3", "he.engineering.thermodynamics#0"],
+          "examples": [
+            "ammonia ocean-thermal Rankine plant",
+            "flashing geothermal water: vapor quality after throttling",
+            "quality of wet steam by a throttling calorimeter",
+            "reversed Carnot cycle with water: temperatures and work"
+          ],
+          "lessons": [],
+          "notes": "4 question record(s): OCW-16.050-PS7-1, OCW-16.050-PS7-3, OCW-16.050-PS7-4, OCW-16.050-PS7-5"
+        },
+        {
+          "n": "8",
+          "title": "ps8_final_to_cms",
+          "url": "https://ocw.mit.edu/courses/16-050-thermal-energy-fall-2002/resources/ps8_final_to_cms/",
+          "topics": ["he.engineering.thermodynamics#1", "he.engineering.heat-transfer#0"],
+          "examples": [
+            "adiabatic flame temperature of octane with excess air",
+            "conduction through a conical section",
+            "heat flow through a two-slab composite wall"
+          ],
+          "lessons": [],
+          "notes": "3 question record(s): OCW-16.050-PS8-1, OCW-16.050-PS8-2, OCW-16.050-PS8-3"
+        },
+        {
+          "n": "9",
+          "title": "quiz1",
+          "url": "https://ocw.mit.edu/courses/16-050-thermal-energy-fall-2002/resources/quiz1/",
+          "topics": ["he.engineering.thermodynamics#2", "he.engineering.thermodynamics#1"],
+          "examples": [
+            "net work and efficiency of a cycle that is a circle on a T–S diagram",
+            "power or heat of an insulated steady-flow air device",
+            "turbine in parallel with a throttle: mixed exit state"
+          ],
+          "lessons": [],
+          "notes": "3 question record(s): OCW-16.050-Q1-1, OCW-16.050-Q1-2, OCW-16.050-Q1-3"
+        },
+        {
+          "n": "10",
+          "title": "quiz2",
+          "url": "https://ocw.mit.edu/courses/16-050-thermal-energy-fall-2002/resources/quiz2/",
+          "topics": ["he.engineering.thermodynamics#3"],
+          "examples": [
+            "R-12 vapor-compression refrigerator: COP and heats",
+            "combined Brayton–Rankine plant: mass ratio and efficiency"
+          ],
+          "lessons": [],
+          "notes": "2 question record(s): OCW-16.050-Q2-1, OCW-16.050-Q2-3"
+        },
+        {
+          "n": "11",
+          "title": "finalexam",
+          "url": "https://ocw.mit.edu/courses/16-050-thermal-energy-fall-2002/resources/finalexam/",
+          "topics": [
+            "he.engineering.thermodynamics#2",
+            "he.engineering.thermodynamics#0",
+            "he.engineering.heat-transfer#2"
+          ],
+          "examples": [
+            "entropy generation of a resistor in an air duct",
+            "exit quality and work of an isentropic steam turbine",
+            "heat and work of a reversible cycle with three reservoirs",
+            "net radiation between black and gray parallel plates",
+            "quality of nitrogen after mass is removed at constant temperature"
+          ],
+          "lessons": [],
+          "notes": "5 question record(s): OCW-16.050-F-1, OCW-16.050-F-2, OCW-16.050-F-3, OCW-16.050-F-5, OCW-16.050-F-8"
+        }
+      ],
+      "title": "MIT OCW 16.050 Thermal Energy"
+    }
+  ]
+}

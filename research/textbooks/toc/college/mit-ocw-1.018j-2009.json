@@ -1,0 +1,151 @@
+{
+  "id": "mit-ocw-1.018j-2009",
+  "curriculum": "MIT OCW 1.018J / 7.30J Ecology I: The Earth System",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Fall 2009",
+  "subject": "biology",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Edward DeLong and Penny Chisholm. 1.018J / 7.30J Ecology I: The Earth System. Fall 2009. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu. License: Creative Commons BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Part",
+    "lesson": "Lecture"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/1-018j-ecology-i-the-earth-system-fall-2009/",
+  "retrieved": "2026-10-02",
+  "notes": "Reference only (CC BY-NC-SA 4.0; OCW terms https://ocw.mit.edu/pages/privacy-and-terms-of-use/). Lecture list and order from the course calendar or lecture-notes page; examples, ranges and notation are our words, read from the exams and problem sets (no problem text or numbers copied). Third-party figures inside OCW PDFs are outside the licence and were not used. Quizzes 1–3 (posted with answers) read for the records.",
+  "books": [
+    {
+      "course": "1.018J / 7.30J",
+      "url": "https://ocw.mit.edu/courses/1-018j-ecology-i-the-earth-system-fall-2009/",
+      "units": [
+        {
+          "n": "1",
+          "title": "Earth, energy and productivity",
+          "topics": ["he.biology.ecology#2"],
+          "examples": [
+            "ΔG°′ of chemolithotrophic reactions",
+            "GPP, NPP, NCP from fluxes; biomass from residence time",
+            "light and dark bottle O₂ method"
+          ],
+          "ranges": ["E°′ −0.43 to +0.96 V", "fluxes 10³–10⁵ g C/yr"],
+          "notation": ["ΔG°′ = −nFΔE°′", "ΔG′ = ΔG°′ + RT ln Q", "MRT = biomass/NPP"],
+          "lessons": [
+            {
+              "n": "1",
+              "title": "What is ecology?",
+              "topics": [],
+              "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+            },
+            {
+              "n": "2",
+              "title": "Evolution of Earth and the biosphere",
+              "topics": ["he.biology.evolution#0"]
+            },
+            {
+              "n": "3",
+              "title": "Thermodynamics of life",
+              "topics": ["he.biology.principles-1#2"]
+            },
+            {
+              "n": "5–6",
+              "title": "Primary productivity I–II",
+              "topics": ["he.biology.ecology#2"]
+            },
+            {
+              "n": "7",
+              "title": "Biogeochemical cycles",
+              "topics": ["he.biology.ecology#2"]
+            },
+            {
+              "n": "8",
+              "title": "Global carbon cycle",
+              "topics": ["he.biology.ecology#2"]
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Nutrients, food webs and populations",
+          "topics": ["he.biology.ecology#0", "he.biology.ecology#1", "he.biology.ecology#2"],
+          "examples": [
+            "assimilation efficiency from I, P, R",
+            "mark–recapture",
+            "life table: ex, R₀, G",
+            "chemostat volume from D = f/V = r; cell quota"
+          ],
+          "notation": ["Q = (Sᵢ − S)/N", "D = f/V"],
+          "lessons": [
+            {
+              "n": "10",
+              "title": "Limiting factors and Redfield",
+              "topics": ["he.biology.ecology#2"]
+            },
+            {
+              "n": "11",
+              "title": "Ecosystem experiments and geoengineering",
+              "topics": ["he.biology.ecology#3"]
+            },
+            {
+              "n": "12",
+              "title": "Secondary productivity and food webs",
+              "topics": ["he.biology.ecology#2", "he.biology.ecology#1"]
+            },
+            {
+              "n": "13",
+              "title": "Population growth",
+              "topics": ["he.biology.ecology#0"]
+            },
+            {
+              "n": "14",
+              "title": "Chemostats and life tables",
+              "topics": ["he.biology.ecology#0", "he.biology.microbiology#1"]
+            },
+            {
+              "n": "15",
+              "title": "Human population growth",
+              "topics": ["he.biology.ecology#0"]
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Communities",
+          "topics": ["he.biology.ecology#1", "he.biology.ecology#3"],
+          "examples": [
+            "Lotka–Volterra isoclines from K₁, K₂, α, β; conditions for coexistence",
+            "trophic level from diet shares",
+            "producer needed at 10% efficiency"
+          ],
+          "lessons": [
+            {
+              "n": "17",
+              "title": "Competition and the niche",
+              "topics": ["he.biology.ecology#1"]
+            },
+            {
+              "n": "18",
+              "title": "Predation, symbiosis, mutualism",
+              "topics": ["he.biology.ecology#1"]
+            },
+            {
+              "n": "19",
+              "title": "Biogeography",
+              "topics": ["he.biology.ecology#3"]
+            },
+            {
+              "n": "20",
+              "title": "A thought experiment in sustainability",
+              "topics": ["he.biology.ecology#3"]
+            }
+          ]
+        }
+      ],
+      "title": "1.018J / 7.30J"
+    }
+  ]
+}

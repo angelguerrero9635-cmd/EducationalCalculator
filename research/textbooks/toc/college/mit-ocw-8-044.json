@@ -1,0 +1,227 @@
+{
+  "id": "mit-ocw-8-044",
+  "curriculum": "MIT OCW 8.044 Statistical Physics I",
+  "publisher": "MIT OpenCourseWare (Thomas Greytak)",
+  "edition": "Spring 2013",
+  "subject": "physics",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Thomas Greytak. 8.044 Statistical Physics I. Spring 2013. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu. License: Creative Commons BY-NC-SA."
+  },
+  "terms": "MIT OCW: CC BY-NC-SA 4.0; syllabus order and problem types only (type records). Third-party content on OCW pages is outside the licence and was skipped.",
+  "sourceUrl": "https://ocw.mit.edu/courses/8-044-statistical-physics-i-spring-2013/",
+  "retrieved": "2026-10-02",
+  "notes": "Lecture topics from the course calendar (in order; the four probability lectures have no physics topic). Exams 1–4 of 2003 and 2004 (posted with the course) carry the examples. Units are the problem sets and exams whose question types are recorded in research/questions/college/physics.jsonl; examples are those question kinds. robots.txt: Allow /.",
+  "books": [
+    {
+      "title": "8.044 Statistical Physics I (Spring 2013)",
+      "url": "https://ocw.mit.edu/courses/8-044-statistical-physics-i-spring-2013/",
+      "units": [
+        {
+          "n": "1",
+          "title": "Probability: 1 Random Variable",
+          "topics": [],
+          "note": "probability review (he.math or statistics); no physics topic"
+        },
+        {
+          "n": "2",
+          "title": "Probability: 2 or More Random Variables",
+          "topics": [],
+          "note": "probability review (he.math or statistics); no physics topic"
+        },
+        {
+          "n": "3",
+          "title": "Probability: Functions of a Random Variable",
+          "topics": [],
+          "note": "probability review (he.math or statistics); no physics topic"
+        },
+        {
+          "n": "4",
+          "title": "Probability: Sums of RVs and Central Limit Theorem",
+          "topics": [],
+          "note": "probability review (he.math or statistics); no physics topic"
+        },
+        {
+          "n": "5",
+          "title": "Thermodynamic Variables and State Functions",
+          "topics": ["he.physics.thermal-statistical#0"]
+        },
+        {
+          "n": "6",
+          "title": "The First Law and Paths",
+          "topics": ["he.physics.thermal-statistical#0"]
+        },
+        {
+          "n": "7",
+          "title": "Statistical Mechanics and the Microcanonical Ensemble",
+          "topics": ["he.physics.thermal-statistical#1"]
+        },
+        {
+          "n": "8",
+          "title": "Entropy, Temperature, and the Second Law",
+          "topics": ["he.physics.thermal-statistical#0", "he.physics.thermal-statistical#1"]
+        },
+        {
+          "n": "9",
+          "title": "Entropy as a Thermodynamic Variable",
+          "topics": ["he.physics.thermal-statistical#0"]
+        },
+        {
+          "n": "10",
+          "title": "Maxwell Relations and Thermodynamic Potentials",
+          "topics": ["he.physics.thermal-statistical#0"]
+        },
+        {
+          "n": "11",
+          "title": "Heat Engines and Carnot Cycles",
+          "topics": ["he.physics.thermal-statistical#0"]
+        },
+        {
+          "n": "12",
+          "title": "Derivation of the Canonical Ensemble",
+          "topics": ["he.physics.thermal-statistical#1", "he.physics.thermal-statistical#2"]
+        },
+        {
+          "n": "13",
+          "title": "Polyatomic Gases",
+          "topics": ["he.physics.thermal-statistical#2"]
+        },
+        {
+          "n": "14",
+          "title": "Black Body Radiation",
+          "topics": ["he.physics.thermal-statistical#3"]
+        },
+        {
+          "n": "15",
+          "title": "Paramagnets",
+          "topics": ["he.physics.thermal-statistical#2"]
+        },
+        {
+          "n": "16",
+          "title": "Quantum States of Many-particle Systems",
+          "topics": ["he.physics.thermal-statistical#3"]
+        },
+        {
+          "n": "17",
+          "title": "Chemical Potential and Grand Canonical Ensemble",
+          "topics": ["he.physics.thermal-statistical#1"]
+        },
+        {
+          "n": "18",
+          "title": "Density of States and Free Fermi Gas",
+          "topics": ["he.physics.thermal-statistical#3"]
+        },
+        {
+          "n": "19",
+          "title": "Stellar Configurations and White Dwarfs",
+          "topics": ["he.physics.thermal-statistical#3"]
+        },
+        {
+          "n": "20",
+          "title": "Bose-Einstein Condensation",
+          "topics": ["he.physics.thermal-statistical#3"]
+        },
+        {
+          "n": "E1-03",
+          "title": "Exam 1 (2003)",
+          "url": "https://ocw.mit.edu/courses/8-044-statistical-physics-i-spring-2013/c5fa60d3e877f4631a0269e8ee17182d_MIT8_044S14_exam1_03.pdf",
+          "topics": ["he.physics.thermal-statistical#1"],
+          "examples": [
+            "isotope abundances: cumulative distribution, mean and variance of a scattering amplitude, nanocrystal mass",
+            "joint probability density of two field values: marginals and correlation",
+            "Rutherford scattering angle as a function of a random impact parameter: p(θ)"
+          ]
+        },
+        {
+          "n": "E2-03",
+          "title": "Exam 2 (2003)",
+          "url": "https://ocw.mit.edu/courses/8-044-statistical-physics-i-spring-2013/39a8d4db98df42f157ae2a71fa875d4e_MIT8_044S14_exam2_03.pdf",
+          "topics": ["he.physics.thermal-statistical#0", "he.physics.thermal-statistical#2"],
+          "examples": [
+            "weakly interacting Bose gas: expansion coefficient and compressibility → equation of state",
+            "hydrostatic system with U = AP²V: adiabat slope, heat capacities",
+            "molecular solid with rotating molecules: partition function, energy, heat capacity"
+          ]
+        },
+        {
+          "n": "E3-03",
+          "title": "Exam 3 (2003)",
+          "url": "https://ocw.mit.edu/courses/8-044-statistical-physics-i-spring-2013/e617da4558cbb994526269e91409fc2b_MIT8_044S14_exam3_03.pdf",
+          "topics": [
+            "he.physics.thermal-statistical#2",
+            "he.physics.thermal-statistical#0",
+            "he.physics.thermal-statistical#1"
+          ],
+          "examples": [
+            "atoms guided on a chip: Boltzmann distributions of velocity and position",
+            "fluid with V = V₁ exp(T/T₁ − P/P₁): response functions and Maxwell relations",
+            "cooling liquid helium with a paramagnetic salt: entropy balance and final temperature"
+          ]
+        },
+        {
+          "n": "E4-03",
+          "title": "Exam 4 (2003)",
+          "url": "https://ocw.mit.edu/courses/8-044-statistical-physics-i-spring-2013/f80c8f286dcc99f05cb97e474fcff9e2_MIT8_044S14_exam4_03.pdf",
+          "topics": ["he.physics.thermal-statistical#3", "he.physics.thermal-statistical#2"],
+          "examples": [
+            "white dwarf cooling: degenerate electron gas and radiated energy",
+            "2-D electron gas: density of states, Fermi energy, heat capacity",
+            "classical paramagnet: partition function and magnetization (Langevin)"
+          ]
+        },
+        {
+          "n": "E1-04",
+          "title": "Exam 1 (2004)",
+          "url": "https://ocw.mit.edu/courses/8-044-statistical-physics-i-spring-2013/c400d87e4b2dfd30d48dfccb82a23283_MIT8_044S14_exam1_04.pdf",
+          "topics": ["he.physics.thermal-statistical#1"],
+          "examples": [
+            "impurity depth distribution in a semiconductor: normalization and probabilities",
+            "collision by-products: discrete probability distribution and averages",
+            "time to failure of two pieces of equipment: exponential distributions"
+          ]
+        },
+        {
+          "n": "E2-04",
+          "title": "Exam 2 (2004)",
+          "url": "https://ocw.mit.edu/courses/8-044-statistical-physics-i-spring-2013/f9686913f8d277e00a345386ce79836d_MIT8_044S14_exam2_04.pdf",
+          "topics": ["he.physics.thermal-statistical#2", "he.physics.thermal-statistical#0"],
+          "examples": [
+            "polar molecules adsorbed on a surface in an electric field: partition function and polarization",
+            "elastic rod with given U(T, L) and tension: adiabats and heat capacities",
+            "1-D Ising ring: partition function and number of domain walls"
+          ]
+        },
+        {
+          "n": "E3-04",
+          "title": "Exam 3 (2004)",
+          "url": "https://ocw.mit.edu/courses/8-044-statistical-physics-i-spring-2013/c542fdb991451a979789bdd6703be369_MIT8_044S14_exam3_04.pdf",
+          "topics": [
+            "he.physics.thermal-statistical#0",
+            "he.physics.thermal-statistical#1",
+            "he.physics.thermal-statistical#2"
+          ],
+          "examples": [
+            "weakly interacting Bose gas: entropy and compressibility → other properties",
+            "entropy change of a solid quenched in a bath, and of the universe",
+            "dust grains in space: Boltzmann statistics of rotational states",
+            "adsorption on a stepped surface: counting states, entropy, coverage"
+          ]
+        },
+        {
+          "n": "E4-04",
+          "title": "Exam 4 (2004)",
+          "url": "https://ocw.mit.edu/courses/8-044-statistical-physics-i-spring-2013/c5867a401be35bb143ae4d922a242154_MIT8_044S14_exam4_04.pdf",
+          "topics": ["he.physics.thermal-statistical#3", "he.physics.thermal-statistical#2"],
+          "examples": [
+            "photon gas in two dimensions: energy density and Stefan–Boltzmann analogue",
+            "2-D metal: Fermi energy and heat capacity of an electron gas",
+            "paramagnetic ions with three levels: partition function, magnetization, entropy"
+          ]
+        }
+      ]
+    }
+  ]
+}

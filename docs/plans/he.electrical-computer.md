@@ -122,7 +122,7 @@ an engine need (E#) or a picture (P#); a ⏳ page can be built with the stand-in
 
 - **Asks:** current and drops in a series loop → main; equivalent resistance and branch
   currents of a parallel pair → ~parallel; series-parallel reduction → ~series-parallel; power
-  absorbed or delivered with the passive sign convention → ~power-sign; voltage divider → main.
+  absorbed or delivered with the passive sign convention → ~power-sign; voltage divider → main; shunt resistor for an ammeter range → [new-page].
 - **Main — KEEP (pilot):** `seriesCircuit`, values V, I, R₁, R₂, V₁, V₂, Rₜ, P (rename the two
   resistances, Part 1). Example 12 V, 2 Ω, 4 Ω → I = 2 A, V₁ = 4 V, V₂ = 8 V, P = 24 W.
 - **~parallel — BUILD ⏳ P1 (stand-in `circuit` parallel, two bulbs):** values source voltage V
@@ -325,7 +325,7 @@ an engine need (E#) or a picture (P#); a ⏳ page can be built with the stand-in
 ### 2.4 `he.engineering.circuits-2#4` — Three-phase circuits
 
 - **Asks:** phase and line values of a balanced Y load → main; delta load → ~delta; Y–Δ
-  conversion → ~wye-delta; total power from two wattmeters → ~two-wattmeter.
+  conversion → ~wye-delta; total power from two wattmeters → ~two-wattmeter; unbalanced three-phase load: line currents → [new-page].
 - **Main — BUILD ⏳ P6 (`complexPlane` `phasors` three-phase star with one line voltage):**
   values line voltage V_L, phase voltage V_ph, phase impedance |Z|, power factor pf, line current
   I_L, S, P, Q. Relations: V_ph = V_L ÷ √3; I_L = V_ph ÷ |Z|; S = √3 V_L I_L; P = S × pf;
@@ -404,7 +404,7 @@ an engine need (E#) or a picture (P#); a ⏳ page can be built with the stand-in
 
 - **Asks:** g_m, r_π and the voltage gain of a common-emitter stage → main; MOSFET
   common-source gain → ~cs-mosfet; gain with source resistance → ~loading; cascaded stages in dB
-  → ~cascade.
+  → ~cascade; emitter follower (common collector): gain and quiescent values → [new-page].
 - **Main — BUILD ⏳ P3 (`smallSignal`: the hybrid-π model with R_C ∥ R_L):** values collector
   current I_C (0.01–100 mA), β, transconductance g_m, input resistance r_π, R_C, R_L,
   R_C ∥ R_L, gain A_v. Relations: g_m = I_C ÷ V_T; r_π = β ÷ g_m; R_p = R_C R_L ÷ (R_C + R_L);
@@ -495,7 +495,7 @@ an engine need (E#) or a picture (P#); a ⏳ page can be built with the stand-in
 
 - **Asks:** harmonics of a square wave and their size → main; share of power in a harmonic →
   main; spectrum of a rectangular pulse, first null → ~pulse-spectrum; what a delay or time scale
-  does to a spectrum → ~properties.
+  does to a spectrum → ~properties; discrete-time frequency response: output for a sinusoid → [new-page].
 - **Main — BUILD ⏳ P10 (`functionGraph` `fourier`, partial sum over the square wave, stems
   of bₖ beside it):** values amplitude A (±A square wave), fundamental f₀, harmonic k (odd,
   1–99, `allowed` odd), harmonic frequency fₖ, coefficient bₖ, power share. Relations: fₖ = kf₀;
@@ -615,7 +615,7 @@ an engine need (E#) or a picture (P#); a ⏳ page can be built with the stand-in
 ### 5.3 `he.engineering.control-systems#3` — Frequency response
 
 - **Asks:** gain crossover and phase margin → main; Bode asymptotes and the exact gain →
-  ~asymptotes; gain margin → ~gain-margin; closed-loop bandwidth from ζ and ω_n → ~bandwidth.
+  ~asymptotes; gain margin → ~gain-margin; closed-loop bandwidth from ζ and ω_n → ~bandwidth; lead or lag compensator to meet a phase margin → [new-page].
 - **Main — BUILD ⏳ P7:** G = K ÷ (s(s + a)). Values K, a, gain crossover ω_c, phase margin
   PM. Relations: ω_c² = (−a² + √(a⁴ + 4K²)) ÷ 2; PM = 90° − atan(ω_c ÷ a). Assumptions: unity
   feedback; |G(jω_c)| = 1; PM above about 45° means little overshoot. Example K = 20, a = 3 →
@@ -663,7 +663,7 @@ an engine need (E#) or a picture (P#); a ⏳ page can be built with the stand-in
 
 - **Asks:** reflection coefficient, VSWR, return loss for a resistive load → main; Z₀ and
   speed from per-length L and C → ~line-params; quarter-wave transformer → ~quarter-wave;
-  shorted-stub reactance → ~stub; input impedance of a loaded line → ~input-impedance.
+  shorted-stub reactance → ~stub; input impedance of a loaded line → ~input-impedance; echo time and distance to a fault on a cable (TDR) → [new-page]; resonant frequencies of a shorted or open line section → [new-page].
 - **Main — BUILD ⏳ P11 (`wave` `line`: the standing-wave envelope, V_max and V_min marked):**
   values Z₀ (1–1000 Ω), load R_L (0–10⁶ Ω), Γ, VSWR, return loss RL, reflected power share.
   Relations: Γ = (R_L − Z₀) ÷ (R_L + Z₀); VSWR = (1 + |Γ|) ÷ (1 − |Γ|); RL = −20 log₁₀|Γ|;
@@ -725,7 +725,7 @@ an engine need (E#) or a picture (P#); a ⏳ page can be built with the stand-in
 ### 6.3 `he.engineering.electromagnetics#3` — Antennas
 
 - **Asks:** received power by the Friis equation → main; free-space path loss → main;
-  half-wave dipole length → ~dipole; dish gain, beamwidth and far field → ~dish.
+  half-wave dipole length → ~dipole; dish gain, beamwidth and far field → ~dish; two-element array pattern → [new-page]; Fresnel-zone clearance → [new-page].
 - **Main — BUILD ⏳ P12 (`waterfall` in dB: P_t, G_t, path loss, G_r → P_r), E1 (dBm, dBi):**
   values transmit power P_t (dBm), gains G_t, G_r (dBi), frequency f, distance d, wavelength λ,
   path loss L_fs, received power P_r. Relations: λ = c ÷ f; L_fs = 20 log₁₀(4πd ÷ λ);
@@ -774,7 +774,7 @@ an engine need (E#) or a picture (P#); a ⏳ page can be built with the stand-in
 
 - **Asks:** synchronous speed, slip, rotor frequency and torque of an induction motor → main;
   transformer efficiency at part load → ~transformer-efficiency; DC motor speed from voltage and
-  current → ~dc-motor; synchronous generator internal EMF → ~sync-generator.
+  current → ~dc-motor; synchronous generator internal EMF → ~sync-generator; magnetic circuit: flux and pull of an electromagnet → [new-page].
 - **Main — BUILD, E1 (rpm):** `waterfall` (air-gap power, minus rotor copper loss, = power
   converted). Values supply frequency f, poles p (`allowed` even 2–24), synchronous speed n_s,
   rotor speed n, slip s, rotor frequency f_r, air-gap power P_ag, rotor copper loss P_cu,
@@ -857,7 +857,7 @@ an engine need (E#) or a picture (P#); a ⏳ page can be built with the stand-in
 ### 8.1 `he.engineering.communication-systems#1` — Digital modulation
 
 - **Asks:** bit rate, bandwidth and spectral efficiency of M-ary schemes → main; BPSK bit
-  error rate → ~bpsk-ber; E_b/N₀ from SNR → ~eb-n0.
+  error rate → ~bpsk-ber; E_b/N₀ from SNR → ~eb-n0; read an eye diagram → [new-page]; TDMA or slotted-Aloha throughput → [new-page].
 - **Main — BUILD ⏳ P16 (`complexPlane` `constellation`):** values levels M (`allowed` 2, 4, 8,
   16, 64, 256), symbol rate R_s, bit rate R_b, roll-off α (0–1), bandwidth B, efficiency η.
   Relations: R_b = R_s log₂M; B = R_s(1 + α); η = R_b ÷ B. Example 16-QAM, 1 Msym/s, 0.25 →
@@ -912,7 +912,7 @@ an engine need (E#) or a picture (P#); a ⏳ page can be built with the stand-in
 
 - **Asks:** decimal ↔ binary ↔ hex → main; two's complement of a negative number → main;
   signed and unsigned range, overflow → ~twos-range; BCD → ~bcd; which law simplifies it →
-  ~laws.
+  ~laws; fixed-point (scaled integer) codes → [new-page].
 - **Main — BUILD ⏳ E3 (base 2 and 16 display), P17 (`placeValueChart` `base`):** values
   number N (0–2³² − 1), width n (`allowed` 4, 8, 16, 32), binary, hexadecimal, the n-bit pattern
   of −N. Relations: the binary digits are the remainders of repeated ÷ 2 (each a line);
@@ -932,7 +932,7 @@ an engine need (E#) or a picture (P#); a ⏳ page can be built with the stand-in
 
 - **Asks:** minimal sum of products from a K-map (with don't-cares) → main; which gate a truth
   table is → ~gates; select lines and decoder outputs → ~mux-decoder; ripple-carry delay →
-  ~ripple-adder.
+  ~ripple-adder; gate circuit drawn from a Boolean expression → [new-page].
 - **Main — BUILD (explore) ⏳ P19 (`karnaugh` explore figure):** scenes, each lighting its
   groups and writing the product terms: "f = Σm(0, 2, 5, 7) of A, B, C: two pairs, f = A′C′ + AC";
   "f = Σm(1, 3, 5, 7): one block of four, f = C"; "f = Σm(0, 2, 8, 10) of A, B, C, D: the four
@@ -956,7 +956,7 @@ an engine need (E#) or a picture (P#); a ⏳ page can be built with the stand-in
 
 - **Asks:** maximum clock frequency from setup, clock-to-Q and logic delay → main; hold
   check → main; counter modulus and output frequency → ~counter; JK next state → ~jk; shift
-  right → ~shift.
+  right → ~shift; latch and flip-flop timing diagrams → [new-page].
 - **Main — BUILD ⏳ P20 (`timingDiagram`: clock, D, Q with t_cq, t_logic, t_setup bars),
   E1 (ns, MHz):** values clock-to-Q t_cq, longest logic delay t_logic, setup time t_setup,
   shortest period T_min, f_max, hold time t_hold, shortest path t_cd. Relations:
@@ -1004,7 +1004,7 @@ an engine need (E#) or a picture (P#); a ⏳ page can be built with the stand-in
 
 - **Asks:** which statements are equivalent to a conditional (contrapositive, converse,
   inverse) → main; is an argument valid → ~arguments; build a truth table → ~truth-table;
-  structure of an induction proof → ~induction.
+  structure of an induction proof → ~induction; choose a proof method and its first and last lines → [new-page].
 - **Main — BUILD (sort):** bins "Equivalent to p → q", "Not equivalent". Cards: "¬q → ¬p (the
   contrapositive)", "¬p ∨ q", "¬(p ∧ ¬q)" → Equivalent; "q → p (the converse)", "¬p → ¬q (the
   inverse)", "p ∧ q" → Not equivalent. Sentence: "p → q is false only when p is true and q is
@@ -1046,7 +1046,7 @@ an engine need (E#) or a picture (P#); a ⏳ page can be built with the stand-in
 
 - **Asks:** arrangements and selections with and without repetition → main; identical items
   into boxes → ~stars-bars; pigeonhole → ~pigeonhole; derangements → ~derangements; words with
-  repeated letters → ~multinomial.
+  repeated letters → ~multinomial; stars and bars with upper bounds (inclusion–exclusion) → [new-page].
 - **Main — BUILD:** `pascalTriangle` (C(n, r) lit; `fraction` slots for P(n, r) ÷ r!). Values
   n (0–60), r (0–n), P(n, r), C(n, r), with repetition nʳ, multisets C(n + r − 1, r).
   Relations: P(n, r) = n! ÷ (n − r)!; C(n, r) = P(n, r) ÷ r!; the other two as written. E9 past
@@ -1062,7 +1062,7 @@ an engine need (E#) or a picture (P#); a ⏳ page can be built with the stand-in
 ### 10.3 `he.engineering.discrete-math#3` — Graph theory
 
 - **Asks:** edges from degrees (handshake), planar faces (Euler) → main; Euler path or
-  circuit → ~euler; trees and m-ary trees → ~trees; edges of Kₙ and K_{m,n} → ~complete.
+  circuit → ~euler; trees and m-ary trees → ~trees; edges of Kₙ and K_{m,n} → ~complete; are two graphs isomorphic → [new-page].
 - **Main — BUILD ⏳ P22 (`graph`):** values vertices V, edges E, degree sum, average degree,
   faces F. Relations: degree sum = 2E; average = 2E ÷ V; V − E + F = 2. Page limit: E ≤ 3V − 6
   for a simple planar graph (V ≥ 3). Example V = 6, E = 9 (a triangular prism) → 18, 3, F = 5.
@@ -1105,7 +1105,7 @@ an engine need (E#) or a picture (P#); a ⏳ page can be built with the stand-in
 
 - **Asks:** what a stack or queue holds after a list of operations → main; circular-buffer
   indices → ~circular-queue; address of an array element → ~array-address; evaluate postfix →
-  ~postfix; cost of a growing array → ~dynamic-array.
+  ~postfix; cost of a growing array → ~dynamic-array; linked-list pointer operations (reverse, second-last) → [new-page].
 - **Main — BUILD (explore) ⏳ P25 (`dataStructure` figure):** scenes: "push 3, push 5, push 2,
   pop: 2 comes out (last in, first out)"; "enqueue 3, 5, 2, dequeue: 3 comes out (first in,
   first out)"; "a circular queue of 8 wraps from slot 7 to slot 0"; "insert 4 at the head of a
@@ -1125,7 +1125,7 @@ an engine need (E#) or a picture (P#); a ⏳ page can be built with the stand-in
 ### 11.1 `he.engineering.data-structures#1` — Trees and graphs
 
 - **Asks:** least height and most nodes of a binary tree → main; heap array indices →
-  ~heap-index; traversal order → ~traversal; adjacency matrix or list size → ~adjacency.
+  ~heap-index; traversal order → ~traversal; adjacency matrix or list size → ~adjacency; BFS and DFS visit order → [new-page]; heap after inserts and removals → [new-page].
 - **Main — BUILD ⏳ P22 (`graph` tree mode, levels filled), E4:** values nodes n, least height
   h_min, height h, most nodes at h, most leaves at h. Relations: h_min = ⌈log₂(n + 1)⌉ − 1; most
   nodes 2^(h+1) − 1; most leaves 2ʰ. Assumptions: height counts edges (a single node has height
@@ -1186,7 +1186,7 @@ an engine need (E#) or a picture (P#); a ⏳ page can be built with the stand-in
 ### 12.0 `he.engineering.computer-architecture#0` — Instruction sets
 
 - **Asks:** field widths and immediate range of an instruction format → main; branch target
-  address → ~branch-target; addressing mode of an instruction → ~addressing.
+  address → ~branch-target; addressing mode of an instruction → ~addressing; stack frames when a procedure calls itself → [new-page].
 - **Main — BUILD ⏳ P18 (`bitFields`), E4:** values word w (`allowed` 16, 32, 64), opcode bits o,
   registers R (`allowed` 8, 16, 32, 64), register field r = log₂R, register fields k, function
   bits f, immediate bits i, smallest immediate, largest immediate. Relations: r = log₂R;
@@ -1305,7 +1305,7 @@ an engine need (E#) or a picture (P#); a ⏳ page can be built with the stand-in
 ### 13.2 `he.engineering.embedded-systems#2` — Serial protocols
 
 - **Asks:** UART byte rate and frame time → main; baud-rate register and error → ~baud-error;
-  SPI throughput → ~spi; I²C transaction time → ~i2c; which protocol → ~protocols.
+  SPI throughput → ~spi; I²C transaction time → ~i2c; which protocol → ~protocols; line coding (Manchester) of a byte → [new-page].
 - **Main — BUILD ⏳ P20 (UART frame: start, data bits LSB first, parity, stop):** values baud
   rate, data bits (`allowed` 5–9), parity bits (`allowed` 0, 1), stop bits (`allowed` 1, 2),
   frame bits, bytes per second, time per byte. Relations: frame = 1 + data + parity + stop;
@@ -1349,7 +1349,7 @@ an engine need (E#) or a picture (P#); a ⏳ page can be built with the stand-in
 ### 14.0 `he.engineering.operating-systems#0` — Processes and threads
 
 - **Asks:** which state a process enters on an event → main; context-switch overhead →
-  ~switch-cost; processes after n forks → ~fork; CPU use with I/O waiting → ~multiprogramming.
+  ~switch-cost; processes after n forks → ~fork; CPU use with I/O waiting → ~multiprogramming; semaphores for a critical section → [new-page].
 - **Main — BUILD (sort):** bins "Ready", "Running", "Blocked", "Terminated". Cards (the event;
   the bin is the state it moves to): "it is created and loaded", "its disk read completes",
   "the timer ends its time slice" → Ready; "the scheduler dispatches it" → Running; "it asks to

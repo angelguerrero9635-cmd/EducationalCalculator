@@ -7,6 +7,8 @@ import type { HskSpec } from '@/data/modules/typesHsk';
 import type { Calculator } from '../useCalculator';
 import { ChargePlates } from './ChargePlates';
 import { Charges } from './Charges';
+import { ChargesHe2e } from './ChargesHe2e';
+import { isHe2eCharges } from '@/data/modules/typesHe2e';
 import { ChargesPotential } from './ChargesPotential';
 import { PlatesLaunch } from './PlatesLaunch';
 import { CircularMotion } from './CircularMotion';
@@ -18,6 +20,7 @@ import { Induction } from './Induction';
 import { Projectile } from './Projectile';
 import { RayLens } from './RayLens';
 import { RayRefraction, RaySlits, RayTelescope } from './RayOptics';
+import { SimpleMachineLimb } from './SimpleMachineLimb';
 import { Seesaw } from './Seesaw';
 import { SimpleMachine } from './SimpleMachine';
 
@@ -34,10 +37,12 @@ export function HskView({ spec, calc }: { spec: HskSpec; calc: Calculator }) {
       return <Collision spec={spec} calc={calc} />;
     case 'simpleMachine':
       if (spec.seesaw && spec.machine === 'lever') return <Seesaw spec={spec} calc={calc} />;
+      if (spec.limb) return <SimpleMachineLimb spec={spec} calc={calc} />; // HC81
       return <SimpleMachine spec={spec} calc={calc} />;
     case 'heatEngine':
       return <HeatEngine spec={spec} calc={calc} />;
     case 'charges':
+      if (isHe2eCharges(spec)) return <ChargesHe2e spec={spec} calc={calc} />; // HC29
       if (spec.mode === 'plates')
         return spec.launch ? (
           <PlatesLaunch spec={spec} calc={calc} />

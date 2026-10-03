@@ -535,3 +535,32 @@ in `galleryHsk.ts`. Step text must put a divisor before a sine (`{a}/{b} × sin(
 H66 and H69 notes say.
 
 With physics, every Grades 9–12 entry (H01–H88) is drawn.
+
+2026-10-02, college round 1 (`docs/RENDERINGS_HE.md`): HC1 `beam`, HC2 `skeletal` (and its
+card), HC3 `section`, HC4 `functionGraph` time responses (`family: 'response'`), HC5
+`controlVolume`, HC6 `fluidSystem`, HC7 schematics (`net` on `seriesCircuit` and `circuit`),
+HC8 `phaseEnvelope` and `chemDiagram` `substance`, HC9 log and flipped axes, HC10 families,
+HC11 `oscillator` options, HC12 regions and HC13 `velocityProfile` are drawn. The tracker is
+`pictureRequestsHe.ts` (one file per group, `pictureRequestsHe1<x>.ts`); each entry's notes give
+the fields a page passes and an example, and its demos (`g.he-…`) are in `galleryHe1<x>.ts`.
+Still requested: HC3's `interaction` (P–M curve).
+
+2026-10-02, college round 2: HC14 `complexPlane` options, HC15 `potentialWell`, HC16
+`unitCell`, HC17 `propertyDiagram`, HC18 schematics `amp`, HC19 `induction` field sources and
+rails, HC20 and HC25 `freeBody` options and aircraft, HC21 `fieldPlot`, HC22 `bode`, HC23
+`thermalWall`, HC24 `wing`, HC26 `soilProfile`, HC27 `truss` (and its joint card), HC28
+`stressStrain`, HC29 `charges` options, HC30 `duct`, HC31 `supersonicFlow`, HC32 `survey`, HC33
+`stressElement`, HC34 `chemDiagram` rate, HC35 `circularMotion` orbits, HC36 `globe`, HC37 and
+HC38 `functionGraph` `tangent`, `band` and `series`, and HC39 schematics `device` are drawn.
+Tracker entries are in `pictureRequestsHe2<x>.ts`, demos in `galleryHe2<x>.ts`.
+
+2026-10-02, college round 3: HC40–HC93 are drawn (heat exchangers, element chains,
+distributions, `gasPiston` P–V and real gases, energy profiles in G with steps and the bomb,
+numerical methods, surface plots, space objects, code traces, timing diagrams, graphs, schedule
+charts, fatigue diagrams, polar areas and the cycloid, related rates, instrument traces, cells,
+pathway details, Gibbs charts, shafts, road curves, connections, device curves, stem plots, bit
+fields, solids of revolution, series charts, optics, phase space, MO diagrams, titrations, VSEPR
+with 5–6 domains, mole maps, aquifers, refraction, GIS shoelace and buffers, projections, membrane
+potentials, dilution series, limbs, binary phase diagrams, machining, linkages, materials icons,
+laminae, rockets, open channels, hydrographs, block diagrams, dB budgets, quantizers and EM waves).
+Tracker entries are in `pictureRequestsHe3<x>.ts`, demos in `galleryHe3<x>.ts`.

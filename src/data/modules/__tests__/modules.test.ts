@@ -17,9 +17,12 @@ import { mechanicsSpecVars } from '../typesMechanics';
 import { physics8SpecVars } from '../typesPhysics8';
 import { hscSpecVars } from '../typesHsc';
 import { hsbSpecVars } from '../typesHsb';
+import { alleleHe4eVars, driftPathsVars, normalCurveHe4eVars } from '../typesHe4e';
 import { hs2aSpecVars } from '../typesHs2a';
 import { hs2eSpecVars } from '../typesHs2e';
 import { hs3dSpecVars } from '../typesHs3d';
+import { skeletalVars } from '../typesHe1c';
+import { soilProfileVars, surveyVars, trussVars } from '../typesHe2i';
 import { hs2gSpecVars } from '../typesHs2g';
 import { hs3bSpecVars } from '../typesHs3b';
 import { hsdSpecVars } from '../typesHsd';
@@ -27,18 +30,57 @@ import { hsgSpecVars, inheritanceVars } from '../typesHsg';
 import { hshSpecVars } from '../typesHsh';
 import { hsiSpecVars } from '../typesHsi';
 import { hsjSpecVars, solutionVars } from '../typesHsj';
+import { cuvetteVars } from '../typesHe4d';
 import { chemDiagramVars } from '../typesHs2d';
+import { phaseEnvelopeVars } from '../typesHe1i';
 import { hslSpecVars } from '../typesHsl';
 import { hs2fSpecVars } from '../typesHs2f';
 import { hs3cSpecVars } from '../typesHs3c';
+import { he1gSpecVars } from '../typesHe1g';
+import { he1fSpecVars } from '../typesHe1f';
+import { he2bSpecVars } from '../typesHe2b';
+import { he3iSpecVars } from '../typesHe3i';
+import { globeVars } from '../typesHe2k';
+import { instrumentTraceVars } from '../typesHe3e';
+import { he3mVars, planeGisVars } from '../typesHe3m';
+import { he2jSpecVars } from '../typesHe2j';
+import { fieldPlotVars } from '../typesHe2g';
+import { solidOfRevolutionVars, spaceObjectsVars, surfacePlotVars } from '../typesHe3b';
+import { he2cSpecVars } from '../typesHe2c';
+import { he3hSpecVars } from '../typesHe3h';
+import { he3dSpecVars } from '../typesHe3d';
+import { dilutionSeriesVars } from '../typesHe3g';
 import { hskOptionVars, hskSpecVars } from '../typesHsk';
+import { he2fSpecVars, isHe2fSpec } from '../typesHe2f';
+import { he3lSpecVars, isHe3lSpec } from '../typesHe3l';
+import { he4cSpecVars, isHe4cOption } from '../typesHe4c';
+import { he1hSpecVars } from '../typesHe1h';
+import { he2dSpecVars } from '../typesHe2d';
 import { hs2cSpecVars } from '../typesHs2c';
 import { hs3aSpecVars } from '../typesHs3a';
+import { he4bSpecVars } from '../typesHe4b'; // HC96–HC171, group B
+import { he1bSpecVars } from '../typesHe1b';
+import { he1aSpecVars } from '../typesHe1a';
+import { bodeVars, complexPlaneHe2aVars } from '../typesHe2a';
+import { he3jSpecVars } from '../typesHe3j';
+import { he3kSpecVars, waterfallDecibelsVars } from '../typesHe3k';
+import { chainTreeVars, matrixGridHe4aVars, scatterClassesVars } from '../typesHe4a'; // group A, round 4
+import { he2hSpecVars } from '../typesHe2h';
+import {
+  conicGraphHe3cVars,
+  curvedSolidHe3cVars,
+  polarGridHe3cVars,
+  rectangleHe3cVars,
+  rightTriangleHe3cVars,
+  termsChartHe3cVars,
+} from '../typesHe3c';
 import { isStandIn, pages } from '../harness/scope';
 import { treeChanceVars, twoWayVars, vennChanceVars } from '../harness/picturesHse';
 
 /** Every variable id a representation refers to. */
 function representationVars(r: Representation): string[] {
+  if (isHe2fSpec(r)) return he2fSpecVars(r); // HC20, HC25, HC35
+  if (isHe4cOption(r)) return he4cSpecVars(r); // HC99, HC101, HC103, HC105, HC118
   switch (r.kind) {
     case 'none':
       return [];
@@ -189,6 +231,7 @@ function representationVars(r: Representation): string[] {
         r.total,
       ];
     case 'beaker':
+      if ('cuvette' in r) return cuvetteVars(r.cuvette); // HC112
       return 'solution' in r ? solutionVars(r.solution) : [...r.parts, r.total];
     case 'quadrilateral':
       return [r.first, r.second, r.rightAngles];
@@ -228,6 +271,7 @@ function representationVars(r: Representation): string[] {
           ? [r.trail.across, r.trail.up].filter((v): v is string => typeof v === 'string')
           : []),
         ...planeGeometryVars(r),
+        ...planeGisVars(r),
       ];
     case 'boxPlot':
       return [
@@ -284,6 +328,7 @@ function representationVars(r: Representation): string[] {
         ...(r.arms ? [r.arms.first, r.arms.second] : []),
       ];
     case 'wave':
+      if (isHe3lSpec(r)) return he3lSpecVars(r); // HC93
       return [
         ...(r.amplitude ? [r.amplitude] : []),
         ...(typeof r.extent === 'string' ? [r.extent] : []),
@@ -352,6 +397,7 @@ function representationVars(r: Representation): string[] {
         ...[r.width, r.at, r.area, r.volume].filter((x): x is string => !!x),
       ];
     case 'treeDiagram':
+      if ('chain' in r) return chainTreeVars(r.chain); // HC98
       if ('chances' in r) return [...treeChanceVars(r.chances), ...hs2gSpecVars(r)];
       return [r.first, r.second, ...[r.third, r.total, r.chance].filter((x): x is string => !!x)];
     case 'diceGrid':
@@ -401,11 +447,17 @@ function representationVars(r: Representation): string[] {
         ...(r.key ? [r.key] : []),
       ];
     case 'waterfall':
-      return [...r.items.map((b) => b.var), r.total, ...(r.caption ?? [])];
+      return [
+        ...r.items.map((b) => b.var),
+        r.total,
+        ...(r.caption ?? []),
+        ...waterfallDecibelsVars(r.decibels), // HC91
+      ];
     case 'rectangle':
       return [
         ...[r.length, r.width, r.inside, r.around],
         ...[r.bounds?.error, r.bounds?.least, r.bounds?.greatest], // H106
+        ...rectangleHe3cVars(r), // HC67
       ].filter((x): x is string => !!x);
     case 'grid100':
       return [
@@ -434,7 +486,7 @@ function representationVars(r: Representation): string[] {
         ...scaleCopyHsfVars(r),
       ].filter((v): v is string => typeof v === 'string');
     case 'rightTriangle':
-      return [r.a, r.b, r.c];
+      return [r.a, r.b, r.c, ...rightTriangleHe3cVars(r)]; // HC54
     case 'plot':
       return [
         r.x.var,
@@ -457,6 +509,7 @@ function representationVars(r: Representation): string[] {
     case 'leafCount':
       return [...r.items, ...(r.difference ? [r.difference] : [])];
     case 'scatter':
+      if ('classes' in r) return scatterClassesVars(r); // HC139
       return [
         ...[r.slope, r.intercept, r.r, r.residualOf?.residual, r.residualOf?.point].filter(
           (x): x is string => typeof x === 'string',
@@ -467,6 +520,7 @@ function representationVars(r: Representation): string[] {
       return [
         r.radius,
         ...[r.height, r.volume, r.slant, r.surface].filter((x): x is string => !!x),
+        ...curvedSolidHe3cVars(r), // HC54
       ];
     case 'rootSquare':
       return [r.area, r.side, ...(r.between ?? [])];
@@ -486,6 +540,8 @@ function representationVars(r: Representation): string[] {
     case 'force':
       return [r.force, r.mass, r.acceleration];
     case 'seriesCircuit':
+      if ('net' in r) return he1hSpecVars(r); // HC7
+      if ('amp' in r || 'device' in r) return he2dSpecVars(r); // HC18, HC39
       return [r.source, r.current, ...r.resistors.flatMap((x) => [x.r, x.v])];
     case 'linearFunction':
     case 'lineSystem':
@@ -511,6 +567,7 @@ function representationVars(r: Representation): string[] {
     case 'circuit':
     case 'electromagnet':
     case 'orbit':
+      if ('net' in r) return he1hSpecVars(r); // HC7
       return [...physics8SpecVars(r), ...hskOptionVars(r)];
     case 'triangleSolver':
     case 'markedFigure':
@@ -520,7 +577,14 @@ function representationVars(r: Representation): string[] {
     case 'histogram':
     case 'pascalTriangle':
     case 'termsChart':
-      return [...hsbSpecVars(r), ...hs2aSpecVars(r), ...hs2gSpecVars(r), ...hs3bSpecVars(r)];
+      return [
+        ...hsbSpecVars(r),
+        ...hs2aSpecVars(r),
+        ...hs2gSpecVars(r),
+        ...hs3bSpecVars(r),
+        ...(r.kind === 'termsChart' ? termsChartHe3cVars(r) : []), // HC66
+        ...(r.kind === 'normalCurve' ? normalCurveHe4eVars(r) : []), // HC114, HC152
+      ];
     case 'unitCircle':
     case 'algebraTiles':
     case 'vectorDiagram':
@@ -528,7 +592,17 @@ function representationVars(r: Representation): string[] {
     case 'polarGrid':
     case 'conicGraph':
     case 'matrixGrid':
-      return [...hsdSpecVars(r), ...hs2gSpecVars(r), ...hs3bSpecVars(r)];
+      return [
+        ...hsdSpecVars(r),
+        ...hs2gSpecVars(r),
+        ...hs3bSpecVars(r),
+        ...(r.kind === 'complexPlane' ? complexPlaneHe2aVars(r) : []), // HC14
+        ...(r.kind === 'vectorDiagram' ? spaceObjectsVars(r.space) : []), // HC47
+        ...(r.kind === 'polarGrid' ? polarGridHe3cVars(r) : []), // HC53
+        ...(r.kind === 'conicGraph' && r.conic === 'circle' ? conicGraphHe3cVars(r) : []), // HC67
+        ...he4bSpecVars(r), // HC96, HC100, HC108, HC171
+        ...(r.kind === 'matrixGrid' ? matrixGridHe4aVars(r) : []), // HC94, HC190
+      ];
     case 'membrane':
     case 'dnaStrand':
       return hsgSpecVars(r);
@@ -537,9 +611,18 @@ function representationVars(r: Representation): string[] {
       return hs2eSpecVars(r);
     case 'neuron':
       return hs3dSpecVars(r);
+    case 'skeletal':
+      return skeletalVars(r);
+    case 'truss':
+      return trussVars(r);
+    case 'soilProfile':
+      return soilProfileVars(r);
+    case 'survey':
+      return surveyVars(r);
     case 'gel':
     case 'alleleFrequencies':
     case 'immuneResponse':
+      if (r.kind === 'alleleFrequencies') return [...hshSpecVars(r), ...alleleHe4eVars(r)]; // HC151
       return hshSpecVars(r);
     case 'unitChain':
     case 'atomModel':
@@ -556,6 +639,8 @@ function representationVars(r: Representation): string[] {
       return hsjSpecVars(r);
     case 'chemDiagram':
       return chemDiagramVars(r);
+    case 'phaseEnvelope':
+      return phaseEnvelopeVars(r);
     case 'earthLayers':
     case 'oceanProfile':
     case 'atmosphereLayers':
@@ -564,6 +649,7 @@ function representationVars(r: Representation): string[] {
       return hslSpecVars(r);
     case 'streamChannel':
     case 'reserve':
+      if ('mode' in r) return he3jSpecVars(r); // HC88
       return hs2fSpecVars(r);
     case 'geologicClock':
     case 'coralSection':
@@ -571,6 +657,56 @@ function representationVars(r: Representation): string[] {
     case 'habitableZone':
     case 'parallax':
       return hs3cSpecVars(r);
+    case 'fluidSystem':
+      return he1gSpecVars(r);
+    case 'controlVolume':
+    case 'velocityProfile':
+      return he1fSpecVars(r);
+    case 'potentialWell':
+    case 'unitCell':
+      return he2bSpecVars(r);
+    case 'phaseSpace':
+      return he3lSpecVars(r); // HC69
+    case 'binaryPhase':
+    case 'machining':
+    case 'linkage':
+      return he3iSpecVars(r);
+    case 'spacetime':
+      return he4cSpecVars(r); // HC104
+    case 'globe':
+      return globeVars(r);
+    case 'instrumentTrace':
+      return instrumentTraceVars(r); // HC55
+    case 'aquifer':
+    case 'refraction':
+    case 'projection':
+      return he3mVars(r);
+    case 'stressStrain':
+    case 'stressElement':
+      return he2jSpecVars(r);
+    case 'fieldPlot':
+      return fieldPlotVars(r); // HC21
+    case 'surfacePlot':
+      return surfacePlotVars(r); // HC46
+    case 'solidOfRevolution':
+      return solidOfRevolutionVars(r); // HC65
+    case 'driftPaths':
+      return driftPathsVars(r); // HC153
+    case 'propertyDiagram':
+    case 'thermalWall':
+      return he2cSpecVars(r);
+    case 'heatExchanger':
+    case 'shaft':
+    case 'fatigueDiagram':
+    case 'elementChain':
+      return he3hSpecVars(r); // HC40, HC41, HC52, HC59
+    case 'timingDiagram':
+    case 'graph':
+    case 'scheduleChart':
+    case 'bitFields':
+      return he3dSpecVars(r);
+    case 'dilutionSeries':
+      return dilutionSeriesVars(r); // HC80
     case 'projectile':
     case 'induction':
     case 'charges':
@@ -580,6 +716,7 @@ function representationVars(r: Representation): string[] {
     case 'collision':
     case 'circularMotion':
     case 'freeBody':
+      if (isHe3lSpec(r)) return he3lSpecVars(r); // HC68
       return hskSpecVars(r);
     case 'impulse':
     case 'powerLift':
@@ -591,7 +728,27 @@ function representationVars(r: Representation): string[] {
     case 'oscillator':
     case 'pendulum':
     case 'capacitor':
-      return hs3aSpecVars(r);
+      return [...hs3aSpecVars(r), ...he1hSpecVars(r), ...he4bSpecVars(r)]; // HC102, HC106, HC107
+    case 'section':
+      return he1bSpecVars(r);
+    case 'beam':
+      return he1aSpecVars(r);
+    case 'bode':
+      return bodeVars(r); // HC22
+    case 'roadCurve':
+    case 'connection':
+    case 'hydrograph':
+    case 'blockDiagram':
+      return he3jSpecVars(r); // HC60, HC61, HC89, HC90
+    case 'lamina':
+    case 'rocket':
+    case 'deviceCurves':
+    case 'stemPlot':
+      return he3kSpecVars(r); // HC86, HC87, HC62, HC63
+    case 'wing':
+    case 'duct':
+    case 'supersonicFlow':
+      return he2hSpecVars(r);
   }
 }
 

@@ -28,6 +28,8 @@ spec.loader.exec_module(qvalidate)
 def load_tocs(errors):
     tocs = []
     for path in sorted(glob.glob(os.path.join(BASE, "toc", "*", "*.json"))):
+        if os.path.basename(os.path.dirname(path)) == "college":
+            continue  # college tables of contents: tools/build_college.py
         try:
             t = json.load(open(path, encoding="utf-8"))
         except ValueError as e:

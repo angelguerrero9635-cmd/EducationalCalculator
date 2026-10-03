@@ -1,0 +1,104 @@
+{
+  "id": "taylor-classical-mechanics",
+  "curriculum": "Classical Mechanics",
+  "publisher": "John R. Taylor (University Science Books)",
+  "edition": "2005",
+  "subject": "physics",
+  "level": "college",
+  "content": "titles",
+  "license": {
+    "name": "All rights reserved",
+    "url": "https://henry.pha.jhu.edu/chapters.html",
+    "attribution": "Titles only, from the publisher's or author's public table of contents; no other content."
+  },
+  "terms": "Commercial: chapter titles only.",
+  "sourceUrl": "https://henry.pha.jhu.edu/chapters.html",
+  "retrieved": "2026-10-02",
+  "notes": "Chapter titles 1–15 as listed on a course page (henry.pha.jhu.edu/chapters.html) found by web search; the publisher's page was not read. Chapter 16 (continuum mechanics) not recorded.",
+  "books": [
+    {
+      "title": "Classical Mechanics",
+      "url": "https://henry.pha.jhu.edu/chapters.html",
+      "units": [
+        {
+          "n": "1",
+          "title": "Newton's Laws of Motion",
+          "topics": ["he.physics.university-1#1"]
+        },
+        {
+          "n": "2",
+          "title": "Projectiles and Charged Particles",
+          "topics": ["he.physics.university-1#1"]
+        },
+        {
+          "n": "3",
+          "title": "Momentum and Angular Momentum",
+          "topics": ["he.physics.university-1#3"]
+        },
+        {
+          "n": "4",
+          "title": "Energy",
+          "topics": ["he.physics.university-1#2"]
+        },
+        {
+          "n": "5",
+          "title": "Oscillations",
+          "topics": ["he.physics.university-1#5"]
+        },
+        {
+          "n": "6",
+          "title": "Calculus of Variations",
+          "topics": ["he.physics.classical-mechanics#0"]
+        },
+        {
+          "n": "7",
+          "title": "Lagrange's Equations",
+          "topics": ["he.physics.classical-mechanics#0"]
+        },
+        {
+          "n": "8",
+          "title": "Two-Body Central-Force Problems",
+          "topics": ["he.physics.classical-mechanics#2"]
+        },
+        {
+          "n": "9",
+          "title": "Mechanics in Noninertial Frames",
+          "topics": [],
+          "note": "no college topic: noninertial frames (plan gap)"
+        },
+        {
+          "n": "10",
+          "title": "Rotational Motion of Rigid Bodies",
+          "topics": ["he.physics.classical-mechanics#3"]
+        },
+        {
+          "n": "11",
+          "title": "Coupled Oscillators and Normal Modes",
+          "topics": ["he.physics.classical-mechanics#4"]
+        },
+        {
+          "n": "12",
+          "title": "Nonlinear Mechanics and Chaos",
+          "topics": [],
+          "note": "no college topic: chaos"
+        },
+        {
+          "n": "13",
+          "title": "Hamiltonian Mechanics",
+          "topics": ["he.physics.classical-mechanics#1"]
+        },
+        {
+          "n": "14",
+          "title": "Collision Theory",
+          "topics": [],
+          "note": "no college topic: scattering"
+        },
+        {
+          "n": "15",
+          "title": "Special Relativity",
+          "topics": ["he.physics.university-3#2"]
+        }
+      ]
+    }
+  ]
+}

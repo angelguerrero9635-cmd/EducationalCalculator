@@ -1,0 +1,186 @@
+{
+  "id": "mit-ocw-7.014-2005",
+  "curriculum": "MIT OCW 7.014 Introductory Biology",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Spring 2005",
+  "subject": "biology",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Graham Walker, Penny Chisholm, Julia Khodor and Michelle Mischke. 7.014 Introductory Biology. Spring 2005. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu. License: Creative Commons BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Part",
+    "lesson": "Lecture"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/7-014-introductory-biology-spring-2005/",
+  "retrieved": "2026-10-02",
+  "notes": "Reference only (CC BY-NC-SA 4.0; OCW terms https://ocw.mit.edu/pages/privacy-and-terms-of-use/). Lecture list and order from the course calendar or lecture-notes page; examples, ranges and notation are our words, read from the exams and problem sets (no problem text or numbers copied). Third-party figures inside OCW PDFs are outside the licence and were not used. Problem sets 5–8 and quizzes 2–3 read for the records.",
+  "books": [
+    {
+      "course": "7.014",
+      "url": "https://ocw.mit.edu/courses/7-014-introductory-biology-spring-2005/",
+      "units": [
+        {
+          "n": "1",
+          "title": "Biochemistry and molecular biology",
+          "topics": [
+            "he.biology.principles-1#0",
+            "he.biology.principles-1#2",
+            "he.biology.genetics#2"
+          ],
+          "lessons": [
+            {
+              "n": "2–8",
+              "title": "Biochemistry I–VI",
+              "topics": ["he.biology.principles-1#0", "he.biology.principles-1#2"]
+            },
+            {
+              "n": "9–13",
+              "title": "Molecular biology I–IV",
+              "topics": ["he.biology.genetics#2"]
+            },
+            {
+              "n": "13–14",
+              "title": "Gene regulation I–II",
+              "topics": ["he.biology.cell-molecular#2"]
+            },
+            {
+              "n": "15",
+              "title": "Bacterial genetics",
+              "topics": ["he.biology.microbiology#2"]
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Ecology I: energy and the biosphere",
+          "topics": ["he.biology.ecology#2", "he.biology.principles-2#4"],
+          "examples": [
+            "metabolic types by electron, carbon and energy source",
+            "NPP and net ecosystem production from flux diagrams",
+            "carbon reaching a predator through assimilation, production and exploitation efficiencies"
+          ],
+          "lessons": [
+            {
+              "n": "16",
+              "title": "The biosphere",
+              "topics": ["he.biology.ecology#2"]
+            },
+            {
+              "n": "17",
+              "title": "Carbon and energy metabolism",
+              "topics": ["he.biology.principles-1#2", "he.biology.microbiology#1"]
+            },
+            {
+              "n": "18",
+              "title": "Productivity and food webs",
+              "topics": ["he.biology.ecology#2", "he.biology.principles-2#4"]
+            },
+            {
+              "n": "19",
+              "title": "Regulation of productivity",
+              "topics": ["he.biology.ecology#2"]
+            },
+            {
+              "n": "20",
+              "title": "Limiting factors and biogeochemical cycles",
+              "topics": ["he.biology.ecology#2"]
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Genetics, recombinant DNA, immunology",
+          "topics": [
+            "he.biology.principles-1#3",
+            "he.biology.principles-1#4",
+            "he.biology.genetics#0",
+            "he.biology.microbiology#3"
+          ],
+          "examples": [
+            "linked dihybrid F2 with a missing class",
+            "recombination frequency from 1000 progeny",
+            "X-linked pedigree risk",
+            "antibody structure and V(D)J joining; reverse transcriptase"
+          ],
+          "lessons": [
+            {
+              "n": "21",
+              "title": "Mendelian genetics",
+              "topics": ["he.biology.principles-1#4"]
+            },
+            {
+              "n": "22",
+              "title": "Mitosis and meiosis",
+              "topics": ["he.biology.principles-1#3"]
+            },
+            {
+              "n": "23",
+              "title": "Diploid genetics",
+              "topics": ["he.biology.genetics#0", "he.biology.genetics#1"]
+            },
+            {
+              "n": "24–27",
+              "title": "Recombinant DNA I–III",
+              "topics": ["he.biology.genetics#2"]
+            },
+            {
+              "n": "27–28",
+              "title": "Immunology I–II",
+              "topics": ["he.biology.microbiology#3"]
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Ecology II and evolution",
+          "topics": [
+            "he.biology.ecology#0",
+            "he.biology.ecology#1",
+            "he.biology.evolution#0",
+            "he.biology.evolution#2"
+          ],
+          "examples": [
+            "cohort life table: lx, ex, R₀, G, r = ln R₀/G",
+            "r and doubling time from two counts; K from a logistic count",
+            "Hardy–Weinberg with a codominant trait; scenarios of selection, mutation, founder effect, gene flow",
+            "invariant residues in aligned sequences; DNA vs protein trees",
+            "succession after fire"
+          ],
+          "notation": ["N_t = N₀e^(rt)", "R₀ = Σ lx bx", "G = Σ lx bx x / R₀"],
+          "lessons": [
+            {
+              "n": "29–30",
+              "title": "Population growth I–II",
+              "topics": ["he.biology.ecology#0"]
+            },
+            {
+              "n": "31",
+              "title": "Population genetics and evolution",
+              "topics": ["he.biology.genetics#3", "he.biology.evolution#0"]
+            },
+            {
+              "n": "32",
+              "title": "Molecular evolution",
+              "topics": ["he.biology.evolution#2"]
+            },
+            {
+              "n": "33–35",
+              "title": "Communities I–III",
+              "topics": ["he.biology.ecology#1"]
+            },
+            {
+              "n": "36",
+              "title": "Ecological applications",
+              "topics": ["he.biology.ecology#3"]
+            }
+          ]
+        }
+      ],
+      "title": "7.014"
+    }
+  ]
+}

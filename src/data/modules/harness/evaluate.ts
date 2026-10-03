@@ -17,6 +17,16 @@ import { HSG_PHRASES } from './phrasesHsg';
 import { HSI_PHRASES } from './phrasesHsi';
 import { HSJ_PHRASES } from './phrasesHsj';
 import { HS2D_PHRASES } from './phrasesHs2d';
+import { HE1E_PHRASES } from './phrasesHe1e';
+import { HE1I_PHRASES } from './phrasesHe1i';
+import { HE2A_PHRASES } from './phrasesHe2a';
+import { HE2B_PHRASES } from './phrasesHe2b';
+import { HE2C_PHRASES } from './phrasesHe2c';
+import { HE3E_PHRASES } from './phrasesHe3e';
+import { HE3C_PHRASES } from './phrasesHe3c';
+import { HE3D_PHRASES } from './phrasesHe3d';
+import { HE3K_PHRASES } from './phrasesHe3k';
+import { HE4D_PHRASES } from './phrasesHe4d';
 import { M9_PHRASES } from './phrasesM9';
 import { M10_PHRASES } from './phrasesM10';
 import { M11_PHRASES } from './phrasesM11';
@@ -87,6 +97,13 @@ export const PHRASES: [RegExp, (...xs: number[]) => number][] = [
   ...HSB_PHRASES,
   ...HSJ_PHRASES,
   ...HS2D_PHRASES,
+  ...HE1I_PHRASES,
+  ...HE2B_PHRASES,
+  ...HE2C_PHRASES,
+  ...HE3E_PHRASES,
+  ...HE3C_PHRASES, // college round 3, group C (n!)
+  ...HE3D_PHRASES, // college round 3, group D (min of sums)
+  ...HE3K_PHRASES,
   ...HSF_PHRASES,
   ...HSG_PHRASES,
   ...HSI_PHRASES,
@@ -99,6 +116,9 @@ export const PHRASES: [RegExp, (...xs: number[]) => number][] = [
   ...S10_PHRASES,
   ...S11_PHRASES,
   ...S12_PHRASES,
+  ...HE1E_PHRASES, // college round 1, group E (erf)
+  ...HE2A_PHRASES, // college round 2, group A (atan2)
+  ...HE4D_PHRASES, // college round 4, group D (crystal-field filling)
   // Grade 3 clock times ("3:45"), as minutes past 12:00 on a 12-hour clock. Phrases that start
   // with a bracket are tried first, so these come before "35 minutes".
   [

@@ -1,0 +1,67 @@
+{
+  "id": "mit-ocw-6-003",
+  "curriculum": "MIT OpenCourseWare 6.003 Signals and Systems",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Fall 2011",
+  "subject": "electrical",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Dennis Freeman. 6.003 Signals and Systems. Fall 2011. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu/courses/6-003-signals-and-systems-fall-2011/. License: CC BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Lecture block"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/6-003-signals-and-systems-fall-2011/",
+  "retrieved": "2026-10-02",
+  "sources": ["https://ocw.mit.edu/courses/6-003-signals-and-systems-fall-2011/pages/calendar/"],
+  "notes": "Session list from the calendar; quizzes 1–3 (Fall 2011) read.",
+  "books": [
+    {
+      "course": "he.engineering.signals-systems",
+      "title": "6.003 Signals and Systems (Fall 2011)",
+      "url": "https://ocw.mit.edu/courses/6-003-signals-and-systems-fall-2011/",
+      "units": [
+        {
+          "n": "1–4",
+          "title": "Signals and systems; discrete-time systems; feedback, poles and modes; continuous-time systems",
+          "topics": ["he.engineering.signals-systems#0", "he.engineering.signals-systems#3"]
+        },
+        {
+          "n": "5–7",
+          "title": "Z and Laplace transforms; discrete approximation",
+          "topics": ["he.engineering.signals-systems#3"],
+          "examples": ["poles and zeros from h[n]", "Laplace transforms with ROC"]
+        },
+        {
+          "n": "8",
+          "title": "Convolution",
+          "topics": ["he.engineering.signals-systems#1"],
+          "examples": ["match a convolution result"]
+        },
+        {
+          "n": "9–13",
+          "title": "Frequency response; Bode plots; feedback and control",
+          "topics": [
+            "he.engineering.signals-systems#2",
+            "he.engineering.control-systems#1",
+            "he.engineering.control-systems#3"
+          ]
+        },
+        {
+          "n": "14–20",
+          "title": "Fourier series and transforms, continuous and discrete; relations; applications",
+          "topics": ["he.engineering.signals-systems#2"],
+          "examples": ["sketch |X(jω)| and ∠X"]
+        },
+        {
+          "n": "21–",
+          "title": "Sampling; modulation",
+          "topics": ["he.engineering.signals-systems#4", "he.engineering.communication-systems#0"]
+        }
+      ]
+    }
+  ]
+}

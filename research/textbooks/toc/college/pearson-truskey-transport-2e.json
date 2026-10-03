@@ -1,0 +1,133 @@
+{
+  "id": "pearson-truskey-transport-2e",
+  "curriculum": "Truskey, Yuan and Katz, Transport Phenomena in Biological Systems",
+  "publisher": "Pearson (Prentice Hall)",
+  "edition": "2nd edition (2009)",
+  "subject": "bio",
+  "level": "college",
+  "content": "titles",
+  "terms": {
+    "unit": "Chapter",
+    "lesson": null,
+    "part": "Section"
+  },
+  "license": {
+    "name": "all rights reserved (no licence stated)",
+    "url": "https://www.pearson.com/en-us/subject-catalog/p/transport-phenomena-in-biological-systems/P200000003212/9780131569881",
+    "attribution": "Pearson (Prentice Hall)"
+  },
+  "sourceUrl": "https://www.pearson.com/en-us/subject-catalog/p/transport-phenomena-in-biological-systems/P200000003212/9780131569881",
+  "retrieved": "2026-10-02",
+  "notes": "Titles only (all rights reserved). Chapter titles as listed on the publisher's public product page (robots.txt allows it; no login). Chapter numbers are by order on that page.  No licence is stated: titles only.",
+  "books": [
+    {
+      "url": "https://www.pearson.com/en-us/subject-catalog/p/transport-phenomena-in-biological-systems/P200000003212/9780131569881",
+      "units": [
+        {
+          "n": "1",
+          "title": "Introduction",
+          "topics": ["he.engineering.biotransport#0"]
+        },
+        {
+          "n": "2",
+          "title": "Conservation and Momentum Balances",
+          "topics": ["he.engineering.biotransport#1"],
+          "part": "A. Introduction to Physiological Fluid Mechanics"
+        },
+        {
+          "n": "3",
+          "title": "Conservation Relations for Fluid Transport, Dimensional Analysis and Scaling",
+          "topics": ["he.engineering.biotransport#1"],
+          "part": "A. Introduction to Physiological Fluid Mechanics"
+        },
+        {
+          "n": "4",
+          "title": "Macroscopic Form of Conservation Relations and Applications of Momentum Transport",
+          "topics": ["he.engineering.biotransport#1"],
+          "part": "A. Introduction to Physiological Fluid Mechanics"
+        },
+        {
+          "n": "5",
+          "title": "Fluid Flow in the Circulation and Tissues",
+          "topics": ["he.engineering.biotransport#1"],
+          "part": "A. Introduction to Physiological Fluid Mechanics"
+        },
+        {
+          "n": "6",
+          "title": "Introduction to Mass Transport",
+          "topics": ["he.engineering.biotransport#0"],
+          "part": "B. Fundamentals and Applications of Mass Transport"
+        },
+        {
+          "n": "7",
+          "title": "Diffusion with Convection or Electrical Potentials",
+          "topics": ["he.engineering.biotransport#2"],
+          "part": "B. Fundamentals and Applications of Mass Transport"
+        },
+        {
+          "n": "8",
+          "title": "Transport in Porous Media",
+          "topics": ["he.engineering.biotransport#2"],
+          "part": "B. Fundamentals and Applications of Mass Transport"
+        },
+        {
+          "n": "9",
+          "title": "Transvascular Transport",
+          "topics": ["he.engineering.biotransport#2"],
+          "part": "B. Fundamentals and Applications of Mass Transport"
+        },
+        {
+          "n": "10",
+          "title": "Solvent and Solute Transport across the Kidney Glomerulus",
+          "topics": ["he.engineering.biotransport#3"],
+          "part": "B. Fundamentals and Applications of Mass Transport"
+        },
+        {
+          "n": "11",
+          "title": "Mass Transport and Biochemical Interactions",
+          "topics": ["he.engineering.biotransport#2"],
+          "part": "C. The Effect of Mass Transport upon Biochemical Interactions"
+        },
+        {
+          "n": "12",
+          "title": "Oxygen Transport from the Lungs to the Tissues",
+          "topics": ["he.engineering.biotransport#0"],
+          "part": "C. The Effect of Mass Transport upon Biochemical Interactions"
+        },
+        {
+          "n": "13",
+          "title": "Ligand-Receptor Kinetics on the Cell Surface and Molecular Transport within Cells",
+          "topics": ["he.biology.cell-molecular#1"],
+          "part": "C. The Effect of Mass Transport upon Biochemical Interactions"
+        },
+        {
+          "n": "14",
+          "title": "Cell Adhesion and Cell Signaling",
+          "topics": ["he.engineering.tissue-engineering#1"],
+          "part": "C. The Effect of Mass Transport upon Biochemical Interactions"
+        },
+        {
+          "n": "15",
+          "title": "Transport of Drugs and Macromolecules in Tumors",
+          "topics": ["he.engineering.biotransport#3"],
+          "part": "C. The Effect of Mass Transport upon Biochemical Interactions"
+        },
+        {
+          "n": "16",
+          "title": "Transport in Organs and Organisms",
+          "topics": ["he.engineering.biotransport#3"],
+          "part": "C. The Effect of Mass Transport upon Biochemical Interactions"
+        },
+        {
+          "n": "17",
+          "title": "Heat Transfer in Biological Systems",
+          "topics": [],
+          "part": "C. The Effect of Mass Transport upon Biochemical Interactions",
+          "notes": "No taxonomy topic.",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        }
+      ],
+      "title": "Truskey, Yuan and Katz, Transport Phenomena in Biological Systems"
+    }
+  ]
+}

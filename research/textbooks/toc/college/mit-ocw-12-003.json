@@ -1,0 +1,67 @@
+{
+  "id": "mit-ocw-12-003",
+  "curriculum": "MIT OCW 12.003 Atmosphere, Ocean and Climate Dynamics",
+  "publisher": "MIT OpenCourseWare",
+  "edition": "Fall 2008",
+  "subject": "earth-science",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Raffaele Ferrari. 12.003 Atmosphere, Ocean and Climate Dynamics, Fall 2008. Massachusetts Institute of Technology: MIT OpenCourseWare, https://ocw.mit.edu/courses/12-003-atmosphere-ocean-and-climate-dynamics-fall-2008/. License: Creative Commons BY-NC-SA."
+  },
+  "terms": {
+    "unit": "Assignment",
+    "lesson": "Part"
+  },
+  "sourceUrl": "https://ocw.mit.edu/courses/12-003-atmosphere-ocean-and-climate-dynamics-fall-2008/",
+  "retrieved": "2026-10-02",
+  "notes": "Instructor(s): Raffaele Ferrari. Units are the problem sets, labs and exams read (type only; no solutions fetched). Calendar (topic order) as published: SES # TOPICS READINGS LABS KEY DATES 1 Introduction Introduction Lab experiment 0: Rotation stiffens fluids 2 Characteristics of the atmosphere Chapter 1 3 Equation of state for the dry and moist air Chapter 1 4 Earth’s radiation budget Chapter 2 5 Greenhouse effect: I Chapter 2 6 Greenhouse effect: II Chapter 2 Problem set 1 due 7 Vertical structure of the atmosphere Chapter 3 8 Convection in water Chapter 4 Lab experiment 2: Convection 9 Convection in water (cont.) Chapter 4 Problem set 2 due 10 Convection in water (cont.) Chapter 4 11 Dry convection in air Chapter 4 12 Potential temperature Chapter 4 Problem set 3 due 13 Moist convection in air: I Chapter 4 Lab experiment 1: Cloud formation on adiabatic expansion 14 Moist convection in air: II Chapter 4 Problem set 4 due 15 Meridional structure of the atmosphere Chapter 5 16 Partial differential equations Chapter 6 Problem set 5 due 1 Third-party content inside OCW files (figures credited to other publishers) was not used.",
+  "books": [
+    {
+      "grade": "college",
+      "url": "https://ocw.mit.edu/courses/12-003-atmosphere-ocean-and-climate-dynamics-fall-2008/",
+      "units": [
+        {
+          "n": "1",
+          "title": "assignments",
+          "url": "https://ocw.mit.edu/courses/12-003-atmosphere-ocean-and-climate-dynamics-fall-2008/resources/assignments/",
+          "topics": [
+            "he.earth-science.meteorology#3",
+            "he.earth-science.oceanography#2",
+            "he.geography.climatology#1"
+          ],
+          "examples": [
+            "geostrophic wind from contour spacing on a 500 hPa map; compare with plotted winds",
+            "sideways Coriolis deflection of a kicked ball",
+            "sketch winds at the surface and at 500 hPa around a low from isobars and thickness; predict the storm's motion",
+            "thermal wind across the Gulf Stream: horizontal temperature difference from the current's shear"
+          ],
+          "lessons": [],
+          "notes": "4 question record(s): OCW-12.003-PS6-Q1, OCW-12.003-PS6-Q3, OCW-12.003-PS6-Q4, OCW-12.003-PS6-Q2"
+        },
+        {
+          "n": "2",
+          "title": "midterm",
+          "url": "https://ocw.mit.edu/courses/12-003-atmosphere-ocean-and-climate-dynamics-fall-2008/resources/midterm/",
+          "topics": [
+            "he.earth-science.meteorology#1",
+            "he.earth-science.meteorology#2",
+            "he.geography.climatology#0",
+            "he.geography.physical-geography#0"
+          ],
+          "examples": [
+            "daily mean insolation against latitude for an axis normal to the Sun line; surface temperature by latitude from a one-slab model",
+            "density and potential temperature of a surface parcel; θ and T after lifting dry to 125 hPa; then with all its vapour condensed",
+            "emission temperature of Venus from its distance and albedo; layers of an N-layer greenhouse needed for its surface temperature",
+            "temperature rise of the air in a closed room from people's and machines' power over an hour"
+          ],
+          "lessons": [],
+          "notes": "4 question record(s): OCW-12.003-MID-Q2, OCW-12.003-MID-Q3, OCW-12.003-MID-Q1, OCW-12.003-MID-Q4"
+        }
+      ],
+      "title": "MIT OCW 12.003 Atmosphere, Ocean and Climate Dynamics"
+    }
+  ]
+}

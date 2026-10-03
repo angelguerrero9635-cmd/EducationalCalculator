@@ -1,0 +1,621 @@
+{
+  "id": "perkins-mineralogy",
+  "curriculum": "Mineralogy",
+  "publisher": "OpenGeology (LibreTexts Geosciences edition)",
+  "edition": "LibreTexts edition",
+  "subject": "earth-science",
+  "level": "college",
+  "content": "full",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Mineralogy by Dexter Perkins et al., OpenGeology; LibreTexts Geosciences edition. CC BY-NC-SA 4.0."
+  },
+  "terms": {
+    "unit": "Chapter",
+    "lesson": "Section"
+  },
+  "sourceUrl": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)",
+  "retrieved": "2026-10-02",
+  "notes": "CC BY-NC-SA 4.0: titles and mapping. The section pages read (11.9 Miller Indices) carry no exercises; no Perkins question records.",
+  "books": [
+    {
+      "grade": "college",
+      "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)",
+      "units": [
+        {
+          "n": "1",
+          "title": "Introduction",
+          "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/01%3A_Introduction",
+          "topics": ["he.earth-science.mineralogy#1"],
+          "lessons": [
+            {
+              "n": "1.01",
+              "title": "The Importance of Minerals",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/01%3A_Introduction/1.01%3A_The_Importance_of_Minerals"
+            },
+            {
+              "n": "1.02",
+              "title": "Definition of a Mineral",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/01%3A_Introduction/1.02%3A_Definition_of_a_Mineral"
+            },
+            {
+              "n": "1.03",
+              "title": "Elements Minerals and Rocks",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/01%3A_Introduction/1.03%3A_Elements_Minerals_and_Rocks"
+            },
+            {
+              "n": "1.04",
+              "title": "Classifying Minerals",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/01%3A_Introduction/1.04%3A_Classifying_Minerals"
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Mineral Chemistry",
+          "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/02%3A_Mineral_Chemistry",
+          "topics": ["he.earth-science.mineralogy#1"],
+          "notes": "Mineral chemistry: ions, bonding, compositional variation (solid solution, formula recalculation).",
+          "lessons": [
+            {
+              "n": "2.01",
+              "title": "Elements and Minerals",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/02%3A_Mineral_Chemistry/2.01%3A_Elements_and_Minerals"
+            },
+            {
+              "n": "2.02",
+              "title": "Elements and the Periodic Table",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/02%3A_Mineral_Chemistry/2.02%3A_Elements_and_the_Periodic_Table"
+            },
+            {
+              "n": "2.03",
+              "title": "Ions",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/02%3A_Mineral_Chemistry/2.03%3A_Ions"
+            },
+            {
+              "n": "2.04",
+              "title": "Bonding in Minerals",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/02%3A_Mineral_Chemistry/2.04%3A_Bonding_in_Minerals"
+            },
+            {
+              "n": "2.05",
+              "title": "Compositional Variation in Minerals",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/02%3A_Mineral_Chemistry/2.05%3A_Compositional_Variation_in_Minerals"
+            },
+            {
+              "n": "2.06",
+              "title": "Common Minerals",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/02%3A_Mineral_Chemistry/2.06%3A_Common_Minerals"
+            }
+          ]
+        },
+        {
+          "n": "3",
+          "title": "Mineral Properties",
+          "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/03%3A_Mineral_Properties",
+          "topics": ["he.earth-science.mineralogy#1", "he.earth-science.physical-geology#0"],
+          "notes": "Properties: hardness, density and specific gravity, cleavage.",
+          "lessons": [
+            {
+              "n": "3.01",
+              "title": "Naming Minerals",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/03%3A_Mineral_Properties/3.01%3A_Naming_Minerals"
+            },
+            {
+              "n": "3.02",
+              "title": "Mineral Identification",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/03%3A_Mineral_Properties/3.02%3A_Mineral_Identification"
+            },
+            {
+              "n": "3.03",
+              "title": "Crystal Shape",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/03%3A_Mineral_Properties/3.03%3A_Crystal_Shape"
+            },
+            {
+              "n": "3.04",
+              "title": "Mineral Appearance",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/03%3A_Mineral_Properties/3.04%3A_Mineral_Appearance"
+            },
+            {
+              "n": "3.05",
+              "title": "Strength and Breaking",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/03%3A_Mineral_Properties/3.05%3A_Strength_and_Breaking"
+            },
+            {
+              "n": "3.06",
+              "title": "Density and Specific Gravity",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/03%3A_Mineral_Properties/3.06%3A_Density_and_Specific_Gravity"
+            },
+            {
+              "n": "3.07",
+              "title": "Magnetism",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/03%3A_Mineral_Properties/3.07%3A_Magnetism"
+            },
+            {
+              "n": "3.08",
+              "title": "Electrical Properties",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/03%3A_Mineral_Properties/3.08%3A_Electrical_Properties"
+            },
+            {
+              "n": "3.09",
+              "title": "Reaction to Dilute Hydrochloric Acid",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/03%3A_Mineral_Properties/3.09%3A_Reaction_to_Dilute_Hydrochloric_Acid"
+            },
+            {
+              "n": "3.10",
+              "title": "Additional Properties",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/03%3A_Mineral_Properties/3.10%3A_Additional_Properties"
+            }
+          ]
+        },
+        {
+          "n": "4",
+          "title": "Crystals and Crystallization",
+          "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/04%3A_Crystals_and_Crystallization",
+          "topics": ["he.earth-science.mineralogy#0"],
+          "lessons": [
+            {
+              "n": "4.01",
+              "title": "Crystalline and Noncrystalline Solids",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/04%3A_Crystals_and_Crystallization/4.01%3A_Crystalline_and_Noncrystalline_Solids"
+            },
+            {
+              "n": "4.02",
+              "title": "Forming Crystals",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/04%3A_Crystals_and_Crystallization/4.02%3A_Forming_Crystals"
+            },
+            {
+              "n": "4.03",
+              "title": "Mineral Stability and Polymorphs",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/04%3A_Crystals_and_Crystallization/4.03%3A_Mineral_Stability_and_Polymorphs"
+            },
+            {
+              "n": "4.04",
+              "title": "Factors Controlling Crystal Size and Perfection",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/04%3A_Crystals_and_Crystallization/4.04%3A_Factors_Controlling_Crystal_Size_and_Perfection"
+            },
+            {
+              "n": "4.05",
+              "title": "Life Spans of Minerals",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/04%3A_Crystals_and_Crystallization/4.05%3A_Life_Spans_of_Minerals"
+            }
+          ]
+        },
+        {
+          "n": "5",
+          "title": "Optical Mineralogy",
+          "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/05%3A_Optical_Mineralogy",
+          "topics": ["he.earth-science.mineralogy#2"],
+          "notes": "Optical mineralogy: polarization, petrographic microscope, uniaxial and biaxial, interference figures.",
+          "lessons": [
+            {
+              "n": "5.01",
+              "title": "Introduction to Mineral Optics",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/05%3A_Optical_Mineralogy/5.01%3A_Introduction_to_Mineral_Optics"
+            },
+            {
+              "n": "5.02",
+              "title": "Light and the Properties of Light",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/05%3A_Optical_Mineralogy/5.02%3A_Light_and_the_Properties_of_Light"
+            },
+            {
+              "n": "5.03",
+              "title": "Polarization of Light",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/05%3A_Optical_Mineralogy/5.03%3A_Polarization_of_Light"
+            },
+            {
+              "n": "5.04",
+              "title": "Petrographic Microscopes",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/05%3A_Optical_Mineralogy/5.04%3A_Petrographic_Microscopes"
+            },
+            {
+              "n": "5.05",
+              "title": "More About Uniaxial and Biaxial Minerals",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/05%3A_Optical_Mineralogy/5.05%3A_More_About_Uniaxial_and_Biaxial_Minerals"
+            },
+            {
+              "n": "5.06",
+              "title": "Interference Figures",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/05%3A_Optical_Mineralogy/5.06%3A_Interference_Figures"
+            },
+            {
+              "n": "5.07",
+              "title": "Identifying Minerals and Mineral Properties in Thin Section",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/05%3A_Optical_Mineralogy/5.07%3A_Identifying_Minerals_and_Mineral_Properties_in_Thin_Section"
+            }
+          ]
+        },
+        {
+          "n": "6",
+          "title": "Igneous Rocks and Silicate Minerals",
+          "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/06%3A_Igneous_Rocks_and_Silicate_Minerals",
+          "topics": ["he.earth-science.physical-geology#0"],
+          "lessons": [
+            {
+              "n": "6.01",
+              "title": "Magmas and Igneous Rocks",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/06%3A_Igneous_Rocks_and_Silicate_Minerals/6.01%3A_Magmas_and_Igneous_Rocks"
+            },
+            {
+              "n": "6.02",
+              "title": "Compositions of Igneous Rocks",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/06%3A_Igneous_Rocks_and_Silicate_Minerals/6.02%3A_Compositions_of_Igneous_Rocks"
+            },
+            {
+              "n": "6.03",
+              "title": "Crystallization of Magmas",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/06%3A_Igneous_Rocks_and_Silicate_Minerals/6.03%3A_Crystallization_of_Magmas"
+            },
+            {
+              "n": "6.04",
+              "title": "Silicate Minerals",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/06%3A_Igneous_Rocks_and_Silicate_Minerals/6.04%3A_Silicate_Minerals"
+            },
+            {
+              "n": "6.05",
+              "title": "Naming Igneous Rocks",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/06%3A_Igneous_Rocks_and_Silicate_Minerals/6.05%3A_Naming_Igneous_Rocks"
+            },
+            {
+              "n": "6.06",
+              "title": "Mineral Modes",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/06%3A_Igneous_Rocks_and_Silicate_Minerals/6.06%3A_Mineral_Modes"
+            },
+            {
+              "n": "6.07",
+              "title": "Common Types of Igneous Rock",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/06%3A_Igneous_Rocks_and_Silicate_Minerals/6.07%3A_Common_Types_of_Igneous_Rock"
+            }
+          ]
+        },
+        {
+          "n": "7",
+          "title": "Sedimentary Minerals and Sedimentary Rocks",
+          "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/07%3A_Sedimentary_Minerals_and_Sedimentary_Rocks",
+          "topics": ["he.earth-science.physical-geology#0"],
+          "lessons": [
+            {
+              "n": "7.01",
+              "title": "Weathering",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/07%3A_Sedimentary_Minerals_and_Sedimentary_Rocks/7.01%3A_Weathering"
+            },
+            {
+              "n": "7.02",
+              "title": "Siliciclastic Sediments",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/07%3A_Sedimentary_Minerals_and_Sedimentary_Rocks/7.02%3A_Siliciclastic_Sediments"
+            },
+            {
+              "n": "7.03",
+              "title": "Transportation Deposition and Lithification",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/07%3A_Sedimentary_Minerals_and_Sedimentary_Rocks/7.03%3A_Transportation_Deposition_and_Lithification"
+            },
+            {
+              "n": "7.04",
+              "title": "Sedimentary Minerals",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/07%3A_Sedimentary_Minerals_and_Sedimentary_Rocks/7.04%3A_Sedimentary_Minerals"
+            },
+            {
+              "n": "7.05",
+              "title": "Common Sedimentary Rocks",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/07%3A_Sedimentary_Minerals_and_Sedimentary_Rocks/7.05%3A_Common_Sedimentary_Rocks"
+            },
+            {
+              "n": "7.06",
+              "title": "Sedimentary Environments and Facies",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/07%3A_Sedimentary_Minerals_and_Sedimentary_Rocks/7.06%3A_Sedimentary_Environments_and_Facies"
+            }
+          ]
+        },
+        {
+          "n": "8",
+          "title": "Metamorphic Minerals and Metamorphic Rocks",
+          "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/08%3A_Metamorphic_Minerals_and_Metamorphic_Rocks",
+          "topics": ["he.earth-science.physical-geology#0"],
+          "lessons": [
+            {
+              "n": "8.01",
+              "title": "Different Kinds of Metamorphism",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/08%3A_Metamorphic_Minerals_and_Metamorphic_Rocks/8.01%3A_Different_Kinds_of_Metamorphism"
+            },
+            {
+              "n": "8.02",
+              "title": "Pressure and Temperature",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/08%3A_Metamorphic_Minerals_and_Metamorphic_Rocks/8.02%3A_Pressure_and_Temperature"
+            },
+            {
+              "n": "8.03",
+              "title": "Metamorphic Textures",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/08%3A_Metamorphic_Minerals_and_Metamorphic_Rocks/8.03%3A_Metamorphic_Textures"
+            },
+            {
+              "n": "8.04",
+              "title": "Metamorphic Reactions",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/08%3A_Metamorphic_Minerals_and_Metamorphic_Rocks/8.04%3A_Metamorphic_Reactions"
+            },
+            {
+              "n": "8.05",
+              "title": "Metamorphic Rocks of Different Compositions",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/08%3A_Metamorphic_Minerals_and_Metamorphic_Rocks/8.05%3A_Metamorphic_Rocks_of_Different_Compositions"
+            },
+            {
+              "n": "8.06",
+              "title": "Metasedimentary Rocks",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/08%3A_Metamorphic_Minerals_and_Metamorphic_Rocks/8.06%3A_Metasedimentary_Rocks"
+            },
+            {
+              "n": "8.07",
+              "title": "Metaigneous Rocks and Minerals",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/08%3A_Metamorphic_Minerals_and_Metamorphic_Rocks/8.07%3A_Metaigneous_Rocks_and_Minerals"
+            },
+            {
+              "n": "8.08",
+              "title": "High-Pressure Rocks and Minerals",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/08%3A_Metamorphic_Minerals_and_Metamorphic_Rocks/8.08%3A_High-Pressure_Rocks_and_Minerals"
+            }
+          ]
+        },
+        {
+          "n": "9",
+          "title": "Ore Deposits and Economic Minerals",
+          "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/09%3A_Ore_Deposits_and_Economic_Minerals",
+          "topics": [],
+          "notes": "Ore deposits: no topic.",
+          "lessons": [
+            {
+              "n": "9.01",
+              "title": "Mineral Commodities",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/09%3A_Ore_Deposits_and_Economic_Minerals/9.01%3A_Mineral_Commodities"
+            },
+            {
+              "n": "9.02",
+              "title": "Ore Minerals",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/09%3A_Ore_Deposits_and_Economic_Minerals/9.02%3A_Ore_Minerals"
+            },
+            {
+              "n": "9.03",
+              "title": "Types of Ore Deposits",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/09%3A_Ore_Deposits_and_Economic_Minerals/9.03%3A_Types_of_Ore_Deposits"
+            }
+          ],
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "10",
+          "title": "Crystal Morphology and Symmetry",
+          "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/10%3A_Crystal_Morphology_and_Symmetry",
+          "topics": ["he.earth-science.mineralogy#0"],
+          "notes": "Symmetry, stereo diagrams, point groups, crystal systems.",
+          "lessons": [
+            {
+              "n": "10.01",
+              "title": "Symmetry",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/10%3A_Crystal_Morphology_and_Symmetry/10.01%3A_Symmetry"
+            },
+            {
+              "n": "10.02",
+              "title": "Stereo Diagrams",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/10%3A_Crystal_Morphology_and_Symmetry/10.02%3A_Stereo_Diagrams"
+            },
+            {
+              "n": "10.03",
+              "title": "From Points to Crystal Faces and Forms",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/10%3A_Crystal_Morphology_and_Symmetry/10.03%3A_From_Points_to_Crystal_Faces_and_Forms"
+            },
+            {
+              "n": "10.04",
+              "title": "Combinations of Symmetry Elements- Point Groups",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/10%3A_Crystal_Morphology_and_Symmetry/10.04%3A_Combinations_of_Symmetry_Elements-_Point_Groups"
+            },
+            {
+              "n": "10.05",
+              "title": "Point Groups and Crystal Systems",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/10%3A_Crystal_Morphology_and_Symmetry/10.05%3A_Point_Groups_and_Crystal_Systems"
+            }
+          ]
+        },
+        {
+          "n": "11",
+          "title": "Crystallography",
+          "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/11%3A_Crystallography",
+          "topics": ["he.earth-science.mineralogy#0"],
+          "notes": "Unit cells, lattices, space groups, Miller indices.",
+          "lessons": [
+            {
+              "n": "11.01",
+              "title": "Observations in the Seventeenth through Nineteenth Centuries",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/11%3A_Crystallography/11.01%3A_Observations_in_the_Seventeenth_through_Nineteenth_Centuries"
+            },
+            {
+              "n": "11.02",
+              "title": "Translational Symmetry",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/11%3A_Crystallography/11.02%3A_Translational_Symmetry"
+            },
+            {
+              "n": "11.03",
+              "title": "Unit Cells and Lattices in Two Dimension",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/11%3A_Crystallography/11.03%3A_Unit_Cells_and_Lattices_in_Two_Dimension"
+            },
+            {
+              "n": "11.04",
+              "title": "Unit Cells and Lattices in Three Dimensions",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/11%3A_Crystallography/11.04%3A_Unit_Cells_and_Lattices_in_Three_Dimensions"
+            },
+            {
+              "n": "11.05",
+              "title": "Symmetry of Three Dimensional Atomic Arrangements",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/11%3A_Crystallography/11.05%3A_Symmetry_of_Three_Dimensional_Atomic_Arrangements"
+            },
+            {
+              "n": "11.06",
+              "title": "Space Groups",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/11%3A_Crystallography/11.06%3A_Space_Groups"
+            },
+            {
+              "n": "11.07",
+              "title": "Crystal Habit and Crystal Faces",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/11%3A_Crystallography/11.07%3A_Crystal_Habit_and_Crystal_Faces"
+            },
+            {
+              "n": "11.08",
+              "title": "Quantitative Aspects of Unit Cells Points Lines and Planes",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/11%3A_Crystallography/11.08%3A_Quantitative_Aspects_of_Unit_Cells_Points_Lines_and_Planes"
+            },
+            {
+              "n": "11.09",
+              "title": "Miller Indices",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/11%3A_Crystallography/11.09%3A_Miller_Indices"
+            },
+            {
+              "n": "11.10",
+              "title": "The Miller Indices of Planes within a Crystal Structure",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/11%3A_Crystallography/11.10%3A_The_Miller_Indices_of_Planes_within_a_Crystal_Structure"
+            },
+            {
+              "n": "11.11",
+              "title": "Confusing Notations",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/11%3A_Crystallography/11.11%3A_Confusing_Notations"
+            },
+            {
+              "n": "11.12",
+              "title": "Crystal Forms and the Miller Index",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/11%3A_Crystallography/11.12%3A_Crystal_Forms_and_the_Miller_Index"
+            }
+          ]
+        },
+        {
+          "n": "12",
+          "title": "X-ray Diffraction and Mineral Analysis",
+          "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/12%3A_X-ray_Diffraction_and_Mineral_Analysis",
+          "topics": ["he.earth-science.mineralogy#0", "he.earth-science.mineralogy#1"],
+          "notes": "X-ray diffraction (Bragg) and mineral analysis.",
+          "lessons": [
+            {
+              "n": "12.01",
+              "title": "X-ray Diffraction",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/12%3A_X-ray_Diffraction_and_Mineral_Analysis/12.01%3A_X-ray_Diffraction"
+            },
+            {
+              "n": "12.02",
+              "title": "Obtaining a Mineral Analysis",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/12%3A_X-ray_Diffraction_and_Mineral_Analysis/12.02%3A_Obtaining_a_Mineral_Analysis"
+            }
+          ]
+        },
+        {
+          "n": "13",
+          "title": "Crystal Structures",
+          "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/13%3A_Crystal_Structures",
+          "topics": ["he.earth-science.mineralogy#0", "he.earth-science.mineralogy#1"],
+          "notes": "Crystal structures: closest packing, Pauling's rules, silicate structures.",
+          "lessons": [
+            {
+              "n": "13.01",
+              "title": "The Impact of X-ray Crystallography",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/13%3A_Crystal_Structures/13.01%3A_The_Impact_of_X-ray_Crystallography"
+            },
+            {
+              "n": "13.02",
+              "title": "Ionic Crystals",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/13%3A_Crystal_Structures/13.02%3A_Ionic_Crystals"
+            },
+            {
+              "n": "13.03",
+              "title": "Closest Packing",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/13%3A_Crystal_Structures/13.03%3A_Closest_Packing"
+            },
+            {
+              "n": "13.04",
+              "title": "Paulings Rules",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/13%3A_Crystal_Structures/13.04%3A_Paulings_Rules"
+            },
+            {
+              "n": "13.05",
+              "title": "Oxygen and Other Common Elements",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/13%3A_Crystal_Structures/13.05%3A_Oxygen_and_Other_Common_Elements"
+            },
+            {
+              "n": "13.06",
+              "title": "Silicate Structures in General",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/13%3A_Crystal_Structures/13.06%3A_Silicate_Structures_in_General"
+            },
+            {
+              "n": "13.07",
+              "title": "Structures of the Basic Silicate Subclasses",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/13%3A_Crystal_Structures/13.07%3A_Structures_of_the_Basic_Silicate_Subclasses"
+            },
+            {
+              "n": "13.08",
+              "title": "Structures and Chemistry of Nonsilicates",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/13%3A_Crystal_Structures/13.08%3A_Structures_and_Chemistry_of_Nonsilicates"
+            }
+          ]
+        },
+        {
+          "n": "14",
+          "title": "Mineral Descriptions",
+          "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/14%3A_Mineral_Descriptions",
+          "topics": ["he.earth-science.mineralogy#1"],
+          "lessons": [
+            {
+              "n": "14.01",
+              "title": "Silicate Class",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/14%3A_Mineral_Descriptions/14.01%3A_Silicate_Class"
+            },
+            {
+              "n": "14.02",
+              "title": "Native Elements",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/14%3A_Mineral_Descriptions/14.02%3A_Native_Elements"
+            },
+            {
+              "n": "14.03",
+              "title": "Sulfide Minerals",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/14%3A_Mineral_Descriptions/14.03%3A_Sulfide_Minerals"
+            },
+            {
+              "n": "14.04",
+              "title": "Halide Minerals",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/14%3A_Mineral_Descriptions/14.04%3A_Halide_Minerals"
+            },
+            {
+              "n": "14.05",
+              "title": "Oxide Minerals",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/14%3A_Mineral_Descriptions/14.05%3A_Oxide_Minerals"
+            },
+            {
+              "n": "14.06",
+              "title": "Hydroxide Minerals",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/14%3A_Mineral_Descriptions/14.06%3A_Hydroxide_Minerals"
+            },
+            {
+              "n": "14.07",
+              "title": "Carbonates and Nitrates",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/14%3A_Mineral_Descriptions/14.07%3A_Carbonates_and_Nitrates"
+            },
+            {
+              "n": "14.08",
+              "title": "Borate Minerals",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/14%3A_Mineral_Descriptions/14.08%3A_Borate_Minerals"
+            },
+            {
+              "n": "14.09",
+              "title": "Sulfate Minerals",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/14%3A_Mineral_Descriptions/14.09%3A_Sulfate_Minerals"
+            },
+            {
+              "n": "14.10",
+              "title": "Tungstates Molybdates and Chromates",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/14%3A_Mineral_Descriptions/14.10%3A_Tungstates_Molybdates_and_Chromates"
+            },
+            {
+              "n": "14.11",
+              "title": "Phosphates Arsenates and Vanadates",
+              "url": "https://geo.libretexts.org/Bookshelves/Geology/Mineralogy_(Perkins_et_al.)/14%3A_Mineral_Descriptions/14.11%3A_Phosphates_Arsenates_and_Vanadates"
+            }
+          ]
+        }
+      ],
+      "title": "Mineralogy"
+    }
+  ]
+}

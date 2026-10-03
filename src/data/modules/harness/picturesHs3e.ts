@@ -67,6 +67,7 @@ export function chemDiagramHs3eIssues(rep: ChemDiagramHs3eSpec, num: Num): strin
       break;
     }
     case 'rate': {
+      if (!('times' in rep)) break; // college options: picturesHe2k.ts
       const [t1, t2] = rep.times.map((t) => num(t));
       const [a1, a2] = rep.concentrations.map((a) => num(a));
       if (t1 === undefined || t2 === undefined || a1 === undefined || a2 === undefined) break;
@@ -84,6 +85,7 @@ export function chemDiagramHs3eIssues(rep: ChemDiagramHs3eSpec, num: Num): strin
       break;
     }
     case 'cell': {
+      if (!('cathode' in rep)) break;
       const [ec, ea] = [num(rep.cathode), num(rep.anode)];
       for (const [e, what] of [
         [ec, 'cathode'],

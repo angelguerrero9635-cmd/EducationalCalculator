@@ -1,0 +1,606 @@
+{
+  "id": "ncees-fe-env-specifications",
+  "curriculum": "NCEES FE Environmental CBT exam specifications",
+  "publisher": "NCEES",
+  "edition": "Effective beginning with the July 2020 examinations",
+  "subject": "civil",
+  "level": "college",
+  "content": "titles",
+  "license": {
+    "name": "© NCEES; free to view (all rights reserved)",
+    "url": "https://ncees.org/exams/fe-exam/",
+    "attribution": "Fundamentals of Engineering (FE) Environmental CBT Exam Specifications, NCEES."
+  },
+  "terms": {
+    "unit": "Knowledge area",
+    "lesson": "Subtopic"
+  },
+  "sourceUrl": "https://ncees.org/wp-content/uploads/2022/09/FE-Environmental-CBT-specs.pdf",
+  "retrieved": "2026-10-02",
+  "notes": "Topic list and question counts per knowledge area only, as the brief allows (110 questions in all). No exam items, practice exams or Reference Handbook content were read. Fetched from ncees.org (robots.txt: Crawl-delay 10, disallows /*?, /calendar/action*, /events/action*, /cdn-cgi*), 10 s between requests. Topic mapping is ours.",
+  "books": [
+    {
+      "grade": "college",
+      "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Environmental-CBT-specs.pdf",
+      "units": [
+        {
+          "n": "1",
+          "title": "Mathematics",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Environmental-CBT-specs.pdf",
+          "topics": [
+            "he.engineering.numerical-methods#0",
+            "he.engineering.numerical-methods#1",
+            "he.engineering.numerical-methods#2",
+            "he.engineering.numerical-methods#3",
+            "he.engineering.numerical-methods#4",
+            "he.math.calc-1#0",
+            "he.math.calc-1#1",
+            "he.math.calc-1#2",
+            "he.math.calc-1#3",
+            "he.math.calc-1#4",
+            "he.math.diff-eq#0",
+            "he.math.diff-eq#1",
+            "he.math.diff-eq#2",
+            "he.math.diff-eq#3",
+            "he.math.diff-eq#4",
+            "he.math.linear-algebra#0",
+            "he.math.linear-algebra#1",
+            "he.math.linear-algebra#2",
+            "he.math.linear-algebra#3",
+            "he.math.linear-algebra#4"
+          ],
+          "questions": "5–8",
+          "lessons": [
+            {
+              "n": "1.A",
+              "title": "Analytic geometry and trigonometry",
+              "url": null
+            },
+            {
+              "n": "1.B",
+              "title": "Algebraic equations and roots",
+              "url": null
+            },
+            {
+              "n": "1.C",
+              "title": "Calculus (e.g., differential, integral, differential equations)",
+              "url": null
+            },
+            {
+              "n": "1.D",
+              "title": "Numerical methods (e.g., numerical integration, approximations, precision limits, error propagation)",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "2",
+          "title": "Probability and Statistics",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Environmental-CBT-specs.pdf",
+          "topics": [],
+          "questions": "4–6",
+          "lessons": [
+            {
+              "n": "2.A",
+              "title": "Measures of central tendencies and dispersions (e.g., mean, mode, standard deviation)",
+              "url": null
+            },
+            {
+              "n": "2.B",
+              "title": "Probability distributions (e.g., discrete, continuous, normal, binomial)",
+              "url": null
+            },
+            {
+              "n": "2.C",
+              "title": "Estimation for a single mean (e.g., point, confidence intervals)",
+              "url": null
+            },
+            {
+              "n": "2.D",
+              "title": "Regression (linear, multiple), curve fitting, and goodness of fit (e.g., correlation coefficient, least squares)",
+              "url": null
+            },
+            {
+              "n": "2.E",
+              "title": "Hypothesis testing (e.g., t-test, outlier testing, analysis of the variance)",
+              "url": null
+            }
+          ],
+          "notes": "No taxonomy topic of a college course matches this knowledge area (ethics, economics, statistics or professional practice are not taxonomy topics).",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "3",
+          "title": "Ethics and Professional Practice",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Environmental-CBT-specs.pdf",
+          "topics": [],
+          "questions": "5–8",
+          "lessons": [
+            {
+              "n": "3.A",
+              "title": "Codes of ethics (e.g., professional and technical societies, ethical and legal considerations)",
+              "url": null
+            },
+            {
+              "n": "3.B",
+              "title": "Public health, safety, and welfare (e.g., public protection issues, licensing boards, professional liability)",
+              "url": null
+            },
+            {
+              "n": "3.C",
+              "title": "Compliance with codes, standards, and regulations (e.g., CWA, CAA, RCRA, CERCLA, SDWA, NEPA, OSHA)",
+              "url": null
+            },
+            {
+              "n": "3.D",
+              "title": "Engineer’s role in society (e.g., sustainability, resiliency, long-term viability)",
+              "url": null
+            }
+          ],
+          "notes": "No taxonomy topic of a college course matches this knowledge area (ethics, economics, statistics or professional practice are not taxonomy topics).",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "4",
+          "title": "Engineering Economics",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Environmental-CBT-specs.pdf",
+          "topics": [],
+          "questions": "5–8",
+          "lessons": [
+            {
+              "n": "4.A",
+              "title": "Time value of money (e.g., equivalence, present worth, equivalent annual worth, future worth, rate of return, annuities)",
+              "url": null
+            },
+            {
+              "n": "4.B",
+              "title": "Cost types and breakdowns (e.g., fixed, variable, direct and indirect labor, incremental, average, sunk, O&M)",
+              "url": null
+            },
+            {
+              "n": "4.C",
+              "title": "Economic analyses (e.g., benefit-cost, break-even, minimum cost, overhead, life cycle)",
+              "url": null
+            },
+            {
+              "n": "4.D",
+              "title": "Project selection (e.g., comparison of projects with unequal lives, lease/buy/make, depreciation, discounted cash flow)",
+              "url": null
+            }
+          ],
+          "notes": "No taxonomy topic of a college course matches this knowledge area (ethics, economics, statistics or professional practice are not taxonomy topics).",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        },
+        {
+          "n": "5",
+          "title": "Fundamental Principles",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Environmental-CBT-specs.pdf",
+          "topics": [
+            "he.engineering.reaction-engineering#0",
+            "he.engineering.reaction-engineering#1",
+            "he.engineering.reaction-engineering#2",
+            "he.engineering.reaction-engineering#3"
+          ],
+          "questions": "7–11",
+          "lessons": [
+            {
+              "n": "5.A",
+              "title": "Population projections and demand calculations (e.g., water, wastewater, solid waste, energy)",
+              "url": null
+            },
+            {
+              "n": "5.B",
+              "title": "Reactors",
+              "url": null
+            },
+            {
+              "n": "5.C",
+              "title": "Materials science (e.g., properties, corrosion, compatibility, stress strain)",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "6",
+          "title": "Environmental Chemistry",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Environmental-CBT-specs.pdf",
+          "topics": [
+            "he.chemistry.gen-chem-1#0",
+            "he.chemistry.gen-chem-1#1",
+            "he.chemistry.gen-chem-1#2",
+            "he.chemistry.gen-chem-1#3",
+            "he.chemistry.gen-chem-1#4",
+            "he.chemistry.gen-chem-2#0",
+            "he.chemistry.gen-chem-2#1",
+            "he.chemistry.gen-chem-2#2",
+            "he.chemistry.gen-chem-2#3",
+            "he.chemistry.gen-chem-2#4"
+          ],
+          "questions": "7–11",
+          "lessons": [
+            {
+              "n": "6.A",
+              "title": "Stoichiometry and chemical reactions (e.g., equilibrium, acid-base, oxidation-reduction, precipitation, pC-pH)",
+              "url": null
+            },
+            {
+              "n": "6.B",
+              "title": "Kinetics (e.g., chemical conversion, growth and decay)",
+              "url": null
+            },
+            {
+              "n": "6.C",
+              "title": "Organic chemistry (e.g., nomenclature, functional group reactions)",
+              "url": null
+            },
+            {
+              "n": "6.D",
+              "title": "Multimedia equilibrium partitioning (e.g., Henry’s law, octanol partitioning coefficient)",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "7",
+          "title": "Health Hazards and Risk Assessment",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Environmental-CBT-specs.pdf",
+          "topics": [
+            "he.engineering.environmental#0",
+            "he.engineering.environmental#1",
+            "he.engineering.environmental#2",
+            "he.engineering.environmental#3"
+          ],
+          "questions": "4–6",
+          "lessons": [
+            {
+              "n": "7.A",
+              "title": "Dose-response toxicity (e.g., carcinogen, noncarcinogen)",
+              "url": null
+            },
+            {
+              "n": "7.B",
+              "title": "Exposure routes and pathways",
+              "url": null
+            },
+            {
+              "n": "7.C",
+              "title": "Occupational health (e.g., PPE, noise pollution, safety screening)",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "8",
+          "title": "Fluid Mechanics and Hydraulics",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Environmental-CBT-specs.pdf",
+          "topics": [
+            "he.engineering.fluid-mechanics#0",
+            "he.engineering.fluid-mechanics#1",
+            "he.engineering.fluid-mechanics#2",
+            "he.engineering.fluid-mechanics#3",
+            "he.engineering.fluid-mechanics#4",
+            "he.engineering.fluid-mechanics#5",
+            "he.engineering.hydraulics-hydrology#0",
+            "he.engineering.hydraulics-hydrology#1",
+            "he.engineering.hydraulics-hydrology#2",
+            "he.engineering.hydraulics-hydrology#3"
+          ],
+          "questions": "12–18",
+          "lessons": [
+            {
+              "n": "8.A",
+              "title": "Fluid statics (e.g., pressure, force analysis)",
+              "url": null
+            },
+            {
+              "n": "8.B",
+              "title": "Closed conduits (e.g., Darcy-Weisbach, Hazen-Williams, Moody)",
+              "url": null
+            },
+            {
+              "n": "8.C",
+              "title": "Open channel (e.g., Manning, supercritical/subcritical, culverts, hydraulic elements)",
+              "url": null
+            },
+            {
+              "n": "8.D",
+              "title": "Pumps (e.g., power, operating point, parallel, series)",
+              "url": null
+            },
+            {
+              "n": "8.E",
+              "title": "Flow measurement (e.g., weirs, orifices, flumes)",
+              "url": null
+            },
+            {
+              "n": "8.F",
+              "title": "Blowers (e.g., power, inlet/outlet pressure, efficiency, operating point, parallel, series)",
+              "url": null
+            },
+            {
+              "n": "8.G",
+              "title": "Fluid dynamics (e.g., Bernoulli, laminar flow, turbulent flow, continuity equation)",
+              "url": null
+            },
+            {
+              "n": "8.H",
+              "title": "Steady and unsteady flow",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "9",
+          "title": "Thermodynamics",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Environmental-CBT-specs.pdf",
+          "topics": [
+            "he.engineering.thermodynamics#0",
+            "he.engineering.thermodynamics#1",
+            "he.engineering.thermodynamics#2",
+            "he.engineering.thermodynamics#3"
+          ],
+          "questions": "3–5",
+          "lessons": [
+            {
+              "n": "9.A",
+              "title": "Thermodynamic laws (e.g., first law, second law)",
+              "url": null
+            },
+            {
+              "n": "9.B",
+              "title": "Energy, heat, and work (e.g., efficiencies, coefficient of performance, energy cycles, energy conversion, conduction, convection, radiation)",
+              "url": null
+            },
+            {
+              "n": "9.C",
+              "title": "Behavior of ideal gases",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "10",
+          "title": "Surface Water Resources and Hydrology",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Environmental-CBT-specs.pdf",
+          "topics": [
+            "he.engineering.hydraulics-hydrology#0",
+            "he.engineering.hydraulics-hydrology#1",
+            "he.engineering.hydraulics-hydrology#2",
+            "he.engineering.hydraulics-hydrology#3",
+            "he.earth-science.hydrology#0",
+            "he.earth-science.hydrology#1",
+            "he.earth-science.hydrology#3"
+          ],
+          "questions": "9–14",
+          "lessons": [
+            {
+              "n": "10.A",
+              "title": "Runoff calculations (e.g., land use, land cover, time of concentration, duration, intensity, frequency, runoff control, runoff management)",
+              "url": null
+            },
+            {
+              "n": "10.B",
+              "title": "Water storage sizing (e.g., reservoir, detention and retention basins)",
+              "url": null
+            },
+            {
+              "n": "10.C",
+              "title": "Routing (e.g., channel, reservoir)",
+              "url": null
+            },
+            {
+              "n": "10.D",
+              "title": "Water quality and modeling (e.g., erosion, channel stability, stormwater quality management, wetlands, Streeter-Phelps, eutrophication)",
+              "url": null
+            },
+            {
+              "n": "10.E",
+              "title": "Water budget (e.g., evapotranspiration, precipitation, infiltration, soil moisture, storage)",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "11",
+          "title": "Groundwater, Soils, and Sediments",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Environmental-CBT-specs.pdf",
+          "topics": [
+            "he.earth-science.hydrology#2",
+            "he.engineering.soil-mechanics#0",
+            "he.engineering.soil-mechanics#1",
+            "he.engineering.soil-mechanics#2",
+            "he.engineering.soil-mechanics#3",
+            "he.engineering.soil-mechanics#4"
+          ],
+          "questions": "8–12",
+          "lessons": [
+            {
+              "n": "11.A",
+              "title": "Basic hydrogeology (e.g., aquifer properties, soil characteristics, subsurface)",
+              "url": null
+            },
+            {
+              "n": "11.B",
+              "title": "Groundwater flow (e.g., Darcy’s law, specific capacity, velocity, gradient, transport mechanisms)",
+              "url": null
+            },
+            {
+              "n": "11.C",
+              "title": "Drawdown (e.g., Dupuit, Jacob, Theis, Thiem)",
+              "url": null
+            },
+            {
+              "n": "11.D",
+              "title": "Remediation of soil, sediment, and/or groundwater (e.g., recovery, ex-situ/in-situ treatment)",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "12",
+          "title": "Water and Wastewater",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Environmental-CBT-specs.pdf",
+          "topics": [
+            "he.engineering.environmental#0",
+            "he.engineering.environmental#1",
+            "he.engineering.environmental#2",
+            "he.engineering.environmental#3"
+          ],
+          "questions": "12–18",
+          "lessons": [
+            {
+              "n": "12.A",
+              "title": "Water and wastewater characteristics (e.g., physical, chemical, biological, nutrients)",
+              "url": null
+            },
+            {
+              "n": "12.B",
+              "title": "Mass balance and loading rates (e.g., removal efficiencies)",
+              "url": null
+            },
+            {
+              "n": "12.C",
+              "title": "Physical processes (e.g., sedimentation/clarification, filtration, adsorption, membrane, flocculation, headworks, flow equalization, air stripping, activated carbon)",
+              "url": null
+            },
+            {
+              "n": "12.D",
+              "title": "Chemical processes (e.g., disinfection, ion exchange, softening, coagulation, precipitation)",
+              "url": null
+            },
+            {
+              "n": "12.E",
+              "title": "Biological processes (e.g., activated sludge, fixed film, lagoons, phytoremediation, aerobic, anaerobic, anoxic)",
+              "url": null
+            },
+            {
+              "n": "12.F",
+              "title": "Sludge treatment and handling (e.g., land application, digestion, sludge dewatering, composting)",
+              "url": null
+            },
+            {
+              "n": "12.G",
+              "title": "Water conservation and reuse",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "13",
+          "title": "Air Quality and Control",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Environmental-CBT-specs.pdf",
+          "topics": [
+            "he.engineering.environmental#0",
+            "he.engineering.environmental#1",
+            "he.engineering.environmental#2",
+            "he.engineering.environmental#3"
+          ],
+          "questions": "8–12",
+          "lessons": [
+            {
+              "n": "13.A",
+              "title": "Ambient and indoor air quality (e.g., criteria, toxic and hazardous air pollutants)",
+              "url": null
+            },
+            {
+              "n": "13.B",
+              "title": "Mass and energy balances (e.g., STP basis, loading rates, heating values)",
+              "url": null
+            },
+            {
+              "n": "13.C",
+              "title": "Emissions (e.g., factors, rates)",
+              "url": null
+            },
+            {
+              "n": "13.D",
+              "title": "Atmospheric modeling and meteorology (e.g., stability classes, dispersion modeling, lapse rates)",
+              "url": null
+            },
+            {
+              "n": "13.E",
+              "title": "Gas treatment technologies (e.g., biofiltration, scrubbers, adsorbers, incineration, catalytic reducers)",
+              "url": null
+            },
+            {
+              "n": "13.F",
+              "title": "Particle treatment technologies (e.g., baghouses, cyclones, electrostatic precipitators)",
+              "url": null
+            },
+            {
+              "n": "13.G",
+              "title": "Indoor air quality modeling and controls (e.g., air exchanges, steady- and nonsteady-state reactor model)",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "14",
+          "title": "Solid and Hazardous Waste",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Environmental-CBT-specs.pdf",
+          "topics": [
+            "he.engineering.environmental#0",
+            "he.engineering.environmental#1",
+            "he.engineering.environmental#2",
+            "he.engineering.environmental#3"
+          ],
+          "questions": "7–11",
+          "lessons": [
+            {
+              "n": "14.A",
+              "title": "Mass and energy balances",
+              "url": null
+            },
+            {
+              "n": "14.B",
+              "title": "Solid waste management (e.g., collection, transportation, storage, composting, recycling, waste to energy)",
+              "url": null
+            },
+            {
+              "n": "14.C",
+              "title": "Solid waste disposal (e.g., landfills, leachate and gas collection)",
+              "url": null
+            },
+            {
+              "n": "14.D",
+              "title": "Hazardous waste compatibility",
+              "url": null
+            },
+            {
+              "n": "14.E",
+              "title": "Site characterization (e.g., sampling, monitoring, remedial investigation)",
+              "url": null
+            },
+            {
+              "n": "14.F",
+              "title": "Hazardous and radioactive waste treatment and disposal (e.g., physical, chemical, thermal, biological)",
+              "url": null
+            }
+          ]
+        },
+        {
+          "n": "15",
+          "title": "Energy and Environment",
+          "url": "https://ncees.org/wp-content/uploads/2022/09/FE-Environmental-CBT-specs.pdf",
+          "topics": [],
+          "questions": "4–6",
+          "lessons": [
+            {
+              "n": "15.A",
+              "title": "Energy sources concepts (e.g., conventional and alternative)",
+              "url": null
+            },
+            {
+              "n": "15.B",
+              "title": "Environmental impact of energy sources and production (e.g., greenhouse gas production, carbon footprint, thermal, water needs)",
+              "url": null
+            }
+          ],
+          "notes": "No taxonomy topic of a college course matches this knowledge area (ethics, economics, statistics or professional practice are not taxonomy topics).",
+          "note": "No topic of the course fits: a taxonomy gap (or outside the course)."
+        }
+      ],
+      "title": "NCEES FE Environmental CBT exam specifications"
+    }
+  ]
+}

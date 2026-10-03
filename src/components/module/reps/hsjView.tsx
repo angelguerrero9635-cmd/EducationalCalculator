@@ -6,29 +6,42 @@ import type { HsjSpec } from '@/data/modules/typesHsj';
 
 import type { Calculator } from '../useCalculator';
 import { DecayChart } from './DecayChart';
+import { EnergyBomb } from './EnergyBomb';
 import { EnergyLadder } from './EnergyLadder';
 import { EnergyProfile } from './EnergyProfile';
+import { EnergySteps } from './EnergySteps';
 import { EquilibriumChart } from './EquilibriumChart';
+import { EquilibriumGibbs } from './EquilibriumGibbs';
 import { GasFirstLaw } from './GasFirstLaw';
 import { GasMixture } from './GasMixture';
 import { GasPiston } from './GasPiston';
+import { GasPistonPv } from './GasPistonPv';
+import { GasPistonReal } from './GasPistonReal';
 import { PhScale } from './PhScale';
+import { isPhHe3f, PhScaleHe3f } from './PhScaleHe3f';
 
 export function HsjView({ spec, calc }: { spec: HsjSpec; calc: Calculator }) {
   switch (spec.kind) {
     case 'gasPiston':
       if (spec.energy) return <GasFirstLaw spec={spec} calc={calc} />;
       if (spec.mixture) return <GasMixture spec={spec} calc={calc} />;
+      if (spec.pv) return <GasPistonPv spec={spec} calc={calc} />; // HC43
+      if (spec.real) return <GasPistonReal spec={spec} calc={calc} />; // HC43
       return <GasPiston spec={spec} calc={calc} />;
     case 'energyProfile':
+      if (spec.mode === 'bomb') return <EnergyBomb spec={spec} calc={calc} />; // HC44
+      if (spec.mode !== 'ladder' && spec.mode !== 'calorimeter' && spec.steps)
+        return <EnergySteps spec={spec} calc={calc} />; // HC44
       return spec.mode === 'ladder' ? (
         <EnergyLadder spec={spec} calc={calc} />
       ) : (
         <EnergyProfile spec={spec} calc={calc} />
       );
     case 'equilibriumChart':
+      if ('gibbs' in spec) return <EquilibriumGibbs spec={spec} calc={calc} />;
       return <EquilibriumChart spec={spec} calc={calc} />;
     case 'phScale':
+      if (isPhHe3f(spec)) return <PhScaleHe3f spec={spec} calc={calc} />;
       return <PhScale spec={spec} calc={calc} />;
     case 'decayChart':
       return <DecayChart spec={spec} calc={calc} />;
