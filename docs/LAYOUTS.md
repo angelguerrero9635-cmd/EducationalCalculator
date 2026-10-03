@@ -236,6 +236,12 @@ marked? }`, 112 × 76, a 2–3 generation family in the standard symbols, `peopl
 figure lists them (drawn with the `pedigree` calculator picture's pieces); `marked` says the
 half-filled symbols are every carrier. The layout check finds the modes (autosomal or X-linked,
 dominant or recessive) the family allows: possible under its bin's mode, impossible under another.
+Card figure `codons` (HC146, `layouts/codonsCardHe4i.tsx`): `{ kind: 'codons', mrna, change: {
+type: 'substitution' | 'insertion' | 'deletion', at, base? } }`, 140 × 74, the mRNA strip of 3–4
+codons before (top) and after (bottom) the change, each codon boxed with its amino acid (the
+`dnaStrand` code, nothing after a stop), the changed base lit; after an insertion or a deletion
+the boxes regroup, so the reading frame moves. The layout check reads the effect (silent,
+missense, nonsense, frameshift) and keeps the card in the bin that names it.
 
 Observe figures: an observation can set `figure: { kind: 'shadowStick', stick: 100 }`
 (`layouts/ShadowStick.tsx`): a meter stick and its noon shadow for the column tapped last, to

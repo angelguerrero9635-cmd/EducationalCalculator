@@ -107,4 +107,20 @@ export const HE4I_REQUESTS: PictureRequest[] = [
     status: 'drawn',
     gallery: ['g.he-linkageMap-two', 'g.he-linkageMap-loose', 'g.he-linkageMap-three'],
   },
+  {
+    ...ask(
+      'HC146',
+      'codons',
+      'Card figure: the mRNA codon strip before and after a point mutation, each codon boxed with its amino acid and the changed base lit; after an insertion or a deletion the boxes regroup, so the reading frame is seen to move',
+      [`${B}genetics#2~mutations`],
+      [
+        'From B-P9. New card figure (typesHe4i.ts CodonsCard, layouts/codonsCardHe4i.tsx; the code and the effect in layouts/codonsHe4iMath.ts, reading the `dnaStrand` CODON_TABLE).',
+        "Fields: { kind: 'codons', mrna (9–12 bases of A, C, G, U), change: { type: 'substitution' | 'insertion' | 'deletion', at (from 1), base? (a substitution's or an insertion's base) } }, 140 × 74.",
+        "Example: { label: 'Base 4: C to U', bin: 'nonsense', figure: { kind: 'codons', mrna: 'AUGCAGUGG', change: { type: 'substitution', at: 4, base: 'U' } } } in a sort with bins silent, missense, nonsense, frameshift (ids or labels naming them). The page can replace its text cards with these.",
+        'Layout check (harness/picturesHe4i.ts): whole codons of A, C, G, U, 9 to 12 bases; the change inside the strip with a real base; the card’s effect (same amino acid, a different one, a stop, or a length change not a multiple of 3) is the one its bin names.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: ['g.he-codons-mutations'],
+  },
 ];

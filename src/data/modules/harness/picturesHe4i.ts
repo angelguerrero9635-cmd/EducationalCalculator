@@ -6,9 +6,11 @@
  * `pictures.ts` (and the layout checks from `layoutFigures.ts`). Test-only.
  */
 import { cellRatio, crossoverSpots } from '@/components/module/reps/he4iMath';
+import { codonEffect, effectOfBin } from '@/components/module/layouts/codonsHe4iMath';
+import { CODON_TABLE } from '@/components/module/reps/dnaMath';
 import { modeOfBin, modePossible, type Mode } from '@/components/module/reps/pedigreeHe4iMath';
 
-import { divisionStages } from '../typesHe4i';
+import { divisionStages, type CodonsCard } from '../typesHe4i';
 
 import type { LayoutDef, PedigreePerson } from '../layouts';
 import { EVIDENCE_OF } from '../layouts/icons/he4i';
@@ -113,6 +115,15 @@ export function he4iLayoutIssues(l: LayoutDef): string[] {
       if (!others.some((m: Mode) => !modePossible(f.people, m, f.marked)))
         out.push(`card "${card.label}": possible under every other bin's mode too`);
     }
+    // HC146: a codon card's change has one effect, the one its bin names.
+    for (const card of l.cards) {
+      if (card.figure?.kind !== 'codons') continue;
+      out.push(...codonsCardIssues(card.figure).map((x) => `card "${card.label}": ${x}`));
+      const bin = l.bins.find((b) => b.id === card.bin);
+      const want = bin ? effectOfBin(bin) : undefined;
+      const got = codonEffect(card.figure);
+      if (want !== got) out.push(`card "${card.label}": a ${got} change in bin "${bin?.label}"`);
+    }
   }
   return out;
 }
@@ -213,5 +224,26 @@ export function linkageMapIssues(rep: Representation, val: Val): string[] {
     if (I !== undefined && coc !== undefined && !near(I, 1 - coc))
       out.push(`linkageMap: I ${I}, 1 − c.o.c. = ${1 - coc}`);
   }
+  return out;
+}
+
+/** HC146: a codon card's strip: 3–4 whole codons of A, C, G, U; a change inside it. */
+export function codonsCardIssues(f: CodonsCard): string[] {
+  const out: string[] = [];
+  const m = f.mrna;
+  if (!/^[ACGU]+$/.test(m)) out.push(`codons: "${m}" is not mRNA (A, C, G, U)`);
+  if (m.length % 3 !== 0 || m.length < 9 || m.length > 12)
+    out.push(`codons: ${m.length} bases (9 to 12, whole codons)`);
+  const ch = f.change;
+  const last = ch.type === 'insertion' ? m.length + 1 : m.length;
+  if (!(Number.isInteger(ch.at) && ch.at >= 1 && ch.at <= last))
+    out.push(`codons: change at ${ch.at}`);
+  if (ch.type !== 'deletion' && !(ch.base && /^[ACGU]$/.test(ch.base)))
+    out.push(`codons: a ${ch.type} needs one base`);
+  if (ch.type === 'substitution' && ch.base === m[ch.at - 1])
+    out.push('codons: the base is unchanged');
+  // Every codon reads in the standard code.
+  for (let i = 0; i + 3 <= m.length; i += 3)
+    if (!CODON_TABLE[m.slice(i, i + 3)]) out.push(`codons: ${m.slice(i, i + 3)} is not a codon`);
   return out;
 }

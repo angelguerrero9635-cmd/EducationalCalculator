@@ -8,6 +8,7 @@
  * - HC142 `cellDivision` `content`: chromosomes, chromatids and DNA in c by stage.
  * - HC144 `pedigree`: a family in the standard symbols, as a calculator picture and a card.
  * - HC145 `linkageMap`: loci on a chromosome to scale in cM, homologs with their crossovers.
+ * - HC146 card `codons`: a codon strip before and after a point mutation.
  */
 import type { PedigreePerson } from './layouts/types';
 import type { NumOrVar } from './typesGraphs';
@@ -150,3 +151,22 @@ export function linkageMapVars(r: LinkageMapSpec): string[] {
     r.interference,
   );
 }
+
+// ─── HC146: card figure codons ───────────────────────────────────────────────────
+
+/**
+ * HC146 (B-P9): a `codons` card, 140 × 74. `mrna` is the old strip (9–12 bases of A, C, G, U:
+ * 3–4 codons); `change` the point mutation (`at` counts bases from 1; a substitution or an
+ * insertion names its `base`). The old strip is drawn over the new one, each codon boxed with
+ * its amino acid, the changed base lit; after an insertion or a deletion the boxes regroup, so
+ * the reading frame moves. The layout check reads the effect (silent, missense, nonsense,
+ * frameshift) and keeps the card in the bin that names it.
+ */
+export interface CodonsCard {
+  kind: 'codons';
+  mrna: string;
+  change: { type: 'substitution' | 'insertion' | 'deletion'; at: number; base?: string };
+}
+
+export const CODONS_CARD_W = 140;
+export const CODONS_CARD_H = 74;

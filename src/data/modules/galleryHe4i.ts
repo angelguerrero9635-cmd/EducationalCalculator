@@ -6,6 +6,7 @@
  * HC143: card icons, evidence for evolution (he.biology.principles-2#0).
  * HC144: `pedigree`, the calculator picture and the card (he.biology.genetics#0, ~modes).
  * HC145: `linkageMap`, the new kind (he.biology.genetics#1, ~three-point).
+ * HC146: card figure `codons` (he.biology.genetics#2~mutations).
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
@@ -688,6 +689,89 @@ const LINKAGE_THREE = page({
   },
 });
 
+// ─── HC146: kinds of point mutation (genetics#2~mutations) ─────────────────────────
+
+const mutationCard = (
+  label: string,
+  bin: string,
+  mrna: string,
+  change: { type: 'substitution' | 'insertion' | 'deletion'; at: number; base?: string },
+) => ({ label, bin, figure: { kind: 'codons' as const, mrna, change } });
+
+const MUTATIONS_SORT: LayoutDef = {
+  id: 'g.he-codons-mutations',
+  title: 'Silent, missense, nonsense or frameshift?',
+  kind: 'sort',
+  use: 'Use this for naming a point mutation from the codons before and after it.',
+  assumptions: [
+    'Each card shows the mRNA before (top) and after (bottom) the change, each codon boxed with its amino acid.',
+    'The code is read three bases at a time from the start; the lit base is the one that changed.',
+  ],
+  intro:
+    'Compare the codon with the lit base: same amino acid, a different one, a stop, or the boxes regrouping.',
+  question: 'What does the mutation do to the protein?',
+  bins: [
+    {
+      id: 'silent',
+      label: 'Silent',
+      why: 'The new codon codes the same amino acid: the code has several codons for most of them.',
+    },
+    {
+      id: 'missense',
+      label: 'Missense',
+      why: 'The new codon codes a different amino acid; the rest of the protein is unchanged.',
+    },
+    {
+      id: 'nonsense',
+      label: 'Nonsense',
+      why: 'The new codon is a stop codon, so the protein ends early.',
+    },
+    {
+      id: 'frameshift',
+      label: 'Frameshift',
+      why: 'One base in or out moves every codon after it: the reading frame shifts.',
+    },
+  ],
+  cards: [
+    mutationCard('Base 6: U to C', 'silent', 'AUGGCUCUAGGA', {
+      type: 'substitution',
+      at: 6,
+      base: 'C',
+    }),
+    mutationCard('Base 9: U to C', 'silent', 'AUGAAAGUU', {
+      type: 'substitution',
+      at: 9,
+      base: 'C',
+    }),
+    mutationCard('Base 5: A to U', 'missense', 'AUGGAGCUU', {
+      type: 'substitution',
+      at: 5,
+      base: 'U',
+    }),
+    mutationCard('Base 1: U to C', 'missense', 'UUCCGAACU', {
+      type: 'substitution',
+      at: 1,
+      base: 'C',
+    }),
+    mutationCard('Base 4: C to U', 'nonsense', 'AUGCAGUGG', {
+      type: 'substitution',
+      at: 4,
+      base: 'U',
+    }),
+    mutationCard('Base 6: G to A', 'nonsense', 'AUGUGGAAA', {
+      type: 'substitution',
+      at: 6,
+      base: 'A',
+    }),
+    mutationCard('G put in before base 4', 'frameshift', 'AUGACCGUA', {
+      type: 'insertion',
+      at: 4,
+      base: 'G',
+    }),
+    mutationCard('Base 5 lost', 'frameshift', 'AUGUUCGCAAGA', { type: 'deletion', at: 5 }),
+  ],
+};
+
 export const HE4I_GALLERY_MODULES: ModuleDef[] = [
   CELL_RATIO,
   CELL_RATIO_SMALL,
@@ -700,4 +784,4 @@ export const HE4I_GALLERY_MODULES: ModuleDef[] = [
   LINKAGE_THREE,
 ];
 
-export const HE4I_GALLERY_LAYOUTS: LayoutDef[] = [SORT_EVIDENCE, MODES_SORT];
+export const HE4I_GALLERY_LAYOUTS: LayoutDef[] = [SORT_EVIDENCE, MODES_SORT, MUTATIONS_SORT];
