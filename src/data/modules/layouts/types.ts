@@ -36,6 +36,7 @@ import type { He4dFigure, SymmetryScene } from '../typesHe4d';
 import type { He4lFigure, OrthoScene } from '../typesHe4l';
 import type { He4nFigure, He4nScene } from '../typesHe4n';
 import type { CodonsCard, PedigreeCard } from '../typesHe4i';
+import type { He4mFigure, OrbitScene, PfdSymbolCard } from '../typesHe4m';
 import type { GelScene, Hs3dCard, Hs3dFigure, ObserveScale, ReflexScene } from '../typesHs3d';
 import type { Round3Icon } from './icons';
 import type { StrobeCard } from './strobeCard';
@@ -223,6 +224,8 @@ export type CardFigure =
   | ProjectionCard
   /** College round 3, group D (`typesHe3d.ts`): code on a code panel (HC48). */
   | He3dCard
+  /** College round 4, group M (`typesHe4m.ts`): a process-flow-diagram symbol (HC178). */
+  | PfdSymbolCard
   /** College HC57 (`typesHe3g.ts`): one step of glycolysis or the citric acid cycle, 112 × 76. */
   | PathwayStepCard
   /** College HC156 (`typesHe4j.ts`): a stick walker at one phase of the gait cycle, 112 × 76. */
@@ -349,6 +352,8 @@ export type Figure =
   | He4lFigure
   /** College round 4, group N (`typesHe4n.ts`): K-maps, state diagrams, data structures. */
   | He4nFigure
+  /** College round 4, group M (`typesHe4m.ts`): the orbital elements, one lit (HC173). */
+  | He4mFigure
   /** Biology round 3, group H3D (`typesHs3d.ts`): a gel of fixed samples. */
   | Hs3dFigure
   /** College round 3, group D (`typesHe3d.ts`): a code trace (HC48). */
@@ -590,6 +595,8 @@ export interface Scene {
   symmetry?: SymmetryScene;
   /** An `orthographic` figure (`typesHe4l.ts`): which view or step is shown. */
   ortho?: OrthoScene;
+  /** An `orbitElements` figure (`typesHe4m.ts`): the orbit's elements and the one lit. */
+  orbit?: OrbitScene;
   /** The part to highlight (a `parts` figure). */
   part?: string;
   /** More parts lit with `part`, on a drawn `parts` figure (a stamen: anther and filament). */

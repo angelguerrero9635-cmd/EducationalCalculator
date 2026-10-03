@@ -34,6 +34,7 @@ import { SpectraFigure } from './spectraFigure';
 import { Hs3cFigureView } from './hs3cFigures';
 import { SymmetryFigure } from './symmetryFigure';
 import { OrthographicFigure } from './orthographicFigure';
+import { OrbitElementsFigure } from './orbitElementsFigure';
 import { BodyFigure } from './bodyFigure';
 import { ContinentsFigure } from './continentsFigure';
 import { FrontFigure } from './frontFigure';
@@ -129,6 +130,10 @@ function FigureView({
       return <SymmetryFigure scene={scene.symmetry ?? { molecule: 'H2O' }} />; // HC113
     case 'orthographic':
       return <OrthographicFigure scene={scene.ortho ?? { view: 'box' }} />; // HC169
+    case 'orbitElements':
+      return (
+        <OrbitElementsFigure scene={scene.orbit ?? { i: 30, raan: 40, argp: 60, nu: 90, e: 0.5 }} />
+      ); // HC173
     case 'parts':
       if (figure.drawing) {
         return (

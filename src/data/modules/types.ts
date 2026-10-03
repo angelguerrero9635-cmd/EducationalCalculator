@@ -60,6 +60,7 @@ import type {
   LinkageMapSpec,
   PedigreeSpec,
 } from './typesHe4i'; // HC141–HC149, group I
+import type { He4mSpec, PlaceValueBaseHe4m } from './typesHe4m'; // HC174–HC183, group M
 import type { CardIcon } from './layouts/types';
 import type { TreeChances, TwoWaySpec, VennChances } from './typesHse';
 import type { IntegerLineHs2a } from './typesHs2a';
@@ -1249,6 +1250,8 @@ export type Representation =
   /** College round 4, group I (HC144, HC145): a pedigree; a genetic map (`typesHe4i.ts`). */
   | PedigreeSpec
   | LinkageMapSpec
+  /** College round 4, group M (HC174, HC175, HC180, HC181): new kinds (`typesHe4m.ts`). */
+  | He4mSpec
   /** Grades 9–12 round 2 biology, group H2E (specs in `typesHs2e.ts`). */
   | Hs2eSpec
   | Hs3dSpec
@@ -1359,7 +1362,7 @@ export type Representation =
    * digits are seen moving; `compare` draws a second number under it and outlines the first
    * place where the two differ.
    */
-  | {
+  | (PlaceValueBaseHe4m & {
       kind: 'placeValueChart';
       value: string;
       decimals: number;
@@ -1378,7 +1381,7 @@ export type Representation =
        * Numbers to the millions draw as without it. Only with `decimals` 0.
        */
       periods?: boolean;
-    }
+    })
   /** Factor tree of `value` down to its prime factors; `count` is how many primes (with repeats). */
   | {
       kind: 'factorTree';

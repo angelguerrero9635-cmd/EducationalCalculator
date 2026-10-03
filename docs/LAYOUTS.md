@@ -159,6 +159,18 @@ angle? }` shows it in a glass box (`box`), the box unfolded with its hinges (`un
 three views with one lit (`front`, `top`, `right`), the hole's hidden edges lit (`hidden`) or
 its centre lines (`center`), or the isometric view on 120° axes (`isometric`); `angle` is
 `third` (default) or `first`. The layout check requires a known view on every scene.
+College orbital mechanics, round 4 (group M, HC173): `orbitElements`
+(`layouts/orbitElementsFigure.tsx`), Earth in its equatorial plane with the vernal-equinox
+direction, the orbit tilted through the dashed node line (the half below the plane dashed),
+periapsis, the ascending node and the satellite marked; `orbit: { i, raan, argp, nu, e, lit? }`
+(degrees) lights `i` (across the node line), `raan` (Ω in the equatorial plane), `argp` (ω in
+the orbit plane), `nu` (ν from periapsis) or `shape` (2a with e). With i = 0 there is no node
+line and the figure says Ω is undefined. Not to scale; the angles are. The layout check keeps Ω's
+arc in the equatorial plane and ω's and ν's in the orbit plane.
+
+Card figure `pfdSymbol` (HC178, `layouts/pfdCard.tsx`): a process-flow-diagram symbol, 84 × 68,
+its streams arrowed: `symbol` is `pump`, `compressor`, `exchanger` (shell and tube), `heater`
+(fired, with its stack), `column` (trays), `flash`, `absorber` (packed), `cstr` or `packedBed`.
 
 Grade 9 biology (HS group G): `macromolecules` (`layouts/macroFigure.tsx`): monomers on their own
 cards joining into a polymer, the joining groups and new bonds lit and one water molecule drawn per

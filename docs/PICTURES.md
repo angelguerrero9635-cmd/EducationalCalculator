@@ -120,6 +120,10 @@ search or the sitemap, but the module tests and the harness run over it):
 | `coralSection`     | a fossil coral's daily lines across yearly bands; D beside 24 hours    | Earth science history (H110)        |
 | `transit`          | a planet crossing its star to scale; the light curve dipping by δ      | Earth and space exoplanets (H110)   |
 | `habitableZone`    | a star's zone 0.95√L to 1.37√L AU, green; the planet at a with T       | Earth and space exoplanets (H110)   |
+| `soilPhases`       | air, water and solids to scale (Vₛ = 1, Vᵥ = e); volumes, weights      | College soil mechanics (HC174)      |
+| `losScale`         | density on an A–F level-of-service bar; its cars in a mile of lane     | College transportation (HC175)      |
+| `oneLine`          | source, transformers, lines, buses, a fault bolt; jX summed to Xₜₕ     | College power faults (HC180)        |
+| `rfSpectrum`       | AM or FM in time over its spectrum: carrier, sidebands, B bracketed    | College communication (HC181)       |
 | `parallax`         | Earth in January and July, a near star shifting on far stars; p, d     | Earth and space stars (H110)        |
 | `controlVolume`    | a unit or steel device in a control volume; streams, Q̇, Ẇ, in = out    | College balances, devices (HC5)     |
 | `velocityProfile`  | tube, vessel, plates or film: v arrows, v_max = 2v_avg, τ_w; c lines   | College transport, blood (HC13)     |
@@ -724,6 +728,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `areaModel`        | `factors`; `divide`                      | parts split by place from the factors; partial quotients and the remainder    |
 | `placeValueChart`  | `highlight`, `from`, `compare`           | a place with its × 10 neighbors; the number before × 10; the first difference |
 | `placeValueChart`  | `periods`                                | whole numbers to hundred billions, columns grouped ones … billions            |
+| `placeValueChart`  | `base: 2 \| 8 \| 16`, `width`, `twos`    | columns weighted bᵏ, hex under each four bits; invert and add 1 (HC183)       |
 | `tape`             | `times`; groups past 12                  | the bigger bar as copies of the smaller; a label instead of dashes            |
 | `grid100`          | `second`, `wholes`, `stack`, `past100`   | a grid to compare; ones grids (`stack` past 3); past 100%; `exact` tenths     |
 | `rounding`         | `to` 1, 0.1 or 0.01                      | rounding decimals                                                             |
@@ -902,6 +907,7 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `complexPlane`     | `j`, `axes`, `reactances`, `zMag`        | Z = R + jX: R and jX legs, jX_L up, −jX_C down, the size, θ (HC14)            |
 | `complexPlane`     | `phasors`, `between`                     | a three-phase star, V_ab tip to tail, I at its own scale (HC14)               |
 | `complexPlane`     | `poles`, `zeros`, `locus`, `transfer`    | s-plane × and ○, root locus, σₐ, breakaway, poles at K (HC14)                 |
+| `complexPlane`     | `constellation`                          | M-PSK or square M-QAM, Gray-coded bits, dashed boundaries (HC182)             |
 | `matrixGrid`       | `mode: 'determinant'`, `cramer`          | D by its diagonals or the first-row expansion; D, Dx, Dy side by side (H99)   |
 | `matrixGrid`       | `steps: 'echelon' \| 'reduced'`          | row operations worked out from typed entries, a 0 row read out (H105)         |
 | `matrixGrid`       | `inverse: { values? }` (rowReduce)       | [A \| I] to [I \| A⁻¹], 3 × 6 or 4 × 8, A⁻¹ lit; columns fit (HC94)           |

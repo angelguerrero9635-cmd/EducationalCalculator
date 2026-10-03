@@ -84,6 +84,10 @@ import { He4nView } from './He4nView';
 import { VennThree } from './VennThree';
 import { PedigreeHe4i } from './PedigreeHe4i';
 import { LinkageMap } from './LinkageMap';
+import { SoilPhases } from './SoilPhases';
+import { RfSpectrum } from './RfSpectrum';
+import { OneLine } from './OneLine';
+import { LosScale } from './LosScale';
 import { FunctionGraphHe4e } from './FunctionGraphHe4e';
 import { AlleleFrequenciesAfterHe4e } from './AlleleFrequenciesAfterHe4e';
 import { BarsLogHe1d } from './BarsLogHe1d';
@@ -232,6 +236,8 @@ import { Footprints } from './Footprints';
 import { SpringDashpot } from './SpringDashpot';
 import { DiffusionProfile } from './DiffusionProfile';
 import { ComplexPlaneHe2a } from './ComplexPlaneHe2a';
+import { ConstellationHe4m } from './ConstellationHe4m';
+import { PlaceValueBaseHe4m } from './PlaceValueBaseHe4m';
 import { Bode } from './Bode';
 import { StreamChannelHe } from './StreamChannelHe';
 import { RoadCurve } from './RoadCurve';
@@ -416,6 +422,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       if (spec.curve?.shape === 'conic') return <PolarConic spec={spec} calc={calc} />; // H106
       return <PolarGrid spec={spec} calc={calc} />;
     case 'complexPlane':
+      if (spec.constellation) return <ConstellationHe4m spec={spec} calc={calc} />; // HC182
       if (spec.j || spec.axes || spec.phasors || spec.poles || spec.zeros || spec.locus)
         return <ComplexPlaneHe2a spec={spec} calc={calc} />; // HC14
       return spec.power !== undefined || spec.roots !== undefined ? (
@@ -539,6 +546,14 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <PedigreeHe4i spec={spec} calc={calc} />; // HC144
     case 'linkageMap':
       return <LinkageMap spec={spec} calc={calc} />; // HC145
+    case 'soilPhases':
+      return <SoilPhases spec={spec} calc={calc} />; // HC174
+    case 'rfSpectrum':
+      return <RfSpectrum spec={spec} calc={calc} />; // HC181
+    case 'oneLine':
+      return <OneLine spec={spec} calc={calc} />; // HC180
+    case 'losScale':
+      return <LosScale spec={spec} calc={calc} />; // HC175
     case 'solidOfRevolution':
       return <SolidOfRevolution spec={spec} calc={calc} />; // HC65
     case 'thermalWall':
@@ -824,6 +839,7 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
     case 'unitCubes':
       return <UnitCubes spec={spec} calc={calc} />;
     case 'placeValueChart':
+      if (spec.base) return <PlaceValueBaseHe4m spec={spec} calc={calc} />; // HC183
       return <PlaceValueChart spec={spec} calc={calc} />;
     case 'factorTree':
       return <FactorTree spec={spec} calc={calc} />;

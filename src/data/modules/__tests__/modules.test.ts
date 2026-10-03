@@ -28,6 +28,7 @@ import {
   linkageMapVars,
   pedigreeVars,
 } from '../typesHe4i';
+import { complexPlaneHe4mVars, he4mSpecVars, placeValueBaseVars } from '../typesHe4m';
 import { hs2aSpecVars } from '../typesHs2a';
 import { hs2eSpecVars } from '../typesHs2e';
 import { hs3dSpecVars } from '../typesHs3d';
@@ -325,6 +326,7 @@ function representationVars(r: Representation): string[] {
       return [
         r.value,
         ...[r.highlight, r.from, r.compare, r.plus, r.total].filter((v): v is string => !!v),
+        ...placeValueBaseVars(r), // HC183
       ];
     case 'factorPairs':
       return [r.value, ...[r.first, r.second, r.count].filter((v): v is string => !!v)];
@@ -616,6 +618,7 @@ function representationVars(r: Representation): string[] {
         ...hs2gSpecVars(r),
         ...hs3bSpecVars(r),
         ...(r.kind === 'complexPlane' ? complexPlaneHe2aVars(r) : []), // HC14
+        ...(r.kind === 'complexPlane' ? complexPlaneHe4mVars(r) : []), // HC182
         ...(r.kind === 'vectorDiagram' ? spaceObjectsVars(r.space) : []), // HC47
         ...(r.kind === 'polarGrid' ? polarGridHe3cVars(r) : []), // HC53
         ...(r.kind === 'conicGraph' && r.conic === 'circle' ? conicGraphHe3cVars(r) : []), // HC67
@@ -733,6 +736,11 @@ function representationVars(r: Representation): string[] {
       return pedigreeVars(r); // HC144
     case 'linkageMap':
       return linkageMapVars(r); // HC145
+    case 'soilPhases':
+    case 'rfSpectrum':
+    case 'oneLine':
+    case 'losScale':
+      return he4mSpecVars(r); // HC174–HC181, group M
     case 'propertyDiagram':
     case 'thermalWall':
       return he2cSpecVars(r);

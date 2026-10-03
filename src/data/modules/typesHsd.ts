@@ -13,6 +13,7 @@ import type {
 } from './typesHs2g';
 import type { NumOrVar } from './typesGraphs';
 import type { ComplexPlaneHe2a } from './typesHe2a'; // HC14
+import type { ComplexPlaneHe4m } from './typesHe4m'; // HC182
 import type { VectorDiagramHe4b } from './typesHe4b'; // HC96, HC100, HC108, HC171
 import type { MatrixRouthHe4a, RowReduceHe4a } from './typesHe4a'; // HC94, HC190
 import type { ConicTurnedHs3b, PolarConicHs3b, VectorDiagramHs3b } from './typesHs3b';
@@ -156,7 +157,7 @@ export type ComplexOf = { re: NumOrVar; im: NumOrVar } | { modulus: NumOrVar; ar
  * `argument` mark |z| and arg z (variables checked); `polar` writes z = r(cos θ + i sin θ).
  * Drag z's point.
  */
-export interface ComplexPlaneSpec extends ComplexPlaneHs2g, ComplexPlaneHe2a {
+export interface ComplexPlaneSpec extends ComplexPlaneHs2g, ComplexPlaneHe2a, ComplexPlaneHe4m {
   kind: 'complexPlane';
   z: ComplexOf;
   conjugate?: boolean;
