@@ -577,4 +577,66 @@ export const COLLEGE_CHEMISTRY_MODULES: ModuleDef[] = [
       },
     },
   },
+  {
+    // The molecular formula: how many empirical units make one molecule (M ÷ empirical mass).
+    id: 'he.chemistry.gen-chem-1#1~molecular-formula',
+    title: 'The molecular formula from the empirical formula',
+    use: 'Use this for “A sugar’s empirical formula is CH₂O and its molar mass is 180 g/mol. Find its molecular formula.”',
+    assumptions: [
+      'The molecular formula is a whole number n of empirical units: CH₂O × 6 is C₆H₁₂O₆.',
+      'A measured molar mass is rarely exact, so the ratio M ÷ empirical mass is rounded to the nearest whole number when it is within 2% of one.',
+      'Empirical formula mass is the sum of its atoms’ molar masses: CH₂O is 12.01 + 2 × 1.008 + 16.00 = 30.03 g/mol.',
+    ],
+    variables: [
+      V('e', 'M_emp', 'Empirical formula mass', {
+        unit: 'g/mol',
+        units: ['g/mol'],
+        min: 1,
+        max: 1000,
+        step: 0.01,
+        figures: 4,
+      }),
+      V('M', 'M', 'Molar mass', {
+        unit: 'g/mol',
+        units: ['g/mol'],
+        min: 1,
+        max: 1e6,
+        step: 0.01,
+        figures: 4,
+      }),
+      V('r', 'r', 'Mass ratio', { min: 0.98, max: 1000, step: 0.001, figures: 4 }),
+      V('n', 'n', 'Empirical units per molecule', { min: 1, max: 1000, step: 1, integer: true }),
+    ],
+    ...rels(
+      rule(
+        'r within 2% of a whole number',
+        'The mass ratio {r} is within 2% of a whole number',
+        ['r'],
+        (v) => Math.abs(v.r! - Math.round(v.r!)) <= 0.02 * v.r!,
+        'The ratio is not near a whole number: check both molar masses, or the empirical formula.',
+      ),
+      rel('r = M ÷ M_emp', '{r} = {M} ÷ {e}', ['r', 'M', 'e'], (v) => v.r! * v.e! - v.M!, {
+        r: [
+          (v) => v.M! / v.e!,
+          '{M} ÷ {e}',
+          'Divide the molar mass by the empirical formula mass: how many empirical units fit in one mole of molecules.',
+        ],
+        M: [(v) => v.r! * v.e!, '{r} × {e}', 'The molar mass is the empirical mass taken r times.'],
+        e: [(v) => v.M! / v.r!, '{M} ÷ {r}', 'Share the molar mass among the r empirical units.'],
+      }),
+      derive(
+        'n = r rounded',
+        '{n} = {r} rounded to the ones',
+        'n',
+        ['r'],
+        (v) => Math.round(v.r!),
+        '{r} rounded to the ones',
+        'A molecule holds a whole number of empirical units; multiply every subscript of the empirical formula by n.',
+      ),
+    ),
+    example: { e: 30.03, M: 180, r: 180 / 30.03, n: 6 },
+    startWith: ['e', 'M'],
+    unitSystems: ['metric'],
+    representation: { kind: 'none' },
+  },
 ];
