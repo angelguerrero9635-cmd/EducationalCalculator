@@ -45,6 +45,12 @@ const powerWork = (c: number, n: number, x: number) => {
   ];
 };
 
+/** A relation that only places the picture (its value is `hidden`): no row, step or check. */
+const hide = <R extends { relation: { hidden?: boolean } }>(r: R): R => ({
+  ...r,
+  relation: { ...r.relation, hidden: true },
+});
+
 /** x² + bx + c at x. */
 const topAt = (v: Values, x: number) => x * x + v.b! * x + v.c!;
 
@@ -661,6 +667,126 @@ export const COLLEGE_MATH_MODULES: ModuleDef[] = [
       extent: 4,
       grow: { du: 'du', dv: 'dv', product: 'P', quotient: 'Q' },
       fixed: true,
+    },
+  },
+  {
+    // Calculus I → Derivatives and differentiation rules: the chain rule on (ax + b)ⁿ.
+    id: 'he.math.calc-1#1~chain',
+    title: 'The chain rule on a power',
+    use: 'Use this for “Find f′(1) for f(x) = (2x + 1)³.”',
+    assumptions: [
+      'Chain rule: when f is an outside function of u and u is an inside function of x, f′(x) = (outside slope at u) × (inside slope).',
+      'Here the inside is u = ax + b, with slope a, and the outside is uⁿ, with slope n·uⁿ⁻¹ by the power rule.',
+      'So f′(x) = n(ax + b)ⁿ⁻¹ × a. Leaving off the × a is the usual slip.',
+      'n is a whole number 1–8 and a ≠ 0. The graph writes f as aⁿ(x + b ÷ a)ⁿ, which meets the x-axis only at x = −b ÷ a.',
+    ],
+    variables: [
+      V('a', 'a', 'Slope of the inside', { min: -5, max: 5, step: 0.1 }),
+      V('b', 'b', 'Constant of the inside', { min: -10, max: 10, step: 0.1 }),
+      V('n', 'n', 'Power', { min: 1, max: 8, step: 1, integer: true }),
+      V('x', 'x', 'Point', { min: -5, max: 5, step: 0.1 }),
+      V('u', 'u', 'Inside value ax + b', { min: -40, max: 40, step: 0.0001 }),
+      V('f', 'f(x)', 'Value there', { min: -1e13, max: 1e13, step: 0.0001 }),
+      V('m', 'f′(x)', 'Slope of the tangent', { min: -1e14, max: 1e14, step: 0.0001 }),
+      V('A', 'aⁿ', 'Leading coefficient', {
+        min: -1e6,
+        max: 1e6,
+        derived: true,
+        hidden: true,
+      }),
+      V('z', 'z', 'Zero of f', { min: -1000, max: 1000, derived: true, hidden: true }),
+    ],
+    ...rels(
+      rule(
+        'a ≠ 0',
+        'The slope of the inside {a} is not 0',
+        ['a'],
+        (v) => v.a !== 0,
+        'With a = 0 the inside is the constant b, so f is a constant with slope 0. Pick an a that is not 0.',
+      ),
+      rel(
+        'u = ax + b',
+        '{u} = {a} × {x} + {b}',
+        ['u', 'a', 'x', 'b'],
+        (v) => v.u! - (v.a! * v.x! + v.b!),
+        {
+          u: [
+            (v) => v.a! * v.x! + v.b!,
+            '{a} × {x} + {b}',
+            'Work out the inside first: a times x, plus b.',
+          ],
+          x: [
+            (v) => (v.a === 0 ? undefined : (v.u! - v.b!) / v.a!),
+            '({u} − {b}) ÷ {a}',
+            'Take b from u, then divide by a.',
+          ],
+          b: [(v) => v.u! - v.a! * v.x!, '{u} − {a} × {x}', 'Take a·x from u.'],
+        },
+      ),
+      rel('f = uⁿ', '{f} = {u}^{n}', ['f', 'u', 'n'], (v) => v.f! - v.u! ** v.n!, {
+        f: [(v) => v.u! ** v.n!, '{u}^{n}', 'Raise the inside value to the power n.'],
+        u: [
+          (v) => realRoots(v.f!, v.n!),
+          (v) =>
+            v.u! >= 0 ? '{f}^(1 ÷ {n})' : v.n! % 2 === 0 ? '−{f}^(1 ÷ {n})' : '−(−{f})^(1 ÷ {n})',
+          'Take the n-th root of f. For even n both signs work; the one nearest the point is shown.',
+        ],
+      }),
+      rel(
+        'f′ = n·uⁿ⁻¹·a',
+        '{m} = {n} × {u}^({n} − 1) × {a}',
+        ['m', 'n', 'u', 'a'],
+        (v) => v.m! - powerRule(1, v.n!, v.u!) * v.a!,
+        {
+          m: [
+            (v) => powerRule(1, v.n!, v.u!) * v.a!,
+            '{n} × {u}^({n} − 1) × {a}',
+            'Chain rule: the outside’s slope n·uⁿ⁻¹ at the inside value, times the inside’s slope a.',
+          ],
+          a: [
+            (v) => {
+              const d = powerRule(1, v.n!, v.u!);
+              if (d !== 0) return v.m! / d;
+              return v.m === 0 ? undefined : [NaN];
+            },
+            '{m} ÷ ({n} × {u}^({n} − 1))',
+            'Divide f′ by the outside’s slope n·uⁿ⁻¹.',
+          ],
+        },
+      ),
+      hide(
+        derive(
+          'A = aⁿ',
+          '{A} = {a}^{n}',
+          'A',
+          ['a', 'n'],
+          (v) => v.a! ** v.n!,
+          '{a}^{n}',
+          '(ax + b)ⁿ = aⁿ(x + b ÷ a)ⁿ.',
+        ),
+      ),
+      hide(
+        derive(
+          'z = −b ÷ a',
+          '{z} = −{b} ÷ {a}',
+          'z',
+          ['b', 'a'],
+          (v) => (v.a === 0 ? undefined : -v.b! / v.a!),
+          '−{b} ÷ {a}',
+          'The inside is 0 where ax + b = 0.',
+        ),
+      ),
+    ),
+    example: { a: 2, b: 1, n: 3, x: 1, u: 3, f: 27, m: 54, A: 8, z: -0.5 },
+    startWith: ['a', 'b', 'n', 'x'],
+    equation: 'f(x) = ({a}x + {b})^{n}\nf′({x}) = {m}',
+    representation: {
+      kind: 'functionGraph',
+      family: 'polynomial',
+      a: 'A',
+      zeros: [{ x: 'z', times: 'n' }],
+      at: { x: 'x', y: 'f' },
+      tangent: { x: 'x', slope: 'm', y: 'f' },
     },
   },
 ];
