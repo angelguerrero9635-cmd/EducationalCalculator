@@ -2691,4 +2691,109 @@ export const COLLEGE_CHEMISTRY_MODULES: ModuleDef[] = [
       },
     } satisfies ModuleDef;
   })(),
+  (() => {
+    // General Chemistry II → Kinetics: the order and k from two initial-rate runs. Runs 1 and 2
+    // hold [B] = 0.100 M; [A] doubles, 0.100 → 0.200 M, and the rate goes 2.00 × 10⁻³ →
+    // 8.00 × 10⁻³ M/s: 8.00 × 10⁻³ ÷ 2.00 × 10⁻³ = 4 = 2^m, so m = log 4 ÷ log 2 = 2. With n = 1:
+    // k = 2.00 × 10⁻³ ÷ (0.100² × 0.100¹) = 2.00 × 10⁻³ ÷ 0.00100 = 2.00 (M⁻²s⁻¹).
+    const [A1, A2, r1, r2, B, n] = [0.1, 0.2, 2.0e-3, 8.0e-3, 0.1, 1];
+    const m = Math.log(r2 / r1) / Math.log(A2 / A1);
+    const conc = (id: string, symbol: string, name: string) =>
+      V(id, symbol, name, { unit: 'M', units: ['M'], min: 1e-4, max: 10, step: 0.0001 });
+    const rate = (id: string, symbol: string, name: string) =>
+      V(id, symbol, name, {
+        unit: 'M/s',
+        units: ['M/s'],
+        min: 1e-10,
+        max: 10,
+        step: 1e-10,
+        scientific: true,
+      });
+    const order = (id: string, symbol: string, name: string, min: number) =>
+      V(id, symbol, name, { min, max: 3, step: 0.5, figures: 3 });
+    const pos = (x: number) => (x > 0 && Number.isFinite(x) ? x : undefined);
+    const fin = (x: number) => (Number.isFinite(x) ? x : undefined);
+    return {
+      id: 'he.chemistry.gen-chem-2#0~initial-rates',
+      title: 'Order and rate constant from initial rates',
+      workedFigures: 3,
+      use: 'Use this for “With [B] held at 0.100 M, raising [A] from 0.100 M to 0.200 M raises the initial rate from 2.00 × 10⁻³ to 8.00 × 10⁻³ M/s. The reaction is first order in B. Find the order in A and k.”',
+      assumptions: [
+        'The rate law is rate = k[A]ᵐ[B]ⁿ. Runs 1 and 2 change only [A], so [B]ⁿ and k cancel when one rate is divided by the other.',
+        'Each rate is an initial rate, measured before the concentrations have changed much.',
+        'The order in B, n, comes from another pair of runs that change only [B]; type it here.',
+        'k’s unit depends on the overall order m + n: M⁻¹s⁻¹ when it is 2, and M⁻²s⁻¹ when it is 3, as here with m = 2 and n = 1.',
+      ],
+      variables: [
+        conc('A1', '[A]₁', 'Concentration of A in run 1'),
+        conc('A2', '[A]₂', 'Concentration of A in run 2'),
+        rate('r1', 'rate₁', 'Initial rate in run 1'),
+        rate('r2', 'rate₂', 'Initial rate in run 2'),
+        order('m', 'm', 'Order in A', -1),
+        conc('B', '[B]', 'Concentration of B, held in both runs'),
+        order('n', 'n', 'Order in B', 0),
+        V('k', 'k', 'Rate constant', { min: 1e-20, max: 1e30, scientific: true }),
+      ],
+      ...rels(
+        rule(
+          '[A]₂ ≠ [A]₁',
+          '{A2} ≠ {A1}',
+          ['A1', 'A2'],
+          (v) => Math.abs(Math.log(v.A2! / v.A1!)) > 1e-6,
+          'The two runs must use different [A]; otherwise the rates can’t show the order.',
+        ),
+        rel(
+          'rate₂ = rate₁ × ([A]₂ ÷ [A]₁)ᵐ',
+          '{r2} = {r1} × ({A2} ÷ {A1})^{m}',
+          ['r1', 'r2', 'A1', 'A2', 'm'],
+          (v) => Math.log(v.r2! / v.r1!) - v.m! * Math.log(v.A2! / v.A1!),
+          {
+            m: [
+              (v) => fin(Math.log(v.r2! / v.r1!) / Math.log(v.A2! / v.A1!)),
+              '(log({r2}) − log({r1})) ÷ (log({A2}) − log({A1}))',
+              'Divide the rates: k and [B]ⁿ cancel, leaving rate₂ ÷ rate₁ = ([A]₂ ÷ [A]₁)ᵐ. Take logs, then divide the rate change by the [A] change.',
+            ],
+            r2: [
+              (v) => pos(v.r1! * (v.A2! / v.A1!) ** v.m!),
+              '{r1} × ({A2} ÷ {A1})^{m}',
+              'The rate grows by the [A] ratio raised to the order m.',
+            ],
+            r1: [
+              (v) => pos(v.r2! / (v.A2! / v.A1!) ** v.m!),
+              '{r2} × ({A1} ÷ {A2})^{m}',
+              'Undo the growth: scale rate₂ by the flipped [A] ratio raised to the order m.',
+            ],
+          },
+        ),
+        rel(
+          'rate₁ = k[A]₁ᵐ[B]ⁿ',
+          '{r1} = {k} × ({A1})^{m} × ({B})^{n}',
+          ['r1', 'k', 'A1', 'm', 'B', 'n'],
+          (v) => Math.log(v.r1!) - Math.log(v.k!) - v.m! * Math.log(v.A1!) - v.n! * Math.log(v.B!),
+          {
+            k: [
+              (v) => pos(v.r1! / (v.A1! ** v.m! * v.B! ** v.n!)),
+              '{r1} ÷ (({A1})^{m} × ({B})^{n})',
+              'Put run 1 into the rate law and divide its rate by the concentration terms.',
+            ],
+            r1: [
+              (v) => pos(v.k! * v.A1! ** v.m! * v.B! ** v.n!),
+              '{k} × ({A1})^{m} × ({B})^{n}',
+              'Raise each concentration to its order and multiply by k.',
+            ],
+          },
+        ),
+      ),
+      example: { A1, A2, r1, r2, m, B, n, k: r1 / (A1 ** m * B ** n) },
+      startWith: ['A1', 'A2', 'r1', 'r2', 'B', 'n'],
+      unitSystems: ['metric'],
+      representation: {
+        kind: 'table',
+        sweep: 'A1',
+        output: 'r1',
+        params: ['k', 'm', 'B', 'n'],
+        rows: [0.05, 0.1, 0.2, 0.4],
+      },
+    } satisfies ModuleDef;
+  })(),
 ];
