@@ -2563,6 +2563,7 @@ export function repIssues(
       out.push(...driftPathsIssues(rep, val)); // HC153
       break;
     case 'soilPhases':
+    case 'oneLine':
     case 'losScale':
       out.push(...he4mIssues(rep, val)); // HC174–HC181, group M
       break;

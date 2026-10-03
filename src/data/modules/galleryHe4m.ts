@@ -3,6 +3,7 @@
  * college page that waits, built from the plan's worked example. Spread into gallery.ts.
  * HC174: `soilPhases`, the new kind (he.engineering.soil-mechanics#0, #1~sand-cone).
  * HC175: `losScale`, the new kind (he.engineering.transportation#3).
+ * HC180: `oneLine`, the new kind (he.engineering.power-systems#2, ~slg).
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
@@ -382,6 +383,204 @@ const LOS_F = losPage(
   { V: 4160, PHF: 0.95, N: 2, PT: 5, ET: 2, S: 50 },
 );
 
-export const HE4M_GALLERY_MODULES: ModuleDef[] = [PHASES, PHASES_SATURATED, SAND_CONE, LOS, LOS_F];
+// ─── HC180: fault currents on a one-line diagram (power-systems#2, ~slg) ───────
+
+const ibaseOf = (v: Values) => (v.Sbase! * 1000) / (Math.sqrt(3) * v.Vbase!);
+const baseVars = (): VariableDef[] => [
+  num('Sbase', 'S_base', 'Base power', 'MVA', 1, 5000, { step: 1 }),
+  num('Vbase', 'V_base', 'Base voltage (line to line)', 'kV', 0.2, 800, { step: 0.1 }),
+  out('Ibase', 'I_base', 'Base current', 'A'),
+  out('IkA', 'I_kA', 'Fault current in kA', 'kA'),
+];
+const baseRules = (I: string): Rule[] => [
+  derive(
+    'Ibase',
+    'Ibase',
+    ['Sbase', 'Vbase'],
+    '{Ibase} = {Sbase} × 1000 ÷ (√3 × {Vbase})',
+    ibaseOf,
+    '{Sbase} × 1000 ÷ (√3 × {Vbase})',
+    'Three-phase power is √3 × line voltage × current; MVA ÷ kV is kA, so × 1000 for amperes.',
+  ),
+  derive(
+    'IkA',
+    'IkA',
+    [I, 'Ibase'],
+    `{IkA} = {${I}} × {Ibase} ÷ 1000`,
+    (v) => (v[I]! * v.Ibase!) / 1000,
+    `{${I}} × {Ibase} ÷ 1000`,
+    'A per-unit current times the base current is amperes; ÷ 1000 for kA.',
+  ),
+];
+const PU = { step: 0.01 };
+
+const ifOf = (v: Values) => v.Vf! / v.Xth!;
+
+const faultPage = (
+  id: string,
+  title: string,
+  use: string,
+  typed: Values,
+  faultBus?: number,
+): ModuleDef => {
+  // A fault on bus k sees the elements before it: the generator alone, or all three.
+  const parts = ['Xg', 'Xt', 'Xl'].slice(0, faultBus ?? 3);
+  const sum = (v: Values) => parts.reduce((a, p) => a + v[p]!, 0);
+  return page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'A bolted three-phase fault; loads ignored, so no current flows before it.',
+      'Reactances only, every one in pu on the common base.',
+      faultBus === 1
+        ? 'The fault is on the generator’s bus: only the generator’s reactance is between them.'
+        : 'The reactances from the source to the fault add in series to X_th.',
+    ],
+    variables: [
+      num('Vf', 'V_f', 'Prefault voltage', 'pu', 0.5, 1.2, PU),
+      num('Xg', 'X_G', 'Generator reactance', 'pu', 0.01, 2, PU),
+      ...(faultBus === 1 ? [] : [num('Xt', 'X_T', 'Transformer reactance', 'pu', 0.01, 2, PU)]),
+      ...(faultBus === 1 ? [] : [num('Xl', 'X_L', 'Line reactance', 'pu', 0.01, 2, PU)]),
+      out('Xth', 'X_th', 'Thévenin reactance', 'pu'),
+      out('If', 'I_f', 'Fault current', 'pu'),
+      ...baseVars(),
+      out('Sf', 'S_f', 'Fault power', 'MVA'),
+    ],
+    rules: [
+      derive(
+        'Xth',
+        'Xth',
+        parts,
+        `{Xth} = ${parts.map((p) => `{${p}}`).join(' + ')}`,
+        sum,
+        parts.map((p) => `{${p}}`).join(' + '),
+        'Seen from the fault, the reactances back to the source are in series.',
+      ),
+      derive(
+        'If',
+        'If',
+        ['Vf', 'Xth'],
+        '{If} = {Vf} ÷ {Xth}',
+        ifOf,
+        '{Vf} ÷ {Xth}',
+        'The prefault voltage drives the fault current through X_th alone.',
+      ),
+      ...baseRules('If'),
+      derive(
+        'Sf',
+        'Sf',
+        ['Vf', 'If', 'Sbase'],
+        '{Sf} = {Vf} × {If} × {Sbase}',
+        (v) => v.Vf! * v.If! * v.Sbase!,
+        '{Vf} × {If} × {Sbase}',
+        'Per-unit power times the base power: V_f × I_f in pu, times S_base.',
+      ),
+    ],
+    example: example(
+      typed,
+      ['Xth', sum],
+      ['If', ifOf],
+      ['Ibase', ibaseOf],
+      ['IkA', (v) => (v.If! * v.Ibase!) / 1000],
+      ['Sf', (v) => v.Vf! * v.If! * v.Sbase!],
+    ),
+    startWith: ['Vf', ...parts, 'Sbase', 'Vbase'],
+    representation: {
+      kind: 'oneLine',
+      elements: [
+        { type: 'generator', name: 'G', x: 'Xg' },
+        { type: 'transformer', name: 'T', ...(faultBus === 1 ? {} : { x: 'Xt' }) },
+        { type: 'line', name: 'Line', ...(faultBus === 1 ? {} : { x: 'Xl' }) },
+      ],
+      fault: '3φ',
+      ...(faultBus ? { faultBus } : {}),
+      vf: 'Vf',
+      xth: 'Xth',
+      current: 'If',
+      base: { s: 'Sbase', v: 'Vbase', iBase: 'Ibase', iKA: 'IkA', mva: 'Sf' },
+    },
+  });
+};
+
+const FAULT = faultPage(
+  'g.he-oneLine-three-phase',
+  'Three-phase fault current',
+  'Use this for “Find the fault current for a bolted three-phase fault with X_th = 0.2 pu on a 100 MVA, 13.8 kV base.”',
+  { Vf: 1, Xg: 0.1, Xt: 0.06, Xl: 0.04, Sbase: 100, Vbase: 13.8 },
+);
+
+/** A fault on the generator's own bus: only X_G limits it. */
+const FAULT_GEN = faultPage(
+  'g.he-oneLine-generator-bus',
+  'A fault at the generator’s terminals',
+  'Use this for “A 100 MVA, 13.8 kV generator with X″ = 0.1 pu faults at its terminals. Find the fault current in kA.”',
+  { Vf: 1, Xg: 0.1, Sbase: 100, Vbase: 13.8 },
+  1,
+);
+
+const iaOf = (v: Values) => (3 * v.Vf!) / (v.X1! + v.X2! + v.X0!);
+
+const SLG = page({
+  id: 'g.he-oneLine-slg',
+  title: 'Single line-to-ground fault current',
+  use: 'Use this for “X₁ = X₂ = 0.2 pu and X₀ = 0.1 pu. Find the line-to-ground fault current on a 100 MVA, 13.8 kV base.”',
+  assumptions: [
+    'A bolted fault from phase a to ground; loads ignored.',
+    'The positive, negative and zero sequence networks connect in series at the fault.',
+    'I_a = 3I_a1, all in pu on the common base.',
+  ],
+  variables: [
+    num('Vf', 'V_f', 'Prefault voltage', 'pu', 0.5, 1.2, PU),
+    num('X1', 'X₁', 'Positive-sequence reactance', 'pu', 0.01, 2, PU),
+    num('X2', 'X₂', 'Negative-sequence reactance', 'pu', 0.01, 2, PU),
+    num('X0', 'X₀', 'Zero-sequence reactance', 'pu', 0.01, 2, PU),
+    out('Ia', 'I_a', 'Fault current', 'pu'),
+    ...baseVars(),
+  ],
+  rules: [
+    derive(
+      'Ia',
+      'Ia',
+      ['Vf', 'X1', 'X2', 'X0'],
+      '{Ia} = 3 × {Vf} ÷ ({X1} + {X2} + {X0})',
+      iaOf,
+      '3 × {Vf} ÷ ({X1} + {X2} + {X0})',
+      'One current I_a1 flows through all three networks in series, and I_a = 3I_a1.',
+    ),
+    ...baseRules('Ia'),
+  ],
+  example: example(
+    { Vf: 1, X1: 0.2, X2: 0.2, X0: 0.1, Sbase: 100, Vbase: 13.8 },
+    ['Ia', iaOf],
+    ['Ibase', ibaseOf],
+    ['IkA', (v) => (v.Ia! * v.Ibase!) / 1000],
+  ),
+  startWith: ['Vf', 'X1', 'X2', 'X0', 'Sbase', 'Vbase'],
+  representation: {
+    kind: 'oneLine',
+    elements: [
+      { type: 'generator', name: 'G' },
+      { type: 'transformer', name: 'T' },
+      { type: 'line', name: 'Line' },
+    ],
+    fault: 'slg',
+    vf: 'Vf',
+    current: 'Ia',
+    sequence: { x1: 'X1', x2: 'X2', x0: 'X0' },
+    base: { s: 'Sbase', v: 'Vbase', iBase: 'Ibase', iKA: 'IkA' },
+  },
+});
+
+export const HE4M_GALLERY_MODULES: ModuleDef[] = [
+  PHASES,
+  PHASES_SATURATED,
+  SAND_CONE,
+  LOS,
+  LOS_F,
+  FAULT,
+  FAULT_GEN,
+  SLG,
+];
 
 export const HE4M_GALLERY_LAYOUTS: LayoutDef[] = [];

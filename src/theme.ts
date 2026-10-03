@@ -379,6 +379,9 @@ const light = {
   he4mCar: '#2F6FD0',
   he4mCarGlass: '#BFD8F2',
   he4mLaneLine: '#F4F1E6',
+  /** HC180: a one-line diagram's reactances and its fault bolt. */
+  he4mReactance: '#1D4ED8',
+  he4mFault: '#D97706',
   landGrass: '#8CC26B',
   /** HC27 truss (college): tension and compression members, the free body of a section. */
   trussTension: '#B91C1C',
@@ -1131,6 +1134,8 @@ const dark: Palette = {
   he4mCar: '#5B8FE0',
   he4mCarGlass: '#1E3550',
   he4mLaneLine: '#D9D6CC',
+  he4mReactance: '#7DB4FF',
+  he4mFault: '#FBBF24',
   landGrass: '#5E8C45',
   trussTension: '#F87171',
   trussCompression: '#2DD4BF',

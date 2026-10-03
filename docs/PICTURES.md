@@ -122,6 +122,7 @@ search or the sitemap, but the module tests and the harness run over it):
 | `habitableZone`    | a star's zone 0.95√L to 1.37√L AU, green; the planet at a with T       | Earth and space exoplanets (H110)   |
 | `soilPhases`       | air, water and solids to scale (Vₛ = 1, Vᵥ = e); volumes, weights      | College soil mechanics (HC174)      |
 | `losScale`         | density on an A–F level-of-service bar; its cars in a mile of lane     | College transportation (HC175)      |
+| `oneLine`          | source, transformers, lines, buses, a fault bolt; jX summed to Xₜₕ     | College power faults (HC180)        |
 | `parallax`         | Earth in January and July, a near star shifting on far stars; p, d     | Earth and space stars (H110)        |
 | `controlVolume`    | a unit or steel device in a control volume; streams, Q̇, Ẇ, in = out    | College balances, devices (HC5)     |
 | `velocityProfile`  | tube, vessel, plates or film: v arrows, v_max = 2v_avg, τ_w; c lines   | College transport, blood (HC13)     |

@@ -6,6 +6,7 @@
  *
  * - HC174 `soilPhases` (new kind): the three-phase block of a soil.
  * - HC175 `losScale` (new kind): a freeway segment's density on the level-of-service bar.
+ * - HC180 `oneLine` (new kind): a power system's one-line diagram with a fault on a bus.
  */
 import type { NumOrVar } from './typesGraphs';
 
@@ -95,10 +96,63 @@ export interface LosScaleSpec {
 /** The variable ids a losScale spec names. */
 export const losScaleVars = (r: LosScaleSpec): string[] => ids(r.density, r.flow, r.speed);
 
+// ─── HC180: oneLine (new kind) ──────────────────────────────────────────────────
+
+/** One element of a one-line diagram, from the source to the faulted bus. */
+export interface OneLineElement {
+  type: 'generator' | 'transformer' | 'line' | 'source';
+  /** Its reactance in pu on the common base (written jX); left out, the element is unlabelled. */
+  x?: NumOrVar;
+  /** Its name over it: "G", "T₁", "Line". */
+  name?: string;
+}
+
+/**
+ * HC180 (EC-P13): a one-line diagram of a radial system, the source on the left, a bus (a
+ * thick bar) after each element, a load arrow off the last bus and the fault bolt on the
+ * faulted bus (the last by default): `'3φ'` bolted, `'slg'` phase a to ground. Each element is
+ * written with its reactance (jX pu). Under it the reactance diagram: V_f behind the elements'
+ * reactances in series to the fault (X_th = ΣX, `xth` checked), or for a single line-to-ground
+ * fault the three sequence networks in series (`sequence`, I_a = 3V_f ÷ (X₁ + X₂ + X₀)).
+ * `current` is the page's fault current in pu (checked); `base` the system base with the
+ * page's base current (A), the current in kA and the fault MVA (checked). A "?" reactance is
+ * left unlabelled and no sum is written.
+ */
+export interface OneLineSpec {
+  kind: 'oneLine';
+  elements: OneLineElement[];
+  fault?: '3φ' | 'slg';
+  /** The faulted bus, counted from 1 after the first element (default the last). */
+  faultBus?: number;
+  load?: boolean;
+  vf?: NumOrVar;
+  xth?: NumOrVar;
+  current?: NumOrVar;
+  sequence?: { x1: NumOrVar; x2: NumOrVar; x0: NumOrVar };
+  base?: { s: NumOrVar; v: NumOrVar; iBase?: string; iKA?: string; mva?: string };
+}
+
+/** The variable ids a oneLine spec names. */
+export const oneLineVars = (r: OneLineSpec): string[] =>
+  ids(
+    ...r.elements.map((e) => e.x),
+    r.vf,
+    r.xth,
+    r.current,
+    r.sequence?.x1,
+    r.sequence?.x2,
+    r.sequence?.x0,
+    r.base?.s,
+    r.base?.v,
+    r.base?.iBase,
+    r.base?.iKA,
+    r.base?.mva,
+  );
+
 // ─── The new kinds together ──────────────────────────────────────────────────────
 
 /** Group M's new picture kinds (one line in `types.ts`). */
-export type He4mSpec = SoilPhasesSpec | LosScaleSpec;
+export type He4mSpec = SoilPhasesSpec | LosScaleSpec | OneLineSpec;
 
 /** The variable ids a group M new-kind spec names (one case in `modules.test.ts`). */
 export function he4mSpecVars(r: He4mSpec): string[] {
@@ -107,5 +161,7 @@ export function he4mSpecVars(r: He4mSpec): string[] {
       return soilPhasesVars(r);
     case 'losScale':
       return losScaleVars(r);
+    case 'oneLine':
+      return oneLineVars(r);
   }
 }

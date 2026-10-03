@@ -5,6 +5,8 @@
  * - HC174 `soilPhases`: the drawn void height ÷ solid height is e and the water's share of the
  *   voids is S; Se = wG_s; n, γ_d and γ (or ρ and ρ_d for a sand cone) are the page's.
  * - HC175 `losScale`: D = v_p ÷ S; the bounds rise; the letter marked is the band holding D.
+ * - HC180 `oneLine`: the summed reactance written is X_th; I_f = V_f ÷ X_th (or 3V_f ÷ ΣX for a
+ *   line-to-ground fault); the base current, the kA and the fault MVA are the page's.
  */
 import { LOS_BOUNDS, losOf, soilPhaseParts } from '@/components/module/reps/he4mMath';
 
@@ -22,6 +24,8 @@ export function he4mIssues(rep: Representation, val: Val): string[] {
       return soilPhasesIssues(rep, val);
     case 'losScale':
       return losScaleIssues(rep, val);
+    case 'oneLine':
+      return oneLineIssues(rep, val);
     default:
       return [];
   }
@@ -94,6 +98,54 @@ function losScaleIssues(rep: Extract<Representation, { kind: 'losScale' }>, val:
     const lo = i === 0 ? -Infinity : bounds[i - 1]!;
     const hi = i === bounds.length ? Infinity : bounds[i]!;
     if (!(D > lo && D <= hi)) out.push(`los: D = ${D} marked in band ${i}`);
+  }
+  return out;
+}
+
+function oneLineIssues(rep: Extract<Representation, { kind: 'oneLine' }>, val: Val) {
+  const out: string[] = [];
+  const get = (v: string | number | undefined) => (v === undefined ? undefined : val(v));
+  if (!rep.elements.length) out.push('one-line: no elements');
+  if (rep.faultBus !== undefined && (rep.faultBus < 1 || rep.faultBus > rep.elements.length))
+    out.push(`one-line: fault on bus ${rep.faultBus} of ${rep.elements.length}`);
+  const xs = rep.elements.map((e) => get(e.x));
+  xs.forEach((x, i) => {
+    if (x !== undefined && x <= 0) out.push(`one-line: element ${i + 1} has X = ${x}`);
+  });
+  const vf = get(rep.vf);
+  const xth = get(rep.xth);
+  // The sum drawn under the diagram (the elements before the faulted bus) is X_th.
+  const upTo = xs.slice(0, rep.faultBus ?? xs.length);
+  if (xth !== undefined && upTo.every((x) => x !== undefined) && upTo.length) {
+    const sum = (upTo as number[]).reduce((a, b) => a + b, 0);
+    if (!close(sum, xth)) out.push(`one-line: ΣX = ${sum} but X_th = ${xth}`);
+  }
+  const I = get(rep.current);
+  if (rep.fault === 'slg') {
+    const sq = rep.sequence;
+    const ss = sq ? [get(sq.x1), get(sq.x2), get(sq.x0)] : [];
+    if (!sq) out.push('one-line: a line-to-ground fault with no sequence reactances');
+    if (I !== undefined && vf !== undefined && ss.length && ss.every((x) => x !== undefined)) {
+      const sum = (ss as number[]).reduce((a, b) => a + b, 0);
+      if (!close(I, (3 * vf) / sum))
+        out.push(`one-line: I_a = ${I}, not 3V_f ÷ ΣX = ${(3 * vf) / sum}`);
+    }
+  } else if (I !== undefined && vf !== undefined && xth !== undefined && !close(I, vf / xth))
+    out.push(`one-line: I_f = ${I}, not V_f ÷ X_th = ${vf / xth}`);
+  const b = rep.base;
+  if (b) {
+    const [S, V, Ib, IkA, mva] = [get(b.s), get(b.v), get(b.iBase), get(b.iKA), get(b.mva)];
+    if (
+      S !== undefined &&
+      V !== undefined &&
+      Ib !== undefined &&
+      !close(Ib, (S * 1000) / (Math.sqrt(3) * V))
+    )
+      out.push(`one-line: I_base = ${Ib} A, not S ÷ (√3V) = ${(S * 1000) / (Math.sqrt(3) * V)}`);
+    if (I !== undefined && Ib !== undefined && IkA !== undefined && !close(IkA, (I * Ib) / 1000))
+      out.push(`one-line: ${IkA} kA, not I_f × I_base = ${(I * Ib) / 1000}`);
+    if (I !== undefined && S !== undefined && mva !== undefined && !close(mva, (vf ?? 1) * I * S))
+      out.push(`one-line: fault ${mva} MVA, not V_fI_fS_base = ${(vf ?? 1) * I * S}`);
   }
   return out;
 }

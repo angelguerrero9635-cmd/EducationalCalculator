@@ -72,6 +72,7 @@ import { FunctionGraphHe1d } from './FunctionGraphHe1d';
 import { NormalCurveHe4e } from './NormalCurveHe4e';
 import { DriftPaths } from './DriftPaths';
 import { SoilPhases } from './SoilPhases';
+import { OneLine } from './OneLine';
 import { LosScale } from './LosScale';
 import { FunctionGraphHe4e } from './FunctionGraphHe4e';
 import { AlleleFrequenciesAfterHe4e } from './AlleleFrequenciesAfterHe4e';
@@ -492,6 +493,8 @@ export function RepresentationView({ spec, calc }: { spec: Representation; calc:
       return <DriftPaths spec={spec} calc={calc} />; // HC153
     case 'soilPhases':
       return <SoilPhases spec={spec} calc={calc} />; // HC174
+    case 'oneLine':
+      return <OneLine spec={spec} calc={calc} />; // HC180
     case 'losScale':
       return <LosScale spec={spec} calc={calc} />; // HC175
     case 'solidOfRevolution':

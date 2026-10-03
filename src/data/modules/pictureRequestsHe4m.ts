@@ -61,4 +61,21 @@ export const HE4M_REQUESTS: PictureRequest[] = [
     status: 'drawn',
     gallery: ['g.he-losScale-freeway', 'g.he-losScale-breakdown'],
   },
+  {
+    ...ask(
+      'HC180',
+      'oneLine',
+      'A one-line diagram (generator, transformer, line, buses as bars, a load arrow) with a fault bolt on a bus, each element written with its jX in pu; under it the reactance diagram summed to X_th, or the three sequence networks in series for a line-to-ground fault',
+      [`${E}power-systems#2`, `${E}power-systems#2~slg`],
+      [
+        'From EC-P13. New kind (typesHe4m.ts OneLineSpec, reps/OneLine.tsx).',
+        "Fields: { kind: 'oneLine', elements: [{ type: 'generator' | 'transformer' | 'line' | 'source', x? (pu), name? }], fault? ('3φ' | 'slg'), faultBus? (from 1, default the last), load? (default drawn), vf?, xth? (checked: the sum of the elements before the faulted bus), current? (checked: V_f ÷ X_th, or 3V_f ÷ (X₁ + X₂ + X₀)), sequence?: { x1, x2, x0 }, base?: { s (MVA), v (kV), iBase? (A), iKA?, mva? } (checked) }.",
+        "A page that types X_th alone can pass one element { type: 'source', name: 'Grid', x: 'Xth' }. A \"?\" reactance is left unlabelled and no sum is written; a \"?\" V_f writes no current. Flat; no handles.",
+        "Example (main): { kind: 'oneLine', elements: [{ type: 'generator', name: 'G', x: 'Xg' }, { type: 'transformer', name: 'T', x: 'Xt' }, { type: 'line', name: 'Line', x: 'Xl' }], fault: '3φ', vf: 'Vf', xth: 'Xth', current: 'If', base: { s: 'Sbase', v: 'Vbase', iBase: 'Ibase', iKA: 'IkA', mva: 'Sf' } }. Example (~slg): the same elements without x, fault: 'slg', current: 'Ia', sequence: { x1: 'X1', x2: 'X2', x0: 'X0' }.",
+        'Harness (harness/picturesHe4m.ts): ΣX to the fault = X_th; I_f = V_f ÷ X_th (or I_a = 3V_f ÷ ΣX); I_base = S ÷ (√3V) in A, I_kA = I_f I_base ÷ 1000, fault MVA = V_f I_f S_base.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: ['g.he-oneLine-three-phase', 'g.he-oneLine-generator-bus', 'g.he-oneLine-slg'],
+  },
 ];
