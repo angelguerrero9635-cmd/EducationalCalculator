@@ -7,6 +7,7 @@
  * - HC116 `ternary` (new kind): a triangle plot with a 10 % grid, QAP or feldspar fields.
  * - HC117 `silicateChain` (new kind): SiO₄ tetrahedra from above, sharing oxygens.
  * - HC119 `earthLayers` mode `rupture`: the fault patch L × W to scale, slip, Mw against M 6.
+ * - HC120 `rockLayers` `ranges`, and the cliff as a sequence `header` (layouts/types.ts).
  */
 import type { NumOrVar } from './typesGraphs';
 
@@ -90,13 +91,52 @@ export interface RuptureSpec {
   magnitude?: NumOrVar;
 }
 
+// ─── HC120: rockLayers ranges, and the dated cliff as a sequence header ────────
+
+/**
+ * HC120 (a) (EG-P6): index fossils' ranges as bars on an age axis (Ma, younger up) beside a
+ * rock column: each fossil from its `first` appearance (older) to its `last`, the overlap of all
+ * of them shaded across the column and bracketed, the window under the chart. `oldest`
+ * (the youngest first appearance), `youngest` (the oldest last appearance) and `window` (Myr)
+ * are the page's (checked). Ranges that never overlap draw no window and say so. 2–4 ranges.
+ */
+export interface RockRangesSpec {
+  kind: 'rockLayers';
+  ranges: { name: string; first: NumOrVar; last: NumOrVar }[];
+  oldest?: NumOrVar;
+  youngest?: NumOrVar;
+  window?: NumOrVar;
+}
+
+/** The sedimentary rocks a cliff header draws. */
+export type CliffRock = 'sandstone' | 'shale' | 'limestone' | 'siltstone' | 'conglomerate';
+
+/**
+ * HC120 (b) (EG-P6): a sequence page's `header`, the cliff to read an order of events from.
+ * `beds` bottom up (oldest first). `unconformity` is how many beds lie under an erosion surface
+ * (angular when `tilt`, in degrees, tilts them); the rest lie flat on it. `intrusion` is a dike
+ * from the bottom up through bed `top` (default the top bed: it cuts every layer; a `top` under
+ * the unconformity stops at it). `surface` erodes today's ground (the last event). The layout
+ * check reads the events in the stages' text (rock names, "tilt", "erosion", "dike") and
+ * compares them with the figure's order.
+ */
+export interface CliffHeader {
+  kind: 'cliff';
+  beds: CliffRock[];
+  unconformity?: number;
+  tilt?: number;
+  intrusion?: { rock?: 'basalt' | 'granite'; top?: number };
+  surface?: boolean;
+}
+
 /** Every picture of group HE4F (new kinds and options on drawn kinds). */
-export type He4fSpec = TernarySpec | SilicateChainSpec | RuptureSpec;
+export type He4fSpec = TernarySpec | SilicateChainSpec | RuptureSpec | RockRangesSpec;
 
 /** Whether a picture is one of group HE4F's (a new kind, or an option on a drawn kind). */
 export function isHe4fSpec(r: { kind: string }): r is He4fSpec {
   const o = r as { kind: string; mode?: string };
   if (r.kind === 'earthLayers') return o.mode === 'rupture';
+  if (r.kind === 'rockLayers') return 'ranges' in o;
   return r.kind === 'ternary' || r.kind === 'silicateChain';
 }
 
@@ -109,5 +149,7 @@ export function he4fSpecVars(r: He4fSpec): string[] {
       return ids(r.shared, r.units, r.oxygens, r.perSi, r.charge);
     case 'earthLayers':
       return ids(r.length, r.width, r.slip, r.rigidity, r.area, r.moment, r.magnitude);
+    case 'rockLayers':
+      return ids(...r.ranges.flatMap((x) => [x.first, x.last]), r.oldest, r.youngest, r.window);
   }
 }

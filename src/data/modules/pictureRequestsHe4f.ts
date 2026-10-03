@@ -91,4 +91,30 @@ export const HE4F_REQUESTS: PictureRequest[] = [
     status: 'drawn',
     gallery: ['g.he-earthLayers-rupture', 'g.he-earthLayers-rupture-great'],
   },
+  {
+    ...ask(
+      'HC120',
+      'rockLayers',
+      'Index fossils’ ranges as bars on a Ma axis beside a rock column, their overlap shaded and bracketed; and the dated cliff as a sequence page’s header figure (beds tilted under an angular unconformity, flat beds over it, a dike cutting every bed it reaches)',
+      {
+        [`${E}historical-geology#2`]: "representation: { kind: 'rockLayers', ranges: [...] }",
+        [`${E}historical-geology#0`]:
+          "header: { kind: 'cliff', beds: [...], unconformity, tilt, intrusion, surface }",
+      },
+      [
+        'From EG-P6. (a) New option on rockLayers (typesHe4f.ts RockRangesSpec, reps/RockRanges.tsx, the window in reps/he4fMath.ts); the dating and fossil-count options are unchanged. (b) New sequence `header` (layouts/types.ts SequenceLayout.header, typesHe4f.ts CliffHeader, layouts/cliffHeaderHe4f.tsx, geometry and events in layouts/cliffMath.ts), drawn above the question.',
+        'Fields (a): { kind: \'rockLayers\', ranges: { name, first (Ma, the older), last (Ma) }[] (2–4), oldest? (the youngest first appearance), youngest? (the oldest last appearance), window? (Myr) }. Ranges that never overlap draw no window and the caption says so; a "?" age draws no bar for that fossil.',
+        "Fields (b): header: { kind: 'cliff', beds: ('sandstone' | 'shale' | 'limestone' | 'siltstone' | 'conglomerate')[] bottom up, unconformity? (beds under it), tilt? (degrees, the beds under it), intrusion?: { rock?: 'basalt' | 'granite', top? (the highest bed it cuts; default the top bed; one under the unconformity stops at it) }, surface? (today's surface eroded: the last event) }.",
+        "Example (a): { kind: 'rockLayers', ranges: [{ name: 'Fossil A', first: 'aFirst', last: 'aLast' }, { name: 'Fossil B', first: 'bFirst', last: 'bLast' }], oldest: 'oldest', youngest: 'youngest', window: 'span' } (A 420–380, B 400–360 Ma → 400 to 380 Ma, 20 Myr). Example (b), historical-geology#0: header: { kind: 'cliff', beds: ['sandstone', 'shale', 'limestone', 'conglomerate', 'siltstone'], unconformity: 3, tilt: 20, intrusion: { rock: 'basalt' }, surface: true } with the plan's eight stages (each stage names its rocks, or says tilted, erosion or dike).",
+        'Checks: (a) harness/picturesHe4f.ts: the window is [the older of the last appearances, the younger of the first], none when empty; first ≥ last; the page’s values agree. (b) layouts.test.ts (cliffIssues): flat beds only over the unconformity, tilt only with one; the dike reaches its top bed’s top (or stops at the unconformity); the events read from the stages’ text equal the figure’s order.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-rockLayers-ranges',
+      'g.he-rockLayers-ranges-narrow',
+      'g.he-rockLayers-cliff',
+      'g.he-rockLayers-cliff-old-dike',
+    ],
+  },
 ];

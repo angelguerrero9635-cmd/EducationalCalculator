@@ -6,6 +6,7 @@ import type { He4fSpec } from '@/data/modules/typesHe4f';
 
 import type { Calculator } from '../useCalculator';
 import { EarthRupture } from './EarthRupture';
+import { RockRanges } from './RockRanges';
 import { SilicateChain } from './SilicateChain';
 import { Ternary } from './Ternary';
 
@@ -17,5 +18,7 @@ export function He4fView({ spec, calc }: { spec: He4fSpec; calc: Calculator }) {
       return <SilicateChain spec={spec} calc={calc} />; // HC117
     case 'earthLayers':
       return <EarthRupture spec={spec} calc={calc} />; // HC119
+    case 'rockLayers':
+      return <RockRanges spec={spec} calc={calc} />; // HC120
   }
 }

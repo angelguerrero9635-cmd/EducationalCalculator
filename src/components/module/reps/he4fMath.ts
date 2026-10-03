@@ -218,3 +218,17 @@ export function ruptureRect(L: number, W: number, fw: number, fh: number) {
   const k = Math.max(L / fw, W / fh);
   return { w: L / k, h: W / k };
 }
+
+// ─── HC120: rockLayers ranges ───────────────────────────────────────────────────
+
+/**
+ * The window when every fossil lived, from [first, last] appearances (Ma, first the older): from
+ * the youngest first appearance (`oldest`) to the oldest last one (`youngest`); none when they
+ * never overlap.
+ */
+export function fossilWindow(ranges: [number, number][]) {
+  if (!ranges.length) return undefined;
+  const oldest = Math.min(...ranges.map((r) => r[0]));
+  const youngest = Math.max(...ranges.map((r) => r[1]));
+  return oldest >= youngest ? { oldest, youngest } : undefined;
+}

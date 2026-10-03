@@ -36,6 +36,12 @@ them. A sequence with `signed: true` shows signed spans (ATP per glycolysis step
 the total as a net change (`totalLabel: 'Net'` → "Net: +2 ATP"); every stage needs a span. A
 sequence with no spans shows the stages in order only.
 
+A sequence can set `header: { kind: 'cliff', beds, unconformity?, tilt?, intrusion?, surface? }`
+(HC120, `typesHe4f.ts`, `layouts/cliffHeaderHe4f.tsx`): a painted cross-section above the question,
+beds bottom up, those under an angular unconformity tilted, a dike cutting every bed it reaches,
+today's surface eroded. The layout check reads the events in the stages' text (rock names, "tilted",
+"erosion", "dike") and compares them with the figure's order (`layouts/cliffMath.ts`).
+
 Explore figures: `parts` (tap a part), `position`, `clock`, `dots`, `magnets`, `flashes`,
 `lightPath` (lamp, object, eye, hand or mirror; with `wall`, a `height` and clear, cloudy or
 solid blockers it traces the shadow), `particles`, `earth`, `push` (a ball pushed from

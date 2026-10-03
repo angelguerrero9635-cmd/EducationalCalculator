@@ -5,6 +5,7 @@
  * HC116: `ternary`, the new kind (he.earth-science.physical-geology#0, mineralogy#1~plagioclase).
  * HC117: `silicateChain`, the new kind (he.earth-science.physical-geology#0~silicates).
  * HC119: `earthLayers` mode `rupture` (he.earth-science.physical-geology#2).
+ * HC120: `rockLayers` `ranges` (historical-geology#2) and the cliff header (#0).
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
@@ -534,6 +535,159 @@ const RUPTURE_GREAT = rupturePage(
   { mu: 40, L: 1000, W: 200, D: 15 },
 );
 
+// ─── HC120: the fossil window (historical-geology#2) and the cliff (#0) ─────────
+
+const windowWork: [string, (v: Values) => number][] = [
+  ['oldest', (v) => Math.min(v.aFirst!, v.bFirst!)],
+  ['youngest', (v) => Math.max(v.aLast!, v.bLast!)],
+  ['span', (v) => v.oldest! - v.youngest!],
+];
+
+const fossilPage = (
+  id: string,
+  title: string,
+  use: string,
+  names: [string, string],
+  typed: Values,
+) =>
+  page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'A bed holding both fossils formed while both lived.',
+      'The ranges come from dated sections elsewhere.',
+      'Ranges that never overlap are rejected: these fossils never lived at the same time.',
+    ],
+    variables: [
+      num('aFirst', 'A_first', `${names[0]} first appears`, 'Ma', 0, 4600, { step: 1 }),
+      num('aLast', 'A_last', `${names[0]} last appears`, 'Ma', 0, 4600, { step: 1 }),
+      num('bFirst', 'B_first', `${names[1]} first appears`, 'Ma', 0, 4600, { step: 1 }),
+      num('bLast', 'B_last', `${names[1]} last appears`, 'Ma', 0, 4600, { step: 1 }),
+      out('oldest', 'oldest', 'Oldest possible age', 'Ma'),
+      out('youngest', 'youngest', 'Youngest possible age', 'Ma'),
+      out('span', 'window', 'Window', 'Myr', { min: 0 }),
+    ],
+    rules: [
+      derive(
+        'oldest',
+        'oldest',
+        ['aFirst', 'bFirst'],
+        '{oldest} = min({aFirst}, {bFirst})',
+        (v) => Math.min(v.aFirst!, v.bFirst!),
+        'min({aFirst}, {bFirst})',
+        'The bed can be no older than the later of the two first appearances.',
+      ),
+      derive(
+        'youngest',
+        'youngest',
+        ['aLast', 'bLast'],
+        '{youngest} = max({aLast}, {bLast})',
+        (v) => Math.max(v.aLast!, v.bLast!),
+        'max({aLast}, {bLast})',
+        'It can be no younger than the earlier of the two last appearances.',
+      ),
+      derive(
+        'span',
+        'span',
+        ['oldest', 'youngest'],
+        '{span} = {oldest} − {youngest}',
+        (v) => v.oldest! - v.youngest!,
+        '{oldest} − {youngest}',
+        'The window is the time both fossils lived.',
+      ),
+    ],
+    example: example(typed, ...windowWork),
+    startWith: ['aFirst', 'aLast', 'bFirst', 'bLast'],
+    representation: {
+      kind: 'rockLayers',
+      ranges: [
+        { name: names[0], first: 'aFirst', last: 'aLast' },
+        { name: names[1], first: 'bFirst', last: 'bLast' },
+      ],
+      oldest: 'oldest',
+      youngest: 'youngest',
+      window: 'span',
+    },
+  });
+
+const FOSSIL_WINDOW = fossilPage(
+  'g.he-rockLayers-ranges',
+  'Dating a bed from two index fossils',
+  'Use this for “Fossil A lived 420–380 Ma and fossil B 400–360 Ma. When did a bed holding both form?”',
+  ['Fossil A', 'Fossil B'],
+  { aFirst: 420, aLast: 380, bFirst: 400, bLast: 360 },
+);
+
+/** Two ranges that barely overlap: a 2-Myr window. */
+const FOSSIL_NARROW = fossilPage(
+  'g.he-rockLayers-ranges-narrow',
+  'A narrow window from two index fossils',
+  'Use this for “A trilobite lived 510–488 Ma and a graptolite 490–440 Ma. How narrow is the window?”',
+  ['Trilobite', 'Graptolite'],
+  { aFirst: 510, aLast: 488, bFirst: 490, bLast: 440 },
+);
+
+/** The cross-section above a sequence page's stages (historical-geology#0). */
+const CLIFF_STAGES: LayoutDef = {
+  kind: 'sequence',
+  id: 'g.he-rockLayers-cliff',
+  title: 'Reading the order of events in a cliff',
+  use: 'Use this for “Put the events that made this cross-section in order, oldest first.”',
+  assumptions: [
+    'Beds are laid down flat, the oldest at the bottom (superposition, original horizontality).',
+    'Tilted beds under flat ones were tilted and eroded before the flat ones were laid down.',
+    'A dike is younger than every bed it cuts (cross-cutting relationships).',
+  ],
+  question: 'Read a cross-section from the bottom up, then place what cuts across.',
+  header: {
+    kind: 'cliff',
+    beds: ['sandstone', 'shale', 'limestone', 'conglomerate', 'siltstone'],
+    unconformity: 3,
+    tilt: 20,
+    intrusion: { rock: 'basalt' },
+    surface: true,
+  },
+  stages: [
+    { label: 'Sandstone laid down flat' },
+    { label: 'Shale laid down on it' },
+    { label: 'Limestone laid down on top' },
+    { label: 'The three beds tilted' },
+    { label: 'Erosion planes them off' },
+    { label: 'Conglomerate then siltstone laid down' },
+    { label: 'A basalt dike cuts every layer' },
+    { label: 'Erosion shapes today’s surface' },
+  ],
+};
+
+/** A dike that stops at the unconformity: it is older than the beds above. */
+const CLIFF_OLD_DIKE: LayoutDef = {
+  kind: 'sequence',
+  id: 'g.he-rockLayers-cliff-old-dike',
+  title: 'A dike older than an unconformity',
+  use: 'Use this for “A dike cuts the tilted beds but not the beds above the unconformity. When did it form?”',
+  assumptions: [
+    'A dike cut off by an erosion surface is older than the surface and every bed above it.',
+    'Tilted beds were tilted before the erosion that planed them.',
+  ],
+  question: 'Put the events in order, oldest first.',
+  header: {
+    kind: 'cliff',
+    beds: ['shale', 'sandstone', 'limestone', 'sandstone'],
+    unconformity: 2,
+    tilt: 30,
+    intrusion: { rock: 'granite', top: 1 },
+  },
+  stages: [
+    { label: 'Shale laid down' },
+    { label: 'Sandstone laid down on it' },
+    { label: 'The beds tilted' },
+    { label: 'A granite dike intrudes the tilted beds' },
+    { label: 'Erosion cuts the unconformity' },
+    { label: 'Limestone then sandstone laid down flat' },
+  ],
+};
+
 export const HE4F_GALLERY_MODULES: ModuleDef[] = [
   QAP,
   QAP_DIORITE,
@@ -542,6 +696,8 @@ export const HE4F_GALLERY_MODULES: ModuleDef[] = [
   ...SILICATES,
   RUPTURE,
   RUPTURE_GREAT,
+  FOSSIL_WINDOW,
+  FOSSIL_NARROW,
 ];
 
-export const HE4F_GALLERY_LAYOUTS: LayoutDef[] = [];
+export const HE4F_GALLERY_LAYOUTS: LayoutDef[] = [CLIFF_STAGES, CLIFF_OLD_DIKE];

@@ -10,6 +10,8 @@
  *   charge 4n − 2O equals −n(4 − s); the page's O, O per Si and charge agree.
  * - HC119 `earthLayers` `rupture`: M₀ = μLWD and Mw = (2 ÷ 3)(log₁₀ M₀ − 9.1) (0.01); the drawn
  *   patch's sides in the ratio L : W, inside the fault face; A = LW.
+ * - HC120 `rockLayers` `ranges`: the window is [the older last appearance, the younger first],
+ *   none when they never overlap; the page's ages agree. (The cliff header: layouts.test.ts.)
  */
 import {
   FELDSPAR_FIELDS,
@@ -19,6 +21,7 @@ import {
   magnitudeOf,
   momentOf,
   normalize,
+  fossilWindow,
   ruptureRect,
   ternaryField,
 } from '@/components/module/reps/he4fMath';
@@ -31,7 +34,13 @@ import {
   wholeRepeat,
 } from '@/components/module/reps/silicateMath';
 
-import type { He4fSpec, RuptureSpec, SilicateChainSpec, TernarySpec } from '../typesHe4f';
+import type {
+  He4fSpec,
+  RockRangesSpec,
+  RuptureSpec,
+  SilicateChainSpec,
+  TernarySpec,
+} from '../typesHe4f';
 
 type Val = (id: string) => number | undefined;
 
@@ -49,6 +58,8 @@ export function he4fIssues(rep: He4fSpec, val: Val): string[] {
       return silicateIssues(rep, num);
     case 'earthLayers':
       return ruptureIssues(rep, num);
+    case 'rockLayers':
+      return rangesIssues(rep, num);
   }
 }
 
@@ -161,5 +172,34 @@ function ruptureIssues(rep: RuptureSpec, num: Num): string[] {
   if (mwPage !== undefined && Math.abs(mwPage - mw) > 0.01)
     out.push(`rupture: the page's Mw ${mwPage} is not ${mw}`);
   if (mw > 10) out.push(`rupture: Mw ${mw} runs off the 0–10 bar`);
+  return out;
+}
+
+function rangesIssues(rep: RockRangesSpec, num: Num): string[] {
+  const out: string[] = [];
+  if (rep.ranges.length < 2 || rep.ranges.length > 4)
+    out.push(`ranges: ${rep.ranges.length} fossils, not 2 to 4`);
+  const rs = rep.ranges.map((r) => [num(r.first), num(r.last)] as const);
+  if (rs.some(([f, l]) => f === undefined || l === undefined)) return out;
+  const known = rs as unknown as [number, number][];
+  known.forEach(([f, l], i) => {
+    if (f < l) out.push(`ranges: ${rep.ranges[i]!.name} first appears after it last appears`);
+  });
+  const win = fossilWindow(known);
+  // An independent reading: the ages every range covers.
+  const lo = Math.max(...known.map((r) => r[1]));
+  const hi = Math.min(...known.map((r) => r[0]));
+  if (lo <= hi) {
+    if (!win || win.youngest !== lo || win.oldest !== hi)
+      out.push(`ranges: the window is not [${lo}, ${hi}] Ma`);
+    for (const [field, want, what] of [
+      [rep.oldest, hi, 'oldest'],
+      [rep.youngest, lo, 'youngest'],
+      [rep.window, hi - lo, 'window'],
+    ] as const) {
+      const v = num(field);
+      if (v !== undefined && !near(v, want, 1e-9)) out.push(`ranges: ${what} ${v}, not ${want}`);
+    }
+  } else if (win) out.push('ranges: a window is drawn for ranges that never overlap');
   return out;
 }
