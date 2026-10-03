@@ -1777,4 +1777,106 @@ export const COLLEGE_PHYSICS_MODULES: ModuleDef[] = [
       centerOfMass: { x: 'xcm', total: 'M' },
     },
   },
+  {
+    // University Physics I → Momentum: a force that rises to a peak and falls back in a
+    // straight line. J = ∫F dt is the triangle's area, half its base times its height.
+    id: 'he.physics.university-1#3~impulse-curve',
+    title: 'Impulse from a triangular force pulse',
+    use: 'Use this for “A kick pushes a 0.43 kg ball at rest with a force that rises evenly to 2,400 N and falls back to 0 over 8 ms. What is the impulse, and how fast does the ball leave?”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'The impulse is the area under the force–time graph, J = ∫F dt. Here the force rises in a straight line to its peak and falls back to 0, so the area is a triangle.',
+      'The average force is the steady force that gives the same impulse over the same contact time.',
+      'Only this force acts along the motion during the contact, so the impulse is the change in momentum, J = mΔv.',
+    ],
+    variables: [
+      V('F', 'F_max', 'Peak force', { unit: 'N', min: 0.01, max: 1e7, step: 1 }),
+      V('dt', 'Δt', 'Contact time', { unit: 's', min: 0.00001, max: 100, step: 0.001 }),
+      V('J', 'J', 'Impulse', { unit: 'N·s', min: 1e-6, max: 1e8, derived: true }),
+      V('Favg', 'F_avg', 'Average force', { unit: 'N', min: 0.005, max: 1e7, derived: true }),
+      V('m', 'm', 'Mass', { unit: 'kg', min: 0.001, max: 1e5, step: 0.01 }),
+      V('dv', 'Δv', 'Change in speed', { unit: 'm/s', min: 1e-6, max: 1e5, derived: true }),
+    ],
+    ...rels(
+      rel(
+        'J = ½F_max Δt',
+        '{J} = ½ × {F} × {dt}',
+        ['J', 'F', 'dt'],
+        (v) => v.J! - 0.5 * v.F! * v.dt!,
+        {
+          J: [
+            (v) => exact(0.5 * v.F! * v.dt!),
+            '½ × {F} × {dt}',
+            'J = ∫F dt is the area under the pulse: a triangle, half its base Δt times its height F_max.',
+          ],
+          F: [
+            (v) => div(2 * v.J!, v.dt!),
+            '2 × {J} ÷ {dt}',
+            'Double the area, then divide by the base, the contact time.',
+          ],
+          dt: [
+            (v) => div(2 * v.J!, v.F!),
+            '2 × {J} ÷ {F}',
+            'Double the area, then divide by the height, the peak force.',
+          ],
+        },
+      ),
+      rel(
+        'F_avg = J ÷ Δt',
+        '{Favg} = {J} ÷ {dt}',
+        ['Favg', 'J', 'dt'],
+        (v) => v.Favg! * v.dt! - v.J!,
+        {
+          Favg: [
+            (v) => div(v.J!, v.dt!),
+            '{J} ÷ {dt}',
+            'Spread the impulse evenly over the contact time. For a triangle this is half the peak.',
+          ],
+          J: [
+            (v) => exact(v.Favg! * v.dt!),
+            '{Favg} × {dt}',
+            'A steady average force over the same time gives a rectangle of the same area.',
+          ],
+          dt: [
+            (v) => div(v.J!, v.Favg!),
+            '{J} ÷ {Favg}',
+            'Divide the impulse by the average force.',
+          ],
+        },
+      ),
+      rel('Δv = J ÷ m', '{dv} = {J} ÷ {m}', ['dv', 'J', 'm'], (v) => v.dv! * v.m! - v.J!, {
+        dv: [
+          (v) => div(v.J!, v.m!),
+          '{J} ÷ {m}',
+          'The impulse is the change in momentum, J = mΔv: divide it by the mass.',
+        ],
+        J: [
+          (v) => exact(v.m! * v.dv!),
+          '{m} × {dv}',
+          'The change in momentum is the mass times the change in speed.',
+        ],
+        m: [
+          (v) => div(v.J!, v.dv!),
+          '{J} ÷ {dv}',
+          'Divide the change in momentum by the change in speed.',
+        ],
+      }),
+    ),
+    // The plan's pulse: 1200 N peak over 0.010 s → J = ½ × 1200 × 0.01 = 6 N·s;
+    // F_avg = 6 ÷ 0.01 = 600 N (half the peak); a 0.15 kg ball from rest: Δv = 6 ÷ 0.15 = 40 m/s.
+    example: { F: 1200, dt: 0.01, J: 6, Favg: 600, m: 0.15, dv: 40 },
+    startWith: ['F', 'dt', 'm'],
+    // The triangle on the F–t graph, its area shaded as J, the rectangle of the same area dashed
+    // at F_avg, and the ball sent off at Δv.
+    representation: {
+      kind: 'impulse',
+      shape: 'triangle',
+      peak: 'F',
+      time: 'dt',
+      impulse: 'J',
+      average: 'Favg',
+      mass: 'm',
+      change: 'dv',
+    },
+  },
 ];
