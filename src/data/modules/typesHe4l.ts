@@ -7,6 +7,7 @@
  * - HC165 `moodyChart` (ME-P13): f against Re on log–log axes, the ε ÷ D curves computed from
  *   Colebrook, the page's point on its lit curve.
  * - HC166 `gearPair` (ME-P18): spur gears in steel, a pair or a train of up to four.
+ * - HC167 `printLayers` (ME-P20): a part sliced into layers; the stair and cusp on a slope.
  */
 import type { NumOrVar } from './typesGraphs';
 
@@ -82,10 +83,54 @@ export const gearPairVars = (r: GearPairSpec): string[] =>
     r.value,
   );
 
+// ─── HC167: printLayers (new kind) ──────────────────────────────────────────────
+
+/**
+ * HC167 (ME-P20): additive manufacturing. A part in its powder bed on the build plate, sliced
+ * into layers of thickness `layer` (t), the layers enlarged: when n is 12 or fewer all are
+ * drawn, else the first five, a break with "n layers", and the last two; H dimensioned and the
+ * laser on the top layer. With `angle` (θ from the build plate, degrees) the picture is the
+ * sloped face instead: an enlarged stair of layers against the true face (dashed), the cusp
+ * c = t cos θ marked square to the face. With the time fields, a bar for one layer: the scan
+ * A ÷ (sv) and the recoat t_r to scale, t_layer at its end, and T = n t_layer in the caption.
+ * A "?" t draws no layer lines; a "?" θ no stair; a "?" time leaves its part of the bar out.
+ */
+export interface PrintLayersSpec {
+  kind: 'printLayers';
+  layer: NumOrVar;
+  height?: NumOrVar;
+  layers?: NumOrVar;
+  angle?: NumOrVar;
+  cusp?: NumOrVar;
+  /** Area scanned per layer, hatch spacing and scan speed: the scan time A ÷ (sv). */
+  area?: NumOrVar;
+  hatch?: NumOrVar;
+  speed?: NumOrVar;
+  recoat?: NumOrVar;
+  layerTime?: NumOrVar;
+  buildTime?: NumOrVar;
+}
+
+/** The variable ids a printLayers spec names. */
+export const printLayersVars = (r: PrintLayersSpec): string[] =>
+  ids(
+    r.layer,
+    r.height,
+    r.layers,
+    r.angle,
+    r.cusp,
+    r.area,
+    r.hatch,
+    r.speed,
+    r.recoat,
+    r.layerTime,
+    r.buildTime,
+  );
+
 // ─── Every group L spec ─────────────────────────────────────────────────────────
 
 /** The round 4 group L picture specs (listed once in `types.ts`). */
-export type He4lSpec = MoodyChartSpec | GearPairSpec;
+export type He4lSpec = MoodyChartSpec | GearPairSpec | PrintLayersSpec;
 
 /** The variable ids a group L spec names. */
 export function he4lSpecVars(r: He4lSpec): string[] {
@@ -94,5 +139,7 @@ export function he4lSpecVars(r: He4lSpec): string[] {
       return moodyChartVars(r);
     case 'gearPair':
       return gearPairVars(r);
+    case 'printLayers':
+      return printLayersVars(r);
   }
 }

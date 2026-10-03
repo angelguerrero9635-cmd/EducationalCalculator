@@ -4,12 +4,11 @@
  * page's values to agree. Called from `repIssues` in `pictures.ts`. Test-only.
  */
 import type { VariableDef } from '@/engine/types';
-import { siFactor } from '@/components/module/reps/he3iUnits';
-import { MOODY_LAMINAR, trainValue } from '@/components/module/reps/he4lMath';
+import { cuspOf, MOODY_LAMINAR, si4l, trainValue } from '@/components/module/reps/he4lMath';
 
 import type { Representation } from '../types';
 import { siOf } from './picturesHs2c';
-import type { GearPairSpec, He4lSpec, MoodyChartSpec } from '../typesHe4l';
+import type { GearPairSpec, He4lSpec, MoodyChartSpec, PrintLayersSpec } from '../typesHe4l';
 
 type Val = (x: string | number) => number | undefined;
 type X = string | number | undefined;
@@ -17,7 +16,7 @@ type X = string | number | undefined;
 const close = (a: number, b: number, rel = 1e-6) =>
   Math.abs(a - b) <= rel * Math.max(1e-12, Math.abs(a), Math.abs(b));
 
-const HE4L_KINDS: string[] = ['moodyChart', 'gearPair'];
+const HE4L_KINDS: string[] = ['moodyChart', 'gearPair', 'printLayers'];
 const isHe4l = (r: Representation): r is He4lSpec => HE4L_KINDS.includes(r.kind);
 
 /** The group L checks, by kind. */
@@ -34,13 +33,15 @@ export function he4lIssues(
   const si = (x: X, unit: string) => {
     const v = get(x);
     if (v === undefined) return undefined;
-    return v * siFactor(typeof x === 'string' ? (byId.get(x)?.unit ?? unit) : unit);
+    return v * si4l(typeof x === 'string' ? (byId.get(x)?.unit ?? unit) : unit);
   };
   switch (rep.kind) {
     case 'moodyChart':
       return moodyIssues(rep, get, si);
     case 'gearPair':
       return gearIssues(rep, get, si);
+    case 'printLayers':
+      return printIssues(rep, get, si);
   }
 }
 
@@ -153,5 +154,45 @@ function gearIssues(
   const [P, W] = [si(rep.power, 'W'), si(rep.force, 'N')];
   if (P !== undefined && W !== undefined && V !== undefined && V > 0 && !close(W, P / V))
     out.push(`gears: W_t = ${W} N is not P ÷ V = ${P / V} N`);
+  return out;
+}
+
+/**
+ * HC167: n = H ÷ t; c = t cos θ; t_layer = A ÷ (sv) + t_r; T = n t_layer (all in SI); t > 0 and
+ * θ within 0° to 90°.
+ */
+function printIssues(
+  rep: PrintLayersSpec,
+  get: (x: X) => number | undefined,
+  si: (x: X, unit: string) => number | undefined,
+): string[] {
+  const out: string[] = [];
+  const [t, H, n, th, cusp] = [
+    si(rep.layer, 'mm'),
+    si(rep.height, 'mm'),
+    get(rep.layers),
+    get(rep.angle),
+    si(rep.cusp, 'mm'),
+  ];
+  if (t !== undefined && t <= 0) out.push(`layers: t = ${t} is not positive`);
+  if (th !== undefined && (th < 0 || th > 90)) out.push(`layers: θ = ${th}° is outside 0° to 90°`);
+  if (t !== undefined && H !== undefined && n !== undefined && t > 0 && !close(n, H / t))
+    out.push(`layers: n = ${n} is not H ÷ t = ${H / t}`);
+  if (t !== undefined && th !== undefined && cusp !== undefined && !close(cusp, cuspOf(t, th)))
+    out.push(`layers: c = ${cusp} m is not t cos θ = ${cuspOf(t, th)} m`);
+  const [A, s, v, tr, tl, T] = [
+    si(rep.area, 'mm²'),
+    si(rep.hatch, 'mm'),
+    si(rep.speed, 'mm/s'),
+    si(rep.recoat, 's'),
+    si(rep.layerTime, 's'),
+    si(rep.buildTime, 'h'),
+  ];
+  if ([A, s, v, tr, tl].every((x) => x !== undefined) && s! * v! > 0) {
+    const want = A! / (s! * v!) + tr!;
+    if (!close(tl!, want)) out.push(`layers: t_layer = ${tl} s is not A ÷ (sv) + t_r = ${want} s`);
+  }
+  if (n !== undefined && tl !== undefined && T !== undefined && !close(T, n * tl))
+    out.push(`layers: T = ${T} s is not n t_layer = ${n * tl} s`);
   return out;
 }

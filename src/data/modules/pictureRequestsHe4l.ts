@@ -66,4 +66,26 @@ export const HE4L_REQUESTS: PictureRequest[] = [
       'g.he-gearPair-idler',
     ],
   },
+  {
+    ...ask(
+      'HC167',
+      'printLayers',
+      'A part in its powder bed sliced into layers (n counted, a few drawn and a break), the stair steps and cusp c = t cos θ on a sloped face, and a time bar per layer',
+      [`${E}manufacturing#2`, `${E}manufacturing#2~cusp`],
+      [
+        'From ME-P20. New kind (typesHe4l.ts PrintLayersSpec, reps/PrintLayers.tsx, cuspOf and the scan-speed units in reps/he4lMath.ts).',
+        "Fields: { kind: 'printLayers', layer (t), height? (H), layers? (n), angle? (θ from the build plate, degrees: draws the sloped face instead of the stack), cusp? (c), area? (A), hatch? (s), speed? (v; mm/s understood), recoat? (t_r), layerTime? (t_layer), buildTime? (T) }.",
+        'Stack: a metal part in its powder bed on a steel build plate, layers enlarged (all when n ≤ 12, else five, a break naming n, and two), H dimensioned at the left, t on the first layer, the laser on the top layer. Slope: five enlarged steps against the true face (dashed), one cusp shaded with c square to the face, t and θ marked. Time bar: the scan A ÷ (sv) and recoat t_r to scale, t_layer under it. A "?" t draws no layer lines (no stair on a slope); a "?" time leaves its part of the bar out. No handles.',
+        "Examples: main { kind: 'printLayers', layer: 't', height: 'H', layers: 'n', area: 'A', hatch: 's', speed: 'v', recoat: 'tr', layerTime: 'tl', buildTime: 'T' }; ~cusp { kind: 'printLayers', layer: 't', angle: 'th', cusp: 'c' }.",
+        'Harness (harness/picturesHe4l.ts): n = H ÷ t; c = t cos θ; t_layer = A ÷ (sv) + t_r; T = n t_layer (in SI); θ within 0° to 90°.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: [
+      'g.he-printLayers-build',
+      'g.he-printLayers-few',
+      'g.he-printLayers-cusp',
+      'g.he-printLayers-cusp-shallow',
+    ],
+  },
 ];

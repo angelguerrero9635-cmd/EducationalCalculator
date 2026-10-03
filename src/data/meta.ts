@@ -181,6 +181,7 @@ const PICTURE_NAMES: Record<string, string> = {
   driftPaths: 'genetic drift: populations’ allele frequencies wandering, expected H falling',
   moodyChart: 'the Moody chart: friction factor against Re, roughness curves from Colebrook',
   gearPair: 'spur gears in mesh: teeth, pitch circles, speeds and the force at the teeth',
+  printLayers: 'a 3-D printed part in layers: the count, the stair on a slope, the time per layer',
   propertyDiagram: 'a T–v, P–v or T–s plane with the vapor dome, states and a cycle',
   elementChain: 'finite elements: springs or bars between nodes, loads, displacements; a mesh',
   fatigueDiagram: 'fatigue: a Goodman diagram, an S–N line on log axes, a Miner damage bar',

@@ -5,6 +5,7 @@
  *
  * HC165 `moodyChart` (he.engineering.fluid-mechanics#4, ME-P13).
  * HC166 `gearPair` (he.engineering.machine-design#3, ~train, ME-P18).
+ * HC167 `printLayers` (he.engineering.manufacturing#2, ~cusp, ME-P20).
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 import { colebrookF } from '@/components/module/reps/he4lMath';
@@ -489,6 +490,168 @@ const GEAR_IDLER = gearTrainDemo(
   1200,
 );
 
+// ─── HC167: additive layers (manufacturing#2, ~cusp) ────────────────────────────
+
+/** A powder-bed build: n = H ÷ t, one layer's time A ÷ (sv) + t_r, the build n t_layer. */
+function buildDemo(
+  id: string,
+  title: string,
+  use: string,
+  ex: { H: number; t: number; A: number; s: number; v: number; tr: number },
+): ModuleDef {
+  const n = ex.H / ex.t;
+  const tl = ex.A / (ex.s * ex.v) + ex.tr;
+  return demo(id, title, use, {
+    assumptions: [
+      'Every layer has the same scanned area A, hatched at spacing s and speed v.',
+      'Each layer adds a recoat (spreading fresh powder) of t_r.',
+      'mm, mm² and mm/s give the scan time in s; T is in hours (3600 s).',
+    ],
+    variables: [
+      q('H', 'H', 'Part height', 'mm', 0.1, 1000, 0.1),
+      q('t', 't', 'Layer thickness', 'mm', 0.01, 1, 0.01),
+      q('n', 'n', 'Layers', undefined, 1, 1e5, 1),
+      q('A', 'A', 'Area scanned per layer', 'mm²', 1, 1e5, 1),
+      q('s', 's', 'Hatch spacing', 'mm', 0.01, 1, 0.01),
+      q('v', 'v', 'Scan speed', 'mm/s', 1, 10000, 1),
+      q('tr', 't_r', 'Recoat time', 's', 0.1, 120, 0.1),
+      q('tl', 't_layer', 'Time per layer', 's', 0.1, 1e5, 0.1),
+      q('T', 'T', 'Build time', 'h', 0.0001, 1e4, 0.001),
+    ],
+    ...rules(
+      rule('n = H ÷ t', '{n} = {H} ÷ {t}', (v) => v.n! * v.t! - v.H!, {
+        n: [(v) => div(v.H!, v.t!), '{H} ÷ {t}', 'One layer per thickness t, up the whole height.'],
+        H: [(v) => v.n! * v.t!, '{n} × {t}', 'The layers stacked: n of them, t each.'],
+        t: [(v) => div(v.H!, v.n!), '{H} ÷ {n}', 'The height shared among the layers.'],
+      }),
+      rule(
+        't_layer = A ÷ (sv) + t_r',
+        '{tl} = {A} ÷ ({s} × {v}) + {tr}',
+        (v) => v.tl! - v.A! / (v.s! * v.v!) - v.tr!,
+        {
+          tl: [
+            (v) => div(v.A!, v.s! * v.v!)! + v.tr!,
+            '{A} ÷ ({s} × {v}) + {tr}',
+            'The laser sweeps lines s apart at speed v, so it covers s × v of area a second; then the recoat.',
+          ],
+          tr: [
+            (v) => v.tl! - v.A! / (v.s! * v.v!),
+            '{tl} − {A} ÷ ({s} × {v})',
+            'The layer time less the scan time.',
+          ],
+          A: [
+            (v) => (v.tl! - v.tr!) * v.s! * v.v!,
+            '({tl} − {tr}) × {s} × {v}',
+            'The scan time times the area covered each second.',
+          ],
+          v: [
+            (v) => div(v.A!, v.s! * (v.tl! - v.tr!)),
+            '{A} ÷ ({s} × ({tl} − {tr}))',
+            'The area over the hatch spacing and the scan time.',
+          ],
+          s: [
+            (v) => div(v.A!, v.v! * (v.tl! - v.tr!)),
+            '{A} ÷ ({v} × ({tl} − {tr}))',
+            'The area over the speed and the scan time.',
+          ],
+        },
+      ),
+      rule('T = n t_layer', '{T} = {n} × {tl} ÷ 3600', (v) => v.T! * 3600 - v.n! * v.tl!, {
+        T: [
+          (v) => (v.n! * v.tl!) / 3600,
+          '{n} × {tl} ÷ 3600',
+          'Every layer takes t_layer; 3600 s to the hour.',
+        ],
+        n: [
+          (v) => div(v.T! * 3600, v.tl!),
+          '{T} × 3600 ÷ {tl}',
+          'The build time over one layer’s.',
+        ],
+        tl: [
+          (v) => div(v.T! * 3600, v.n!),
+          '{T} × 3600 ÷ {n}',
+          'The build time shared by the layers.',
+        ],
+      }),
+    ),
+    example: { ...ex, n, tl, T: (n * tl) / 3600 },
+    startWith: ['H', 't', 'A', 's', 'v', 'tr'],
+    representation: {
+      kind: 'printLayers',
+      layer: 't',
+      height: 'H',
+      layers: 'n',
+      area: 'A',
+      hatch: 's',
+      speed: 'v',
+      recoat: 'tr',
+      layerTime: 'tl',
+      buildTime: 'T',
+    },
+  });
+}
+
+const PRINT_BUILD = buildDemo(
+  'g.he-printLayers-build',
+  'A powder-bed build: layers and build time',
+  'Use this for “A 30 mm part in 0.1 mm layers, 400 mm² a layer, hatch 0.1 mm at 1000 mm/s, 8 s recoat. How long is the build?”',
+  { H: 30, t: 0.1, A: 400, s: 0.1, v: 1000, tr: 8 },
+);
+
+/** The few-layers edge: every layer drawn. */
+const PRINT_FEW = buildDemo(
+  'g.he-printLayers-few',
+  'A thin part: ten thick layers',
+  'Use this for “A 2 mm plate in 0.2 mm layers, 150 mm² a layer, hatch 0.1 mm at 500 mm/s, 6 s recoat. Find n and the build time.”',
+  { H: 2, t: 0.2, A: 150, s: 0.1, v: 500, tr: 6 },
+);
+
+/** The stair-step error on a face at θ from the build plate: c = t cos θ. */
+function cuspDemo(id: string, title: string, use: string, t: number, th: number): ModuleDef {
+  const cos = (deg: number) => Math.cos((deg * Math.PI) / 180);
+  return demo(id, title, use, {
+    assumptions: [
+      'Each layer’s edge meets the true face at its lower corner; the upper corner stands off it.',
+      'θ is the face’s angle from the build plate (90° is a vertical wall, with no cusp).',
+    ],
+    variables: [
+      q('t', 't', 'Layer thickness', 'mm', 0.01, 1, 0.01),
+      q('th', 'θ', 'Face angle from the plate', '°', 1, 89, 0.1),
+      q('c', 'c', 'Cusp height', 'mm', 0.0001, 1, 0.0001),
+    ],
+    ...rules(
+      rule('c = t cos θ', '{c} = {t} × cos({th}°)', (v) => v.c! - v.t! * cos(v.th!), {
+        c: [
+          (v) => v.t! * cos(v.th!),
+          '{t} × cos({th}°)',
+          'The step’s riser t stands at θ to the face’s normal, so its corner sits t cos θ off the face.',
+        ],
+        t: [(v) => div(v.c!, cos(v.th!)), '{c} ÷ cos({th}°)', 'Divide the cusp by cos θ.'],
+      }),
+    ),
+    example: { t, th, c: t * cos(th) },
+    startWith: ['t', 'th'],
+    representation: { kind: 'printLayers', layer: 't', angle: 'th', cusp: 'c' },
+  });
+}
+
+const PRINT_CUSP = cuspDemo(
+  'g.he-printLayers-cusp',
+  'The stair-step error on a sloped face',
+  'Use this for “0.2 mm layers on a face at 30° from the build plate. How high is the cusp?”',
+  0.2,
+  30,
+);
+
+/** A shallow face: the cusp is almost the whole layer. */
+const PRINT_CUSP_SHALLOW = cuspDemo(
+  'g.he-printLayers-cusp-shallow',
+  'A shallow face: the steps show most',
+  'Use this for “0.2 mm layers on a face at 10° from the build plate. Find the cusp.”',
+  0.2,
+  10,
+);
+
 export const HE4L_GALLERY_MODULES: ModuleDef[] = [
   MOODY_STEEL,
   MOODY_ROUGH,
@@ -497,6 +660,10 @@ export const HE4L_GALLERY_MODULES: ModuleDef[] = [
   GEAR_PAIR_SMALL,
   GEAR_TRAIN,
   GEAR_IDLER,
+  PRINT_BUILD,
+  PRINT_FEW,
+  PRINT_CUSP,
+  PRINT_CUSP_SHALLOW,
 ];
 
 export const HE4L_GALLERY_LAYOUTS: LayoutDef[] = [];

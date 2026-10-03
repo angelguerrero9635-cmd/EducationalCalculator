@@ -2,6 +2,7 @@
  * The arithmetic behind the college round 4 group L pictures (HC165–HC172), shared by the
  * pictures and their harness checks so both draw and check from one formula.
  */
+import { siFactor } from './he3iUnits';
 
 // ─── HC165: the Moody chart ─────────────────────────────────────────────────────
 
@@ -124,3 +125,15 @@ export function gearOutline(cx: number, cy: number, N: number, s: number, phase:
   }
   return `${d}Z`;
 }
+
+// ─── HC167: additive layers ─────────────────────────────────────────────────────
+
+/** Shop units the shared registry lacks (scan speeds), then the registry's own. */
+const SHOP_4L: Record<string, number> = { 'mm/s': 1e-3, 'mm/min': 1e-3 / 60, 'm/min': 1 / 60 };
+
+/** How many SI units one of `unit` is. */
+export const si4l = (unit: string | undefined) =>
+  unit !== undefined && unit in SHOP_4L ? SHOP_4L[unit]! : siFactor(unit);
+
+/** The stair-step cusp on a face at θ (degrees) from the build plate: c = t cos θ. */
+export const cuspOf = (t: number, thetaDeg: number) => t * Math.cos((thetaDeg * Math.PI) / 180);
