@@ -101,4 +101,21 @@ export const HE4K_REQUESTS: PictureRequest[] = [
     status: 'drawn',
     gallery: ['g.he-ligandGrid-adhere', 'g.he-ligandGrid-sparse', 'g.he-ligandGrid-dense'],
   },
+  {
+    ...ask(
+      'HC164',
+      'bioreactor',
+      'A stirred glass bioreactor with a sparger bubbling gas into the medium, cells as dots by their density X, and a dissolved-oxygen gauge from 0 to C∗ filled to the steady C = C∗ − qX ÷ k_La',
+      [`${E}tissue-engineering#2`],
+      [
+        'From B-P35. New kind (typesHe4k.ts BioreactorSpec, reps/Bioreactor.tsx, reps/he4kMath.ts). Drawn on its own rather than on controlVolume: the vessel, sparger and gauge are the picture.',
+        "Fields: { kind: 'bioreactor', cStar (C∗, mM), kla (k_La, h⁻¹), q (pmol/(cell·h)), x (X, cells/mL), our? (mM/h, checked), c? (C, mM, checked), xMax? (cells/mL, checked) }.",
+        'Painted: the glass vessel (Glass sheen) with its metal lid, the medium, an impeller on its shaft, the gas line down the wall to a sparger ring with bubbles rising; cells as dots, each a power of ten of cells/mL (at most 120 dots, the unit written under the vessel); the gauge from 0 to C∗ filled to C with both labelled, OUR beside it, X_max = k_La·C∗ ÷ q in the caption. qX in mM/h is q × X × 10⁻⁶. C ≤ 0 empties the gauge and the caption says the cells outrun the supply (the page’s limit message). A "?" X draws no cells; a "?" C∗, k_La or q leaves the gauge empty. No handles.',
+        "Example: { kind: 'bioreactor', cStar: 'cStar', kla: 'kla', q: 'q', x: 'x', our: 'our', c: 'c', xMax: 'xMax' } (0.21 mM, 5 h⁻¹, 0.2 pmol/(cell·h), 2 × 10⁶ cells/mL → OUR = 0.4 mM/h, C = 0.13 mM, X_max = 5.25 × 10⁶ cells/mL).",
+        'Harness (harness/picturesHe4k.ts): C = C∗(1 − X ÷ X_max) (another route to C∗ − qX ÷ k_La); OUR, C and X_max as written; the dots times the cells per dot are X within one dot; C ≥ 0.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: ['g.he-bioreactor-steady', 'g.he-bioreactor-crowded'],
+  },
 ];

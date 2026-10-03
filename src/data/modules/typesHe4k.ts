@@ -1,7 +1,7 @@
 /**
  * College pictures, round 4, group K (docs/RENDERINGS_HE.md): the new kinds HC160 `dialyzer`,
  * HC161 `attenuation`, HC162 `scaffold`,
- * HC163 `ligandGrid`.
+ * HC163 `ligandGrid`, HC164 `bioreactor`.
  * Kept apart from `types.ts` so the union only names them.
  *
  * Every string is a variable id; a `NumOrVar` is a fixed number or one. A value is read in its
@@ -108,10 +108,38 @@ export interface LigandGridSpec {
   threshold?: NumOrVar;
 }
 
-/** Every new kind of group K. */
-export type He4kSpec = DialyzerSpec | AttenuationSpec | ScaffoldSpec | LigandGridSpec;
+// ─── HC164: bioreactor ─────────────────────────────────────────────────────────
 
-const HE4K_KINDS = new Set<string>(['dialyzer', 'attenuation', 'scaffold', 'ligandGrid']);
+/**
+ * HC164 (B-P35): a stirred glass bioreactor, painted: a sparger bubbling gas into the medium
+ * (oxygen dissolving at `kla`, h⁻¹), cells as dots by their density `x` (cells/mL; each dot a
+ * power of ten of cells/mL, at most about 120 dots), and a dissolved-oxygen gauge from 0 to
+ * `cStar` (mM) filled to C = C∗ − qX ÷ k_La at steady state (`q` pmol/(cell·h); qX in mM/h is
+ * q × X × 10⁻⁶). `our`, `c` and `xMax` (X_max = k_La·C∗ ÷ q) are the page's, checked. C ≤ 0
+ * empties the gauge and the caption says the cells outrun the supply.
+ */
+export interface BioreactorSpec {
+  kind: 'bioreactor';
+  cStar: NumOrVar;
+  kla: NumOrVar;
+  q: NumOrVar;
+  x: NumOrVar;
+  our?: string;
+  c?: string;
+  xMax?: string;
+}
+
+/** Every new kind of group K. */
+export type He4kSpec =
+  DialyzerSpec | AttenuationSpec | ScaffoldSpec | LigandGridSpec | BioreactorSpec;
+
+const HE4K_KINDS = new Set<string>([
+  'dialyzer',
+  'attenuation',
+  'scaffold',
+  'ligandGrid',
+  'bioreactor',
+]);
 
 /** Whether a picture is one of group K's new kinds. */
 export const isHe4k = (r: Representation): r is He4kSpec => HE4K_KINDS.has(r.kind);
@@ -127,5 +155,7 @@ export function he4kSpecVars(r: He4kSpec): string[] {
       return ids(r.rhoS, r.rhoStar, r.relative, r.porosity, r.es, r.estar);
     case 'ligandGrid':
       return ids(r.density, r.spacing, r.threshold);
+    case 'bioreactor':
+      return ids(r.cStar, r.kla, r.q, r.x, r.our, r.c, r.xMax);
   }
 }

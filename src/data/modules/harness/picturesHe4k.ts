@@ -4,6 +4,7 @@
  * it with the page's values. Test-only.
  */
 import {
+  cellsPerDot,
   LIGAND_ASPECT,
   ligandPlaques,
   ligandWindow,
@@ -176,6 +177,38 @@ function ligandIssues(rep: Extract<He4kSpec, { kind: 'ligandGrid' }>, val: Val):
   return out;
 }
 
+/**
+ * HC164 `bioreactor`: C = C∗(1 − X ÷ X_max) with X_max = k_La·C∗ ÷ q (another route to
+ * C∗ − qX ÷ k_La); the page's OUR, C and X_max; the dots drawn times the cells per dot are X to
+ * within one dot, at most 120 dots; the gauge is empty when C ≤ 0.
+ */
+function bioreactorIssues(rep: Extract<He4kSpec, { kind: 'bioreactor' }>, val: Val): string[] {
+  const out: string[] = [];
+  const get = (x: string | number | undefined) => (x === undefined ? undefined : val(x));
+  const [cStar, kla, q, x] = [get(rep.cStar), get(rep.kla), get(rep.q), get(rep.x)];
+  if (x !== undefined && x > 0) {
+    const unit = cellsPerDot(x);
+    const dots = Math.round(x / unit);
+    if (dots > 120 || Math.abs(dots * unit - x) > unit / 2 + 1e-9)
+      out.push(`bioreactor: ${dots} dots of ${unit} cells/mL for X = ${x}`);
+  }
+  if (cStar === undefined || kla === undefined || q === undefined || x === undefined) return out;
+  if (kla <= 0 || q <= 0) return out;
+  const xMax = (kla * cStar) / (q * 1e-6);
+  const C = cStar * (1 - x / xMax);
+  const our = get(rep.our);
+  if (our !== undefined && !close(our, q * x * 1e-6))
+    out.push(`bioreactor: OUR = ${our} is not qX`);
+  const c = get(rep.c);
+  if (c !== undefined && Math.abs(c - C) > 1e-6 * Math.max(1, cStar))
+    out.push(`bioreactor: C = ${c} is not C∗ − qX ÷ k_La = ${C}`);
+  const pageMax = get(rep.xMax);
+  if (pageMax !== undefined && !close(pageMax, xMax))
+    out.push(`bioreactor: X_max = ${pageMax} is not k_La·C∗ ÷ q = ${xMax}`);
+  if (c !== undefined && c < 0) out.push(`bioreactor: C = ${c} is below 0 (the gauge is empty)`);
+  return out;
+}
+
 export function he4kIssues(rep: He4kSpec, val: Val): string[] {
   switch (rep.kind) {
     case 'dialyzer':
@@ -186,5 +219,7 @@ export function he4kIssues(rep: He4kSpec, val: Val): string[] {
       return scaffoldIssues(rep, val);
     case 'ligandGrid':
       return ligandIssues(rep, val);
+    case 'bioreactor':
+      return bioreactorIssues(rep, val);
   }
 }

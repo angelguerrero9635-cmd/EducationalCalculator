@@ -1,6 +1,6 @@
 /**
  * The arithmetic group K's college pictures draw from (round 4: HC160 dialyzer, HC161 attenuation, HC162
- * scaffold, HC163 ligandGrid), shared by the
+ * scaffold, HC163 ligandGrid, HC164 bioreactor), shared by the
  * pictures and their harness checks.
  */
 
@@ -129,4 +129,26 @@ export function ligandPlaques(d: number, threshold: number, cols: number, cellRo
     out.push([r, first, Math.min(cols - 1, first + run - 1)]);
   }
   return out;
+}
+
+// ─── HC164: bioreactor ─────────────────────────────────────────────────────────
+
+/** The oxygen uptake rate (mM/h) of X cells/mL at q pmol/(cell·h): qX × 10⁻⁶. */
+export const uptake = (q: number, x: number) => q * x * 1e-6;
+
+/** The cells/mL one dot stands for: a power of ten, so X needs at most 120 dots. */
+export const cellsPerDot = (x: number) => 10 ** Math.max(0, Math.ceil(Math.log10(x / 120)));
+
+/** Fixed, even-looking places in the unit square (a Halton sequence in bases 2 and 3). */
+export function halton(n: number): [number, number][] {
+  const h = (i: number, b: number) => {
+    let f = 1;
+    let r = 0;
+    for (let k = i; k > 0; k = Math.floor(k / b)) {
+      f /= b;
+      r += f * (k % b);
+    }
+    return r;
+  };
+  return Array.from({ length: n }, (_, i) => [h(i + 1, 2), h(i + 1, 3)]);
 }

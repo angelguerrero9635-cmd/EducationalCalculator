@@ -5,6 +5,7 @@
  * HC161: `attenuation` (he.engineering.bioinstrumentation#2, ~ultrasound).
  * HC162: `scaffold` (he.engineering.tissue-engineering#0).
  * HC163: `ligandGrid` (he.engineering.tissue-engineering#1).
+ * HC164: `bioreactor` (he.engineering.tissue-engineering#2).
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
@@ -569,6 +570,123 @@ const LIGAND_DENSE = ligandPage(
   { density: 10000 },
 );
 
+// ─── HC164: oxygen in a bioreactor (tissue-engineering#2) ──────────────────────
+
+const ourOf = (v: Values) => v.q! * v.x! * 1e-6;
+const cOf = (v: Values) => v.cStar! - v.our! / v.kla!;
+const xMaxOf = (v: Values) => (v.kla! * v.cStar!) / (v.q! * 1e-6);
+
+const bioreactorRules = [
+  rule('our', '{our} = {q} × {x} ÷ 1000000', ['our', 'q', 'x'], (v) => 1e6 * v.our! - v.q! * v.x!, {
+    our: [
+      (v) => posOf(ourOf(v)),
+      '{q} × {x} ÷ 1000000',
+      'Every cell takes q; a millilitre holds X of them (pmol per mL per hour ÷ 10⁶ is mM/h).',
+    ],
+    q: [
+      (v) => posOf((1e6 * v.our!) / v.x!),
+      '1000000 × {our} ÷ {x}',
+      'Share the uptake among the cells in a millilitre.',
+    ],
+    x: [
+      (v) => posOf((1e6 * v.our!) / v.q!),
+      '1000000 × {our} ÷ {q}',
+      'How many cells, each taking q, use oxygen this fast.',
+    ],
+  }),
+  rule(
+    'balance',
+    '{c} = {cStar} − {our} ÷ {kla}',
+    ['c', 'cStar', 'our', 'kla'],
+    (v) => v.c! - cOf(v),
+    {
+      c: [
+        (v) => fin(cOf(v)),
+        '{cStar} − {our} ÷ {kla}',
+        'At steady state the gas supplies k_La(C∗ − C), just what the cells use.',
+      ],
+      cStar: [
+        (v) => posOf(v.c! + v.our! / v.kla!),
+        '{c} + {our} ÷ {kla}',
+        'The shortfall below saturation drives the supply.',
+      ],
+      our: [
+        (v) => posOf(v.kla! * (v.cStar! - v.c!)),
+        '{kla} × ({cStar} − {c})',
+        'The supply k_La(C∗ − C) is what the cells take.',
+      ],
+      kla: [
+        (v) => posOf(v.our! / (v.cStar! - v.c!)),
+        '{our} ÷ ({cStar} − {c})',
+        'The supply rate over the shortfall below saturation.',
+      ],
+    },
+  ),
+  rule(
+    'xmax',
+    '{xMax} = {kla} × {cStar} × 1000000 ÷ {q}',
+    ['xMax', 'kla', 'cStar', 'q'],
+    (v) => v.xMax! - xMaxOf(v),
+    {
+      xMax: [
+        (v) => posOf(xMaxOf(v)),
+        '{kla} × {cStar} × 1000000 ÷ {q}',
+        'The most the gas can feed: C falls to 0 when qX reaches k_La·C∗.',
+      ],
+    },
+  ),
+];
+
+const bioreactorPage = (id: string, title: string, use: string, typed: Values) =>
+  page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'Steady state: the gas supplies oxygen as fast as the cells use it.',
+      'The medium is well mixed, so C is the same everywhere.',
+    ],
+    variables: [
+      num('cStar', 'C∗', 'Oxygen at saturation', 'mM', 0.01, 2, { step: 0.01 }),
+      num('kla', 'k_La', 'Oxygen transfer coefficient', 'h⁻¹', 0.1, 100, { step: 0.1 }),
+      num('q', 'q', 'Uptake per cell', 'pmol/(cell·h)', 0.001, 10, { step: 0.01 }),
+      num('x', 'X', 'Cell density', 'cells/mL', 1000, 1e9, { step: 1000, scientific: true }),
+      out('our', 'OUR', 'Oxygen uptake rate', 'mM/h'),
+      num('c', 'C', 'Dissolved oxygen', 'mM', 0, 2, { step: 0.01 }),
+      out('xMax', 'X_max', 'Highest cell density the gas can feed', 'cells/mL', {
+        scientific: true,
+      }),
+    ],
+    rules: bioreactorRules,
+    example: example(typed, ['our', ourOf], ['c', cOf], ['xMax', xMaxOf]),
+    startWith: ['cStar', 'kla', 'q', 'x'],
+    representation: {
+      kind: 'bioreactor',
+      cStar: 'cStar',
+      kla: 'kla',
+      q: 'q',
+      x: 'x',
+      our: 'our',
+      c: 'c',
+      xMax: 'xMax',
+    },
+  });
+
+const BIOREACTOR = bioreactorPage(
+  'g.he-bioreactor-steady',
+  'Oxygen in a bioreactor at steady state',
+  'Use this for “C∗ = 0.21 mM, k_La = 5 per hour, and 2 × 10⁶ cells/mL each take 0.2 pmol/h. What is the dissolved oxygen, and how many cells can the vessel feed?”',
+  { cStar: 0.21, kla: 5, q: 0.2, x: 2e6 },
+);
+
+/** Near the limit: 5 × 10⁶ cells/mL leave almost no oxygen. */
+const BIOREACTOR_CROWDED = bioreactorPage(
+  'g.he-bioreactor-crowded',
+  'A bioreactor near its oxygen limit',
+  'Use this for “At 5 × 10⁶ cells/mL, each taking 0.2 pmol/h, with k_La = 5 per hour and C∗ = 0.21 mM, how much oxygen is left?”',
+  { cStar: 0.21, kla: 5, q: 0.2, x: 5e6 },
+);
+
 export const HE4K_GALLERY_MODULES: ModuleDef[] = [
   DIALYZER,
   DIALYZER_HIGH,
@@ -582,6 +700,8 @@ export const HE4K_GALLERY_MODULES: ModuleDef[] = [
   LIGAND,
   LIGAND_SPARSE,
   LIGAND_DENSE,
+  BIOREACTOR,
+  BIOREACTOR_CROWDED,
 ];
 
 export const HE4K_GALLERY_LAYOUTS: LayoutDef[] = [];
