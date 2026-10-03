@@ -214,7 +214,8 @@ const antiForm = (v: Values) =>
     antiTerms(v).map(([k, n, d]) => {
       const power = n === 1 ? 'x' : `x${raised(n)}`;
       const whole = exact(Math.abs(k) / d);
-      const short = Math.abs(whole * 1e4 - Math.round(whole * 1e4)) < 1e-6;
+      // A whole coefficient stands alone (2x²); any other is written over d (x² ÷ 2, not 0.5x²).
+      const short = Number.isInteger(whole);
       const size = short ? whole : Math.abs(k);
       const front = size === 1 ? '' : formatNumber(size);
       return [k, short ? `${front}${power}` : `${front}${power} ÷ ${d}`] as const;
