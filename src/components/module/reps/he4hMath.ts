@@ -1,0 +1,556 @@
+/**
+ * The sums behind group H's college pictures of round 4 (typesHe4h.ts), kept apart from the
+ * drawings so the harness checks the same numbers the pictures draw.
+ */
+export type Pt = { x: number; y: number };
+
+/** A random number source in [0, 1) that depends only on the seed (mulberry32). */
+export function seeded(seed: number) {
+  let a = seed >>> 0;
+  return () => {
+    a = (a + 0x6d2b79f5) >>> 0;
+    let t = a;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+/** 0 … n − 1 in an order that depends only on the seed. */
+export function shuffled(n: number, seed: number): number[] {
+  const r = seeded(seed);
+  const out = Array.from({ length: n }, (_, i) => i);
+  for (let i = n - 1; i > 0; i--) {
+    const j = Math.floor(r() * (i + 1));
+    [out[i], out[j]] = [out[j]!, out[i]!];
+  }
+  return out;
+}
+
+/** Shoelace area of a closed polygon. */
+export const polygonArea = (p: Pt[]) =>
+  Math.abs(
+    p.reduce((s, a, i) => {
+      const b = p[(i + 1) % p.length]!;
+      return s + a.x * b.y - b.x * a.y;
+    }, 0),
+  ) / 2;
+
+/** Whether a point lies inside a closed polygon (even–odd rule). */
+export function inside(p: Pt, poly: Pt[]) {
+  let hit = false;
+  for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+    const a = poly[i]!;
+    const b = poly[j]!;
+    if (a.y > p.y !== b.y > p.y && p.x < ((b.x - a.x) * (p.y - a.y)) / (b.y - a.y) + a.x)
+      hit = !hit;
+  }
+  return hit;
+}
+
+/** The nearest point on a polyline, and its distance. */
+export function nearestOn(p: Pt, line: Pt[]): { at: Pt; d: number } {
+  let best = { at: line[0]!, d: Infinity };
+  for (let i = 0; i + 1 < line.length; i++) {
+    const a = line[i]!;
+    const b = line[i + 1]!;
+    const dx = b.x - a.x;
+    const dy = b.y - a.y;
+    const t = Math.max(0, Math.min(1, ((p.x - a.x) * dx + (p.y - a.y) * dy) / (dx * dx + dy * dy)));
+    const at = { x: a.x + t * dx, y: a.y + t * dy };
+    const d = Math.hypot(p.x - at.x, p.y - at.y);
+    if (d < best.d) best = { at, d };
+  }
+  return best;
+}
+
+/** A smooth path through points (Catmull–Rom as cubic Béziers), open or closed. */
+export function smoothPath(p: Pt[], closed = false, f = (q: Pt) => q): string {
+  const n = p.length;
+  const at = (i: number) => f(closed ? p[((i % n) + n) % n]! : p[Math.max(0, Math.min(n - 1, i))]!);
+  const r = (x: number) => x.toFixed(1);
+  let d = `M${r(at(0).x)},${r(at(0).y)}`;
+  for (let i = 0; i < (closed ? n : n - 1); i++) {
+    const [a, b, c, e] = [at(i - 1), at(i), at(i + 1), at(i + 2)];
+    const c1 = { x: b.x + (c.x - a.x) / 6, y: b.y + (c.y - a.y) / 6 };
+    const c2 = { x: c.x - (e.x - b.x) / 6, y: c.y - (e.y - b.y) / 6 };
+    d += `C${r(c1.x)},${r(c1.y)} ${r(c2.x)},${r(c2.y)} ${r(c.x)},${r(c.y)}`;
+  }
+  return closed ? `${d}Z` : d;
+}
+
+// ─── HC129: catchment ──────────────────────────────────────────────────────────
+
+/** Drops drawn on the basin: round(40C) of them run off, so the drawn share is C to 1/80. */
+export const CATCHMENT_DROPS = 40;
+
+/**
+ * The made-up basin in unit coordinates (y down, about 2 wide): a pear narrowing to its outlet
+ * at the bottom, 72 points round.
+ */
+export const BASIN: Pt[] = Array.from({ length: 72 }, (_, i) => {
+  const t = (i / 72) * 2 * Math.PI;
+  let dt = Math.abs(t - Math.PI / 2);
+  dt = Math.min(dt, 2 * Math.PI - dt);
+  const r =
+    (1 + 0.12 * Math.sin(2 * t + 0.8) + 0.08 * Math.cos(3 * t + 0.3) + 0.05 * Math.sin(5 * t)) *
+    (1 - 0.42 * Math.exp(-((dt / 0.45) ** 2)));
+  return { x: r * Math.cos(t), y: 0.78 * r * Math.sin(t) };
+});
+
+/** The outlet: the basin's lowest point (the outline at 90°). */
+export const OUTLET: Pt = BASIN[18]!;
+
+/** The streams, each ending on the one it joins; the first is the main channel to the outlet. */
+export const STREAMS: Pt[][] = [
+  [
+    { x: 0.08, y: -0.62 },
+    { x: -0.05, y: -0.38 },
+    { x: 0.04, y: -0.12 },
+    { x: -0.03, y: 0.14 },
+    { x: 0.02, y: 0.36 },
+    OUTLET,
+  ],
+  [
+    { x: -0.78, y: -0.28 },
+    { x: -0.5, y: -0.3 },
+    { x: -0.24, y: -0.16 },
+    { x: 0.04, y: -0.12 },
+  ],
+  [
+    { x: 0.82, y: -0.12 },
+    { x: 0.55, y: 0.0 },
+    { x: 0.28, y: 0.04 },
+    { x: -0.03, y: 0.14 },
+  ],
+  [
+    { x: -0.62, y: 0.3 },
+    { x: -0.34, y: 0.3 },
+    { x: 0.02, y: 0.36 },
+  ],
+  [
+    { x: 0.5, y: -0.58 },
+    { x: 0.28, y: -0.42 },
+    { x: -0.05, y: -0.38 },
+  ],
+];
+
+/** The basin's area in unit coordinates (squared units). */
+export const BASIN_AREA = polygonArea(BASIN);
+
+/**
+ * Where the 40 drops fall (unit coordinates): spread over the basin, clear of its edge and the
+ * streams, the same every time.
+ */
+export const CATCHMENT_DROP_AT: Pt[] = (() => {
+  const shrunk = BASIN.map((p) => ({ x: p.x * 0.88, y: p.y * 0.88 }));
+  for (let gap = 0.2; gap > 0.02; gap *= 0.92) {
+    const r = seeded(129);
+    const out: Pt[] = [];
+    for (let k = 0; k < 6000 && out.length < CATCHMENT_DROPS; k++) {
+      const p = { x: -1.2 + 2.4 * r(), y: -1 + 2 * r() };
+      if (!inside(p, shrunk)) continue;
+      if (STREAMS.some((s) => nearestOn(p, s).d < 0.07)) continue;
+      if (out.some((q) => Math.hypot(q.x - p.x, q.y - p.y) < gap)) continue;
+      out.push(p);
+    }
+    if (out.length === CATCHMENT_DROPS) return out;
+  }
+  return [];
+})();
+
+/** How many of the 40 drops run off for a runoff coefficient C (0 to 1). */
+export const runoffDrops = (C: number) =>
+  Math.max(0, Math.min(CATCHMENT_DROPS, Math.round(C * CATCHMENT_DROPS)));
+
+/** Which drops run off: the first round(40C) of a fixed order, so they are spread out. */
+export const RUNOFF_ORDER = shuffled(CATCHMENT_DROPS, 31);
+
+/** The rational method's peak flow (m³/s) from C, i (mm/h) and A (km²). */
+export const rationalPeak = (C: number, i: number, A: number) => (C * i * A) / 3.6;
+
+/** Rain streaks drawn for an intensity i (mm/h): more for harder rain, 3 to 40. */
+export const rainStreaks = (i: number) => Math.max(3, Math.min(40, Math.round(3 * Math.sqrt(i))));
+
+/** A round length (1, 2 or 5 × 10ⁿ) near `x`, not above it. */
+export function niceBelow(x: number) {
+  const e = 10 ** Math.floor(Math.log10(x));
+  const m = x / e;
+  return (m >= 5 ? 5 : m >= 2 ? 2 : 1) * e;
+}
+
+// ─── HC133: contourMap ─────────────────────────────────────────────────────────
+
+/** The made-up hill's outline by direction (screen angle, y down): about 1, never round. */
+export const hillR = (t: number) => 1 + 0.14 * Math.sin(2 * t + 1) + 0.08 * Math.cos(3 * t - 0.4);
+
+/** How flat the hill's contours are drawn (their height over their width). */
+export const HILL_SQUASH = 0.72;
+
+/** Contours drawn (0, A's, to K − 1) for n intervals crossed: two past B's, at least 6. */
+export const contourCount = (n: number) => Math.max(6, Math.round(n) + 3);
+
+/** Contour k's size as a share of A's: 1 at A's, shrinking evenly toward the summit. */
+export const contourShare = (k: number, K: number) => 1 - (0.9 * k) / K;
+
+/**
+ * Where A and B sit on the transect (it runs left from the summit), as shares of A's contour:
+ * A on contour 0, B on contour n; with n = 0 both on the flat below the hill.
+ */
+export function transectEnds(n: number): { a: number; b: number } {
+  const K = contourCount(n);
+  const step = 0.9 / K;
+  if (n <= 0) return { a: 1 + 1.6 * step, b: 1 + 0.4 * step };
+  return { a: 1, b: contourShare(n, K) };
+}
+
+/** The contours the line A–B meets after A (A's own left out), A to B: n of them. */
+export function transectCrossings(n: number): number[] {
+  const K = contourCount(n);
+  const { a, b } = transectEnds(n);
+  const out: number[] = [];
+  for (let k = 0; k < K; k++) {
+    const s = contourShare(k, K);
+    if (s < a - 1e-12 && s >= b - 1e-12) out.push(k);
+  }
+  return out;
+}
+
+// ─── HC134: rasterGrid ─────────────────────────────────────────────────────────
+
+/** The lake on the extent, in shares of its width and height (y down). */
+export const LAKE: Pt[] = Array.from({ length: 48 }, (_, i) => {
+  const t = (i / 48) * 2 * Math.PI;
+  const r = 1 + 0.16 * Math.sin(2 * t + 0.5) + 0.1 * Math.cos(3 * t);
+  return { x: 0.46 + 0.3 * r * Math.cos(t), y: 0.52 + 0.26 * r * Math.sin(t) };
+});
+
+/** Columns (or rows) for an extent side in km and a cell in m: 1,000 × side ÷ c. */
+export const rasterCount = (km: number, cellM: number) => (1000 * km) / cellM;
+
+/** The most squares drawn along a side; past it each square is b × b cells. */
+export const RASTER_MAX_DRAWN = 40;
+
+/** Cells per drawn square side: 1, or the least 1, 2 or 5 × 10ⁿ that keeps ≤ 40 a side. */
+export function rasterBlock(cols: number, rows: number) {
+  const most = Math.max(Math.ceil(cols - 1e-9), Math.ceil(rows - 1e-9));
+  if (most <= RASTER_MAX_DRAWN) return 1;
+  for (let e = 1; ; e *= 10)
+    for (const m of [1, 2, 5])
+      if (Math.ceil(most / (m * e) - 1e-9) <= RASTER_MAX_DRAWN) return m * e;
+}
+
+/** Slope from the east and north gradients (rise per metre): degrees and percent. */
+export const slopeOf = (ex: number, ny: number) => {
+  const g = Math.hypot(ex, ny);
+  return { deg: (Math.atan(g) * 180) / Math.PI, percent: 100 * g };
+};
+
+/** The compass bearing (0–360°, clockwise from north) the ground falls toward; none if flat. */
+export function downhillBearing(ex: number, ny: number): number | undefined {
+  if (Math.hypot(ex, ny) < 1e-12) return undefined;
+  const b = (Math.atan2(-ex, -ny) * 180) / Math.PI;
+  return b < 0 ? b + 360 : b;
+}
+
+/** The 8-point name of a bearing: N, NE, E … */
+export const aspectName = (b: number) =>
+  ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'][Math.round(b / 45) % 8]!;
+
+// ─── HC135: sample pattern ─────────────────────────────────────────────────────
+
+/** The most points drawn; more are drawn as this many in the same pattern. */
+export const PATTERN_MAX = 300;
+
+/** The largest nearest-neighbour index (a perfect triangular lattice). */
+export const NNI_MAX = 2.15;
+
+/** Each point's nearest other point (its index). */
+export function nearestNeighbours(p: Pt[]): number[] {
+  return p.map((a, i) => {
+    let best = -1;
+    let bd = Infinity;
+    for (let j = 0; j < p.length; j++) {
+      if (j === i) continue;
+      const d = (a.x - p[j]!.x) ** 2 + (a.y - p[j]!.y) ** 2;
+      if (d < bd) {
+        bd = d;
+        best = j;
+      }
+    }
+    return best;
+  });
+}
+
+/** The nearest-neighbour index of points in the unit square: d̄ over 0.5 ÷ √(n ÷ 1). */
+export function nniOf(p: Pt[]) {
+  if (p.length < 2) return NaN;
+  const near = nearestNeighbours(p);
+  const mean =
+    p.reduce((s, a, i) => s + Math.hypot(a.x - p[near[i]!]!.x, a.y - p[near[i]!]!.y), 0) / p.length;
+  return mean / (0.5 / Math.sqrt(p.length));
+}
+
+/** A coordinate folded back into the square (mirrored at its edges), so nothing piles on a side. */
+const clamp01 = (x: number) => {
+  let y = Math.abs(x) % 2;
+  if (y > 1) y = 2 - y;
+  return Math.min(0.995, Math.max(0.005, y));
+};
+
+/** n points on a triangular lattice filling the square, each moved up to `jitter` spacings. */
+function latticePoints(n: number, jitter: number, seed: number): Pt[] {
+  // The largest equilateral spacing whose sites in the square number at least n.
+  const sites = (a: number) => {
+    const out: Pt[] = [];
+    const h = (a * Math.sqrt(3)) / 2;
+    for (let j = 0; (j + 0.5) * h <= 1; j++)
+      for (let i = 0; (i + 0.5 + (j % 2) / 2) * a <= 1; i++)
+        out.push({ x: (i + 0.5 + (j % 2) / 2) * a, y: (j + 0.5) * h });
+    return out;
+  };
+  let a = Math.sqrt(2 / (Math.sqrt(3) * n));
+  let grid = sites(a);
+  while (grid.length < n) {
+    a *= 0.99;
+    grid = sites(a);
+  }
+  const r = seeded(seed);
+  return grid.slice(0, n).map((p) => {
+    const t = 2 * Math.PI * r();
+    const d = jitter * a * Math.sqrt(r());
+    return { x: clamp01(p.x + d * Math.cos(t)), y: clamp01(p.y + d * Math.sin(t)) };
+  });
+}
+
+/** n points in clusters (about one parent per 10 points), spread σ around their parents. */
+function clusterPoints(n: number, sigma: number, seed: number): Pt[] {
+  const r = seeded(seed);
+  const parents = Array.from({ length: Math.max(1, Math.round(n / 10)) }, () => ({
+    x: 0.1 + 0.8 * r(),
+    y: 0.1 + 0.8 * r(),
+  }));
+  return Array.from({ length: n }, (_, k) => {
+    const p = parents[k % parents.length]!;
+    // Box–Muller: a normal step each way.
+    const u = Math.max(1e-12, r());
+    const v = r();
+    const g = Math.sqrt(-2 * Math.log(u));
+    return {
+      x: clamp01(p.x + sigma * g * Math.cos(2 * Math.PI * v)),
+      y: clamp01(p.y + sigma * g * Math.sin(2 * Math.PI * v)),
+    };
+  });
+}
+
+const PATTERN_CACHE = new Map<string, { points: Pt[]; R: number }>();
+
+/**
+ * n points in the unit square whose nearest-neighbour index is as near R as the search finds:
+ * a jittered lattice for dispersed R, clusters for clustered R, scattered points near 1, from
+ * fixed seeds, so the same n and R always draw the same points.
+ */
+export function patternPoints(n: number, R: number, seed = 135): { points: Pt[]; R: number } {
+  const key = `${n} ${R} ${seed}`;
+  const hit = PATTERN_CACHE.get(key);
+  if (hit) return hit;
+  let best = { points: [] as Pt[], R: NaN };
+  const tryOne = (p: Pt[]) => {
+    const r = nniOf(p);
+    if (!(Math.abs(r - R) >= Math.abs(best.R - R))) best = { points: p, R: r };
+  };
+  for (let s = 0; s < 3; s++) {
+    const sd = seed + 101 * s;
+    for (let k = 0; k <= 24; k++) tryOne(latticePoints(n, (k / 24) * 1.6, sd));
+    for (let k = 0; k <= 28; k++) tryOne(clusterPoints(n, 0.002 * 1.25 ** k, sd));
+    const r = seeded(sd + 7);
+    tryOne(Array.from({ length: n }, () => ({ x: clamp01(r()), y: clamp01(r()) })));
+    if (Math.abs(best.R - R) <= 0.02) break;
+  }
+  // Scaling about the centre scales every nearest distance alike: close the last gap that way
+  // when the scaled points still fit the square.
+  if (Number.isFinite(best.R) && best.R > 0 && Math.abs(best.R - R) > 0.01) {
+    const k = R / best.R;
+    const cx = best.points.reduce((t, q) => t + q.x, 0) / best.points.length;
+    const cy = best.points.reduce((t, q) => t + q.y, 0) / best.points.length;
+    const moved = best.points.map((q) => ({ x: cx + k * (q.x - cx), y: cy + k * (q.y - cy) }));
+    if (moved.every((q) => q.x >= 0.005 && q.x <= 0.995 && q.y >= 0.005 && q.y <= 0.995))
+      best = { points: moved, R: nniOf(moved) };
+  }
+  if (PATTERN_CACHE.size > 50) PATTERN_CACHE.clear();
+  PATTERN_CACHE.set(key, best);
+  return best;
+}
+
+// ─── HC150: sample herd ────────────────────────────────────────────────────────
+
+/** People drawn: a 10 × 10 crowd. */
+export const HERD_PEOPLE = 100;
+
+/** The most contacts drawn (R₀ up to 20). */
+export const HERD_MAX_CONTACTS = 20;
+
+/**
+ * Who is who for R₀ and an immune share p (0 to 1): the case (person 44, never immune);
+ * round(R₀) contacts (at most 20) from a fixed order; round(100p) immune (at most 99), of whom
+ * round(p × contacts) are contacts, so the stopped arrows are R₀ × p to rounding.
+ */
+export function herdPlan(r0: number, p: number) {
+  const index = 44;
+  const others = shuffled(HERD_PEOPLE, 150).filter((k) => k !== index);
+  const k = Math.max(0, Math.min(HERD_MAX_CONTACTS, Math.round(r0)));
+  const contacts = others.slice(0, k);
+  const rest = others.slice(k);
+  const M = Math.max(0, Math.min(HERD_PEOPLE - 1, Math.round(p * HERD_PEOPLE)));
+  const s = Math.max(Math.max(0, k - (HERD_PEOPLE - 1 - M)), Math.min(k, M, Math.round(p * k)));
+  const immune = [...contacts.slice(0, s), ...rest.slice(0, M - s)];
+  return { index, contacts, immune, stopped: s };
+}
+
+// ─── HC136: populationPyramid ──────────────────────────────────────────────────
+
+/** The five-year age groups, youngest first. */
+export const PYRAMID_AGES = [
+  '0–4',
+  '5–9',
+  '10–14',
+  '15–19',
+  '20–24',
+  '25–29',
+  '30–34',
+  '35–39',
+  '40–44',
+  '45–49',
+  '50–54',
+  '55–59',
+  '60–64',
+  '65–69',
+  '70–74',
+  '75–79',
+  '80–84',
+  '85+',
+];
+
+/** Which dependency group each bar is in: 0 young (0–14), 1 working (15–64), 2 old (65+). */
+export const PYRAMID_GROUP = PYRAMID_AGES.map((_, i) => (i < 3 ? 0 : i < 13 ? 1 : 2));
+
+export type PyramidShape = 'expansive' | 'stationary' | 'constrictive';
+
+/** The shape a pyramid's young and working totals suggest (people per five-year bar). */
+export const pyramidShape = (young: number, working: number): PyramidShape => {
+  const r = young / 3 / (working / 10);
+  return r > 1.15 ? 'expansive' : r < 0.9 ? 'constrictive' : 'stationary';
+};
+
+/** Weights within each group by shape, youngest bar first (made up; only the totals are data). */
+function pyramidWeights(shape: PyramidShape): number[] {
+  const young =
+    shape === 'expansive'
+      ? [1.12, 1, 0.88]
+      : shape === 'constrictive'
+        ? [0.88, 1, 1.12]
+        : [1, 1, 1];
+  const working = Array.from({ length: 10 }, (_, k) => {
+    const t = k / 9;
+    return shape === 'expansive'
+      ? 1.3 - 0.6 * t
+      : shape === 'constrictive'
+        ? 0.85 + 0.3 * Math.sin(Math.PI * t) + 0.1 * t
+        : 1.05 - 0.1 * t;
+  });
+  const old =
+    shape === 'expansive'
+      ? [0.4, 0.27, 0.17, 0.1, 0.06]
+      : shape === 'constrictive'
+        ? [0.26, 0.23, 0.2, 0.17, 0.14]
+        : [0.3, 0.25, 0.2, 0.15, 0.1];
+  return [...young, ...working, ...old];
+}
+
+/**
+ * Each bar's males and females: the group totals shared over their bars by the shape's weights
+ * (so each group's bars add to its total exactly), each bar split by a male share falling from
+ * 0.512 to 0.47 in old age. A group whose total is unknown has no bars (undefined).
+ */
+export function pyramidBars(
+  young: number | undefined,
+  working: number | undefined,
+  old: number | undefined,
+  shape: PyramidShape,
+): ({ male: number; female: number } | undefined)[] {
+  const w = pyramidWeights(shape);
+  const totals = [young, working, old];
+  const sums = [0, 1, 2].map((g) => w.reduce((s, x, i) => s + (PYRAMID_GROUP[i] === g ? x : 0), 0));
+  return w.map((x, i) => {
+    const g = PYRAMID_GROUP[i]!;
+    const T = totals[g];
+    if (T === undefined || T < 0) return undefined;
+    const bar = (T * x) / sums[g]!;
+    const m = 0.512 - 0.006 * Math.max(0, i - 10);
+    return { male: bar * m, female: bar * (1 - m) };
+  });
+}
+
+/** People written short: 2.4 M, 350 k, 900. */
+export function compactPeople(x: number) {
+  const r = (v: number) => String(Number(v.toPrecision(3)));
+  return x >= 1e6 ? `${r(x / 1e6)} M` : x >= 1e3 ? `${r(x / 1e3)} k` : r(x);
+}
+
+// ─── HC137: sensorGeometry ─────────────────────────────────────────────────────
+
+/** Ground pixel (m) from altitude H (km) and IFOV (μrad): H × IFOV. */
+export const sensorPixel = (H: number, ifov: number) => H * 1000 * ifov * 1e-6;
+
+/** Swath (km) from altitude H (km) and FOV (°): 2H tan(FOV ÷ 2). */
+export const sensorSwath = (H: number, fov: number) => 2 * H * Math.tan((fov * Math.PI) / 360);
+
+/**
+ * The side view at width w and height h, to scale: one px per k km both ways, the satellite
+ * as high as fits and the fan's swath within the width.
+ */
+export function sensorLayout(w: number, h: number, H: number, fov: number) {
+  const ground = h - 56;
+  const half = (Math.min(179, Math.max(0.01, fov)) * Math.PI) / 360;
+  const k = Math.min((ground - 40) / H, (w / 2 - 14) / (H * Math.tan(half)));
+  return { ground, half, k, cx: w / 2, satY: ground - H * k, halfSwath: H * Math.tan(half) * k };
+}
+
+// ─── HC138: spectralCurve ──────────────────────────────────────────────────────
+
+const gauss = (x: number, m: number, s: number) => Math.exp(-(((x - m) / s) ** 2) / 2);
+const step = (x: number) => 1 / (1 + Math.exp(-x));
+
+/**
+ * Typical reflectance spectra from our own smooth functions of wavelength λ (μm, 0.4 to 2.5):
+ * the shapes the courses teach (vegetation's green bump, red trough, red edge, NIR plateau and
+ * water dips; soil rising; water falling to nothing; a burn scar low in NIR, higher in SWIR),
+ * not digitized from any library.
+ */
+export const SPECTRA = {
+  vegetation: (l: number) =>
+    (0.04 +
+      0.07 * gauss(l, 0.55, 0.035) +
+      0.44 * step((l - 0.715) / 0.02) * (1 - 0.45 * step((l - 1.35) / 0.1))) *
+    (1 - 0.55 * gauss(l, 1.45, 0.05)) *
+    (1 - 0.75 * gauss(l, 1.94, 0.07)) *
+    (1 - 0.5 * step((l - 2.0) / 0.15)),
+  soil: (l: number) =>
+    (0.08 + 0.22 * step((l - 0.9) / 0.35)) *
+    (1 - 0.15 * gauss(l, 1.42, 0.05)) *
+    (1 - 0.2 * gauss(l, 1.92, 0.06)) *
+    (1 - 0.15 * step((l - 2.2) / 0.1)),
+  water: (l: number) => 0.005 + 0.07 * Math.exp(-(l - 0.4) / 0.25),
+  burned: (l: number) =>
+    (0.05 + 0.03 * (l - 0.4) + 0.13 * step((l - 1.2) / 0.3)) * (1 - 0.2 * gauss(l, 1.92, 0.06)),
+};
+
+/** The bands boxed (μm) and where a pixel's dot sits in each. */
+export const SPECTRAL_BANDS = {
+  red: { from: 0.63, to: 0.69, at: 0.66 },
+  nir: { from: 0.76, to: 0.9, at: 0.83 },
+  swir: { from: 2.08, to: 2.35, at: 2.215 },
+};
+
+/** A normalized difference: (a − b) ÷ (a + b), the form of NDVI and NBR. */
+export const normDiff = (a: number, b: number) => (a + b === 0 ? NaN : (a - b) / (a + b));

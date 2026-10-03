@@ -3,6 +3,7 @@ import { View } from 'react-native';
 import Svg, { Circle, G } from 'react-native-svg';
 
 import type { Representation } from '@/data/modules';
+import type { He4hSpec } from '@/data/modules/typesHe4h';
 import { formatNumber } from '@/engine/format';
 import { chart, usePalette } from '@/theme';
 
@@ -10,7 +11,7 @@ import type { Calculator } from '../useCalculator';
 import { Canvas, Caption, ChartText, useRep } from './common';
 import { PictureButton, seeded, shuffled } from './chance';
 
-type Spec = Extract<Representation, { kind: 'sample' }>;
+type Spec = Exclude<Extract<Representation, { kind: 'sample' }>, He4hSpec>; // HC135, HC150 apart
 
 /** The most dots drawn: one per member of the population. */
 export const SAMPLE_MAX = 1000;

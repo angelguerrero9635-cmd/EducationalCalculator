@@ -611,6 +611,12 @@ search or the sitemap, but the module tests and the harness run over it):
 | `printLayers`      | a part sliced in layers (n = H ÷ t); stair and cusp c = t cos θ; time  | College additive manufac. (HC167)   |
 | `fitDiagram`       | hole and shaft zones on the zero line, C_max and C_min, the fit; stack | College tolerances (HC168)          |
 | `casting`          | sand mould cut open: casting to scale, riser H = D, t = BM² bars       | College casting (HC172)             |
+| `catchment`        | basin to scale by its km bar: rain at i, 40 drops, round(40C) run off  | College hydrology, runoff (HC129)   |
+| `contourMap`       | contours at CI, every 5th bold; A–B across n; scale bar; profile under | College landforms, maps (HC133)     |
+| `rasterGrid`       | extent: a lake's cells filled, columns × rows; window: 3 × 3 z, aspect | College GIS, rasters (HC134)        |
+| populationPyramid  | age bars by sex from 3 group totals and a shape; bracketed; the ratio  | College human geography (HC136)     |
+| `sensorGeometry`   | satellite at H, FOV fanned to the swath to scale; H × IFOV pixel inset | College remote sensing (HC137)      |
+| `spectralCurve`    | ρ against λ for vegetation, soil, water, burn; bands boxed; NDVI, NBR  | College remote sensing (HC138)      |
 | `globe`            | sun rays, noon angle, day dial; great circle; Euler pole; dipole; air  | College earth and geography (HC36)  |
 | `stressStrain`     | σ–ε curve: E, 0.2% offset, UTS, necking; specimen; tube; two members   | College materials, biomech. (HC28)  |
 | `stressElement`    | element, turned to θ_p; Mohr's circle; 3 circles; loci, n; soil line   | College stress, soil (HC33)         |
@@ -858,6 +864,8 @@ Options on existing kinds (K–5 rebuild; each one is checked in `harness/pictur
 | `scatter`          | `residualOf: { point: k }`               | a value picks the point, counted from 1: its residual lit and worked (H105)   |
 | `scatter`          | `pointsFrom: '<group>'`                  | points typed as a value group x₁, y₁, …; axes grow to hold them (HC97)        |
 | `scatter`          | `classes`, `pixel`, `distances`          | class means as stars, the pixel's distance to each, the nearest lit (HC139)   |
+| `sample`           | `pattern: { n, index, area?, … }`        | n points (300 drawn) placed to index R; R gauge; neighbour links (HC135)      |
+| `sample`           | `herd: { r0, immune, threshold? }`       | 100 people, immune shaded; a case’s R₀ arrows, to immune ones stopped (HC150) |
 | `boxPlot`          | `fences`; `second`, `labels`             | 1.5 × IQR fences, outliers as open dots; two box plots on one scale (H19)     |
 | `dotPlot`          | `sd: { id, kind? }` (with `mean`)        | the mean as a line and a band one standard deviation either side (H19)        |
 | `table`            | `twoWay: { rows, cols, cells, … }`       | two-way table: totals, lit cell/row/column, segmented bars, chi-square (H20)  |
