@@ -1458,4 +1458,154 @@ export const COLLEGE_CHEMISTRY_MODULES: ModuleDef[] = [
       },
     } satisfies ModuleDef;
   })(),
+  (() => {
+    // General Chemistry I → Gases: the volume of gas a reaction makes. 5.00 g KClO₃
+    // (122.55 g/mol) → 0.04080 mol; 2KClO₃ → 2KCl + 3O₂, so × 3/2 → 0.06120 mol O₂;
+    // V = 0.06120 × 0.08206 × 298.15 ÷ 1.00 = 1.50 L.
+    const [m, M, r, t, P] = [5, 122.55, 1.5, 25, 1];
+    const n1 = m / M;
+    const n2 = r * n1;
+    const T = t + 273.15;
+    return {
+      id: 'he.chemistry.gen-chem-1#2~gas-stoich',
+      title: 'The volume of gas a reaction makes',
+      // As the data are given (5.00 g, 1.00 atm): 1.50 L.
+      workedFigures: 3,
+      use: 'Use this for “2KClO₃ → 2KCl + 3O₂. What volume of O₂ at 25 °C and 1.00 atm does 5.00 g of KClO₃ make?”',
+      assumptions: [
+        'The reactant you weigh is used up completely, and every mole of it makes product by the balanced equation.',
+        'The mole ratio r is the gas’s coefficient over the reactant’s: 3 mol of O₂ for each 2 mol of KClO₃ gives 3/2. Read r from your own balanced equation.',
+        'The gas is ideal. R = 0.08206 L·atm/(mol·K), so the pressure goes in atm, the volume comes out in liters and the temperature is in kelvins.',
+      ],
+      variables: [
+        V('m', 'm', 'Mass of the reactant', {
+          unit: 'g',
+          units: ['g'],
+          min: 0.001,
+          max: 10000,
+          step: 0.001,
+          figures: 4,
+        }),
+        V('M', 'M', 'Molar mass of the reactant', {
+          unit: 'g/mol',
+          units: ['g/mol'],
+          min: 1,
+          max: 1000,
+          step: 0.01,
+          figures: 5,
+        }),
+        V('n1', 'n₁', 'Moles of the reactant', { unit: 'mol', min: 1e-9, max: 10000, figures: 4 }),
+        V('r', 'r', 'Mole ratio (gas per reactant)', {
+          min: 0.1,
+          max: 10,
+          step: 0.001,
+          allowed: [1, 2, 3, 0.5, 1 / 3, 1.5, 2 / 3],
+        }),
+        V('n2', 'n₂', 'Moles of the gas', { unit: 'mol', min: 1e-9, max: 100000, figures: 4 }),
+        V('t', 't', 'Temperature in °C', {
+          unit: '°C',
+          units: ['°C'],
+          min: -200,
+          max: 1000,
+          step: 0.01,
+        }),
+        V('T', 'T', 'Temperature', {
+          unit: 'K',
+          units: ['K'],
+          min: 73.15,
+          max: 1273.15,
+          step: 0.01,
+          figures: 5,
+        }),
+        V('P', 'P', 'Pressure', {
+          unit: 'atm',
+          units: ['atm'],
+          min: 0.001,
+          max: 100,
+          step: 0.001,
+          figures: 4,
+        }),
+        V('V', 'V', 'Volume of the gas', {
+          unit: 'L',
+          units: ['L'],
+          min: 1e-6,
+          max: 1e7,
+          step: 0.001,
+          figures: 4,
+        }),
+      ],
+      ...rels(
+        rel('n₁ = m ÷ M', '{n1} = {m} ÷ {M}', ['n1', 'm', 'M'], (v) => v.n1! * v.M! - v.m!, {
+          n1: [
+            (v) => v.m! / v.M!,
+            '{m} ÷ {M}',
+            'Grams over the molar mass counts the moles of the reactant.',
+          ],
+          m: [(v) => v.n1! * v.M!, '{n1} × {M}', 'Moles times the molar mass gives grams.'],
+          M: [(v) => v.m! / v.n1!, '{m} ÷ {n1}', 'Grams per mole of the reactant.'],
+        }),
+        rel('n₂ = r·n₁', '{n2} = {r} × {n1}', ['n2', 'r', 'n1'], (v) => v.n2! - v.r! * v.n1!, {
+          n2: [
+            (v) => v.r! * v.n1!,
+            '{r} × {n1}',
+            'The mole ratio from the balanced equation carries the moles from the reactant to the gas.',
+          ],
+          n1: [(v) => v.n2! / v.r!, '{n2} ÷ {r}', 'Divide the moles of gas by the ratio.'],
+          r: [
+            (v) => v.n2! / v.n1!,
+            '{n2} ÷ {n1}',
+            'Divide the moles of gas by the moles of reactant.',
+          ],
+        }),
+        rel('T = t + 273.15', '{T} = {t} + 273.15', ['T', 't'], (v) => v.T! - (v.t! + 273.15), {
+          T: [
+            (v) => exact(v.t! + 273.15),
+            '{t} + 273.15',
+            'The gas laws use kelvins, which start 273.15 degrees below 0 °C.',
+          ],
+          t: [(v) => exact(v.T! - 273.15), '{T} − 273.15', 'Take 273.15 off the kelvins for °C.'],
+        }),
+        rel(
+          'PV = nRT',
+          '{P} × {V} = {n2} × 0.08206 × {T}',
+          ['P', 'V', 'n2', 'T'],
+          (v) => v.P! * v.V! - v.n2! * R_LATM * v.T!,
+          {
+            V: [
+              (v) => (v.n2! * R_LATM * v.T!) / v.P!,
+              '{n2} × 0.08206 × {T} ÷ {P}',
+              'The ideal gas law for the gas alone: V = nRT ÷ P, in liters.',
+            ],
+            n2: [
+              (v) => (v.P! * v.V!) / (R_LATM * v.T!),
+              '{P} × {V} ÷ (0.08206 × {T})',
+              'Divide PV by RT for the moles of gas.',
+            ],
+            P: [
+              (v) => (v.n2! * R_LATM * v.T!) / v.V!,
+              '{n2} × 0.08206 × {T} ÷ {V}',
+              'Divide nRT by V for the pressure in atm.',
+            ],
+            T: [
+              (v) => (v.P! * v.V!) / (v.n2! * R_LATM),
+              '{P} × {V} ÷ ({n2} × 0.08206)',
+              'Divide PV by nR.',
+            ],
+          },
+        ),
+      ),
+      example: { m, M, n1, r, n2, t, T, P, V: (n2 * R_LATM * T) / P },
+      startWith: ['m', 'M', 'r', 't', 'P'],
+      unitSystems: ['metric'],
+      representation: {
+        kind: 'moleMap',
+        moles: 'n1',
+        mass: 'm',
+        // No formula on the reactant: its molar mass is the page's typed M.
+        molarMass: 'M',
+        second: { formula: 'O2', ratio: [1, 'r'], moles: 'n2' },
+        gas: { temperature: 'T', pressure: 'P', volume: 'V' },
+      },
+    } satisfies ModuleDef;
+  })(),
 ];
