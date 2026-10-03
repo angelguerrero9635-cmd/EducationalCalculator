@@ -1,7 +1,7 @@
 /**
  * The arithmetic group K's college pictures draw from (round 4: HC160 dialyzer, HC161 attenuation, HC162
  * scaffold, HC163 ligandGrid, HC164 bioreactor,
- * HC176 settlingTank), shared by the
+ * HC176 settlingTank, HC177 plume), shared by the
  * pictures and their harness checks.
  */
 
@@ -181,3 +181,16 @@ export function depthStretch(L: number, D: number, px: number, want = 70) {
   for (const e of [1, 2, 3, 4, 5, 10, 20, 50, 100]) if (raw * e >= want) return e;
   return 100;
 }
+
+// ─── HC177: plume ──────────────────────────────────────────────────────────────
+
+/** The ground-level centreline concentration (μg/m³): (Q ÷ πuσ_yσ_z)e^(−H² ÷ 2σ_z²), Q in g/s. */
+export const plumeGround = (q: number, u: number, sy: number, sz: number, h: number) =>
+  ((1e6 * q) / (Math.PI * u * sy * sz)) * Math.exp(-(h * h) / (2 * sz * sz));
+
+/** The vertical profile's shape at height z, the ground's reflection added (1 at z = H alone). */
+export const plumeProfile = (z: number, h: number, sz: number) =>
+  Math.exp(-((z - h) ** 2) / (2 * sz * sz)) + Math.exp(-((z + h) ** 2) / (2 * sz * sz));
+
+/** σ_z drawn at a share f (0 to 1) of the way to the receptor: σ_z·f^0.85, growing downwind. */
+export const plumeSpread = (sz: number, f: number) => sz * Math.max(0, f) ** 0.85;

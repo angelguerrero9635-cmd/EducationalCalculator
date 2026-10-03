@@ -1,7 +1,7 @@
 /**
  * College pictures, round 4, group K (docs/RENDERINGS_HE.md): the new kinds HC160 `dialyzer`,
  * HC161 `attenuation`, HC162 `scaffold`,
- * HC163 `ligandGrid`, HC164 `bioreactor`, HC176 `settlingTank`.
+ * HC163 `ligandGrid`, HC164 `bioreactor`, HC176 `settlingTank`, HC177 `plume`.
  * Kept apart from `types.ts` so the union only names them.
  *
  * Every string is a variable id; a `NumOrVar` is a fixed number or one. A value is read in its
@@ -153,6 +153,29 @@ export interface SettlingTankSpec {
   t?: string;
 }
 
+// ─── HC177: plume ──────────────────────────────────────────────────────────────
+
+/**
+ * HC177 (ACC-P26): a Gaussian plume in side view. A painted stack (`stack` m tall, default
+ * 0.6 of H, then not labelled), the plume rising to the effective height `h` (H, m) and running
+ * level downwind, its ±σ_z and ±2σ_z envelopes widening with distance to `sz` (σ_z, m) at a
+ * receptor on the ground; the vertical profile there, e^(−(z − H)² ÷ 2σ_z²) + e^(−(z + H)² ÷
+ * 2σ_z²) (the ground reflects), with its ground value ringed. Heights to scale; distance is
+ * not (σ_y and σ_z are read for the receptor's distance, `x` m labels it). `q` (g/s), `u`
+ * (m/s), `sy` (σ_y, m) and `c` (μg/m³, checked: C = (Q ÷ πuσ_yσ_z)e^(−H² ÷ 2σ_z²)).
+ */
+export interface PlumeSpec {
+  kind: 'plume';
+  h: NumOrVar;
+  sz: NumOrVar;
+  sy?: NumOrVar;
+  u?: NumOrVar;
+  q?: NumOrVar;
+  c?: string;
+  stack?: NumOrVar;
+  x?: NumOrVar;
+}
+
 /** Every new kind of group K. */
 export type He4kSpec =
   | DialyzerSpec
@@ -160,7 +183,8 @@ export type He4kSpec =
   | ScaffoldSpec
   | LigandGridSpec
   | BioreactorSpec
-  | SettlingTankSpec;
+  | SettlingTankSpec
+  | PlumeSpec;
 
 const HE4K_KINDS = new Set<string>([
   'dialyzer',
@@ -169,6 +193,7 @@ const HE4K_KINDS = new Set<string>([
   'ligandGrid',
   'bioreactor',
   'settlingTank',
+  'plume',
 ]);
 
 /** Whether a picture is one of group K's new kinds. */
@@ -189,5 +214,7 @@ export function he4kSpecVars(r: He4kSpec): string[] {
       return ids(r.cStar, r.kla, r.q, r.x, r.our, r.c, r.xMax);
     case 'settlingTank':
       return ids(r.length, r.width, r.depth, r.q, r.vs, r.v0, r.removal, r.t);
+    case 'plume':
+      return ids(r.h, r.sz, r.sy, r.u, r.q, r.c, r.stack, r.x);
   }
 }

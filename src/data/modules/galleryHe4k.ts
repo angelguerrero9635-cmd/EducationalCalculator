@@ -7,6 +7,7 @@
  * HC163: `ligandGrid` (he.engineering.tissue-engineering#1).
  * HC164: `bioreactor` (he.engineering.tissue-engineering#2).
  * HC176: `settlingTank` (he.engineering.environmental#0).
+ * HC177: `plume` (he.engineering.environmental#2).
  */
 import type { Relation, Values, VariableDef } from '@/engine/types';
 
@@ -828,6 +829,83 @@ const SETTLING_ALL = settlingPage(
   { q: 0.1, len: 30, wid: 10, dep: 3, d: 20 },
 );
 
+// ─── HC177: a Gaussian plume (environmental#2) ─────────────────────────────────
+
+const plumeOf = (v: Values) =>
+  ((1e6 * v.q!) / (Math.PI * v.u! * v.sy! * v.sz!)) * Math.exp(-(v.h! ** 2) / (2 * v.sz! ** 2));
+/** e^(H² ÷ 2σ_z²), what the plume's height divides the centreline value by. */
+const liftOf = (v: Values) => Math.exp(v.h! ** 2 / (2 * v.sz! ** 2));
+
+const plumeRules = [
+  rule(
+    'gauss',
+    '{c} = 1000000 × {q} ÷ (π × {u} × {sy} × {sz}) ÷ e^({h}^2 ÷ (2 × {sz}^2))',
+    ['c', 'q', 'u', 'sy', 'sz', 'h'],
+    (v) => v.c! - plumeOf(v),
+    {
+      c: [
+        (v) => fin(plumeOf(v)),
+        '1000000 × {q} ÷ (π × {u} × {sy} × {sz}) ÷ e^({h}^2 ÷ (2 × {sz}^2))',
+        'The emission spread over the plume’s cross-section, cut by how far below the centreline the ground lies (10⁶ μg in a gram).',
+      ],
+      q: [
+        (v) => posOf((v.c! * Math.PI * v.u! * v.sy! * v.sz! * liftOf(v)) / 1e6),
+        '{c} × π × {u} × {sy} × {sz} × e^({h}^2 ÷ (2 × {sz}^2)) ÷ 1000000',
+        'Undo the spreading and the height’s cut.',
+      ],
+      u: [
+        (v) => posOf((1e6 * v.q!) / (Math.PI * v.c! * v.sy! * v.sz! * liftOf(v))),
+        '1000000 × {q} ÷ (π × {c} × {sy} × {sz} × e^({h}^2 ÷ (2 × {sz}^2)))',
+        'A faster wind dilutes the plume in proportion.',
+      ],
+      sy: [
+        (v) => posOf((1e6 * v.q!) / (Math.PI * v.c! * v.u! * v.sz! * liftOf(v))),
+        '1000000 × {q} ÷ (π × {c} × {u} × {sz} × e^({h}^2 ÷ (2 × {sz}^2)))',
+        'The crosswind spread dilutes the plume in proportion.',
+      ],
+    },
+  ),
+];
+
+const plumePage = (id: string, title: string, use: string, typed: Values) =>
+  page({
+    id,
+    title,
+    use,
+    assumptions: [
+      'A steady wind and a steady emission.',
+      'The ground reflects the plume.',
+      'σ_y and σ_z are read from the stability-class charts at the receptor’s distance.',
+    ],
+    variables: [
+      num('q', 'Q', 'Emission rate', 'g/s', 0.01, 10000, { step: 1 }),
+      num('u', 'u', 'Wind speed', 'm/s', 0.5, 30, { step: 0.1 }),
+      num('sy', 'σ_y', 'Crosswind spread', 'm', 1, 5000, { step: 1 }),
+      num('sz', 'σ_z', 'Vertical spread', 'm', 1, 5000, { step: 1 }),
+      num('h', 'H', 'Effective stack height', 'm', 1, 500, { step: 1 }),
+      out('c', 'C', 'Ground-level concentration', 'μg/m³'),
+    ],
+    rules: plumeRules,
+    example: example(typed, ['c', plumeOf]),
+    startWith: ['q', 'u', 'sy', 'sz', 'h'],
+    representation: { kind: 'plume', q: 'q', u: 'u', sy: 'sy', sz: 'sz', h: 'h', c: 'c' },
+  });
+
+const PLUME = plumePage(
+  'g.he-plume-ground',
+  'A Gaussian plume: the ground-level concentration',
+  'Use this for “A stack emits 100 g/s into a 5 m/s wind; H = 60 m, σ_y = 100 m and σ_z = 50 m at the receptor. What is the ground-level concentration?”',
+  { q: 100, u: 5, sy: 100, sz: 50, h: 60 },
+);
+
+/** A tall stack: H = 150 m keeps the plume well above the ground at this distance. */
+const PLUME_TALL = plumePage(
+  'g.he-plume-tall',
+  'A tall stack keeps the plume aloft',
+  'Use this for “The same emission leaves a 150 m effective height. What reaches the ground where σ_z = 50 m?”',
+  { q: 100, u: 5, sy: 100, sz: 50, h: 150 },
+);
+
 export const HE4K_GALLERY_MODULES: ModuleDef[] = [
   DIALYZER,
   DIALYZER_HIGH,
@@ -845,6 +923,8 @@ export const HE4K_GALLERY_MODULES: ModuleDef[] = [
   BIOREACTOR_CROWDED,
   SETTLING,
   SETTLING_ALL,
+  PLUME,
+  PLUME_TALL,
 ];
 
 export const HE4K_GALLERY_LAYOUTS: LayoutDef[] = [];

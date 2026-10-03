@@ -604,6 +604,7 @@ search or the sitemap, but the module tests and the harness run over it):
 | `ligandGrid`       | RGD dots on a grid at d under a cell, 70 nm ring; plaques if d ≤ 70    | College tissue engineering (HC163)  |
 | `bioreactor`       | glass vessel, sparger, cells as dots by X; O₂ gauge 0 to C∗ at C       | College tissue engineering (HC164)  |
 | `settlingTank`     | basin to scale, a particle at v_s vs v₀ = Q ÷ LW; removed band shaded  | College environmental eng. (HC176)  |
+| `plume`            | stack, rise to H, ±σ_z widening downwind; ground profile and C         | College environmental eng. (HC177)  |
 | `globe`            | sun rays, noon angle, day dial; great circle; Euler pole; dipole; air  | College earth and geography (HC36)  |
 | `stressStrain`     | σ–ε curve: E, 0.2% offset, UTS, necking; specimen; tube; two members   | College materials, biomech. (HC28)  |
 | `stressElement`    | element, turned to θ_p; Mohr's circle; 3 circles; loci, n; soil line   | College stress, soil (HC33)         |

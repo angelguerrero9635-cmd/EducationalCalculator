@@ -12,6 +12,8 @@ import {
   PHOTONS,
   photonDepths,
   photonRows,
+  plumeProfile,
+  plumeSpread,
   settlingPath,
   strutFor,
   ureaDots,
@@ -253,6 +255,40 @@ function settlingIssues(rep: Extract<He4kSpec, { kind: 'settlingTank' }>, val: V
   return out;
 }
 
+/**
+ * HC177 `plume`: the drawn profile peaks at H (searched on a 1000-step grid of heights) when
+ * H > 2σ_z, so the centreline sits at H; σ_z grows downwind (the drawn spread rises at every
+ * step toward the receptor and reaches σ_z there); the page's C is the Gaussian plume's ground
+ * value, Q ÷ (πuσ_yσ_z) × e^(−H² ÷ 2σ_z²) in μg/m³, worked here as the centreline value times
+ * the profile's ground share ÷ 2.
+ */
+function plumeIssues(rep: Extract<He4kSpec, { kind: 'plume' }>, val: Val): string[] {
+  const out: string[] = [];
+  const get = (x: string | number | undefined) => (x === undefined ? undefined : val(x));
+  const [h, sz] = [get(rep.h), get(rep.sz)];
+  if (h === undefined || sz === undefined || h <= 0 || sz <= 0) return out;
+  if (h > 2 * sz) {
+    let best = 0;
+    for (let i = 1; i <= 1000; i++)
+      if (plumeProfile((3 * h * i) / 1000, h, sz) > plumeProfile((3 * h * best) / 1000, h, sz))
+        best = i;
+    if (Math.abs((3 * h * best) / 1000 - h) > (3 * h) / 1000 + 1e-9)
+      out.push(`plume: the profile peaks at ${(3 * h * best) / 1000} m, not H = ${h} m`);
+  }
+  for (let i = 1; i <= 20; i++)
+    if (!(plumeSpread(sz, i / 20) > plumeSpread(sz, (i - 1) / 20)))
+      out.push(`plume: the spread does not grow downwind at step ${i}`);
+  if (!close(plumeSpread(sz, 1), sz)) out.push(`plume: σ_z at the receptor is not ${sz}`);
+  const [q, u, sy, c] = [get(rep.q), get(rep.u), get(rep.sy), get(rep.c)];
+  if (q === undefined || u === undefined || sy === undefined || c === undefined) return out;
+  const centreline = (1e6 * q) / (2 * Math.PI * u * sy * sz);
+  const ground = centreline * plumeProfile(0, h, sz);
+  // (A value far down the tail shows as 0 to 4 decimals.)
+  if (!close(c, ground) && Math.abs(c - ground) > 1e-4)
+    out.push(`plume: C = ${c} μg/m³ is not the plume's ground value ${ground}`);
+  return out;
+}
+
 export function he4kIssues(rep: He4kSpec, val: Val): string[] {
   switch (rep.kind) {
     case 'dialyzer':
@@ -267,5 +303,7 @@ export function he4kIssues(rep: He4kSpec, val: Val): string[] {
       return bioreactorIssues(rep, val);
     case 'settlingTank':
       return settlingIssues(rep, val);
+    case 'plume':
+      return plumeIssues(rep, val);
   }
 }

@@ -857,6 +857,10 @@ const light = {
   /** HC176 settlingTank: a particle's path; the removed band and the sludge. */
   he4kParticle: '#B45309',
   he4kRemoved: '#7C5A3A',
+  /** HC177 plume: the plume's core and edge, the sky behind, the receptor. */
+  he4kPlume: '#6B7280',
+  he4kSky: '#E3EEF8',
+  he4kReceptor: '#047857',
   hydroRain: '#3A7BD5',
   hydroAbstract: '#7FAF6A',
   hydroInfil: '#B98B4E',
@@ -1517,6 +1521,9 @@ const dark: Palette = {
   he4kOxygen: '#60A5FA',
   he4kParticle: '#FBBF24',
   he4kRemoved: '#C9A27A',
+  he4kPlume: '#9CA3AF',
+  he4kSky: '#16222E',
+  he4kReceptor: '#34D399',
   hydroRain: '#6FA3E8',
   hydroAbstract: '#8FC07A',
   hydroInfil: '#C9A06A',

@@ -135,4 +135,21 @@ export const HE4K_REQUESTS: PictureRequest[] = [
     status: 'drawn',
     gallery: ['g.he-settlingTank-partial', 'g.he-settlingTank-all'],
   },
+  {
+    ...ask(
+      'HC177',
+      'plume',
+      'A Gaussian plume in side view: a stack, the plume rising to the effective height H and running level downwind, its σ_z envelopes widening to the receptor, and the vertical profile at the receptor with the ground-level value C',
+      [`${E}environmental#2`],
+      [
+        'From ACC-P26. New kind (typesHe4k.ts PlumeSpec, reps/Plume.tsx, reps/he4kMath.ts).',
+        "Fields: { kind: 'plume', h (H, m), sz (σ_z at the receptor, m), sy? (σ_y, m), u? (m/s), q? (Q, g/s), c? (μg/m³, checked), stack? (physical stack height, m; default 0.6H, unlabelled), x? (the receptor’s distance, a label) }.",
+        'Sky and ground, a painted brick stack, the dashed centreline rising from the stack top to H and running level, the ±σ_z and ±2σ_z envelopes (clipped at the ground) widening as σ_z·f^0.85 to σ_z at the receptor, the receptor on the ground with the vertical profile e^(−(z − H)² ÷ 2σ_z²) + e^(−(z + H)² ÷ 2σ_z²) drawn beside its post and its ground value ringed; H and σ_z dimensioned; wind and Q at the top; C along the bottom. Heights to scale, distance not (said under the ground). The page passes σ_y and σ_z for its distance (typed; a later chart of the stability classes could supply them). A "?" H or σ_z draws no plume. No handles.',
+        "Example: { kind: 'plume', q: 'q', u: 'u', sy: 'sy', sz: 'sz', h: 'h', c: 'c' } (100 g/s, 5 m/s, 100 m, 50 m, 60 m → e^(−0.72) = 0.487 → C = 620 μg/m³; H = 150 m → 14.1 μg/m³).",
+        'Harness (harness/picturesHe4k.ts): the drawn profile peaks at H (so the centreline sits at H); the spread grows at every step downwind and is σ_z at the receptor; C is the centreline value Q ÷ (2πuσ_yσ_z) times the profile’s ground value.',
+      ].join(' '),
+    ),
+    status: 'drawn',
+    gallery: ['g.he-plume-ground', 'g.he-plume-tall'],
+  },
 ];
