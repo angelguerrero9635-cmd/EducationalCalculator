@@ -644,4 +644,104 @@ export const COLLEGE_PHYSICS_MODULES: ModuleDef[] = [
       pulley: { layout: 'atwood', m1: 'm1', m2: 'm2', a: 'a', T: 'T' },
     },
   },
+  {
+    // University Physics I → Newton's laws: falling from rest against linear drag bv.
+    id: 'he.physics.university-1#1~drag',
+    title: 'Falling against linear drag: terminal speed',
+    use: 'Use this for “A 2 kg ball is dropped from rest, and the air pushes back with 4 kg/s times its speed. Find its terminal speed and how fast it falls after 1 s.”',
+    unitSystems: ['metric'],
+    assumptions: [
+      'Drag is bv, in proportion to the speed (slow, small objects); g = 9.81 m/s².',
+      'The object starts from rest at t = 0 and falls straight down.',
+      'The terminal speed v_T is where drag equals weight: bv_T = mg, so it stops speeding up.',
+      'τ = m ÷ b; after 5τ the speed is within 1% of v_T.',
+    ],
+    variables: [
+      V('m', 'm', 'Mass', { unit: 'kg', min: 0.001, max: 1000, step: 0.001 }),
+      V('b', 'b', 'Drag constant', { unit: 'kg/s', min: 0.001, max: 1000, step: 0.001 }),
+      V('vT', 'v_T', 'Terminal speed', { unit: 'm/s', min: 0, max: 1e7 }),
+      V('tau', 'τ', 'Time constant', { unit: 's', min: 0, max: 1e6 }),
+      V('t', 't', 'Time after release', { unit: 's', min: 0, max: 1e6, step: 0.01 }),
+      V('v', 'v', 'Speed at t', { unit: 'm/s', min: 0, max: 1e7 }),
+    ],
+    ...rels(
+      rel(
+        'v_T = mg ÷ b',
+        '{vT} = {m} × 9.81 ÷ {b}',
+        ['vT', 'm', 'b'],
+        (v) => v.vT! * v.b! - v.m! * G,
+        {
+          vT: [
+            (v) => div(v.m! * G, v.b!),
+            '{m} × 9.81 ÷ {b}',
+            'At terminal speed drag balances weight, bv_T = mg, so divide the weight by b.',
+          ],
+          m: [
+            (v) => (v.vT! * v.b!) / G,
+            '{vT} × {b} ÷ 9.81',
+            'The drag at terminal speed, bv_T, equals the weight mg: divide it by g.',
+          ],
+          b: [
+            (v) => div(v.m! * G, v.vT!),
+            '{m} × 9.81 ÷ {vT}',
+            'The drag at terminal speed equals the weight mg: divide the weight by v_T.',
+          ],
+        },
+      ),
+      rel('τ = m ÷ b', '{tau} = {m} ÷ {b}', ['tau', 'm', 'b'], (v) => v.tau! * v.b! - v.m!, {
+        tau: [
+          (v) => div(v.m!, v.b!),
+          '{m} ÷ {b}',
+          'Newton’s second law, m dv/dt = mg − bv, changes the speed on the time scale m ÷ b.',
+        ],
+        m: [(v) => v.tau! * v.b!, '{tau} × {b}', 'Multiply the time constant by b.'],
+        b: [(v) => div(v.m!, v.tau!), '{m} ÷ {tau}', 'Divide the mass by the time constant.'],
+      }),
+      rel(
+        'v = v_T(1 − e^(−t/τ))',
+        '{v} = {vT} × (1 − e^(−{t} ÷ {tau}))',
+        ['v', 'vT', 't', 'tau'],
+        (v) => v.v! - v.vT! * (1 - Math.exp(-v.t! / v.tau!)),
+        {
+          v: [
+            (v) => (v.tau! > 0 ? exact(v.vT! * (1 - Math.exp(-v.t! / v.tau!))) : undefined),
+            '{vT} × (1 − e^(−{t} ÷ {tau}))',
+            'Solving m dv/dt = mg − bv from rest gives v = v_T(1 − e^(−t/τ)): the share of v_T reached so far.',
+          ],
+          vT: [
+            (v) => div(v.v!, 1 - Math.exp(-v.t! / v.tau!)),
+            '{v} ÷ (1 − e^(−{t} ÷ {tau}))',
+            'Divide the speed by the share of the terminal speed reached so far.',
+          ],
+          t: [
+            (v) => (v.v! < v.vT! ? -v.tau! * Math.log(1 - v.v! / v.vT!) : undefined),
+            '−{tau} × ln(1 − {v} ÷ {vT})',
+            'Undo the exponential with ln: t = −τ ln(1 − v ÷ v_T).',
+          ],
+        },
+      ),
+      rule(
+        'v < v_T',
+        'The speed stays below the terminal speed: {v} is less than {vT}',
+        ['v', 'vT'],
+        (v) => v.v! < v.vT! * (1 + 1e-9) || v.vT === 0,
+        'From rest the speed only creeps up toward v_T; it never reaches or passes it.',
+      ),
+    ),
+    // m = 2 kg, b = 4 kg/s: v_T = 2 × 9.81 ÷ 4 = 4.905 m/s, τ = 2 ÷ 4 = 0.5 s;
+    // t = 1 s = 2τ: v = 4.905 × (1 − e⁻²) = 4.905 × 0.8647 = 4.241 m/s.
+    example: (() => {
+      const [m, b, t] = [2, 4, 1];
+      const vT = (m * G) / b;
+      const tau = m / b;
+      return { m, b, t, vT, tau, v: vT * (1 - Math.exp(-t / tau)) };
+    })(),
+    startWith: ['m', 'b', 't'],
+    // v(t) climbing to v_T (dashed), τ to 5τ marked, the 63.2% point ringed, the point at t.
+    representation: {
+      kind: 'functionGraph',
+      family: 'response',
+      transient: { initial: 0, final: 'vT', tau: 'tau', time: 't', value: 'v' },
+    },
+  },
 ];
